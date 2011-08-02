@@ -164,9 +164,11 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 					}
 					
 					searchString = [newComponents componentsJoinedByString:@" "];
+					searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
+					searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
 					
 					[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-					browsePredicate = [NSPredicate predicateWithFormat:search];
+					browsePredicate = [NSPredicate predicateWithFormat: search];
 				}
 				else
 					if ([parameters objectForKey:@"searchID"])
@@ -669,9 +671,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[self sendImages:selectedImages toDicomNode:dicomDestination];
 				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Dicom send to node %@ initiated.", @"Web Portal, study, dicom send, success"), [[dicomDestination objectForKey:@"AETitle"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 			} else
-				[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+				[response.tokens addError: NSLocalizedString(@"Dicom send failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 		} else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")]];
+			[response.tokens addError: NSLocalizedString(@"Dicom send failed: cannot identify node.", @"Web Portal, study, dicom send, error")];
 	}
 	
 	if ([[parameters objectForKey:@"WADOURLsRetrieve"] isEqual:@"WADOURLsRetrieve"] && study && [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"])
@@ -707,7 +709,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			return;
 		}
 		else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")]];
+			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
 	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
@@ -739,7 +741,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
 		} else
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")]];
+			[response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
 	}
 	
 	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
@@ -1848,13 +1850,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	if ([DCMAbstractSyntaxUID isStructuredReport:series.seriesSOPClassUID]) {
 		NSString* path = [NSFileManager.defaultManager confirmDirectoryAtPath:@"/tmp/dicomsr_osirix"];
-		NSString* htmlpath = [path stringByAppendingPathComponent:[[[series.images.anyObject valueForKey:@"completePath"] lastPathComponent] stringByAppendingPathExtension:@"html"]];
+		NSString* htmlpath = [path stringByAppendingPathComponent:[[[series.images.anyObject valueForKey:@"completePath"] lastPathComponent] stringByAppendingPathExtension:@"xml"]];
 		
 		if (![NSFileManager.defaultManager fileExistsAtPath:htmlpath]) {
 			NSTask* aTask = [[[NSTask alloc] init] autorelease];
 			[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dicom.dic"] forKey:@"DCMDICTPATH"]];
 			[aTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"dsr2html"]];
-			[aTask setArguments:[NSArray arrayWithObjects:[series.images.anyObject valueForKey:@"completePath"], htmlpath, nil]];		
+			[aTask setArguments:[NSArray arrayWithObjects: @"+X1", [series.images.anyObject valueForKey:@"completePath"], htmlpath, nil]];		
 			[aTask launch];
 			[aTask waitUntilExit];		
 		}

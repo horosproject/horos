@@ -19,7 +19,8 @@
 @class LLMPRViewer;
 @class ViewerController;
 
-@interface LLScoutViewer : NSWindowController {
+@interface LLScoutViewer : NSWindowController <NSWindowDelegate>
+{
 	IBOutlet OrthogonalMPRController	*mprController;
 	ViewerController					*viewer, *blendingViewer;
 	int									topLimit, bottomLimit;

@@ -82,6 +82,9 @@ END_EXTERN_C
 #define OPENSSL_DISABLE_OLD_DES_SUPPORT // joris
 
 #ifdef WITH_OPENSSL // joris
+#ifdef UI
+#undef UI // For MacOS 10.7 compilation
+#endif
 #include "tlstrans.h"
 #include "tlslayer.h"
 #endif

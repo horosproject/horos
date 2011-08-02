@@ -28,7 +28,7 @@
 */
 
 
-@interface EndoscopyViewer : OSIWindowController
+@interface EndoscopyViewer : OSIWindowController <NSToolbarDelegate, NSWindowDelegate, NSSplitViewDelegate>
 {
 	IBOutlet OrthogonalMPRController	*mprController;
 	IBOutlet EndoscopyVRController		*vrController;

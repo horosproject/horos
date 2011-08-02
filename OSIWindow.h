@@ -13,8 +13,9 @@
 =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "N2OpenGLViewWithSplitsWindow.h"
 
-@interface OSIWindow : NSWindow
+@interface OSIWindow : N2OpenGLViewWithSplitsWindow
 {
 }
 

@@ -46,7 +46,7 @@ extern NSString* O2AlbumDragType;
 *	and manges the database
 */
 
-@interface BrowserController : NSWindowController   //NSObject
+@interface BrowserController : NSWindowController <NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate>   //NSObject
 {
 //	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
 //    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
@@ -272,7 +272,7 @@ extern NSString* O2AlbumDragType;
 
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
-@property NSTimeInterval databaseLastModification __deprecated;
+@property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
 //@property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
 //@property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
@@ -384,6 +384,7 @@ extern NSString* O2AlbumDragType;
 - (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;
+- (void) setCurrentBonjourService:(long) index __deprecated;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;
@@ -446,6 +447,7 @@ extern NSString* O2AlbumDragType;
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
 - (IBAction) reparseIn3D:(id) sender;
 - (IBAction) reparseIn4D:(id) sender;
+- (void) selectThisStudy: (id)study;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
 
@@ -542,6 +544,8 @@ extern NSString* O2AlbumDragType;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
 #ifndef OSIRIX_LIGHT
+- (IBAction) paste: (id)sender;
+- (IBAction) pasteImageForSourceFile: (NSString*) sourceFile;
 - (void) decompressDICOMJPEG: (NSArray*) array __deprecated;
 //- (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) compressDICOMJPEG:(NSArray*) array __deprecated;

@@ -1560,7 +1560,8 @@ return YES;
 			}
 
 			Wait *splash = [[Wait alloc] initWithString:NSLocalizedString(@"Creating a DICOM series", nil)];
-			[splash showWindow:self];
+			[splash setCancel: YES];
+			[splash showWindow: self];
 			[[splash progress] setMaxValue:(int)((to-from)/interval)];
 			
 			@try
@@ -1570,24 +1571,31 @@ return YES;
 				
 				for( i = from; i < to; i+=interval)
 				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
 					@try 
 					{
+						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+						
+						NSDisableScreenUpdates();
+						
 						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 						[splitView display];
 						[view display];
 						
 						[producedFiles addObject: [self exportDICOMFileInt:[[dcmFormat selectedCell] tag]]];
 						
+						NSEnableScreenUpdates();
+						
 						[splash incrementBy: 1];
+						
+						[pool release];
+						
+						if( [splash aborted])
+							break;
 					}
 					@catch (NSException * e) 
 					{
 						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 					}
-					
-					[pool release];
 				}
 				
 				[view setCrossPosition:oldX+0.5 :oldY+0.5];

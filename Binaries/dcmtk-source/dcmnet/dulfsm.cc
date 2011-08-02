@@ -2237,10 +2237,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      * and several Unix variants.
      * Workaround is to explicitly handle the IP address case.
      */
-    unsigned int addr = 0;
-    if ((int)(addr = inet_addr(node)) != -1) {
+    unsigned long addr = inet_addr(node);
+    if (addr != INADDR_NONE) {
         // it is an IP address
-        (void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
+        server.sin_addr.s_addr = addr;
     } else {
         // must be a host name
         hp = gethostbyname(node);

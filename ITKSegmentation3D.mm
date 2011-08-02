@@ -1166,7 +1166,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 //			roiImageList = [roiSeriesList objectAtIndex:point3D.z * resampleZ];
 //			[roiImageList addObject: theNewROI];
 //			[theNewROI mouseRoiDown:point :(int)(point3D.z * resampleZ) :1.0];
-//			[theNewROI mouseRoiUp:point ];	
+//			[theNewROI mouseRoiUp:point scaleValue: scaleValue];	
 //	*/
 //			point3D.x *= resampleX;
 //			point3D.y *= resampleY;

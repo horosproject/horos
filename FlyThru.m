@@ -272,7 +272,7 @@
 		for( t = 0 ; t <= numberOfFrames ; t += inc )
 		{		
 			[stepsPositionInPath addObject:[NSNumber numberWithUnsignedInt:t]];
-			NSLog(@"t ::: %d",t);
+			NSLog(@"t ::: %f",t);
 		}		
 	}
 

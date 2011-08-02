@@ -257,7 +257,7 @@
 		else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)] == YES || [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
 		{
 			NSDate		*date = nil;
-			NSString	*field;
+			NSString	*field = nil;
 			
 			if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) field = [NSString stringWithString: @"date"];
 			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)]) field = [NSString stringWithString: @"dateAdded"];

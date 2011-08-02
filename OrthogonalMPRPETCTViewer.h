@@ -19,7 +19,7 @@
 
 /** \brief Window Controller for PET-CT fusion display */
 
-@interface OrthogonalMPRPETCTViewer : OSIWindowController
+@interface OrthogonalMPRPETCTViewer : OSIWindowController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	ViewerController							*viewer, *blendingViewerController;
 	

@@ -548,7 +548,7 @@ NSRect screenFrame()
 				{
 					frame = [[[NSScreen screens] objectAtIndex:i] frame];
 					if (frame.size.height == height && frame.size.width == singleWidth)
-						width =+ frame.size.width;
+						width = frame.size.width;
 				}	
 				screenRect = NSMakeRect([[[NSScreen screens] objectAtIndex:1] frame].origin.x, 
 										[[[NSScreen screens] objectAtIndex:1] frame].origin.y,
@@ -568,7 +568,7 @@ NSRect screenFrame()
 			{
 				frame = [[[NSScreen screens] objectAtIndex:i] frame];
 				if (frame.size.height == height && frame.size.width == singleWidth)
-					width =+ frame.size.width;
+					width = frame.size.width;
 			}
 			screenRect = NSMakeRect([[[NSScreen screens] objectAtIndex:0] frame].origin.x, 
 										[[[NSScreen screens] objectAtIndex:0] frame].origin.y,
@@ -2277,9 +2277,6 @@ static NSDate *lastWarningDate = nil;
 - (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
 	long				i;
-	NSMutableArray		*filesArray = [NSMutableArray array];
-	NSMutableArray		*pluginsArray = [NSMutableArray array];
-	NSFileManager       *defaultManager = [NSFileManager defaultManager];
 	BOOL                isDirectory;
 
 	if([filenames count] == 1) // for iChat Theatre... (drag & drop a DICOM file on the video chat window)
@@ -2387,8 +2384,8 @@ static NSDate *lastWarningDate = nil;
 	
 	if( rc < 0)
 	{
+        NSLog( @"******* waitUnlockFile : child process died... %d / %d", rc, errno);
 		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile : child process died...");
 	}
 	
 	unlink( dir);
@@ -2719,7 +2716,7 @@ static BOOL initialized = NO;
 					exit(0);
 				}
 				
-				NSLog(@"Number of processors: %d", MPProcessors ());
+				NSLog(@"Number of processors: %lu", MPProcessors ());
 				
 				#ifdef NDEBUG
 				#else
@@ -4713,6 +4710,8 @@ static BOOL initialized = NO;
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];
 		
+		NSDisableScreenUpdates();
+		
 		for( id v in viewersList)
 		{
 			if( [v isKindOfClass:[ViewerController class]])
@@ -4733,6 +4732,8 @@ static BOOL initialized = NO;
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
+			
+		NSEnableScreenUpdates();
 	}
 	
 	for( id obj in winList)
@@ -4848,7 +4849,6 @@ static BOOL initialized = NO;
 	long clutBarsCopy = [[NSUserDefaults standardUserDefaults] integerForKey:@"CLUTBARS"];
 	BOOL noInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"];
 	BOOL highQInterpolationCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"SOFTWAREINTERPOLATION"];
-	BOOL full32bitPipeCopy = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 	
 	float pixData[] = {0,1,1,0};
 	DCMPix* dcmPix = [[DCMPix alloc] initWithData:pixData :32 :2 :2 :1 :1 :0 :0 :0];

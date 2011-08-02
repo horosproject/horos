@@ -14,7 +14,7 @@
 
 #import <PreferencePanes/PreferencePanes.h>
 
-@interface OSIAutoroutingPreferencePanePref : NSPreferencePane 
+@interface OSIAutoroutingPreferencePanePref : NSPreferencePane <NSTableViewDelegate>
 {
 	IBOutlet NSButton					*autoroutingActivated;
 	IBOutlet NSWindow					*newRoute;

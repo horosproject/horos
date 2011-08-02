@@ -86,6 +86,7 @@ CGFloat N3VectorDistance(N3Vector vector1, N3Vector vector2);
 
 CGFloat N3VectorDotProduct(N3Vector vector1, N3Vector vector2);
 N3Vector N3VectorCrossProduct(N3Vector vector1, N3Vector vector2);
+N3Vector N3VectorLerp(N3Vector vector1, N3Vector vector2, CGFloat t); // when t == 0.0 the result is vector 1, when t == 1.0 the result is vector2
 CGFloat N3VectorAngleBetweenVectorsAroundVector(N3Vector vector1, N3Vector vector2, N3Vector aroundVector); // returns [0, 2*M_PI)
 
 CGFloat N3VectorLength(N3Vector vector);

@@ -19,7 +19,7 @@
 
 /** \brief  Searches and retrieves Bonjour shared databases */
 
-@interface BonjourBrowser : NSObject
+@interface BonjourBrowser : NSObject <NSNetServiceDelegate, NSNetServiceBrowserDelegate>
 {
     NSNetServiceBrowser* browser;
 	NSMutableArray* services;

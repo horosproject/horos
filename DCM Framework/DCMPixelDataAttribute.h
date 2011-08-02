@@ -100,6 +100,6 @@ enum photometricmode{DCM_UNKNOWN_PHOTOMETRIC, DCM_MONOCHROME1,  DCM_MONOCHROME2,
 - (NSData *) convertYBrToRGB:(NSData *)ybrData kind:(NSString *)theKind isPlanar:(BOOL)isPlanar;
 - (NSData *)convertToFloat:(NSData *)data;
 - (NSMutableData *)decodeFrameAtIndex:(int)index;
-- (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl;
+//- (NSImage *)imageAtIndex:(int)index ww:(float)ww  wl:(float)wl;
 
 @end

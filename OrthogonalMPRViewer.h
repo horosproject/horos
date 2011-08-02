@@ -22,7 +22,7 @@
 
 /** \brief  Window Controller for Orthogonal MPR */
 
-@interface OrthogonalMPRViewer : OSIWindowController
+@interface OrthogonalMPRViewer : OSIWindowController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	ViewerController					*viewer;
 

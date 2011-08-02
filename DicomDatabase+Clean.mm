@@ -365,7 +365,7 @@
 		if( _lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) {
 			_lastFreeSpace = free;
 			_lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
-			NSLog(@"HD Free Space: %d MB", (long) free);
+			NSLog(@"HD Free Space: %ld MB", (long)free);
 		}
 		
 		if (free >= freeMemoryRequested)

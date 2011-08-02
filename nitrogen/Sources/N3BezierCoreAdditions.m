@@ -640,11 +640,11 @@ CFIndex N3BezierCoreGetVectorInfo(N3BezierCoreRef bezierCore, CGFloat spacing, C
             
             nextTangentVector = nextSegmentDirection;
         }
-        startNormalVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(previousNormalVector, normalVector), 0.5)); 
-        endNormalVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(nextNormalVector, normalVector), 0.5)); 
+        startNormalVector = N3VectorNormalize(N3VectorLerp(previousNormalVector, normalVector, 0.5)); 
+        endNormalVector = N3VectorNormalize(N3VectorLerp(nextNormalVector, normalVector, 0.5)); 
         
-        startTangentVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(previousTangentVector, tangentVector), 0.5)); 
-        endTangentVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(nextTangentVector, tangentVector), 0.5)); 
+        startTangentVector = N3VectorNormalize(N3VectorLerp(previousTangentVector, tangentVector, 0.5)); 
+        endTangentVector = N3VectorNormalize(N3VectorLerp(nextTangentVector, tangentVector, 0.5)); 
         
 		while(distanceTraveled < segmentLength)
 		{
@@ -652,11 +652,11 @@ CFIndex N3BezierCoreGetVectorInfo(N3BezierCoreRef bezierCore, CGFloat spacing, C
                 vectors[i] = N3VectorAdd(startVector, N3VectorScalarMultiply(segmentDirection, distanceTraveled));
             }
             if (tangents) {
-                tangents[i] = N3VectorNormalize(N3VectorAdd(N3VectorScalarMultiply(startTangentVector, 1.0-distanceTraveled/segmentLength), N3VectorScalarMultiply(endTangentVector, distanceTraveled/segmentLength)));
+                tangents[i] = N3VectorNormalize(N3VectorLerp(startTangentVector, endTangentVector, distanceTraveled/segmentLength));
                 
             }
             if (normals) {
-                normals[i] = N3VectorNormalize(N3VectorAdd(N3VectorScalarMultiply(startNormalVector, 1.0-distanceTraveled/segmentLength), N3VectorScalarMultiply(endNormalVector, distanceTraveled/segmentLength)));
+                normals[i] = N3VectorNormalize(N3VectorLerp(startNormalVector, endNormalVector, distanceTraveled/segmentLength));
             }
             i++;
             if (i >= numVectors) {
@@ -792,11 +792,11 @@ CFIndex N3BezierCoreGetProjectedVectorInfo(N3BezierCoreRef bezierCore, CGFloat s
             
             nextTangentVector = nextSegmentDirection;
         }
-        startNormalVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(previousNormalVector, normalVector), 0.5)); 
-        endNormalVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(nextNormalVector, normalVector), 0.5)); 
+        startNormalVector = N3VectorNormalize(N3VectorLerp(previousNormalVector, normalVector, 0.5)); 
+        endNormalVector = N3VectorNormalize(N3VectorLerp(nextNormalVector, normalVector, 0.5)); 
         
-        startTangentVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(previousTangentVector, tangentVector), 0.5)); 
-        endTangentVector = N3VectorNormalize(N3VectorScalarMultiply(N3VectorAdd(nextTangentVector, tangentVector), 0.5)); 
+        startTangentVector = N3VectorNormalize(N3VectorLerp(previousTangentVector, tangentVector, 0.5)); 
+        endTangentVector = N3VectorNormalize(N3VectorLerp(nextTangentVector, tangentVector, 0.5)); 
         
 		while(distanceTraveled < projectedSegmentLength)
 		{
@@ -807,11 +807,10 @@ CFIndex N3BezierCoreGetProjectedVectorInfo(N3BezierCoreRef bezierCore, CGFloat s
                 vectors[i] = N3VectorAdd(startVector, N3VectorScalarMultiply(segmentDirection, segmentDistanceTraveled));
             }
             if (tangents) {
-                tangents[i] = N3VectorNormalize(N3VectorAdd(N3VectorScalarMultiply(startTangentVector, 1.0-distanceTraveled/projectedSegmentLength), N3VectorScalarMultiply(endTangentVector, distanceTraveled/projectedSegmentLength)));
-                
+                tangents[i] = N3VectorNormalize(N3VectorLerp(startTangentVector, endTangentVector, distanceTraveled/projectedSegmentLength));
             }
             if (normals) {
-                normals[i] = N3VectorNormalize(N3VectorAdd(N3VectorScalarMultiply(startNormalVector, 1.0-distanceTraveled/projectedSegmentLength), N3VectorScalarMultiply(endNormalVector, distanceTraveled/projectedSegmentLength)));
+                normals[i] = N3VectorNormalize(N3VectorLerp(startNormalVector, endNormalVector, distanceTraveled/projectedSegmentLength));
             }
             if (relativePositions) {
                 relativePositions[i] = (totalDistanceTraveled + segmentDistanceTraveled) / bezierLength;

@@ -19,7 +19,7 @@
 @class SendController;
 
 /** \brief Window Controller for the Wait Panel */
-@interface Wait : NSWindowController
+@interface Wait : NSWindowController <NSWindowDelegate>
 {
     IBOutlet NSProgressIndicator *progress;
 	IBOutlet NSTextField		 *text, *elapsed;

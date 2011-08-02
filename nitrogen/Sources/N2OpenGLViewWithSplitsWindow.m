@@ -12,16 +12,28 @@
      PURPOSE.
 =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
+#import <N2OpenGLViewWithSplitsWindow.h>
 
 
-@interface NSData (N2)
+@implementation N2OpenGLViewWithSplitsWindow
 
-+(NSData*)dataWithHex:(NSString*)hex;
--(NSData*)initWithHex:(NSString*)hex;
-+(NSData*)dataWithBase64:(NSString*)base64;
--(NSData*)initWithBase64:(NSString*)base64;
--(NSString*)base64;
--(NSString*)hex;
+@synthesize needsEnableUpdate;
+
+-(void)disableUpdatesUntilFlush
+{
+    if(!needsEnableUpdate)
+        NSDisableScreenUpdates();
+    needsEnableUpdate = YES;
+}
+
+-(void)flushWindow
+{
+    [super flushWindow];
+    if(needsEnableUpdate)
+    {
+        needsEnableUpdate = NO;
+        NSEnableScreenUpdates();
+    }
+}
 
 @end

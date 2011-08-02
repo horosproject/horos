@@ -327,8 +327,4 @@ static BonjourBrowser *currentBrowser = nil;
 		}
 }
 
-// This object is the delegate of its NSNetServiceBrowser object.
-
-
-
 @end

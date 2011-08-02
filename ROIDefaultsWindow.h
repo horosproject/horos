@@ -21,7 +21,7 @@
 
 /** \brief  Window Controller for ROI defaults */
 
-@interface ROIDefaultsWindow : NSWindowController
+@interface ROIDefaultsWindow : NSWindowController <NSComboBoxDataSource>
 {
 	NSArray			*roiNames;
 	

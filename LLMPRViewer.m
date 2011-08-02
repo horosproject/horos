@@ -1339,7 +1339,13 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 	NSMutableArray *pix = [[NSMutableArray alloc] initWithCapacity:0];
 	[self produceResultData:&volumeData pixList:pix];
 	
-	if([volumeData length]==0 || [pix count]==0) return;
+	if([volumeData length]==0 || [pix count]==0)
+    {
+        [pix release];
+        [volumeData release];
+        
+        return;
+    }
 	
 	NSMutableArray * newFileArray = [NSMutableArray arrayWithArray:[[[self viewer] fileList] subarrayWithRange:NSMakeRange(0,[pix count])]];
 	
@@ -1384,11 +1390,14 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[wait close];
 		[wait release];
 		
-//		NSLog(@"[volumeData length] : %d", [volumeData length]);
-//		NSLog(@"[pix count] : %d", [pix count]);
 		
-		if([volumeData length]==0 || [pix count]==0) return;
-		
+		if([volumeData length]==0 || [pix count]==0)
+        {
+            [pix release];		
+            [volumeData release];
+            
+            return;
+		}
 		NSArray * newFileArray = [NSArray arrayWithArray:[[[self viewer] fileList] subarrayWithRange:NSMakeRange(0,[pix count])]];
 		
 //		if( [VRPROController available])

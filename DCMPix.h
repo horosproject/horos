@@ -186,6 +186,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				fSetClut, fSetClut16;
 	
 	int					savedHeightInDB, savedWidthInDB;
+	
+	id					retainedCacheGroup;
 }
 
 @property long frameNo;

@@ -153,7 +153,6 @@ static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames = nil;
 
-static  BOOL AUTOHIDEMATRIX								= NO;
 static	float deg2rad									= 3.14159265358979/180.0; 
 
 static NSMenu *wlwwPresetsMenu = nil;
@@ -496,16 +495,10 @@ return YES;
 	{
 		if( postprocessed == NO)
 		{
-			for( int x = 0 ; x < [fileList[ curMovieIndex] count]; x++)
-			{
-				NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex: x];
-				
-				if( [[o valueForKey: @"isKeyImage"] boolValue] == YES)
-				{
-					valid = YES;
-					break;
-				}
-			}
+			DicomStudy *s = [[imageView seriesObj] valueForKey:@"study"];
+			
+			if( [[s keyImages] count])
+				valid = YES;
 		}
 	}
 	else if( [item action] == @selector( loadWindowsState:))
@@ -2874,14 +2867,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[imageView sendSyncMessage: 0];
 	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
 	[imageView stopROIEditingForce: YES];
 	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 	
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
@@ -2971,8 +2964,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) refreshToolbar
 {
-	
-	if (AUTOHIDEMATRIX) [self autoHideMatrix];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
 	
 	[self redrawToolbar];
 	
@@ -3260,40 +3252,60 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 //	float scaleValue = [imageView scaleValue];
 	
-	[self setUpdateTilingViewsValue: YES];
+	NSDisableScreenUpdates();
 	
+	[self setUpdateTilingViewsValue: YES];
 	[self selectFirstTilingView];
 	
     if( FullScreenOn == YES) // we need to go back to non-full screen
     {
         [StartingWindow setContentView: contentView];
-    
+		
         [FullScreenWindow setDelegate:nil];
         [FullScreenWindow close];
 		[FullScreenWindow release];
         
         FullScreenOn = NO;
 		
-		NSRect	rr = [StartingWindow frame];
+		NSRect rr = [StartingWindow frame];
 		
 		rr.size.width--;
 		[StartingWindow setFrame: rr display: NO];
 		rr.size.width++;
 		[StartingWindow setFrame: rr display: YES];
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
+		{
+			[imageView setIndex: previousFullscreenCurImage];
+			[self setImageRows: previousFullscreenRows columns: previousFullscreenColumns];
+			[[self window] makeFirstResponder: [[seriesView imageViews] objectAtIndex: previousFullscreenViewIndex]];
+		}
 	}
     else // FullScreenOn == false
     {
         unsigned int windowStyle;
-        NSRect       contentRect;
+        NSRect contentRect;
         
+		previousFullscreenColumns = [imageView columns];
+		previousFullscreenRows = [imageView rows];
+		int selectedIndex = [imageView curImage];
+		previousFullscreenViewIndex = [[seriesView imageViews] indexOfObject: imageView]; 
+		
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"NoImageTilingInFullscreen"] && (previousFullscreenColumns != 1 || previousFullscreenRows != 1))
+			[self setImageRows: 1 columns: 1];
+		
+		previousFullscreenCurImage = [imageView curImage];
+		
+		[imageView setIndex: selectedIndex];
+		
 		NSRect frame = [[[splitView subviews] objectAtIndex: 0] frame];
 		int previous = frame.size.width;
 		frame.size.width = 0;
 		[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 		
         StartingWindow = [self window];
-        windowStyle    = NSBorderlessWindowMask; 
-        contentRect    = [[NSScreen mainScreen] frame];
+        windowStyle = NSBorderlessWindowMask; 
+        contentRect = [[NSScreen mainScreen] frame];
         FullScreenWindow = [[NSFullScreenWindow alloc] initWithContentRect:contentRect styleMask: windowStyle backing:NSBackingStoreBuffered defer: NO];
         if(FullScreenWindow != nil)
         {
@@ -3322,12 +3334,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[self setUpdateTilingViewsValue : NO];
 	
-	[self selectFirstTilingView];
-	
+//	[self selectFirstTilingView];
 //	[imageView setScaleValue: scaleValue];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AlwaysScaleToFit"])
 		[imageView scaleToFit];
+		
+	NSEnableScreenUpdates();
 }
 
 - (BOOL) FullScreenON { return FullScreenOn;}
@@ -3562,8 +3575,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
-		
-		
 		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
 		[newViewer setHighLighted: 1.0];
 		lastHighLightedRow = [sender selectedRow];
@@ -3613,10 +3624,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			if( found == NO)
 			{
+				BOOL savedAUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
+				
 				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
 				
 				[self matrixPreviewSelectCurrentSeries];
 				[self updateNavigator];
+				
+				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
 		else
@@ -3664,6 +3681,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [[splitView subviews] count] > 1)
 	{
+		[self splitViewWillResizeSubviews: nil];
+		
 		frameLeft =  previous  = [[[splitView subviews] objectAtIndex: 0] frame];
 		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
 		
@@ -3681,9 +3700,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( previous.size.width != frameLeft.size.width)
 		{
 			imageView.dontEnterReshape = YES;
+			
+//			[NSAnimationContext beginGrouping];
+//			[[NSAnimationContext currentContext] setDuration: 1];
+//			[[[[splitView subviews] objectAtIndex: 0] animator] setFrameSize: frameLeft.size];
+//			[[[[splitView subviews] objectAtIndex: 1] animator] setFrameSize: frameRight.size];
+//			[splitView adjustSubviews];
+//			[NSAnimationContext endGrouping];
+			
 			[[[splitView subviews] objectAtIndex: 0] setFrameSize: frameLeft.size];
 			[[[splitView subviews] objectAtIndex: 1] setFrameSize: frameRight.size];
 			[splitView adjustSubviews];
+			
 			imageView.dontEnterReshape = NO;
 		}
 	}
@@ -3692,11 +3720,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) autoHideMatrix
 {
 	BOOL hide = NO;
+	NSWindow *window = nil;
 	
-	if( [[self window] isKeyWindow] == NO) hide = YES;
-	if( [[self window] isMainWindow] == NO) hide = YES;
-
-	NSPoint	mouse = [[self window] mouseLocationOutsideOfEventStream];
+	if( [self FullScreenON] == NO)
+	{
+		window = self.window;
+		if( [window isKeyWindow] == NO) hide = YES;
+		if( [window isMainWindow] == NO) hide = YES;
+	}
+	else
+		window = FullScreenWindow;
+	
+	NSPoint	mouse = [window mouseLocationOutsideOfEventStream];
 	
 	if( hide == NO)
 	{
@@ -3707,20 +3742,42 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
-	NSMutableArray *scaleValues = [NSMutableArray array];
-	for( DCMView * v in [seriesView imageViews])
-		[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+	BOOL isCurrentlyVisible = NO;
 	
-	[self setMatrixVisible: !hide];
-	
-	int i = 0;
-	for( DCMView * v in [seriesView imageViews])
+	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		isCurrentlyVisible = YES;
+		
+	if( isCurrentlyVisible == hide)
 	{
-		[v displayIfNeeded];
-		v.scaleValue = [[scaleValues objectAtIndex: i++] floatValue];
+		NSMutableArray *scaleValues = [NSMutableArray array];
+		NSMutableArray *originValues = [NSMutableArray array];
+		
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[scaleValues addObject: [NSNumber numberWithFloat: v.scaleValue]];
+			[originValues addObject: NSStringFromPoint( v.origin)];
+		}
+		
+		[self setMatrixVisible: !hide];
+		
+		NSDisableScreenUpdates();
+		
+		int i = 0;
+		for( DCMView * v in [seriesView imageViews])
+		{
+			[v displayIfNeeded];
+			v.scaleValue = [[scaleValues objectAtIndex: i] floatValue];
+			v.origin = NSPointFromString( [originValues objectAtIndex: i]);
+			i++;
+		}
+		
+		[self propagateSettings];
+		
+		for( DCMView * v in [seriesView imageViews])
+			[v displayIfNeeded];
+		
+		NSEnableScreenUpdates();
 	}
-	
-	[self propagateSettings];
 }
 
 - (NSScrollView*) previewMatrixScrollView
@@ -3748,7 +3805,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( [note object] == [previewMatrixScrollView contentView])
 		{
-			BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"];
+			BOOL syncThumbnails = [[NSUserDefaults standardUserDefaults] boolForKey: @"syncPreviewList"];
 			
 			if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSCommandKeyMask)
 				syncThumbnails = !syncThumbnails;
@@ -3779,6 +3836,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+	OSIWindow *window = (OSIWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
+}
+
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
     if( [sender isVertical] == YES)
@@ -3790,7 +3855,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( pos <  size.width/2) pos = 0;
 		else pos = size.width+13;
 		
-		if (AUTOHIDEMATRIX == NO)
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
 		{
 			// Apply show / hide matrix to all viewers
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
@@ -4586,15 +4651,13 @@ static ViewerController *draggedController = nil;
 
 -(void) mouseMoved: (NSEvent*) theEvent
 {
-	if( ![[self window] isVisible])
+	if( ![[self window] isVisible] && ![self FullScreenON])
 		return;
 	
 	if( windowWillClose) return;
 	
-	if (AUTOHIDEMATRIX)
-	{
+	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
 		[self autoHideMatrix];
-	}
 	
 //	if( [self checkFrameSize])
 //	{
@@ -6490,6 +6553,8 @@ return YES;
 			else
 			{
 				// *****************
+				[imageView setDrawing: NO];
+				
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerWillChangeNotification object: self userInfo: nil];
 				
@@ -6503,7 +6568,7 @@ return YES;
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
 				
 				windowWillClose = YES;
-				[imageView setDrawing: NO];
+				
 
 				[self setUpdateTilingViewsValue: YES];
 
@@ -6681,7 +6746,7 @@ return YES;
 					if( curImage >= [fileList[ curMovieIndex] count])
 						curImage = 0;
 					
-					NSNumber	*status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
+					NSNumber *status = [[fileList[ curMovieIndex] objectAtIndex: curImage] valueForKeyPath:@"series.study.stateText"];
 					
 					if( status == nil) [StatusPopup selectItemWithTitle: NSLocalizedString(@"empty", nil)];
 					else [StatusPopup selectItemWithTag: [status intValue]];
@@ -6831,8 +6896,6 @@ return YES;
 					
 					windowWillClose = NO;
 					
-					[imageView setDrawing: YES];
-					
 					[self setPostprocessed: NO];
 					
 					[self SetSyncButtonBehavior: self];
@@ -6882,6 +6945,9 @@ return YES;
 					
 					[subCtrlSum setFloatValue: 1];
 					[subCtrlPercent setFloatValue: 1];
+					
+					[imageView setDrawing: YES];
+					[imageView setNeedsDisplay: YES];
 				}
 				@catch ( NSException *e)
 				{
@@ -8396,6 +8462,8 @@ return YES;
 	int previousFusion = [popFusion selectedTag];
 	int previousCurImage = [imageView curImage];
 	
+	imageView.drawing = NO;
+	
 	[seriesView setFlippedData: ![imageView flippedData]];
 	[self setFusionMode: 0];
 	
@@ -8407,6 +8475,8 @@ return YES;
 	
 	if( activatedFusionState == NSOnState)
 		[self setFusionMode: previousFusion];
+	
+	imageView.drawing = YES;
 	
 	[popFusion selectItemWithTag:previousFusion];
 	
@@ -18418,7 +18488,6 @@ int i,j,l;
 	roiLock = [[NSLock alloc] init];
 	
 	factorPET2SUV = 1.0;
-	AUTOHIDEMATRIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"];
 	
 	subCtrlMaskID = -2;
 	maxMovieIndex = 1;
@@ -19710,6 +19779,7 @@ int i,j,l;
 	
 	if( tag == 0)
 	{
+		// First find in this series
 		for( int i = [imageView curImage]+1; i < [fileList[ curMovieIndex] count]; i++)
 		{
 			NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
@@ -19723,8 +19793,6 @@ int i,j,l;
 				return;
 			}
 		}
-		
-		NSBeep();
 	}
 	else
 	{
@@ -19739,6 +19807,119 @@ int i,j,l;
 				[self adjustSlider];
 				[imageView displayIfNeeded];
 				return;
+			}
+		}
+	}
+	
+	if( [imageView flippedData]) tag = !tag; // We RE-inverse the tag !
+	
+	if( tag == 0)
+	{
+		//Nothing found -> search in next series
+		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+		
+		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
+		if( indexOfObject != NSNotFound)
+		{
+			for( int i = indexOfObject+1; i < seriesArray.count; i++)
+			{
+				if( [[[seriesArray objectAtIndex: i] keyImages] count])
+				{
+					//Load this series
+					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
+					
+					[self matrixPreviewSelectCurrentSeries];
+					[self updateNavigator];
+					
+					if( [imageView flippedData])
+					{
+						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+					else
+					{
+						for( int i = 0; i < [fileList[ curMovieIndex] count]; i++)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		NSBeep();
+	}
+	else
+	{
+		//Nothing found -> search in next series
+		NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+		
+		NSUInteger indexOfObject = [seriesArray indexOfObject: [imageView seriesObj]];
+		if( indexOfObject != NSNotFound)
+		{
+			for( int i = indexOfObject-1; i >= 0; i++)
+			{
+				if( [[[seriesArray objectAtIndex: i] keyImages] count])
+				{
+					//Load this series
+					[[BrowserController currentBrowser] loadSeries :[seriesArray objectAtIndex: i] :self :YES keyImagesOnly: displayOnlyKeyImages];
+					
+					[self matrixPreviewSelectCurrentSeries];
+					[self updateNavigator];
+					
+					if( [imageView flippedData] == NO)
+					{
+						for( int i = [fileList[ curMovieIndex] count]-1; i >= 0 ; i--)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+					else
+					{
+						for( int i = 0; i < [fileList[ curMovieIndex] count]; i++)
+						{
+							NSManagedObject *image = [fileList[ curMovieIndex] objectAtIndex: i];
+							
+							if( [[image valueForKey:@"isKeyImage"] boolValue])
+							{
+								[imageView setIndex: i];
+								[imageView sendSyncMessage: 0];
+								[self adjustSlider];
+								[imageView displayIfNeeded];
+								return;
+							}
+						}
+					}
+				}
 			}
 		}
 		
@@ -19946,7 +20127,7 @@ int i,j,l;
 	[keyImagePopUpButton setEnabled: YES];
 	
 	// Update Key Image check box
-	if( [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
+	if( [imageView curImage] >= 0 && [[[fileList[curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"isKeyImage"] boolValue] == YES)
 	{
 		[keyImageCheck setState: NSOnState];
 	}

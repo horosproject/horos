@@ -112,30 +112,32 @@
 	NSCalendarDate *startDate = nil;
 	
 	NSString *today = [endDate dateString];
-	NSString *dateRange = today;
+	NSString *dateRange = nil;
 	
-	switch ([_object intValue]){
-	case searchWithinToday: return today; //today
+	switch ([_object intValue])
+    {
+        default:
+        case searchWithinToday: return today; //today
 		break;
-	case searchWithinLast2Days: startDate = [endDate dateByAddingYears:0 months:0 days:-1 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLast2Days: startDate = [endDate dateByAddingYears:0 months:0 days:-1 hours:0 minutes:0 seconds:0 ];
 		  //last 2 days
 		break;
-	case searchWithinLastWeek: startDate = [endDate dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLastWeek: startDate = [endDate dateByAddingYears:0 months:0 days:-7 hours:0 minutes:0 seconds:0 ];
 		break;
-	case searchWithinLast2Weeks: startDate = [endDate dateByAddingYears:0 months:0 days:-14 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLast2Weeks: startDate = [endDate dateByAddingYears:0 months:0 days:-14 hours:0 minutes:0 seconds:0 ];
 		break;
-	case searchWithinLastMonth: startDate = [endDate dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLastMonth: startDate = [endDate dateByAddingYears:0 months:-1 days:0 hours:0 minutes:0 seconds:0 ];
 		break;
-	case searchWithinLast2Months: startDate = [endDate dateByAddingYears:0 months:-2 days:0 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLast2Months: startDate = [endDate dateByAddingYears:0 months:-2 days:0 hours:0 minutes:0 seconds:0 ];
 		break;
-	case searchWithinLast3Months: startDate = [endDate dateByAddingYears:0 months:-3 days:0 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLast3Months: startDate = [endDate dateByAddingYears:0 months:-3 days:0 hours:0 minutes:0 seconds:0 ];
 		break;
-	case searchWithinLastYear: startDate = [endDate dateByAddingYears:-1 months:0 days:0 hours:0 minutes:0 seconds:0 ];
+        case searchWithinLastYear: startDate = [endDate dateByAddingYears:-1 months:0 days:0 hours:0 minutes:0 seconds:0 ];
 		break;
 	}
-	//dateRange =[NSString stringWithFormat:@"%@-%@", [startDate dateString], today];
+    
 	dateRange =[NSString stringWithFormat:@"%@-", [[DCMCalendarDate dicomDateWithDate:startDate] dateString]];
-	//NSLog(@"dateRange %@", dateRange);
+    
 	return dateRange;
 }
 	

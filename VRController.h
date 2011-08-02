@@ -39,7 +39,7 @@
 */
 
 
-@interface VRController : Window3DController
+@interface VRController : Window3DController <NSWindowDelegate, NSToolbarDelegate>
 {
     IBOutlet NSSlider       *LODSlider;
 	IBOutlet VRView			*view;

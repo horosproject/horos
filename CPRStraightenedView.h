@@ -62,7 +62,7 @@
     BOOL _needsNewRequest;
 	
 	BOOL _displayCrossLines;
-	BOOL displayTransverseLines;
+	BOOL _displayTransverseLines;
 	
 	NSMutableDictionary *stanStringAttrib;
 	StringTexture *stringTexA, *stringTexB, *stringTexC;
@@ -90,7 +90,7 @@
 @property (nonatomic, readonly, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readonly, assign) CGFloat generatedHeight; // height of the image that is generated in mm. kinda hack sends CPRViewDidChangeGeneratedHeight to the delegate when this value changes
 
-@property (nonatomic) BOOL displayTransverseLines;
+@property (nonatomic, readwrite, assign) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
 - (void)waitUntilPixUpdate; // returns once this view's DCM pix object has been updated to reflect any changes made to the view. 

@@ -17,7 +17,7 @@
 #import <Cocoa/Cocoa.h>
 
 /** \brief  Window Controller for Splash Window */
-@interface SplashScreen : NSWindowController
+@interface SplashScreen : NSWindowController <NSWindowDelegate>
 {
 	IBOutlet	NSButton *version;
 	NSTimer		*timerIn, *timerOut;

@@ -130,6 +130,9 @@
 
 - (void) WADODownload: (NSArray*) urlToDownload
 {
+    if( [urlToDownload count])
+        urlToDownload = [[NSSet setWithArray: urlToDownload] allObjects]; // UNIQUE OBJECTS !
+	
 	if( [urlToDownload count])
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -174,12 +177,13 @@
 			
 			NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
 			
-			[WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
-			
-			[downloadConnection start];
-			
-			[connectionsArray addObject: downloadConnection];
-			
+            if( downloadConnection)
+            {
+                [WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
+                [downloadConnection start];
+                [connectionsArray addObject: downloadConnection];
+			}
+            
 			if( downloadConnection == nil)
 				OSAtomicDecrement32Barrier( &WADOThreads);
 			

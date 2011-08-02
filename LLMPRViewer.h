@@ -25,7 +25,8 @@
 
 @class LLDCMView;
 
-@interface LLMPRViewer : OrthogonalMPRViewer <Schedulable> {
+@interface LLMPRViewer : OrthogonalMPRViewer <Schedulable, NSWindowDelegate, NSToolbarDelegate, NSSplitViewDelegate>
+{
 	IBOutlet LLMPRController	*injectedMPRController;
 	IBOutlet LLDCMView			*subtractedOriginalView, *subtractedXReslicedView, *subtractedYReslicedView;
 	float						*subtractedOriginalBuffer, *subtractedXReslicedBuffer, *subtractedYReslicedBuffer;

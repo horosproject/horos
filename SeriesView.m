@@ -42,8 +42,9 @@
 		
 //		NSLog(@"ImageRows %d imageColumns: %d", imageRows, imageColumns);
 	
-			if (!imageRows)
+		if (!imageRows)
 			imageRows = 1;
+		
 		if (!imageColumns)
 			imageColumns = 1;
 		
@@ -152,6 +153,8 @@
 
 - (void)setImageViewMatrixForRows:(int)rows  columns:(int)columns
 {
+	NSDisableScreenUpdates();
+
 	int currentSize = imageRows * imageColumns;
 	int newSize = rows * columns;
 	int i;
@@ -197,9 +200,12 @@
 		}	
 	}
 	
-	for( id view in imageViews) 
+	for( DCMView *view in imageViews) 
+	{
+		[view setCOPYSETTINGSINSERIESdirectly: [[imageViews objectAtIndex: 0] COPYSETTINGSINSERIES]];
 		[view setRows:rows columns:columns];
-	
+	}
+		
 	[[self window] makeFirstResponder:[imageViews objectAtIndex:0]];
 	[[[self window] windowController] setUpdateTilingViewsValue: NO];
 	
@@ -221,6 +227,8 @@
 	imageColumns = columns;
 	
 	if( wasVisible) [[self window] makeKeyAndOrderFront: self];
+	
+	NSEnableScreenUpdates();
 	
 	[self setNeedsDisplay:YES];
 }
@@ -255,9 +263,8 @@
     }
 	if( ctag >= 0)
     {
-		DCMView *view;
-		for (view in imageViews)
-        [view setCurrentTool: ctag];
+		for (DCMView *view in imageViews)
+			[view setCurrentTool: ctag];
     }
 }
 

@@ -14,14 +14,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+@interface N2OpenGLViewWithSplitsWindow : NSWindow
+{
+	BOOL needsEnableUpdate;
+}
 
-@interface NSData (N2)
+@property BOOL needsEnableUpdate;
 
-+(NSData*)dataWithHex:(NSString*)hex;
--(NSData*)initWithHex:(NSString*)hex;
-+(NSData*)dataWithBase64:(NSString*)base64;
--(NSData*)initWithBase64:(NSString*)base64;
--(NSString*)base64;
--(NSString*)hex;
+- (void) disableUpdatesUntilFlush;
 
 @end

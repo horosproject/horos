@@ -96,7 +96,7 @@ extern "C"
 
 extern AppController* OsiriX;
 
-@interface AppController : NSObject	<GrowlApplicationBridgeDelegate>
+@interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate>
 {
 	IBOutlet BrowserController		*browserController;
 
@@ -134,6 +134,7 @@ extern AppController* OsiriX;
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 @property(readonly) NSNetService* dicomBonjourPublisher;
+@property (readonly) XMLRPCMethods *XMLRPCServer;
 
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;

@@ -315,7 +315,7 @@ static NSString *templateDicomFile = nil;
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];
 	[[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
 	
-	Wait *splash = [[[Wait alloc] initWithString: [NSString stringWithFormat: NSLocalizedString( @"Processing...", nil)]] autorelease];
+	Wait *splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
 	[splash showWindow: self];
 	[[splash progress] setMaxValue: [files count]];
 	[splash setCancel: YES];

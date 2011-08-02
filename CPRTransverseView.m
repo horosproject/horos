@@ -59,6 +59,7 @@ extern int splitPosition[ 3];
 @synthesize volumeData = _volumeData;
 @synthesize lastRequest = _lastRequest;
 @synthesize generatedVolumeData = _generatedVolumeData;
+@synthesize reformationDisplayStyle = _reformationDisplayStyle;
 @synthesize displayCrossLines;
 
 - (void) setDisplayCrossLines: (BOOL) b
@@ -351,6 +352,14 @@ extern int splitPosition[ 3];
     }
 }
 
+- (void)setReformationDisplayStyle:(CPRTransverseViewReformationDisplayStyle)displayStyle
+{
+    if (displayStyle != _reformationDisplayStyle) {
+        _reformationDisplayStyle = displayStyle;
+        [self setNeedsDisplay:YES];
+    }
+}
+
 - (void)setSectionWidth:(CGFloat)sectionWidth
 {
     if (_sectionWidth != sectionWidth)
@@ -458,7 +467,7 @@ extern int splitPosition[ 3];
     pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
-	if( displayCrossLines)
+	if( displayCrossLines && _reformationDisplayStyle == CPRTransverseViewStraightenedReformationDisplayStyle)
 	{
 		
 		glColor4d(1.0, 1.0, 0.0, 1.0);

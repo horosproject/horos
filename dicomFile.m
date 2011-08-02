@@ -855,7 +855,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				patientID = [[NSString alloc] initWithString:name];
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
@@ -915,7 +915,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 				fileType = [[NSString stringWithString:@"IMAGE"] retain];
 				
@@ -1168,9 +1168,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NoOfFrames = NSSwapLittleShortToHost(header.npic);
 			NoOfSeries = 1;
 			
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
 			
-			NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
+			//NSLog(@"File has h x w x d %d x %d x %d",height,width,NoOfFrames);
 			int bytesPerPixel=1;
 			// if 8bit, byte_format==1 otherwise 16bit
 			if (NSSwapLittleShortToHost(header.byte_format)!=1)
@@ -1492,7 +1492,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 
 
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 			
 			[dicomElements setObject:studyID forKey:@"studyID"];
 			[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1561,7 +1561,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:@"ANZ"];
 				
 				date = [[NSCalendarDate alloc] initWithString:[NSString stringWithCString: Analyze->hist.exp_date encoding: NSISOLatin1StringEncoding] calendarFormat:@"%Y%m%d"];
-				if(date == nil) date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				if(date == nil) date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				
 				short endian = Analyze->dime.dim[ 0];		// dim[0] 
 				if ((endian < 0) || (endian > 15)) 
@@ -1772,14 +1772,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
 	
-	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"html"];
+	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: htmlpath] == NO)
 	{
 		NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 		[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 		[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-		[aTask setArguments: [NSArray arrayWithObjects: filePath, htmlpath, nil]];		
+		[aTask setArguments: [NSArray arrayWithObjects: @"+X1", filePath, htmlpath, nil]];		
 		[aTask launch];
 		[aTask waitUntilExit];		
 		[aTask interrupt];
@@ -1888,7 +1888,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								{
 									UValue_T *theValueP = inGrOrModP->value;
 									
-									if( theValueP->a)
+									if( theValueP->a && validAPointer( inGrOrModP->vr))
 									{
 										commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
@@ -1922,7 +1922,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								{
 									UValue_T *theValueP = inGrOrModP->value;
 									
-									if( theValueP->a)
+									if( theValueP->a && validAPointer( inGrOrModP->vr))
 									{
 										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
@@ -1959,7 +1959,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								{
 									UValue_T *theValueP = inGrOrModP->value;
 									
-									if( theValueP->a)
+									if( theValueP->a && validAPointer( inGrOrModP->vr))
 									{
 										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
@@ -1981,7 +1981,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								{
 									UValue_T *theValueP = inGrOrModP->value;
 									
-									if( theValueP->a)
+									if( theValueP->a && validAPointer( inGrOrModP->vr))
 									{
 										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
 										
@@ -2009,14 +2009,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					sopClassUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
 					[dicomElements setObject:sopClassUID forKey:@"SOPClassUID"];					
 				}
 				
 				val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					for( int z = 0; z < nbVal ; z++)
 					{
@@ -2031,7 +2031,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papImageTypeGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					UValue_T *ty = val;
 					imageTypeArray = [NSMutableArray array];
@@ -2053,7 +2053,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( imageType) [dicomElements setObject:imageType forKey:@"imageType"];
 				
 				val = Papy3GetElement (theGroupP, papSOPInstanceUIDGr, &nbVal, &itemType);
-				if (val != NULL) SOPUID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+				if (val != NULL && val->a && validAPointer( itemType)) SOPUID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else SOPUID = nil;
 				if( SOPUID) [dicomElements setObject:SOPUID forKey:@"SOPUID"];
 				
@@ -2066,23 +2066,23 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				free( t);
 				
 				val = Papy3GetElement (theGroupP, papStudyDescriptionGr, &nbVal, &itemType); //
-				if (val != NULL) study = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+				if (val != NULL && val->a && validAPointer( itemType)) study = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else study = [[NSString alloc] initWithString:@"unnamed"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
 				
 				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &itemType);
-				if (val != NULL) Modality = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+				if (val != NULL && val->a && validAPointer( itemType)) Modality = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else Modality = [[NSString alloc] initWithString:@"OT"];
 				[dicomElements setObject:Modality forKey:@"modality"];
 				
 				val = Papy3GetElement (theGroupP, papImageDateGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
-					NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+					NSString *studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 					if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 					
 					val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
-					if (val != NULL)
+					if (val != NULL && val->a && validAPointer( itemType))
 					{
 						NSString*   completeDate;
 						NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2099,13 +2099,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else
 				{
 					val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
-					if (val != NULL)
+					if (val != NULL && val->a && validAPointer( itemType))
 					{
 						NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 						if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 						
 						val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
-						if (val != NULL)
+						if (val != NULL && val->a && validAPointer( itemType))
 						{
 							NSString*   completeDate;
 							NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2122,13 +2122,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					else
 					{
 						val = Papy3GetElement (theGroupP, papSeriesDateGr, &nbVal, &itemType);
-						if (val != NULL)
+						if (val != NULL && val->a && validAPointer( itemType))
 						{
 							NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 							if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 							
 							val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &itemType);
-							if (val != NULL)
+							if (val != NULL && val->a && validAPointer( itemType))
 							{
 								NSString*   completeDate;
 								NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2145,13 +2145,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						else
 						{
 							val = Papy3GetElement (theGroupP, papStudyDateGr, &nbVal, &itemType);
-							if (val != NULL)
+							if (val != NULL && val->a && validAPointer( itemType))
 							{
 								NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 								if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 								
 								val = Papy3GetElement (theGroupP, papStudyTimeGr, &nbVal, &itemType);
-								if (val != NULL)
+								if (val != NULL && val->a && validAPointer( itemType))
 								{
 									NSString*   completeDate;
 									NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -2173,12 +2173,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( date) [dicomElements setObject:date forKey:@"studyDate"];
 				
 				 val = Papy3GetElement (theGroupP, papSeriesDescriptionGr, &nbVal, &itemType);
-				if (val != NULL) serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+				if (val != NULL && val->a && validAPointer( itemType)) serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 				else serie = [[NSString alloc] initWithString:@"unnamed"];
 				[dicomElements setObject:serie forKey:@"seriesDescription"];
 				
 				 val = Papy3GetElement (theGroupP, papInstitutionNameGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					NSString *institution = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:institution forKey:@"institutionName"];
@@ -2186,7 +2186,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papReferringPhysiciansNameGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"referringPhysiciansName"];
@@ -2194,7 +2194,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papPerformingPhysiciansNameGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					NSString *physician = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					[dicomElements setObject:physician forKey:@"performingPhysiciansName"];
@@ -2202,13 +2202,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papAccessionNumberGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					[dicomElements setObject:[DicomFile stringWithBytes: (char*) val->a encodings:encoding replaceBadCharacters: NO] forKey:@"accessionNumber"];
 				}
 				
 //				val = Papy3GetElement (theGroupP, papManufacturerGr, &nbVal, &itemType);
-//				if (val != NULL)
+//				if (val != NULL && val->a && validAPointer( itemType))
 //				{
 //					NSString *manufacturer = [DicomFile stringWithBytes: (char*) val->a encodings:encoding];
 //					if( [manufacturer hasPrefix: @"MAC:"])
@@ -2221,7 +2221,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				study = [[NSString alloc] initWithString:@"unnamed"];
 				Modality = [[NSString alloc] initWithString:@"OT"];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:@"unnamed"];
 				
 				[dicomElements setObject:date forKey:@"studyDate"];
@@ -2237,7 +2237,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				//Patient Name
 				val = Papy3GetElement (theGroupP, papPatientsNameGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					name = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
 					if(name == nil) name = [[NSString alloc] initWithCString: val->a encoding: encoding[ 0]];
@@ -2247,7 +2247,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				//Patient ID
 				val = Papy3GetElement (theGroupP, papPatientIDGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					patientID = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding replaceBadCharacters: NO] retain];
 					[dicomElements setObject:patientID forKey:@"patientID"];
@@ -2255,7 +2255,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				// Patient Age
 				val = Papy3GetElement (theGroupP, papPatientsAgeGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{  
 					NSString *patientAge =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					[dicomElements setObject:patientAge forKey:@"patientAge"];
@@ -2264,7 +2264,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				//Patient BD
 				val = Papy3GetElement (theGroupP, papPatientsBirthDateGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{  
 					NSString		*patientDOB =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
@@ -2275,7 +2275,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				//Patients Sex
 				val = Papy3GetElement (theGroupP, papPatientsSexGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{  
 					NSString *patientsSex =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					[dicomElements setObject:patientsSex forKey:@"patientSex"];
@@ -2296,7 +2296,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
 				val = Papy3GetElement (theGroupP, papScanOptionsGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					if( strlen( val->a) >= 4)
 					{
@@ -2320,12 +2320,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[dicomElements setObject:[NSNumber numberWithLong: cardiacTime] forKey: @"cardiacTime"];
 				
 				val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &itemType);
-				if (val != NULL) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey: @"protocolName"];
+				if (val != NULL && val->a && validAPointer( itemType)) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey: @"protocolName"];
 				
 				//Get TE for Dual Echo and multiecho MRI sequences
 				
 				val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &itemType);
-				if (val != NULL) echoTime = [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
+				if (val != NULL && val->a && validAPointer( itemType)) echoTime = [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 				
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
 			}
@@ -2337,7 +2337,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		   if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 		   {
 				val = Papy3GetElement (theGroupP, papImageNumberGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					imageID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 					int val = [imageID intValue];
@@ -2356,7 +2356,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				origin[0] = origin[1] = origin[2] = 0;
 				
 				val = Papy3GetElement (theGroupP, papImagePositionPatientGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					tmp = val;
 					
@@ -2379,7 +2379,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				orientation[ 3] = 0;	orientation[ 4] = 1;		orientation[ 5] = 0;
 				
 				val = Papy3GetElement (theGroupP, papImageOrientationPatientGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					long j;
 					tmp = val;
@@ -2418,7 +2418,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 				
 //				val = Papy3GetElement (theGroupP, papSliceLocationGr, &nbVal, &itemType);
-//				if (val != NULL)
+//				if (val != NULL && val->a && validAPointer( itemType))
 //				{
 //					sliceLocation = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 //					int val = ([sliceLocation floatValue]) * 100.;
@@ -2429,7 +2429,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				
 				seriesNo = nil;
 				val = Papy3GetElement (theGroupP, papSeriesNumberGr, &nbVal, &itemType);
-				if (val != NULL)
+				if (val != NULL && val->a && validAPointer( itemType))
 				{
 					seriesNo = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				}
@@ -2438,9 +2438,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( seriesNo) [dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]]  forKey:@"seriesNumber"];
 				
 				val = Papy3GetElement (theGroupP, papSeriesInstanceUIDGr, &nbVal, &itemType);
-				if( val != NULL) [dicomElements setObject:[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] forKey:@"seriesDICOMUID"];
+				if( val != NULL && val->a && validAPointer( itemType)) [dicomElements setObject:[NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding] forKey:@"seriesDICOMUID"];
 				
-				if (val != NULL) serieID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+				if (val != NULL && val->a && validAPointer( itemType)) serieID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else serieID = [[NSString alloc] initWithString:name];
 				
 				// *********** WARNING : SERIESID MUST BE IDENTICAL BETWEEN DCMFRAMEWORK & PAPYRUS TOOLKIT !!!!! OTHERWISE muliple identical series will be created during DATABASE rebuild !
@@ -2492,7 +2492,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papStudyInstanceUIDGr, &nbVal, &itemType);
-				if (val != NULL) studyID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+				if (val != NULL && val->a && validAPointer( itemType)) studyID = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else
 					studyID = [[NSString alloc] initWithString:name];
 					
@@ -2514,7 +2514,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				
 				val = Papy3GetElement (theGroupP, papStudyIDGr, &nbVal, &itemType);
-				if (val != NULL) studyIDs = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
+				if (val != NULL && val->a && validAPointer( itemType)) studyIDs = [[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding];
 				else studyIDs = [[NSString alloc] initWithString:@"0"];
 				
 				if( studyIDs) [dicomElements setObject:studyIDs forKey:@"studyNumber"];
@@ -2522,7 +2522,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( COMMENTSFROMDICOMFILES)
 				{
 					val = Papy3GetElement (theGroupP, papImageCommentsGr, &nbVal, &itemType);
-					if (val != NULL && strlen( val->a) > 0)
+					if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
 						[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"seriesComments"];
 				}
 				// free the module and the associated sequences 
@@ -2548,7 +2548,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					width = realwidth;
 				}
 				val = Papy3GetElement (theGroupP, papFramesofInterestDescriptionGr, &nbVal, &itemType); // papPresentationLabelGr == DCM_FramesOfInterestDescription == 0x0028, 0x6022
-				if (val != NULL && strlen( val->a) > 0)
+				if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
 				{
 					NSMutableArray *a = [NSMutableArray array];
 					for( int v = 0 ; v < nbVal ; v++, val++)
@@ -2565,7 +2565,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 				{
 					val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
-					if (val != NULL && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
+					if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
 						[dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
 						
 					theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -2574,7 +2574,261 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			NoOfFrames = gArrNbImages [fileNb];
 			NoOfSeries = 1;
-
+			
+			// Is it a multi frame DICOM files? We need to parse these sequences for the correct sliceLocation value !
+			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x5200);
+			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+			{
+				UValue_T *val3 = nil;
+//				// ****** ****** ****** ************************************************************************
+//				// SHARED FRAME
+//				// ****** ****** ****** ************************************************************************
+//				
+//				val = Papy3GetElement ( theGroupP, papSharedFunctionalGroupsSequence, &nbVal, &itemType);
+//				
+//				// there is an element
+//				if ( val)
+//				{
+//					// there is a sequence
+//					if (val->sq)
+//					{
+//						// get a pointer to the first element of the list
+//						Papy_List *dcmList = val->sq->object->item;
+//						
+//						// loop through the elements of the sequence
+//						while (dcmList != NULL)
+//						{
+//							SElement * gr = (SElement *) dcmList->object->group;
+//							
+//							switch( gr->group)
+//							{
+//								case 0x0020:
+//									val3 = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+//									if (val3 != NULL && nbVal >= 1)
+//									{
+//										// there is a sequence
+//										if (val3->sq)
+//										{
+//											Papy_List *PixelMatrixSeq = val3->sq->object->item;
+//											
+//											// loop through the elements of the sequence
+//											while (PixelMatrixSeq)
+//											{
+//												SElement * gr = (SElement *) PixelMatrixSeq->object->group;
+//												
+//												switch( gr->group)
+//												{
+//													case 0x0020:
+//													{
+//														float location = [self getSliceLocationFromPapyrusGroup: gr];
+//														
+//														[dicomElements setObject: [NSNumber numberWithFloat: location] forKey:@"sliceLocation"];
+//													}
+//													break;
+//												}
+//												
+//												// get the next element of the list
+//												PixelMatrixSeq = PixelMatrixSeq->next;
+//											}
+//										}
+//									}
+//									break;
+//							}
+//							// get the next element of the list
+//							dcmList = dcmList->next;
+//						} // while ...loop through the sequence
+//					} // if ...there is a sequence of groups
+//				} // if ...val is not NULL
+				
+				// ****** ****** ****** ************************************************************************
+				// PER FRAME
+				// ****** ****** ****** ************************************************************************
+				
+				long frameCount = 0;
+				
+				val = Papy3GetElement ( theGroupP, papPerFrameFunctionalGroupsSequence, &nbVal, &itemType);
+				
+				// there is an element
+				if ( val)
+				{
+					// there is a sequence
+					if (val->sq)
+					{
+						// get a pointer to the first element of the list
+						Papy_List *dcmList = val->sq;
+						
+						NSMutableArray *sliceLocationArray = [NSMutableArray array];
+						
+						// loop through the elements of the sequence
+						while (dcmList)
+						{
+							if( dcmList->object->item)
+							{
+								float originMultiFrame[ 3], orientationMultiFrame[ 9];
+								
+								originMultiFrame[0] = originMultiFrame[1] = originMultiFrame[2] = 0;
+								orientationMultiFrame[ 0] = 1;	orientationMultiFrame[ 1] = 0;		orientationMultiFrame[ 2] = 0;
+								orientationMultiFrame[ 3] = 0;	orientationMultiFrame[ 4] = 1;		orientationMultiFrame[ 5] = 0;
+								
+								{
+									Papy_List *groupsForFrame = dcmList->object->item;
+									
+									while( groupsForFrame)
+									{
+										if( groupsForFrame->object->group)
+										{
+											SElement * gr = (SElement *) groupsForFrame->object->group;
+											
+											switch( gr->group)
+											{
+												case 0x0020:
+													val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
+													if (val != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (val->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = val->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr = (SElement *) seq->object->group;
+																
+																switch( gr->group)
+																{
+																	case 0x0020:
+																	{
+																		val = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
+																		if (val != NULL && val->a && validAPointer( itemType))
+																		{
+																			UValue_T *tmp = val;
+																			
+																			originMultiFrame[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			
+																			if( nbVal > 1)
+																			{
+																				tmp++;
+																				originMultiFrame[1] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			}
+																			
+																			if( nbVal > 2)
+																			{
+																				tmp++;
+																				originMultiFrame[2] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																			}
+																		}
+																	}
+																	break;
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+													
+													val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+													if (val != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (val->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = val->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr = (SElement *) seq->object->group;
+																
+																switch( gr->group)
+																{
+																	case 0x0020:
+																	{
+																		val = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
+																		if (val != NULL && val->a && validAPointer( itemType))
+																		{
+																			UValue_T *tmp = val;
+																			if( nbVal != 6)
+																			{
+																				NSLog(@"Orientation is NOT 6 !!!");
+																				if( nbVal > 6) nbVal = 6;
+																			}
+																			for (int j = 0; j < nbVal; j++)
+																			{
+																				orientationMultiFrame[ j]  = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
+																				tmp++;
+																			}
+																			
+																			for (int j = nbVal; j < 6; j++)
+																				orientationMultiFrame[ j] = 0;
+																			
+																			// Compute normal vector
+																			orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
+																			orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
+																			orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];		
+																		}
+																		
+																		float location = 0;
+																		
+																		if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
+																			location = originMultiFrame[ 0];
+																		
+																		if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
+																			location = originMultiFrame[ 1];
+																		
+																		if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
+																			location = originMultiFrame[ 2];
+																		
+																		[sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
+																	}
+																	break;
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+													break;
+											} // switch( gr->group)
+										} // if( groupsForFrame->object->item)
+										
+										if( groupsForFrame)
+										{
+											// get the next element of the list
+											groupsForFrame = groupsForFrame->next;
+										}
+									} // while groupsForFrame
+								}
+							}
+							
+							if( dcmList)
+							{
+								// get the next element of the list
+								dcmList = dcmList->next;
+								
+								frameCount++;
+							}
+						} // while ...loop through the sequence
+						
+						if( sliceLocationArray.count)
+						{
+							if( NoOfFrames == sliceLocationArray.count)
+								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
+							else
+								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
+						}
+					} // if ...there is a sequence of groups
+				} // if ...val is not NULL
+				
+				theErr = Papy3GroupFree (&theGroupP, TRUE);
+				
+				if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+			}
+			
 			if( patientID == nil) patientID = [[NSString alloc] initWithString:@""];
 		}
 		
@@ -2586,7 +2840,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				SElement *element = theGroupP + papEncapsulatedDocumentGr;
 				
-				if( element->nb_val > 0)
+				if( element->nb_val > 0 && validAPointer( element->vr) && element->value->a)
 				{
 					NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
 					NoOfFrames = [rep pageCount];
@@ -2645,7 +2899,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
 				val = Papy3GetElement (theGroupP, papInterpretationStatusIDGr, &nbVal, &itemType);
-				if (val != NULL && strlen( val->a) > 0)
+				if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
 					[dicomElements setObject: [NSNumber numberWithInt: [[NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] intValue]] forKey: @"stateText"];
 				
 				theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -2717,7 +2971,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	if( converted)
 	{
 		if ([[NSFileManager defaultManager] fileExistsAtPath:converted])
-			[[NSFileManager defaultManager] removeFileAtPath:converted handler: nil];
+			[[NSFileManager defaultManager] removeItemAtPath: converted error: nil];
 	}
 	else
 	{
@@ -2772,7 +3026,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				id			commentsField;
 				NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
 				
-				if (commentsField = [dcmObject attributeValueForKey: grel])
+				if((commentsField = [dcmObject attributeValueForKey: grel]))
 				{
 					if( [commentsField isKindOfClass: [NSString class]])
 						[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
@@ -2839,14 +3093,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSMutableArray	*imageTypeArray = [NSMutableArray arrayWithArray: [dcmObject attributeArrayWithName:@"ImageType"]];
 		if( [imageTypeArray count] > 2)
 		{
-			if (imageType = [[[dcmObject attributeArrayWithName:@"ImageType"] objectAtIndex: 2] retain]) //ImageType		
+			if((imageType = [[[dcmObject attributeArrayWithName:@"ImageType"] objectAtIndex: 2] retain])) //ImageType		
 				[dicomElements setObject:imageType forKey:@"imageType"];
 		}
 			
-		if (SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain])	//SOPInstanceUID 
+		if((SOPUID =[[dcmObject attributeValueForKey:@"0008,0018"] retain]))	//SOPInstanceUID 
 			[dicomElements setObject:SOPUID forKey:@"SOPUID"];
 			
-		if (study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain])
+		if((study = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"StudyDescription"]] retain]))
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		else
 		{
@@ -2854,7 +3108,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		}
 		
-		if (Modality = [[dcmObject attributeValueWithName:@"Modality"] retain])
+		if((Modality = [[dcmObject attributeValueWithName:@"Modality"] retain]))
 			[dicomElements setObject:Modality forKey:@"modality"];
 		else
 		{
@@ -2913,7 +3167,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if ([[dcmObject attributeValueForKey:@"0008,0018"] isEqualToString:@"1.2.840.10008.5.1.4.1.1.7"] == YES) modalityNoSC=FALSE; //JF20070103
 		
-		if (serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"SeriesDescription"]] retain])
+		if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"SeriesDescription"]] retain]))
 			[dicomElements setObject:serie forKey:@"seriesDescription"];
 		else if ((serie = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"instanceNumber"]] retain]) && modalityNoSC)
 			[dicomElements setObject:serie forKey:@"seriesDescription"]; //JF20070103
@@ -2936,7 +3190,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if ([dcmObject attributeValueWithName:@"AccessionNumber"])
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"AccessionNumber"] forKey:@"accessionNumber"];
 			
-		if (name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain])
+		if ((name = [[DicomFile NSreplaceBadCharacter: [dcmObject attributeValueWithName:@"PatientsName"]] retain]))
 			[dicomElements setObject:name forKey:@"patientName"];
 		else
 		{
@@ -2944,7 +3198,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:name forKey:@"patientName"];
 		}
 			
-		if (patientID = [[dcmObject attributeValueWithName:@"PatientID"] retain])
+		if ((patientID = [[dcmObject attributeValueWithName:@"PatientID"] retain]))
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"PatientID"] forKey:@"patientID"];
 		else
 		{
@@ -2982,7 +3236,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 //				[dicomElements setObject: manufacturer forKey:@"manufacturer"];
 //		}
 		
-		if (imageID = [dcmObject attributeValueWithName:@"InstanceNumber"])
+		if ((imageID = [dcmObject attributeValueWithName:@"InstanceNumber"]))
 		{
 			int val = [imageID intValue];
 			imageID = [[NSString alloc] initWithFormat:@"%5d", val];		
@@ -3036,22 +3290,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		// Series Number
 		
-		if (seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain])
+		if ((seriesNo = [[dcmObject attributeValueWithName:@"SeriesNumber"] retain]))
 		{
 		}
 		else
 			seriesNo = [[NSString alloc] initWithString: @"0"];
 		[dicomElements setObject:[NSNumber numberWithInt:[seriesNo intValue]] forKey:@"seriesNumber"];
 			
-		if (serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain])
+		if ((serieID = [[dcmObject attributeValueWithName:@"SeriesInstanceUID"] retain]))
 		{
 			[dicomElements setObject: serieID forKey:@"seriesDICOMUID"];
 		}
 			
-		if (studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain])
+		if ((studyID = [[dcmObject attributeValueWithName:@"StudyInstanceUID"] retain]))
 			[dicomElements setObject:[dcmObject attributeValueWithName:@"StudyInstanceUID"] forKey:@"studyID"];
 			
-		if (studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain])
+		if ((studyIDs = [[dcmObject attributeValueWithName:@"StudyID"] retain]))
 		{
 		}
 		else 

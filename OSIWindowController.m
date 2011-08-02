@@ -21,6 +21,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import <Carbon/Carbon.h>
+#import "DCMPix.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
@@ -63,6 +64,21 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 #pragma mark-
 #pragma mark Magnetic Windows & Tiling
+
+#ifndef OSIRIX_LIGHT
+- (IBAction) paste:(id) sender;
+{
+	if( [[self pixList] count])
+	{
+		DCMPix *pix = [[self pixList] lastObject];
+		
+		if( [pix seriesObj])
+			[[BrowserController currentBrowser] selectThisStudy: [[pix seriesObj] valueForKey: @"study"]];
+		
+		[[BrowserController currentBrowser] pasteImageForSourceFile: [pix sourceFile]];
+	}
+}
+#endif
 
 - (void) setMagnetic:(BOOL) a
 {

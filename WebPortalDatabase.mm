@@ -30,11 +30,11 @@ const NSString* const WebPortalDatabaseUserEntityName = @"User";
 const NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 
 -(NSEntityDescription*)userEntity {
-	return [self entityForName:WebPortalDatabaseUserEntityName];
+	return [self entityForName: [NSString stringWithString: WebPortalDatabaseUserEntityName]];
 }
 
 -(NSEntityDescription*)studyEntity {
-	return [self entityForName:WebPortalDatabaseStudyEntityName];
+	return [self entityForName: [NSString stringWithString: WebPortalDatabaseStudyEntityName]];
 }
 
 -(NSArray*)usersWithPredicate:(NSPredicate*)p {
@@ -49,7 +49,7 @@ const NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 }
 
 -(WebPortalUser*)newUser {
-	return [NSEntityDescription insertNewObjectForEntityForName:WebPortalDatabaseUserEntityName inManagedObjectContext:self.managedObjectContext];
+	return [NSEntityDescription insertNewObjectForEntityForName: [NSString stringWithString: WebPortalDatabaseUserEntityName] inManagedObjectContext:self.managedObjectContext];
 }
 
 @end

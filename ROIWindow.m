@@ -127,8 +127,6 @@
 		newResolution = [recalibrateValue floatValue] / pixels;
 		newResolution *= 10.0;
 		
-		NSMutableArray  *array = [curController pixList];
-		
 		for( DCMPix *pix in [curController pixList])
 		{
 			float previousX = [pix pixelSpacingX];

@@ -770,6 +770,80 @@ extern NSRecursiveLock *PapyrusLock;
 		if (dataset->findAndGetString(DCM_NumberOfFrames, string, OFFalse).good() && string != NULL)
 			NoOfFrames = atoi(string);
 		
+		// Is it a multi frame DICOM files? We need to parse these sequences for the correct sliceLocation value !
+		int i = 0;
+        DcmItem *ditem = NULL;
+		NSMutableArray *sliceLocationArray = [NSMutableArray array];
+		do
+		{
+			if (dataset->findAndGetSequenceItem(DCM_PerFrameFunctionalGroupsSequence, ditem, i++).good())
+			{
+				double originMultiFrame[ 3] = {0, 0, 0}, orientationMultiFrame[ 9] = {1, 0, 0, 0, 1, 0};
+				
+				int x = 0;
+				DcmItem *eitem = NULL;
+				do
+				{
+					BOOL succeed = YES;
+					
+					if (ditem->findAndGetSequenceItem(DCM_PlanePositionSequence, eitem, x).good())
+					{
+						int count = 0;
+						while (count < 3 && eitem->findAndGetFloat64(DCM_ImagePositionPatient, originMultiFrame[count], count, OFFalse).good())
+							count++;
+						
+						if( count != 3)
+							succeed = NO;
+					}
+					else succeed = NO;
+					
+					if (ditem->findAndGetSequenceItem(DCM_PlaneOrientationSequence, eitem, x).good())
+					{
+						int count = 0;
+						while (count < 6 && eitem->findAndGetFloat64(DCM_ImageOrientationPatient, orientationMultiFrame[count], count, OFFalse).good())
+							count++;
+						
+						if( count != 6 && count != 0)
+							succeed = NO;
+					}
+					else succeed = NO;
+					
+					if( succeed)
+					{
+						// Compute normal vector
+						orientationMultiFrame[ 6] = orientationMultiFrame[ 1]*orientationMultiFrame[ 5] - orientationMultiFrame[ 2]*orientationMultiFrame[ 4];
+						orientationMultiFrame[ 7] = orientationMultiFrame[ 2]*orientationMultiFrame[ 3] - orientationMultiFrame[ 0]*orientationMultiFrame[ 5];
+						orientationMultiFrame[ 8] = orientationMultiFrame[ 0]*orientationMultiFrame[ 4] - orientationMultiFrame[ 1]*orientationMultiFrame[ 3];		
+						
+						float location = 0;
+						
+						if( fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 7]) && fabs( orientationMultiFrame[ 6]) > fabs(orientationMultiFrame[ 8]))
+							location = originMultiFrame[ 0];
+						
+						if( fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 7]) > fabs(orientationMultiFrame[ 8]))
+							location = originMultiFrame[ 1];
+						
+						if( fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 6]) && fabs( orientationMultiFrame[ 8]) > fabs(orientationMultiFrame[ 7]))
+							location = originMultiFrame[ 2];
+						
+						[sliceLocationArray addObject: [NSNumber numberWithFloat: location]];
+					}
+					
+					x++;
+				}
+				while (eitem != NULL);
+			}
+		}
+		while (ditem != NULL);
+		if( sliceLocationArray.count)
+		{
+			if( NoOfFrames == sliceLocationArray.count)
+				[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
+			else
+				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", NoOfFrames, sliceLocationArray.count);
+		}
+		
+		// Is it PDF DICOM file?
 		if( [sopClassUID isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]])
 		{
 			const Uint8 *buffer = nil;

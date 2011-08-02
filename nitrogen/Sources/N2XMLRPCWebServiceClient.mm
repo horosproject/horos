@@ -37,7 +37,7 @@
 	
 	NSError* error = NULL;
 	NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithData:result options:0 error:&error] autorelease];
-	if (error) [NSException raise:NSGenericException format:error.description];
+	if (error) [NSException raise:NSGenericException format:@"%@", error.description];
 	
 	NSArray* errs = [doc objectsForXQuery:@"/methodResponse/fault/value" error:NULL];
 	if (errs.count)

@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#define FETCHNUMBER 50
 
 #import "OsiriXSCPDataHandler.h"
 #import "DicomFile.h"
@@ -1350,8 +1351,8 @@ extern NSManagedObjectContext *staticContext;
 		[context lock];
 		
 		[findArray release];
-		findArray = nil;
-		
+		findArray = [NSArray array];
+        
 		@try
 		{
 			if( seriesLevelPredicate) // First find at series level, then move to image level
@@ -1361,18 +1362,39 @@ extern NSManagedObjectContext *staticContext;
 				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 				[seriesRequest setPredicate: seriesLevelPredicate];
 				
-				NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
-				
-				findArray = [NSArray array];
-				
+                NSArray *newObjects = nil;
+                NSArray *allSeries = [NSArray array];
+                
+                [seriesRequest setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
+                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
+                
 				for( id series in allSeries)
 					findArray = [findArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 				
 				findArray = [findArray filteredArrayUsingPredicate: predicate];
 			}
 			else
-				findArray = [context executeFetchRequest:request error:&error];
-			
+            {
+                NSArray *newObjects = nil;
+               
+                [request setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: request error: &error];
+                    findArray = [findArray arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
+			}
+            
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
 			
@@ -1545,7 +1567,7 @@ extern NSManagedObjectContext *staticContext;
 		context = staticContext;
 		[context lock];
 		
-		NSArray *array = nil;
+		NSArray *array = [NSArray array];
 		
 		@try
 		{
@@ -1556,9 +1578,19 @@ extern NSManagedObjectContext *staticContext;
 				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
 				[seriesRequest setPredicate: seriesLevelPredicate];
 				
-				NSArray *allSeries = [context executeFetchRequest: seriesRequest error: &error];
-				
-				array = [NSArray array];
+                
+                NSArray *newObjects = nil;
+                NSArray *allSeries = [NSArray array];
+                
+                [seriesRequest setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
+                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
 				
 				for( id series in allSeries)
 					array = [array arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
@@ -1566,7 +1598,19 @@ extern NSManagedObjectContext *staticContext;
 				array = [array filteredArrayUsingPredicate: predicate];
 			}
 			else
-				array = [context executeFetchRequest:request error:&error];
+            {
+                NSArray *newObjects = nil;
+                
+                [request setFetchLimit: FETCHNUMBER];
+                do
+                {
+                    newObjects = [context executeFetchRequest: request error: &error];
+                    array = [array arrayByAddingObjectsFromArray: newObjects];
+                    
+                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                }
+                while( [newObjects count]);
+			}
 			
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
 				array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];

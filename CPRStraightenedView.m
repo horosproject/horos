@@ -135,7 +135,7 @@ extern int splitPosition[ 3];
 @dynamic purplePlaneColor;
 @dynamic bluePlaneColor;
 @synthesize mousePlanePointsInPix = _mousePlanePointsInPix;
-@synthesize displayTransverseLines;
+@synthesize displayTransverseLines = _displayTransverseLines;
 @synthesize displayCrossLines = _displayCrossLines;
 
 + (BOOL)resolveInstanceMethod:(SEL)selector
@@ -198,7 +198,7 @@ extern int splitPosition[ 3];
         _planeColors = [[NSMutableDictionary alloc] init];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
 		_displayCrossLines = YES;
-		displayTransverseLines = YES;
+		_displayTransverseLines = YES;
     }
     return self;
 }
@@ -348,9 +348,9 @@ extern int splitPosition[ 3];
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
 {
-	if( displayTransverseLines)
+	if(_displayTransverseLines)
 	{
-		float length = curDCM.pixelSpacingX * curDCM.pwidth;
+		float length = [_curvedPath.bezierPath length];
 	
 		NSMutableArray *topLeft = [curDCM.annotationsDictionary objectForKey: @"TopLeft"];
 		
@@ -513,7 +513,7 @@ extern int splitPosition[ 3];
 			glEnd();
 		}
 	}
-	else if( displayTransverseLines)
+	else if(_displayTransverseLines)
 	{
 		N3Vector lineAStart, lineAEnd, lineBStart, lineBEnd, lineCStart, lineCEnd;
 		
@@ -757,7 +757,7 @@ extern int splitPosition[ 3];
             // test to see if the mouse is near a trasverse line
             _displayInfo.mouseTransverseSection = CPRTransverseViewNoneSectionType;
             _displayInfo.mouseTransverseSectionDistance = 0.0;
-            if (displayTransverseLines) {
+            if (_displayTransverseLines) {
                 distance = ABS(pixVector.x - _curvedPath.leftTransverseSectionPosition*(CGFloat)curDCM.pwidth);
                 minDistance = distance;
                 if (distance < 20.0) {
@@ -822,7 +822,7 @@ extern int splitPosition[ 3];
 			exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
 		
 		
-		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
+		if( curDCM.pwidth != 0 && exportTransverseSliceInterval == 0 && _displayTransverseLines && ((ABS((pixVector.x/curDCM.pwidth) - _curvedPath.transverseSectionPosition)*curDCM.pwidth < 5.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.leftTransverseSectionPosition)*curDCM.pwidth < 10.0) || (ABS((pixVector.x/curDCM.pwidth) - _curvedPath.rightTransverseSectionPosition)*curDCM.pwidth < 10.0)))
 		{
 			if( [theEvent type] == NSLeftMouseDragged || [theEvent type] == NSLeftMouseDown)
 				[[NSCursor closedHandCursor] set];
@@ -866,13 +866,13 @@ extern int splitPosition[ 3];
 	if( [[self windowController] exportSequenceType] == CPRSeriesExportSequenceType && [[self windowController] exportSeriesType] == CPRTransverseViewsExportSeriesType)
 		exportTransverseSliceInterval = [[self windowController] exportTransverseSliceInterval];
 	
-    if( exportTransverseSliceInterval == 0 && displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
+    if( exportTransverseSliceInterval == 0 && _displayTransverseLines && (ABS((pixVector.x/pixWidth) - _curvedPath.transverseSectionPosition)*pixWidth < 5.0))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverse = YES;
 		[self mouseMoved: event];
     }
-	else if( exportTransverseSliceInterval == 0 && displayTransverseLines && ((ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) ||  (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0)))
+	else if( exportTransverseSliceInterval == 0 && _displayTransverseLines && ((ABS((pixVector.x/pixWidth) - _curvedPath.leftTransverseSectionPosition)*pixWidth < 10.0) ||  (ABS((pixVector.x/pixWidth) - _curvedPath.rightTransverseSectionPosition)*pixWidth < 10.0)))
 	{
 		[self _sendWillEditCurvedPath];
         _draggingTransverseSpacing = YES;

@@ -22,8 +22,8 @@
 
 /** \brief Window Controller for ROI */
 
-@interface ROIWindow : NSWindowController {
-	
+@interface ROIWindow : NSWindowController <NSComboBoxDataSource>
+{	
 	ROI						*curROI;
 	ViewerController		*curController;
 	
@@ -60,5 +60,6 @@
 - (IBAction) roiSaveCurrent: (id) sender;
 - (void) setROI: (ROI*) iroi :(ViewerController*) c;
 - (BOOL) allWithSameName;
+- (void) windowWillClose:(NSNotification *)notification;
 
 @end
