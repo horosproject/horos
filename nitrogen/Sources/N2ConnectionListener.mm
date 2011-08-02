@@ -20,8 +20,8 @@
 #include <arpa/inet.h>
 #include <sys/un.h>
 
-const NSString* N2ConnectionListenerOpenedConnectionNotification = @"N2ConnectionListenerOpenedConnectionNotification";
-const NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedConnection";
+NSString* N2ConnectionListenerOpenedConnectionNotification = @"N2ConnectionListenerOpenedConnectionNotification";
+NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedConnection";
 
 @implementation N2ConnectionListener
 

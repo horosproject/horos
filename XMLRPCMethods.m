@@ -542,9 +542,7 @@ static NSTimeInterval lastConnection = 0;
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
 			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-			{
-				[[loopItem6 window] close];
-			}
+				[[v window] close];
 			
 			// Done, we can send the response to the sender
 			
