@@ -2779,28 +2779,32 @@ static NSConditionLock *threadLock = nil;
 	[parsed release];
 }
 
--(NSArray*) addURLToDatabaseFiles:(NSArray*) URLs
+-(BOOL) addURLToDatabaseFiles:(NSArray*) URLs
 {
-	NSMutableArray	*localFiles = [NSMutableArray array];
-	
-	// FIRST DOWNLOAD FILES TO LOCAL DATABASE
-	
+    BOOL error = NO;
+    
+	// Download Files
 	for( NSURL *url in URLs)
 	{
-		NSData *data = [NSData dataWithContentsOfURL: url];
-		
-		if( data)
-		{
-			NSString *dstPath = [self getNewFileDatabasePath:@"dcm"];		
-			[data writeToFile:dstPath  atomically:YES];
-			[localFiles addObject:dstPath];
-		}
+        NSData *data = [NSData dataWithContentsOfURL: url];
+        
+        if( data)
+        {
+            NSString *dstPath = [[self INCOMINGPATH] stringByAppendingPathComponent: [url lastPathComponent]];
+            
+            [data writeToFile:dstPath atomically:YES];
+        }
+        else
+        {
+            error = YES;
+            NSRunCriticalAlertPanel(NSLocalizedString(@"URL Error",nil), [NSString stringWithFormat: NSLocalizedString(@"I'm not able to download this file: %@",nil), [url lastPathComponent]],NSLocalizedString( @"OK",nil), nil, nil);
+        }
 	}
 	
-	// THEN, LOAD THEM
-	[self addFilesAndFolderToDatabase: localFiles];
-	
-	return localFiles;
+	// Check incoming folder
+	[self checkIncoming: self];
+    
+    return !error;
 }
 
 - (void)addURLToDatabaseEnd: (id)sender
@@ -2808,17 +2812,12 @@ static NSConditionLock *threadLock = nil;
 	if( [sender tag] == 1)
 	{
 		[[NSUserDefaults standardUserDefaults] setObject: [urlString stringValue] forKey: @"LASTURL"];
-		NSArray *result = [self addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString: [urlString stringValue]]]];
-		
-		if( [result count] == 0)
+	
+        if( [self addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString: [urlString stringValue]]]])
 		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"URL Error",nil), NSLocalizedString(@"I'm not able to download this file.",nil),NSLocalizedString( @"OK",nil), nil, nil);
-		}
-		else
-		{
-			[urlWindow orderOut:sender];
-			[NSApp endSheet: urlWindow returnCode:[sender tag]];
-		}
+            [urlWindow orderOut:sender];
+            [NSApp endSheet: urlWindow returnCode:[sender tag]];
+        }
 	}
 	else
 	{

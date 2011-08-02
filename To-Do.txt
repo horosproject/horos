@@ -1,6 +1,5 @@
 - Toolbars: tests with new screen plugged when using OsiriX
 - 10.7 : DICOM TLS (64), Weasis
-- Test download dicomzip file
 - Add 'retrieve' xml-rpc message
 
 - ROI: Add points to Polygon or Pencil ROIs 
@@ -8,6 +7,7 @@
 - Find Previous/Next Key image will scan the entire study, instead of only current series
 - Paste an image in a viewer or in the database window: it will create a DICOM SC image for the selected patient
 
+- Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments

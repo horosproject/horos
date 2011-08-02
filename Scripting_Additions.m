@@ -67,12 +67,10 @@
 	{
 		NSString	*url = [[self arguments] objectForKey:@"URL"];
 		
-		NSArray	*files = [[BrowserController currentBrowser] addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]];
-		
-		if( [[BrowserController currentBrowser] findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: nil shouldExpand: NO])
-		{
-			NSLog(@"done!");
-		}
+        if( [[BrowserController currentBrowser] addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]] == NO)
+        {
+            NSLog( @"XML-RPC DownloadURLFile: failed to download URL");
+        }
 	}
 	
 	if( [command isEqualToString:@"OpenViewerForSelected"]) [[BrowserController currentBrowser] viewerDICOM: self];
