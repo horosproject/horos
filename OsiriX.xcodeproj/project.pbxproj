@@ -318,7 +318,7 @@
 		59DC28B211C611F100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B011C611F100DAD5B4 /* NSThread+N2.h */; };
 		59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
 		59DC28B611C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
-		59DC28B711C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1112FC6556006B930A /* NSManagedObject+N2.h */; };
+		59DC28B711C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B511C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
 		59DC28C011C614A100DAD5B4 /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28BE11C614A100DAD5B4 /* NSXMLNode+N2.h */; };
 		59DC28C111C614A100DAD5B4 /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28BF11C614A100DAD5B4 /* NSXMLNode+N2.mm */; };
 		59DC28C611C6152400DAD5B4 /* N2CSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28C411C6152400DAD5B4 /* N2CSV.h */; };
@@ -900,7 +900,7 @@
 		AB0206851250A22F000BAB5B /* N2HexadecimalNumberFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997898111B7B461002DB107 /* N2HexadecimalNumberFormatter.mm */; };
 		AB0206861250A22F000BAB5B /* ISO8601DateFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FB1D1129338A009EB238 /* ISO8601DateFormatter.h */; };
 		AB0206871250A22F000BAB5B /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
-		AB0206881250A22F000BAB5B /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1112FC6556006B930A /* NSManagedObject+N2.h */; };
+		AB0206881250A22F000BAB5B /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B511C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
 		AB0206891250A22F000BAB5B /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28BE11C614A100DAD5B4 /* NSXMLNode+N2.h */; };
 		AB02068A1250A22F000BAB5B /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28BF11C614A100DAD5B4 /* NSXMLNode+N2.mm */; };
 		AB02068B1250A22F000BAB5B /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B011C611F100DAD5B4 /* NSThread+N2.h */; };

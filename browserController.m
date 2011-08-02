@@ -1660,21 +1660,18 @@ static NSConditionLock *threadLock = nil;
 //	if( DICOMDIRCDMODE)
 //		COPYDATABASE = NO;
 	
-	NSMutableArray *newList = [NSMutableArray arrayWithCapacity: [filesInput count]];
+	NSMutableArray *newFilesToCopyList = [NSMutableArray arrayWithCapacity: [filesInput count]];
 	NSString *INpath = [_database dataDirPath];
 	
 	for( NSString *file in filesInput)
 	{
 		if( [[file commonPrefixWithString: INpath options: NSLiteralSearch] isEqualToString:INpath] == NO)
-			[newList addObject: file];
+			[newFilesToCopyList addObject: file];
 	}
-	
-	if( [newList count] == 0)
-		return;
 	
 	BOOL copyFiles = NO;
 	
-	if( COPYDATABASE)
+	if( COPYDATABASE && [newFilesToCopyList count])
 	{
 		copyFiles = YES;
 		
@@ -1703,7 +1700,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			break;
 				
-			case ask:			
+			case ask:
 				switch (NSRunInformationalAlertPanel(
 													 NSLocalizedString(@"OsiriX Database",@"OsiriX Database"),
 													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),

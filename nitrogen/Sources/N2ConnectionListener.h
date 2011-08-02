@@ -15,8 +15,8 @@
 
 #import <Cocoa/Cocoa.h>
 
-const extern NSString* N2ConnectionListenerOpenedConnectionNotification;
-const extern NSString* N2ConnectionListenerOpenedConnection;
+extern NSString* N2ConnectionListenerOpenedConnectionNotification;
+extern NSString* N2ConnectionListenerOpenedConnection;
 
 @class N2Connection;
 

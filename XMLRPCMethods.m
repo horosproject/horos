@@ -378,7 +378,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0", elements: array of elements corresponding to the request}
 	
-	if ([selName isEqualToString:@"dbwindowfind"])
+	if ([selName isEqualToString:@"dbwindowfind"] || [selName isEqualToString:@"findobject"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -537,16 +537,12 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"CloseAllWindows"])
+	if( [selName isEqualToString: @"closeallwindows"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			for( id loopItem6 in viewersList)
-			{
-				[[loopItem6 window] close];
-			}
+			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+				[[v window] close];
 			
 			// Done, we can send the response to the sender
 			
@@ -567,7 +563,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0", elements: array of series corresponding to displayed windows}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"GetDisplayed2DViewerSeries"])
+	if( [selName isEqualToString: @"getdisplayed2dviewerseries"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -628,7 +624,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0", elements: array of studies corresponding to displayed windows}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"GetDisplayed2DViewerStudies"])
+	if( [selName isEqualToString: @"getdisplayed2dviewerstudies"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -691,7 +687,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"Close2DViewerWithSeriesUID"])
+	if( [selName isEqualToString: @"close2dviewerwithseriesuid"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -735,7 +731,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"Close2DViewerWithStudyUID"])
+	if( [selName isEqualToString: @"close2dviewerwithstudyuid"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
@@ -780,7 +776,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Response: {error: "0"}
 	
-	if( [[httpServerMessage valueForKey: @"MethodName"] isEqualToString: @"CMove"])
+	if( [selName isEqualToString: @"cmove"])
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{

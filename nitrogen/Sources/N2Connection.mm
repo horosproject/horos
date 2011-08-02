@@ -38,7 +38,7 @@
 @end
 
 
-const NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
+NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
 
 @implementation N2Connection
 @synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent;

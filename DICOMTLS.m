@@ -92,7 +92,7 @@
 + (void)generateCertificateAndKeyForLabel:(NSString*)label withStringID:(NSString*)stringID;
 {	
 	SecIdentityRef identity = [DDKeychain identityForLabel:label];
-	if(identity)
+	if( identity)
 	{		
 		// identity to certificate
 		[DDKeychain KeychainAccessExportCertificateForIdentity:identity toPath:[[DICOMTLS certificatePathForLabel:label] stringByAppendingFormat:@"%@", stringID]];

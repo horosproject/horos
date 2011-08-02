@@ -14,7 +14,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern const NSString* N2ConnectionStatusDidChangeNotification;
+extern NSString* N2ConnectionStatusDidChangeNotification;
 
 enum N2ConnectionStatus {
 	N2ConnectionStatusClosed = 0,
@@ -36,7 +36,7 @@ enum N2ConnectionStatus {
 }
 
 @property(readonly) NSString* address;
-@property N2ConnectionStatus status;
+@property(nonatomic) N2ConnectionStatus status;
 @property NSUInteger maximumReadSizePerEvent;
 
 // non-tls
