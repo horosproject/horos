@@ -39,7 +39,7 @@
 #include <IOKit/usb/IOUSBLib.h>
 */
 
-@interface BrowserSourcesHelper : NSObject/*<NSTableViewDelegate,NSTableViewDataSource>*/ {
+@interface BrowserSourcesHelper : NSObject<NSNetServiceBrowserDelegate, NSNetServiceDelegate>/*<NSTableViewDelegate,NSTableViewDataSource>*/ {
 	BrowserController* _browser;
 	NSNetServiceBrowser* _nsbOsirix;
 	NSNetServiceBrowser* _nsbDicom;
@@ -168,7 +168,7 @@
 				NSString* message = NSLocalizedString(@"The selected database's data was not found on your computer.", nil);
 				if ([path hasPrefix:@"/Volumes/"])
 					  message = [message stringByAppendingFormat:@" %@", NSLocalizedString(@"If it is stored on an external drive? If so, please make sure the device in connected and on.", nil)];
-				[NSException raise:NSGenericException format:message];
+				[NSException raise:NSGenericException format:@"%@", message];
 			}
 			
 			NSString* name = io.count > 2? [io objectAtIndex:2] : nil;

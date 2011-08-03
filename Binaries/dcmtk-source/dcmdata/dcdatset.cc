@@ -113,7 +113,7 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer)
 {
     register E_TransferSyntax originalXfer = Xfer;
-    if (newXfer == EXS_Unknown)
+    if (newXfer == EXS_Unknown) // Bug with LLVM GCC 4.2 .... Explicit == EXS_Unknown ?? Problem with enum?
         return OFFalse;
     if (Xfer == EXS_Unknown)
         originalXfer = oldXfer;
