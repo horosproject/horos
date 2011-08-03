@@ -384,7 +384,6 @@ extern NSString* O2AlbumDragType;
 - (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;
-- (void) setCurrentBonjourService:(long) index __deprecated;
 - (IBAction)customize:(id)sender;
 - (IBAction)showhide:(id)sender;
 - (IBAction) selectAll3DSeries:(id) sender;

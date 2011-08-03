@@ -93,6 +93,14 @@
 		5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
 		5912DCDA118EF447007F7D40 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5912DCD6118EF447007F7D40 /* N2FlippedView.h */; };
 		5912DCDB118EF447007F7D40 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5912DCD7118EF447007F7D40 /* N2FlippedView.mm */; };
+		591F5F7713E9464F004D9ADF /* N2MutableUInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */; };
+		591F5F7813E9464F004D9ADF /* N2MutableUInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */; };
+		591F5F7913E9464F004D9ADF /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */; };
+		591F5F7A13E9464F004D9ADF /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */; };
+		591F5F7D13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */; };
+		591F5F7E13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */; };
+		591F5F7F13E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
+		591F5F8013E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
 		59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
@@ -1493,7 +1501,6 @@
 		AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */ = {isa = PBXBuildFile; fileRef = AB80EBA70AF1F5B600E7E934 /* AYNSImageToDicom.h */; };
 		AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */ = {isa = PBXBuildFile; fileRef = AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */; };
 		AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
-		AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
 		AB86603B066E40970015E1C4 /* ToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AB866037066E40970015E1C4 /* ToolbarPanel.m */; };
 		AB86603C066E40970015E1C4 /* ToolbarPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = AB866038066E40970015E1C4 /* ToolbarPanel.h */; };
 		AB87FA7A0C06BEB200CD2976 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
@@ -6968,7 +6975,6 @@
 		CEC7068610A5C844008935EA /* HUDRightArrowButtonNeutral.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */; };
 		CEC7068710A5C844008935EA /* HUDRightArrowButtonPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */; };
 		CEC7068810A5C844008935EA /* FileIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65B0BFADA9500C4B52E /* FileIcon.tif */; };
-		CEC7068910A5C844008935EA /* FolderIcon.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */; };
 		CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B70C0FEEAE00BBD907 /* iPodEjectOff.tif */; };
 		CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE0817B80C0FEEAE00BBD907 /* iPodEjectOn.tif */; };
 		CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE27BA0E0C113BBA00BDC9B3 /* 3DPresetsPanel.tif */; };
@@ -8245,6 +8251,10 @@
 		590BB21F12A002FA009E9758 /* WebPortalStudy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalStudy.mm; sourceTree = "<group>"; };
 		5912DCD6118EF447007F7D40 /* N2FlippedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2FlippedView.h; path = nitrogen/Sources/N2FlippedView.h; sourceTree = "<group>"; };
 		5912DCD7118EF447007F7D40 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2FlippedView.mm; path = nitrogen/Sources/N2FlippedView.mm; sourceTree = "<group>"; };
+		591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2MutableUInteger.h; path = nitrogen/Sources/N2MutableUInteger.h; sourceTree = "<group>"; };
+		591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2MutableUInteger.mm; path = nitrogen/Sources/N2MutableUInteger.mm; sourceTree = "<group>"; };
+		591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
+		591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteDicomDatabase.mm; sourceTree = "<group>"; };
 		59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 4.xcdatamodel"; sourceTree = "<group>"; };
 		59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; name = "WebPortalDB 3-4.xcmappingmodel"; path = "Binaries/WebPortalDB Mapping Models/WebPortalDB 3-4.xcmappingmodel"; sourceTree = "<group>"; };
 		5926822211CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThreadModalForWindow.xib; sourceTree = "<group>"; };
@@ -8956,7 +8966,6 @@
 		AB80EBA80AF1F5B600E7E934 /* AYNSImageToDicom.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AYNSImageToDicom.m; sourceTree = "<group>"; };
 		AB80EBA90AF1F5B600E7E934 /* AYPrintManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AYPrintManager.h; path = AYDicomPrint/AYPrintManager.h; sourceTree = "<group>"; };
 		AB85C65B0BFADA9500C4B52E /* FileIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FileIcon.tif; sourceTree = "<group>"; };
-		AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FolderIcon.tif; sourceTree = "<group>"; };
 		AB866037066E40970015E1C4 /* ToolbarPanel.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ToolbarPanel.m; sourceTree = "<group>"; };
 		AB866038066E40970015E1C4 /* ToolbarPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ToolbarPanel.h; sourceTree = "<group>"; };
 		AB87FA750C06BEB200CD2976 /* nifti1.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = nifti1.h; sourceTree = "<group>"; };
@@ -13159,6 +13168,8 @@
 		A99B7E4F08858D0D004328C0 /* Bonjour */ = {
 			isa = PBXGroup;
 			children = (
+				591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */,
+				591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */,
 				A99B7E5008858D31004328C0 /* BonjourPublisher.h */,
 				A99B7E5108858D31004328C0 /* BonjourPublisher.m */,
 				A99B7E5408858D4F004328C0 /* BonjourBrowser.h */,
@@ -13404,6 +13415,8 @@
 				AB10FB1B1129338A009EB238 /* NSImageView+N2.mm */,
 				5912DCD6118EF447007F7D40 /* N2FlippedView.h */,
 				5912DCD7118EF447007F7D40 /* N2FlippedView.mm */,
+				591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */,
+				591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -13834,7 +13847,6 @@
 				BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */,
 				BF1833D009AD833D0046C295 /* FlipVertical.tif */,
 				CE1D97CE0883B65E005A3A22 /* FlyThru.tif */,
-				AB85C65C0BFADA9500C4B52E /* FolderIcon.tif */,
 				CEFBB18A0B358C8F00666FA9 /* Forward.tif */,
 				CEFBB18C0B358C8F00666FA9 /* ForwardDisabled.tif */,
 				CEFBB18E0B358C8F00666FA9 /* ForwardPressed.tif */,
@@ -19793,6 +19805,8 @@
 				4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */,
 				4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */,
 				84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
+				591F5F7713E9464F004D9ADF /* N2MutableUInteger.h in Headers */,
+				591F5F7D13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22012,6 +22026,8 @@
 				59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 				84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */,
 				8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
+				591F5F7813E9464F004D9ADF /* N2MutableUInteger.h in Headers */,
+				591F5F7E13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22556,7 +22572,6 @@
 				A917CF1F0BF49314002F415E /* HUDRightArrowButtonNeutral.tif in Resources */,
 				A917CF200BF49314002F415E /* HUDRightArrowButtonPressed.tif in Resources */,
 				AB85C65D0BFADA9500C4B52E /* FileIcon.tif in Resources */,
-				AB85C65E0BFADA9500C4B52E /* FolderIcon.tif in Resources */,
 				CE0817B90C0FEEAE00BBD907 /* iPodEjectOff.tif in Resources */,
 				CE0817BA0C0FEEAE00BBD907 /* iPodEjectOn.tif in Resources */,
 				CE27BA100C113BBA00BDC9B3 /* 3DPresetsPanel.tif in Resources */,
@@ -22969,7 +22984,6 @@
 				CEC7068610A5C844008935EA /* HUDRightArrowButtonNeutral.tif in Resources */,
 				CEC7068710A5C844008935EA /* HUDRightArrowButtonPressed.tif in Resources */,
 				CEC7068810A5C844008935EA /* FileIcon.tif in Resources */,
-				CEC7068910A5C844008935EA /* FolderIcon.tif in Resources */,
 				CEC7068A10A5C844008935EA /* iPodEjectOff.tif in Resources */,
 				CEC7068B10A5C844008935EA /* iPodEjectOn.tif in Resources */,
 				CEC7068C10A5C844008935EA /* 3DPresetsPanel.tif in Resources */,
@@ -24386,6 +24400,8 @@
 				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
 				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
 				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				591F5F7913E9464F004D9ADF /* N2MutableUInteger.mm in Sources */,
+				591F5F7F13E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25644,6 +25660,8 @@
 				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
 				8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				591F5F7A13E9464F004D9ADF /* N2MutableUInteger.mm in Sources */,
+				591F5F8013E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

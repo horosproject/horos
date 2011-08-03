@@ -232,15 +232,15 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding] autorelease];
 }
 
 -(BOOL)fetchIsPasswordProtected {
 	NSMutableData* request = [NSMutableData dataWithBytes:"ISPWD" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
@@ -248,16 +248,16 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:password];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
 -(unsigned int)fetchDatabaseIndexSize {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBSIZ" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes));
 }
 
@@ -279,7 +279,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		password = [[BrowserController currentBrowser] askPassword]; // TODO: awww
 		BOOL isRightPassword = [self fetchIsRightPassword:password];
 		if (!isRightPassword)
-			[NSException raise:NSInvalidArgumentException format:NSLocalizedString(@"Wrong password for remote database.", nil)];
+			[NSException raise:NSInvalidArgumentException format:@"%@", NSLocalizedString(@"Wrong password for remote database.", nil)];
 		// else DLog(@"RDD password ok");
 	}
 	
@@ -321,7 +321,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 			size -= w;
 			start += w;
 			obtainedSize.unsignedIntegerValue = obtainedSize.unsignedIntegerValue + w;
-		} else [NSException raise:NSGenericException format:fileStream.streamError.localizedDescription];
+		} else [NSException raise:NSGenericException format:@"%@", fileStream.streamError.localizedDescription];
 	}
 		
 	thread.progress = 1.0*obtainedSize.unsignedIntegerValue/databaseIndexSize;
@@ -333,8 +333,8 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(NSTimeInterval)fetchDatabaseTimestamp {
 	NSMutableData* request = [NSMutableData dataWithBytes:"VERSI" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigDoubleToHost(*((NSSwappedDouble*)response.bytes));
 }
 
@@ -342,7 +342,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	if (!port) port = 8780;
 	NSMutableData* request = [NSMutableData dataWithBytes:"GETDI" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:address port:port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [NSUnarchiver unarchiveObjectWithData:response];
 }
 
@@ -438,7 +438,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	[RemoteDicomDatabase _data:request appendInt:pathData.length];
 	[request appendData:pathData];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUnicodeStringEncoding] autorelease];
 }
 
@@ -646,7 +646,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 						ll -= w;
 						readSize += w;
 						streamSize.unsignedIntegerValue = streamSize.unsignedIntegerValue+w;
-					} else [NSException raise:NSGenericException format:stream.streamError.localizedDescription];
+					} else [NSException raise:NSGenericException format:@"%@", stream.streamError.localizedDescription];
 				}
 				
 				if (streamSize.unsignedIntegerValue >= l)

@@ -59,7 +59,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[thread release];
 	
 	id response = io.count? [io lastObject] : nil;
-	if ([response isKindOfClass:NSException.class])
+	if ([response isKindOfClass:[NSException class]])
 		@throw response;
 	return response;
 } 

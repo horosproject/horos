@@ -23,7 +23,7 @@ enum N2ConnectionStatus {
 	N2ConnectionStatusOk
 };
 
-@interface N2Connection : NSObject {
+@interface N2Connection : NSObject<NSStreamDelegate> {
 	NSString* _address;
 	NSInteger _port;
 	NSInputStream* _inputStream;
