@@ -11143,9 +11143,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				currHeight = GetNextTextureSize (*tH - offsetY, maxTextureSize, f_ext_texture_rectangle); // use remaining to determine next texture size
 				glBindTexture (TEXTRECTMODE, texture[k++]);
 				
-				if( glGetError() != 0)
-					NSLog( @"****** glGetError: %d", glGetError());
-				
+                #ifndef NDEBUG
+                {
+                GLenum glLocalError = GL_NO_ERROR;
+                glLocalError = glGetError();
+                if( glLocalError != GL_NO_ERROR)
+                    NSLog( @"OpenGL error 0x%04X", glLocalError);
+                }
+                #endif
+                
 				glTexParameterf (TEXTRECTMODE, GL_TEXTURE_PRIORITY, 1.0f);
 				
 				if (f_ext_client_storage)
@@ -11220,8 +11226,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 				
-				if( glGetError() != 0)
-					NSLog( @"****** glGetError: %d", glGetError());
+                {
+                #ifndef NDEBUG
+                GLenum glLocalError = GL_NO_ERROR;
+                glLocalError = glGetError();
+                if( glLocalError != GL_NO_ERROR)
+                    NSLog( @"OpenGL error 0x%04X", glLocalError);
+                #endif
+                }
 				
 				offsetY += currHeight;
 			}
