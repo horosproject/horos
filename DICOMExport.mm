@@ -366,7 +366,7 @@
 {
 	if( spp != 1 && spp != 3)
 	{
-		NSLog( @"**** DICOM Export: sample per pixel not supported: %d", spp);
+		NSLog( @"**** DICOM Export: sample per pixel not supported: %ld", spp);
 		return nil;
 	}
 	
@@ -374,14 +374,14 @@
 	{
 		if( bps != 8)
 		{
-			NSLog( @"**** DICOM Export: for RGB images, only 8 bits per sample is supported: %d", bps);
+			NSLog( @"**** DICOM Export: for RGB images, only 8 bits per sample is supported: %ld", bps);
 			return nil;
 		}
 	}
 	
 	if( bps != 8 && bps != 16 && bps != 32)
 	{
-		NSLog( @"**** DICOM Export: unknown bits per sample: %d", bps);
+		NSLog( @"**** DICOM Export: unknown bits per sample: %ld", bps);
 		return nil;
 	}
 	
@@ -516,7 +516,7 @@
 					break;
 					
 					default:
-						NSLog(@"Unsupported bps: %d", bps);
+						NSLog(@"Unsupported bps: %ld", bps);
 						return nil;
 					break;
 				}
@@ -733,7 +733,12 @@
 						
 						OFCondition cond = dcmtkFileFormat->saveFile( [dstPath UTF8String], EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
 						OFBool fileWriteSucceeded =  (cond.good()) ? YES : NO;
+                        
+                        if( fileWriteSucceeded == NO)
+                            NSLog( @"******* dcmtkFileFormat->saveFile failed");
 					}
+                    else
+                        NSLog( @"******* dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit) failed");
 					
 					if( squaredata)
 						free( squaredata);
