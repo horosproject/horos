@@ -97,6 +97,14 @@
 		5915F17013E94CBA002591FF /* BrowserSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915F16D13E94CBA002591FF /* BrowserSource.h */; };
 		5915F17113E94CBA002591FF /* BrowserSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F16E13E94CBA002591FF /* BrowserSource.mm */; };
 		5915F17213E94CBA002591FF /* BrowserSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F16E13E94CBA002591FF /* BrowserSource.mm */; };
+		5915F17513E991CB002591FF /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915F17313E991CB002591FF /* NSDate+N2.h */; };
+		5915F17613E991CB002591FF /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915F17313E991CB002591FF /* NSDate+N2.h */; };
+		5915F17713E991CB002591FF /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F17413E991CB002591FF /* NSDate+N2.mm */; };
+		5915F17813E991CB002591FF /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F17413E991CB002591FF /* NSDate+N2.mm */; };
+		5915F17B13E99243002591FF /* NSArray+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915F17913E99243002591FF /* NSArray+N2.h */; };
+		5915F17C13E99243002591FF /* NSArray+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915F17913E99243002591FF /* NSArray+N2.h */; };
+		5915F17D13E99243002591FF /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F17A13E99243002591FF /* NSArray+N2.mm */; };
+		5915F17E13E99243002591FF /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915F17A13E99243002591FF /* NSArray+N2.mm */; };
 		591F5F7713E9464F004D9ADF /* N2MutableUInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */; };
 		591F5F7813E9464F004D9ADF /* N2MutableUInteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */; };
 		591F5F7913E9464F004D9ADF /* N2MutableUInteger.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */; };
@@ -8282,6 +8290,10 @@
 		5912DCD7118EF447007F7D40 /* N2FlippedView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2FlippedView.mm; path = nitrogen/Sources/N2FlippedView.mm; sourceTree = "<group>"; };
 		5915F16D13E94CBA002591FF /* BrowserSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserSource.h; sourceTree = "<group>"; };
 		5915F16E13E94CBA002591FF /* BrowserSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserSource.mm; sourceTree = "<group>"; };
+		5915F17313E991CB002591FF /* NSDate+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+N2.h"; path = "nitrogen/Sources/NSDate+N2.h"; sourceTree = "<group>"; };
+		5915F17413E991CB002591FF /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
+		5915F17913E99243002591FF /* NSArray+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+N2.h"; path = "nitrogen/Sources/NSArray+N2.h"; sourceTree = "<group>"; };
+		5915F17A13E99243002591FF /* NSArray+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSArray+N2.mm"; path = "nitrogen/Sources/NSArray+N2.mm"; sourceTree = "<group>"; };
 		591F5F7513E9464F004D9ADF /* N2MutableUInteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2MutableUInteger.h; path = nitrogen/Sources/N2MutableUInteger.h; sourceTree = "<group>"; };
 		591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2MutableUInteger.mm; path = nitrogen/Sources/N2MutableUInteger.mm; sourceTree = "<group>"; };
 		591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
@@ -13428,6 +13440,10 @@
 				AB10FAFF1129338A009EB238 /* NSTextView+N2.mm */,
 				AB10FB001129338A009EB238 /* NSString+N2.h */,
 				AB10FB011129338A009EB238 /* NSString+N2.mm */,
+				5915F17313E991CB002591FF /* NSDate+N2.h */,
+				5915F17413E991CB002591FF /* NSDate+N2.mm */,
+				5915F17913E99243002591FF /* NSArray+N2.h */,
+				5915F17A13E99243002591FF /* NSArray+N2.mm */,
 				59526E9C1281896F0016F6C0 /* NSMutableString+N2.h */,
 				59526E9D1281896F0016F6C0 /* NSMutableString+N2.mm */,
 				AB10FB021129338A009EB238 /* NSImage+N2.h */,
@@ -19875,6 +19891,8 @@
 				59E961EA13E949F300A20CC1 /* BrowserController+Sources.h in Headers */,
 				59E961EE13E949F300A20CC1 /* BrowserController+Sources+Copy.h in Headers */,
 				5915F16F13E94CBA002591FF /* BrowserSource.h in Headers */,
+				5915F17513E991CB002591FF /* NSDate+N2.h in Headers */,
+				5915F17B13E99243002591FF /* NSArray+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22104,6 +22122,8 @@
 				59E961EB13E949F300A20CC1 /* BrowserController+Sources.h in Headers */,
 				59E961EF13E949F300A20CC1 /* BrowserController+Sources+Copy.h in Headers */,
 				5915F17013E94CBA002591FF /* BrowserSource.h in Headers */,
+				5915F17613E991CB002591FF /* NSDate+N2.h in Headers */,
+				5915F17C13E99243002591FF /* NSArray+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24485,6 +24505,8 @@
 				59E961EC13E949F300A20CC1 /* BrowserController+Sources.mm in Sources */,
 				59E961F013E949F300A20CC1 /* BrowserController+Sources+Copy.mm in Sources */,
 				5915F17113E94CBA002591FF /* BrowserSource.mm in Sources */,
+				5915F17713E991CB002591FF /* NSDate+N2.mm in Sources */,
+				5915F17D13E99243002591FF /* NSArray+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25752,6 +25774,8 @@
 				59E961ED13E949F300A20CC1 /* BrowserController+Sources.mm in Sources */,
 				59E961F113E949F300A20CC1 /* BrowserController+Sources+Copy.mm in Sources */,
 				5915F17213E94CBA002591FF /* BrowserSource.mm in Sources */,
+				5915F17813E991CB002591FF /* NSDate+N2.mm in Sources */,
+				5915F17E13E99243002591FF /* NSArray+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
