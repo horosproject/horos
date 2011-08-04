@@ -43,8 +43,6 @@
 	[[self window] flushWindow];
 	[[self window] makeKeyAndOrderFront: sender];
 	
-	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-	
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 }
 
@@ -81,8 +79,8 @@
 
 - (void) close
 {
-	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.05)
-		[NSThread sleepForTimeInterval: 0.05];
+	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
+		[NSThread sleepForTimeInterval: 0.5];
 	
 	[super close];
 }
