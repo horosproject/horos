@@ -650,7 +650,7 @@
 						modality = string;
 					
 					delete dataset->remove( DCM_PixelData);
-                    delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // The problematic private group, containing a non-compressed PixelData
+                    delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
                     
 					if( bps == 32) // float support
 					{

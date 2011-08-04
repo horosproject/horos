@@ -6472,8 +6472,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( curDCM.frameofReferenceUID && oFrameofReferenceUID && [[NSUserDefaults standardUserDefaults] boolForKey: @"UseFrameofReferenceUID"])
 				{
-					if( [oFrameofReferenceUID isEqualToString: curDCM.frameofReferenceUID])
+					if( oFrameofReferenceUID == nil || curDCM.frameofReferenceUID == nil || [oFrameofReferenceUID isEqualToString: curDCM.frameofReferenceUID])
 						same3DReferenceWorld = YES;
+                    else
+                        NSLog( @"-- same studyInstanceUID, but different frameofReferenceUID : NO cross reference lines displayed:\r%@\r%@",oFrameofReferenceUID,curDCM.frameofReferenceUID);
 				}
 				else
 					same3DReferenceWorld = YES;
