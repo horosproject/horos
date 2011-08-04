@@ -112,8 +112,11 @@ Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
 OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer)
 {
+    //First : GE private group...
+    delete remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
+    
     register E_TransferSyntax originalXfer = Xfer;
-    if (newXfer == EXS_Unknown) // Bug with LLVM GCC 4.2 .... Explicit == EXS_Unknown ?? Problem with enum?
+    if (newXfer == EXS_Unknown)
         return OFFalse;
     if (Xfer == EXS_Unknown)
         originalXfer = oldXfer;
@@ -509,6 +512,9 @@ OFCondition DcmDataset::saveFile(const char *fileName,
 OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
                                              const DcmRepresentationParameter *repParam)
 {
+    //First : GE private group...
+    delete remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
+    
     OFCondition l_error = EC_Normal;
     OFStack<DcmStack> pixelStack;
 

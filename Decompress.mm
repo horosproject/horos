@@ -249,6 +249,8 @@ int main(int argc, const char *argv[])
 						}
 						else
 						{
+                            delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
+                            
 							NSString *modality;
 							if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
 								modality = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
@@ -542,6 +544,8 @@ int main(int argc, const char *argv[])
 						{
 							DcmDataset *dataset = fileformat.getDataset();
 							
+                            delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
+                            
 							// decompress data set if compressed
 							dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
 							

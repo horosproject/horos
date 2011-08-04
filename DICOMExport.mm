@@ -650,7 +650,8 @@
 						modality = string;
 					
 					delete dataset->remove( DCM_PixelData);
-					
+                    delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
+                    
 					if( bps == 32) // float support
 					{
 						dataset->putAndInsertString( DCM_RescaleIntercept, "0");
@@ -724,7 +725,7 @@
 					dataset->putAndInsertString( DCM_SOPInstanceUID, buf);
 					metaInfo->putAndInsertString( DCM_MediaStorageSOPInstanceUID, buf);
 					
-					dcmtkFileFormat->chooseRepresentation( EXS_LittleEndianExplicit, NULL);
+                    dcmtkFileFormat->chooseRepresentation( EXS_LittleEndianExplicit, NULL);
 					if( dcmtkFileFormat->canWriteXfer( EXS_LittleEndianExplicit))
 					{
 						// Add to the current DB

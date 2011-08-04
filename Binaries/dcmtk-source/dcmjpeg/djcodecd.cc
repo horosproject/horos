@@ -137,7 +137,7 @@ OFCondition DJCodecDecoder::decode(
 			OFBool isGEIcon = OFFalse;
 			if(((DcmItem *)dataset)->findAndGetString( DcmTagKey( 0x0029, 0x0010), GEIcon).good() && GEIcon)
 			{
-				if( strcmp( GEIcon, "GEIIS") == 0)
+				if( strcmp( GEIcon, "GEIIS") == 0) // 0x0009, 0x1110 The problematic private group, containing a *always* JPEG compressed PixelData
 					isGEIcon = OFTrue; // GE Icon pixel data are already and always compressed in JPEG -> dont touch lesion !
 			}
 			
