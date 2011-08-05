@@ -258,9 +258,7 @@ extern int splitPosition[ 3];
 - (id)valueForKey:(NSString *)key
 {
     NSString *planeFullName; // full plane name may include Top or Bottom before the plane name
-//    NSArray *planeRuns;
-//    NSArray *vertialLines;
-    
+     
     if ([key hasSuffix:@"VerticalLines"]) {
         planeFullName = [key substringToIndex:[key length] - 13];
         if ([_verticalLines valueForKey:planeFullName] == nil) {
@@ -399,8 +397,6 @@ extern int splitPosition[ 3];
 - (void)subDrawRect:(NSRect)rect
 {
     double pixToSubdrawRectOpenGLTransform[16];
- 	CGFloat pixelsPerMm;
-    CGFloat pheight_2;
 	NSInteger i;
     N3Vector endpoint;
     N3BezierPath *centerline;
@@ -423,8 +419,6 @@ extern int splitPosition[ 3];
     }
     
     centerline = [self centerlinePath];
-    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
-    pheight_2 = (CGFloat)curDCM.pheight/2.0;
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
     
@@ -724,7 +718,7 @@ extern int splitPosition[ 3];
 												 :0.0 :0.0 :0.0 :NO];
 		} else {
 			assert(0);
-			newPix = [[DCMView alloc] init];
+			newPix = [[DCMPix alloc] init];
 		}
 		[self.curvedVolumeData releaseInlineBuffer:&inlineBuffer];
         
@@ -1345,7 +1339,6 @@ extern int splitPosition[ 3];
     NSInteger pixelsHigh;
     NSUInteger numVectors;
     N3Vector midHeightPoint;
-    N3Vector curveDirection;
     N3Vector projectionNormal;
     N3BezierCoreRef flattenedBezierCore;
     N3BezierCoreRef projectedBezierCore;
@@ -1361,7 +1354,6 @@ extern int splitPosition[ 3];
     // figure out how many horizonatal pixels we will have
     pixelsWide = [generatorRequest pixelsWide];
     pixelsHigh = [generatorRequest pixelsHigh];
-    curveDirection = N3VectorSubtract([generatorRequest.bezierPath vectorAtEnd], [generatorRequest.bezierPath vectorAtStart]);
     projectionNormal = N3VectorNormalize(generatorRequest.projectionNormal);
     midHeightPoint = N3VectorLerp([generatorRequest.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
                                   [generatorRequest.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
@@ -1511,29 +1503,6 @@ extern int splitPosition[ 3];
     glPopMatrix();
 }
 
-
-// for each transverse plane, we will only draw one line of limited length that goes through the centerline
-
-// we will implement this using two functions, the first will return a vertical line index
-//
-//- (NSUInteger)_verticalLineIndexForRelativePosition:(CGFloat)relativePosition // returns -1 if the plane can not be represented by a vertical line
-//{
-//    N3Plane transversePlane;
-//    
-//    // figure out what intersection plane we are talking about
-//    transversePlane.point = [curvedPath.bezierPath vectorAtRelativePosition:relativePosition];
-//    transversePlane.normal = [curvedPath.bezierPath tangentAtRelativePosition:relativePosition];
-//    
-//    // find start and end point of the vertical trace and the relative position, and the nextPoint
-//    
-//    
-//    
-//    // this will be the case if both 
-//    
-//    
-//    // find the 
-//}
-
 - (_CPRStretchedViewPlaneRun *)_limitedRunForRelativePosition:(CGFloat)relativePosition verticalLineIndex:(NSUInteger *)verticalLinePointer lengthFromCenterline:(CGFloat)length
 {
     N3Plane transversePlane;
@@ -1554,19 +1523,14 @@ extern int splitPosition[ 3];
     CGFloat *relativePositions;
     NSInteger i;
     NSInteger relativePositionIndex;
-    N3Vector top1;
-    N3Vector bottom1;
-    N3Vector top2;
-    N3Vector bottom2;
-    BOOL top1PointAbove;
-    BOOL bottom1PointAbove;
-    BOOL top2PointAbove;
-    BOOL bottom2PointAbove;
+    N3Vector top;
+    N3Vector bottom;
+    BOOL topPointAbove;
+    BOOL bottomPointAbove;
     BOOL prevBottomPointAbove;
     _CPRStretchedViewPlaneRun *planeRun;
     NSRange range;
     CGFloat distance;
-    NSMutableArray *distances;
     CGFloat traveledDistance;
     N3Vector distanceVector;
     N3Vector lastDistanceVector;
@@ -1575,7 +1539,6 @@ extern int splitPosition[ 3];
     transversePlane.point = [_curvedPath.bezierPath vectorAtRelativePosition:relativePosition];
     transversePlane.normal = [_curvedPath.bezierPath tangentAtRelativePosition:relativePosition];
     
-//    mmPerPixel = [_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth;
     mmPerPixel = [curDCM pixelSpacingX];
 	halfHeight = ((CGFloat)curDCM.pheight*mmPerPixel)/2.0;
     length /= 2.0; // because the rest of the code uses the length from the centerline 
@@ -1589,8 +1552,8 @@ extern int splitPosition[ 3];
     
     midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
                                   [_curvedPath.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
-    topPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, halfHeight)), projectionNormal);
-    bottomPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, -halfHeight)), projectionNormal);
+    topPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, halfHeight*1e2)), projectionNormal); // make the virtual top and bottom of the world be real far away
+    bottomPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, -halfHeight*1e2)), projectionNormal);
     
     flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([_curvedPath.bezierPath N3BezierCore], N3BezierDefaultFlatness);
     projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
@@ -1622,13 +1585,13 @@ extern int splitPosition[ 3];
     relativePositionIndex = MAX(0, i-1);
     
     if (numVectors >= 2 && relativePositionIndex < numVectors - 1) { // it only makes sense to check for a vertical line if numVec is at least 2 and there i is not on the last line
-        bottom1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane);
-        top1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), topPlane);
+        bottom = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane);
+        top = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), topPlane);
         
-        bottom1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom1, transversePlane.point)) > 0.0;
-		top1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top1, transversePlane.point)) > 0.0;
+        bottomPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom, transversePlane.point)) > 0.0;
+		topPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top, transversePlane.point)) > 0.0;
         
-        if (bottom1PointAbove == top1PointAbove) {
+        if (bottomPointAbove == topPointAbove) {
             if (verticalLinePointer) {
                 *verticalLinePointer = relativePositionIndex;
             }
@@ -1640,48 +1603,35 @@ extern int splitPosition[ 3];
     
     // now know that this is not vertical line, and so we have to make a plane run    
     planeRun = [[[_CPRStretchedViewPlaneRun alloc] init] autorelease];
-    distances = planeRun.distances;
         
     // it is easier to extend the curve than to start it, so we will put th first point checking all the edge cases, and then we will worry about extending it
-    bottom1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane); // isn't this already set?
-    top1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), topPlane);
-    bottom1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom1, transversePlane.point)) > 0.0;
-    top1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top1, transversePlane.point)) > 0.0;
-    prevBottomPointAbove = bottom1PointAbove;
-    
-    // top and bottom better be on opposite sides of the plane, or bad things will happen , this is not strictly true, there it might still be a vertical line
-//    if (bottom1PointAbove == top1PointAbove) {
-//        free(vectors);
-//        free(relativePositions);
-//        return [[[_CPRStretchedViewPlaneRun alloc] init] autorelease];        
-//    }
-    
-//    distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom1, top1), transversePlane), midHeightPoint), projectionNormal);
+    bottom = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane); // isn't this already set?
+    bottomPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom, transversePlane.point)) > 0.0;
+    prevBottomPointAbove = bottomPointAbove;
+        
     distance = N3VectorDotProduct(N3VectorSubtract(vectors[relativePositionIndex], midHeightPoint), projectionNormal);
     [planeRun.distances addObject:[NSNumber numberWithDouble:distance]];
     planeRun.range = NSMakeRange(relativePositionIndex, 1);
-    
-//    distance = N3VectorDotProduct(N3VectorSubtract(vectors[relativePositionIndex], midHeightPoint), projectionNormal);
     lastDistanceVector = N3VectorMake(relativePositionIndex, distance/mmPerPixel, 0);
     
     // start walking forwards
     traveledDistance = 0;
     for (i = relativePositionIndex + 1; i < numVectors; i++) {
-        bottom1 = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), bottomPlane);
-        top1 = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
-        bottom1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom1, transversePlane.point)) > 0.0;
-        top1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top1, transversePlane.point)) > 0.0;
+        bottom = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), bottomPlane);
+        top = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
+        bottomPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom, transversePlane.point)) > 0.0;
+        topPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top, transversePlane.point)) > 0.0;
 
         // if we just walked off the projection
-        if (bottom1PointAbove == top1PointAbove) {
+        if (bottomPointAbove == topPointAbove) {
             // figure out if we just walked up or down
-            if (prevBottomPointAbove != bottom1PointAbove) {
+            if (prevBottomPointAbove != bottomPointAbove) {
                 distance = -(halfHeight*1e10);
             } else {
                 distance = halfHeight*1e10;
             }
         } else {
-            distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom1, top1), transversePlane), midHeightPoint), projectionNormal);
+            distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom, top), transversePlane), midHeightPoint), projectionNormal);
         }
         
         distanceVector = N3VectorMake(i, distance/mmPerPixel, 0);
@@ -1704,35 +1654,32 @@ extern int splitPosition[ 3];
             break;
         }
         
-        prevBottomPointAbove = bottom1PointAbove;
+        prevBottomPointAbove = bottomPointAbove;
     }
     
     // and walk back
-    bottom1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane); // isn't this already set?
-    top1 = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), topPlane);
-    bottom1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom1, transversePlane.point)) > 0.0;
-    top1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top1, transversePlane.point)) > 0.0;
-    prevBottomPointAbove = bottom1PointAbove;
+    bottom = N3LineIntersectionWithPlane(N3LineMake(vectors[relativePositionIndex], projectionNormal), bottomPlane); // isn't this already set?
+    prevBottomPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom, transversePlane.point)) > 0.0;
         
     distance = N3VectorDotProduct(N3VectorSubtract(vectors[relativePositionIndex], midHeightPoint), projectionNormal);
     lastDistanceVector = N3VectorMake(relativePositionIndex, distance/mmPerPixel, 0);
     traveledDistance = 0;
     for (i = relativePositionIndex - 1; i >= 0; i--) {
-        bottom1 = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), bottomPlane);
-        top1 = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
-        bottom1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom1, transversePlane.point)) > 0.0;
-        top1PointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top1, transversePlane.point)) > 0.0;
+        bottom = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), bottomPlane);
+        top = N3LineIntersectionWithPlane(N3LineMake(vectors[i], projectionNormal), topPlane);
+        bottomPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(bottom, transversePlane.point)) > 0.0;
+        topPointAbove = N3VectorDotProduct(transversePlane.normal, N3VectorSubtract(top, transversePlane.point)) > 0.0;
         
         // if we just walked off the projection
-        if (bottom1PointAbove == top1PointAbove) {
+        if (bottomPointAbove == topPointAbove) {
             // figure out if we just walked up or down
-            if (prevBottomPointAbove != bottom1PointAbove) {
+            if (prevBottomPointAbove != bottomPointAbove) {
                 distance = -(halfHeight*1e10);
             } else {
                 distance = halfHeight*1e10;
             }
         } else {
-            distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom1, top1), transversePlane), midHeightPoint), projectionNormal);
+            distance = N3VectorDotProduct(N3VectorSubtract(N3LineIntersectionWithPlane(N3LineMakeFromPoints(bottom, top), transversePlane), midHeightPoint), projectionNormal);
         }
         
         distanceVector = N3VectorMake(i, distance/mmPerPixel, 0);
@@ -1756,7 +1703,7 @@ extern int splitPosition[ 3];
             break;
         }
         
-        prevBottomPointAbove = bottom1PointAbove;
+        prevBottomPointAbove = bottomPointAbove;
     }
 
     free(vectors);
@@ -1806,7 +1753,6 @@ extern int splitPosition[ 3];
 		verticalLines = nil;
 	}
 	
-//	mmPerPixel = [_curvedPath.bezierPath length]/(CGFloat)curDCM.pwidth;
     mmPerPixel = [curDCM pixelSpacingX];
 	halfHeight = ((CGFloat)curDCM.pheight*mmPerPixel)/2.0;
     
@@ -1957,7 +1903,6 @@ extern int splitPosition[ 3];
 - (CGFloat)_distanceToPoint:(NSPoint)point onVerticalLines:(NSArray *)verticalLines pixVector:(N3VectorPointer)closestPixVectorPtr volumeVector:(N3VectorPointer)volumeVectorPtr;
 {
 	N3AffineTransform pixToViewTransform;
-	CGFloat pixelsPerMm;
 	NSNumber *indexNumber;
 	N3Vector pixPointVector;
 	N3Vector pixVector;
@@ -1974,8 +1919,6 @@ extern int splitPosition[ 3];
 	pixToViewTransform = N3AffineTransformInvert([self viewToPixTransform]);
 	minDistance = CGFLOAT_MAX;
 	pixPointVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), [self viewToPixTransform]);
-    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
-
     
 	for (indexNumber in verticalLines) {
 		lineStart = N3VectorMake([indexNumber doubleValue], 0, 0);
@@ -1984,8 +1927,8 @@ extern int splitPosition[ 3];
 		distance = N3VectorDistanceToLine(N3VectorMakeFromNSPoint(point), N3LineApplyTransform(N3LineMakeFromPoints(lineStart, lineEnd), pixToViewTransform));
 		if (distance < minDistance) {
 			minDistance = distance;
+            pixVector = N3VectorMake([indexNumber doubleValue], pixPointVector.y, 0);
 			if (closestPixVectorPtr) {
-				pixVector = N3VectorMake([indexNumber doubleValue], pixPointVector.y, 0);
 				*closestPixVectorPtr = pixVector;
 			}
 			
@@ -2226,14 +2169,11 @@ extern int splitPosition[ 3];
     N3Plane relativePositionPlane;
     NSArray *intersections;
     N3Vector relativePositionIntersection;
-    CGFloat pixelsPerMm;
     
     if ([curDCM pixelSpacingX] == 0) {
         return N3VectorZero;
     }
     
-    pixelsPerMm = 1.0/[curDCM pixelSpacingX];
-
     relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
     intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
     
