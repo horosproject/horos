@@ -432,9 +432,10 @@
                 *endpoint = endpointVector;
             }            
             return N3CloseBezierPathElement;
+        default:
+            assert(0);
+            return 0;
     }
-    assert(0);
-    return 0;
 }
 
 - (N3Vector)vectorAtRelativePosition:(CGFloat)relativePosition // RelativePosition is in [0, 1]
@@ -579,25 +580,25 @@
 - (void)moveToVector:(N3Vector)vector
 {
     [self _clearRandomAccessor];
-    N3BezierCoreAddSegment(_bezierCore, N3MoveToBezierPathElement, N3VectorZero, N3VectorZero, vector);
+    N3BezierCoreAddSegment(_bezierCore, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, vector);
 }
 
 - (void)lineToVector:(N3Vector)vector
 {
     [self _clearRandomAccessor];
-    N3BezierCoreAddSegment(_bezierCore, N3LineToBezierPathElement, N3VectorZero, N3VectorZero, vector);
+    N3BezierCoreAddSegment(_bezierCore, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, vector);
 }
 
 - (void)curveToVector:(N3Vector)vector controlVector1:(N3Vector)controlVector1 controlVector2:(N3Vector)controlVector2
 {
     [self _clearRandomAccessor];
-    N3BezierCoreAddSegment(_bezierCore, N3CurveToBezierPathElement, controlVector1, controlVector2, vector);
+    N3BezierCoreAddSegment(_bezierCore, N3CurveToBezierCoreSegmentType, controlVector1, controlVector2, vector);
 }
 
 - (void)close
 {
 	[self _clearRandomAccessor];
-    N3BezierCoreAddSegment(_bezierCore, N3CloseBezierPathElement, N3VectorZero, N3VectorZero, N3VectorZero);
+    N3BezierCoreAddSegment(_bezierCore, N3CloseBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorZero);
 }
 
 - (void)flatten:(CGFloat)flatness

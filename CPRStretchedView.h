@@ -61,6 +61,7 @@
 
     N3BezierPath *_centerlinePath; // this is the centerline path of the most recently generated DCM
     N3Vector _midHeightPoint; // a point in patient space that is mid-height in the curDCM
+    N3Vector _projectionNormal;
     
     NSMutableDictionary *stanStringAttrib;
 	StringTexture *stringTexA, *stringTexB, *stringTexC;

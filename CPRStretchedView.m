@@ -709,6 +709,7 @@ extern int splitPosition[ 3];
     // blow away local caches of overlay lines
     self.centerlinePath = nil;
     _midHeightPoint = N3VectorZero;
+    _projectionNormal = N3VectorZero;
     
     for (i = 0; i < self.curvedVolumeData.pixelsDeep; i++)
 	{
@@ -733,6 +734,12 @@ extern int splitPosition[ 3];
 	
 	if( [pixArray count])
 	{
+        [self _clearAllPlanes];
+        [self _clearTransversePlanes];
+        self.centerlinePath = [self _projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest*)request];
+        _midHeightPoint = [(CPRStretchedGeneratorRequest*)request midHeightPoint];
+        _projectionNormal = [(CPRStretchedGeneratorRequest*)request projectionNormal];
+
 		for( i = 0; i < [pixArray count]; i++)
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
 		
@@ -761,10 +768,6 @@ extern int splitPosition[ 3];
 		
 		[[self curRoiList] addObjectsFromArray: roiArray];
 		
-        [self _clearAllPlanes];
-        [self _clearTransversePlanes];
-        self.centerlinePath = [self _projectedBezierPathFromStretchedGeneratorRequest:(CPRStretchedGeneratorRequest*)request];
-        _midHeightPoint = [(CPRStretchedGeneratorRequest*)request midHeightPoint];
 		[self setNeedsDisplay:YES];
 	}
 	[pixArray release];
@@ -1306,11 +1309,7 @@ extern int splitPosition[ 3];
 {
     _needsNewRequest = YES;
     [self setNeedsDisplay:YES];
-    //	if (_needsNewRequest == NO) {
-    //		[self performSelector:@selector(_sendNewRequestIfNeeded) withObject:nil afterDelay:0 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
-    //	}
-    //    _needsNewRequest = YES;
-}
+ }
 
 - (void)_sendNewRequestIfNeeded
 {
@@ -1355,8 +1354,7 @@ extern int splitPosition[ 3];
     pixelsWide = [generatorRequest pixelsWide];
     pixelsHigh = [generatorRequest pixelsHigh];
     projectionNormal = N3VectorNormalize(generatorRequest.projectionNormal);
-    midHeightPoint = N3VectorLerp([generatorRequest.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
-                                  [generatorRequest.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
+    midHeightPoint = generatorRequest.midHeightPoint;
     
     flattenedBezierCore = N3BezierCoreCreateFlattenedCopy([generatorRequest.bezierPath N3BezierCore], N3BezierDefaultFlatness);
     projectedBezierCore = N3BezierCoreCreateCopyProjectedToPlane(flattenedBezierCore, N3PlaneMake(N3VectorZero, projectionNormal));
@@ -1509,8 +1507,6 @@ extern int splitPosition[ 3];
     CGFloat mmPerPixel;
 	CGFloat halfHeight;
     NSInteger pixelsWide;
-    N3Vector curveDirection;
-    N3Vector baseNormal;
     N3Vector projectionNormal;
     N3Plane topPlane;
     N3Plane bottomPlane;
@@ -1545,13 +1541,9 @@ extern int splitPosition[ 3];
     
     // figure out how many horizonatal pixels we will have
     pixelsWide = curDCM.pwidth;
-    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
-    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
-    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
-    projectionNormal = N3VectorNormalize(projectionNormal);
+    projectionNormal = _projectionNormal;
     
-    midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
-                                  [_curvedPath.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
+    midHeightPoint = _midHeightPoint;
     topPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, halfHeight*1e2)), projectionNormal); // make the virtual top and bottom of the world be real far away
     bottomPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, -halfHeight*1e2)), projectionNormal);
     
@@ -1731,8 +1723,6 @@ extern int splitPosition[ 3];
 	NSInteger aboveOrBelow;
 	NSInteger prevAboveOrBelow;
     NSInteger pixelsWide;
-    N3Vector curveDirection;
-    N3Vector baseNormal;
     N3Vector projectionNormal;
     N3BezierCoreRef flattenedBezierCore;
     N3BezierCoreRef projectedBezierCore;
@@ -1758,13 +1748,9 @@ extern int splitPosition[ 3];
     
     // figure out how many horizonatal pixels we will have
     pixelsWide = curDCM.pwidth;
-    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
-    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
-    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
-    projectionNormal = N3VectorNormalize(projectionNormal);
+    projectionNormal = _projectionNormal;
     
-    midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:projectionNormal].point, 
-                                  [_curvedPath.bezierPath bottomBoundingPlaneForNormal:projectionNormal].point, 0.5);
+    midHeightPoint = _midHeightPoint;
     topPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, halfHeight)), projectionNormal);
     bottomPlane = N3PlaneMake(N3VectorAdd(midHeightPoint, N3VectorScalarMultiply(projectionNormal, -halfHeight)), projectionNormal);
 
@@ -2230,13 +2216,9 @@ extern int splitPosition[ 3];
     CGFloat mmPerPixel;
     CGFloat pixDistance;
     CGFloat mmDistance;
-    N3Vector curveDirection;
-    N3Vector baseNormal;
     N3Vector projectionNormal;
         
-    curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
-    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
-    projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+    projectionNormal = _projectionNormal;
     mmPerPixel = [curDCM pixelSpacingX];
     intersectionPlane = N3PlaneMake(N3VectorMakeFromNSPoint(pixPoint), N3VectorMake(1.0, 0, 0));
     intersections = [_centerlinePath intersectionsWithPlane:intersectionPlane];
