@@ -1471,6 +1471,98 @@ bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector
 }
 
 
+N3BezierCoreRef N3BezierCoreCreateCopyByReversing(N3BezierCoreRef bezierCore)
+{
+    return N3BezierCoreCreateMutableCopyByReversing(bezierCore);
+}
+
+N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef bezierCore)
+{
+    N3BezierCoreRandomAccessorRef bezierAccessor;
+    N3MutableBezierCoreRef reversedBezier;
+    bool needsClose;
+    bool needsMove;
+    long i;
+    N3BezierCoreSegmentType segmentType;
+    N3Vector control1;
+    N3Vector control2;
+    N3Vector endpoint;
+    N3BezierCoreSegmentType prevSegmentType;
+    N3Vector prevControl1;
+    N3Vector prevControl2;
+    N3Vector prevEndpoint;
+    
+    bezierAccessor = N3BezierCoreRandomAccessorCreateWithBezierCore(bezierCore);
+    reversedBezier = N3BezierCoreCreateMutable();
+    
+    // check empty bezierPath special case
+    if (N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) == 0) {
+        N3BezierCoreRandomAccessorRelease(bezierAccessor);
+        return reversedBezier;
+    }
+    
+    // check for the special case of a bezier with just a moveto
+    if (N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) == 1) {
+        segmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, i, &control1, &control2, &endpoint);
+        assert(segmentType == N3MoveToBezierCoreSegmentType);
+        N3BezierCoreAddSegment(reversedBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+        N3BezierCoreRandomAccessorRelease(bezierAccessor);
+        return reversedBezier;
+    }
+    
+    needsClose = false;
+    needsMove = true;
+    
+    prevSegmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, i, &prevControl1, &prevControl2, &prevEndpoint);
+    
+    for (i = N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) - 2; i >= 0; i--) {
+        segmentType = N3BezierCoreRandomAccessorGetSegmentAtIndex(bezierAccessor, N3BezierCoreRandomAccessorSegmentCount(bezierAccessor) - 1, &control1, &control2, &endpoint);
+        
+        if (needsMove && prevSegmentType != N3CloseBezierCoreSegmentType) {
+            N3BezierCoreAddSegment(reversedBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, prevEndpoint);
+            needsMove = false;
+        }
+        
+        switch (prevSegmentType) {
+            case N3CloseBezierCoreSegmentType:
+                needsClose = true;
+                break;
+            case N3LineToBezierCoreSegmentType:
+                N3BezierCoreAddSegment(reversedBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+                break;
+            case N3CurveToBezierCoreSegmentType:
+                N3BezierCoreAddSegment(reversedBezier, N3CurveToBezierCoreSegmentType, prevControl2, prevControl1, endpoint);
+                break;
+            case N3MoveToBezierCoreSegmentType:
+                if (needsClose) {
+                    N3BezierCoreAddSegment(reversedBezier, N3CloseBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorZero);
+                }
+                N3BezierCoreAddSegment(reversedBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, endpoint);
+                needsClose = false;
+                needsMove = true;
+                break;
+            default:
+                break;
+        }
+        
+        prevSegmentType = segmentType;
+        prevControl1 = control1;
+        prevControl2 = control2;
+        prevEndpoint = endpoint;
+    }
+    
+    assert(prevSegmentType == N3MoveToBezierCoreSegmentType);
+    
+    N3BezierCoreRandomAccessorRelease(bezierAccessor);
+        
+    return reversedBezier;
+}
+
+
+
+
+
+
 
 
 

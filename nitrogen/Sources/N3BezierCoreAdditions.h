@@ -67,6 +67,10 @@ bool N3BezierCoreIsPlanar(N3BezierCoreRef bezierCore, N3PlanePointer bezierCoreP
 
 bool N3BezierCoreGetBoundingPlanesForNormal(N3BezierCoreRef bezierCore, N3Vector normal, N3PlanePointer topPlanePtr, N3PlanePointer bottomPlanePtr); // returns true on success
 
+N3BezierCoreRef N3BezierCoreCreateCopyByReversing(N3BezierCoreRef bezierCore);
+N3MutableBezierCoreRef N3BezierCoreCreateMutableCopyByReversing(N3BezierCoreRef bezierCore);
+
+
 CF_EXTERN_C_END
 
 #endif // _N3BEZIERCORE_ADDITIONS_H_

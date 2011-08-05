@@ -504,6 +504,17 @@
     return [collapsedBezierPath autorelease];
 }
 
+- (N3BezierPath *)bezierPathByReversing
+{
+    N3BezierCoreRef reversedBezierCore;
+    N3MutableBezierPath *reversedBezierPath;
+    
+    reversedBezierCore = N3BezierCoreCreateCopyByReversing(_bezierCore);
+    reversedBezierPath = [N3MutableBezierPath bezierPathN3BezierCore:reversedBezierCore];
+    N3BezierCoreRelease(reversedBezierCore);
+    return reversedBezierPath;
+}
+
 - (NSArray*)intersectionsWithPlane:(N3Plane)plane; // returns NSValues containing N3Vectors of the intersections.
 {
     return [self intersectionsWithPlane:plane relativePositions:NULL];
