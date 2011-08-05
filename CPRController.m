@@ -337,6 +337,8 @@ static float deg2rad = 3.14159265358979/180.0;
 		redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		[self setToolIndex: tWL];
+        
+        self.cprType = [[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
 	}
 	
 	@catch (NSException *e)
@@ -2974,6 +2976,7 @@ static float deg2rad = 3.14159265358979/180.0;
 		windowWillClose = YES;
 		
 		[[NSUserDefaults standardUserDefaults] setBool: self.displayMousePosition forKey: @"MPRDisplayMousePosition"];
+        [[NSUserDefaults standardUserDefaults] setInteger: self.cprType forKey: @"SavedCPRType"];
         
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( updateViewsAccordingToFrame:) object: nil];
 		[NSObject cancelPreviousPerformRequestsWithTarget: self selector:@selector( delayedFullLODRendering:) object: nil];
@@ -3262,13 +3265,26 @@ static float deg2rad = 3.14159265358979/180.0;
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Axis",nil)];
 		
 		[toolbarItem setLabel:NSLocalizedString(@"Axis",nil)];
-		if( ![self selectedView].displayCrossLines)
+		if( ![[self selectedViewOnlyMPRView: YES] displayCrossLines])
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 		else
 			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
 		
 		[toolbarItem setTarget:self];
 		[toolbarItem setAction:@selector(toogleAxisVisibility:)];
+    }
+    else if ([itemIdent isEqualToString:@"CPRAxisShowHide"])
+	{
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"CPR Axis",nil)];
+		
+		[toolbarItem setLabel:NSLocalizedString(@"CPR Axis",nil)];
+		if( !cprView.displayCrossLines)
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisHide"]];
+		else
+			[toolbarItem setImage:[NSImage imageNamed:@"MPRAxisShow"]];
+		
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(toogleCPRAxisVisibility:)];
     }
 	else if ([itemIdent isEqualToString:@"MousePositionShowHide"])
 	{
@@ -3302,8 +3318,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-//    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3312,9 +3327,7 @@ static float deg2rad = 3.14159265358979/180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-//            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
-	//@"tbLOD"
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3352,7 +3365,14 @@ static float deg2rad = 3.14159265358979/180.0;
 	{
 		if([[item itemIdentifier] isEqualToString:@"AxisShowHide"])
 		{
-			if( ![self selectedView].displayCrossLines)
+			if( ![[self selectedViewOnlyMPRView: YES] displayCrossLines])
+				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
+			else
+				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
+		}
+        else if([[item itemIdentifier] isEqualToString:@"CPRAxisShowHide"])
+		{
+			if( !cprView.displayCrossLines)
 				[item setImage:[NSImage imageNamed:@"MPRAxisHide"]];
 			else
 				[item setImage:[NSImage imageNamed:@"MPRAxisShow"]];
@@ -3370,30 +3390,39 @@ static float deg2rad = 3.14159265358979/180.0;
 
 #pragma mark Axis / Mouse Position : Show / Hide
 
+- (void)toogleCPRAxisVisibility:(id) sender;
+{
+    cprView.displayCrossLines = !cprView.displayCrossLines;
+
+    topTransverseView.displayCrossLines = !topTransverseView.displayCrossLines;
+    middleTransverseView.displayCrossLines = !middleTransverseView.displayCrossLines;
+    bottomTransverseView.displayCrossLines = !bottomTransverseView.displayCrossLines;
+	
+	[cprView setNeedsDisplay: YES];
+	[topTransverseView setNeedsDisplay: YES];
+	[middleTransverseView setNeedsDisplay: YES];
+	[bottomTransverseView setNeedsDisplay: YES];
+	
+	[self updateToolbarItems];
+}
+
+
 - (void)toogleAxisVisibility:(id) sender;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
 	{
-		[self selectedView].displayCrossLines = ![self selectedView].displayCrossLines;
+		[[self selectedViewOnlyMPRView: YES] setDisplayCrossLines: ![[self selectedViewOnlyMPRView: YES] displayCrossLines]];
 	}
 	else
 	{
 		mprView1.displayCrossLines = !mprView1.displayCrossLines;
 		mprView2.displayCrossLines = !mprView2.displayCrossLines;
 		mprView3.displayCrossLines = !mprView3.displayCrossLines;
-		cprView.displayCrossLines = !cprView.displayCrossLines;
-		topTransverseView.displayCrossLines = !topTransverseView.displayCrossLines;
-		middleTransverseView.displayCrossLines = !middleTransverseView.displayCrossLines;
-		bottomTransverseView.displayCrossLines = !bottomTransverseView.displayCrossLines;
 	}
 	
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
-	[cprView setNeedsDisplay: YES];
-	[topTransverseView setNeedsDisplay: YES];
-	[middleTransverseView setNeedsDisplay: YES];
-	[bottomTransverseView setNeedsDisplay: YES];
 	
 	[self updateToolbarItems];
 }
