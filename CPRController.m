@@ -46,7 +46,7 @@ extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2
 static float deg2rad = 3.14159265358979/180.0; 
 
 @interface CPRController ()
-@property (readwrite, copy) CPRCurvedPath *curvedPath;
+@property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
 @property (readwrite, copy) CPRDisplayInfo *displayInfo;
 @end
 
