@@ -1,4 +1,3 @@
-- Toolbars: tests with new screen plugged when using OsiriX
 - 10.7 : DICOM TLS (64), Weasis
 - Add 'retrieve' xml-rpc message
 
