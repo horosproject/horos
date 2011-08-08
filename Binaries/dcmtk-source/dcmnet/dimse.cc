@@ -789,7 +789,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
             /* send information over the network to the other DICOM application */
             dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
             if (dulCond.bad())
- 	        return makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
+                return makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
 
             /* count the bytes and the amount of PDVs which were transmitted */
             bytesTransmitted += rtnLength;

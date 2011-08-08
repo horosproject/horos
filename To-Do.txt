@@ -1,4 +1,4 @@
-- 10.7 : DICOM TLS (64), Weasis
+- 10.7 : Weasis
 - Add 'retrieve' xml-rpc message
 
 - New Curved MPR mode: straightened versus stretched
@@ -206,7 +206,6 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 ------------------------------------------------------------------------------------------------------------------------
 
 // Release
-- X CPR
 - X Bundle Version
 - X Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h -macRoman

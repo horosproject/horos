@@ -119,7 +119,6 @@ private:
   void lockFile(void);
   void unlockFile(void);
   void waitUnlockFile(void);
-//  void waitUnlockFileWithPID(int pid);
   void writeErrorMessage( const char *str);
   void writeStateProcess( const char *str);
   NSString* getErrorMessage();
