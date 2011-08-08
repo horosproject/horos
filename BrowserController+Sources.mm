@@ -751,6 +751,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
+
 @implementation MountedBrowserSource
 
 @synthesize devicePath = _devicePath;
@@ -813,7 +814,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)dealloc {
 	[_database release];
-	self.devicePath = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL];
+    self.devicePath = nil;
 	[super dealloc];
 }
 

@@ -41,7 +41,7 @@ CF_EXTERN_C_BEGIN
 #import "NSUserDefaults+OsiriX.h"
 CF_EXTERN_C_END
 
-const NSString* const CurrentDatabaseVersion = @"2.5";
+NSString* const CurrentDatabaseVersion = @"2.5";
 
 
 @interface DicomDatabase ()
@@ -60,7 +60,7 @@ const NSString* const CurrentDatabaseVersion = @"2.5";
 @implementation DicomDatabase
 
 +(void)initializeDicomDatabaseClass {
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:DicomDatabase.class];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
@@ -72,8 +72,8 @@ const NSString* const CurrentDatabaseVersion = @"2.5";
 	}
 }
 
-static const NSString* const SqlFileName = @"Database.sql";
-const NSString* const OsirixDataDirName = @"OsiriX Data";
+static NSString* const SqlFileName = @"Database.sql";
+NSString* const OsirixDataDirName = @"OsiriX Data";
 
 +(NSString*)baseDirPathForPath:(NSString*)path {
 	// were we given a path inside a OsirixDataDirName dir?
@@ -207,7 +207,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 //}
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
-	return [self databaseAtPath:path name:nil];
+	return [[self class] databaseAtPath:path name:nil];
 }
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name {
@@ -216,7 +216,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 	@synchronized(databasesDictionary) {
 		DicomDatabase* database = [databasesDictionary objectForKey:path];
 		if (database) return database;
-		database = [[[self alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
+		database = [[[[self class] alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
 		database.name = name;
 		return database;
 	}
@@ -436,11 +436,11 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return b;
 }
 
-const NSString* const DicomDatabaseImageEntityName = @"Image";
-const NSString* const DicomDatabaseSeriesEntityName = @"Series";
-const NSString* const DicomDatabaseStudyEntityName = @"Study";
-const NSString* const DicomDatabaseAlbumEntityName = @"Album";
-const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
+NSString* const DicomDatabaseImageEntityName = @"Image";
+NSString* const DicomDatabaseSeriesEntityName = @"Series";
+NSString* const DicomDatabaseStudyEntityName = @"Study";
+NSString* const DicomDatabaseAlbumEntityName = @"Album";
+NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSEntityDescription*)imageEntity {
 	return [self entityForName:DicomDatabaseImageEntityName];

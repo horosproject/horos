@@ -15,8 +15,8 @@
 #import "N2ManagedDatabase.h"
 
 
-extern const NSString* const CurrentDatabaseVersion;
-extern const NSString* const OsirixDataDirName;
+extern NSString* const CurrentDatabaseVersion;
+extern NSString* const OsirixDataDirName;
 
 @class N2MutableUInteger;
 
@@ -66,11 +66,11 @@ extern const NSString* const OsirixDataDirName;
 -(BOOL)isLocal;
 
 #pragma mark Entities
-extern const NSString* const DicomDatabaseImageEntityName;
-extern const NSString* const DicomDatabaseSeriesEntityName;
-extern const NSString* const DicomDatabaseStudyEntityName;
-extern const NSString* const DicomDatabaseAlbumEntityName;
-extern const NSString* const DicomDatabaseLogEntryEntityName;
+extern NSString* const DicomDatabaseImageEntityName;
+extern NSString* const DicomDatabaseSeriesEntityName;
+extern NSString* const DicomDatabaseStudyEntityName;
+extern NSString* const DicomDatabaseAlbumEntityName;
+extern NSString* const DicomDatabaseLogEntryEntityName;
 -(NSEntityDescription*)imageEntity;
 -(NSEntityDescription*)seriesEntity;
 -(NSEntityDescription*)studyEntity;

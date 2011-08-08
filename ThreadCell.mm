@@ -149,14 +149,14 @@
 }
 
 -(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
-	{ // for debug
-		[NSGraphicsContext saveGraphicsState];
-		
-		[[NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.25] setFill];
-		[NSBezierPath fillRect:frame];
-		
-		[NSGraphicsContext restoreGraphicsState];
-	}
+//	{ // for debug
+//		[NSGraphicsContext saveGraphicsState];
+//		
+//		[[NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.25] setFill];
+//		[NSBezierPath fillRect:frame];
+//		
+//		[NSGraphicsContext restoreGraphicsState];
+//	}
 	
 	if ([self.thread isFinished]) return;
 	
