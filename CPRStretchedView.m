@@ -70,6 +70,7 @@ extern int splitPosition[ 3];
 
 @property (nonatomic, readwrite, retain) CPRVolumeData *curvedVolumeData; // the volume data that was generated
 @property (nonatomic, readwrite, retain) CPRStretchedGeneratorRequest *lastRequest;
+@property (nonatomic, readwrite, assign) BOOL drawAllNodes;
 @property (nonatomic, readwrite, retain) N3BezierPath *centerlinePath;
 
 + (NSInteger)_fusionModeForCPRViewClippingRangeMode:(CPRViewClippingRangeMode)clippingRangeMode;
@@ -130,6 +131,7 @@ extern int splitPosition[ 3];
 @synthesize curvedVolumeData = _curvedVolumeData;
 @synthesize clippingRangeMode = _clippingRangeMode;
 @synthesize lastRequest = _lastRequest;
+@synthesize drawAllNodes = _drawAllNodes;
 @dynamic orangePlane;
 @dynamic purplePlane;
 @dynamic bluePlane;
@@ -283,6 +285,14 @@ extern int splitPosition[ 3];
 	[[self windowController] propagateWLWW: self];
 }
 
+- (void)setDrawAllNodes:(BOOL)drawAllNodes
+{
+    if (drawAllNodes != _drawAllNodes) {
+        _drawAllNodes = drawAllNodes;
+        [self setNeedsDisplay:YES];
+    }
+}
+
 - (void)setVolumeData:(CPRVolumeData *)volumeData
 {
     if (volumeData != _volumeData) {
@@ -404,6 +414,7 @@ extern int splitPosition[ 3];
 	NSColor *planeColor;
     N3AffineTransform pixToSubDrawRectTransform;
     N3Vector cursorVector;
+    CGFloat relativePosition;
 
     CGLContextObj cgl_ctx;
     
@@ -656,6 +667,34 @@ extern int splitPosition[ 3];
 //        }
     }
     
+    if (_drawAllNodes)
+	{
+        for (i = 0; i < [_curvedPath.nodes count]; i++)
+		{
+            relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+            cursorVector = [self _centerlinePixVectorForRelativePosition:relativePosition];
+//            cursorVector = N3VectorMake(curDCM.pwidth * relativePosition, (CGFloat)curDCM.pheight/2.0, 0);
+            cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
+            
+            if (_displayInfo.hoverNodeHidden == NO && _displayInfo.hoverNodeIndex == i)
+			{
+                glColor4d(1.0, 0.5, 0.0, 1.0);
+            } else {
+                glColor4d(1.0, 0.0, 0.0, 1.0);
+            }
+            
+            
+            glEnable(GL_POINT_SMOOTH);
+            glPointSize(8);
+            
+            glBegin(GL_POINTS);
+            glVertex2f(cursorVector.x, cursorVector.y);
+            glEnd();
+        }
+    }
+
+
+    
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil)
 	{
@@ -801,7 +840,7 @@ extern int splitPosition[ 3];
 	[self _sendDidEditDisplayInfo];
     [_mousePlanePointsInPix removeAllObjects];
 	
-//    self.drawAllNodes = NO;
+    self.drawAllNodes = NO;
     
     [self setNeedsDisplay:YES];
     
@@ -827,6 +866,7 @@ extern int splitPosition[ 3];
 		BOOL didChangeHover;
 		NSString *planeName;
 		N3Vector vector;
+        CGFloat distanceFromCenterline;
 		
 		viewPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		
@@ -869,38 +909,41 @@ extern int splitPosition[ 3];
 //			line = N3LineMake(N3VectorMake(0, (CGFloat)curDCM.pheight / 2.0, 0), N3VectorMake(1, 0, 0));
 //			line = N3LineApplyTransform(line, N3AffineTransformInvert([self viewToPixTransform]));
 //			
-//			if (N3VectorDistanceToLine(N3VectorMakeFromNSPoint(viewPoint), line) < 20.0) {
-//				self.drawAllNodes = YES;
-//			} else {
-//				self.drawAllNodes = NO;
-//			}
-			
-//			overNode = NO;
-//			hoverNodeIndex = 0;
-//			if (self.drawAllNodes) {
-//				for (i = 0; i < [_curvedPath.nodes count]; i++) {
-//					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
-//					
-//					if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
-//                                         N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
-//						overNode = YES;
-//						hoverNodeIndex = i;
-//						break;
-//					}
-//				}
-//				
-//				if (overNode) {
-//					if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
-//						_displayInfo.hoverNodeHidden = NO;
-//						_displayInfo.hoverNodeIndex = hoverNodeIndex;
-//					}
-//				} else {
-//					if (_displayInfo.hoverNodeHidden == NO) {
-//						_displayInfo.hoverNodeHidden = YES;
-//						_displayInfo.hoverNodeIndex = 0;
-//					}
-//				}
-//			}
+            
+            [_centerlinePath relativePositionClosestToLine:N3LineMake(pixVector, N3VectorMake(0, 0, 1)) closestVector:&vector];
+            distanceFromCenterline = N3VectorDistanceToLine(vector, N3LineMake(pixVector, N3VectorMake(0, 0, 1)));
+			if (distanceFromCenterline < 20.0) {
+				self.drawAllNodes = YES;
+			} else {
+				self.drawAllNodes = NO;
+			}
+            			
+			overNode = NO;
+			hoverNodeIndex = 0;
+			if (self.drawAllNodes) {
+				for (i = 0; i < [_curvedPath.nodes count]; i++) {
+					relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+					
+                    
+                    if (N3VectorDistance(pixVector, [self _centerlinePixVectorForRelativePosition:relativePosition]) < 10) {
+						overNode = YES;
+						hoverNodeIndex = i;
+						break;
+					}
+				}
+				
+				if (overNode) {
+					if (_displayInfo.hoverNodeHidden == YES || _displayInfo.hoverNodeIndex != hoverNodeIndex) {
+						_displayInfo.hoverNodeHidden = NO;
+						_displayInfo.hoverNodeIndex = hoverNodeIndex;
+					}
+				} else {
+					if (_displayInfo.hoverNodeHidden == NO) {
+						_displayInfo.hoverNodeHidden = YES;
+						_displayInfo.hoverNodeIndex = 0;
+					}
+				}
+			}
 			
 			[self _sendDidEditDisplayInfo];
 		}
@@ -958,7 +1001,7 @@ extern int splitPosition[ 3];
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
-//    _clickedNode = NO;
+    _clickedNode = NO;
     
     if (pixWidth == 0.0) {
         [super mouseDown:event];
@@ -1009,20 +1052,18 @@ extern int splitPosition[ 3];
     }
 	else
 	{
-//        for (i = 0; i < [_curvedPath.nodes count]; i++)
-//		{
-//            relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
-//            
-//            if (N3VectorDistance(N3VectorMakeFromNSPoint(viewPoint),
-//                                 N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*relativePosition, (CGFloat)curDCM.pheight/2.0, 0), N3AffineTransformInvert([self viewToPixTransform]))) < 10.0) {
-//                if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
-//                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
-//                }
-//                _clickedNode = YES;
-//                break;
-//            }
-//        }
-//        if (_clickedNode == NO)
+        for (i = 0; i < [_curvedPath.nodes count]; i++)
+		{
+            relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+            if (N3VectorDistance(pixVector, [self _centerlinePixVectorForRelativePosition:relativePosition]) < 10) {
+                if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+                }
+                _clickedNode = YES;
+                break;
+            }
+        }
+        if (_clickedNode == NO)
 		{
 			int clickCount = 1;
 			
@@ -1090,8 +1131,8 @@ extern int splitPosition[ 3];
     CGFloat relativePosition;
     CGFloat pixWidth;
     
-//	if( _clickedNode)
-//		return;
+	if( _clickedNode)
+		return;
 	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
@@ -2160,14 +2201,20 @@ extern int splitPosition[ 3];
         return N3VectorZero;
     }
     
-    relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
-    intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
-    
-    if ([intersections count] == 0) {
-        return N3VectorZero;
-    } 
-    
-    relativePositionIntersection = [[intersections objectAtIndex:0] N3VectorValue];
+    if (relativePosition == 0) {
+        relativePositionIntersection = [self.centerlinePath vectorAtStart];
+    } else if (relativePosition == 1) {
+        relativePositionIntersection = [self.centerlinePath vectorAtEnd];
+    } else {
+        relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
+        intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
+        
+        if ([intersections count] == 0) {
+            return N3VectorZero;
+        } 
+        
+        relativePositionIntersection = [[intersections objectAtIndex:0] N3VectorValue];
+    }
     
     return relativePositionIntersection;
 }

@@ -49,8 +49,11 @@
 
     BOOL _draggingTransverse;
     BOOL _draggingTransverseSpacing;
+	BOOL _clickedNode;
 
     NSInteger _editingCurvedPathCount;
+    
+    BOOL _drawAllNodes;
     
     BOOL _processingRequest; // synchronous new image requests are generated in drawRect, but code that handles the new image calls' setNeedsDisplay,
                             // so this variable is used to short circuit setNeedsDisplay while the image is being generated.
