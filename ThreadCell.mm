@@ -17,7 +17,7 @@
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "NSThread+N2.h"
-
+#import "AppController.h"
 
 @implementation ThreadCell
 
@@ -138,12 +138,19 @@
 		[view addSubview:self.cancelButton];
 	if (!NSEqualRects(self.cancelButton.frame, cancelFrame)) [self.cancelButton setFrame:cancelFrame];
 	
-	NSRect progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
 //		[self.progressIndicator startAnimation:self];
 	}
-	if (!NSEqualRects(self.progressIndicator.frame, progressFrame)) [self.progressIndicator setFrame:progressFrame];
+    
+    NSRect progressFrame;
+    if ([AppController hasMacOSXLion])
+        progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y+27, frame.size.width-6, frame.size.height-32);
+    else progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
+
+    
+	if (!NSEqualRects(self.progressIndicator.frame, progressFrame))
+        [self.progressIndicator setFrame:progressFrame];
 	
 	[NSGraphicsContext restoreGraphicsState];
 }

@@ -973,6 +973,22 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
++(BOOL) hasMacOSXLion
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1070UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
 
 +(BOOL) hasMacOSXSnowLeopard
 {
