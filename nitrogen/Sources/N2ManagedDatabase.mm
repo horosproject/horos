@@ -7,6 +7,7 @@
 //
 
 #import "N2ManagedDatabase.h"
+#import "N2Debug.h"
 
 
 @interface N2ManagedDatabase ()
@@ -138,16 +139,16 @@
 	req.predicate = p;
     
     
-    NSArray *objects = nil;
+    NSArray* objects = nil;
     
     [managedObjectContext lock];
     
     @try {
-        NSArray *objects = [managedObjectContext executeFetchRequest:req error:NULL];
+        objects = [managedObjectContext executeFetchRequest:req error:NULL];
+    } @catch (NSException* e) {
+        N2LogException(e);
     }
-    @catch (NSException *e) {
-       NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-    }
+    
     [managedObjectContext unlock];
     
     return objects;
