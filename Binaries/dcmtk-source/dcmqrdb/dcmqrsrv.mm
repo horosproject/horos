@@ -50,6 +50,92 @@
 
 #include <signal.h>
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@interface ContextCleaner : NSObject
+{
+
+}
+@end
+
+@implementation ContextCleaner
+
++ (void) waitUnlockFileWithPID: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	BOOL fileExist = YES;
+	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
+	char dir[ 1024];
+	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
+	
+	do
+	{
+		FILE * pFile = fopen (dir,"r");
+		if( pFile)
+		{
+			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
+			fclose (pFile);
+		}
+		else
+			fileExist = NO;
+            
+            usleep( 100000);
+            inc++;
+	}
+#define TIMEOUT 1200 // 1200*100000 = 120 secs
+	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+	
+	if( inc >= TIMEOUT)
+	{
+		kill( pid, 15);
+		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
+	}
+	
+	if( rc < 0)
+	{
+        NSLog( @"******* waitUnlockFile : child process died... %d / %d", rc, errno);
+		kill( pid, 15);
+	}
+	
+	unlink( dir);
+	
+	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
+	{
+		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
+		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/error_message" handler: nil];
+		
+		if( str && [str length] > 0)
+			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+	}
+    
+    // And finally release memory on the father side
+    [NSThread sleepForTimeInterval: 60*45]; //45 min....
+    
+    T_ASC_Association *assoc = (T_ASC_Association*) [[dict valueForKey: @"assoc"] pointerValue];
+    OFCondition cond = EC_Normal;
+    
+    /* the child will handle the association, we can drop it */
+    cond = ASC_dropAssociation(assoc);
+    if (cond.bad())
+    {
+        //DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+        DimseCondition::dump(cond);
+    }
+    
+    cond = ASC_destroyAssociation(&assoc);
+    if (cond.bad())
+    {
+        //DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+        DimseCondition::dump(cond);
+    }
+    
+	[pool release];
+}
+@end
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
 extern "C"
 {
 	void (*signal(int signum, void (*sighandler)(int)))(int);
@@ -1135,7 +1221,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
             queryRetrievePairs[i].findSyntax);
         if (findpid == 0) {
         if (options_.requireFindForMove_) {
-            //* refuse the move 
+            // refuse the move 
             ASC_refusePresentationContext(assoc->params,
                 movepid, ASC_P_USERREJECTION);
             } else {
@@ -1184,6 +1270,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 	Boolean singleProcess = options_.singleProcess_;
 	Boolean moveProcess = false;
 	
+//    if( secureConnection_)
+//        singleProcess = YES;
+    
     if (singleProcess) timeout = 30000;
     else
     {
@@ -1455,25 +1544,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							// Father
 							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
 							
-							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [AppController sharedAppController] withObject: [NSNumber numberWithInt: pid]];
+							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", nil]];
 							
-							/* the child will handle the association, we can drop it */
-							cond = ASC_dropAssociation(assoc);
-							if (cond.bad())
-							{
-								//DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-								DimseCondition::dump(cond);
-							}
-							
-							cond = ASC_destroyAssociation(&assoc);
-							if (cond.bad())
-							{
-								//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-								DimseCondition::dump(cond);
-							}
-							
-//							waitUnlockFileWithPID( pid);
-//							
 //							NSString *str = getErrorMessage();
 //							if( str)
 //								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];

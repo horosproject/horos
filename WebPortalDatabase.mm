@@ -26,15 +26,15 @@
     return model;
 }
 
-const NSString* const WebPortalDatabaseUserEntityName = @"User";
-const NSString* const WebPortalDatabaseStudyEntityName = @"Study";
+NSString* const WebPortalDatabaseUserEntityName = @"User";
+NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 
 -(NSEntityDescription*)userEntity {
-	return [self entityForName: [NSString stringWithString: WebPortalDatabaseUserEntityName]];
+	return [self entityForName:WebPortalDatabaseUserEntityName];
 }
 
 -(NSEntityDescription*)studyEntity {
-	return [self entityForName: [NSString stringWithString: WebPortalDatabaseStudyEntityName]];
+	return [self entityForName:WebPortalDatabaseStudyEntityName];
 }
 
 -(NSArray*)usersWithPredicate:(NSPredicate*)p {
@@ -49,7 +49,7 @@ const NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 }
 
 -(WebPortalUser*)newUser {
-	return [NSEntityDescription insertNewObjectForEntityForName: [NSString stringWithString: WebPortalDatabaseUserEntityName] inManagedObjectContext:self.managedObjectContext];
+	return [NSEntityDescription insertNewObjectForEntityForName:WebPortalDatabaseUserEntityName inManagedObjectContext:self.managedObjectContext];
 }
 
 @end

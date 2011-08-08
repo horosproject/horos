@@ -83,6 +83,7 @@ typedef NSInteger N3BezierPathElement;
 - (CGFloat)relativePositionClosestToLine:(N3Line)line;
 - (CGFloat)relativePositionClosestToLine:(N3Line)line closestVector:(N3VectorPointer)vectorPointer;
 - (N3BezierPath *)bezierPathByCollapsingZ;
+- (N3BezierPath *)bezierPathByReversing;
 
 - (NSArray*)intersectionsWithPlane:(N3Plane)plane; // returns NSValues containing N3Vectors of the intersections.
 - (NSArray*)intersectionsWithPlane:(N3Plane)plane relativePositions:(NSArray **)returnedRelativePositions;

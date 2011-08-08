@@ -1640,8 +1640,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		return;
 	}
 	
-	[response.tokens setObject:self.portalURL forKey:@"WebServerAddress"];
-	
 	response.templateString = [self.portal stringForPath:@"weasis.jnlp"];
 	response.mimeType = @"application/x-java-jnlp-file";
 }

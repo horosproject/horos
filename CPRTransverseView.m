@@ -467,33 +467,33 @@ extern int splitPosition[ 3];
     pixelsPerMm = (CGFloat)curDCM.pwidth/(_sectionWidth / _renderingScale);
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
 
-	if( displayCrossLines && _reformationDisplayStyle == CPRTransverseViewStraightenedReformationDisplayStyle)
-	{
-		
-		glColor4d(1.0, 1.0, 0.0, 1.0);
-		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
-		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-		glLineWidth(1.0);
-		glBegin(GL_LINE_STRIP);
-		glVertex2f(lineStart.x, lineStart.y);
-		glVertex2f(lineEnd.x, lineEnd.y);
-		glEnd();
-		
-		if (_curvedPath.thickness > 2.0)
-		{
-			glLineWidth(1.0);
-			glBegin(GL_LINES);
-			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-			glVertex2f(lineStart.x, lineStart.y);
-			glVertex2f(lineEnd.x, lineEnd.y);
-			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
-			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-			glVertex2f(lineStart.x, lineStart.y);
-			glVertex2f(lineEnd.x, lineEnd.y);
-			glEnd();
-		}
-	}
+    // Dont display cross lines on transverse views, to keep coherence with streched mode
+//	if( displayCrossLines && _reformationDisplayStyle == CPRTransverseViewStraightenedReformationDisplayStyle)
+//	{
+//		glColor4d(1.0, 1.0, 0.0, 1.0);
+//		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
+//		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//		glLineWidth(1.0);
+//		glBegin(GL_LINE_STRIP);
+//		glVertex2f(lineStart.x, lineStart.y);
+//		glVertex2f(lineEnd.x, lineEnd.y);
+//		glEnd();
+//		
+//		if (_curvedPath.thickness > 2.0)
+//		{
+//			glLineWidth(1.0);
+//			glBegin(GL_LINES);
+//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//			glVertex2f(lineStart.x, lineStart.y);
+//			glVertex2f(lineEnd.x, lineEnd.y);
+//			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
+//			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth-_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
+//			glVertex2f(lineStart.x, lineStart.y);
+//			glVertex2f(lineEnd.x, lineEnd.y);
+//			glEnd();
+//		}
+//	}
     
     if( [[self windowController] displayMousePosition] == YES && _displayInfo.mouseTransverseSection == _sectionType) {
         cursorVector = N3VectorMake(((CGFloat)curDCM.pwidth)/2.0, ((CGFloat)curDCM.pheight/2.0)+(_displayInfo.mouseTransverseSectionDistance*pixelsPerMm), 0);

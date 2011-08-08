@@ -201,7 +201,6 @@ extern AppController* OsiriX;
 //=============================================
 
 - (IBAction) killAllStoreSCU:(id) sender;
-- (void) waitUnlockFileWithPID: (NSNumber*) nspid;
 
 - (id) splashScreen;
 

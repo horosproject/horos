@@ -8,6 +8,7 @@
 
 #import "N2ManagedDatabase.h"
 #import "NSMutableDictionary+N2.h"
+#import "N2Debug.h"
 
 
 @interface N2ManagedDatabase ()
@@ -217,7 +218,17 @@
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
-	return [self.managedObjectContext executeFetchRequest:req error:err];
+    
+    [managedObjectContext lock];
+    @try {
+        return [managedObjectContext executeFetchRequest:req error:NULL];
+    } @catch (NSException* e) {
+        N2LogException(e);
+    } @finally {
+		[managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 -(id)newObjectForEntity:(NSEntityDescription*)entity {

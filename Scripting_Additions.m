@@ -81,8 +81,8 @@
     /*
      * Code added by Kanteron Systems
      */
-	if ([command isEqualToString:@"invoke XMLPRC method"]) {
-		NSLog(@"invoke XMLPRC method");
+	if ([command isEqualToString:@"invoke XMLRPC method"]) {
+		NSLog(@"invoke XMLRPC method");
 		// We extact the arguments if any 
 		NSDictionary *paramDict = nil;
 		if  ([[self arguments] objectForKey:@"XMLRPCParams"])

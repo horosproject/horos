@@ -72,11 +72,11 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (assign) id <CPRViewDelegate> delegate;
 @property (readonly) DCMPix *pix;
 @property (retain) Camera *camera;
-@property (copy) CPRCurvedPath *curvedPath;
-@property (copy) CPRDisplayInfo *displayInfo;
-@property float angleMPR, fromIntervalExport, toIntervalExport, LOD;
+@property (nonatomic, copy) CPRCurvedPath *curvedPath;
+@property (nonatomic, copy) CPRDisplayInfo *displayInfo;
+@property (nonatomic) float angleMPR, fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
-@property BOOL displayCrossLines, dontUseAutoLOD;
+@property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
 

@@ -218,6 +218,6 @@
 		</dict>
 	</array>
 	<key>OSAScriptingDefinition</key>
-	<string>OsiriX.def</string>
+	<string>OsiriX.sdef</string>
 </dict>
 </plist>

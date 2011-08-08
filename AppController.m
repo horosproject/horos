@@ -2350,59 +2350,6 @@ static NSDate *lastWarningDate = nil;
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void) waitUnlockFileWithPID: (NSNumber*) nspid
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	BOOL fileExist = YES;
-	int pid = [nspid intValue], inc = 0, rc = pid, state;
-	char dir[ 1024];
-	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
-	
-	do
-	{
-		FILE * pFile = fopen (dir,"r");
-		if( pFile)
-		{
-			rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
-			fclose (pFile);
-		}
-		else
-			fileExist = NO;
-		
-		usleep( 100000);
-		inc++;
-	}
-#define TIMEOUT 1200 // 1200*100000 = 120 secs
-	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
-	
-	if( inc >= TIMEOUT)
-	{
-		kill( pid, 15);
-		NSLog( @"******* waitUnlockFile for %d sec", inc/10);
-	}
-	
-	if( rc < 0)
-	{
-        NSLog( @"******* waitUnlockFile : child process died... %d / %d", rc, errno);
-		kill( pid, 15);
-	}
-	
-	unlink( dir);
-	
-	if ([[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
-	{
-		NSString *str = [NSString stringWithContentsOfFile:@"/tmp/error_message" encoding:NSUTF8StringEncoding error:nil];
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/error_message" error: nil];
-		
-		if( str && [str length] > 0)
-			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-	}
-	
-	[pool release];
-}
-
-
 - (void) applicationWillTerminate: (NSNotification*) aNotification
 {
 	unlink( "/tmp/kill_all_storescu");

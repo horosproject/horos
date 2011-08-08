@@ -197,7 +197,7 @@ extern int splitPosition[ 3];
         _planeRuns = [[NSMutableDictionary alloc] init];
         _planeColors = [[NSMutableDictionary alloc] init];
 		_mousePlanePointsInPix = [[NSMutableDictionary alloc] init];
-		_displayCrossLines = YES;
+		_displayCrossLines = NO;
 		_displayTransverseLines = YES;
     }
     return self;

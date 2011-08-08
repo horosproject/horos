@@ -159,23 +159,23 @@ typedef NSInteger CPRExportRotationSpan;
 	NSMutableArray *_delegateDisplayInfoDebugging;
 }
 
-@property float clippingRangeThickness, blendingPercentage;
-@property int clippingRangeMode, mouseViewID;
-@property int curMovieIndex, maxMovieIndex, blendingMode;
-@property (retain) Point3D *mousePosition;
+@property (nonatomic) float clippingRangeThickness, blendingPercentage;
+@property (nonatomic) int clippingRangeMode, mouseViewID;
+@property (nonatomic) int curMovieIndex, maxMovieIndex, blendingMode;
+@property (nonatomic, retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (readonly) DCMPix *originalPix;
-@property float LOD, movieRate;
+@property (nonatomic) float LOD, movieRate;
 @property BOOL lowLOD, displayMousePosition, blendingModeAvailable;
-@property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
+@property (nonatomic, retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) CPRMPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
-@property (readonly, copy) CPRCurvedPath *curvedPath;
+@property (nonatomic, readonly, copy) CPRCurvedPath *curvedPath;
 @property (readonly, copy) CPRDisplayInfo *displayInfo;
-@property BOOL curvedPathCreationMode;
+@property (nonatomic) BOOL curvedPathCreationMode;
 @property (retain) NSColor *curvedPathColor;
-@property double straightenedCPRAngle;
-@property CPRType cprType;
+@property (nonatomic) double straightenedCPRAngle;
+@property (nonatomic) CPRType cprType;
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;
