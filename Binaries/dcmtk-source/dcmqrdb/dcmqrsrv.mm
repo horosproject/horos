@@ -110,7 +110,7 @@
 	}
     
     // And finally release memory on the father side
-    [NSThread sleepForTimeInterval: 10];
+    [NSThread sleepForTimeInterval: 60*45]; //45 min....
     
     T_ASC_Association *assoc = (T_ASC_Association*) [[dict valueForKey: @"assoc"] pointerValue];
     OFCondition cond = EC_Normal;
