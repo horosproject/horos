@@ -219,13 +219,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [managedObjectContext lock];
+    [self.managedObjectContext lock];
     @try {
-        return [managedObjectContext executeFetchRequest:req error:NULL];
+        return [self.managedObjectContext executeFetchRequest:req error:NULL];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-		[managedObjectContext unlock];
+		[self.managedObjectContext unlock];
     }
     
 	return nil;
