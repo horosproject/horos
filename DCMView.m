@@ -10218,7 +10218,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long				width, height, spp, bpp;
 	NSString			*colorSpace;
 	unsigned char		*data;
-		
+	
+	NSDisableScreenUpdates();
+	
 	if( stringID == nil && originalSize == NO)
 	{
 //		if( [ViewerController numberOf2DViewer] > 1 || _imageColumns != 1 || _imageRows != 1 || [self isKeyImage] == YES)
@@ -10362,7 +10364,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[image addRepresentation:rep];
      
 	free( data);
-	 
+	
+	NSEnableScreenUpdates();
+	
     return image;
 }
 
