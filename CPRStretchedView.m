@@ -516,19 +516,20 @@ extern int splitPosition[ 3];
         
 		for( int i = 0; i < noOfFrames; i++)
 		{
-            N3Plane sliceTransversePlane = N3PlaneMake(vectors[i], tangents[i]);
-            NSArray *slicePlaneRun;
-            NSArray *sliceVerticalSlices;
+            _CPRStretchedViewPlaneRun *transverseRun;
+            NSUInteger transverseIndex;
             
-            slicePlaneRun = [self _runsForPlane:sliceTransversePlane verticalLineIndexes:&sliceVerticalSlices];
+            relativePosition = (startingDistance + (exportTransverseSliceInterval * (CGFloat)i)) / curveLength;
+            transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline:curDCM.pheight / 3];
             
-			glLineWidth(2.0);
-            [self _drawPlaneRuns:slicePlaneRun];
-            [self _drawVerticalLines:sliceVerticalSlices];
+            glLineWidth(2.0);
+
+            if (transverseRun) {
+                [self _drawPlaneRuns:[NSArray arrayWithObject:transverseRun]];
+            } else {
+                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]] length:curDCM.pheight / 3];
+            }
 		}
-        
-        free(vectors);
-        free(tangents);
 	}
 	else if(_displayTransverseLines)
 	{
@@ -1494,7 +1495,7 @@ extern int splitPosition[ 3];
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
 	for (indexNumber in verticalLines) {
-        relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]];
+        relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]]; // this is dumb, just do one iteration! and do it in log(n) time while your at it to!
         centerlineVector = [self _centerlinePixVectorForRelativePosition:relativePostion];
         
 		lineStart = N3VectorMake([indexNumber doubleValue], centerlineVector.y - length/2.0, 0);
@@ -2207,7 +2208,7 @@ extern int splitPosition[ 3];
         relativePositionIntersection = [self.centerlinePath vectorAtEnd];
     } else {
         relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
-        intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
+        intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane]; // TODO make this O(log(n)) not O(n)
         
         if ([intersections count] == 0) {
             return N3VectorZero;
@@ -2226,7 +2227,7 @@ extern int splitPosition[ 3];
     
     plane = N3PlaneMake(N3VectorMake((CGFloat)index, 0, 0), N3VectorMake(1, 0, 0));
     
-    intersections = [_centerlinePath intersectionsWithPlane:plane];
+    intersections = [_centerlinePath intersectionsWithPlane:plane]; // TODO make this O(log(n)) not O(n) 
     if ([intersections count] == 0) {
         return 0;
     }

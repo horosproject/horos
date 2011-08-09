@@ -67,7 +67,9 @@
 {
     if ( (self = [super init]) ) {
         _bezierCore = N3BezierCoreCreateMutableCopy([bezierPath N3BezierCore]);
-		_length = bezierPath->_length;
+        @synchronized (bezierPath) {
+            _length = bezierPath->_length;
+        }
     }
     return self;
 }
