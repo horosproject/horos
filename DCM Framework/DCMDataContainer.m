@@ -189,19 +189,19 @@
 
 
 - (BOOL)isLittleEndian{
-	if (transferSyntaxInUse);
+	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isLittleEndian];
 	return YES;
 }
 
 - (BOOL)isExplicitTS{
-	if (transferSyntaxInUse);
+	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isExplicit];
 	return YES;
 }
 
 - (BOOL)isEncapsulated{
-	if (transferSyntaxInUse);
+	if (transferSyntaxInUse)
 		return [transferSyntaxInUse isEncapsulated];
 	return NO;
 }
@@ -316,7 +316,7 @@
 - (long long)nextSignedLongLong{
 	NSException *exception = [self testForLength:8];
 	if (!exception) {
-		int size = 8;
+		const int size = 8;
 		union {
 			unsigned long long ull;
 			long long sll;
@@ -608,7 +608,7 @@
 }
 
 - (void)addUnsignedShort:(unsigned short)uShort{
-	int size = 2;
+	const int size = 2;
 	union {
 			unsigned short us;
 			short ss;
@@ -623,7 +623,7 @@
 }
 
 - (void)addSignedShort:(signed short)sShort{
-	int size = 2;
+	const int size = 2;
 	union {
 		unsigned short us;
 		short ss;
@@ -637,7 +637,7 @@
 }
 
 - (void)addUnsignedLong:(unsigned long)uLong{
-	int size = 4;
+	const int size = 4;
 	union {
 		unsigned long ul;
 		unsigned char buffer[size];
@@ -650,7 +650,7 @@
 }
 
 - (void)addSignedLong:(signed long)sLong{
-	int size = 4;
+	const int size = 4;
 	union {
 		unsigned long ul;
 		long sl;
@@ -664,7 +664,7 @@
 }
 
 - (void)addUnsignedLongLong:(unsigned long long)uLongLong{
-	int size = 8;
+	const int size = 8;
 	union {
 		unsigned long ull;
 		long sll;
@@ -678,7 +678,7 @@
 }
 
 - (void)addSignedLongLong:(signed long long)sLongLong{
-	int size = 8;
+	const int size = 8;
 	union {
 		unsigned long ull;
 		long sll;
@@ -693,7 +693,7 @@
 }
 
 - (void)addFloat:(float)f{
-	int size = 4;
+	const int size = 4;
 	union {
 		float f;
 		unsigned long l;
@@ -708,7 +708,7 @@
 
 
 - (void)addDouble:(double)d{
-	int size = 8;
+	const int size = 8;
 	union {
 		double d;
 		unsigned long long l;
@@ -973,7 +973,7 @@
 
 - (NSException *)testForLength: (int)elementLength{
 		
-	if (position + elementLength > [dicomData length] || elementLength < 0) {
+	if (position + elementLength > [dicomData length] || elementLength < 0 || position < 0) {
 		NSArray *keys = [NSArray arrayWithObjects:@"position", @"elementLength", @"dataLength", nil];
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:position], [NSNumber numberWithInt:elementLength], [NSNumber numberWithInt:[dicomData length]], nil];
 	

@@ -18,7 +18,7 @@
 #import "NSString+N2.h"
 #import "NSThread+N2.h"
 #import "N2Operators.h"
-
+#import "AppController.h"
 
 @implementation ThreadCell
 
@@ -144,6 +144,19 @@
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
 	[self.thread.status drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
+	if (![self.progressIndicator superview]) {
+		[view addSubview:self.progressIndicator];
+//		[self.progressIndicator startAnimation:self];
+	}
+    
+    NSRect progressFrame;
+    if ([AppController hasMacOSXLion])
+        progressFrame = NSMakeRect(frame.origin.x+3, frame.origin.y+27, frame.size.width-6, frame.size.height-32);
+    else progressFrame = NSMakeRect(frame.origin.x+1, frame.origin.y+26, frame.size.width-2, frame.size.height-28);
+
+    
+	if (!NSEqualRects(self.progressIndicator.frame, progressFrame))
+        [self.progressIndicator setFrame:progressFrame];
 	
 	[NSGraphicsContext restoreGraphicsState];
 }

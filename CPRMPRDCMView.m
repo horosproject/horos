@@ -694,7 +694,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	glEnable(GL_LINE_SMOOTH);
 	glPointSize( 12);
 	
-	if( displayCrossLines)
+	if( displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
@@ -750,7 +750,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	[self colorForView: viewID];
 	
 	// Red Square
-	if( [[self window] firstResponder] == self && stringID == nil)
+	if( [[self window] firstResponder] == self && stringID == nil && frameZoomed == NO)
 	{
 		glLineWidth(8.0);
 		glBegin(GL_LINE_LOOP);
@@ -770,7 +770,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	glEnd();
 	glLineWidth(1.0);
 	
-	if( displayCrossLines && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
+	if( displayCrossLines && frameZoomed == NO && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
        && !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
 		// Mouse Position
@@ -1181,7 +1181,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		return 0;
 	
-	if( displayCrossLines == NO)
+	if( displayCrossLines == NO || frameZoomed)
 		return 0;
 	
 	if( LOD == 0)
