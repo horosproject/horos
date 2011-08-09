@@ -629,7 +629,7 @@ static	BOOL frameZoomed = NO;
 	glEnable(GL_LINE_SMOOTH);
 	glPointSize( 12);
 	
-	if( displayCrossLines)
+	if( displayCrossLines && frameZoomed == NO)
 	{
 		// All pix have the same thickness
 		float thickness = [pix sliceThickness];
@@ -724,7 +724,7 @@ static	BOOL frameZoomed = NO;
 	[self colorForView: viewID];
 	
 	// Red Square
-	if( [[self window] firstResponder] == self)
+	if( [[self window] firstResponder] == self && frameZoomed == NO)
 	{
 		glLineWidth(8.0);
 		glBegin(GL_LINE_LOOP);
@@ -744,7 +744,7 @@ static	BOOL frameZoomed = NO;
 	glEnd();
 	glLineWidth(1.0);
 	
-	if( displayCrossLines && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
+	if( displayCrossLines && frameZoomed == NO && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
 																					&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
 	{
 		// Mouse Position
