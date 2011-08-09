@@ -916,7 +916,7 @@ static NSDate *lastWarningDate = nil;
 
 +(BOOL) hasMacOSXSnowLeopard
 {
-	OSErr						err;       
+	OSErr						err;
 	SInt32						osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       

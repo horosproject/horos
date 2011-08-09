@@ -662,7 +662,17 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
-	return [context executeFetchRequest:req error:NULL];
+    
+    [context lock];
+    @try {
+        return [context executeFetchRequest:req error:NULL];
+    } @catch (NSException* e) {
+        N2LogException(e);
+    } @finally {
+        [context unlock];
+    }
+    
+    return nil;
 }
 
 -(NSArray*)albums {
