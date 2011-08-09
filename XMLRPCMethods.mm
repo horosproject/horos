@@ -26,6 +26,8 @@
 #import "ThreadsManager.h"
 #import "DicomSeries.h"
 #import "DicomStudy.h"
+#import "DCMTKRootQueryNode.h"
+#import "NSUserDefaults+OsiriX.h"
 
 #import <sys/socket.h>
 #import <netinet/in.h>
@@ -227,6 +229,18 @@ static NSTimeInterval lastConnection = 0;
 	}
 	
 	[pool release];
+}
+
+- (void) retrieve:(NSDictionary*) dict
+{
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    for( DCMTKQueryNode	*study in [dict valueForKey: @"children"])
+    {
+        [study move: dict retrieveMode: [[dict valueForKey: @"retrieveMode"] intValue]];
+    }
+    
+    [pool release];
 }
 
 - (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding
@@ -762,7 +776,103 @@ static NSTimeInterval lastConnection = 0;
 			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
 		}
 	}
+
+#pragma mark Retrieve
+    // ********************************************
+	// Method: Retrieve
+	//
+	// Parameters:
+    //
+	// serverName: 
+	// filterValue: 
+    // filterKey:
+	//
+	// Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
+	//
+	// Response: {error: "0"}
 	
+	if( [selName isEqualToString: @"retrieve"])
+	{
+		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
+		{
+			if (3 != [paramDict count])
+			{
+				[self postError: 400 version: vers message: mess];
+				return;
+			}
+            
+            NSNumber *ret = [NSNumber numberWithInt: -1];
+            
+			// *****
+            @try
+            {
+                NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
+                NSDictionary *sourceServer = nil;
+                
+                
+                for( NSDictionary *s in sources)
+                {
+                    if( [[s valueForKey:@"Description"] isEqualToString: [paramDict valueForKey:@"serverName"]]) // We found the source server
+                    {
+                        sourceServer = s;
+                        break;
+                    }
+                }
+                
+                if( sourceServer)
+                {
+                    //We found the DICOM node, prepare the query
+                    DCMTKRootQueryNode *rootNode = [[DCMTKRootQueryNode alloc] initWithDataset: nil
+                                                                                    callingAET: [NSUserDefaults defaultAETitle]
+                                                                                     calledAET: [sourceServer objectForKey:@"AETitle"]
+                                                                                      hostname: [sourceServer objectForKey:@"Address"]
+                                                                                          port: [[sourceServer objectForKey:@"Port"] intValue]
+                                                                                transferSyntax: 0
+                                                                                   compression: nil
+                                                                               extraParameters: sourceServer];
+                    
+                    NSArray *filterArray = [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue"], @"value", [paramDict objectForKey: @"filterKey"], @"name", nil]];
+                    
+                    [rootNode queryWithValues: filterArray];
+                    
+                    int retrieveMode = CMOVERetrieveMode;
+                    if( [[sourceServer valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode)
+                        retrieveMode = WADORetrieveMode;
+                    if( [[sourceServer valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode)
+                        retrieveMode = CGETRetrieveMode;
+                    
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSUserDefaults defaultAETitle], @"moveDestination", [NSNumber numberWithInt: retrieveMode] , @"retrieveMode", [rootNode children], @"children", nil];
+                    
+                    if( [[rootNode children] count])
+                    {
+                        ret = [NSNumber numberWithInt: 0];
+                        [NSThread detachNewThreadSelector: @selector( retrieve:) toTarget: self withObject: dict];
+                    }
+                    else
+                    {
+                        NSLog( @"--- study not found");
+                        ret = [NSNumber numberWithInt: -3];
+                    }
+                }
+                else
+                {
+                    NSLog( @"--- server not found");
+                    ret = [NSNumber numberWithInt: -2];
+                }
+            }
+            @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+            
+            // Done, we can send the response to the sender
+			
+			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
+			NSError *error = nil;
+			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
+			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
+			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+        }
+    }
+
+    
 #pragma mark CMove
 	
 	// ********************************************

@@ -34,8 +34,8 @@ NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 	if (!formatter)
 		formatter = [[NSDateFormatter alloc] init];
 	
-	if (![formatter.dateFormat isEqual:self.dateTimeFormat])
-		formatter.dateFormat = self.dateTimeFormat;
+	if (![formatter.dateFormat isEqual:[self dateTimeFormat]])
+		formatter.dateFormat = [self dateTimeFormat];
 	
 	return formatter;
 }
@@ -53,8 +53,8 @@ NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 	if (!formatter)
 		formatter = [[NSDateFormatter alloc] init];
 	
-	if (![formatter.dateFormat isEqual:self.dateFormat])
-		formatter.dateFormat = self.dateFormat;
+	if (![formatter.dateFormat isEqual: [self dateFormat]])
+		formatter.dateFormat = [self dateFormat];
 	
 	return formatter;
 }
