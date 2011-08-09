@@ -1098,7 +1098,7 @@ static NSConditionLock *threadLock = nil;
 //			[self willChangeValueForKey:@"database"];
 			_database = [db retain];
 //			[self didChangeValueForKey:@"database"];
-			if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![[self sourceForDatabase:db] isReadOnly])
+			if ([NSUserDefaults canActivateAnyLocalDatabase] && [db isLocal] && ![db isReadOnly])
 				[DicomDatabase setActiveLocalDatabase:db];
 			if (db) [self selectCurrentDatabaseSource];
 

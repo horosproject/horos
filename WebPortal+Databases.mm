@@ -39,12 +39,8 @@
 			return array;
 		
 		// Find studies
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-		req.predicate = predicate;
-        
-        Ne faut-il pas un lock?
-		NSArray* studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+        // Ne faut-il pas un lock? Si, et je switch to [*Database objectsForEntity..]
+		NSArray* studiesArray = [self.dicomDatabase objectsForEntity:self.dicomDatabase.studyEntity predicate:predicate];
 		
 		for (WebPortalStudy* study in userStudies)
 		{

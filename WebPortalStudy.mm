@@ -16,6 +16,8 @@
 #import "BrowserController.h"
 #import "DicomStudy.h"
 #import "NSString+N2.h"
+#import "WebPortal.h"
+#import "DicomDatabase.h"
 
 
 @implementation WebPortalStudy
@@ -26,15 +28,11 @@
 @dynamic user;
 
 
-// TODO: we're accessing the browser database, and this is bad
+// TODO: we're accessing the defaultWebPortal database, and this is bad
 -(DicomStudy*)study {
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:BrowserController.currentBrowser.managedObjectContext];
-	req.predicate = [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID];
+    DicomDatabase* ddb = [[WebPortal defaultWebPortal] dicomDatabase];
     
-    
-    Ne faut-il pas un lock?
-	NSArray* studies = [BrowserController.currentBrowser.managedObjectContext executeFetchRequest:req error:NULL];
+	NSArray* studies = [ddb objectsForEntity:ddb.studyEntity predicate:[NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
 	
 	if (studies.count != 1) {
 		NSLog(@"Warning: Study request with \"patientUID == %@ AND studyInstanceUID == %@\" returned %d objects", self.patientUID, self.studyInstanceUID, studies.count);

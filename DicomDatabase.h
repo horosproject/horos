@@ -42,6 +42,7 @@ extern NSString* const OsirixDataDirName;
 	NSRecursiveLock* _cleanLock;
 	unsigned long long _lastFreeSpace;
 	NSTimeInterval _lastFreeSpaceLogTime;
+    BOOL _isReadOnly;
 }
 
 +(void)initializeDicomDatabaseClass;
@@ -62,6 +63,7 @@ extern NSString* const OsirixDataDirName;
 @property(readonly,retain) NSString* dataBaseDirPath; // depends on the content of the file at baseDirPath/DBFOLDER_LOCATION
 @property(readwrite,retain) NSString* name;
 @property(readwrite) NSTimeInterval timeOfLastModification;
+@property BOOL isReadOnly;
 
 -(BOOL)isLocal;
 

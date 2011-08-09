@@ -270,6 +270,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 #pragma mark Instance
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
+@synthesize isReadOnly = _isReadOnly;
 
 -(NSString*)description {
 	return [NSString stringWithFormat:@"<%@ 0x%08x> \"%@\"", self.className, self, self.name];

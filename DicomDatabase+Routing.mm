@@ -281,7 +281,6 @@
 	for (NSDictionary* routingRule in autoroutingRules)
 		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
             
-            Pourquoi n'y a-t-il pas de lock?
 			//			[self.managedObjectContext lock];
 			
 			NSPredicate	*predicate = nil;
@@ -341,13 +340,8 @@
 							
 							id study = [patients objectForKey: patientUID];
 							
-							NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID];
-							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							dbRequest.entity = [self.managedObjectModel.entitiesByName objectForKey:@"Study"];
-							dbRequest.predicate = predicate;
-							
-							NSError	*error = nil;
-							NSArray *studiesArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
+                            // Pourquoi n'y a-t-il pas de lock? Oui il en faut bien mais pas pendant TOUT le routage... seulement ici:
+                            NSArray *studiesArray = [self objectsForEntity:self.studyEntity predicate:[NSPredicate predicateWithFormat:  @"(patientUID == %@)", patientUID]];
 							
 							if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
 							{

@@ -986,13 +986,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	[response.tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
-	
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [self.portal.database entityForName:@"User"];
-	req.predicate = [NSPredicate predicateWithValue:YES];
     
-    Ne faut-il pas un lock?
-	[response.tokens setObject:[[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
+    // Ne faut-il pas un lock? Si. On switch to database objectsforentity et le lock est là.
+	[response.tokens setObject:[[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
 }
@@ -1278,16 +1274,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	if (objectUID == nil && (seriesUID.length > 0 || studyUID.length > 0)) // This is a 'special case', not officially supported by DICOM standard : we take all the series or study objects -> zip them -> send them
 	{
-		NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		dbRequest.entity = [self.portal.dicomDatabase entityForName:@"Study"];
-		
+		NSPredicate* predicate = nil;
 		if (studyUID)
-			[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-		else
-			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
 		
-        Ne faut-il pas un lock?
-		NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+		NSArray* studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:predicate];
 		
 		if ([studies count] == 0)
 			NSLog( @"****** WADO Server : study not found");
@@ -1386,13 +1377,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		if (!imageCache && !cachedPathForSOPInstanceUID)
 		{
-			if (studyUID)
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-			else
-				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+			NSPredicate* predicate1 = nil;
+            if (studyUID)
+				predicate1 = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID];
 			
-			Ne faut-il pas un lock?
-			NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+			NSArray* studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:predicate1];
 			
 			if ([studies count] == 0)
 				NSLog( @"****** WADO Server : study not found");
@@ -1413,7 +1402,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			for( DicomImage *image in allImages)
 				[self.wadoSOPInstanceUIDCache setObject: image.completePath forKey: image.sopInstanceUID];
 			
-			NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
+			NSPredicate* predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
 			NSPredicate *N2NonNullStringPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 			
 			images = [[allImages filteredArrayUsingPredicate: N2NonNullStringPredicate] filteredArrayUsingPredicate: predicate];
