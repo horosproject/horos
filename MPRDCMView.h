@@ -51,7 +51,7 @@
 @property (retain) Camera *camera;
 @property float angleMPR, fromIntervalExport, toIntervalExport, LOD;
 @property int viewExport;
-@property BOOL displayCrossLines, dontUseAutoLOD;
+@property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
 
