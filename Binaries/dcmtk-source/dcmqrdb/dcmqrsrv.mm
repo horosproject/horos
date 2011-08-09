@@ -46,7 +46,7 @@
 #include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
 
-#import "dcmqrdbq.h";
+#import "dcmqrdbq.h"
 
 #include <signal.h>
 
@@ -110,7 +110,7 @@
 	}
     
     // And finally release memory on the father side
-    [NSThread sleepForTimeInterval: 60*45]; //45 min....
+    [NSThread sleepForTimeInterval: 60 * 30]; //45 min....
     
     T_ASC_Association *assoc = (T_ASC_Association*) [[dict valueForKey: @"assoc"] pointerValue];
     OFCondition cond = EC_Normal;
