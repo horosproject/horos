@@ -1181,7 +1181,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotNone)
 		return 0;
 	
-	if( displayCrossLines == NO)
+	if( displayCrossLines == NO || frameZoomed)
 		return 0;
 	
 	if( LOD == 0)
