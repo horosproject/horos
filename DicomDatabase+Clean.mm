@@ -378,16 +378,11 @@
 			NSLog( @"***** WARNING - AUTOCLEANINGSPACE : no options specified !");
 		}
 		else {
-			NSFetchRequest			*request = [[[NSFetchRequest alloc] init] autorelease];
-			NSArray					*studiesArray = nil;
-			NSMutableArray			*unlockedStudies = nil;
-			BOOL					dontDeleteStudiesWithComments = [NSUserDefaults.standardUserDefaults boolForKey: @"dontDeleteStudiesWithComments"];
+			NSMutableArray* unlockedStudies = nil;
+			BOOL dontDeleteStudiesWithComments = [NSUserDefaults.standardUserDefaults boolForKey: @"dontDeleteStudiesWithComments"];
 			
 			@try
 			{
-				[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
-				[request setPredicate: [NSPredicate predicateWithValue: YES]];
-				
 				do
 				{
 					NSTimeInterval producedInterval = 0;
@@ -396,8 +391,7 @@
 					
 					[self lock];
 					@try {
-						NSError *error = nil;
-						studiesArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+						NSArray* studiesArray = [self objectsForEntity:self.studyEntity];
 						
 						NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
 						studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];

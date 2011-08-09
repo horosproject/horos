@@ -3906,8 +3906,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	
-	NSManagedObjectModel	*model = [[[BrowserController currentBrowser] database] managedObjectModel];
-	NSManagedObjectContext	*context = [[[BrowserController currentBrowser] database] managedObjectContext];
+	DicomDatabase* db = [[BrowserController currentBrowser] database];
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
 	NSError					*error = nil;
@@ -3940,18 +3939,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
 	}
 	else predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", searchString];
-	
-	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: predicate];
-	
-	[context retain];
-	[context lock];
-	
+		
 	@try
 	{
-		error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		NSArray *studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
 		
 		if ([studiesArray count])
 		{
@@ -4196,9 +4187,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		NSLog( @"***** buildMatrixPreview exception: %@", e);
 	}
-	
-	[context unlock];
-	[context release];
 }
 
 - (void) showCurrentThumbnail:(id) sender;

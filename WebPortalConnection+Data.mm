@@ -799,10 +799,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		NSMutableArray* shareDestinations = [NSMutableArray array];
 		if (!user || user.shareStudyWithUser.boolValue) {
-			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [self.portal.database entityForName:@"User"];
-			req.predicate = [NSPredicate predicateWithValue:YES];
-			NSArray* users = [[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
+			NSArray* users = [[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"name" ascending: YES] autorelease]]];
 			
 			for (WebPortalUser* u in users)
 				if (u != self.user)
@@ -854,15 +851,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			@try
 			{
-				NSError *error = nil;
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:self.portal.database.managedObjectContext]];
-				
+                NSPredicate* predicate = nil;
 				if ([email length] > [username length])
-					[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email]];
-				else [dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username]];
+					predicate = [NSPredicate predicateWithFormat: @"(email BEGINSWITH[cd] %@) AND (email ENDSWITH[cd] %@)", email, email];
+				else predicate = [NSPredicate predicateWithFormat: @"(name BEGINSWITH[cd] %@) AND (name ENDSWITH[cd] %@)", username, username];
 				
-				NSArray *users = [self.portal.database.managedObjectContext executeFetchRequest: dbRequest error:NULL];
+				NSArray *users = [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:predicate];
 				
 				if ([users count] >= 1)
 				{

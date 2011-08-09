@@ -233,19 +233,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 -(NSString*)passwordForUser:(NSString*)username {
 	self.user = NULL;
 	
-	NSArray* users = NULL;
-	[self.portal.database.managedObjectContext lock];
-	@try {
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.portal.database.managedObjectContext];
-		req.predicate = [NSPredicate predicateWithFormat:@"name == %@", username];
-		users = [self.portal.database.managedObjectContext executeFetchRequest:req error:NULL];
-	} @catch (NSException* e) {
-		NSLog(@"Error: [WebPortalConnection passwordForUser:] %@", e);
-	} @finally {
-		[self.portal.database.managedObjectContext unlock];
-	}
-	
+	NSArray* users = [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", username]];
 	if (users.count)
 		self.user = users.lastObject;
 	
@@ -739,12 +727,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						
 						@try
 						{
-							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
-							
-							NSError *error = nil;
-							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+							NSArray *studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
 							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);

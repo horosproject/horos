@@ -14,8 +14,10 @@
 
 #import "LogManager.h"
 #import "browserController.h"
+#import "DicomDatabase.h"
 #import "DICOMToNSString.h"
 #import "DicomFile.h"
+#import "N2Debug.h"
 
 static LogManager *currentLogManager = nil;
 
@@ -40,34 +42,20 @@ static LogManager *currentLogManager = nil;
 
 - (void) resetLogs
 {
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
-	[context retain];
-	[context lock];
+	DicomDatabase* db = [[BrowserController currentBrowser] database];
+	[db lock];
 	
 	[_currentLogs removeAllObjects];
 	
-	@try
-	{
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey: @"LogEntry"]];
-		
-		[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"message like[cd] %@", @"In Progress"]];
-		NSError	*error = nil;
-		NSArray *array = [context executeFetchRequest:dbRequest error:&error];
-		
-		for( NSManagedObject *o in array)
-		{
+	@try {
+		NSArray* array = [db objectsForEntity:db.logEntryEntity predicate:[NSPredicate predicateWithFormat: @"message like[cd] %@", @"In Progress"]];
+		for (NSManagedObject* o in array)
 			[o setValue: @"Incomplete" forKey:@"message"];
-		}
-	}
-	@catch (NSException * e)
-	{
-	}
-	
-	
-	[context unlock];
-	[context release];
+	} @catch (NSException* e) {
+        N2LogException(e);
+	} @finally {
+        [db unlock];
+    }
 }
 
 - (void) dealloc

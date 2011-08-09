@@ -25,6 +25,7 @@
 #import "DicomDatabase.h"
 #import "AppController.h"
 #import "NSManagedObject+N2.h"
+#import "N2Debug.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -106,7 +107,7 @@
 	
 	if ([self.dicomDatabase tryLock])
 	{
-		[WebPortal.defaultWebPortal.database.managedObjectContext lock];
+		[database.managedObjectContext lock];
 		
 		// TEMPORARY USERS
 		
@@ -114,14 +115,7 @@
 		{
 			BOOL toBeSaved = NO;
 			
-			// Find all users
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:WebPortal.defaultWebPortal.database.managedObjectContext];
-			dbRequest.predicate = [NSPredicate predicateWithValue:YES];
-			
-			error = nil;
-			NSArray *users = [WebPortal.defaultWebPortal.database.managedObjectContext executeFetchRequest: dbRequest error:&error];
+			NSArray *users = [database objectsForEntity:database.userEntity];
 			
 			for (WebPortalUser* user in users)
 			{
@@ -132,12 +126,12 @@
 					[self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:nil];
 					
 					toBeSaved = YES;
-					[WebPortal.defaultWebPortal.database.managedObjectContext deleteObject: user];
+					[database.managedObjectContext deleteObject:user];
 				}
 			}
 			
 			if (toBeSaved)
-				[WebPortal.defaultWebPortal.database save:NULL];
+				[database save:NULL];
 		}
 		@catch (NSException *e)
 		{
@@ -150,21 +144,12 @@
 		{
 			@try
 			{
-				NSFetchRequest* dbRequest = nil;
 				// Find all studies AFTER the lastCheckDate
-				dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [dicomDatabase entityForName:@"Study"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-				NSArray *studies = [dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+				NSArray *studies = [dicomDatabase objectsForEntity:dicomDatabase.studyEntity];
 				
 				if ([studies count] > 0)
 				{
-					// Find all users
-					dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:database.managedObjectContext]];
-					[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-                    
-					NSArray *users = [WebPortal.defaultWebPortal.database.managedObjectContext executeFetchRequest: dbRequest error:NULL];
+					NSArray *users = [database objectsForEntity:database.userEntity];
 					
 					for (WebPortalUser* user in users)
 					{
@@ -198,7 +183,7 @@
 				NSLog( @"***** emailNotifications exception: %@", e);
 			}
 		}
-		[WebPortal.defaultWebPortal.database.managedObjectContext unlock];
+		[database.managedObjectContext unlock];
 		[dicomDatabase.managedObjectContext unlock];
 	}
 	
@@ -220,14 +205,9 @@
 		
 		// Search for same log entry during last 5 min
 		NSArray* logs = NULL;
-		@try {
-			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [NSEntityDescription entityForName:@"LogEntry" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-			req.predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
-			logs = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-		} @catch (NSException* e) {
-			NSLog(@"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
+
+        NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
+			logs = [self.dicomDatabase objectsForEntity:self.dicomDatabase.logEntryEntity predicate:predicate];
 		
 		if (!logs.count) {
 			NSManagedObject* logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:self.dicomDatabase.managedObjectContext];

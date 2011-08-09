@@ -17,6 +17,8 @@
 #import "DicomDatabase.h"
 #import "WebPortalDatabase.h"
 #import "WebPortalStudy.h"
+#import "N2Debug.h"
+#import "DicomAlbum.h"
 
 @implementation WebPortal (Databases)
 
@@ -248,27 +250,14 @@
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue {
 	
-	NSArray *studiesArray = nil, *albumArray = nil;
+
 	
-	[self.dicomDatabase.managedObjectContext lock];
+    NSArray* albumArray = [self.dicomDatabase objectsForEntity:self.dicomDatabase.albumEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", albumName]];
+	DicomAlbum* album = [albumArray lastObject];
 	
-	@try
-	{
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [self.dicomDatabase entityForName:@"Album"];
-		req.predicate = [NSPredicate predicateWithFormat:@"name == %@", albumName];
-		albumArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-	}
-	@catch(NSException *e)
-	{
-		NSLog(@"******** studiesForAlbum exception: %@", e.description);
-	}
-	
-	[self.dicomDatabase.managedObjectContext unlock];
-	
-	NSManagedObject *album = [albumArray lastObject];
-	
-	if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
+    NSArray* studiesArray = nil;
+    
+	if (album.smartAlbum.intValue == 1)
 	{
 		studiesArray = [self studiesForUser:user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
 	}
