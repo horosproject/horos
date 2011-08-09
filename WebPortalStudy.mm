@@ -31,6 +31,9 @@
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:BrowserController.currentBrowser.managedObjectContext];
 	req.predicate = [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID];
+    
+    
+    Ne faut-il pas un lock?
 	NSArray* studies = [BrowserController.currentBrowser.managedObjectContext executeFetchRequest:req error:NULL];
 	
 	if (studies.count != 1) {

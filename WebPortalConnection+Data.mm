@@ -990,6 +990,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = [self.portal.database entityForName:@"User"];
 	req.predicate = [NSPredicate predicateWithValue:YES];
+    
+    Ne faut-il pas un lock?
 	[response.tokens setObject:[[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
@@ -1284,6 +1286,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		else
 			[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 		
+        Ne faut-il pas un lock?
 		NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
 		
 		if ([studies count] == 0)
@@ -1388,6 +1391,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			else
 				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
 			
+			Ne faut-il pas un lock?
 			NSArray *studies = [self.portal.dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
 			
 			if ([studies count] == 0)

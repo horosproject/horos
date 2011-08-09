@@ -280,6 +280,8 @@
 	
 	for (NSDictionary* routingRule in autoroutingRules)
 		if (![routingRule valueForKey:@"activated"] || [[routingRule valueForKey:@"activated"] boolValue]) {
+            
+            Pourquoi n'y a-t-il pas de lock?
 			//			[self.managedObjectContext lock];
 			
 			NSPredicate	*predicate = nil;

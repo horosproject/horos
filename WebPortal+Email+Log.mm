@@ -163,6 +163,7 @@
 					dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 					[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:database.managedObjectContext]];
 					[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
+                    
 					NSArray *users = [WebPortal.defaultWebPortal.database.managedObjectContext executeFetchRequest: dbRequest error:NULL];
 					
 					for (WebPortalUser* user in users)

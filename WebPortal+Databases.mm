@@ -42,6 +42,8 @@
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
 		req.predicate = predicate;
+        
+        Ne faut-il pas un lock?
 		NSArray* studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		
 		for (WebPortalStudy* study in userStudies)
@@ -115,7 +117,6 @@
 																												nil]];
 			else
 				req.predicate = [DicomDatabase predicateForSmartAlbumFilter:user.studyPredicate];
-			
 			
 			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 			
