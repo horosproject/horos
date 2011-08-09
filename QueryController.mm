@@ -48,7 +48,7 @@ static NSString *InstitutionName = @"InstitutionName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 static NSArray *studyArrayInstanceUID = nil, *studyArrayCache = nil;
-//static BOOL afterDelayRefresh = NO;
+static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
 
@@ -793,21 +793,21 @@ extern "C"
 
 - (void) refresh: (id) sender
 {
-//	if( afterDelayRefresh == NO)
-//	{
-//		afterDelayRefresh = YES;
-//		
-//		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
-//		
-//		int delay;
-//		
-//		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
-//			delay = 1;
-//		else
-//			delay = 10;
+	if( afterDelayRefresh == NO)
+	{
+		afterDelayRefresh = YES;
 		
-		[self executeRefresh:nil];
-//	}
+		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
+		
+		int delay;
+		
+		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
+			delay = 1;
+		else
+			delay = 10;
+		
+		[self performSelector:@selector(executeRefresh:) withObject:self afterDelay:delay];
+	}
 }
 
 - (void) refreshAutoQR: (id) sender
@@ -1027,6 +1027,7 @@ extern "C"
         }
     }
     
+    afterDelayRefresh = NO;
     [pool release];
 }
 
@@ -3510,7 +3511,7 @@ extern "C"
 }
 
 -(void)observeDatabaseAddNotification:(NSNotification*)notification {
-	[self refresh:self];
+	[self performSelectorOnMainThread:@selector(refresh:) withObject:self waitUntilDone:NO];
 }
 
 @end
