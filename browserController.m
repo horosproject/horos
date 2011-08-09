@@ -411,7 +411,7 @@ static NSConditionLock *threadLock = nil;
 	return [[DicomDatabase databaseAtPath:dbFolder] uniquePathForNewDataFileWithExtension:extension];
 }
 
-- (void)reloadViewers:(NSMutableArray*)vl
+/*- (void)reloadViewers:(NSMutableArray*)vl
 {
 	// Reload series if needed
 	for( ViewerController *vc in vl)
@@ -428,7 +428,7 @@ static NSConditionLock *threadLock = nil;
 	else if( [QueryController currentAutoQueryController])
 		[[QueryController currentAutoQueryController] refresh: self];
 	#endif
-}
+}*/
 
 - (void) rebuildViewers: (NSMutableArray*) vlToRebuild
 {	

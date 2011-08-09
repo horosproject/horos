@@ -34,6 +34,7 @@
 #import "OpenGLScreenReader.h"
 #import "Notifications.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "N2Debug.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -47,7 +48,7 @@ static NSString *InstitutionName = @"InstitutionName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 static NSArray *studyArrayInstanceUID = nil, *studyArrayCache = nil;
-static BOOL afterDelayRefresh = NO;
+//static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
 
@@ -784,29 +785,29 @@ extern "C"
 
 - (void) executeRefresh: (id) sender
 {
-	if( currentQueryController.DatabaseIsEdited == NO) [currentQueryController.outlineView reloadData];
-	if( currentAutoQueryController.DatabaseIsEdited == NO) [currentAutoQueryController.outlineView reloadData];
+    if (currentQueryController.DatabaseIsEdited == NO) [currentQueryController.outlineView reloadData];
+	if (currentAutoQueryController.DatabaseIsEdited == NO) [currentAutoQueryController.outlineView reloadData];
 	
-	[NSThread detachNewThreadSelector: @selector( computeStudyArrayInstanceUID:) toTarget: self withObject: nil];
+    [NSThread detachNewThreadSelector:@selector(computeStudyArrayInstanceUID:) toTarget:self withObject:nil];
 }
 
 - (void) refresh: (id) sender
 {
-	if( afterDelayRefresh == NO)
-	{
-		afterDelayRefresh = YES;
+//	if( afterDelayRefresh == NO)
+//	{
+//		afterDelayRefresh = YES;
+//		
+//		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
+//		
+//		int delay;
+//		
+//		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
+//			delay = 1;
+//		else
+//			delay = 10;
 		
-		[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
-		
-		int delay;
-		
-		if( [currentQueryController.window isKeyWindow] || [currentAutoQueryController.window isKeyWindow])
-			delay = 1;
-		else
-			delay = 10;
-		
-		[self performSelector: @selector( executeRefresh:) withObject: nil afterDelay: delay];
-	}
+		[self executeRefresh:nil];
+//	}
 }
 
 - (void) refreshAutoQR: (id) sender
@@ -971,63 +972,62 @@ extern "C"
 	[pool release];
 }
 
-- (void) computeStudyArrayInstanceUID: (NSNumber*) sender
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSArray *local_studyArrayCache = nil;
-	NSArray *local_studyArrayInstanceUID = nil;
-	
-	@try
-	{
-		NSError *error = nil;
-		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
-		
-		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		[context lock];
-		
-		@try
-		{
-			local_studyArrayCache = [context executeFetchRequest:request error: &error];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		[context unlock];
-		
-		@try
-		{
-			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		if( local_studyArrayCache && local_studyArrayInstanceUID)
-		{
-			if( [NSThread isMainThread])
-				[self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
-			else
-				[self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: YES];
-		}
-		else
-			NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	afterDelayRefresh = NO;
-	
-	[pool release];
+-(void)computeStudyArrayInstanceUID:(NSNumber*)sender {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    static NSString* lock = @"lock";
+    @synchronized(lock) {
+        @try
+        {
+            NSArray *local_studyArrayCache = nil;
+            NSArray *local_studyArrayInstanceUID = nil;
+
+            NSError *error = nil;
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
+            
+            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [request setPredicate: predicate];
+            
+            [context lock];
+            
+            @try
+            {
+                local_studyArrayCache = [context executeFetchRequest:request error: &error];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            [context unlock];
+            
+            @try
+            {
+                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            if( local_studyArrayCache && local_studyArrayInstanceUID)
+            {
+                if( [NSThread isMainThread])
+                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+                else
+                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: YES];
+            }
+            else
+                NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
+        }
+        @catch (NSException* e) {
+            N2LogException(e);
+        }
+    }
+    
+    [pool release];
 }
 
 - (NSArray*) localStudy:(id) item

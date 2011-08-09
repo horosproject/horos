@@ -322,8 +322,17 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super dealloc];
 }
 
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-	NSKeyValueChange changeKind = [[change valueForKey:NSKeyValueChangeKindKey] unsignedIntegerValue];
+	if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
+        return;
+    }
+    
+    NSKeyValueChange changeKind = [[change valueForKey:NSKeyValueChangeKindKey] unsignedIntegerValue];
 	
 	if (context == LocalBrowserSourcesContext) {
 		NSArray* a = [NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"];
