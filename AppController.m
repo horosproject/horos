@@ -1107,7 +1107,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		if( threadStateChanged == NO)
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] length] > 0)
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [(NSString*)[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] length] > 0)
 			{
 				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" Service: %@", nil), [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil]];
 				[NSThread sleepForTimeInterval: 1];
