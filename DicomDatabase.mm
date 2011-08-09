@@ -292,7 +292,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 	p = [DicomDatabase baseDirPathForPath:p];
-	NSLog(@"DicomDatabase initWithPath:%@", p);
+//	NSLog(@"DicomDatabase initWithPath:%@", p);
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
 	
