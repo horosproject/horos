@@ -1696,14 +1696,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	// produce XML
-	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
+	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
 	[doc setCharacterEncoding:@"UTF-8"];
 	
 	NSDateFormatter* dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	dateFormatter.dateFormat = @"dd-MM-yyyy";
+	dateFormatter.dateFormat = @"yyyyMMdd";
 	NSDateFormatter* timeFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	timeFormatter.dateFormat = @"HH:mm:ss";	
+	timeFormatter.dateFormat = @"HHmmss";	
 	
 	for (NSString* patientId in patientIds) {
 		NSXMLElement* patientNode = [NSXMLNode elementWithName:@"Patient"];
