@@ -43,14 +43,16 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 
 + (BOOL)controlTokenIsNode:(CPRCurvedPathControlToken)token;
 + (NSInteger)nodeIndexForToken:(CPRCurvedPathControlToken)token;
++ (CPRCurvedPathControlToken)controlTokenForNodeIndex:(NSInteger)nodeIndex;
 
 - (id)init;
 
 - (void)addNode:(NSPoint)point transform:(N3AffineTransform)transform; // adds the point to z = 0 in the arbitrary coordinate space
-- (void)insertNodeAtRelativePosition:(CGFloat)relativePosition;
+- (NSInteger)insertNodeAtRelativePosition:(CGFloat)relativePosition; // returns the node index of the inserted node
 - (void)removeNodeAtIndex:(NSInteger)index;
 
 - (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform; // resets Z by default
+- (void)moveNodeAtIndex:(NSInteger)index toVector:(N3Vector)vector; // for this exceptional method, the vector is given in patient space
 
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;
 

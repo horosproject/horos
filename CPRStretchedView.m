@@ -117,7 +117,7 @@ extern int splitPosition[ 3];
 
 // calls for dealing with intersections with planes
 
-
+- (void)_pushBezierPath:(CGFloat)distance;
 
 @end
 
@@ -995,14 +995,15 @@ extern int splitPosition[ 3];
 {
     NSPoint viewPoint;
     N3Vector pixVector;
+    N3Vector vector;
     CGFloat pixWidth;
     CGFloat relativePosition;
+    CGFloat distanceFromCenterline;
     NSInteger i;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
-    _clickedNode = NO;
     
     if (pixWidth == 0.0) {
         [super mouseDown:event];
@@ -1057,17 +1058,41 @@ extern int splitPosition[ 3];
 		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             if (N3VectorDistance(pixVector, [self _centerlinePixVectorForRelativePosition:relativePosition]) < 10) {
-                if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
-                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+                if (i == 0 || i == [_curvedPath.nodes count] - 1) {
+                    if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+                        [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+                    }
+                    _draggedNode = -1;
+                    _isDraggingNode = YES;
+                    break;
+                } else {
+                    _draggedNode = i;
+                    _isDraggingNode = YES;
+                    [self _sendWillEditCurvedPath];
+                    
+                    break;
                 }
-                _clickedNode = YES;
-                break;
             }
         }
-        if (_clickedNode == NO)
+        
+        if (_isDraggingNode == NO) {
+            relativePosition = [_centerlinePath relativePositionClosestToLine:N3LineMake(pixVector, N3VectorMake(0, 0, 1)) closestVector:&vector];
+            distanceFromCenterline = N3VectorDistanceToLine(vector, N3LineMake(pixVector, N3VectorMake(0, 0, 1)));
+            if (distanceFromCenterline < 5.0) {
+                _isDraggingNode = YES;
+                [self _sendWillEditCurvedPath];
+                _draggedNode = [_curvedPath insertNodeAtRelativePosition:relativePosition];
+                
+                _isDraggingNode = YES;
+                [self setNeedsDisplay:YES];
+                [self _setNeedsNewRequest];
+            }
+        }
+        
+        if (_isDraggingNode == NO)
 		{
 			int clickCount = 1;
-			
+            
 			@try
 			{
 				if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
@@ -1131,10 +1156,7 @@ extern int splitPosition[ 3];
     N3Vector pixVector;
     CGFloat relativePosition;
     CGFloat pixWidth;
-    
-	if( _clickedNode)
-		return;
-	
+    	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
@@ -1144,7 +1166,16 @@ extern int splitPosition[ 3];
         return;
     }
     
-    if (_draggingTransverse)
+    if (_isDraggingNode) {
+        if (_draggedNode >= 0) {
+            [_curvedPath moveNodeAtIndex:_draggedNode toVector:[self _vectorForPixPoint:NSPointFromN3Vector(pixVector)]];
+        }
+        [self _sendDidUpdateCurvedPath];
+        [self _setNeedsNewRequest];
+        [self display];
+        [self mouseMoved: event];
+    }
+    else if (_draggingTransverse)
 	{
         relativePosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
         _curvedPath.transverseSectionPosition = MAX(MIN(relativePosition, 1.0), 0.0);
@@ -1180,6 +1211,22 @@ extern int splitPosition[ 3];
 
 - (void)mouseUp:(NSEvent *)event
 {
+    if (_isDraggingNode) {
+//        [_draggingCenterlinePath release];
+//        _draggingCenterlinePath = nil;
+//        _draggingMidHeightPoint = N3VectorZero;
+//        _draggingProjectionNormal = N3VectorZero;
+        [self _sendDidEditCurvedPath];
+        
+        if (_draggedNode >= 0) {
+            if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+                [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:_draggedNode] N3VectorValue]];
+            }
+        }
+    }
+    _draggedNode = 0;
+    _isDraggingNode = NO;
+
 	if (_draggingTransverse) {
 		_draggingTransverse = NO;
 		[self _sendDidEditCurvedPath];
@@ -1191,7 +1238,24 @@ extern int splitPosition[ 3];
     [super mouseUp:event];
 }
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+    unichar c = [[theEvent characters] characterAtIndex:0];
+    
+    if(c == NSDeleteCharacter || c == NSDeleteFunctionKey)
+	{
+		// Delete node
+		if (_isDraggingNode) {
+			[_curvedPath removeNodeAtIndex:_draggedNode];
+            _draggedNode = -1;
+			[self setNeedsDisplay:YES];
+            [self _setNeedsNewRequest];
 
+		}
+    } else {
+        [super keyDown:theEvent];
+    }
+}
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	// Scroll/Move transverse lines
@@ -1219,6 +1283,12 @@ extern int splitPosition[ 3];
 		[self _setNeedsNewRequest];
 		[self setNeedsDisplay: YES];
 	}
+    
+    // Scroll/push the curve in and out
+	else if( [theEvent modifierFlags] & NSControlKeyMask) {
+        [self _pushBezierPath:[theEvent deltaY] * .4];
+    }
+    
 	else
 	{
 		N3Vector initialNormal;
@@ -1427,7 +1497,8 @@ extern int splitPosition[ 3];
     
     if (numVectors) {
         newPoint.x = 0;
-        newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        //        newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        newPoint.y = N3VectorDotProduct(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal);
         newPoint.y /= sampleSpacing;
         newPoint.y += (CGFloat)pixelsHigh/2.0;
         newPoint.z = relativePositions[0];
@@ -1940,8 +2011,8 @@ extern int splitPosition[ 3];
 	CGFloat distance;
 	CGFloat minDistance;
     
-    if ([curDCM pixelSpacingX] == 0) {
-        return 0;
+    if ([curDCM pixelSpacingX] == 0 || [verticalLines count] == 0) {
+        return CGFLOAT_MAX;
     }
     
 	pixToViewTransform = N3AffineTransformInvert([self viewToPixTransform]);
@@ -1980,8 +2051,8 @@ extern int splitPosition[ 3];
 	_CPRStretchedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	
-    if ([curDCM pixelSpacingX] == 0) {
-        return 0;
+    if ([curDCM pixelSpacingX] == 0 || [planeRuns count] == 0) {
+        return CGFLOAT_MAX;
     }
     
 	pointVector = N3VectorMakeFromNSPoint(point);
@@ -2280,6 +2351,28 @@ extern int splitPosition[ 3];
     mmDistance = pixDistance * mmPerPixel;
     
     return N3VectorAdd(vector, N3VectorScalarMultiply(projectionNormal, mmDistance));
+}
+
+- (void)_pushBezierPath:(CGFloat)distance
+{
+    NSInteger i;
+    CGFloat relativePosition;
+    N3Vector tangent;
+    N3Vector normal;
+    N3Vector newNode;
+    CPRCurvedPathControlToken controlToken;
+    
+    [self _sendWillEditCurvedPath];
+    for (i = 0; i < [[_curvedPath nodes] count]; i++) {
+        relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+        
+        tangent = [_curvedPath.bezierPath tangentAtRelativePosition:relativePosition];
+        normal = N3VectorNormalize(N3VectorCrossProduct(_projectionNormal, tangent));
+        
+        newNode = N3VectorAdd([[[_curvedPath nodes] objectAtIndex:i] N3VectorValue], N3VectorScalarMultiply(normal, distance));
+        [_curvedPath moveNodeAtIndex:i toVector:newNode];
+    }
+    [self _sendDidEditCurvedPath];
 }
 
 @end

@@ -49,7 +49,9 @@
 
     BOOL _draggingTransverse;
     BOOL _draggingTransverseSpacing;
-	BOOL _clickedNode;
+    
+    BOOL _isDraggingNode;
+    NSInteger _draggedNode;
 
     NSInteger _editingCurvedPathCount;
     
