@@ -52,7 +52,7 @@ typedef char* DcmFileFormat;
 		// Raw data support
 		unsigned char		*data, *localData;
 		long				width, height, spp, bps;
-		BOOL				isSigned, modalityAsSource;
+		BOOL				isSigned, modalityAsSource, rotateRawDataBy90degrees;
 		int					offset;
 		
 		// NSImage support
@@ -73,6 +73,8 @@ typedef char* DcmFileFormat;
 		float				position[ 3];
 		float				slicePosition;
 }
+
+@property BOOL rotateRawDataBy90degrees;
 
 // Is this DCM file based on another DCM file?
 - (void) setSourceFile:(NSString*) isource;

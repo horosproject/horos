@@ -1233,9 +1233,17 @@ extern int splitPosition[ 3];
 	{
         request = [[CPRStraightenedGeneratorRequest alloc] init];
         
-        request.pixelsWide = [self bounds].size.width*1.2;
-        request.pixelsHigh = [self bounds].size.height*1.2;
-		request.slabWidth = _curvedPath.thickness;
+        if( [[self windowController] viewsPosition] == VerticalPosition)
+        {
+            request.pixelsWide = [self bounds].size.height*1.2;
+            request.pixelsHigh = [self bounds].size.width*1.2;
+		}
+        else
+        {
+            request.pixelsWide = [self bounds].size.width*1.2;
+            request.pixelsHigh = [self bounds].size.height*1.2;
+		}
+        request.slabWidth = _curvedPath.thickness;
 
         request.slabSampleDistance = 0;
         request.bezierPath = _curvedPath.bezierPath;

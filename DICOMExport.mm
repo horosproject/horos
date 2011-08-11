@@ -23,6 +23,8 @@
 
 @implementation DICOMExport
 
+@synthesize rotateRawDataBy90degrees;
+
 - (NSString*) seriesDescription
 {
 	return exportSeriesDescription;
@@ -472,7 +474,22 @@
 						}
 					}
 				}
-				
+                
+                if( rotateRawDataBy90degrees)
+				{
+                    float copySpacingX = spacingX;
+                    spacingX = spacingY;
+                    spacingY = copySpacingX;
+                    
+                    long copyWidth = width;
+                    width = height;
+                    height = copyWidth;
+                    
+                    //Origin and vector
+                    
+                    //Pixels data
+				}
+                
 				#if __BIG_ENDIAN__
 				if( bps == 16)
 				{

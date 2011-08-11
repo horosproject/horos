@@ -368,4 +368,15 @@
     [_stretchedView setDisplayCrossLines:displayCrossLines];
 }
 
+- (void)setRotation: (float) rotation
+{
+    [_straightenedView setRotation: rotation];
+    [_stretchedView setRotation: rotation];
+}
+
+- (float)rotation
+{
+    return [[self reformationView] rotation];
+}
+
 @end

@@ -1380,9 +1380,18 @@ extern int splitPosition[ 3];
 	{
         request = [[CPRStretchedGeneratorRequest alloc] init];
         
-        request.pixelsWide = [self bounds].size.width*_extraWidthFactor;
-        request.pixelsHigh = [self bounds].size.height*_extraWidthFactor;
-		request.slabWidth = _curvedPath.thickness;
+        if( [[self windowController] viewsPosition] == VerticalPosition)
+        {
+            request.pixelsWide = [self bounds].size.height*_extraWidthFactor;
+            request.pixelsHigh = [self bounds].size.width*_extraWidthFactor;
+		}
+        else
+        {
+            request.pixelsWide = [self bounds].size.width*_extraWidthFactor;
+            request.pixelsHigh = [self bounds].size.height*_extraWidthFactor;
+		}
+        
+        request.slabWidth = _curvedPath.thickness;
         
         request.slabSampleDistance = 0;
         request.bezierPath = _curvedPath.bezierPath;

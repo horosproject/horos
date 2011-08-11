@@ -2259,9 +2259,17 @@ static float deg2rad = 3.14159265358979/180.0;
 		
         [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
         
-		exportWidth = NSWidth([cprView bounds]);
-        exportHeight = NSHeight([cprView bounds]);
-		
+		if( self.viewsPosition == VerticalPosition)
+        {
+			exportWidth = NSHeight([cprView bounds]);
+            exportHeight = NSWidth([cprView bounds]);
+		}
+        else
+        {
+            exportWidth = NSWidth([cprView bounds]);
+            exportHeight = NSHeight([cprView bounds]);
+		}
+        
 		if( self.exportSeriesType == CPRTransverseViewsExportSeriesType && self.exportSequenceType != CPRCurrentOnlyExportSequenceType)
 		{
 			exportWidth = NSWidth([middleTransverseView bounds]);
@@ -2354,11 +2362,14 @@ static float deg2rad = 3.14159265358979/180.0;
                     curvedVolumeData = [CPRGenerator synchronousRequestVolume:requestStretched volumeData:cprView.volumeData];                            
                 }  
                 
-                if(curvedVolumeData)
+                if( curvedVolumeData)
                 {
                     imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:0];
                     dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
                     [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                    
+                    if( self.viewsPosition == VerticalPosition)
+                        dicomExport.rotateRawDataBy90degrees = YES;
                     
                     [dicomExport setOffset:[imageRep offset]];
                     [dicomExport setSigned:NO];
@@ -2463,6 +2474,9 @@ static float deg2rad = 3.14159265358979/180.0;
 							
 							[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
 							
+                            if( self.viewsPosition == VerticalPosition)
+                                dicomExport.rotateRawDataBy90degrees = YES;
+                            
 							[dicomExport setOffset:[imageRep offset]];
 							[dicomExport setSigned:NO];
 							
@@ -2575,6 +2589,9 @@ static float deg2rad = 3.14159265358979/180.0;
                             dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
                             
                             [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                            
+                            if( self.viewsPosition == VerticalPosition)
+                                dicomExport.rotateRawDataBy90degrees = YES;
                             
                             [dicomExport setOffset:[imageRep offset]];
                             [dicomExport setSigned:NO];
@@ -3058,6 +3075,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+        cprView.rotation = 0;
+        
 		[[self window] setAcceptsMouseMovedEvents: NO];
 		
 		windowWillClose = YES;
@@ -3873,16 +3892,19 @@ static float deg2rad = 3.14159265358979/180.0;
         case NormalPosition:
             [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
             [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+            cprView.rotation = 0;
         break;
         
         case VerticalPosition:
             [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
             [horizontalSplit2 setPosition: [horizontalSplit2 minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+            cprView.rotation = 90;
         break;
         
         case HorizontalPosition:
              [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
              [verticalSplit setPosition:[verticalSplit minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+            cprView.rotation = 0;
         break;
     }
 }
