@@ -6916,6 +6916,8 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
 {
+    NSLog(@"splitView:constrain");
+    
     if( [sender isVertical] == YES)
 	{
         NSSize size = oMatrix.cellSize;

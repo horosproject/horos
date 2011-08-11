@@ -1,11 +1,3 @@
-- CD Import:
---- Réactiver lecture fichiers ZIP (aussi avec MDP)
-- Réactiver autoimport etc
-
-BUGs:
-- Auto-retrieve bug (check for already here: 46150)
-- Thread Cells (sometimes empty and staying forever… (Auto QA, no errors)
-
 - MacAppStore (check)
 
 --- tester à fond:

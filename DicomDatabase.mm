@@ -1710,11 +1710,11 @@ enum { Compress, Decompress };
 			@try {
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
 				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-				[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:userInfo];
-				[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:userInfo2];
+                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayNotification, self, userInfo, nil] waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
 				if (postNotifications) {
-					[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:userInfo];
-					[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:userInfo2];
+                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBNotification, self, userInfo, nil] waitUntilDone:NO];
+                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
@@ -1770,6 +1770,10 @@ enum { Compress, Decompress };
 	}
 	
 	return addedImagesArray;
+}
+
+-(void)_notify:(NSArray*)args {
+    [NSNotificationCenter.defaultCenter postNotificationName:[args objectAtIndex:0] object:[args objectAtIndex:1] userInfo:[args objectAtIndex:2]];
 }
 
 -(void)copyFilesThread:(NSDictionary*)dict {

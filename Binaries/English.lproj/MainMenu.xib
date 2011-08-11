@@ -4911,8 +4911,8 @@
 												</object>
 												<object class="NSScroller" id="361142642">
 													<reference key="NSNextResponder" ref="84064525"/>
-													<int key="NSvFlags">256</int>
-													<string key="NSFrame">{{423, 1}, {15, 435}}</string>
+													<int key="NSvFlags">-2147483392</int>
+													<string key="NSFrame">{{-100, -100}, {15, 435}}</string>
 													<reference key="NSSuperview" ref="84064525"/>
 													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="414637043"/>
@@ -4939,7 +4939,7 @@
 											<reference key="NSSuperview" ref="766578884"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="828164548"/>
-											<int key="NSsFlags">133330</int>
+											<int key="NSsFlags">133314</int>
 											<reference key="NSVScroller" ref="361142642"/>
 											<reference key="NSHScroller" ref="828164548"/>
 											<reference key="NSContentView" ref="150457028"/>
@@ -22651,7 +22651,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">BrowserController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="ReBuildDatabase:">id</string>
 						<string key="ReBuildDatabaseSheet:">id</string>
 						<string key="addSmartAlbum:">id</string>
 						<string key="albumButtons:">id</string>
@@ -22662,7 +22661,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="checkMemory:">id</string>
 						<string key="compressSelectedFiles:">id</string>
 						<string key="copyToDBFolder:">id</string>
-						<string key="createDatabase:">id</string>
 						<string key="createDatabaseFolder:">id</string>
 						<string key="customIntervalNow:">id</string>
 						<string key="customize:">id</string>
@@ -22699,10 +22697,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="switchSoundex:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="ReBuildDatabase:">
-							<string key="name">ReBuildDatabase:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
 							<string key="name">ReBuildDatabaseSheet:</string>
 							<string key="candidateClassName">id</string>
@@ -22741,10 +22735,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="copyToDBFolder:">
 							<string key="name">copyToDBFolder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="createDatabase:">
-							<string key="name">createDatabase:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="createDatabaseFolder:">
@@ -22885,7 +22875,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="AtableView">NSTableView</string>
 						<string key="CDpasswordWindow">NSWindow</string>
 						<string key="ZIPpasswordWindow">NSWindow</string>
 						<string key="_activityTableView">NSTableView</string>
@@ -22897,7 +22886,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="animationCheck">NSButton</string>
 						<string key="animationSlider">NSSlider</string>
 						<string key="bonjourPasswordWindow">NSWindow</string>
-						<string key="bonjourServicesList">NSTableView</string>
 						<string key="bonjourSourcesBox">NSBox</string>
 						<string key="compressionMatrix">NSMatrix</string>
 						<string key="customEnd">NSDatePicker</string>
@@ -22918,7 +22906,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="folderTree">NSMatrix</string>
 						<string key="imageTileMenu">NSMenu</string>
 						<string key="imageView">PreviewView</string>
-						<string key="mainWindow">NSWindow</string>
 						<string key="memoryMessage">NSTextField</string>
 						<string key="newAlbum">NSWindow</string>
 						<string key="newAlbumName">NSTextField</string>
@@ -22960,10 +22947,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="warning">NSTextField</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="AtableView">
-							<string key="name">AtableView</string>
-							<string key="candidateClassName">NSTableView</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="CDpasswordWindow">
 							<string key="name">CDpasswordWindow</string>
 							<string key="candidateClassName">NSWindow</string>
@@ -23007,10 +22990,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="bonjourPasswordWindow">
 							<string key="name">bonjourPasswordWindow</string>
 							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="bonjourServicesList">
-							<string key="name">bonjourServicesList</string>
-							<string key="candidateClassName">NSTableView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="bonjourSourcesBox">
 							<string key="name">bonjourSourcesBox</string>
@@ -23091,10 +23070,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="imageView">
 							<string key="name">imageView</string>
 							<string key="candidateClassName">PreviewView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mainWindow">
-							<string key="name">mainWindow</string>
-							<string key="candidateClassName">NSWindow</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="memoryMessage">
 							<string key="name">memoryMessage</string>
