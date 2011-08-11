@@ -4255,11 +4255,11 @@ static NSConditionLock *threadLock = nil;
 				
 			case ask:
 				switch (NSRunInformationalAlertPanel(
-													 NSLocalizedString(@"OsiriX Database",@"OsiriX Database"),
-													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),
-													 NSLocalizedString(@"Copy Files",@"Copy Files"),
-													 NSLocalizedString(@"Cancel",@"Cancel"),
-													 NSLocalizedString(@"Copy Links",@"Copy Links")))
+													 NSLocalizedString(@"OsiriX Database", nil),
+													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
+													 NSLocalizedString(@"Copy Files", nil),
+													 NSLocalizedString(@"Cancel", nil),
+													 NSLocalizedString(@"Copy Links", nil)))
 													{
 					case NSAlertDefaultReturn:
 					break;

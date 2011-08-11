@@ -20,7 +20,7 @@
 
 enum _CPRType {
     CPRStraightenedType = 0,
-    CPRStretchedType = 0
+    CPRStretchedType = 1
 };
 typedef NSInteger CPRType;
 

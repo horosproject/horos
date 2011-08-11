@@ -1,9 +1,13 @@
+- Export Rotation strectched versus straightened
+- Bug if view hidden
+
 - New Curved MPR mode: straightened versus stretched
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
 - Find Previous/Next Key image will scan the entire study, instead of only current series
 - Paste an image in a viewer or in the database window: it will create a DICOM SC image for the selected patient
 
+- CPR save last curved points
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
