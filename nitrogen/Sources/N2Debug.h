@@ -20,7 +20,7 @@
 +(BOOL)isActive;
 +(void)setActive:(BOOL)active;
 
-extern NSString* RectString(NSRect r);
+extern NSString* RectString(NSRect r) __deprecated; // use NSStringFromRect
 
 @end
 
