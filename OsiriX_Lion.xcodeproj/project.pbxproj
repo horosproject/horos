@@ -656,6 +656,12 @@
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
+		84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98213F41800005A5D02 /* horizontalPosition.tif */; };
+		84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98213F41800005A5D02 /* horizontalPosition.tif */; };
+		84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98313F41800005A5D02 /* normalPosition.tif */; };
+		84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98313F41800005A5D02 /* normalPosition.tif */; };
+		84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
+		84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
@@ -8587,6 +8593,9 @@
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
+		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
+		84EBD98313F41800005A5D02 /* normalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = normalPosition.tif; sourceTree = "<group>"; };
+		84EBD98413F41800005A5D02 /* verticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = verticalPosition.tif; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tif; sourceTree = "<group>"; };
@@ -13761,6 +13770,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				84EBD98213F41800005A5D02 /* horizontalPosition.tif */,
+				84EBD98313F41800005A5D02 /* normalPosition.tif */,
+				84EBD98413F41800005A5D02 /* verticalPosition.tif */,
 				A9A80E3611F73E22009F54B9 /* Activity_Stop.tif */,
 				A9A80E3711F73E22009F54B9 /* Activity_StopPressed.tif */,
 				5997896F11B7B40B002DB107 /* MinusButton.png */,
@@ -22695,6 +22707,9 @@
 				CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
 				CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */,
 				CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */,
+				84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */,
+				84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */,
+				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23054,6 +23069,9 @@
 				CEB98C5A1335084F0083F3FD /* Security.tiff in Resources */,
 				CEB98C621335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
 				CE9E11D113DBB5DD008B2848 /* OsiriX.sdef in Resources */,
+				84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */,
+				84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */,
+				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

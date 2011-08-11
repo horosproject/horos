@@ -1110,20 +1110,25 @@ static	BOOL frameZoomed = NO;
 		}
 		else
 		{
-			float distance1, distance2;
+			float distance1 = 1000, distance2 = 1000;
 			
-			NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
-			NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
-			
-			NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
-			NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);			
-			
-			[DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
-			[DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
-			
-			distance1 /= curDCM.pixelSpacingX;
-			distance2 /= curDCM.pixelSpacingX;
-			
+            if( crossLinesA[ 0][ 0] != HUGE_VALF)
+            {
+                NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+                NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+                [DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
+                distance1 /= curDCM.pixelSpacingX;
+            }
+            
+            if( crossLinesB[ 0][ 0] != HUGE_VALF)
+            {
+                NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
+                NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);			
+                
+                [DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
+                distance2 /= curDCM.pixelSpacingX;
+			}
+            
 			if( distance1 * scaleValue < 10 || distance2 * scaleValue < 10)
 			{
 				return 1;

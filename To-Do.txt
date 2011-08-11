@@ -1,3 +1,6 @@
+- CPR Axis : check for visibility
+- Rotate tool : check for visibility
+
 - New Curved MPR mode: straightened versus stretched
 - ROI: Add points to Polygon or Pencil ROIs 
 - Option to switch to 1x1 when going to fullscreen if tiling mode is not 1x1
