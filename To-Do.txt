@@ -1,5 +1,4 @@
-- Export Rotation strectched versus straightened
-- Bug if view hidden
+- Bug if view hidden with axis
 
 - New Curved MPR mode: straightened versus stretched
 - ROI: Add points to Polygon or Pencil ROIs 
