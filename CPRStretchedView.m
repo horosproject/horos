@@ -364,7 +364,7 @@ extern int splitPosition[ 3];
 {
 	if(_displayTransverseLines)
 	{
-		float length = curDCM.pixelSpacingX * curDCM.pwidth;
+		float length = [_curvedPath.bezierPath length];
         
 		NSMutableArray *topLeft = [curDCM.annotationsDictionary objectForKey: @"TopLeft"];
 		
