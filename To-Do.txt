@@ -1,5 +1,5 @@
 - CPR Axis : check for visibility
-- Rotate tool : check for visibility
+- Rotate Sphere tool : check for visibility
 
 - New Curved MPR mode: straightened versus stretched
 - ROI: Add points to Polygon or Pencil ROIs 
