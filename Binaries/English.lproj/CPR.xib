@@ -118,6 +118,7 @@
 													<string key="NSFrame">{{294, 0}, {72, 75}}</string>
 													<reference key="NSSuperview" ref="554492225"/>
 													<reference key="NSWindow"/>
+													<reference key="NSNextKeyView"/>
 													<string key="NSClassName">CPRTransverseView</string>
 												</object>
 												<object class="NSCustomView" id="1019564056">
@@ -3048,7 +3049,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="146559712">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">14</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSView" id="752185165">
@@ -3060,7 +3061,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{5, 4}, {110, 38}}</string>
 								<reference key="NSSuperview" ref="752185165"/>
-								<reference key="NSWindow"/>
 								<string key="NSReuseIdentifierKey">_NS:266</string>
 								<bool key="NSEnabled">YES</bool>
 								<int key="NSNumRows">2</int>
@@ -3195,13 +3195,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{134, 44}</string>
 						<reference key="NSSuperview" ref="146559712"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1020744704"/>
 					</object>
 				</array>
 				<string key="NSFrameSize">{134, 44}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="752185165"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
@@ -3232,19 +3229,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<object class="NSSegmentedControl" id="663543939">
 								<reference key="NSNextResponder" ref="275918846"/>
 								<int key="NSvFlags">268</int>
-								<string key="NSFrame">{{11, 10}, {100, 25}}</string>
+								<string key="NSFrame">{{9, 11}, {104, 24}}</string>
 								<reference key="NSSuperview" ref="275918846"/>
 								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="873783301">
 									<int key="NSCellFlags">67239424</int>
 									<int key="NSCellFlags2">0</int>
-									<object class="NSFont" key="NSSupport">
-										<string key="NSName">LucidaGrande</string>
-										<double key="NSSize">13</double>
-										<int key="NSfFlags">16</int>
-									</object>
+									<reference key="NSSupport" ref="761768664"/>
 									<string key="NSCellIdentifier">_NS:1766</string>
 									<reference key="NSControlView" ref="663543939"/>
 									<array class="NSMutableArray" key="NSSegmentImages">
@@ -3260,7 +3254,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<double key="NSSegmentItemWidth">32</double>
 											<object class="NSCustomResource" key="NSSegmentItemImage">
 												<string key="NSClassName">NSImage</string>
-												<string key="NSResourceName">verticalPosition</string>
+												<string key="NSResourceName">horizontalPosition</string>
 											</object>
 											<int key="NSSegmentItemTag">1</int>
 											<bool key="NSSegmentItemSelected">YES</bool>
@@ -3270,14 +3264,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<double key="NSSegmentItemWidth">32</double>
 											<object class="NSCustomResource" key="NSSegmentItemImage">
 												<string key="NSClassName">NSImage</string>
-												<string key="NSResourceName">horizontalPosition</string>
+												<string key="NSResourceName">verticalPosition</string>
 											</object>
 											<int key="NSSegmentItemTag">2</int>
 											<int key="NSSegmentItemImageScaling">0</int>
 										</object>
 									</array>
 									<int key="NSSelectedSegment">1</int>
-									<int key="NSSegmentStyle">4</int>
 								</object>
 							</object>
 						</array>
@@ -6863,7 +6856,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="1428.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1430.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1436.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<integer value="1" key="1437.IBNSSegmentedControlInspectorSelectedSegmentMetadataKey"/>
+				<integer value="2" key="1437.IBNSSegmentedControlInspectorSelectedSegmentMetadataKey"/>
 				<string key="1437.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="342.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7664,9 +7657,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="WLWW">{28, 28}</string>
 			<string key="Zoom">{28, 28}</string>
 			<string key="curvedROI">{23, 23}</string>
-			<string key="horizontalPosition">{32, 32}</string>
-			<string key="normalPosition">{32, 32}</string>
-			<string key="verticalPosition">{32, 32}</string>
+			<string key="horizontalPosition">{20, 20}</string>
+			<string key="normalPosition">{20, 20}</string>
+			<string key="verticalPosition">{20, 20}</string>
 		</dictionary>
 	</data>
 </archive>
