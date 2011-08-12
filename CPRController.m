@@ -3878,6 +3878,9 @@ static float deg2rad = M_PI / 180.0;
 {
     if (newCprType != cprType) {
         cprType = newCprType;
+        mprView1.CPRType = cprType;
+        mprView2.CPRType = cprType;
+        mprView3.CPRType = cprType;
         cprView.reformationType = cprType;
         topTransverseView.reformationDisplayStyle = cprType;
         middleTransverseView.reformationDisplayStyle = cprType;

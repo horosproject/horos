@@ -71,7 +71,7 @@
     }
 }
 
-- (void)waitUntilPixUpdate // returns once the refomration view's DCM pix object has been updated to reflect any changes made to the view.
+- (void)waitUntilPixUpdate // returns once the reformation view's DCM pix object has been updated to reflect any changes made to the view.
 {
     [[self reformationView] waitUntilPixUpdate];
 }

@@ -76,5 +76,6 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 @property (nonatomic, readonly, assign) CGFloat rightTransverseSectionPosition;
 @property (readonly, copy) NSArray* nodes; // N3Vectors stored in NSValues
 
+- (N3Vector)stretchedProjectionNormal;
 
 @end

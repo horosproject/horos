@@ -28,6 +28,12 @@ enum _CPRViewClippingRangeMode {
 };
 typedef CPRProjectionMode CPRViewClippingRangeMode;
 
+enum _CPRMPRDCMViewCPRType { // more than kinda ridiculous, move this and the equivalent CPRType constants to a single consts file..... 
+    CPRMPRDCMViewCPRStraightenedType = 0,
+    CPRMPRDCMViewCPRStretchedType = 1
+};
+typedef NSInteger CPRMPRDCMViewCPRType;
+
 
 @class CPRController;
 @class CPRDisplayInfo;
@@ -48,6 +54,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 	NSInteger editingCurvedPathCount;
     CPRCurvedPathControlToken draggedToken;
 	float angleMPR;
+    CPRMPRDCMViewCPRType _CPRType;
 	BOOL dontUseAutoLOD;
 	
 	float crossLinesA[2][3];
@@ -79,6 +86,7 @@ typedef CPRProjectionMode CPRViewClippingRangeMode;
 @property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
+@property (nonatomic, assign) CPRMPRDCMViewCPRType CPRType;
 
 - (BOOL)is2DTool:(short)tool;
 - (void) setDCMPixList:(NSMutableArray*)pix filesList:(NSArray*)files roiList:(NSMutableArray*)rois firstImage:(short)firstImage type:(char)type reset:(BOOL)reset;

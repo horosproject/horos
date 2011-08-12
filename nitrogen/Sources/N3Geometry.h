@@ -128,9 +128,11 @@ N3Plane N3PlaneLeastSquaresPlaneFromPoints(N3VectorArray vectors, CFIndex numVec
 N3Plane N3PlaneApplyTransform(N3Plane plane, N3AffineTransform transform);
 
 void N3VectorScalarMultiplyVectors(CGFloat scalar, N3VectorArray vectors, CFIndex numVectors);
+void N3VectorCrossProductVectors(N3Vector vector, N3VectorArray vectors, CFIndex numVectors);
 void N3VectorAddVectors(N3VectorArray vectors1, const N3VectorArray vectors2, CFIndex numVectors);
 void N3VectorApplyTransformToVectors(N3AffineTransform transform, N3VectorArray vectors, CFIndex numVectors);
 void N3VectorCrossProductWithVectors(N3VectorArray vectors1, const N3VectorArray vectors2, CFIndex numVectors);
+void N3VectorNormalizeVectors(N3VectorArray vectors, CFIndex numVectors);
 
 CG_INLINE NSPoint NSPointFromN3Vector(N3Vector vector) {return NSMakePoint(vector.x, vector.y);}
 CG_INLINE N3Vector N3VectorMakeFromNSPoint(NSPoint point) {return N3VectorMake(point.x, point.y, 0);}

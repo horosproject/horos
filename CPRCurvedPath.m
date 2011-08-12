@@ -529,6 +529,16 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     self.nodeRelativePositions = nodeRelativePositions;
 }
 
+- (N3Vector)stretchedProjectionNormal
+{
+    N3Vector curveDirection;
+    N3Vector baseNormal;
+    
+    curveDirection = N3VectorSubtract([_bezierPath vectorAtEnd], [_bezierPath vectorAtStart]);
+    baseNormal = N3VectorNormalize(N3VectorCrossProduct(_baseDirection, curveDirection));
+    return N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_angle, curveDirection));
+}
+
 @end
 
 

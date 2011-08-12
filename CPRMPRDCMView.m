@@ -75,6 +75,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 @synthesize curvedPath;
 @synthesize displayInfo;
 @synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
+@synthesize CPRType = _CPRType;
 
 - (BOOL)becomeFirstResponder
 {
@@ -200,6 +201,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     if (displayInfo != newDisplayInfo) {
         [displayInfo release];
         displayInfo = [newDisplayInfo copy];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+ -(void)setCPRType:(CPRMPRDCMViewCPRType)type
+{
+    if (type != _CPRType) {
+        _CPRType = type;
         [self setNeedsDisplay:YES];
     }
 }
@@ -2304,7 +2313,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     if ([bezierPath elementCount] >= 2 && curvedPath.thickness > 2.0 && length > 3.0)
 	{
         glLineWidth(1.0);
-        outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
+        if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
+            outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
+        } else {
+            outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 projectionNormal:[curvedPath stretchedProjectionNormal] spacing:1.0] mutableCopy];
+        }
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
@@ -2326,7 +2339,11 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if( [[self windowController] exportSlabThickness] > 0)
 	{
 		glLineWidth(1.0);
-        outlinePath = [[bezierPath outlineBezierPathAtDistance: [[self windowController] exportSlabThickness] / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
+        if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
+            outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
+        } else {
+            outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 projectionNormal:[curvedPath stretchedProjectionNormal] spacing:1.0] mutableCopy];
+        }
         [outlinePath applyAffineTransform:transform];
         glColor4d(0.0, 1.0, 0.0, 1.0); 
         glBegin(GL_LINE_STRIP);
