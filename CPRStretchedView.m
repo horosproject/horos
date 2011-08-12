@@ -23,6 +23,8 @@
 #import "NSColor+N2.h"
 #import <objc/runtime.h>
 
+static float deg2rad = M_PI / 180.0f; 
+
 #define _extraWidthFactor 1.2
 
 extern BOOL frameZoomed;
@@ -404,6 +406,34 @@ extern int splitPosition[ 3];
     }
 }
 
+- (NSPoint) positionWithoutRotation: (NSPoint) tPt
+{
+    NSRect unrotatedRect = NSMakeRect( tPt.x/scaleValue, tPt.y/scaleValue, 1, 1);
+    NSRect centeredRect = unrotatedRect;
+    
+    float ratio = 1;
+    
+    if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+        ratio = self.pixelSpacingX / self.pixelSpacingY;
+    
+    centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
+    centeredRect.origin.x -= - [self origin].x/scaleValue;
+    
+    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) + centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) + centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
+    
+    unrotatedRect.origin.y *= ratio;
+    
+    unrotatedRect.origin.y += [self origin].y*ratio/scaleValue;
+    unrotatedRect.origin.x += - [self origin].x/scaleValue;
+    
+    tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
+    tPt.x = (tPt.x)*scaleValue - unrotatedRect.size.width/2;
+    tPt.y = (tPt.y)/ratio*scaleValue - unrotatedRect.size.height/2/ratio;
+    
+    return tPt;
+}
+
 - (void)subDrawRect:(NSRect)rect
 {
     double pixToSubdrawRectOpenGLTransform[16];
@@ -612,15 +642,39 @@ extern int splitPosition[ 3];
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-				
-		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x+1 - [stringTexA frameSize].width, transverseIntersectionA.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x - [stringTexA frameSize].width, transverseIntersectionA.y) ratio: 1];
 		
-		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x+1 - [stringTexB frameSize].width/2., transverseIntersectionB.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x - [stringTexB frameSize].width/2., transverseIntersectionB.y) ratio: 1];
-		
-		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x+1, transverseIntersectionC.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x, transverseIntersectionC.y) ratio: 1];
+        {
+            glPushMatrix();
+            
+            float ratio = 1;
+            
+            if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+                ratio = self.pixelSpacingX / self.pixelSpacingY;
+            
+            glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+            glScalef (2.0f /([self xFlipped] ? -([self drawingFrameRect].size.width) : [self drawingFrameRect].size.width), -2.0f / ([self yFlipped] ? -([self drawingFrameRect].size.height) : [self drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
+            glTranslatef( [self origin].x, -[self origin].y, 0.0f);
+            
+            [stringTexA setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            [stringTexB setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            [stringTexC setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            
+            NSPoint tPt;
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionA.x, transverseIntersectionA.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionB.x, transverseIntersectionB.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionC.x, transverseIntersectionC.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            glPopMatrix();
+        }
 				
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}
