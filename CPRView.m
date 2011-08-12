@@ -379,4 +379,15 @@
     return [[self reformationView] rotation];
 }
 
+- (void)setScaleValue: (float) scaleValue
+{
+    [_straightenedView setScaleValue: scaleValue];
+    [_stretchedView setScaleValue: scaleValue];
+}
+
+- (float)scaleValue
+{
+    return [[self reformationView] scaleValue];
+}
+
 @end

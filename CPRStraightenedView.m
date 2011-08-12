@@ -993,6 +993,18 @@ extern int splitPosition[ 3];
 					[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
 					[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 					[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+                    
+                    [windowController.mprView1 restoreCamera];
+                    windowController.mprView1.camera.forceUpdate = YES;
+                    [windowController.mprView1 updateViewMPR];
+                    
+                    [windowController.mprView2 restoreCamera];
+                    windowController.mprView2.camera.forceUpdate = YES;
+                    [windowController.mprView2 updateViewMPR];
+                    
+                    [windowController.mprView3 restoreCamera];
+                    windowController.mprView3.camera.forceUpdate = YES;
+                    [windowController.mprView3 updateViewMPR];
 				}
 			}
 			else
@@ -1117,6 +1129,10 @@ extern int splitPosition[ 3];
 		[self _sendDidEditCurvedPath];
 		[self _setNeedsNewRequest];
 	}
+}
+
+- (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
+{
 }
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request

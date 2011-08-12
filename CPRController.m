@@ -56,7 +56,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -3885,6 +3885,8 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (void)setViewsPosition:(ViewsPosition) newViewsPosition
 {
+    NSDisableScreenUpdates();
+    
     viewsPosition = newViewsPosition;
     
     switch ( viewsPosition)
@@ -3907,6 +3909,20 @@ static float deg2rad = 3.14159265358979/180.0;
             cprView.rotation = 0;
         break;
     }
+    
+    [mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];
+    
+    NSEnableScreenUpdates();
 }
 
 - (ViewsPosition)viewsPosition
@@ -4029,11 +4045,20 @@ static float deg2rad = 3.14159265358979/180.0;
     if (context == MPRPlaneObservationContext) {        
         if ([keyPath isEqualToString:@"plane"]) {
 			if (object == mprView1) {
-				cprView.orangePlane = [mprView1 plane];
+				if( [mprView1 frame].size.width > 10 && [mprView1 frame].size.height > 10)
+                   cprView.orangePlane = [mprView1 plane];
+                else
+                    cprView.orangePlane = N3PlaneInvalid;
 			} else if (object == mprView2) {
-				cprView.purplePlane = [mprView2 plane];
+                if( [mprView2 frame].size.width > 10 && [mprView2 frame].size.height > 10)
+                    cprView.purplePlane = [mprView2 plane];
+                else
+                    cprView.purplePlane = N3PlaneInvalid;
 			} else if (object == mprView3) {
-				cprView.bluePlane = [mprView3 plane];
+                 if( [mprView3 frame].size.width > 10 && [mprView3 frame].size.height > 10)
+                     cprView.bluePlane = [mprView3 plane];
+                 else
+                     cprView.bluePlane = N3PlaneInvalid;
 			}
         }
     } else {

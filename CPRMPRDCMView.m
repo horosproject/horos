@@ -306,6 +306,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	LOD = l;
 }
 
+- (void) reshape
+{
+    // To display or hide the resulting plane on the CPR view
+    [self willChangeValueForKey:@"plane"];
+    [self didChangeValueForKey:@"plane"];
+    
+    [super reshape];
+}
+
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	if( [self frame].size.width <= 0)
@@ -1460,6 +1469,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
 				[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 				[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+                
+                [windowController.mprView1 restoreCamera];
+                windowController.mprView1.camera.forceUpdate = YES;
+                [windowController.mprView1 updateViewMPR];
+                
+                [windowController.mprView2 restoreCamera];
+                windowController.mprView2.camera.forceUpdate = YES;
+                [windowController.mprView2 updateViewMPR];
+                
+                [windowController.mprView3 restoreCamera];
+                windowController.mprView3.camera.forceUpdate = YES;
+                [windowController.mprView3 updateViewMPR];
+                
+                [windowController.cprView setScaleValue: 0.8];
 			}
 			
 			[self restoreCamera];

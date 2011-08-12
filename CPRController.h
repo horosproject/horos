@@ -185,6 +185,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property (nonatomic) double straightenedCPRAngle;
 @property (nonatomic) CPRType cprType;
 @property (nonatomic) ViewsPosition viewsPosition;
+@property (nonatomic, readonly) CPRView *cprView;
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;
