@@ -30,7 +30,7 @@
 
 extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
-static float deg2rad = 3.14159265358979/180.0; 
+static float deg2rad = M_PI/180.0; 
 
 @implementation MPRController
 

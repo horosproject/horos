@@ -52,7 +52,7 @@
 //#define new_loupe
 
 			short						syncro = syncroLOC;
-static		float						deg2rad = 3.14159265358979/180.0; 
+static		float						deg2rad = M_PI / 180.0; 
 static		unsigned char				*PETredTable = nil, *PETgreenTable = nil, *PETblueTable = nil;
 static		BOOL						NOINTERPOLATION = NO, SOFTWAREINTERPOLATION = NO, IndependentCRWLWW, pluginOverridesMouse = NO;  // Allows plugins to override mouse click actions.
 			BOOL						FULL32BITPIPELINE = NO;
@@ -2734,7 +2734,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if (currentTool == tTranslate)
 			{
 				float xmove, ymove, xx, yy;
-			//	GLfloat deg2rad = 3.14159265358979/180.0; 
+			//	GLfloat deg2rad = M_PI/180.0; 
 				
 				xmove = xMove*10;
 				ymove = yMove*10;

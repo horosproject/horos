@@ -389,5 +389,4 @@
 {
     return [[self reformationView] scaleValue];
 }
-
 @end

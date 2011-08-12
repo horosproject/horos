@@ -1311,19 +1311,16 @@ extern int splitPosition[ 3];
 {
     unichar c = [[theEvent characters] characterAtIndex:0];
     
-    if(c == NSDeleteCharacter || c == NSDeleteFunctionKey)
+    if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode)
 	{
 		// Delete node
-		if (_isDraggingNode) {
 			[_curvedPath removeNodeAtIndex:_draggedNode];
             _draggedNode = -1;
 			[self setNeedsDisplay:YES];
             [self _setNeedsNewRequest];
-
-		}
-    } else {
-        [super keyDown:theEvent];
     }
+    else
+        [super keyDown:theEvent];
 }
 - (void)scrollWheel:(NSEvent *)theEvent
 {

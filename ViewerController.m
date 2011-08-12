@@ -151,7 +151,7 @@ static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames = nil;
 
-static	float deg2rad									= 3.14159265358979/180.0; 
+static	float deg2rad									= M_PI/180.0; 
 
 static NSMenu *wlwwPresetsMenu = nil;
 static NSMenu *contextualMenu = nil;

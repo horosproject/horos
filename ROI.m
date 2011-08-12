@@ -1513,7 +1513,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 -(float) EllipseArea
 {
-	return fabs (3.14159265358979 * rect.size.width*2. * rect.size.height*2.) / 4.;
+	return fabs (M_PI * rect.size.width*2. * rect.size.height*2.) / 4.;
 }
 
 -(float) plainArea
