@@ -23,6 +23,8 @@
 #import "NSColor+N2.h"
 #import <objc/runtime.h>
 
+static float deg2rad = M_PI / 180.0f; 
+
 #define _extraWidthFactor 1.2
 
 extern BOOL frameZoomed;
@@ -117,7 +119,7 @@ extern int splitPosition[ 3];
 
 // calls for dealing with intersections with planes
 
-
+- (void)_pushBezierPath:(CGFloat)distance;
 
 @end
 
@@ -364,7 +366,7 @@ extern int splitPosition[ 3];
 {
 	if(_displayTransverseLines)
 	{
-		float length = curDCM.pixelSpacingX * curDCM.pwidth;
+		float length = [_curvedPath.bezierPath length];
         
 		NSMutableArray *topLeft = [curDCM.annotationsDictionary objectForKey: @"TopLeft"];
 		
@@ -402,6 +404,34 @@ extern int splitPosition[ 3];
     if (_processingRequest == NO) {
         [super setNeedsDisplay:flag];
     }
+}
+
+- (NSPoint) positionWithoutRotation: (NSPoint) tPt
+{
+    NSRect unrotatedRect = NSMakeRect( tPt.x/scaleValue, tPt.y/scaleValue, 1, 1);
+    NSRect centeredRect = unrotatedRect;
+    
+    float ratio = 1;
+    
+    if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+        ratio = self.pixelSpacingX / self.pixelSpacingY;
+    
+    centeredRect.origin.y -= [self origin].y*ratio/scaleValue;
+    centeredRect.origin.x -= - [self origin].x/scaleValue;
+    
+    unrotatedRect.origin.x = centeredRect.origin.x*cos( -self.rotation*deg2rad) + centeredRect.origin.y*sin( -self.rotation*deg2rad)/ratio;
+    unrotatedRect.origin.y = -centeredRect.origin.x*sin( -self.rotation*deg2rad) + centeredRect.origin.y*cos( -self.rotation*deg2rad)/ratio;
+    
+    unrotatedRect.origin.y *= ratio;
+    
+    unrotatedRect.origin.y += [self origin].y*ratio/scaleValue;
+    unrotatedRect.origin.x += - [self origin].x/scaleValue;
+    
+    tPt = NSMakePoint( unrotatedRect.origin.x, unrotatedRect.origin.y);
+    tPt.x = (tPt.x)*scaleValue - unrotatedRect.size.width/2;
+    tPt.y = (tPt.y)/ratio*scaleValue - unrotatedRect.size.height/2/ratio;
+    
+    return tPt;
 }
 
 - (void)subDrawRect:(NSRect)rect
@@ -516,19 +546,20 @@ extern int splitPosition[ 3];
         
 		for( int i = 0; i < noOfFrames; i++)
 		{
-            N3Plane sliceTransversePlane = N3PlaneMake(vectors[i], tangents[i]);
-            NSArray *slicePlaneRun;
-            NSArray *sliceVerticalSlices;
+            _CPRStretchedViewPlaneRun *transverseRun;
+            NSUInteger transverseIndex;
             
-            slicePlaneRun = [self _runsForPlane:sliceTransversePlane verticalLineIndexes:&sliceVerticalSlices];
+            relativePosition = (startingDistance + (exportTransverseSliceInterval * (CGFloat)i)) / curveLength;
+            transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline:curDCM.pheight / 3];
             
-			glLineWidth(2.0);
-            [self _drawPlaneRuns:slicePlaneRun];
-            [self _drawVerticalLines:sliceVerticalSlices];
+            glLineWidth(2.0);
+
+            if (transverseRun) {
+                [self _drawPlaneRuns:[NSArray arrayWithObject:transverseRun]];
+            } else {
+                [self _drawVerticalLines:[NSArray arrayWithObject:[NSNumber numberWithUnsignedInteger:transverseIndex]] length:curDCM.pheight / 3];
+            }
 		}
-        
-        free(vectors);
-        free(tangents);
 	}
 	else if(_displayTransverseLines)
 	{
@@ -611,15 +642,39 @@ extern int splitPosition[ 3];
 		glEnable (GL_TEXTURE_RECTANGLE_EXT);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-				
-		glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x+1 - [stringTexA frameSize].width, transverseIntersectionA.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(transverseIntersectionA.x - [stringTexA frameSize].width, transverseIntersectionA.y) ratio: 1];
 		
-		glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x+1 - [stringTexB frameSize].width/2., transverseIntersectionB.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(transverseIntersectionB.x - [stringTexB frameSize].width/2., transverseIntersectionB.y) ratio: 1];
-		
-		glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x+1, transverseIntersectionC.y+1) ratio: 1];
-		glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(transverseIntersectionC.x, transverseIntersectionC.y) ratio: 1];
+        {
+            glPushMatrix();
+            
+            float ratio = 1;
+            
+            if( self.pixelSpacingX != 0 && self.pixelSpacingY != 0)
+                ratio = self.pixelSpacingX / self.pixelSpacingY;
+            
+            glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+            glScalef (2.0f /([self xFlipped] ? -([self drawingFrameRect].size.width) : [self drawingFrameRect].size.width), -2.0f / ([self yFlipped] ? -([self drawingFrameRect].size.height) : [self drawingFrameRect].size.height), 1.0f); // scale to port per pixel scale
+            glTranslatef( [self origin].x, -[self origin].y, 0.0f);
+            
+            [stringTexA setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            [stringTexB setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            [stringTexC setFlippedX: [self xFlipped] Y:[self yFlipped]];
+            
+            NSPoint tPt;
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionA.x, transverseIntersectionA.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexA drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionB.x, transverseIntersectionB.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexB drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            tPt = [self positionWithoutRotation: NSMakePoint( transverseIntersectionC.x, transverseIntersectionC.y)];
+            glColor4f (0, 0, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x+1, tPt.y+1) ratio: 1];
+            glColor4f (1, 1, 0, 1);	[stringTexC drawAtPoint:NSMakePoint(tPt.x, tPt.y) ratio: 1];
+            
+            glPopMatrix();
+        }
 				
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
 	}
@@ -721,6 +776,9 @@ extern int splitPosition[ 3];
 	glDisable(GL_BLEND);	
 }
 
+- (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage
+{
+}
 
 - (void)generator:(CPRGenerator *)generator didGenerateVolume:(CPRVolumeData *)volume request:(CPRGeneratorRequest *)request
 {
@@ -994,14 +1052,15 @@ extern int splitPosition[ 3];
 {
     NSPoint viewPoint;
     N3Vector pixVector;
+    N3Vector vector;
     CGFloat pixWidth;
     CGFloat relativePosition;
+    CGFloat distanceFromCenterline;
     NSInteger i;
     
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
-    _clickedNode = NO;
     
     if (pixWidth == 0.0) {
         [super mouseDown:event];
@@ -1056,17 +1115,41 @@ extern int splitPosition[ 3];
 		{
             relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
             if (N3VectorDistance(pixVector, [self _centerlinePixVectorForRelativePosition:relativePosition]) < 10) {
-                if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
-                    [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+                if (i == 0 || i == [_curvedPath.nodes count] - 1) {
+                    if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+                        [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:i] N3VectorValue]];
+                    }
+                    _draggedNode = -1;
+                    _isDraggingNode = YES;
+                    break;
+                } else {
+                    _draggedNode = i;
+                    _isDraggingNode = YES;
+                    [self _sendWillEditCurvedPath];
+                    
+                    break;
                 }
-                _clickedNode = YES;
-                break;
             }
         }
-        if (_clickedNode == NO)
+        
+        if (_isDraggingNode == NO) {
+            relativePosition = [_centerlinePath relativePositionClosestToLine:N3LineMake(pixVector, N3VectorMake(0, 0, 1)) closestVector:&vector];
+            distanceFromCenterline = N3VectorDistanceToLine(vector, N3LineMake(pixVector, N3VectorMake(0, 0, 1)));
+            if (distanceFromCenterline < 5.0) {
+                _isDraggingNode = YES;
+                [self _sendWillEditCurvedPath];
+                _draggedNode = [_curvedPath insertNodeAtRelativePosition:relativePosition];
+                
+                _isDraggingNode = YES;
+                [self setNeedsDisplay:YES];
+                [self _setNeedsNewRequest];
+            }
+        }
+        
+        if (_isDraggingNode == NO)
 		{
 			int clickCount = 1;
-			
+            
 			@try
 			{
 				if( [event type] ==	NSLeftMouseDown || [event type] ==	NSRightMouseDown || [event type] ==	NSLeftMouseUp || [event type] == NSRightMouseUp)
@@ -1108,6 +1191,18 @@ extern int splitPosition[ 3];
 					[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
 					[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 					[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+                    
+                    [windowController.mprView1 restoreCamera];
+                    windowController.mprView1.camera.forceUpdate = YES;
+                    [windowController.mprView1 updateViewMPR];
+                    
+                    [windowController.mprView2 restoreCamera];
+                    windowController.mprView2.camera.forceUpdate = YES;
+                    [windowController.mprView2 updateViewMPR];
+                    
+                    [windowController.mprView3 restoreCamera];
+                    windowController.mprView3.camera.forceUpdate = YES;
+                    [windowController.mprView3 updateViewMPR];
 				}
 			}
 			else
@@ -1130,10 +1225,7 @@ extern int splitPosition[ 3];
     N3Vector pixVector;
     CGFloat relativePosition;
     CGFloat pixWidth;
-    
-	if( _clickedNode)
-		return;
-	
+    	
     viewPoint = [self convertPoint:[event locationInWindow] fromView:nil];
     pixVector = N3VectorApplyTransform(N3VectorMakeFromNSPoint(viewPoint), [self viewToPixTransform]);
     pixWidth = curDCM.pwidth;
@@ -1143,7 +1235,16 @@ extern int splitPosition[ 3];
         return;
     }
     
-    if (_draggingTransverse)
+    if (_isDraggingNode) {
+        if (_draggedNode >= 0) {
+            [_curvedPath moveNodeAtIndex:_draggedNode toVector:[self _vectorForPixPoint:NSPointFromN3Vector(pixVector)]];
+        }
+        [self _sendDidUpdateCurvedPath];
+        [self _setNeedsNewRequest];
+        [self display];
+        [self mouseMoved: event];
+    }
+    else if (_draggingTransverse)
 	{
         relativePosition = [self _relativePositionForPixPoint:NSPointFromN3Vector(pixVector)];
         _curvedPath.transverseSectionPosition = MAX(MIN(relativePosition, 1.0), 0.0);
@@ -1179,6 +1280,22 @@ extern int splitPosition[ 3];
 
 - (void)mouseUp:(NSEvent *)event
 {
+    if (_isDraggingNode) {
+//        [_draggingCenterlinePath release];
+//        _draggingCenterlinePath = nil;
+//        _draggingMidHeightPoint = N3VectorZero;
+//        _draggingProjectionNormal = N3VectorZero;
+        [self _sendDidEditCurvedPath];
+        
+        if (_draggedNode >= 0) {
+            if ([_delegate respondsToSelector:@selector(CPRView:setCrossCenter:)]) {
+                [_delegate CPRView: [[self windowController] mprView1] setCrossCenter:[[_curvedPath.nodes objectAtIndex:_draggedNode] N3VectorValue]];
+            }
+        }
+    }
+    _draggedNode = 0;
+    _isDraggingNode = NO;
+
 	if (_draggingTransverse) {
 		_draggingTransverse = NO;
 		[self _sendDidEditCurvedPath];
@@ -1190,7 +1307,24 @@ extern int splitPosition[ 3];
     [super mouseUp:event];
 }
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+    unichar c = [[theEvent characters] characterAtIndex:0];
+    
+    if(c == NSDeleteCharacter || c == NSDeleteFunctionKey)
+	{
+		// Delete node
+		if (_isDraggingNode) {
+			[_curvedPath removeNodeAtIndex:_draggedNode];
+            _draggedNode = -1;
+			[self setNeedsDisplay:YES];
+            [self _setNeedsNewRequest];
 
+		}
+    } else {
+        [super keyDown:theEvent];
+    }
+}
 - (void)scrollWheel:(NSEvent *)theEvent
 {
 	// Scroll/Move transverse lines
@@ -1218,6 +1352,12 @@ extern int splitPosition[ 3];
 		[self _setNeedsNewRequest];
 		[self setNeedsDisplay: YES];
 	}
+    
+    // Scroll/push the curve in and out
+	else if( [theEvent modifierFlags] & NSControlKeyMask) {
+        [self _pushBezierPath:[theEvent deltaY] * .4];
+    }
+    
 	else
 	{
 		N3Vector initialNormal;
@@ -1309,9 +1449,18 @@ extern int splitPosition[ 3];
 	{
         request = [[CPRStretchedGeneratorRequest alloc] init];
         
-        request.pixelsWide = [self bounds].size.width*_extraWidthFactor;
-        request.pixelsHigh = [self bounds].size.height*_extraWidthFactor;
-		request.slabWidth = _curvedPath.thickness;
+        if( [[self windowController] viewsPosition] == VerticalPosition)
+        {
+            request.pixelsWide = [self bounds].size.height*_extraWidthFactor;
+            request.pixelsHigh = [self bounds].size.width*_extraWidthFactor;
+		}
+        else
+        {
+            request.pixelsWide = [self bounds].size.width*_extraWidthFactor;
+            request.pixelsHigh = [self bounds].size.height*_extraWidthFactor;
+		}
+        
+        request.slabWidth = _curvedPath.thickness;
         
         request.slabSampleDistance = 0;
         request.bezierPath = _curvedPath.bezierPath;
@@ -1426,7 +1575,8 @@ extern int splitPosition[ 3];
     
     if (numVectors) {
         newPoint.x = 0;
-        newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        //        newPoint.y = N3VectorLength(N3VectorProject(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal));
+        newPoint.y = N3VectorDotProduct(N3VectorSubtract(vectors[0], midHeightPoint), projectionNormal);
         newPoint.y /= sampleSpacing;
         newPoint.y += (CGFloat)pixelsHigh/2.0;
         newPoint.z = relativePositions[0];
@@ -1494,7 +1644,7 @@ extern int splitPosition[ 3];
     glPushMatrix();
     glMultMatrixd(pixToSubdrawRectOpenGLTransform);    
 	for (indexNumber in verticalLines) {
-        relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]];
+        relativePostion = [self _relativePositionForIndex:[indexNumber integerValue]]; // this is dumb, just do one iteration! and do it in log(n) time while your at it to!
         centerlineVector = [self _centerlinePixVectorForRelativePosition:relativePostion];
         
 		lineStart = N3VectorMake([indexNumber doubleValue], centerlineVector.y - length/2.0, 0);
@@ -1939,8 +2089,8 @@ extern int splitPosition[ 3];
 	CGFloat distance;
 	CGFloat minDistance;
     
-    if ([curDCM pixelSpacingX] == 0) {
-        return 0;
+    if ([curDCM pixelSpacingX] == 0 || [verticalLines count] == 0) {
+        return CGFLOAT_MAX;
     }
     
 	pixToViewTransform = N3AffineTransformInvert([self viewToPixTransform]);
@@ -1979,8 +2129,8 @@ extern int splitPosition[ 3];
 	_CPRStretchedViewPlaneRun *planeRun;
 	N3MutableBezierPath *planeRunBezierPath;
 	
-    if ([curDCM pixelSpacingX] == 0) {
-        return 0;
+    if ([curDCM pixelSpacingX] == 0 || [planeRuns count] == 0) {
+        return CGFLOAT_MAX;
     }
     
 	pointVector = N3VectorMakeFromNSPoint(point);
@@ -2207,7 +2357,7 @@ extern int splitPosition[ 3];
         relativePositionIntersection = [self.centerlinePath vectorAtEnd];
     } else {
         relativePositionPlane = N3PlaneMake(N3VectorMake(0, 0, relativePosition), N3VectorMake(0, 0, 1));
-        intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane];
+        intersections = [self.centerlinePath intersectionsWithPlane:relativePositionPlane]; // TODO make this O(log(n)) not O(n)
         
         if ([intersections count] == 0) {
             return N3VectorZero;
@@ -2226,7 +2376,7 @@ extern int splitPosition[ 3];
     
     plane = N3PlaneMake(N3VectorMake((CGFloat)index, 0, 0), N3VectorMake(1, 0, 0));
     
-    intersections = [_centerlinePath intersectionsWithPlane:plane];
+    intersections = [_centerlinePath intersectionsWithPlane:plane]; // TODO make this O(log(n)) not O(n) 
     if ([intersections count] == 0) {
         return 0;
     }
@@ -2279,6 +2429,28 @@ extern int splitPosition[ 3];
     mmDistance = pixDistance * mmPerPixel;
     
     return N3VectorAdd(vector, N3VectorScalarMultiply(projectionNormal, mmDistance));
+}
+
+- (void)_pushBezierPath:(CGFloat)distance
+{
+    NSInteger i;
+    CGFloat relativePosition;
+    N3Vector tangent;
+    N3Vector normal;
+    N3Vector newNode;
+    CPRCurvedPathControlToken controlToken;
+    
+    [self _sendWillEditCurvedPath];
+    for (i = 0; i < [[_curvedPath nodes] count]; i++) {
+        relativePosition = [_curvedPath relativePositionForNodeAtIndex:i];
+        
+        tangent = [_curvedPath.bezierPath tangentAtRelativePosition:relativePosition];
+        normal = N3VectorNormalize(N3VectorCrossProduct(_projectionNormal, tangent));
+        
+        newNode = N3VectorAdd([[[_curvedPath nodes] objectAtIndex:i] N3VectorValue], N3VectorScalarMultiply(normal, distance));
+        [_curvedPath moveNodeAtIndex:i toVector:newNode];
+    }
+    [self _sendDidEditCurvedPath];
 }
 
 @end

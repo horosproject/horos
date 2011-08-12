@@ -1702,11 +1702,11 @@ static NSConditionLock *threadLock = nil;
 				
 			case ask:
 				switch (NSRunInformationalAlertPanel(
-													 NSLocalizedString(@"OsiriX Database",@"OsiriX Database"),
-													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?",@"Should I copy these files in OsiriX Database folder, or only copy links to these files?"),
-													 NSLocalizedString(@"Copy Files",@"Copy Files"),
-													 NSLocalizedString(@"Cancel",@"Cancel"),
-													 NSLocalizedString(@"Copy Links",@"Copy Links")))
+													 NSLocalizedString(@"OsiriX Database", nil),
+													 NSLocalizedString(@"Should I copy these files in OsiriX Database folder, or only copy links to these files?", nil),
+													 NSLocalizedString(@"Copy Files", nil),
+													 NSLocalizedString(@"Cancel", nil),
+													 NSLocalizedString(@"Copy Links", nil)))
 													{
 					case NSAlertDefaultReturn:
 					break;
@@ -6925,14 +6925,24 @@ static BOOL withReset = NO;
 		
         int pos = proposedPosition;
 		
+//        NSView* view = [[sender subviews] objectAtIndex:0];
+        CGFloat scrollbarWidth = 0;
+//        if ([view isKindOfClass:[NSScrollView class]]) {
+//            NSScroller* scroller = [(NSScrollView*)view verticalScroller];
+//            if ([(NSScrollView*)view hasVerticalScroller])
+//                scrollbarWidth = [scroller frame].size.width;
+//        }
+        
+        scrollbarWidth = 17;
+        
 		pos += size.width/2;
-		pos -= 17;
+		pos -= scrollbarWidth;
 		
         pos /= (size.width + space.width*2);
 		if( pos <= 0) pos = 1;
 		
         pos *= (size.width + space.width*2);
-		pos += 17;
+		pos += scrollbarWidth;
 		
         return pos;
     }

@@ -56,7 +56,7 @@ static float deg2rad = 3.14159265358979/180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -579,19 +579,22 @@ static float deg2rad = 3.14159265358979/180.0;
 	s[ 0][ 0] = HUGE_VALF; s[ 0][ 1] = HUGE_VALF; s[ 0][ 2] = HUGE_VALF;
 	s[ 1][ 0] = HUGE_VALF; s[ 1][ 1] = HUGE_VALF; s[ 1][ 2] = HUGE_VALF;
 	
-	originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
-	originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
+    if( mp2.frame.size.height > 10 && mp2.frame.size.width > 10)
+    {
+        originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
+        originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
 	
-	[mp2.pix orientation: vectorA];
-	[mp1.pix orientation: vectorB];
+        [mp2.pix orientation: vectorA];
+        [mp1.pix orientation: vectorB];
 	
-	float slicePoint[ 3];
-	float sliceVector[ 3];
+        float slicePoint[ 3];
+        float sliceVector[ 3];
 	
-	if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
-	{
-		[mp1 computeSliceIntersection: mp2.pix sliceFromTo: s vector: vectorB origin: originB];
-	}
+        if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
+        {
+            [mp1 computeSliceIntersection: mp2.pix sliceFromTo: s vector: vectorB origin: originB];
+        }
+    }
 }
 
 - (void) propagateOriginRotationAndZoomToTransverseViews: (CPRTransverseView*) sender
@@ -2210,7 +2213,8 @@ static float deg2rad = 3.14159265358979/180.0;
     float windowLevel;
     float orientation[6];
     float origin[3];
-    CPRStraightenedGeneratorRequest *request;
+    CPRStraightenedGeneratorRequest *requestStraightened = nil;
+    CPRStretchedGeneratorRequest *requestStretched = nil;
     CPRVolumeData *curvedVolumeData;
     CPRUnsignedInt16ImageRep *imageRep;
     unsigned char *dataPtr;
@@ -2238,13 +2242,13 @@ static float deg2rad = 3.14159265358979/180.0;
 	
     [cprView getWLWW:&windowLevel :&windowWidth];
     NSString *f = nil;
-    	
+    
 	if( [sender tag])
 	{
 		NSMutableArray *producedFiles = [NSMutableArray array];
 		
         dicomExport = [[[DICOMExport alloc] init] autorelease];
-        		
+        
         [dicomExport setSeriesDescription:self.exportSeriesName]; 
         [dicomExport setSeriesNumber:9983]; 
         
@@ -2255,9 +2259,17 @@ static float deg2rad = 3.14159265358979/180.0;
 		
         [dicomExport setSourceFile:[[pixList[0] lastObject] sourceFile]];
         
-		exportWidth = NSWidth([cprView bounds]);
-        exportHeight = NSHeight([cprView bounds]);
-		
+		if( self.viewsPosition == VerticalPosition)
+        {
+			exportWidth = NSHeight([cprView bounds]);
+            exportHeight = NSWidth([cprView bounds]);
+		}
+        else
+        {
+            exportWidth = NSWidth([cprView bounds]);
+            exportHeight = NSHeight([cprView bounds]);
+		}
+        
 		if( self.exportSeriesType == CPRTransverseViewsExportSeriesType && self.exportSequenceType != CPRCurrentOnlyExportSequenceType)
 		{
 			exportWidth = NSWidth([middleTransverseView bounds]);
@@ -2323,18 +2335,41 @@ static float deg2rad = 3.14159265358979/180.0;
 		{
 			if( self.exportImageFormat == CPR16BitExportImageFormat)
 			{
-                request = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
-                request.pixelsWide = exportWidth;
-                request.pixelsHigh = exportHeight;
-                request.bezierPath = curvedPath.bezierPath;
-                request.initialNormal = curvedPath.initialNormal;    
+                if( cprType == CPRStraightenedType)
+                {
+                    requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStraightened.pixelsWide = exportWidth;
+                    requestStraightened.pixelsHigh = exportHeight;
+                    requestStraightened.bezierPath = curvedPath.bezierPath;
+                    requestStraightened.initialNormal = curvedPath.initialNormal;    
+                    
+                    curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStraightened volumeData:cprView.volumeData];                            
+                }
+                else
+                {
+                    requestStretched = [[[CPRStretchedGeneratorRequest alloc] init] autorelease];
+                    requestStretched.pixelsWide = exportWidth;
+                    requestStretched.pixelsHigh = exportHeight;
+                    requestStretched.bezierPath = curvedPath.bezierPath;
+                    
+                    N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
+                    N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                    
+                    requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( curvedPath.angle, curveDirection));
+                    requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
+                                                          [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                    
+                    curvedVolumeData = [CPRGenerator synchronousRequestVolume:requestStretched volumeData:cprView.volumeData];                            
+                }  
                 
-                curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];                            
-                if(curvedVolumeData)
+                if( curvedVolumeData)
                 {
                     imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:0];
                     dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
                     [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                    
+                    if( self.viewsPosition == VerticalPosition)
+                        dicomExport.rotateRawDataBy90degrees = YES;
                     
                     [dicomExport setOffset:[imageRep offset]];
                     [dicomExport setSigned:NO];
@@ -2373,12 +2408,29 @@ static float deg2rad = 3.14159265358979/180.0;
 			
 			if( self.exportSeriesType == CPRRotationExportSeriesType) // 3D rotation
 			{
-				request = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
-				request.pixelsWide = exportWidth;
-				request.pixelsHigh = exportHeight;
-				request.bezierPath = curvedPath.bezierPath;
-				request.initialNormal = curvedPath.initialNormal;    
-				
+                if( cprType == CPRStraightenedType)
+                {
+                    requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStraightened.pixelsWide = exportWidth;
+                    requestStraightened.pixelsHigh = exportHeight;
+                    requestStraightened.bezierPath = curvedPath.bezierPath;
+                    requestStraightened.initialNormal = curvedPath.initialNormal;
+                }
+                else
+                {
+                    requestStretched = [[[CPRStretchedGeneratorRequest alloc] init] autorelease];
+                    requestStretched.pixelsWide = exportWidth;
+                    requestStretched.pixelsHigh = exportHeight;
+                    requestStretched.bezierPath = curvedPath.bezierPath;
+                    
+                    N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
+                    N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                    
+                    requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( curvedPath.angle, curveDirection));
+                    requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
+                                                                   [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                }
+                
 				N3Vector initialNormal = mprView1.curvedPath.initialNormal;
 				
 				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
@@ -2397,16 +2449,34 @@ static float deg2rad = 3.14159265358979/180.0;
 					
 					if( self.exportImageFormat == CPR16BitExportImageFormat)
 					{
-						request.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
-						
-						curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
-						if(curvedVolumeData)
+                        if( cprType == CPRStraightenedType)
+                        {
+                            requestStraightened.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
+                            
+                            curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStraightened volumeData:cprView.volumeData];
+						}
+                        else
+                        {
+                            N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
+                            N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                            
+                            requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( angle, curveDirection));
+                            requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
+                                                                           [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                            
+                            curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStretched volumeData:cprView.volumeData];
+						}
+                        
+                        if(curvedVolumeData)
 						{
 							imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:0];
 							dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
 							
 							[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
 							
+                            if( self.viewsPosition == VerticalPosition)
+                                dicomExport.rotateRawDataBy90degrees = YES;
+                            
 							[dicomExport setOffset:[imageRep offset]];
 							[dicomExport setSigned:NO];
 							
@@ -2429,9 +2499,9 @@ static float deg2rad = 3.14159265358979/180.0;
 						
 						[cprView waitUntilPixUpdate];
                         // transverse view use synchronous generators, so this is no longer needed
-//						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-//						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-//						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                        //						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                        //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                        //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
 						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
 					}
@@ -2448,37 +2518,68 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 			else if(self.exportSeriesType == CPRSlabExportSeriesType)
 			{
-				request = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
-				request.pixelsWide = exportWidth;
-				request.pixelsHigh = exportHeight;
-				if (self.exportSequenceNumberOfFrames > 1)
-				{
-//					if (self.exportSlabThinknessSameAsSlabThickness)
-//						request.slabWidth = [self getClippingRangeThicknessInMm];
-//					else
-						request.slabWidth = exportSlabThickness;
-					
-					if (self.exportSliceIntervalSameAsVolumeSliceInterval)
-						request.slabSampleDistance = [cprView.volumeData minPixelSpacing];
-					else
-						request.slabSampleDistance = self.exportSliceInterval;
-				}
-				request.bezierPath = curvedPath.bezierPath;
-				request.initialNormal = curvedPath.initialNormal;    
-				
-				Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
+                Wait *progress = [[Wait alloc] initWithString:NSLocalizedString(@"Creating series", nil)];
 				[progress showWindow: self];
 				[progress setCancel: YES];
 				[[progress progress] setMaxValue: self.exportSequenceNumberOfFrames];
-				
-				curvedVolumeData = [CPRGenerator synchronousRequestVolume:request volumeData:cprView.volumeData];
+                
+                if( cprType == CPRStraightenedType)
+                {
+                    requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStraightened.pixelsWide = exportWidth;
+                    requestStraightened.pixelsHigh = exportHeight;
+                    if (self.exportSequenceNumberOfFrames > 1)
+                    {
+                        //					if (self.exportSlabThinknessSameAsSlabThickness)
+                        //						requestStraightened.slabWidth = [self getClippingRangeThicknessInMm];
+                        //					else
+						requestStraightened.slabWidth = exportSlabThickness;
+                        
+                        if (self.exportSliceIntervalSameAsVolumeSliceInterval)
+                            requestStraightened.slabSampleDistance = [cprView.volumeData minPixelSpacing];
+                        else
+                            requestStraightened.slabSampleDistance = self.exportSliceInterval;
+                    }
+                    requestStraightened.bezierPath = curvedPath.bezierPath;
+                    requestStraightened.initialNormal = curvedPath.initialNormal;
+                    curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStraightened volumeData:cprView.volumeData];
+                }
+                else
+                {
+                    requestStretched = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStretched.pixelsWide = exportWidth;
+                    requestStretched.pixelsHigh = exportHeight;
+                    if (self.exportSequenceNumberOfFrames > 1)
+                    {
+                        //					if (self.exportSlabThinknessSameAsSlabThickness)
+                        //						requestStretched.slabWidth = [self getClippingRangeThicknessInMm];
+                        //					else
+						requestStretched.slabWidth = exportSlabThickness;
+                        
+                        if (self.exportSliceIntervalSameAsVolumeSliceInterval)
+                            requestStretched.slabSampleDistance = [cprView.volumeData minPixelSpacing];
+                        else
+                            requestStretched.slabSampleDistance = self.exportSliceInterval;
+                    }
+                    requestStretched.bezierPath = curvedPath.bezierPath;
+                    
+                    N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
+                    N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                    
+                    requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( curvedPath.angle, curveDirection));
+                    requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
+                                                                   [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                    
+                    curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStretched volumeData:cprView.volumeData];
+                }
+                
 				if(curvedVolumeData)
 				{
 					for( int i = 0; i < self.exportSequenceNumberOfFrames; i++)
 					{
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
-//						if (self.exportImageFormat == CPR16BitExportImageFormat)
+                        //						if (self.exportImageFormat == CPR16BitExportImageFormat)
 						{  
                             if (self.exportReverseSliceOrder == NO)
                                 imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:i];
@@ -2486,8 +2587,11 @@ static float deg2rad = 3.14159265358979/180.0;
                                 imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:self.exportSequenceNumberOfFrames - i - 1];
                             
                             dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
-
+                            
                             [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                            
+                            if( self.viewsPosition == VerticalPosition)
+                                dicomExport.rotateRawDataBy90degrees = YES;
                             
                             [dicomExport setOffset:[imageRep offset]];
                             [dicomExport setSigned:NO];
@@ -2562,9 +2666,9 @@ static float deg2rad = 3.14159265358979/180.0;
 						}
 						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
 					}
-						
+                    
 					[pool release];
-						
+                    
 					[progress incrementBy: 1];
 					if( [progress aborted])
 						break;
@@ -2602,27 +2706,27 @@ static float deg2rad = 3.14159265358979/180.0;
         cprView.displayInfo = displayInfo;
 		self.displayMousePosition = copyDisplayMousePosition;
 		cprView.displayTransverseLines = YES;
-			
+        
     }
-//		else
-//		{
-//			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :[qtFileArray count]];
-//			[mov createMovieQTKit: YES  :NO :[[filesList[0] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];			
-//			[mov release];
-//		}
-		
-//		if( self.dcmFormat) 
-//			[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
-		
-//		[self setLOD: savedLOD];
-		
-//		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
-		
-//		mprView1.camera = c1;
-//		mprView2.camera = c2;
-//		mprView3.camera = c3;
-		
-//		[self updateViewsAccordingToFrame: nil];
+    //		else
+    //		{
+    //			QuicktimeExport *mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :[qtFileArray count]];
+    //			[mov createMovieQTKit: YES  :NO :[[filesList[0] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];			
+    //			[mov release];
+    //		}
+    
+    //		if( self.dcmFormat) 
+    //			[curExportView.vrView restoreViewSizeAfterMatrix3DExport];
+    
+    //		[self setLOD: savedLOD];
+    
+    //		[[NSUserDefaults standardUserDefaults] setInteger: dcmMode forKey: @"lastMPRdcmExportMode"];
+    
+    //		mprView1.camera = c1;
+    //		mprView2.camera = c2;
+    //		mprView3.camera = c3;
+    
+    //		[self updateViewsAccordingToFrame: nil];
 	
 	[qtFileArray release];
 	qtFileArray = nil;
@@ -2971,6 +3075,8 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	if( [notification object] == [self window])
 	{
+        cprView.rotation = 0;
+        
 		[[self window] setAcceptsMouseMovedEvents: NO];
 		
 		windowWillClose = YES;
@@ -3163,7 +3269,15 @@ static float deg2rad = 3.14159265358979/180.0;
 		
 		[toolbarItem setView: tbCPRType];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRType frame]), NSHeight([tbCPRType frame]))];
-    }    
+    }
+    else if ([itemIdent isEqualToString: @"tbViewsPosition"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Views",nil)];
+		
+		[toolbarItem setView: tbViewsPosition];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbViewsPosition frame]), NSHeight([tbViewsPosition frame]))];
+    }
 	else if ([itemIdent isEqualToString: @"tbStraightenedCPRAngle"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Curved MPR Angle",nil)];
@@ -3318,7 +3432,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3327,7 +3441,7 @@ static float deg2rad = 3.14159265358979/180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3769,6 +3883,54 @@ static float deg2rad = 3.14159265358979/180.0;
     }
 }
 
+- (void)setViewsPosition:(ViewsPosition) newViewsPosition
+{
+    NSDisableScreenUpdates();
+    
+    viewsPosition = newViewsPosition;
+    
+    switch ( viewsPosition)
+    {
+        case NormalPosition:
+            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+            [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+            cprView.rotation = 0;
+        break;
+        
+        case VerticalPosition:
+            [verticalSplit setPosition:([verticalSplit minPossiblePositionOfDividerAtIndex:0]+[verticalSplit maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+            [horizontalSplit2 setPosition: [horizontalSplit2 minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+            cprView.rotation = 90;
+        break;
+        
+        case HorizontalPosition:
+             [horizontalSplit2 setPosition:([horizontalSplit2 minPossiblePositionOfDividerAtIndex:0]+[horizontalSplit2 maxPossiblePositionOfDividerAtIndex:0])/2 ofDividerAtIndex:0];
+             [verticalSplit setPosition:[verticalSplit minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+            cprView.rotation = 0;
+        break;
+    }
+    
+    [mprView1 restoreCamera];
+	mprView1.camera.forceUpdate = YES;
+	[mprView1 updateViewMPR];
+	
+	[mprView2 restoreCamera];
+	mprView2.camera.forceUpdate = YES;
+	[mprView2 updateViewMPR];
+	
+	[mprView3 restoreCamera];
+	mprView3.camera.forceUpdate = YES;
+	[mprView3 updateViewMPR];
+    
+    NSEnableScreenUpdates();
+}
+
+- (ViewsPosition)viewsPosition
+{
+    return viewsPosition;
+}
+
+
 //- (void)setStraightenedCPRAngle:(double)newAngle
 //{
 //    N3Vector initialNormal;
@@ -3883,11 +4045,20 @@ static float deg2rad = 3.14159265358979/180.0;
     if (context == MPRPlaneObservationContext) {        
         if ([keyPath isEqualToString:@"plane"]) {
 			if (object == mprView1) {
-				cprView.orangePlane = [mprView1 plane];
+				if( [mprView1 frame].size.width > 10 && [mprView1 frame].size.height > 10)
+                   cprView.orangePlane = [mprView1 plane];
+                else
+                    cprView.orangePlane = N3PlaneInvalid;
 			} else if (object == mprView2) {
-				cprView.purplePlane = [mprView2 plane];
+                if( [mprView2 frame].size.width > 10 && [mprView2 frame].size.height > 10)
+                    cprView.purplePlane = [mprView2 plane];
+                else
+                    cprView.purplePlane = N3PlaneInvalid;
 			} else if (object == mprView3) {
-				cprView.bluePlane = [mprView3 plane];
+                 if( [mprView3 frame].size.width > 10 && [mprView3 frame].size.height > 10)
+                     cprView.bluePlane = [mprView3 plane];
+                 else
+                     cprView.bluePlane = N3PlaneInvalid;
 			}
         }
     } else {

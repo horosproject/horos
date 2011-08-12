@@ -306,6 +306,15 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	LOD = l;
 }
 
+- (void) reshape
+{
+    // To display or hide the resulting plane on the CPR view
+    [self willChangeValueForKey:@"plane"];
+    [self didChangeValueForKey:@"plane"];
+    
+    [super reshape];
+}
+
 - (void) updateViewMPR:(BOOL) computeCrossReferenceLines
 {
 	if( [self frame].size.width <= 0)
@@ -1163,13 +1172,37 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (NSPoint) centerLines
 {
+    NSPoint r = NSMakePoint( 0, 0);
+    
+    // One line or no lines : find the middle of the line
+    if( crossLinesB[ 0][ 0] == HUGE_VALF)
+    {
+        NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+        NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+            
+        r.x = a2.x + (a1.x - a2.x) / 2.;
+        r.y = a2.y + (a1.y - a2.y) / 2.;
+        
+        return r;
+    }
+    
+    // One line or no lines : find the middle of the line
+    if( crossLinesA[ 0][ 0] == HUGE_VALF)
+    {
+        NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
+        NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);
+        
+        r.x = b2.x + (b1.x - b2.x) / 2.;
+        r.y = b2.y + (b1.y - b2.y) / 2.;
+        
+        return r;
+    }
+    
 	NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
 	NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
 	
 	NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
 	NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);
-	
-	NSPoint r = NSMakePoint( 0, 0);
 	
 	[DCMView intersectionBetweenTwoLinesA1: a1 A2: a2 B1: b1 B2: b2 result: &r];
 	
@@ -1208,20 +1241,25 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		}
 		else
 		{
-			float distance1, distance2;
+			float distance1 = 1000, distance2 = 1000;
 			
-			NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
-			NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+            if( crossLinesA[ 0][ 0] != HUGE_VALF)
+            {
+                NSPoint a1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+                NSPoint a2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+                [DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
+                distance1 /= curDCM.pixelSpacingX;
+            }
+            
+            if( crossLinesB[ 0][ 0] != HUGE_VALF)
+            {
+                NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
+                NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);			
 			
-			NSPoint b1 = NSMakePoint( crossLinesB[ 0][ 0], crossLinesB[ 0][ 1]);
-			NSPoint b2 = NSMakePoint( crossLinesB[ 1][ 0], crossLinesB[ 1][ 1]);			
-			
-			[DCMView DistancePointLine:mouseLocation :a1 :a2 :&distance1];
-			[DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
-			
-			distance1 /= curDCM.pixelSpacingX;
-			distance2 /= curDCM.pixelSpacingX;
-			
+                [DCMView DistancePointLine:mouseLocation :b1 :b2 :&distance2];
+                distance2 /= curDCM.pixelSpacingX;
+			}
+            
 			if( distance1 * scaleValue < 10 || distance2 * scaleValue < 10)
 			{
 				return 1;
@@ -1431,6 +1469,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				[windowController.verticalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
 				[windowController.horizontalSplit1 setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 				[windowController.horizontalSplit2 setPosition: splitPosition[ 2] ofDividerAtIndex: 0];
+                
+                [windowController.mprView1 restoreCamera];
+                windowController.mprView1.camera.forceUpdate = YES;
+                [windowController.mprView1 updateViewMPR];
+                
+                [windowController.mprView2 restoreCamera];
+                windowController.mprView2.camera.forceUpdate = YES;
+                [windowController.mprView2 updateViewMPR];
+                
+                [windowController.mprView3 restoreCamera];
+                windowController.mprView3.camera.forceUpdate = YES;
+                [windowController.mprView3 updateViewMPR];
+                
+                [windowController.cprView setScaleValue: 0.8];
 			}
 			
 			[self restoreCamera];

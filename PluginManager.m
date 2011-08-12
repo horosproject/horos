@@ -403,7 +403,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		if ([[NSFileManager defaultManager] fileExistsAtPath:sysPath] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:sysPath attributes:nil];
 		#endif
 		
-		NSArray* paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, nil];
+		NSArray* paths = [NSArray arrayWithObjects:appPath, userPath, sysPath, [NSNull null], nil]; // [NSNull null] is a placeholder for launch parameters load commands
 		
 		[plugins release];
 		[pluginsDict release];
@@ -427,17 +427,27 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
 		#ifndef OSIRIX_LIGHT
-		for (NSString* path in paths)
+		for (id path in paths)
 		{
-			NSArray* donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:NSCharacterSet.newlineCharacterSet];
-			
-			if ([donotloadnames containsObject:@"*"])
-				break;
-			
-			NSEnumerator *e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
-			NSString *name;
-			
-			while ( name = [e nextObject] )
+            NSArray* donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+            if ([donotloadnames containsObject:@"*"])
+                break;
+            
+            NSEnumerator* e = nil;
+            if ([path isKindOfClass:[NSString class]])
+                e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
+            else if (path == [NSNull null]) {
+                path = @"/";
+                NSMutableArray* cl = [NSMutableArray array];
+                NSArray* args = [[NSProcessInfo processInfo] arguments];
+                for (NSInteger i = 0; i < [args count]; ++i)
+                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1)
+                        [cl addObject:[args objectAtIndex:++i]];
+                e = [cl objectEnumerator];
+            }
+            
+			NSString* name;
+			while (name = [e nextObject])
 			{
 				if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]) && ![donotloadnames containsObject:[name stringByDeletingPathExtension]])
 				{
@@ -868,7 +878,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 	NSMutableArray *paths = [NSMutableArray array];
 	[paths addObjectsFromArray:[PluginManager activeDirectories]];
 	[paths addObjectsFromArray:[PluginManager inactiveDirectories]];
-	
+    
     NSString *path;
 	
     NSMutableArray *plugins = [NSMutableArray array];

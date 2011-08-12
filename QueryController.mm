@@ -1931,25 +1931,37 @@ extern "C"
 		[sender selectText: self];
 }
 
-// This function calls many GUI function, it has to be called from the main thread
 - (void) performQuery:(NSNumber*) showErrors
 {
 	checkAndViewTry = -1;
 	
+    if( [NSThread isMainThread] == NO)
+        showErrors = [NSNumber numberWithBool: NO];
+    
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	[progressIndicator startAnimation:nil];
-	@synchronized( self)
-	{
-		if( performingCFind == NO)
-		{
-			performingCFind = YES;
-			[queryManager performQuery: [showErrors boolValue]];
-			performingCFind = NO;
-		}
-	}
-	[progressIndicator stopAnimation:nil];
-	[resultArray sortUsingDescriptors: [self sortArray]];
-	[outlineView reloadData];
+    
+    @synchronized( self)
+    {
+        if( performingCFind == NO)
+        {
+            performingCFind = YES;
+            
+            if( [NSThread isMainThread] == NO)
+                [progressIndicator performSelectorOnMainThread: @selector( startAnimation:) withObject:nil waitUntilDone: NO];
+            else
+                [progressIndicator startAnimation:nil];
+            
+            [queryManager performQuery: [showErrors boolValue]];
+            
+            if( [NSThread isMainThread] == NO)
+                [progressIndicator performSelectorOnMainThread: @selector( stopAnimation:) withObject:nil waitUntilDone: NO];
+            else
+                [progressIndicator stopAnimation:nil];
+            
+            performingCFind = NO;
+        }
+    }
+    
 	[pool release];
 }
 

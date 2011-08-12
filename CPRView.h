@@ -76,7 +76,7 @@ typedef NSInteger CPRViewReformationType;
 @property (nonatomic) BOOL displayTransverseLines;
 @property (nonatomic, readwrite, assign) BOOL displayCrossLines;
 
-
+@property (nonatomic, readwrite, assign) float rotation, scaleValue;
 
 
 @end

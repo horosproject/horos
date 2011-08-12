@@ -18,9 +18,16 @@
 #import "VRController.h"
 #import "VRView.h"
 
+enum _ViewsPosition {
+    NormalPosition = 0,
+    HorizontalPosition = 1,
+    VerticalPosition = 2
+};
+typedef NSInteger ViewsPosition;
+
 enum _CPRType {
     CPRStraightenedType = 0,
-    CPRStretchedType = 0
+    CPRStretchedType = 1
 };
 typedef NSInteger CPRType;
 
@@ -75,8 +82,9 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
-    IBOutlet NSView *tbCPRType;
+    IBOutlet NSView *tbCPRType, *tbViewsPosition;
     CPRType cprType;
+    ViewsPosition viewsPosition;
     
     CPRVolumeData *cprVolumeData;
     CPRCurvedPath *curvedPath;
@@ -176,6 +184,8 @@ typedef NSInteger CPRExportRotationSpan;
 @property (retain) NSColor *curvedPathColor;
 @property (nonatomic) double straightenedCPRAngle;
 @property (nonatomic) CPRType cprType;
+@property (nonatomic) ViewsPosition viewsPosition;
+@property (nonatomic, readonly) CPRView *cprView;
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;

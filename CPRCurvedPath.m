@@ -77,6 +77,11 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     return _elementForControlToken(token);
 }
 
++ (CPRCurvedPathControlToken)controlTokenForNodeIndex:(NSInteger)nodeIndex
+{
+    return _controlTokenForElement(nodeIndex);
+}
+
 - (id)init
 {
     if ( (self = [super init]) ) {
@@ -243,14 +248,14 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     }
 }
 
-- (void)insertNodeAtRelativePosition:(CGFloat)relativePosition
+- (NSInteger)insertNodeAtRelativePosition:(CGFloat)relativePosition
 {
     N3Vector vectorAtRelativePosition;
     NSInteger insertIndex;
     
     if ([_nodes count] < 2) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node into a path that on has %d nodes", [_nodes count]);
-        return;
+        return -1;
     }
     
     for (insertIndex = 0; insertIndex < [_nodes count]; insertIndex++) {
@@ -267,16 +272,17 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     
     if (insertIndex > 0 && N3VectorDistance([[_nodes objectAtIndex:insertIndex-1] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the previous node");
-        return;
+        return -1;
     }
     if (insertIndex <= [_nodes count]-1 && N3VectorDistance([[_nodes objectAtIndex:insertIndex] N3VectorValue], vectorAtRelativePosition) < _CPRCurvedPathNodeSpacingThreshold) {
         NSLog(@"Warning, CPRCurvedPath trying to insert a node too close the the next node");
-        return;
+        return -1;
     }
             
     [_nodes insertObject:[NSValue valueWithN3Vector:vectorAtRelativePosition] atIndex:insertIndex];
     
     self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
+    return insertIndex;
 }
 
 - (void)removeNodeAtIndex:(NSInteger)index
@@ -325,6 +331,12 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
         relativePosition = [self relativePositionForPoint:point transform:transform];;
         _transverseSectionSpacing = ABS(_transverseSectionPosition - relativePosition)*[_bezierPath length];
     }
+}
+
+- (void)moveNodeAtIndex:(NSInteger)index toVector:(N3Vector)vector // for this exceptional method, the vector is given in patient space
+{
+    // hacky implementation, but why not....
+    [self moveControlToken:[[self class] controlTokenForNodeIndex:index] toPoint:NSPointFromN3Vector(vector) transform:N3AffineTransformMakeTranslation(0, 0, vector.z)];
 }
 
 - (CPRCurvedPathControlToken)controlTokenNearPoint:(NSPoint)point transform:(N3AffineTransform)transform;

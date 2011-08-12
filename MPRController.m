@@ -451,23 +451,26 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	float vectorA[ 9], vectorB[ 9];
 	float originA[ 3], originB[ 3];
-
+    
 	s[ 0][ 0] = HUGE_VALF; s[ 0][ 1] = HUGE_VALF; s[ 0][ 2] = HUGE_VALF;
 	s[ 1][ 0] = HUGE_VALF; s[ 1][ 1] = HUGE_VALF; s[ 1][ 2] = HUGE_VALF;
 	
-	originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
-	originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
-	
-	[mp2.pix orientation: vectorA];
-	[mp1.pix orientation: vectorB];
-	
-	float slicePoint[ 3];
-	float sliceVector[ 3];
-	
-	if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
-	{
-		[mp1 computeSliceIntersection: mp2.pix sliceFromTo: s vector: vectorB origin: originB];
-	}
+    if( mp2.frame.size.height > 10 && mp2.frame.size.width > 10)
+    {
+        originA[ 0] = mp2.pix.originX; originA[ 1] = mp2.pix.originY; originA[ 2] = mp2.pix.originZ;
+        originB[ 0] = mp1.pix.originX; originB[ 1] = mp1.pix.originY; originB[ 2] = mp1.pix.originZ;
+        
+        [mp2.pix orientation: vectorA];
+        [mp1.pix orientation: vectorB];
+        
+        float slicePoint[ 3];
+        float sliceVector[ 3];
+        
+        if( intersect3D_2Planes( vectorA+6, originA, vectorB+6, originB, sliceVector, slicePoint) == noErr)
+        {
+            [mp1 computeSliceIntersection: mp2.pix sliceFromTo: s vector: vectorB origin: originB];
+        }
+    }
 }
 
 - (void) propagateWLWW:(MPRDCMView*) sender
