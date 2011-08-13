@@ -1705,7 +1705,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		if (!bSuccess) {
 		  opj_cio_close(cio);
 		  fprintf(stderr, "failed to encode image\n");
-		  return false;
+		  return nil;
 		}
 		codestream_length = cio_tell(cio);
 		

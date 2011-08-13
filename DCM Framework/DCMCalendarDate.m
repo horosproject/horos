@@ -14,7 +14,7 @@
 
 //7/5/05 Finxed bug in dicomTime. Changed comparison to first component rather than whole string. LP
 
-#import "DCMCalendarDate.h"aTimeZone
+#import "DCMCalendarDate.h"//aTimeZone
 #import "DCM.h"
 
 @implementation DCMCalendarDate

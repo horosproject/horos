@@ -70,7 +70,7 @@
 	{
 		NSScanner *scanner = [NSScanner scannerWithString:tagString];
 		if( tagString == nil)
-			NSLog( @"");
+			NSLog( @"tagString == nil");
 		unsigned int uGroup, uElement;
 		[scanner scanHexInt:&uGroup];
 		[scanner scanString:@"," intoString:nil];
@@ -132,7 +132,7 @@
 }
 
 - (long)longValue {
-	NSLog(@"long Value for %@:%d", self.description, (long)_group<<16 + (long)_element&0xffff);
+	NSLog(@"long Value for %@:%ld", self.description, (long)_group<<16 + (long)_element&0xffff);
 	return (long)_group<<16 + (long)_element&0xffff;
 }
 
