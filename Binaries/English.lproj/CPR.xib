@@ -3229,7 +3229,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<object class="NSSegmentedControl" id="663543939">
 								<reference key="NSNextResponder" ref="275918846"/>
 								<int key="NSvFlags">268</int>
-								<string key="NSFrame">{{9, 11}, {104, 24}}</string>
+								<string key="NSFrame">{{9, 11}, {104, 25}}</string>
 								<reference key="NSSuperview" ref="275918846"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
