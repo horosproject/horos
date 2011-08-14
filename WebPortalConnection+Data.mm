@@ -624,10 +624,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(void)processLoginHtml {
 	response.templateString = [self.portal stringForPath:@"login.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processIndexHtml {
 	response.templateString = [self.portal stringForPath:@"index.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processMainHtml {
@@ -642,6 +644,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:[self.portal studiesForUser:user predicate:NULL] forKey:@"Studies"];
 	
 	response.templateString = [self.portal stringForPath:@"main.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processStudyHtml {
@@ -817,6 +820,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 		
 	response.templateString = [self.portal stringForPath:@"study.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processStudyListHtml {
@@ -824,6 +828,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:[self studyList_requestedStudies:&title] forKey:@"Studies"];	
 	if (title) [response.tokens setObject:title forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"studyList.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processSeriesHtml {
@@ -836,6 +841,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:[NSString stringWithFormat:@"%@ - %@", series.study.name, series.study.studyName] forKey:@"BackLinkLabel"];
 	
 	response.templateString = [self.portal stringForPath:@"series.html"];
+	response.mimeType = @"text/html";
 }
 
 
@@ -915,6 +921,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[response.tokens setObject:NSLocalizedString(@"Forgotten Password", @"Web portal, password forgotten, title") forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"password_forgotten.html"];
+	response.mimeType = @"text/html";
 }
 
 
@@ -972,6 +979,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"Account information for: %@", @"Web portal, account, title format (%@ is user.name)"), user.name] forKey:@"PageTitle"];
 	response.templateString = [self.portal stringForPath:@"account.html"];
+	response.mimeType = @"text/html";
 }
 
 
@@ -993,6 +1001,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:[[self.portal.database.managedObjectContext executeFetchRequest:req error:NULL] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
+	response.mimeType = @"text/html";
 }
 
 -(void)processAdminUserHtml {
@@ -1116,6 +1125,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	else if (userRecycleParams) [response.tokens setObject:self.parameters forKey:@"EditedUser"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/user.html"];
+	response.mimeType = @"text/html";
 }
 
 #pragma mark JSON
@@ -1829,6 +1839,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		NSDictionary* imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
 		response.data = data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
 	}
+	
+	response.mimeType = @"image/png";
 	
 	if (data)
 		[self.thumbnailsCache setObject:data forKey:xid];
