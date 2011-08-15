@@ -12952,6 +12952,11 @@ static BOOL needToRezoom;
 							
 							pos3Dindex++;
 						}
+						
+						if( pos3Dindex == [singleSeries count]) // No 3D-4D.... Try something else...
+						{
+							
+						}
 					}
 					else
 					{	// 3D - 4D
