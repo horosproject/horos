@@ -2864,7 +2864,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							else
 								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
 							
-							if( NoOfFrames == imageTypeFrameArray)
+							if( NoOfFrames == imageTypeFrameArray.count)
 								[dicomElements setObject: imageTypeFrameArray forKey:@"imageTypeFrameArray"];
 							else
 								NSLog( @"*** NoOfFrames != imageTypeFrameArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageTypeFrameArray.count);
