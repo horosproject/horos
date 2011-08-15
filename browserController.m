@@ -6930,10 +6930,16 @@ static BOOL withReset = NO;
         if ([view isKindOfClass:[NSScrollView class]]) {
             NSScroller* scroller = [view verticalScroller];
             BOOL overlays = NO;
-            if ([scroller respondsToSelector:@selector(scrollerStyle)])
-                overlays = (NSInteger)[scroller scrollerStyle] == 1;
-            if ([view hasVerticalScroller] && ![scroller isHidden] && !overlays)
-                scrollbarWidth = [scroller frame].size.width;
+            if ([scroller respondsToSelector:@selector(scrollerStyle)]) {
+                NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[scroller methodSignatureForSelector:@selector(scrollerStyle)]];
+                [inv setSelector:@selector(scrollerStyle)];
+                [inv invokeWithTarget:scroller];
+                NSInteger r; [inv getReturnValue:&r];
+                overlays = r == 1;
+            }
+            if (!overlays)
+                if ([view hasVerticalScroller] && ![scroller isHidden])
+                    scrollbarWidth = [scroller frame].size.width;
         }
         
         proposedPosition -= scrollbarWidth;
