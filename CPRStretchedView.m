@@ -1311,19 +1311,16 @@ extern int splitPosition[ 3];
 {
     unichar c = [[theEvent characters] characterAtIndex:0];
     
-    if(c == NSDeleteCharacter || c == NSDeleteFunctionKey)
+    if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode)
 	{
 		// Delete node
-		if (_isDraggingNode) {
 			[_curvedPath removeNodeAtIndex:_draggedNode];
             _draggedNode = -1;
 			[self setNeedsDisplay:YES];
             [self _setNeedsNewRequest];
-
-		}
-    } else {
-        [super keyDown:theEvent];
     }
+    else
+        [super keyDown:theEvent];
 }
 - (void)scrollWheel:(NSEvent *)theEvent
 {
@@ -1442,8 +1439,8 @@ extern int splitPosition[ 3];
 - (void)_sendNewRequest
 {
     CPRStretchedGeneratorRequest *request;
-    N3Vector curveDirection;
-    N3Vector baseNormal;
+//    N3Vector curveDirection;
+//    N3Vector baseNormal;
     
     if ([_curvedPath.bezierPath elementCount] >= 3)
 	{
@@ -1465,9 +1462,7 @@ extern int splitPosition[ 3];
         request.slabSampleDistance = 0;
         request.bezierPath = _curvedPath.bezierPath;
         request.projectionMode = _clippingRangeMode;
-        curveDirection = N3VectorSubtract([_curvedPath.bezierPath vectorAtEnd], [_curvedPath.bezierPath vectorAtStart]);
-        baseNormal = N3VectorNormalize(N3VectorCrossProduct(_curvedPath.baseDirection, curveDirection));
-        request.projectionNormal = N3VectorApplyTransform(baseNormal, N3AffineTransformMakeRotationAroundVector(_curvedPath.angle, curveDirection));
+        request.projectionNormal = [_curvedPath stretchedProjectionNormal];
         request.midHeightPoint = N3VectorLerp([_curvedPath.bezierPath topBoundingPlaneForNormal:request.projectionNormal].point, 
                                               [_curvedPath.bezierPath bottomBoundingPlaneForNormal:request.projectionNormal].point, 0.5);
         //        request.vertical = NO;

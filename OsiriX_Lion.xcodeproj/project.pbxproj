@@ -512,7 +512,6 @@
 		847BE3BA128BF0E100A87E98 /* mqc.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38E128BF0E100A87E98 /* mqc.c */; };
 		847BE3BB128BF0E100A87E98 /* mqc.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38F128BF0E100A87E98 /* mqc.h */; };
 		847BE3BC128BF0E100A87E98 /* openjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE390128BF0E100A87E98 /* openjpeg.c */; };
-		847BE3BD128BF0E100A87E98 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE391128BF0E100A87E98 /* openjpeg.h */; };
 		847BE3BE128BF0E100A87E98 /* opj_convert.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE392128BF0E100A87E98 /* opj_convert.c */; };
 		847BE3BF128BF0E100A87E98 /* opj_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE393128BF0E100A87E98 /* opj_convert.h */; };
 		847BE3C0128BF0E100A87E98 /* opj_includes.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE394128BF0E100A87E98 /* opj_includes.h */; };
@@ -555,7 +554,6 @@
 		847BE3E6128BF0E200A87E98 /* mqc.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE38E128BF0E100A87E98 /* mqc.c */; };
 		847BE3E7128BF0E200A87E98 /* mqc.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE38F128BF0E100A87E98 /* mqc.h */; };
 		847BE3E8128BF0E200A87E98 /* openjpeg.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE390128BF0E100A87E98 /* openjpeg.c */; };
-		847BE3E9128BF0E200A87E98 /* openjpeg.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE391128BF0E100A87E98 /* openjpeg.h */; };
 		847BE3EA128BF0E200A87E98 /* opj_convert.c in Sources */ = {isa = PBXBuildFile; fileRef = 847BE392128BF0E100A87E98 /* opj_convert.c */; };
 		847BE3EB128BF0E200A87E98 /* opj_convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE393128BF0E100A87E98 /* opj_convert.h */; };
 		847BE3EC128BF0E200A87E98 /* opj_includes.h in Headers */ = {isa = PBXBuildFile; fileRef = 847BE394128BF0E100A87E98 /* opj_includes.h */; };
@@ -707,7 +705,6 @@
 		84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98313F41800005A5D02 /* normalPosition.tif */; };
 		84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
-		84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
@@ -805,7 +802,6 @@
 		A9897D9B0D4A142200BAC447 /* displayRGB.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D970D4A142200BAC447 /* displayRGB.tif */; };
 		A9897D9C0D4A142200BAC447 /* displayTotoku.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9897D980D4A142200BAC447 /* displayTotoku.tif */; };
 		A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
-		A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
 		A98FFBEA0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A98FFBEB0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
 		A98FFBEC0CA92B58000291C8 /* altivecFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = A98FFBE30CA92B58000291C8 /* altivecFunctions.c */; };
@@ -1714,7 +1710,6 @@
 		ABE46F970A76410F00327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1A09B6828200545F5E /* jcdctmgr.c */; };
 		ABE46F980A76410F00327466 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1B09B6828200545F5E /* jcdiffct.c */; };
 		ABE46F990A76410F00327466 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1C09B6828200545F5E /* jchuff.c */; };
-		ABE46F9A0A76410F00327466 /* jchuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C1D09B6828200545F5E /* jchuff12.h */; };
 		ABE46F9B0A76410F00327466 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1E09B6828200545F5E /* jcinit.c */; };
 		ABE46F9C0A76410F00327466 /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1F09B6828200545F5E /* jclhuff.c */; };
 		ABE46F9D0A76410F00327466 /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2009B6828200545F5E /* jclossls.c */; };
@@ -1724,7 +1719,6 @@
 		ABE46FA10A76410F00327466 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2409B6828200545F5E /* jcmaster.c */; };
 		ABE46FA20A76410F00327466 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2509B6828200545F5E /* jcodec.c */; };
 		ABE46FA30A76410F00327466 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2609B6828200545F5E /* jcomapi.c */; };
-		ABE46FA40A76410F00327466 /* jconfig12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C2709B6828200545F5E /* jconfig12.h */; };
 		ABE46FA50A76410F00327466 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2809B6828200545F5E /* jcparam.c */; };
 		ABE46FA60A76410F00327466 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2909B6828200545F5E /* jcphuff.c */; };
 		ABE46FA70A76410F00327466 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C2A09B6828200545F5E /* jcpred.c */; };
@@ -1740,11 +1734,9 @@
 		ABE46FB10A76410F00327466 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3409B6828200545F5E /* jdatasrc.c */; };
 		ABE46FB20A76410F00327466 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3509B6828200545F5E /* jdcoefct.c */; };
 		ABE46FB30A76410F00327466 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3609B6828200545F5E /* jdcolor.c */; };
-		ABE46FB40A76410F00327466 /* jdct12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3709B6828200545F5E /* jdct12.h */; };
 		ABE46FB50A76410F00327466 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3809B6828200545F5E /* jddctmgr.c */; };
 		ABE46FB60A76410F00327466 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3909B6828200545F5E /* jddiffct.c */; };
 		ABE46FB70A76410F00327466 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3A09B6828200545F5E /* jdhuff.c */; };
-		ABE46FB80A76410F00327466 /* jdhuff12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C3B09B6828200545F5E /* jdhuff12.h */; };
 		ABE46FB90A76410F00327466 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3C09B6828200545F5E /* jdinput.c */; };
 		ABE46FBA0A76410F00327466 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3D09B6828200545F5E /* jdlhuff.c */; };
 		ABE46FBB0A76410F00327466 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C3E09B6828200545F5E /* jdlossls.c */; };
@@ -1761,7 +1753,6 @@
 		ABE46FC60A76410F00327466 /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4909B6828200545F5E /* jdshuff.c */; };
 		ABE46FC70A76410F00327466 /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4A09B6828200545F5E /* jdtrans.c */; };
 		ABE46FC80A76410F00327466 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4B09B6828200545F5E /* jerror.c */; };
-		ABE46FC90A76410F00327466 /* jerror12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C4C09B6828200545F5E /* jerror12.h */; };
 		ABE46FCA0A76410F00327466 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4D09B6828200545F5E /* jfdctflt.c */; };
 		ABE46FCB0A76410F00327466 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4E09B6828200545F5E /* jfdctfst.c */; };
 		ABE46FCC0A76410F00327466 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C4F09B6828300545F5E /* jfdctint.c */; };
@@ -1769,19 +1760,11 @@
 		ABE46FCE0A76410F00327466 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5109B6828300545F5E /* jidctfst.c */; };
 		ABE46FCF0A76410F00327466 /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5209B6828300545F5E /* jidctint.c */; };
 		ABE46FD00A76410F00327466 /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5309B6828300545F5E /* jidctred.c */; };
-		ABE46FD10A76410F00327466 /* jinclude12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5409B6828300545F5E /* jinclude12.h */; };
-		ABE46FD20A76410F00327466 /* jlossls12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5509B6828300545F5E /* jlossls12.h */; };
-		ABE46FD30A76410F00327466 /* jlossy12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5609B6828300545F5E /* jlossy12.h */; };
 		ABE46FD40A76410F00327466 /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5709B6828300545F5E /* jmemmgr.c */; };
 		ABE46FD50A76410F00327466 /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5809B6828300545F5E /* jmemnobs.c */; };
-		ABE46FD60A76410F00327466 /* jmemsys12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5909B6828300545F5E /* jmemsys12.h */; };
-		ABE46FD70A76410F00327466 /* jmorecfg12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5A09B6828300545F5E /* jmorecfg12.h */; };
-		ABE46FD80A76410F00327466 /* jpegint12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5B09B6828300545F5E /* jpegint12.h */; };
-		ABE46FD90A76410F00327466 /* jpeglib12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C5C09B6828300545F5E /* jpeglib12.h */; };
 		ABE46FDA0A76410F00327466 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5D09B6828300545F5E /* jquant1.c */; };
 		ABE46FDB0A76410F00327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5E09B6828300545F5E /* jquant2.c */; };
 		ABE46FDC0A76410F00327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
-		ABE46FDD0A76410F00327466 /* jversion12.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6009B6828300545F5E /* jversion12.h */; };
 		ABE46FE10A76411900327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6209B6828300545F5E /* jaricom.c */; };
 		ABE46FE20A76411900327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6309B6828300545F5E /* jcapimin.c */; };
 		ABE46FE30A76411900327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6409B6828300545F5E /* jcapistd.c */; };
@@ -1790,7 +1773,6 @@
 		ABE46FE60A76411900327466 /* jccolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6709B6828300545F5E /* jccolor.c */; };
 		ABE46FE70A76411900327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6809B6828300545F5E /* jcdctmgr.c */; };
 		ABE46FE90A76411900327466 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6A09B6828300545F5E /* jchuff.c */; };
-		ABE46FEA0A76411900327466 /* jchuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C6B09B6828300545F5E /* jchuff16.h */; };
 		ABE46FEB0A76411900327466 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6C09B6828300545F5E /* jcinit.c */; };
 		ABE46FEC0A76411900327466 /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6D09B6828300545F5E /* jclhuff.c */; };
 		ABE46FED0A76411900327466 /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C6E09B6828300545F5E /* jclossls.c */; };
@@ -1800,7 +1782,6 @@
 		ABE46FF10A76411900327466 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7209B6828300545F5E /* jcmaster.c */; };
 		ABE46FF20A76411900327466 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7309B6828300545F5E /* jcodec.c */; };
 		ABE46FF30A76411900327466 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7409B6828300545F5E /* jcomapi.c */; };
-		ABE46FF40A76411900327466 /* jconfig16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C7509B6828300545F5E /* jconfig16.h */; };
 		ABE46FF50A76411900327466 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7609B6828300545F5E /* jcparam.c */; };
 		ABE46FF60A76411900327466 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7709B6828300545F5E /* jcphuff.c */; };
 		ABE46FF70A76411900327466 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C7809B6828300545F5E /* jcpred.c */; };
@@ -1816,11 +1797,9 @@
 		ABE470010A76411900327466 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8209B6828300545F5E /* jdatasrc.c */; };
 		ABE470020A76411900327466 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8309B6828300545F5E /* jdcoefct.c */; };
 		ABE470030A76411900327466 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8409B6828300545F5E /* jdcolor.c */; };
-		ABE470040A76411900327466 /* jdct16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8509B6828300545F5E /* jdct16.h */; };
 		ABE470050A76411900327466 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8609B6828300545F5E /* jddctmgr.c */; };
 		ABE470060A76411900327466 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8709B6828300545F5E /* jddiffct.c */; };
 		ABE470070A76411900327466 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8809B6828300545F5E /* jdhuff.c */; };
-		ABE470080A76411900327466 /* jdhuff16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C8909B6828300545F5E /* jdhuff16.h */; };
 		ABE470090A76411900327466 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8A09B6828300545F5E /* jdinput.c */; };
 		ABE4700A0A76411900327466 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8B09B6828300545F5E /* jdlhuff.c */; };
 		ABE4700B0A76411900327466 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C8C09B6828300545F5E /* jdlossls.c */; };
@@ -1837,7 +1816,6 @@
 		ABE470160A76411900327466 /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9709B6828400545F5E /* jdshuff.c */; };
 		ABE470170A76411900327466 /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9809B6828400545F5E /* jdtrans.c */; };
 		ABE470180A76411900327466 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9909B6828400545F5E /* jerror.c */; };
-		ABE470190A76411900327466 /* jerror16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3C9A09B6828400545F5E /* jerror16.h */; };
 		ABE4701A0A76411900327466 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9B09B6828400545F5E /* jfdctflt.c */; };
 		ABE4701B0A76411900327466 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9C09B6828400545F5E /* jfdctfst.c */; };
 		ABE4701C0A76411900327466 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9D09B6828400545F5E /* jfdctint.c */; };
@@ -1845,19 +1823,11 @@
 		ABE4701E0A76411900327466 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C9F09B6828400545F5E /* jidctfst.c */; };
 		ABE4701F0A76411900327466 /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CA009B6828400545F5E /* jidctint.c */; };
 		ABE470200A76411900327466 /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CA109B6828400545F5E /* jidctred.c */; };
-		ABE470210A76411900327466 /* jinclude16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA209B6828400545F5E /* jinclude16.h */; };
-		ABE470220A76411900327466 /* jlossls16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA309B6828400545F5E /* jlossls16.h */; };
-		ABE470230A76411900327466 /* jlossy16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA409B6828400545F5E /* jlossy16.h */; };
 		ABE470240A76411900327466 /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CA509B6828400545F5E /* jmemmgr.c */; };
 		ABE470250A76411900327466 /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CA609B6828400545F5E /* jmemnobs.c */; };
-		ABE470260A76411900327466 /* jmemsys16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA709B6828400545F5E /* jmemsys16.h */; };
-		ABE470270A76411900327466 /* jmorecfg16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA809B6828400545F5E /* jmorecfg16.h */; };
-		ABE470280A76411900327466 /* jpegint16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CA909B6828400545F5E /* jpegint16.h */; };
-		ABE470290A76411900327466 /* jpeglib16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAA09B6828400545F5E /* jpeglib16.h */; };
 		ABE4702A0A76411900327466 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CAB09B6828400545F5E /* jquant1.c */; };
 		ABE4702B0A76411900327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CAC09B6828400545F5E /* jquant2.c */; };
 		ABE4702C0A76411900327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CAD09B6828400545F5E /* jutils.c */; };
-		ABE4702D0A76411900327466 /* jversion16.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CAE09B6828400545F5E /* jversion16.h */; };
 		ABE470CB0A76412700327466 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB009B6828400545F5E /* jaricom.c */; };
 		ABE470CC0A76412700327466 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB109B6828400545F5E /* jcapimin.c */; };
 		ABE470CD0A76412700327466 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB209B6828400545F5E /* jcapistd.c */; };
@@ -1867,7 +1837,6 @@
 		ABE470D10A76412700327466 /* jcdctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB609B6828400545F5E /* jcdctmgr.c */; };
 		ABE470D20A76412700327466 /* jcdiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB709B6828400545F5E /* jcdiffct.c */; };
 		ABE470D30A76412700327466 /* jchuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CB809B6828400545F5E /* jchuff.c */; };
-		ABE470D40A76412700327466 /* jchuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CB909B6828400545F5E /* jchuff8.h */; };
 		ABE470D50A76412700327466 /* jcinit.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CBA09B6828400545F5E /* jcinit.c */; };
 		ABE470D60A76412700327466 /* jclhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CBB09B6828400545F5E /* jclhuff.c */; };
 		ABE470D70A76412700327466 /* jclossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CBC09B6828400545F5E /* jclossls.c */; };
@@ -1877,7 +1846,6 @@
 		ABE470DB0A76412700327466 /* jcmaster.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC009B6828400545F5E /* jcmaster.c */; };
 		ABE470DC0A76412700327466 /* jcodec.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC109B6828400545F5E /* jcodec.c */; };
 		ABE470DD0A76412700327466 /* jcomapi.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC209B6828400545F5E /* jcomapi.c */; };
-		ABE470DE0A76412700327466 /* jconfig8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CC309B6828400545F5E /* jconfig8.h */; };
 		ABE470DF0A76412700327466 /* jcparam.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC409B6828400545F5E /* jcparam.c */; };
 		ABE470E00A76412700327466 /* jcphuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC509B6828400545F5E /* jcphuff.c */; };
 		ABE470E10A76412700327466 /* jcpred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CC609B6828400545F5E /* jcpred.c */; };
@@ -1893,11 +1861,9 @@
 		ABE470EB0A76412700327466 /* jdatasrc.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD009B6828400545F5E /* jdatasrc.c */; };
 		ABE470EC0A76412700327466 /* jdcoefct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD109B6828400545F5E /* jdcoefct.c */; };
 		ABE470ED0A76412700327466 /* jdcolor.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD209B6828500545F5E /* jdcolor.c */; };
-		ABE470EE0A76412700327466 /* jdct8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD309B6828500545F5E /* jdct8.h */; };
 		ABE470EF0A76412700327466 /* jddctmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD409B6828500545F5E /* jddctmgr.c */; };
 		ABE470F00A76412700327466 /* jddiffct.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD509B6828500545F5E /* jddiffct.c */; };
 		ABE470F10A76412700327466 /* jdhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD609B6828500545F5E /* jdhuff.c */; };
-		ABE470F20A76412700327466 /* jdhuff8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CD709B6828500545F5E /* jdhuff8.h */; };
 		ABE470F30A76412700327466 /* jdinput.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD809B6828500545F5E /* jdinput.c */; };
 		ABE470F40A76412700327466 /* jdlhuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CD909B6828500545F5E /* jdlhuff.c */; };
 		ABE470F50A76412700327466 /* jdlossls.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CDA09B6828500545F5E /* jdlossls.c */; };
@@ -1914,7 +1880,6 @@
 		ABE471000A76412700327466 /* jdshuff.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CE509B6828500545F5E /* jdshuff.c */; };
 		ABE471010A76412700327466 /* jdtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CE609B6828500545F5E /* jdtrans.c */; };
 		ABE471020A76412700327466 /* jerror.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CE709B6828500545F5E /* jerror.c */; };
-		ABE471030A76412700327466 /* jerror8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CE809B6828500545F5E /* jerror8.h */; };
 		ABE471040A76412700327466 /* jfdctflt.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CE909B6828500545F5E /* jfdctflt.c */; };
 		ABE471050A76412700327466 /* jfdctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CEA09B6828500545F5E /* jfdctfst.c */; };
 		ABE471060A76412700327466 /* jfdctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CEB09B6828500545F5E /* jfdctint.c */; };
@@ -1922,19 +1887,11 @@
 		ABE471080A76412700327466 /* jidctfst.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CED09B6828500545F5E /* jidctfst.c */; };
 		ABE471090A76412700327466 /* jidctint.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CEE09B6828500545F5E /* jidctint.c */; };
 		ABE4710A0A76412700327466 /* jidctred.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CEF09B6828500545F5E /* jidctred.c */; };
-		ABE4710B0A76412700327466 /* jinclude8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF009B6828500545F5E /* jinclude8.h */; };
-		ABE4710C0A76412700327466 /* jlossls8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF109B6828500545F5E /* jlossls8.h */; };
-		ABE4710D0A76412700327466 /* jlossy8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF209B6828500545F5E /* jlossy8.h */; };
 		ABE4710E0A76412700327466 /* jmemmgr.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CF309B6828500545F5E /* jmemmgr.c */; };
 		ABE4710F0A76412700327466 /* jmemnobs.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CF409B6828500545F5E /* jmemnobs.c */; };
-		ABE471100A76412700327466 /* jmemsys8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF509B6828500545F5E /* jmemsys8.h */; };
-		ABE471110A76412700327466 /* jmorecfg8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF609B6828500545F5E /* jmorecfg8.h */; };
-		ABE471120A76412700327466 /* jpegint8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF709B6828500545F5E /* jpegint8.h */; };
-		ABE471130A76412700327466 /* jpeglib8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CF809B6828500545F5E /* jpeglib8.h */; };
 		ABE471140A76412700327466 /* jquant1.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CF909B6828500545F5E /* jquant1.c */; };
 		ABE471150A76412700327466 /* jquant2.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFA09B6828500545F5E /* jquant2.c */; };
 		ABE471160A76412700327466 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3CFB09B6828500545F5E /* jutils.c */; };
-		ABE471170A76412700327466 /* jversion8.h in Headers */ = {isa = PBXBuildFile; fileRef = BFBF3CFC09B6828500545F5E /* jversion8.h */; };
 		ABE59B850F494CA1004EBF28 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		ABEF7E7809A21070006CEC3E /* Reports.h in Headers */ = {isa = PBXBuildFile; fileRef = ABEF7E7609A21070006CEC3E /* Reports.h */; };
@@ -5343,7 +5300,6 @@
 		CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */; };
 		CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */; };
 		CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */; };
-		CEB98C831335088C0083F3FD /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C7F1335088C0083F3FD /* AYDicomPrintPref.h */; };
 		CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C801335088C0083F3FD /* AYDicomPrintPref.m */; };
 		CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C811335088C0083F3FD /* AYDicomPrintPref.xib */; };
 		CEBA30130EEDB3FF00D920B4 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490D0DA42A7600B8D506 /* libvtkexpat.a */; };
@@ -6976,7 +6932,6 @@
 		CEC7065B10A5C844008935EA /* Back.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFBB1890B358C8F00666FA9 /* Back.tif */; };
 		CEC7065D10A5C844008935EA /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tif */; };
 		CEC7065E10A5C844008935EA /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
-		CEC7065F10A5C844008935EA /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
 		CEC7066010A5C844008935EA /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
 		CEC7066110A5C844008935EA /* Propagate.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tif */; };
 		CEC7066210A5C844008935EA /* PropagateOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */; };
@@ -7703,7 +7658,6 @@
 		CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
-		CEC7FF0E10A5C844008935EA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = A98FFBE40CA92B58000291C8 /* altivecFunctions.h */; };
 		CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
 		CEC7FF1310A5C844008935EA /* NFHUDButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE730CB0D4BE00FB2C3D /* NFHUDButtonCell.h */; };
 		CEC7FF1410A5C844008935EA /* NFHUDButton.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE750CB0D4BE00FB2C3D /* NFHUDButton.h */; };
@@ -7982,7 +7936,6 @@
 		CEDCDD5B099C8AA20026AA4B /* ROIManager.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCDD5A099C8AA20026AA4B /* ROIManager.tif */; };
 		CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB380B4C4A4B00510ABD /* SyncSmall.tif */; };
 		CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3E0B4C4E3900510ABD /* SyncSmallLocked.tif */; };
-		CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */; };
 		CEDDD87F10DCC93500FFE72B /* PSGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDDD87D10DCC93500FFE72B /* PSGenerator.h */; };
 		CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDDD87E10DCC93500FFE72B /* PSGenerator.m */; };
 		CEDDD88110DCC93500FFE72B /* PSGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDDD87D10DCC93500FFE72B /* PSGenerator.h */; };
@@ -12280,7 +12233,6 @@
 				AB0E6B140FAF4BF600A5C046 /* libvtkzlib.a in Frameworks */,
 				AB0E6B170FAF4C2100A5C046 /* libitkzlib.a in Frameworks */,
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
-				84F4533E0FC3DF3800D29666 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
 				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
@@ -17980,45 +17932,6 @@
 				A9944C110A52A54D004C5E0A /* LLDCMView.h in Headers */,
 				BF26843D0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h in Headers */,
 				A95B98A40A6E65B100E476D4 /* QTExportHTMLSummary.h in Headers */,
-				ABE46F9A0A76410F00327466 /* jchuff12.h in Headers */,
-				ABE46FA40A76410F00327466 /* jconfig12.h in Headers */,
-				ABE46FB40A76410F00327466 /* jdct12.h in Headers */,
-				ABE46FB80A76410F00327466 /* jdhuff12.h in Headers */,
-				ABE46FC90A76410F00327466 /* jerror12.h in Headers */,
-				ABE46FD10A76410F00327466 /* jinclude12.h in Headers */,
-				ABE46FD20A76410F00327466 /* jlossls12.h in Headers */,
-				ABE46FD30A76410F00327466 /* jlossy12.h in Headers */,
-				ABE46FD60A76410F00327466 /* jmemsys12.h in Headers */,
-				ABE46FD70A76410F00327466 /* jmorecfg12.h in Headers */,
-				ABE46FD80A76410F00327466 /* jpegint12.h in Headers */,
-				ABE46FD90A76410F00327466 /* jpeglib12.h in Headers */,
-				ABE46FDD0A76410F00327466 /* jversion12.h in Headers */,
-				ABE46FEA0A76411900327466 /* jchuff16.h in Headers */,
-				ABE46FF40A76411900327466 /* jconfig16.h in Headers */,
-				ABE470040A76411900327466 /* jdct16.h in Headers */,
-				ABE470080A76411900327466 /* jdhuff16.h in Headers */,
-				ABE470190A76411900327466 /* jerror16.h in Headers */,
-				ABE470210A76411900327466 /* jinclude16.h in Headers */,
-				ABE470220A76411900327466 /* jlossls16.h in Headers */,
-				ABE470230A76411900327466 /* jlossy16.h in Headers */,
-				ABE470260A76411900327466 /* jmemsys16.h in Headers */,
-				ABE470270A76411900327466 /* jmorecfg16.h in Headers */,
-				ABE470280A76411900327466 /* jpegint16.h in Headers */,
-				ABE470290A76411900327466 /* jpeglib16.h in Headers */,
-				ABE4702D0A76411900327466 /* jversion16.h in Headers */,
-				ABE470D40A76412700327466 /* jchuff8.h in Headers */,
-				ABE470DE0A76412700327466 /* jconfig8.h in Headers */,
-				ABE470EE0A76412700327466 /* jdct8.h in Headers */,
-				ABE470F20A76412700327466 /* jdhuff8.h in Headers */,
-				ABE471030A76412700327466 /* jerror8.h in Headers */,
-				ABE4710B0A76412700327466 /* jinclude8.h in Headers */,
-				ABE4710C0A76412700327466 /* jlossls8.h in Headers */,
-				ABE4710D0A76412700327466 /* jlossy8.h in Headers */,
-				ABE471100A76412700327466 /* jmemsys8.h in Headers */,
-				ABE471110A76412700327466 /* jmorecfg8.h in Headers */,
-				ABE471120A76412700327466 /* jpegint8.h in Headers */,
-				ABE471130A76412700327466 /* jpeglib8.h in Headers */,
-				ABE471170A76412700327466 /* jversion8.h in Headers */,
 				A95837B50AAF0DCB0001D415 /* SRAnnotation.h in Headers */,
 				AB80EBAB0AF1F5B600E7E934 /* AYDicomPrintWindowController.h in Headers */,
 				AB80EBAD0AF1F5B600E7E934 /* AYNSImageToDicom.h in Headers */,
@@ -18052,7 +17965,6 @@
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
-				A98FFBE70CA92B58000291C8 /* altivecFunctions.h in Headers */,
 				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
 				BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */,
@@ -19813,7 +19725,6 @@
 				847BE3B7128BF0E100A87E98 /* jpt.h in Headers */,
 				847BE3B9128BF0E100A87E98 /* mct.h in Headers */,
 				847BE3BB128BF0E100A87E98 /* mqc.h in Headers */,
-				847BE3BD128BF0E100A87E98 /* openjpeg.h in Headers */,
 				847BE3BF128BF0E100A87E98 /* opj_convert.h in Headers */,
 				847BE3C0128BF0E100A87E98 /* opj_includes.h in Headers */,
 				847BE3C1128BF0E200A87E98 /* opj_malloc.h in Headers */,
@@ -19887,7 +19798,6 @@
 				CEB98C6C1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.h in Headers */,
 				CEB98C6E1335086B0083F3FD /* RoutesTableView.h in Headers */,
 				CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */,
-				CEB98C831335088C0083F3FD /* AYDicomPrintPref.h in Headers */,
 				59B696641337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 				84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */,
 				4FC5E3F6138AB91E00CB635F /* CPRStretchedOperation.h in Headers */,
@@ -20347,7 +20257,6 @@
 				CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */,
 				CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */,
 				CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */,
-				CEC7FF0E10A5C844008935EA /* altivecFunctions.h in Headers */,
 				CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */,
 				CEC7FF1310A5C844008935EA /* NFHUDButtonCell.h in Headers */,
 				CEC7FF1410A5C844008935EA /* NFHUDButton.h in Headers */,
@@ -22078,7 +21987,6 @@
 				847BE3E3128BF0E200A87E98 /* jpt.h in Headers */,
 				847BE3E5128BF0E200A87E98 /* mct.h in Headers */,
 				847BE3E7128BF0E200A87E98 /* mqc.h in Headers */,
-				847BE3E9128BF0E200A87E98 /* openjpeg.h in Headers */,
 				847BE3EB128BF0E200A87E98 /* opj_convert.h in Headers */,
 				847BE3EC128BF0E200A87E98 /* opj_includes.h in Headers */,
 				847BE3ED128BF0E200A87E98 /* opj_malloc.h in Headers */,
@@ -22638,7 +22546,6 @@
 				CE8CAB0E0B4715DD0068DBAE /* DICOMPrint in Resources */,
 				CEDCFB3C0B4C4A4B00510ABD /* SyncSmall.tif in Resources */,
 				CEDCFB460B4C4E3900510ABD /* SyncSmallLocked.tif in Resources */,
-				CEDCFB470B4C4E3900510ABD /* SyncSmall.tif in Resources */,
 				A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */,
 				CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */,
 				CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */,
@@ -23053,7 +22960,6 @@
 				CEC7065B10A5C844008935EA /* Back.tif in Resources */,
 				CEC7065D10A5C844008935EA /* SyncSmall.tif in Resources */,
 				CEC7065E10A5C844008935EA /* SyncSmallLocked.tif in Resources */,
-				CEC7065F10A5C844008935EA /* SyncSmall.tif in Resources */,
 				CEC7066010A5C844008935EA /* Repulsor.tif in Resources */,
 				CEC7066110A5C844008935EA /* Propagate.tif in Resources */,
 				CEC7066210A5C844008935EA /* PropagateOn.tif in Resources */,
@@ -26411,7 +26317,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -26424,7 +26329,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Launcher";
 			};
 			name = Development;
@@ -26433,7 +26337,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -26445,7 +26348,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Launcher";
 			};
 			name = "Deployment 32-bit";
@@ -26454,7 +26356,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
@@ -26466,7 +26367,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Launcher";
 			};
 			name = "Deployment 64-bit";
@@ -26496,7 +26396,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -26512,7 +26412,6 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
@@ -26525,7 +26424,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
@@ -26543,7 +26441,6 @@
 				);
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -26571,7 +26468,6 @@
 				GCC_AUTO_VECTORIZATION = NO;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -26623,7 +26519,6 @@
 					__info_plist,
 					"Deployment-Info.plist",
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 			};
 			name = Development;
@@ -26634,7 +26529,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
@@ -26652,7 +26546,6 @@
 				);
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Unzip Binaries";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -26701,7 +26594,6 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -26715,7 +26607,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriXAPI;
 			};
 			name = Development;
@@ -26732,7 +26623,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -26745,7 +26635,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriXAPI;
 			};
 			name = "Deployment 32-bit";
@@ -26759,7 +26648,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -26772,7 +26660,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriXAPI;
 			};
 			name = "Deployment 64-bit";
@@ -26808,7 +26695,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Decompress;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -26880,7 +26766,6 @@
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_MATH = YES;
@@ -26932,7 +26817,6 @@
 					"-weak_framework",
 					3DconnexionClient,
 				);
-				PREBINDING = NO;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = OsiriX;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -26964,7 +26848,6 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_CPU = "";
@@ -26974,6 +26857,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -26989,7 +26873,6 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
@@ -27003,7 +26886,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
@@ -27021,7 +26903,6 @@
 				);
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Unzip Binaries";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -27038,7 +26919,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
@@ -27056,7 +26936,6 @@
 				);
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -27098,7 +26977,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Decompress;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -27132,7 +27010,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = DICOMPrint;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -27183,7 +27060,6 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_MATH = YES;
@@ -27240,7 +27116,6 @@
 					__info_plist,
 					"Deployment-Info.plist",
 				);
-				PREBINDING = YES;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = OsiriX;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -27272,7 +27147,6 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -27282,6 +27156,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DCM Framework/DCM Framework_Prefix.pch";
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "DCM Framework/DCM-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
@@ -27297,7 +27172,6 @@
 					"-seg1addr",
 					0x20000000,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
@@ -27311,7 +27185,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_CPU = "";
 				GCC_MODEL_PPC64 = NO;
 				GCC_MODEL_TUNING = "";
@@ -27329,7 +27202,6 @@
 				);
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Unzip Binaries";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
@@ -27347,7 +27219,6 @@
 				HEADER_SEARCH_PATHS = Binaries;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
 			};
@@ -27386,7 +27257,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Decompress;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -27420,7 +27290,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = DICOMPrint;
 				SYMROOT = build;
 				ZERO_LINK = NO;
@@ -27443,7 +27312,6 @@
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
-				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
 			name = Development;
@@ -27464,7 +27332,6 @@
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
-				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
 			name = "Deployment 32-bit";
@@ -27485,7 +27352,6 @@
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
-				PREBINDING = YES;
 				PRODUCT_NAME = "DCM StaticLibrary";
 			};
 			name = "Deployment 64-bit";
@@ -27506,7 +27372,6 @@
 				GCC_AUTO_VECTORIZATION = NO;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -27550,7 +27415,6 @@
 					"-weak_framework",
 					3DconnexionClient,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "OsiriX Lite";
 			};
 			name = Development;
@@ -27572,7 +27436,6 @@
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_MATH = YES;
@@ -27618,7 +27481,6 @@
 					"-weak_framework",
 					3DconnexionClient,
 				);
-				PREBINDING = NO;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -27641,7 +27503,6 @@
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_DEBUGGING_SYMBOLS = default;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_FAST_MATH = YES;
@@ -27690,7 +27551,6 @@
 					"-undefined",
 					dynamic_lookup,
 				);
-				PREBINDING = YES;
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -27708,7 +27568,6 @@
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -27723,7 +27582,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -27738,7 +27596,6 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -27752,7 +27609,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -27767,7 +27623,6 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -27781,7 +27636,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = "32-bit shell";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -27815,7 +27669,6 @@
 					"-framework",
 					AppKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = DICOMPrint;
 				SYMROOT = build;
 				ZERO_LINK = NO;

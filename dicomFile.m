@@ -2658,6 +2658,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						Papy_List *dcmList = val->sq;
 						
 						NSMutableArray *sliceLocationArray = [NSMutableArray array];
+						NSMutableArray *imageTypeFrameArray = [NSMutableArray array];
 						
 						// loop through the elements of the sequence
 						while (dcmList)
@@ -2677,19 +2678,62 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									{
 										if( groupsForFrame->object->group)
 										{
-											SElement * gr = (SElement *) groupsForFrame->object->group;
+											UValue_T *valb = nil, *valc = nil;
+											SElement *gr = (SElement *) groupsForFrame->object->group;
 											
 											switch( gr->group)
 											{
-												case 0x0020:
-													val = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
-													if (val != NULL && nbVal >= 1)
+												case 0x0018:
+													valb = Papy3GetElement (gr, papMRImageFrameTypeSequence, &nbVal, &itemType);
+													if (valb != NULL && nbVal >= 1)
 													{
 														// there is a sequence
-														if (val->sq)
+														if (valb->sq)
 														{
 															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
+															Papy_List *seq = valb->sq->object->item;
+															
+															// loop through the elements of the sequence
+															while (seq)
+															{
+																SElement * gr = (SElement *) seq->object->group;
+																
+																switch( gr->group)
+																{
+																	case 0x0008:
+																	{
+																		valc = Papy3GetElement ( gr, papFrameType, &nbVal, &itemType);
+																		if (valc != NULL && valc->a && validAPointer( itemType))
+																		{
+																			NSMutableArray *types = [NSMutableArray array];
+																			for( int z = 0; z < nbVal ; z++)
+																			{
+																				[types addObject: [[[NSString alloc] initWithCString: valc->a encoding: NSASCIIStringEncoding] autorelease]];
+																				valc++;
+																			}
+																			
+																			if( types.count > 2)
+																				[imageTypeFrameArray addObject: [imageTypeArray objectAtIndex: 2]];
+																		}
+																	}
+																}
+																
+																// get the next element of the list
+																seq = seq->next;
+															}
+														}
+													}
+												break;
+											
+												case 0x0020:
+													valb = Papy3GetElement (gr, papPlanePositionSequence, &nbVal, &itemType);
+													if (valb != NULL && nbVal >= 1)
+													{
+														// there is a sequence
+														if (valb->sq)
+														{
+															// get a pointer to the first element of the list
+															Papy_List *seq = valb->sq->object->item;
 															
 															// loop through the elements of the sequence
 															while (seq)
@@ -2700,11 +2744,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 																{
 																	case 0x0020:
 																	{
-																		val = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
-																		if (val != NULL && val->a && validAPointer( itemType))
+																		valc = Papy3GetElement ( gr, papImagePositionPatientGr, &nbVal, &itemType);
+																		if (valc != NULL && valc->a && validAPointer( itemType))
 																		{
-																			UValue_T *tmp = val;
-																			
+																			UValue_T *tmp = valc;
 																			originMultiFrame[0] = [[NSString stringWithCString:tmp->a encoding: NSISOLatin1StringEncoding] floatValue];
 																			
 																			if( nbVal > 1)
@@ -2729,14 +2772,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 														}
 													}
 													
-													val = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
-													if (val != NULL && nbVal >= 1)
+													valb = Papy3GetElement (gr, papPlaneOrientationSequence, &nbVal, &itemType);
+													if (valb != NULL && nbVal >= 1)
 													{
 														// there is a sequence
-														if (val->sq)
+														if (valb->sq)
 														{
 															// get a pointer to the first element of the list
-															Papy_List *seq = val->sq->object->item;
+															Papy_List *seq = valb->sq->object->item;
 															
 															// loop through the elements of the sequence
 															while (seq)
@@ -2747,10 +2790,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 																{
 																	case 0x0020:
 																	{
-																		val = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
-																		if (val != NULL && val->a && validAPointer( itemType))
+																		valc = Papy3GetElement( gr, papImageOrientationPatientGr, &nbVal, &itemType);
+																		if (valc != NULL && valc->a && validAPointer( itemType))
 																		{
-																			UValue_T *tmp = val;
+																			UValue_T *tmp = valc;
 																			if( nbVal != 6)
 																			{
 																				NSLog(@"Orientation is NOT 6 !!!");
@@ -2820,6 +2863,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 							else
 								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
+							
+							if( NoOfFrames == [imageTypeFrameArray count])
+								[dicomElements setObject: imageTypeFrameArray forKey:@"imageTypeFrameArray"];
+							else
+								NSLog( @"*** NoOfFrames != imageTypeFrameArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageTypeFrameArray.count);
 						}
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL

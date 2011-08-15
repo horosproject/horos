@@ -43,7 +43,7 @@ static NSString *MPRPlaneObservationContext = @"MPRPlaneObservationContext";
 
 extern void setvtkMeanIPMode( int m);
 extern short intersect3D_2Planes( float *Pn1, float *Pv1, float *Pn2, float *Pv2, float *u, float *iP);
-static float deg2rad = 3.14159265358979/180.0; 
+static float deg2rad = M_PI / 180.0; 
 
 @interface CPRController ()
 @property (nonatomic, readwrite, copy) CPRCurvedPath *curvedPath;
@@ -901,7 +901,7 @@ static float deg2rad = 3.14159265358979/180.0;
 
 - (IBAction) roiGetInfo:(id) sender
 {
-	CPRMPRDCMView *s = [self selectedViewOnlyMPRView : NO];
+	CPRMPRDCMView *s = [[self selectedViewOnlyMPRView : NO] reformationView];
 	
 	for( ROI *r in [s curRoiList])
 	{
@@ -988,7 +988,7 @@ static float deg2rad = 3.14159265358979/180.0;
 {
 	[self addToUndoQueue: @"roi"];
 	
-	CPRMPRDCMView *s = [self selectedViewOnlyMPRView: NO];
+	CPRMPRDCMView *s = [[self selectedViewOnlyMPRView: NO] reformationView];
 	
 	[s stopROIEditingForce: YES];
 	
@@ -2330,6 +2330,8 @@ static float deg2rad = 3.14159265358979/180.0;
 			}
 		}
 		
+         dicomExport.rotateRawDataBy90degrees = NO;
+        
 		// CURRENT image only
 		if( self.exportSequenceType == CPRCurrentOnlyExportSequenceType)
 		{
@@ -3876,6 +3878,9 @@ static float deg2rad = 3.14159265358979/180.0;
 {
     if (newCprType != cprType) {
         cprType = newCprType;
+        mprView1.CPRType = cprType;
+        mprView2.CPRType = cprType;
+        mprView3.CPRType = cprType;
         cprView.reformationType = cprType;
         topTransverseView.reformationDisplayStyle = cprType;
         middleTransverseView.reformationDisplayStyle = cprType;

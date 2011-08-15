@@ -20,7 +20,16 @@ typedef struct {
    double x,y,z;
 } XYZ;
 
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif /*cplusplus*/
 extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
+#ifdef __cplusplus
+}
+#endif /*cplusplus*/
+
 
 @class ROI;
 @class ThickSlabController;

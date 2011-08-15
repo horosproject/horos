@@ -128,7 +128,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
     bzero(MACAddress, bufferSize);
     
     // IOIteratorNext retains the returned object, so release it when we're done with it.
-    while (intfService = IOIteratorNext(intfIterator))
+    while ((intfService = IOIteratorNext(intfIterator)))
     {
         CFTypeRef	MACAddressAsCFData;        
 
@@ -756,7 +756,7 @@ PixelRepresentation
 				// however, try to work around Philips bug ...
 				long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
 				*byteOffset+=4;
-				NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, vl);
+				NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, tag.stringValue, (unsigned int) vl);
 				// let's just ignore it for now
 				//continue;
 			}
@@ -820,7 +820,7 @@ PixelRepresentation
 					*byteOffset += 4;
 				}
 				if (DCMDEBUG)
-					NSLog(@"Tag: %@, length: %d", [tag description], vl);
+					NSLog(@"Tag: %@, length: %ld", [tag description], vl);
 				//if (DCMDEBUG)
 				//	NSLog(@"byteoffset after length %d, VR:%@  length:%d",*byteOffset,  vr, vl);
 				
@@ -1077,7 +1077,7 @@ PixelRepresentation
 	gl += attr.paddedLength;
 	gl += (4+4+4);
 	if (DCMDEBUG)
-		NSLog(@"padded Length: %d  group length: %d", attr.paddedLength, gl);
+		NSLog(@"padded Length: %ld  group length: %d", attr.paddedLength, gl);
 	[attr release];
 	[tag release];
 	

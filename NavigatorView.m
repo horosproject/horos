@@ -23,7 +23,7 @@
 
 #import "DCMPix.h"
 
-static float deg2rad = 3.14159265358979/180.0; 
+static float deg2rad = M_PI/180.0; 
 
 // max size of the thumbnails in pixels
 #define thumbnailMaxHeight 100

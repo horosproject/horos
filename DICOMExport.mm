@@ -21,6 +21,8 @@
 #import "altivecFunctions.h"
 #import "DICOMToNSString.h"
 
+static float deg2rad = M_PI / 180.0f; 
+
 @implementation DICOMExport
 
 @synthesize rotateRawDataBy90degrees;
@@ -486,9 +488,141 @@
                     height = copyWidth;
                     
                     //Origin and vector
+                    if( orientation[ 0] != 0 || orientation[ 1] != 0 || orientation[ 2] != 0)
+                    {
+                        float x = 0, y = width;
+                        float newOrigin[ 3];
+                        
+                        if( spacingX != 0 && spacingY != 0)
+                        {
+                            newOrigin[0] = position[0] + y*orientation[3]*spacingY + x*orientation[0]*spacingX;
+                            newOrigin[1] = position[1] + y*orientation[4]*spacingY + x*orientation[1]*spacingX;
+                            newOrigin[2] = position[2] + y*orientation[5]*spacingY + x*orientation[2]*spacingX;
+                        }
+                        else
+                        {
+                            newOrigin[0] = position[0] + y*orientation[3] + x*orientation[0];
+                            newOrigin[1] = position[1] + y*orientation[4] + x*orientation[1];
+                            newOrigin[2] = position[2] + y*orientation[5] + x*orientation[2];
+                        }
+                        
+                        position[0] = newOrigin[0];
+                        position[1] = newOrigin[1];
+                        position[2] = newOrigin[2];
+                        
+                        float newOrientation[ 3];
+                        float o[ 9];
+                        
+                        o[0] = orientation[0];  o[1] = orientation[1];  o[2] = orientation[2];
+                        o[3] = orientation[3];  o[4] = orientation[4];  o[5] = orientation[5];
+                        
+                        // Compute normal vector
+                        o[6] = o[1]*o[5] - o[2]*o[4];
+                        o[7] = o[2]*o[3] - o[0]*o[5];
+                        o[8] = o[0]*o[4] - o[1]*o[3];
+                        
+                        XYZ vector, rotationVector; 
+                        
+                        rotationVector.x = o[ 6];	rotationVector.y = o[ 7];	rotationVector.z = o[ 8];
+                        
+                        vector.x = o[ 0];	vector.y = o[ 1];	vector.z = o[ 2];
+                        vector =  ArbitraryRotate(vector, -90*deg2rad, rotationVector);
+                        o[ 0] = vector.x;	o[ 1] = vector.y;	o[ 2] = vector.z;
+                        
+                        vector.x = o[ 3];	vector.y = o[ 4];	vector.z = o[ 5];
+                        vector =  ArbitraryRotate(vector, -90*deg2rad, rotationVector);
+                        o[ 3] = vector.x;	o[ 4] = vector.y;	o[ 5] = vector.z;
+                        
+                        // Compute normal vector
+                        o[6] = o[1]*o[5] - o[2]*o[4];
+                        o[7] = o[2]*o[3] - o[0]*o[5];
+                        o[8] = o[0]*o[4] - o[1]*o[3];
+                        
+                        orientation[0] = o[0];  orientation[1] = o[1];  orientation[2] = o[2];
+                        orientation[3] = o[3];  orientation[4] = o[4];  orientation[5] = o[5];
+                    }
                     
                     //Pixels data
-				}
+                    switch( bps)
+                    {
+                        case 8:
+                            if (spp == 3)
+                            {
+                                unsigned char *olddata = (unsigned char*) data;
+                                unsigned char *newdata = (unsigned char*) malloc( height * width * bps*spp / 8);
+                                
+                                for( long x = 0 ; x < width; x++)
+                                {
+                                    for( long y = 0 ; y < height; y++)
+                                    {
+                                        *(newdata+y*width*3+x +0) = *(olddata+(width-x-1)*height*3+y +0);
+                                        *(newdata+y*width*3+x +1) = *(olddata+(width-x-1)*height*3+y +1);
+                                        *(newdata+y*width*3+x +2) = *(olddata+(width-x-1)*height*3+y +2);
+                                    }
+                                }
+                                
+                                memcpy( olddata, newdata, height * width * bps*spp / 8);
+                                free( newdata);
+                            }
+                            else
+                            {
+                                unsigned char *olddata = (unsigned char*) data;
+                                unsigned char *newdata = (unsigned char*) malloc( height * width * bps / 8);
+                                
+                                for( long x = 0 ; x < width; x++)
+                                {
+                                    for( long y = 0 ; y < height; y++)
+                                    {
+                                        *(newdata+y*width+x) = *(olddata+(width-x-1)*height+y);
+                                    }
+                                }
+                                
+                                memcpy( olddata, newdata, height * width * bps / 8);
+                                free( newdata);
+                            }
+                        break;
+                        
+                        case 16:
+                        {
+                            unsigned short *olddata = (unsigned short*) data;
+                            unsigned short *newdata = (unsigned short*) malloc( height * width * bps / 8);
+                            
+                            for( long x = 0 ; x < width; x++)
+                            {
+                                for( long y = 0 ; y < height; y++)
+                                {
+                                    *(newdata+y*width+x) = *(olddata+(width-x-1)*height+y);
+                                }
+                            }
+                            
+                            memcpy( olddata, newdata, height * width * bps / 8);
+                            free( newdata);
+                        }
+                        break;
+                        
+                        case 32:
+                        {
+                            float *olddata = (float*) data;
+                            float *newdata = (float*) malloc( height * width * bps / 8);
+                            
+                            for( long x = 0 ; x < width; x++)
+                            {
+                                for( long y = 0 ; y < height; y++)
+                                {
+                                    *(newdata+y*width+x) = *(olddata+(width-x-1)*height+y);
+                                }
+                            }
+                            
+                            memcpy( olddata, newdata, height * width * bps / 8);
+                            free( newdata);
+                        }
+                        break;
+                            
+                        default:
+                            NSLog( @"**** unknown bps during rotate90 DICOMExport");
+                        break;
+                    }
+                }
                 
 				#if __BIG_ENDIAN__
 				if( bps == 16)

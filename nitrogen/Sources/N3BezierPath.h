@@ -55,7 +55,7 @@ typedef NSInteger N3BezierPathElement;
 - (N3BezierPath *)bezierPathByAddingEndpointsAtIntersectionsWithPlane:(N3Plane)plane; // will  flatten the path if it is not already flattened
 - (N3BezierPath *)bezierPathByProjectingToPlane:(N3Plane)plane;
 - (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance initialNormal:(N3Vector)initalNormal spacing:(CGFloat)spacing;
-//- (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance projectionNormal:(N3Vector)initalNormal spacing:(CGFloat)spacing;
+- (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance projectionNormal:(N3Vector)projectionNormal spacing:(CGFloat)spacing;
 
 - (NSInteger)elementCount;
 - (CGFloat)length;

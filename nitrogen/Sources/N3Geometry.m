@@ -233,6 +233,15 @@ void N3VectorScalarMultiplyVectors(CGFloat scalar, N3VectorArray vectors, CFInde
 #endif
 }
 
+void N3VectorCrossProductVectors(N3Vector vector, N3VectorArray vectors, CFIndex numVectors)
+{
+    CFIndex i;
+    
+    for (i = 0; i < numVectors; i++) {
+        vectors[i] = N3VectorCrossProduct(vector, vectors[i]);
+    }
+}
+
 void N3VectorAddVectors(N3VectorArray vectors1, const N3VectorArray vectors2, CFIndex numVectors)
 {
 #if CGFLOAT_IS_DOUBLE
@@ -281,6 +290,15 @@ void N3VectorCrossProductWithVectors(N3VectorArray vectors1, const N3VectorArray
     
     for (i = 0; i < numVectors; i++) {
         vectors1[i] = N3VectorCrossProduct(vectors1[i], vectors2[i]);
+    }
+}
+
+void N3VectorNormalizeVectors(N3VectorArray vectors, CFIndex numVectors)
+{
+    CFIndex i;
+    
+    for (i = 0; i < numVectors; i++) {
+        vectors[i] = N3VectorNormalize(vectors[i]);
     }
 }
 

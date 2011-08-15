@@ -87,7 +87,7 @@
 
 - (void)addItem:(id)item offset:(long)offset{
 	if(DCMDEBUG)
-		NSLog(@"Add sequence Item %@ at Offset:%d", [item description], offset);
+		NSLog(@"Add sequence Item %@ at Offset:%ld", [item description], offset);
 	NSArray *objects =  [NSArray arrayWithObjects:item, [NSNumber numberWithInt:offset], nil];
 	NSArray *keys =		[NSArray arrayWithObjects:@"item", @"offset", nil];
 	NSDictionary *dictionary = [NSDictionary dictionaryWithObjects:objects forKeys:keys];
@@ -176,7 +176,7 @@
 	//NSString *description = [super description];
 	NSEnumerator *enumerator = [sequenceItems objectEnumerator];
 	NSString *string;
-	while (string = [[(NSDictionary *)[enumerator nextObject] objectForKey:@"item"] description])
+	while ((string = [[(NSDictionary *)[enumerator nextObject] objectForKey:@"item"] description]))
 		sequenceDescription = [NSString stringWithFormat:@"%@\n\t%@", sequenceDescription, string];
 	return sequenceDescription;
 }

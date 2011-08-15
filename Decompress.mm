@@ -721,6 +721,9 @@ int main(int argc, const char *argv[])
 			@try
 			{
 				WebView *webView = [[[WebView alloc] initWithFrame: NSMakeRect(0,0,1,1) frameName: @"myFrame" groupName: @"myGroup"] autorelease];
+				NSWindow *w = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,1,1) styleMask:NSBorderlessWindowMask backing:NSBackingStoreNonretained defer:NO] autorelease];
+				[w setContentView:webView];
+				
 				WebPreferences *webPrefs = [WebPreferences standardPreferences];
 				
 				[webPrefs setLoadsImagesAutomatically: YES];

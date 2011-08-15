@@ -296,6 +296,22 @@
     return [outlinePath autorelease];
 }
 
+- (N3BezierPath *)outlineBezierPathAtDistance:(CGFloat)distance projectionNormal:(N3Vector)projectionNormal spacing:(CGFloat)spacing
+{
+    N3BezierPath *outlinePath;
+    N3BezierCoreRef outlineCore;
+    
+	if (N3BezierCoreSubpathCount(_bezierCore) != 1) {
+		return nil;
+	}
+	
+    outlineCore = N3BezierCoreCreateOutlineWithNormal(_bezierCore, distance, spacing, projectionNormal);
+    outlinePath = [[N3BezierPath alloc] initWithN3BezierCore:outlineCore];
+    N3BezierCoreRelease(outlineCore);
+    return [outlinePath autorelease];
+}
+
+
 - (NSInteger)elementCount
 {
     return N3BezierCoreSegmentCount(_bezierCore);

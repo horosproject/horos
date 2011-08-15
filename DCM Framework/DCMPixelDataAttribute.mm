@@ -754,7 +754,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			dcmObject:(DCMObject *)dcmObject
 			decodeData:(BOOL)decodeData{
 
-	singleThread = [[NSLock alloc] init];
+	singleThread = [[NSRecursiveLock alloc] init];
 
 	NSString *theVR = @"OW";
 	_dcmObject = dcmObject;
@@ -1705,7 +1705,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		if (!bSuccess) {
 		  opj_cio_close(cio);
 		  fprintf(stderr, "failed to encode image\n");
-		  return false;
+		  return nil;
 		}
 		codestream_length = cio_tell(cio);
 		

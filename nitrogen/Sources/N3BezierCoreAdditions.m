@@ -1014,7 +1014,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     N3VectorArray side;
     
 	assert(N3BezierCoreSubpathCount(bezierCore) == 1); // this only works when there is a single subpath
-
+    
     if (N3BezierCoreSegmentCount(bezierCore) < 2) {
         return NULL;
     }
@@ -1026,7 +1026,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     } else {
         flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
     }
-        
+    
     length = N3BezierCoreLength(flattenedBezierCore);
     
     if (spacing * 2 >= length) {
@@ -1049,7 +1049,7 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     
     memcpy(scaledNormals, normals, numVectors * sizeof(N3Vector));
     N3VectorScalarMultiplyVectors(distance, scaledNormals, numVectors);
-
+    
     memcpy(side, vectors, numVectors * sizeof(N3Vector));
     N3VectorAddVectors(side, scaledNormals, numVectors);
     
@@ -1058,13 +1058,13 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
     }
     N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, endpointNormal));
-                                                
+    
     memcpy(scaledNormals, normals, numVectors * sizeof(N3Vector));
     N3VectorScalarMultiplyVectors(-distance, scaledNormals, numVectors);
-
+    
     memcpy(side, vectors, numVectors * sizeof(N3Vector));
     N3VectorAddVectors(side, scaledNormals, numVectors);
-
+    
     N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
     for (i = 1; i < numVectors; i++) {
         N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
@@ -1074,6 +1074,93 @@ N3MutableBezierCoreRef N3BezierCoreCreateMutableOutline(N3BezierCoreRef bezierCo
     free(vectors);
     free(normals);
     free(scaledNormals);
+    free(side);
+    
+    N3BezierCoreRelease(flattenedBezierCore);
+    
+    return outlineBezier;
+}
+
+N3BezierCoreRef N3BezierCoreCreateOutlineWithNormal(N3BezierCoreRef bezierCore, CGFloat distance, CGFloat spacing, N3Vector projectionNormal)
+{
+    return N3BezierCoreCreateMutableOutlineWithNormal(bezierCore, distance, spacing, projectionNormal);
+}
+
+N3MutableBezierCoreRef N3BezierCoreCreateMutableOutlineWithNormal(N3BezierCoreRef bezierCore, CGFloat distance, CGFloat spacing, N3Vector projectionNormal)
+{
+    N3BezierCoreRef flattenedBezierCore;
+    N3MutableBezierCoreRef outlineBezier;
+    N3Vector endpoint;
+    N3Vector endpointNormal;
+    CGFloat length;
+    NSInteger i;
+    NSUInteger numVectors;
+    N3VectorArray vectors;
+    N3VectorArray tangents;
+    N3VectorArray normals;
+    N3VectorArray side;
+    
+	assert(N3BezierCoreSubpathCount(bezierCore) == 1); // this only works when there is a single subpath
+    
+    if (N3BezierCoreSegmentCount(bezierCore) < 2) {
+        return NULL;
+    }
+    
+    if (N3BezierCoreHasCurve(bezierCore)) {
+        flattenedBezierCore = N3BezierCoreCreateMutableCopy(bezierCore);
+        N3BezierCoreSubdivide((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultSubdivideSegmentLength);
+        N3BezierCoreFlatten((N3MutableBezierCoreRef)flattenedBezierCore, N3BezierDefaultFlatness);
+    } else {
+        flattenedBezierCore = N3BezierCoreRetain(bezierCore); 
+    }
+    
+    length = N3BezierCoreLength(flattenedBezierCore);
+    
+    if (spacing * 2 >= length) {
+        N3BezierCoreRelease(flattenedBezierCore);
+        return NULL;
+    }
+    
+    numVectors = length/spacing + 1.0;
+    
+    vectors = malloc(numVectors * sizeof(N3Vector));
+    tangents = malloc(numVectors * sizeof(N3Vector));
+    normals = malloc(numVectors * sizeof(N3Vector));
+    side = malloc(numVectors * sizeof(N3Vector));
+    outlineBezier = N3BezierCoreCreateMutable();
+    
+    numVectors = N3BezierCoreGetVectorInfo(flattenedBezierCore, spacing, 0, N3VectorZero, vectors, tangents, NULL, numVectors);
+    endpoint = N3BezierCoreVectorAtEnd(flattenedBezierCore);
+    endpointNormal = N3VectorScalarMultiply(N3VectorNormalize(N3VectorCrossProduct(projectionNormal, N3BezierCoreTangentAtEnd(flattenedBezierCore))), distance);
+    
+    memcpy(normals, tangents, numVectors * sizeof(N3Vector));
+    N3VectorCrossProductVectors(projectionNormal, normals, numVectors);
+    N3VectorNormalizeVectors(normals, numVectors);
+    N3VectorScalarMultiplyVectors(distance, normals, numVectors);
+    
+    memcpy(side, vectors, numVectors * sizeof(N3Vector));
+    N3VectorAddVectors(side, normals, numVectors);
+    
+    N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
+    for (i = 1; i < numVectors; i++) {
+        N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
+    }
+    N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, endpointNormal));
+    
+    N3VectorScalarMultiplyVectors(-1.0, normals, numVectors);
+    
+    memcpy(side, vectors, numVectors * sizeof(N3Vector));
+    N3VectorAddVectors(side, normals, numVectors);
+    
+    N3BezierCoreAddSegment(outlineBezier, N3MoveToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[0]);
+    for (i = 1; i < numVectors; i++) {
+        N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, side[i]);
+    }
+    N3BezierCoreAddSegment(outlineBezier, N3LineToBezierCoreSegmentType, N3VectorZero, N3VectorZero, N3VectorAdd(endpoint, N3VectorInvert(endpointNormal)));
+    
+    free(vectors);
+    free(normals);
+    free(tangents);
     free(side);
     
     N3BezierCoreRelease(flattenedBezierCore);
