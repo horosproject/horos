@@ -844,7 +844,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			[_values addObject:[dicomData nextDataWithLength:vl]];
 			
 			if (DCMDEBUG)
-				NSLog(@"add Frame %d with length: %d", [_values count],  vl);
+				NSLog(@"add Frame %u with length: %d", [_values count],  vl);
 		}
 		else if ([[attrTag stringValue]  isEqualToString:[(NSDictionary *)[DCMTagForNameDictionary sharedTagForNameDictionary] objectForKey:@"SequenceDelimitationItem"]])  
 				break;
@@ -909,7 +909,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		for ( id object in _values)
 		{
 			if (DCMDEBUG)
-				NSLog(@"Write Item with length:%d", [(NSData *)object length]);
+				NSLog(@"Write Item with length:%u", [(NSData *)object length]);
 			
 			[container addUnsignedShort:(0xfffe)];		// Item
 			[container addUnsignedShort:(0xe000)];
