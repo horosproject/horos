@@ -174,6 +174,7 @@ void restartSTORESCP()
 
 - (void)setDBWindowTitle;
 -(void)reduceCoreDataFootPrint;
+- (void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
 
 @end
 
@@ -249,7 +250,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 @synthesize /*checkIncomingLock, */CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize COLUMN, databaseOutline, albumTable;
+@synthesize databaseOutline, albumTable;
 //@synthesize currentDatabasePath;
 //@synthesize ![database isLocal], bonjourDownloading
 @synthesize bonjourSourcesBox;
@@ -5213,7 +5214,8 @@ static NSConditionLock *threadLock = nil;
 				if( [[oMatrix selectedCell] tag] != seriesPosition)
 				{
 					// Select the right thumbnail matrix
-					[oMatrix selectCellAtRow: seriesPosition/COLUMN column: seriesPosition%COLUMN];
+                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+					[oMatrix selectCellAtRow: seriesPosition/cols column: seriesPosition%cols];
 					[self matrixPressed: oMatrix];
 				}
 				
@@ -6309,31 +6311,25 @@ static BOOL withReset = NO;
 	previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 	previewPixThumbnails = [[NSMutableArray alloc] initWithCapacity:0];
 	
-	if( COLUMN == 0) NSLog(@"COLUMN = 0, ERROR");
+//	if( COLUMN == 0) NSLog(@"COLUMN = 0, ERROR");
 	
-	int row = ceil((float) noOfImages/(float) COLUMN);
+    [self previewMatrixScrollViewFrameDidChange:nil];
+    NSInteger rows, columns; [oMatrix getNumberOfRows:&rows columns:&columns];
 	
-	[oMatrix renewRows:row columns: COLUMN];
-	
-	for( long i=0; i < row*COLUMN; i++)
+	for( long i=0; i < rows*columns; i++)
 	{
-		NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+		NSButtonCell* cell = [oMatrix cellAtRow:i/columns column:i%columns];
 		cell.tag = i;
-		[cell setTransparent: YES];
-		[cell setEnabled: NO];
+		[cell setTransparent:(i>=noOfImages)];
+		[cell setEnabled:NO];
 		[cell setFont:[NSFont systemFontOfSize:9]];
 		cell.title = NSLocalizedString(@"loading...", nil);
 		cell.image = nil;
 		cell.bezelStyle = NSShadowlessSquareBezelStyle;
 	}
 	
-	for( long i=0; i<noOfImages; i++)
-	{
-		[[oMatrix cellWithTag: i] setTransparent:NO];
-	}
-	
-	[oMatrix sizeToCells];
-	
+//	[oMatrix sizeToCells];
+    
 	[imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
 	
 	[self matrixDisplayIcons: self];
@@ -6394,7 +6390,8 @@ static BOOL withReset = NO;
 			
 			if ( img || [modality  hasPrefix: @"RT"])
 			{
-				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+				NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
 				[cell setTransparent:NO];
 				[cell setEnabled:YES];
 				[cell setLineBreakMode: NSLineBreakByCharWrapping];
@@ -6503,7 +6500,8 @@ static BOOL withReset = NO;
 			}		
 			else
 			{  // Show Error Button
-				NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+				NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
 				[cell setImage: nil];
 				[oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
 				[cell setTitle: NSLocalizedString(@"File not readable", nil)];			
@@ -6592,7 +6590,8 @@ static BOOL withReset = NO;
 				long i;
 				for( i = loadPreviewIndex; i < [previewPix count]; i++)
 				{
-					NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
+                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+					NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
 					
 					if( [cell isEnabled] == NO)
 					{
@@ -6914,37 +6913,36 @@ static BOOL withReset = NO;
     [pool release];
 }
 
-- (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
+- (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
-    NSLog(@"splitView:constrain");
-    
-    if( [sender isVertical] == YES)
+    if (sender == splitViewVert)
 	{
-        NSSize size = oMatrix.cellSize;
-        NSSize space = oMatrix.intercellSpacing;
+        _splitViewVertDividerRatio = proposedPosition/sender.bounds.size.width;
+
+		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-        int pos = proposedPosition;
-		
-//        NSView* view = [[sender subviews] objectAtIndex:0];
+        NSView* view = [[sender subviews] objectAtIndex:0];
         CGFloat scrollbarWidth = 0;
-//        if ([view isKindOfClass:[NSScrollView class]]) {
-//            NSScroller* scroller = [(NSScrollView*)view verticalScroller];
-//            if ([(NSScrollView*)view hasVerticalScroller])
-//                scrollbarWidth = [scroller frame].size.width;
-//        }
+        if ([view isKindOfClass:[NSScrollView class]]) {
+            NSScroller* scroller = [(NSScrollView*)view verticalScroller];
+            if ([(NSScrollView*)view hasVerticalScroller])
+                scrollbarWidth = [scroller frame].size.width;
+        }
         
-        scrollbarWidth = 17;
+        proposedPosition -= scrollbarWidth;
+
+        NSInteger hcells = MAX(roundf(proposedPosition/rcs), 1);
+        proposedPosition = rcs*hcells;
+        proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
-		pos += size.width/2;
-		pos -= scrollbarWidth;
-		
-        pos /= (size.width + space.width*2);
-		if( pos <= 0) pos = 1;
-		
-        pos *= (size.width + space.width*2);
-		pos += scrollbarWidth;
-		
-        return pos;
+        proposedPosition += scrollbarWidth;
+        
+        return proposedPosition;
+    }
+    
+    if (sender == splitDrawer) {
+        proposedPosition = MAX(proposedPosition, [sender minPossiblePositionOfDividerAtIndex:offset]);
+        proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
     }
 	
     return proposedPosition;
@@ -7010,38 +7008,66 @@ static BOOL withReset = NO;
 	}
 }
 
-- (void)ViewFrameDidChange: (NSNotification*)note
-{
-	if( [[splitViewVert subviews] count] > 1)
-	{
-		if( [note object] == [[splitViewVert subviews] objectAtIndex: 1])	// 1
-		{
-			NSSize size = oMatrix.cellSize;
-			NSSize space = oMatrix.intercellSpacing;
-			NSRect frame = [[splitViewVert.subviews objectAtIndex: 0] frame];
-			
-			int width = frame.size.width;
-			int cellsize = (size.width + space.width*2);
-			
-			width += cellsize/2;
-			width /=  cellsize;
-			width *=  cellsize;
-			
-			width += 17;
-			
-			while( splitViewVert.frame.size.width - width - splitViewVert.dividerThickness <= 200 && width > 0) width -= cellsize;
-			
-			frame.size.width = width;
-			[[splitViewVert.subviews objectAtIndex: 0] setFrame: frame];
-			
-			frame = [[[splitViewVert subviews] objectAtIndex: 1] frame];
-			frame.size.width = [splitViewVert frame].size.width - width - [splitViewVert dividerThickness];
-			
-			[[splitViewVert.subviews objectAtIndex: 1] setFrame: frame];
-			
-			[splitViewVert adjustSubviews];
-		}
-	}
+-(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note {
+    CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
+    
+    NSSize size = thumbnailsScrollView.bounds.size;
+    size.width += oMatrix.intercellSpacing.width;
+    
+    NSInteger hcells = (NSInteger)roundf(oMatrix.bounds.size.width/rcs);
+    NSInteger vcells = MAX(1, (NSInteger)ceilf(1.0*matrixViewArray.count/hcells));
+    [oMatrix renewRows:vcells columns:hcells];
+    
+    for (int i = [previewPix count]; i < hcells*vcells; ++i) {
+        NSButtonCell* cell = [oMatrix cellAtRow:i/hcells column:i%hcells];
+        [cell setTransparent:YES];
+        [cell setEnabled:NO];
+    }
+    
+    [oMatrix sizeToCells];
+}
+
+-(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+	if (sender == splitDrawer) {
+        NSView* left = [[sender subviews] objectAtIndex:0];
+        NSView* right = [[sender subviews] objectAtIndex:1];
+        
+        NSRect splitFrame = [sender frame];
+        CGFloat dividerThickness = [sender dividerThickness];
+        CGFloat availableWidth = splitFrame.size.width - dividerThickness;
+        
+        NSRect leftFrame = [left frame];
+        NSRect rightFrame = [right frame];
+        
+        leftFrame.size.height = splitFrame.size.height;
+        [left setFrame:leftFrame];
+        
+        rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
+        rightFrame.size.height = splitFrame.size.height;
+        rightFrame.size.width = availableWidth - leftFrame.size.width;
+        [right setFrame:rightFrame];
+        
+        return;
+    }
+    
+    if (sender == splitViewVert) {
+        if (!_splitViewVertDividerRatio)
+            _splitViewVertDividerRatio = [[[sender subviews] objectAtIndex:0] bounds].size.width/oldSize.width;
+        
+        CGFloat dividerPosition = [sender bounds].size.width*_splitViewVertDividerRatio;
+        CGFloat save = _splitViewVertDividerRatio;
+        dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
+        _splitViewVertDividerRatio = save;
+        
+        NSRect splitFrame = [sender frame];
+        
+        [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
+        [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+        
+        return;
+    }
+    
+    [sender adjustSubviews];
 }
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
@@ -7052,76 +7078,62 @@ static BOOL withReset = NO;
 		[window disableUpdatesUntilFlush];
 }
 
-- (void)splitViewDidResizeSubviews: (NSNotification *)aNotification
+- (void)splitViewDidResizeSubviews: (NSNotification *)notification
 {
-    NSSize size = oMatrix.cellSize;
-    NSSize space = oMatrix.intercellSpacing;
-    NSRect frame = oMatrix.enclosingScrollView.frame;
+    NSSplitView* splitView = [notification object];
     
-    int newColumn = frame.size.width / (size.width + space.width*2);
-    if( newColumn <= 0) newColumn = 1;
-	
-    if( newColumn != COLUMN)
-	{
-        int	row;
-        int	selectedCellTag = [oMatrix.selectedCell tag];
-		
-        COLUMN = newColumn;
-        if( COLUMN == 0)
-			{ COLUMN = 1; NSLog(@"ERROR COLUMN = 0");}
-        
-		row = ceil((float)[matrixViewArray count]/(float) newColumn);
-		//	row = ceil((float)[[oMatrix cells] count]/(float)newColumn);
-		//	minrow = 1 + (frame.size.height / (size.height + space.height*2));
-		//	if( row < minrow) row = minrow;
-		
-        [oMatrix renewRows:row columns:newColumn];
-        [oMatrix sizeToCells];
-        
-		
-        for( int i = [previewPix count]; i<row*COLUMN; i++)
-		{
-            NSButtonCell *cell = [oMatrix cellAtRow:i/COLUMN column:i%COLUMN];
-            [cell setTransparent:YES];
-            [cell setEnabled:NO];
-        }
-		
-		[oMatrix selectCellWithTag: selectedCellTag];
+    if (splitView == splitDrawer) {
+        CGFloat w = [segmentedAlbumButton bounds].size.width/[segmentedAlbumButton segmentCount];
+        for (int i = 0; i < [segmentedAlbumButton segmentCount]; ++i)
+            [segmentedAlbumButton setWidth:w forSegment:i];
     }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
 {
-	if ([sender isEqual:splitViewVert]) return NO;
-	else return YES;
+	if (sender == splitViewVert)
+        return NO;
+	
+    if (sender == splitDrawer && subview == [[splitDrawer subviews] objectAtIndex:1])
+        return NO;
+    
+    return YES;
+}
+
+- (void)drawerToggle: (id)sender
+{
+    NSView* leftView = [[splitDrawer subviews] objectAtIndex:0];
+    if ([splitDrawer isSubviewCollapsed:0] || [leftView isHidden])
+        [splitDrawer setPosition:160 ofDividerAtIndex:0];
+    else [splitDrawer setPosition:[splitDrawer minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
 {	
-	if ([sender isEqual: splitViewHorz])
-	{
+	if (sender == splitViewHorz)
 		return oMatrix.cellSize.height;
-	}
-	else
-	{
+
+	if (sender == splitViewVert)
 		return oMatrix.cellSize.width;
-	}
+    
+	if (sender == splitDrawer)
+		return 160;
+	
+    return 0;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate: (CGFloat)proposedMax ofSubviewAt: (NSInteger)offset
 {
-	if ([sender isEqual:splitViewVert])
-	{
+	if (sender == splitViewVert)
 		return [sender bounds].size.width-200;
-	}
-	else if ([sender isEqual: splitViewHorz])
-	{
+    
+	if (sender == splitViewHorz)
 		return [sender bounds].size.height- (2*[oMatrix cellSize].height);
-	}
-	else
-	{
-		return oMatrix.cellSize.width;
-	}
+    
+	if (sender == splitDrawer)
+		return 300;
+    
+	return oMatrix.cellSize.width;
 }
 
 - (NSManagedObject *)firstObjectForDatabaseMatrixSelection
@@ -7637,47 +7649,6 @@ static BOOL withReset = NO;
 }
 
 static BOOL needToRezoom;
-
--(void)drawerWillClose:(NSNotification*)notification {
-	needToRezoom = self.window.isZoomed;
-}
-
--(void)drawerDidClose:(NSNotification*)notification {
-	if (needToRezoom)
-		[self.window zoom:self];
-	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"BrowserDidResizeForDrawer"]) {
-		NSRect windowFrame = self.window.frame;
-		windowFrame.origin.x -= albumDrawer.contentSize.width;
-		windowFrame.size.width += albumDrawer.contentSize.width;
-		[self.window setFrame:windowFrame display:YES animate:YES];
-	}
-}
-
--(void)drawerWillOpen:(NSNotification*)notification {
-	needToRezoom = self.window.isZoomed;
-}
-
--(void)drawerDidOpen:(NSNotification*)notification {
-	if (needToRezoom)
-		[self.window zoom:self];
-	else {
-		NSRect screenBounds = NSZeroRect;
-		for (NSScreen* screen in [NSScreen screens])
-			screenBounds = NSUnionRect(screenBounds, [screen frame]);
-		NSRect drawerFrame = albumDrawer.contentView.window.frame;
-		NSRect intersectedFrame = NSIntersectionRect(drawerFrame, screenBounds);
-		
-		#define DrawerMinVisibleRatio .5
-		BOOL adapt = (intersectedFrame.size.width*intersectedFrame.size.height)/(drawerFrame.size.width*drawerFrame.size.height) < DrawerMinVisibleRatio;
-		[[NSUserDefaultsController sharedUserDefaultsController] setBool:adapt forKey:@"BrowserDidResizeForDrawer"];
-		if (adapt) {
-			NSRect windowFrame = self.window.frame;
-			windowFrame.origin.x += albumDrawer.contentSize.width;
-			windowFrame.size.width -= albumDrawer.contentSize.width;
-			[self.window setFrame:windowFrame display:YES animate:YES];
-		}
-	}
-}
 
 - (IBAction)smartAlbumHelpButton: (id)sender
 {
@@ -10042,8 +10013,6 @@ static NSArray*	openSubSeriesArray = nil;
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;
 		
-		COLUMN = 4;
-		
 		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 		
@@ -10124,7 +10093,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		
 		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
@@ -10350,10 +10318,12 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	@try
 	{
+      //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixFrameDidChange:) name:NSViewFrameDidChangeNotification object:oMatrix];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:thumbnailsScrollView];
+        [self previewMatrixScrollViewFrameDidChange:nil];
+        
 		NSTableColumn		*tableColumn = nil;
 		NSPopUpButtonCell	*buttonCell = nil;
-		
-		[albumDrawer setPreferredEdge: NSMinXEdge];
 		
 		// thumbnails : no background color
 		[thumbnailsScrollView setDrawsBackground:NO];
@@ -10366,21 +10336,19 @@ static NSArray*	openSubSeriesArray = nil;
 		[self.window setFrameAutosaveName:@"DBWindow"];
 		
 		[self awakeSources];
-		[albumDrawer setDelegate:self];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(drawerFrameDidChange:) name:NSViewFrameDidChangeNotification object:albumDrawer.contentView];
 		[oMatrix setDelegate:self];
 		[oMatrix setSelectionByRect: NO];
 		[oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
 		[oMatrix setFocusRingType: NSFocusRingTypeExterior];
 		[oMatrix renewRows:0 columns: 0];
-		[oMatrix sizeToCells];
+		//[oMatrix sizeToCells];
 		
 		[imageView setTheMatrix:oMatrix];
 		
 		// Bug for segmentedControls...
-		NSRect f = [segmentedAlbumButton frame];
-		f.size.height = 25;
-		[segmentedAlbumButton setFrame: f];
+		//NSRect f = [segmentedAlbumButton frame];
+		//f.size.height = 25;
+		//[segmentedAlbumButton setFrame: f];
 		
 		[databaseOutline setAction:@selector(databasePressed:)];
 		[databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
@@ -10521,14 +10489,13 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self setDBWindowTitle];
 	
-	NSSize size = NSSizeFromString( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerSize"]);
-	if( size.width > 0)
-		[albumDrawer setContentSize: size];
-	
-	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-		[albumDrawer openOnEdge:NSMinXEdge];
-	else
-		[albumDrawer close];
+    // TODO: drawer
+//	NSSize size = NSSizeFromString( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerSize"]);
+//	if( size.width > 0)
+///		; // [albumDrawer setContentSize: size];
+//	
+//	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+//		;//[albumDrawer openOnEdge:NSMinXEdge];
 	
 	loadingIsOver = YES;
 	
@@ -10728,8 +10695,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"databaseSortDescriptor"];
 	}
 	[[NSUserDefaults standardUserDefaults] setObject:[databaseOutline columnState] forKey: @"databaseColumns2"];
-	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt: [albumDrawer state]] forKey: @"drawerState"];
-	[[NSUserDefaults standardUserDefaults] setObject: NSStringFromSize( [albumDrawer contentSize]) forKey: @"drawerSize"];
 	
     [self.window setDelegate:nil];
 	
@@ -10756,9 +10721,6 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if(/* newFilesInIncoming ||*/ [[ThreadsManager defaultManager] threadsCount] > 0)
 	{
-		if( NSDrawerClosedState == [albumDrawer state])
-			[self drawerToggle: self];
-		
 		NSAlert* w = [NSAlert alertWithMessageText: NSLocalizedString( @"Background Threads", NULL)
 									 defaultButton: NSLocalizedString( @"Cancel", NULL) 
 								   alternateButton: NSLocalizedString( @"Quit", NULL)
@@ -10782,9 +10744,6 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [SendController sendControllerObjects] > 0)
 	{
-		if( NSDrawerClosedState == [albumDrawer state])
-			[self drawerToggle: self];
-		
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
 	}
 	
@@ -15332,22 +15291,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	#endif
-}
-
-- (void)drawerToggle: (id)sender
-{
-    NSDrawerState state = [albumDrawer state];
-    if (NSDrawerOpeningState == state || NSDrawerOpenState == state)
-        [albumDrawer close];
-	else
-        [albumDrawer openOnEdge:NSMinXEdge];
-}
-
--(void)drawerFrameDidChange:(NSNotification*)n { // drawer view frame changed, and NSSegmentedView segments don't adapt to the view's new width
-	CGFloat w = (segmentedAlbumButton.frame.size.width-4)/segmentedAlbumButton.segmentCount;
-	for (NSInteger i = 0; i < segmentedAlbumButton.segmentCount; ++i)
-		[segmentedAlbumButton setWidth:w forSegment:i];
-	[segmentedAlbumButton setNeedsDisplay:YES];
 }
 
 - (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted

@@ -2799,9 +2799,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
             else [self setIndexWithReset:curImage :YES];
             
-            if( matrix )
-			{
-                [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+            if( matrix ) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow:curImage/cols column:curImage%cols];
             }
             
 			if( [self is2DViewer] == YES)
@@ -3101,9 +3101,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 			if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
 			{
-				NSButtonCell *cell = [matrix cellAtRow:curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSButtonCell *cell = [matrix cellAtRow:curImage/cols column:curImage%cols];
 				[cell performClick:nil];
-				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+				[matrix selectCellAtRow :curImage/cols column:curImage%cols];
 			}
 			
 			long tool = currentMouseEventTool;
@@ -4664,9 +4665,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix )
-				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-			
+			if( matrix ) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow :curImage/cols column:curImage%cols];
+			}
+            
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
 			
@@ -5198,8 +5201,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix) [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-			
+			if (matrix) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow :curImage/cols column:curImage%cols];
+			}
+            
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
 			

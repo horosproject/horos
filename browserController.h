@@ -85,8 +85,9 @@ extern NSString* O2AlbumDragType;
     
 	long					previousBonjourIndex;
 	
-    long                    COLUMN;
-	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums;
+//    long                    COLUMN;
+	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums, *splitDrawer;
+    CGFloat _splitViewVertDividerRatio;
     
 	BOOL					setDCMDone, dontUpdatePreviewPane;
 	
@@ -137,8 +138,6 @@ extern NSString* O2AlbumDragType;
 	
 	IBOutlet NSWindow				*editSmartAlbum;
 	IBOutlet NSTextField			*editSmartAlbumName, *editSmartAlbumQuery;
-	
-	IBOutlet NSDrawer				*albumDrawer;
 	
 	IBOutlet NSWindow				*rebuildWindow;
 	IBOutlet NSMatrix				*rebuildType;
@@ -241,6 +240,7 @@ extern NSString* O2AlbumDragType;
 //	IBOutlet NSTextField* AstatusLabel;
 //	NSThread* AupdateStatsThread;
 	id _activityHelper;
+    
 }
 
 @property(retain) DicomDatabase* database;
@@ -250,7 +250,7 @@ extern NSString* O2AlbumDragType;
 /*@property(readonly) NSRecursiveLock *checkIncomingLock;*/
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
-@property(readonly) long COLUMN /*currentBonjourService*/;
+//@property(readonly) long COLUMN /*currentBonjourService*/;
 @property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
