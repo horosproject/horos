@@ -754,7 +754,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 			dcmObject:(DCMObject *)dcmObject
 			decodeData:(BOOL)decodeData{
 
-	singleThread = [[NSLock alloc] init];
+	singleThread = [[NSRecursiveLock alloc] init];
 
 	NSString *theVR = @"OW";
 	_dcmObject = dcmObject;
