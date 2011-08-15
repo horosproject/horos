@@ -175,6 +175,7 @@ void restartSTORESCP()
 - (void)setDBWindowTitle;
 -(void)reduceCoreDataFootPrint;
 - (void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
+-(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize;
 
 @end
 
@@ -3302,6 +3303,9 @@ static NSConditionLock *threadLock = nil;
 			
 			ROIsAndKeyImagesButtonAvailable = NO;
 		}
+        
+        [self splitView:splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
+
 		
 	}
 	@catch (NSException * e)
@@ -3322,7 +3326,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification  object:databaseOutline userInfo: nil];
-	
+    
 	[imageView display];
 	
 	if( firstResponderMatrix)
@@ -6921,11 +6925,14 @@ static BOOL withReset = NO;
 
 		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-        NSView* view = [[sender subviews] objectAtIndex:0];
+        NSScrollView* view = (NSScrollView*)[[sender subviews] objectAtIndex:0];
         CGFloat scrollbarWidth = 0;
         if ([view isKindOfClass:[NSScrollView class]]) {
-            NSScroller* scroller = [(NSScrollView*)view verticalScroller];
-            if ([(NSScrollView*)view hasVerticalScroller])
+            NSScroller* scroller = [view verticalScroller];
+            BOOL overlays = NO;
+            if ([scroller respondsToSelector:@selector(scrollerStyle)])
+                overlays = (NSInteger)[scroller scrollerStyle] == 1;
+            if ([view hasVerticalScroller] && ![scroller isHidden] && !overlays)
                 scrollbarWidth = [scroller frame].size.width;
         }
         
@@ -7009,6 +7016,8 @@ static BOOL withReset = NO;
 }
 
 -(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note {
+    NSInteger selectedCellTag = [oMatrix.selectedCell tag];
+    
     CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
     
     NSSize size = thumbnailsScrollView.bounds.size;
@@ -7025,6 +7034,7 @@ static BOOL withReset = NO;
     }
     
     [oMatrix sizeToCells];
+    [oMatrix selectCellWithTag:selectedCellTag];
 }
 
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
