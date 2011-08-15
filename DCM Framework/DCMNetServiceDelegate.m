@@ -91,7 +91,7 @@ static NSMutableArray *cachedServersArray = nil;
 {		
 	//NSArray *addresses = [[_dicomServices objectAtIndex:0] addresses];
 	NSArray *addresses = [netService addresses];
-	NSLog( @"portForNetService addresses:%u", [addresses count]);
+	NSLog( @"portForNetService addresses:%d", (int) [addresses count]);
 	struct sockaddr *addr = ( struct sockaddr *) [[addresses objectAtIndex:0]  bytes];
 	int aPort = -1;
 	if(addr->sa_family == AF_INET)		

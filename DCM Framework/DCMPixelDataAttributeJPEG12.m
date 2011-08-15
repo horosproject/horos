@@ -476,7 +476,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
   /* This is an important step since it will release a good deal of memory. */
 	jpeg_destroy_decompress(&theCInfo);
 	if (DCMDEBUG)
-		NSLog(@"JPEG12 decompressed data length: %d", [rawData length]);
+		NSLog(@"JPEG12 decompressed data length: %d", (int) [rawData length]);
 	return rawData;
 }
 
