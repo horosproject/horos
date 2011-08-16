@@ -14757,9 +14757,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[BrowserController tryLock: decompressThreadRunning during: 120];
 		[BrowserController tryLock: deleteInProgress during: 600];
 		
-		[self emptyDeleteQueueThread];
-		
-		[BrowserController tryLock: deleteInProgress during: 600];
 		[BrowserController tryLock: autoroutingInProgress during: 120];
 		
 		[self emptyAutoroutingQueue:self];
@@ -15232,12 +15229,26 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueueArray removeAllObjects];
 	[deleteQueue unlock];
 	
+    if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
+    {
+        NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
+        
+        copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
+        
+        NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+        
+        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+    }
+    
 	if( copyArray.count)
 	{
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		NSLog(@"delete Queue start: %d objects", [copyArray count]);
+		NSLog( @"delete Queue start: %d objects", [copyArray count]);
 		
+        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
+        
 		int f = 0;
 		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
@@ -15254,6 +15265,9 @@ static NSArray*	openSubSeriesArray = nil;
 			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
 		}
 		
+        //Delete the DELETEQUEUEFILE
+        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        
 		[deleteInProgress unlock];
 		
 		[folders removeDuplicatedStrings];
@@ -15343,22 +15357,48 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	//////////////////////////////////////////////////
 	
-	if( deleteQueueArray != nil && deleteQueue != nil)
-	{
-		if( [deleteQueueArray count] > 0)
-		{
-			if( [deleteInProgress tryLock])
-			{
-				[deleteInProgress unlock];
-				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
-				t.name = NSLocalizedString( @"Deleting files...", nil);
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
-				t.progress = 0;
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-			}
-		}
-	}
+    if( deleteQueueArray == nil) deleteQueueArray = [[NSMutableArray array] retain];
+	if( deleteQueue == nil) deleteQueue = [[NSLock alloc] init];
+	if( deleteInProgress == nil) deleteInProgress = [[NSLock alloc] init];
+    
+     if( [deleteInProgress tryLock])
+     {
+         if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
+         {
+             NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
+             
+             NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+             
+             [deleteQueue lock];
+             
+             @try
+             {
+                 [deleteQueueArray addObjectsFromArray: oldQueue];
+             }
+             @catch (NSException *e)
+             {
+                 NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+             }
+             
+             [deleteQueue unlock];
+         }
+         [deleteInProgress unlock];
+    }
+    
+    if( [deleteQueueArray count] > 0)
+    {
+        if( [deleteInProgress tryLock])
+        {
+            [deleteInProgress unlock];
+            
+            NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
+            t.name = NSLocalizedString( @"Deleting files...", nil);
+            t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
+            t.progress = 0;
+            [[ThreadsManager defaultManager] addThreadAndStart: t];
+        }
+    }
 }
 
 - (void)addFileToDeleteQueue: (NSString*)file
