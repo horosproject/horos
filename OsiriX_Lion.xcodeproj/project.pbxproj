@@ -113,6 +113,10 @@
 		591F5F7E13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */; };
 		591F5F7F13E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
 		591F5F8013E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
+		592230F113FA968B00A124C4 /* AlbumCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 592230EF13FA968A00A124C4 /* AlbumCell.h */; };
+		592230F213FA968B00A124C4 /* AlbumCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 592230EF13FA968A00A124C4 /* AlbumCell.h */; };
+		592230F313FA968B00A124C4 /* AlbumCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592230F013FA968A00A124C4 /* AlbumCell.mm */; };
+		592230F413FA968B00A124C4 /* AlbumCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592230F013FA968A00A124C4 /* AlbumCell.mm */; };
 		59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
@@ -8257,6 +8261,8 @@
 		591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2MutableUInteger.mm; path = nitrogen/Sources/N2MutableUInteger.mm; sourceTree = "<group>"; };
 		591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
 		591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteDicomDatabase.mm; sourceTree = "<group>"; };
+		592230EF13FA968A00A124C4 /* AlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCell.h; sourceTree = "<group>"; };
+		592230F013FA968A00A124C4 /* AlbumCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AlbumCell.mm; sourceTree = "<group>"; };
 		59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 4.xcdatamodel"; sourceTree = "<group>"; };
 		59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcmappingmodel; name = "WebPortalDB 3-4.xcmappingmodel"; path = "Binaries/WebPortalDB Mapping Models/WebPortalDB 3-4.xcmappingmodel"; sourceTree = "<group>"; };
 		5926822211CF60BD00CFA81F /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/ThreadModalForWindow.xib; sourceTree = "<group>"; };
@@ -14062,6 +14068,8 @@
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
+				592230EF13FA968A00A124C4 /* AlbumCell.h */,
+				592230F013FA968A00A124C4 /* AlbumCell.mm */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -19815,6 +19823,7 @@
 				5915F16F13E94CBA002591FF /* BrowserSource.h in Headers */,
 				5915F17513E991CB002591FF /* NSDate+N2.h in Headers */,
 				5915F17B13E99243002591FF /* NSArray+N2.h in Headers */,
+				592230F113FA968B00A124C4 /* AlbumCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22044,6 +22053,7 @@
 				5915F17013E94CBA002591FF /* BrowserSource.h in Headers */,
 				5915F17613E991CB002591FF /* NSDate+N2.h in Headers */,
 				5915F17C13E99243002591FF /* NSArray+N2.h in Headers */,
+				592230F213FA968B00A124C4 /* AlbumCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24431,6 +24441,7 @@
 				5915F17113E94CBA002591FF /* BrowserSource.mm in Sources */,
 				5915F17713E991CB002591FF /* NSDate+N2.mm in Sources */,
 				5915F17D13E99243002591FF /* NSArray+N2.mm in Sources */,
+				592230F313FA968B00A124C4 /* AlbumCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25700,6 +25711,7 @@
 				5915F17213E94CBA002591FF /* BrowserSource.mm in Sources */,
 				5915F17813E991CB002591FF /* NSDate+N2.mm in Sources */,
 				5915F17E13E99243002591FF /* NSArray+N2.mm in Sources */,
+				592230F413FA968B00A124C4 /* AlbumCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -92,7 +92,7 @@
 	[_sourcesTableView setDataSource:_sourcesHelper];
 	[_sourcesTableView setDelegate:_sourcesHelper];
 	
-	ImageAndTextCell* cell = [[[ImageAndTextCell alloc] init] autorelease];
+	NSCell* cell = [[[ImageAndTextCell alloc] init] autorelease];
 	[cell setEditable:NO];
 	[cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
 	[[_sourcesTableView tableColumnWithIdentifier:@"Source"] setDataCell:cell];

@@ -94,6 +94,7 @@
 #import "WADODownload.h"
 #import "NSManagedObject+N2.h"
 #import "DICOMExport.h"
+#import "AlbumCell.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -7096,13 +7097,6 @@ static BOOL withReset = NO;
 
 - (void)splitViewDidResizeSubviews: (NSNotification *)notification
 {
-    NSSplitView* splitView = [notification object];
-    
-    if (splitView == splitDrawer) {
-        CGFloat w = [segmentedAlbumButton bounds].size.width/[segmentedAlbumButton segmentCount];
-        for (int i = 0; i < [segmentedAlbumButton segmentCount]; ++i)
-            [segmentedAlbumButton setWidth:w forSegment:i];
-    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
@@ -7377,12 +7371,26 @@ static BOOL withReset = NO;
 	NSMenuItem		*item;
 	
 	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Albums", nil)] autorelease];
-	
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
-	[item setTarget: self]; // required because the drawner is the first responder
+
+	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Album", nil) action:@selector(addAlbum:) keyEquivalent:@""] autorelease];
+	[item setTarget:self];
 	[albumContextual addItem:item];
 	
+	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Smart Album", nil) action:@selector(addSmartAlbum:) keyEquivalent:@""] autorelease];
+	[item setTarget:self];
+	[albumContextual addItem:item];
+    
 	[albumContextual addItem: [NSMenuItem separatorItem]];
+
+	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete Album", nil) action:@selector(removeAlbum:) keyEquivalent:@""] autorelease];
+	[item setTarget:self];
+	[albumContextual addItem:item];
+
+    [albumContextual addItem: [NSMenuItem separatorItem]];
+
+    item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+	[item setTarget: self]; // required because the drawner is the first responder
+	[albumContextual addItem:item];
 	
 	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Import Albums", nil) action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
 	[item setTarget: self]; // required because the drawner is the first responder
@@ -7395,7 +7403,19 @@ static BOOL withReset = NO;
 	[albumContextual addItem:item];
 	
 	[albumTable setMenu: albumContextual];
-	
+
+    AlbumCell* cell = [[[AlbumCell alloc] init] autorelease];
+    [cell setImagePosition:NSImageLeft];
+    [cell setAlignment:NSLeftTextAlignment];
+    [cell setHighlightsBy:NSNoCellMask];
+    [cell setShowsStateBy:NSNoCellMask];
+    [cell setBordered:NO];
+    [cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
+    [cell setButtonType:NSMomentaryChangeButton];
+	[cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
+	[[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
+
+    
 	// ****************
 	
 	if ( contextual == nil) contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
@@ -7555,113 +7575,85 @@ static BOOL withReset = NO;
 	[smartWindowController release];
 }
 
-- (IBAction) albumButtons: (id)sender
-{
-	switch( [sender selectedSegment])
-	{
-		case 0:
-		{ // Add album
-			
-			[NSApp beginSheet: newAlbum
-			   modalForWindow: self.window
-				modalDelegate: nil
-			   didEndSelector: nil
-				  contextInfo: nil];
-			
-			int result = [NSApp runModalForWindow: newAlbum];
-			[newAlbum makeFirstResponder: nil];
-			
-			[NSApp endSheet: newAlbum];
-			[newAlbum orderOut: self];
-			
-			if( result == NSRunStoppedResponse)
-			{
-				NSString			*name;
-				long				i = 2;
-				
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-				
-				NSManagedObjectContext *context = self.managedObjectContext;
-				
-				[context lock];
-				
-				@try 
-				{
-					NSError *error = nil;
-					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
-					
-					name = [newAlbumName stringValue];
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-					{
-						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
-					}
-					
-					NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-					[album setValue:name forKey:@"name"];
-					
-					[_database save:NULL];
-					
-					[self refreshAlbums];
-				}
-				@catch (NSException * e) 
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
-				}
-				
-				[context unlock];
-				
-				[self outlineViewRefresh];
-			}
-		}
-		break;
-			
-		case 1:
-		{ // Add smart album
-			
-			[self addSmartAlbum: self];
-		}
-		break;
-			
-		case 2:	// Remove
-			if( albumTable.selectedRow > 0)
-			{
-				if (NSRunInformationalAlertPanelRelativeToWindow(NSLocalizedString(@"Delete an album", nil),
-																 NSLocalizedString(@"Are you sure you want to delete this album?", nil),
-																 NSLocalizedString(@"OK",nil),
-																 NSLocalizedString(@"Cancel",nil),
-																 nil, self.window) == NSAlertDefaultReturn)
-				{
-					NSManagedObjectContext	*context = self.managedObjectContext;
-					
-					[context lock];
-					
-					@try 
-					{
-						if( albumTable.selectedRow > 0)	// We cannot delete the first item !
-						{
-							[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
-						}
-						
-						[_database save:NULL];
-						
-						[self refreshAlbums];
-					}
-					@catch (NSException * e) 
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
-					}
-					
-					[context unlock];
-					
-					[self outlineViewRefresh];
-				}
-			}
-		break;
-	}
+- (void) addAlbum:(id)sender {
+    [NSApp beginSheet: newAlbum
+       modalForWindow: self.window
+        modalDelegate: nil
+       didEndSelector: nil
+          contextInfo: nil];
+    
+    int result = [NSApp runModalForWindow: newAlbum];
+    [newAlbum makeFirstResponder: nil];
+    
+    [NSApp endSheet: newAlbum];
+    [newAlbum orderOut: self];
+    
+    if( result == NSRunStoppedResponse)
+    {
+        NSString			*name;
+        long				i = 2;
+        
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+        [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+        
+        NSManagedObjectContext *context = self.managedObjectContext;
+        
+        [context lock];
+        
+        @try 
+        {
+            NSError *error = nil;
+            NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+            
+            name = [newAlbumName stringValue];
+            while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+            {
+                name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+            }
+            
+            NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+            [album setValue:name forKey:@"name"];
+            
+            [_database save:NULL];
+            
+            [self refreshAlbums];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            [AppController printStackTrace: e];
+        }
+        
+        [context unlock];
+        
+        [self outlineViewRefresh];
+    }
+}
+
+-(void)removeAlbum:(id)sender {
+    NSInteger row = [albumTable clickedRow];
+    if (!row) return;
+    
+    DicomAlbum* album = [self.albumArray objectAtIndex:row];
+    
+    if (NSRunInformationalAlertPanelRelativeToWindow(NSLocalizedString(@"Delete Album", nil),
+                                                     [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil), album.name],
+                                                     NSLocalizedString(@"OK",nil),
+                                                     NSLocalizedString(@"Cancel",nil),
+                                                     nil, self.window) == NSAlertDefaultReturn) {
+        [self.database lock];
+        @try {
+            [self.database.managedObjectContext deleteObject:album];
+            [self.database save:NULL];
+            [self refreshAlbums];
+            [self outlineViewRefresh];
+        } @catch (NSException* e) {
+            N2LogException(e);
+        } @finally {
+            [self.database unlock];
+        }
+    }
 }
 
 static BOOL needToRezoom;
@@ -7867,51 +7859,13 @@ static BOOL needToRezoom;
 
 - (id)tableView: (NSTableView *)aTableView objectValueForTableColumn: (NSTableColumn *)aTableColumn row: (NSInteger)rowIndex
 {
-	if ([aTableView isEqual:albumTable])
-	{
-		//if( displayEmptyDatabase) return nil;
-		
-		if([[aTableColumn identifier] isEqualToString:@"no"])
-		{
-			NSString *noOfStudies = nil;
-			
-			@synchronized( albumNoOfStudiesCache) {
-				if( albumNoOfStudiesCache == nil || rowIndex >= [albumNoOfStudiesCache count] || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES) {
-					[self refreshAlbums];
-					// It will be computed in a separate thread, and then displayed later.
-					noOfStudies = @"#";
-				}
-				else
-					noOfStudies = [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
-			}
-			
-			return noOfStudies;
-		}
-		else
-		{
-			NSArray *albumsArray = self.albumArray;
-			
-			if( rowIndex >= 0 && rowIndex < albumsArray.count)
-			{
-				NSManagedObject	*object = [albumsArray  objectAtIndex: rowIndex];
-				return [object valueForKey:@"name"];
-			}
-			else
-				return NSLocalizedString( @"n/a", nil);
-		}
-	}
+	
 	
 	return nil;
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(AlbumCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if( [aCell isKindOfClass: [ImageAndTextCell class]])
-	{
-		[(ImageAndTextCell*) aCell setLastImage: nil];
-		[(ImageAndTextCell*) aCell setLastImageAlternate: nil];
-	}
-	
 	if ([aTableView isEqual:albumTable])
 	{
 		//if( displayEmptyDatabase) return;
@@ -7922,36 +7876,38 @@ static BOOL needToRezoom;
 		else txtFont = [NSFont systemFontOfSize:11];			
 		
 		[aCell setFont:txtFont];
-		[aCell setLineBreakMode: NSLineBreakByTruncatingMiddle];
 		
-		if( [[aTableColumn identifier] isEqualToString:@"Source"])
-		{
-			NSArray *albumArray = self.albumArray;
-			
-			if ( albumArray.count > rowIndex && [[[albumArray objectAtIndex: rowIndex] valueForKey:@"smartAlbum"] boolValue])
-			{
-				if (![_database isLocal])
-				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
+        NSArray* albumArray = self.albumArray;
+        
+        if (albumArray.count > rowIndex && [[[albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
+            if (![_database isLocal])
+                [aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
+            else [aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
+        else
+            if (![_database isLocal])
+                [aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
+            else [aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
+        
+        [aCell setTitle:nil];
+        if ([aTableView isEqual:albumTable]) {
+            NSArray *albumsArray = self.albumArray;
+            if (rowIndex >= 0 && rowIndex < albumsArray.count)
+                [aCell setTitle:[[albumsArray objectAtIndex:rowIndex] valueForKey:@"name"]];
+        }
+        
+        NSString *noOfStudies = nil;
+		@synchronized( albumNoOfStudiesCache) {
+			if( albumNoOfStudiesCache == nil || rowIndex >= [albumNoOfStudiesCache count] || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES) {
+                    [self refreshAlbums];
+					// It will be computed in a separate thread, and then displayed later.
+					noOfStudies = @"#";
 				}
 				else
-				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
-				}
-			}
-			else
-			{
-				if (![_database isLocal])
-				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
-				}
-				else
-				{
-					[(ImageAndTextCell*) aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
-				}
-			}
-		}
-	}
+					noOfStudies = [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
+        }
+
+        [aCell setRightText:noOfStudies];
+    }
 }
 
 - (void)sendDICOMFilesToOsiriXNode: (NSDictionary*)todo

@@ -105,7 +105,6 @@ extern NSString* O2AlbumDragType;
 	NSMenu							*columnsMenu;
 	IBOutlet BrowserMatrix			*oMatrix;
 	IBOutlet NSTableView			*albumTable;
-	IBOutlet NSSegmentedControl		*segmentedAlbumButton;
 	
 	IBOutlet NSBox					*bonjourSourcesBox;
 	
@@ -465,7 +464,6 @@ extern NSString* O2AlbumDragType;
 - (void) refreshColumns;
 - (NSString*) outlineViewRefresh;
 - (void) matrixInit:(long) noOfImages;
-- (IBAction) albumButtons: (id)sender;
 - (NSArray*) albumArray;
 - (void) refreshAlbums;
 - (void) waitForRunningProcesses;
