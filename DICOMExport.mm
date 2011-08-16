@@ -174,9 +174,11 @@ static float deg2rad = M_PI / 180.0f;
 			{
 				for( int x = 0; x < width; x++)
 				{
-					localData[ 0 + x*3 + y*width*3] = data[ 0+ x*4 + y*width*4];
-					localData[ 1 + x*3 + y*width*3] = data[ 1+ x*4 + y*width*4];
-					localData[ 2 + x*3 + y*width*3] = data[ 2+ x*4 + y*width*4];
+                    float alpha = (float)data[ 3+ x*4 + y*width*4] / 255.;
+                    
+					localData[ 0 + x*3 + y*width*3] = data[ 0+ x*4 + y*width*4]*alpha;
+					localData[ 1 + x*3 + y*width*3] = data[ 1+ x*4 + y*width*4]*alpha;
+					localData[ 2 + x*3 + y*width*3] = data[ 2+ x*4 + y*width*4]*alpha;
 				}
 			}
 			
