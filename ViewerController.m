@@ -18059,7 +18059,8 @@ int i,j,l;
 			for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 			{
 				ROI	*curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
-				if( [[curROI name] isEqualToString: [selectedRoi name]])
+                
+				if( [[curROI name] isEqualToString: [selectedRoi name]] && [curROI isValidForVolume])
 				{
 					imageCount++;
 					
@@ -18116,7 +18117,7 @@ int i,j,l;
 		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: x] count]; i++)
 		{
 			curROI = [[roiList[curMovieIndex] objectAtIndex: x] objectAtIndex: i];
-			if( [[curROI name] isEqualToString: [selectedRoi name]] == YES)		//&& [[curROI comments] isEqualToString:@"morphing generated"] == NO)
+			if( [[curROI name] isEqualToString: [selectedRoi name]] == YES  && [curROI isValidForVolume])		//&& [[curROI comments] isEqualToString:@"morphing generated"] == NO)
 			{
 				if( fROI == nil)
 				{

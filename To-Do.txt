@@ -1,8 +1,13 @@
+- 3D First Slice
+
+- CPR save last curved points
+- Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
+- Concurrent DICOM network sends
 - SUV on PET 3D Panel (3D MIP)
 - Q&R: custom field (Performing Physician)
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG

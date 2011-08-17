@@ -144,22 +144,22 @@ enum
 @property(readonly) int textureWidth, textureHeight;
 @property(readonly) int textureDownRightCornerX,textureDownRightCornerY, textureUpLeftCornerX, textureUpLeftCornerY;
 @property(readonly) unsigned char *textureBuffer;
-@property float opacity;
+@property(nonatomic) float opacity;
 @property int originalIndexForAlias;
 @property BOOL locked, selectable, isAliased, displayCMOrPixels;
-@property(retain) NSString *name, *comments;
+@property(nonatomic, retain) NSString *name, *comments;
 @property(readonly) long type;
-@property(setter=setROIMode:) long ROImode;
+@property(nonatomic, setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
 @property(readonly) NSMutableArray *zPositions;
 @property(readonly) BOOL clickInTextBox;
 @property(setter=setROIRect:) NSRect rect; // To create a Rectangular ROI (tROI) or an Oval ROI (tOval) or a 2DPoint
-@property(retain) DCMPix *pix; // The DCMPix associated to this ROI
+@property(nonatomic, retain) DCMPix *pix; // The DCMPix associated to this ROI
 @property(readonly) DCMView *curView;  // The DCMView associated to this ROI
 @property float mousePosMeasure;
 @property(readonly) NSData *data;
-@property(setter=setColor:) RGBColor rgbcolor;
-@property float thickness;
+@property(nonatomic, setter=setColor:) RGBColor rgbcolor;
+@property(nonatomic) float thickness;
 @property(retain) ROI *parentROI;
 @property double sliceThickness, pixelSpacingX, pixelSpacingY;
 @property float min, max, mean;
@@ -180,6 +180,7 @@ enum
 
 - (void) setDefaultName:(NSString*) n;
 - (NSString*) defaultName;
+- (BOOL) isValidForVolume;
 
 + (BOOL) splineForROI;
 
@@ -382,7 +383,7 @@ enum
 @property int calciumThreshold;
 
 @property(retain) NSString *layerReferenceFilePath;
-@property(retain) NSImage *layerImage;
+@property(nonatomic, retain) NSImage *layerImage;
 @property float layerPixelSpacingX, layerPixelSpacingY;
 
 - (GLuint)loadLayerImageTexture;
@@ -398,8 +399,8 @@ enum
 /** Lower right point of ROI */
 - (NSPoint) lowerRightPoint;
 
-@property BOOL isLayerOpacityConstant;
-@property BOOL canColorizeLayer;
+@property(nonatomic) BOOL isLayerOpacityConstant;
+@property(nonatomic) BOOL canColorizeLayer;
 @property BOOL displayTextualData;
 @property(readonly) NSPoint clickPoint;
 
