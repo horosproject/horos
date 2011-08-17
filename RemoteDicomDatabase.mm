@@ -54,7 +54,7 @@
 		if (aet) *aet = [addressParts objectAtIndex:0];
 		address = [addressParts objectAtIndex:1];
 	} else *aet = nil;
-	
+    
 	NSString* h = nil;
 	if (!host) host = &h;
 	addressParts = [address componentsSeparatedByString:@":"];
@@ -66,18 +66,24 @@
 	return *host;
 }
 
++(NSHost*)hostWithAddressOrName:(NSString*)str {
+    NSHost* rhost = nil;
+    if (![str rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].length)
+        rhost = [NSHost hostWithAddress:str];
+	else rhost = [NSHost hostWithName:str];
+    return rhost;
+}
+
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
 	address = [self address:address toAddress:NULL port:port];
-	NSHost* rhost = [NSHost hostWithAddress:address];
-	if (!rhost) rhost = [NSHost hostWithName:address];
+	NSHost* rhost = [self hostWithAddressOrName:address];
 	if (host) *host = rhost;
 	return rhost;
 }
 
 +(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
 	address = [self address:address toAddress:NULL port:port aet:aet];
-	NSHost* rhost = [NSHost hostWithAddress:address];
-	if (!rhost) rhost = [NSHost hostWithName:address];
+	NSHost* rhost = [self hostWithAddressOrName:address];
 	if (host) *host = rhost;
 	return rhost;
 }

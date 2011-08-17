@@ -41,7 +41,7 @@
 NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
 
 @implementation N2Connection
-@synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent;
+@synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent, closeOnRemoteClose = _closeOnRemoteClose;
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
 	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
@@ -109,6 +109,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 			//			[io addObject:((N2ConnectionWithDelegateHandler*)c).invocation];
 		} else {
 			c = [[N2Connection alloc] initWithAddress:address port:port tls:tlsFlag];
+            c.closeOnRemoteClose = YES;
 		}
 		
 		c.maximumReadSizePerEvent = 1024*32;
@@ -325,8 +326,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable && [_outputBuffer length])
 		[self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
 	
-	if (event == NSStreamEventEndEncountered)
+	if (event == NSStreamEventEndEncountered) {
 		[stream close];
+        if ([self closeOnRemoteClose])
+            [self close];
+    }
 	
 	if (event == NSStreamEventErrorOccurred) {
 		NSLog(@"Stream error: %@ %@", stream.streamError, stream.streamError.userInfo);
