@@ -591,6 +591,14 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	return orderedPts;
 }
 
+- (BOOL) isValidForVolume
+{
+    if( type == tCPolygon || type == tOPolygon || type == tPlain || type == tPencil)
+        return YES;
+    else
+        return NO;
+}
+
 -(void) setDefaultName:(NSString*) n { [ROI setDefaultName: n]; }
 -(NSString*) defaultName { return defaultName; }
   
@@ -4440,50 +4448,47 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						NSUInteger index = [roiList indexOfObject: self];
 						if( index != NSNotFound)
 						{
-							if( index >= 0)
-							{
-								int no = 0;
-								for( ROI *r  in roiList)
-								{
-									if( [r type] == tMesure)
-									{
-										no++;
-										if( no >= 2)
-											break;
-									}
-								}
-								
-								if( no >= 2)
-								{
-									BOOL f = NO;
-									for( int i = 0; i < index; i++)
-									{
-										ROI *r = [roiList objectAtIndex: i];
-										
-										if( [r type] == tMesure)
-										{
-											f = YES;
-											break;
-										}
-									}
-									
-									if( f == NO)
-									{
-										glColor4f ( 1.0, 1.0, 0.0, 0.5);
-										glLineWidth( thickness * 3.);
-										
-										glBegin(GL_LINE_STRIP);
-										for( id pt in points)
-										{
-											glVertex2f( ([pt x]- offsetx) * scaleValue , ([pt y]- offsety) * scaleValue );
-										}
-										glEnd();
-										
-										glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
-										glLineWidth(thickness);
-									}
-								}
-							}
+                            int no = 0;
+                            for( ROI *r  in roiList)
+                            {
+                                if( [r type] == tMesure)
+                                {
+                                    no++;
+                                    if( no >= 2)
+                                        break;
+                                }
+                            }
+                            
+                            if( no >= 2)
+                            {
+                                BOOL f = NO;
+                                for( int i = 0; i < index; i++)
+                                {
+                                    ROI *r = [roiList objectAtIndex: i];
+                                    
+                                    if( [r type] == tMesure)
+                                    {
+                                        f = YES;
+                                        break;
+                                    }
+                                }
+                                
+                                if( f == NO)
+                                {
+                                    glColor4f ( 1.0, 1.0, 0.0, 0.5);
+                                    glLineWidth( thickness * 3.);
+                                    
+                                    glBegin(GL_LINE_STRIP);
+                                    for( id pt in points)
+                                    {
+                                        glVertex2f( ([pt x]- offsetx) * scaleValue , ([pt y]- offsety) * scaleValue );
+                                    }
+                                    glEnd();
+                                    
+                                    glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+                                    glLineWidth(thickness);
+                                }
+                            }
 						}
 					}
 					

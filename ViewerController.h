@@ -358,7 +358,7 @@ enum
 @property(readonly) NSButton *blendingResample;
 
 /** Return the 'dragged' window, the destination window is contained in the 'viewerController' object of the 'PluginFilter' object */
-@property(retain) ViewerController *blendedWindow;
+@property(nonatomic, retain) ViewerController *blendedWindow;
 
 /** Array of all 2D Viewers */
 + (NSMutableArray*) getDisplayed2DViewers;

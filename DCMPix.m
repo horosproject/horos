@@ -5483,7 +5483,7 @@ END_CREATE_ROIS:
 				NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 				[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-				[aTask setArguments: [NSArray arrayWithObjects: @"+X1", srcFile, htmlpath, nil]];		
+				[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items",srcFile, htmlpath, nil]];		
 				[aTask launch];
 				[aTask waitUntilExit];		
 				[aTask interrupt];
@@ -8125,7 +8125,7 @@ END_CREATE_ROIS:
 								NSTask *aTask = [[[NSTask alloc] init] autorelease];		
 								[aTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
 								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
-								[aTask setArguments: [NSArray arrayWithObjects: @"+X1", srcFile, htmlpath, nil]];		
+								[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", srcFile, htmlpath, nil]];		
 								[aTask launch];
 								[aTask waitUntilExit];		
 								[aTask interrupt];

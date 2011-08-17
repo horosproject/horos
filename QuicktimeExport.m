@@ -278,7 +278,7 @@
 	err = MovieExportDoUserDialog(exporter, theMovie, NULL, 0, duration, &canceled);
 	if(err)
 	{
-		NSLog(@"Got error %d when calling MovieExportDoUserDialog");
+		NSLog(@"Got error %d when calling MovieExportDoUserDialog", (int) err);
 		CloseComponent(exporter);
 		return nil;
 	}
@@ -292,7 +292,7 @@
 	err = MovieExportGetSettingsAsAtomContainer(exporter, &settings);
 	if(err)
 	{
-		NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer");
+		NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer", (int) err);
 		CloseComponent(exporter);
 		return nil;
 	}
@@ -513,6 +513,8 @@
 			
 			[wait incrementBy:1];
 			
+            NSDisableScreenUpdates();
+            
 			NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
 			
 			if( im)
@@ -535,6 +537,9 @@
 				curSample = maxImage;
 				aborted = YES;
 			}
+            
+            NSEnableScreenUpdates();
+            
 			[pool release];
 		}
 		[wait close];
