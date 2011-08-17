@@ -6926,10 +6926,10 @@ static BOOL withReset = NO;
 
 		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-        NSScrollView* view = (NSScrollView*)[[sender subviews] objectAtIndex:0];
+        NSScrollView* scrollView = (NSScrollView*)[[sender subviews] objectAtIndex:0];
         CGFloat scrollbarWidth = 0;
-        if ([view isKindOfClass:[NSScrollView class]]) {
-            NSScroller* scroller = [view verticalScroller];
+        if ([scrollView isKindOfClass:[NSScrollView class]]) {
+            NSScroller* scroller = [scrollView verticalScroller];
             BOOL overlays = NO;
             if ([scroller respondsToSelector:@selector(scrollerStyle)]) {
                 NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[scroller methodSignatureForSelector:@selector(scrollerStyle)]];
@@ -6939,13 +6939,13 @@ static BOOL withReset = NO;
                 overlays = r == 1;
             }
             if (!overlays)
-                if ([view hasVerticalScroller] && ![scroller isHidden])
+                if ([scrollView hasVerticalScroller] && ![scroller isHidden])
                     scrollbarWidth = [scroller frame].size.width;
         }
         
         proposedPosition -= scrollbarWidth;
 
-        NSInteger hcells = MAX(roundf(proposedPosition/rcs), 1);
+        NSInteger hcells = roundf(proposedPosition/rcs);
         proposedPosition = rcs*hcells;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
