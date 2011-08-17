@@ -109,9 +109,9 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 			//			[io addObject:((N2ConnectionWithDelegateHandler*)c).invocation];
 		} else {
 			c = [[N2Connection alloc] initWithAddress:address port:port tls:tlsFlag];
-            c.closeOnRemoteClose = YES;
 		}
 		
+        c.closeOnRemoteClose = YES;
 		c.maximumReadSizePerEvent = 1024*32;
 		if (request.length) [c writeData:request];
 		
