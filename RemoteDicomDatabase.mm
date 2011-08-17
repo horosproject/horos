@@ -395,7 +395,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 	}
 	
 	if (!_updateTimer) {
-		_updateTimer = [NSTimer timerWithTimeInterval:10 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
+		_updateTimer = [NSTimer timerWithTimeInterval:60 target:RemoteDicomDatabase.class selector:@selector(_updateTimerCallbackClass:) userInfo:[NSValue valueWithPointer:self] repeats:YES];
 		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSModalPanelRunLoopMode];
 		[[NSRunLoop mainRunLoop] addTimer:_updateTimer forMode:NSDefaultRunLoopMode];
 	}	
