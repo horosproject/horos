@@ -1030,8 +1030,13 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(void)_observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
-	NSLog(@"ToDo: [BrowserController _observeDatabaseObjectsMayFaultNotification:]");
+-(void)_observeDatabaseDidChangeContextNotification:(NSNotification*)notification {
+	if (![NSThread isMainThread])
+		[self performSelectorOnMainThread:@selector(_observeDatabaseDidChangeContextNotification:) withObject:notification waitUntilDone:NO];
+	else {
+		[self outlineViewRefresh];
+		[self refreshAlbums];
+	}
 }
 
 -(void)resetToLocalDatabase {
@@ -1106,8 +1111,7 @@ static NSConditionLock *threadLock = nil;
 			if (db) [self selectCurrentDatabaseSource];
 
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
-
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
 		
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			

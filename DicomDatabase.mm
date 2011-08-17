@@ -2710,7 +2710,7 @@ enum { Compress, Decompress };
 	
 //	[self waitForRunningProcesses];
 	
-	[NSNotificationCenter.defaultCenter postNotificationName:OsirixDatabaseObjectsMayFaultNotification object:self userInfo:nil];
+	[NSNotificationCenter.defaultCenter postNotificationName:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:self userInfo:nil];
 	//[[AppController sharedAppController] closeAllViewers: self];
 
 	[_importFilesFromIncomingDirLock lock];

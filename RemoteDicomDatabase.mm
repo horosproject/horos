@@ -372,7 +372,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		thread.status = NSLocalizedString(@"Opening index...", nil);
 		NSManagedObjectContext* context = [self contextAtPath:path];
 		
-		// CHANGE!! we want to DIFF ;) or is it too slow?
+		// TODO: CHANGE!! we want to DIFF ;) or is it too slow?
 		
 		for (ViewerController* vc in [ViewerController getDisplayed2DViewers])
 			[vc.window orderOut:self];
@@ -384,6 +384,8 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		self.managedObjectContext = context;
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
+		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
 		
 	} @catch (NSException* e) {
 		@throw;

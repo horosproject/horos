@@ -39,14 +39,14 @@ static BOOL protectedReentryWindowDidResize = NO;
 	if (database != _database) {
 		if (_database) {
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:_database];
-			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayFaultNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
 		}
 		
 		_database = database;
 		
 		if (_database) {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayFaultNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
 		}
 	}
 }
