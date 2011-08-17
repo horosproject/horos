@@ -106,7 +106,7 @@
 	
 	NSArray* dbs = [DicomDatabase allDatabases];
 	for (RemoteDicomDatabase* db in dbs)
-		if ([db isKindOfClass:RemoteDicomDatabase.class])
+		if ([db isKindOfClass:[RemoteDicomDatabase class]])
 			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port) {
 				if (flagUpdate)
 					[db update];
@@ -445,7 +445,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 -(void)object:(NSManagedObject*)object setValue:(id)value forKey:(NSString*)key {
 	NSMutableData* request = [NSMutableData dataWithBytes:"SETVA" length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:object.objectID.URIRepresentation.absoluteString];
-	[RemoteDicomDatabase _data:request appendStringUTF8: [value isKindOfClass:NSNumber.class]? [value stringValue] : value];
+	[RemoteDicomDatabase _data:request appendStringUTF8: [value isKindOfClass:[NSNumber class]]? [value stringValue] : value];
 	[RemoteDicomDatabase _data:request appendStringUTF8:key];
 	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 	_timestamp = [self fetchDatabaseTimestamp];

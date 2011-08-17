@@ -196,7 +196,7 @@
 }
 
 -(void)_complain:(NSArray*)why { // if 1st obj in array is a number then execute this after the delay specified by that number, with the rest of the array
-	if ([[why objectAtIndex:0] isKindOfClass:NSNumber.class])
+	if ([[why objectAtIndex:0] isKindOfClass:[NSNumber class]])
 		[self performSelector:@selector(_complain:) withObject:[why subarrayWithRange:NSMakeRange(1, why.count-1)] afterDelay:[[why objectAtIndex:0] floatValue]];
 	else NSBeginAlertSheet([why objectAtIndex:0], nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [why objectAtIndex:1]);
 }
@@ -339,7 +339,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// remove old items
 		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i) {
 			BrowserSource* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if (is.type == BrowserSourceTypeLocal && ![is isKindOfClass:DefaultBrowserSource.class])
+			if (is.type == BrowserSourceTypeLocal && ![is isKindOfClass:[DefaultBrowserSource class]])
 				if (![[a valueForKey:@"Path"] containsObject:is.location])
 					[_browser.sources removeObjectAtArrangedObjectIndex:i];
 		}
@@ -627,7 +627,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	MountedBrowserSource* mbs = nil;
 	for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
-		if ([ibs isKindOfClass:MountedBrowserSource.class] && [ibs.devicePath isEqualToString:path]) {
+		if ([ibs isKindOfClass:[MountedBrowserSource class]] && [ibs.devicePath isEqualToString:path]) {
 			mbs = ibs;
 			break;
 		}

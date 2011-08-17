@@ -429,9 +429,12 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		#ifndef OSIRIX_LIGHT
 		for (id path in paths)
 		{
-            NSArray* donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-            if ([donotloadnames containsObject:@"*"])
-                break;
+            NSArray* donotloadnames = nil;
+            if (![path isKindOfClass:[NSNull class]]) {
+                [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                if ([donotloadnames containsObject:@"*"])
+                    break;
+            }
             
             NSEnumerator* e = nil;
             if ([path isKindOfClass:[NSString class]])

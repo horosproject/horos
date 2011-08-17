@@ -187,7 +187,7 @@ void restartSTORESCP()
 @implementation BrowserController
 
 +(void)initializeBrowserControllerClass {
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:BrowserController.class];
+	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[BrowserController class]];
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
@@ -2621,7 +2621,7 @@ static NSConditionLock *threadLock = nil;
 
 
 -(void)refreshBonjourSource: (id) sender {
-	if ([_database isKindOfClass:RemoteDicomDatabase.class])
+	if ([_database isKindOfClass:[RemoteDicomDatabase class]])
 		[(RemoteDicomDatabase*)_database initiateUpdate];
 }
 

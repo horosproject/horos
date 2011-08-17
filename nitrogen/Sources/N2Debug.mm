@@ -45,9 +45,9 @@ void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id ar
 	va_start(args, arg);
 	
 	NSString* message = @"no details";
-	if ([arg isKindOfClass:NSString.class])
+	if ([arg isKindOfClass:[NSString class]])
 		message = [[[NSString alloc] initWithFormat:arg arguments:args] autorelease];
-	if ([arg isKindOfClass:NSError.class])
+	if ([arg isKindOfClass:[NSError class] ])
 		message = [(NSError*)arg description];
 	
 	va_end(args);

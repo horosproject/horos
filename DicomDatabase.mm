@@ -730,7 +730,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			DicomAlbum* album = [self newObjectForEntity:self.albumEntity];
 			album.name = localizedName;
 			NSString* predicate = [albumDescriptors objectForKey:name];
-			if ([predicate isKindOfClass:NSString.class]) {
+			if ([predicate isKindOfClass:[NSString class]]) {
 				album.predicateString = predicate;
 				album.smartAlbum = [NSNumber numberWithBool:YES];
 			}
