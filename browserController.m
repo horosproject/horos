@@ -6945,8 +6945,8 @@ static BOOL withReset = NO;
         
         proposedPosition -= scrollbarWidth;
 
-        NSInteger hcells = roundf(proposedPosition/rcs);
-        proposedPosition = rcs*hcells;
+        int hcells = MAX(roundf((proposedPosition+oMatrix.intercellSpacing.width)/rcs), 1);
+        proposedPosition = rcs*hcells-oMatrix.intercellSpacing.width;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
         proposedPosition += scrollbarWidth;
