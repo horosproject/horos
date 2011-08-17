@@ -5956,17 +5956,22 @@ return YES;
 					
 					[[pixList[ x] objectAtIndex: 1] orientation: orientation];
 					
-					int pw = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"width"] intValue];
-					int ph = [[[fileList[ x] objectAtIndex: 0] valueForKey:@"height"] intValue];
-					
+					int pw = [[[fileList[ x] objectAtIndex: [pixList[ x] count]/2] valueForKey: @"width"] intValue];
+					int ph = [[[fileList[ x] objectAtIndex: [pixList[ x] count]/2] valueForKey: @"height"] intValue];
+					int firstWrongImage = -1;
+                    int numberOfNonVolumicImages = 0;
+                    
 					for( int j = 0 ; j < [pixList[ x] count]; j++)
 					{
-						if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey:@"width"] intValue])
+						if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey: @"width"] intValue] || ph != [[[fileList[ x] objectAtIndex: j] valueForKey: @"height"] intValue])
+                        {
 							volumicData = NO;
-						
-						if( ph != [[[fileList[ x] objectAtIndex: j] valueForKey:@"height"] intValue])
-							volumicData = NO;
-						
+                            numberOfNonVolumicImages++;
+                            
+                            if( firstWrongImage == -1)
+                                firstWrongImage = j;
+						}
+                        
 						if( volumicData)
 						{
 							float o[ 9];
@@ -5988,6 +5993,33 @@ return YES;
 							}
 						}
 					}
+                    
+//                    if( numberOfNonVolumicImages == 1 && (firstWrongImage == 0 || firstWrongImage == [pixList[ x] count]-1)) // First or last image with different matrix
+//                    {
+//                        NSMutableArray *newFileList = [NSMutableArray arrayWithArray: fileList[ x]];
+//                        NSMutableArray *newPixList = [NSMutableArray arrayWithArray: pixList[ x]];
+//                        NSData *newVolumeData = [NSData dataWithBytesNoCopy:  length:<#(NSUInteger)#> freeWhenDone:];
+//                        
+//                        recompute ppixList fImage;
+//                        
+//                        [newFileList removeObjectAtIndex: firstWrongImage];
+//                        [newPixList removeObjectAtIndex: firstWrongImage];
+//                        
+//                        [self changeImageData: newFileList :newPixList :v :NO];
+//                        
+//                        loadingPercentage = 1;
+//                        [self computeInterval];
+//                        [self setWindowTitle:self];
+//                        
+//                        [imageView setIndex: 0];
+//                        [imageView sendSyncMessage: 0];
+//                        
+//                        [self adjustSlider];
+//                        
+//                        postprocessed = YES;
+//                        
+//                        return;
+//                    }
 				}
 				else volumicData = NO;
 			}
