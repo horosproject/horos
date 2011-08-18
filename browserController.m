@@ -25,6 +25,7 @@
 #import "QueryController.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "NSWindow+N2.h"
 #import "DicomStudy.h"
 #import "DCMPix.h"
 #import "SRAnnotation.h"
@@ -177,6 +178,7 @@ void restartSTORESCP()
 -(void)reduceCoreDataFootPrint;
 - (void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize;
+- (void)splitViewDidResizeSubviews: (NSNotification *)notification;
 
 @end
 
@@ -4363,24 +4365,26 @@ static NSConditionLock *threadLock = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-
-
 -(NSString*)outlineView:(NSOutlineView*)outlineView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
 	if ([item isFault])
 		return nil;
 	
 	if ([[tableColumn identifier] isEqualToString:@"name"]) {
-		NSDate* now = [NSDate date];
-		NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
-		NSDate* acqDate = [item valueForKey:@"date"];
-		NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
-		NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
-		
-		if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
-		else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
-		else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
-		else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
-		else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+        NSRect imageFrame, textFrame;
+        [(ImageAndTextCell*)cell divideCellFrame:*rect intoImageFrame:&imageFrame remainingFrame:&textFrame];
+        if (NSPointInRect(mouseLocation, imageFrame)) {
+            NSDate* now = [NSDate date];
+            NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
+            NSDate* acqDate = [item valueForKey:@"date"];
+            NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
+            NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
+            
+            if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
+            else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
+            else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
+            else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
+            else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+        }
 	}
 	
 	return nil;
@@ -7088,6 +7092,12 @@ static BOOL withReset = NO;
         return;
     }
     
+    if (sender == _bottomSplit) {
+        NSLog(@"1234");
+		[self splitViewDidResizeSubviews:[NSNotification notificationWithName:NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
+        return;
+    }
+    
     [sender adjustSubviews];
 }
 
@@ -7101,6 +7111,13 @@ static BOOL withReset = NO;
 
 - (void)splitViewDidResizeSubviews: (NSNotification *)notification
 {
+    if ([notification object] == splitViewVert) {
+        CGFloat dividerPosition = [[[splitViewVert subviews] objectAtIndex:0] frame].size.width+(_bottomSplit.bounds.size.width-splitViewVert.bounds.size.width);
+        NSLog(@"abcd %f", dividerPosition);
+        NSRect splitFrame = [_bottomSplit frame];
+        [[[_bottomSplit subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
+        [[[_bottomSplit subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+_bottomSplit.dividerThickness, 0, splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness, splitFrame.size.height)];
+    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
@@ -7109,6 +7126,9 @@ static BOOL withReset = NO;
         return NO;
 	
     if (sender == splitDrawer && subview == [[splitDrawer subviews] objectAtIndex:1])
+        return NO;
+	
+    if (sender == _bottomSplit)
         return NO;
     
     return YES;
@@ -7147,7 +7167,7 @@ static BOOL withReset = NO;
 	if (sender == splitDrawer)
 		return 300;
     
-	return oMatrix.cellSize.width;
+	return proposedMax;
 }
 
 - (NSManagedObject *)firstObjectForDatabaseMatrixSelection
@@ -10299,6 +10319,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	@try
 	{
+        [self.window safelySetUsesLightBottomGradient:YES];
+        
       //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixFrameDidChange:) name:NSViewFrameDidChangeNotification object:oMatrix];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:thumbnailsScrollView];
         [self previewMatrixScrollViewFrameDidChange:nil];
@@ -10429,10 +10451,10 @@ static NSArray*	openSubSeriesArray = nil;
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
 		[splitAlbums restoreDefault:@"SPLITALBUMS"];
+
+        //		[self autoCleanDatabaseDate: self];
 		
-//		[self autoCleanDatabaseDate: self];
-		
-		[self splitViewDidResizeSubviews: nil];
+		[self splitViewDidResizeSubviews:[NSNotification notificationWithName:NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
 		
 		
 		// database : gray background

@@ -31,5 +31,6 @@
 @property(retain) NSImage* lastImageAlternate;
 
 -(void)setLastImageActionTarget:(id)target selector:(SEL)selector;
+-(void)divideCellFrame:(NSRect)cellFrame intoImageFrame:(NSRect*)imageFrame remainingFrame:(NSRect*)restFrame;
 
 @end

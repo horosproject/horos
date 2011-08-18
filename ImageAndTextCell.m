@@ -97,37 +97,38 @@
 - (void)editWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject event:(NSEvent *)theEvent {
 //	NSLog(@"Edit ImageAnd TextCell");
     NSRect textFrame, imageFrame;
-    NSDivideRect (aRect, &imageFrame, &textFrame, 3 + self.image.size.width, NSMinXEdge);
+    [self divideCellFrame:aRect intoImageFrame:&imageFrame remainingFrame:&textFrame];
     [super editWithFrame: textFrame inView: controlView editor:textObj delegate:anObject event: theEvent];
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(NSInteger)selStart length:(NSInteger)selLength {
     NSRect textFrame, imageFrame;
-    NSDivideRect (aRect, &imageFrame, &textFrame, 3 + self.image.size.width, NSMinXEdge);
+    [self divideCellFrame:aRect intoImageFrame:&imageFrame remainingFrame:&textFrame];
     [super selectWithFrame: textFrame inView: controlView editor:textObj delegate:anObject start:selStart length:selLength];
+}
+
+-(void)divideCellFrame:(NSRect)cellFrame intoImageFrame:(NSRect*)imageFrame remainingFrame:(NSRect*)restFrame {
+    NSSize imageSize = self.image.size;
+    NSDivideRect(cellFrame, imageFrame, restFrame, 3 + imageSize.width, NSMinXEdge);
+    imageFrame->origin.x += 2;
+    imageFrame->size = imageSize;
 }
 
 - (void)drawInteriorWithFrame:(NSRect)cellFrameIn inView:(NSView *)controlView {
 	NSRect cellFrame = cellFrameIn;
 	
-	NSImage* image = self.image;
-	
-    if (image) {
-        NSSize imageSize = [image size];
-        NSRect imageFrame;
-        NSDivideRect(cellFrame, &imageFrame, &cellFrame, 3 + imageSize.width, NSMinXEdge);
-
-		imageFrame.origin.x += 2;
-        imageFrame.size = imageSize;
+    NSRect imageFrame;
+    if (self.image) {
+        [self divideCellFrame:cellFrame intoImageFrame:&imageFrame remainingFrame:&cellFrame];
 
         if ([controlView isFlipped])
             imageFrame.origin.y += ceil((cellFrame.size.height + imageFrame.size.height) / 2);
         else imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
 
-        [image compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
+        [self.image compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
     }
 	
-	image = _lastImage;
+	NSImage* image = self.lastImage;
 	if (_trackingLastImage && _trackingLastImageMouseIsOnLastImage)
 		image = _lastImageAlternate;
 	

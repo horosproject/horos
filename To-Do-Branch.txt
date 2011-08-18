@@ -1,3 +1,5 @@
+- Browser: textfield with number of exams etc...
+
 - MacAppStore (check)
 
 --- tester ˆ fond:

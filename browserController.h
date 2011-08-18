@@ -116,6 +116,7 @@ extern NSString* O2AlbumDragType;
 	
 	IBOutlet NSSlider				*animationSlider;
 	IBOutlet NSButton				*animationCheck;
+    IBOutlet NSSplitView*           _bottomSplit;
     
     IBOutlet PreviewView			*imageView;
 	
