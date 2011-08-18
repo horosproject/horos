@@ -1,5 +1,8 @@
 - 3D First Slice
 
+- Browser: textfield with number of exams etc...
+- Browser: texttips on outline view icon (just added/recent exam..)
+
 - CPR save last curved points
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
