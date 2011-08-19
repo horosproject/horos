@@ -7093,7 +7093,6 @@ static BOOL withReset = NO;
     }
     
     if (sender == _bottomSplit) {
-        NSLog(@"1234");
 		[self splitViewDidResizeSubviews:[NSNotification notificationWithName:NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
         return;
     }
@@ -7113,7 +7112,6 @@ static BOOL withReset = NO;
 {
     if ([notification object] == splitViewVert) {
         CGFloat dividerPosition = [[[splitViewVert subviews] objectAtIndex:0] frame].size.width+(_bottomSplit.bounds.size.width-splitViewVert.bounds.size.width);
-        NSLog(@"abcd %f", dividerPosition);
         NSRect splitFrame = [_bottomSplit frame];
         [[[_bottomSplit subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
         [[[_bottomSplit subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+_bottomSplit.dividerThickness, 0, splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness, splitFrame.size.height)];
