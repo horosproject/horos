@@ -24,7 +24,7 @@ enum N2ConnectionStatus {
 };
 
 @interface N2Connection : NSObject
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_6)
+#if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
 <NSStreamDelegate>
 #endif
 {
