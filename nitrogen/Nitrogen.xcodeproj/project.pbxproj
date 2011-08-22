@@ -159,152 +159,6 @@
 		59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
 		71060F6F13A5015600DEB093 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71060F6D13A5015600DEB093 /* NSException+N2.h */; };
 		71060F7013A5015600DEB093 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71060F6E13A5015600DEB093 /* NSException+N2.mm */; };
-		71060F7113A5015600DEB093 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71060F6D13A5015600DEB093 /* NSException+N2.h */; };
-		71060F7213A5015600DEB093 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71060F6E13A5015600DEB093 /* NSException+N2.mm */; };
-		71C4B66D13A4A85B008E5639 /* N2StepView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6330D10428715003F4069 /* N2StepView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B66E13A4A85B008E5639 /* N2Step.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331110428715003F4069 /* N2Step.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B66F13A4A85B008E5639 /* N2Steps.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331310428715003F4069 /* N2Steps.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67013A4A85B008E5639 /* N2View.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331510428715003F4069 /* N2View.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67113A4A85B008E5639 /* N2StepsView.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331810428715003F4069 /* N2StepsView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67213A4A85B008E5639 /* N2Window.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331910428715003F4069 /* N2Window.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67313A4A85B008E5639 /* N2Pair.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331C10428715003F4069 /* N2Pair.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67413A4A85B008E5639 /* N2Operators.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6331E10428715003F4069 /* N2Operators.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67513A4A85B008E5639 /* N2SingletonObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332310428715003F4069 /* N2SingletonObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67613A4A85B008E5639 /* N2Debug.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332410428715003F4069 /* N2Debug.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67713A4A85B008E5639 /* N2DisclosureBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332710428715003F4069 /* N2DisclosureBox.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67813A4A85B008E5639 /* NSTextView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332910428715003F4069 /* NSTextView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67913A4A85B008E5639 /* NSString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332B10428715003F4069 /* NSString+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67A13A4A85B008E5639 /* NSData+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332D10428715003F4069 /* NSData+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67B13A4A85B008E5639 /* NSButton+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6332F10428715003F4069 /* NSButton+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67C13A4A85B008E5639 /* NSBitmapImageRep+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333110428715003F4069 /* NSBitmapImageRep+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67D13A4A85B008E5639 /* NS(Attributed)String+Geometrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333310428715003F4069 /* NS(Attributed)String+Geometrics.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67E13A4A85B008E5639 /* N2DisclosureButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A6333410428715003F4069 /* N2DisclosureButtonCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B67F13A4A85B008E5639 /* Nitrogen.pch in Headers */ = {isa = PBXBuildFile; fileRef = 59A636A7104298C0003F4069 /* Nitrogen.pch */; settings = {ATTRIBUTES = (); }; };
-		71C4B68013A4A85B008E5639 /* NSImage+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A63F3E1042DB51003F4069 /* NSImage+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68113A4A85B008E5639 /* N2Panel.h in Headers */ = {isa = PBXBuildFile; fileRef = 59A641BA1042E108003F4069 /* N2Panel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68213A4A85B008E5639 /* N2ButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 598E50301043CB90005BCDC7 /* N2ButtonCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68313A4A85B008E5639 /* NSColor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E6DD0F105E3DBD002C8245 /* NSColor+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68413A4A85B008E5639 /* NSDictionary+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF7A381068CDEA00A4444F /* NSDictionary+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68513A4A85B008E5639 /* N2Connection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF837E1069301700A4444F /* N2Connection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68613A4A85B008E5639 /* N2ConnectionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83811069301700A4444F /* N2ConnectionListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68713A4A85B008E5639 /* N2XMLRPCConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83861069302D00A4444F /* N2XMLRPCConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68813A4A85B008E5639 /* NSInvocation+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF838C1069306800A4444F /* NSInvocation+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68913A4A85B008E5639 /* ISO8601DateFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 59CF83A91069309F00A4444F /* ISO8601DateFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68A13A4A85B008E5639 /* N2XMLRPC.h in Headers */ = {isa = PBXBuildFile; fileRef = 598D1D0F1070D63400EE85EA /* N2XMLRPC.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68B13A4A85B008E5639 /* NSURL+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7A179108C9ACF007F82BA /* NSURL+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68C13A4A85B008E5639 /* NSPanel+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E7AA78108DDA4C007F82BA /* NSPanel+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68D13A4A85B008E5639 /* N2Shell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5915D5EE1099D8CC0024F610 /* N2Shell.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68E13A4A85B008E5639 /* N2Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8755B10AABD1900AAA0FE /* N2Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B68F13A4A85B008E5639 /* N2ColumnLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8755F10AABE2200AAA0FE /* N2ColumnLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69013A4A85B008E5639 /* NSView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8756410AAC39C00AAA0FE /* NSView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69113A4A85B008E5639 /* N2Exceptions.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8757910AAC94900AAA0FE /* N2Exceptions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69213A4A85B008E5639 /* N2CellDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D875A610AAEE8000AAA0FE /* N2CellDescriptor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69313A4A85B008E5639 /* N2MinMax.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D875AA10AAEF2000AAA0FE /* N2MinMax.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69413A4A85B008E5639 /* N2Alignment.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8775B10AC0F7C00AAA0FE /* N2Alignment.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69513A4A85B008E5639 /* N2Resizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D8899D10B1812500AAA0FE /* N2Resizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69613A4A85B008E5639 /* NSMutableDictionary+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D892CA10B2E8D100AAA0FE /* NSMutableDictionary+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69713A4A85B008E5639 /* N2Button.h in Headers */ = {isa = PBXBuildFile; fileRef = 59D89B8710B3FFAE00AAA0FE /* N2Button.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69813A4A85B008E5639 /* NSImageView+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596F881210C6CCDC007D6C82 /* NSImageView+N2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		71C4B69913A4A85B008E5639 /* N2ColorWell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924CC110F25CD0006FFFB /* N2ColorWell.h */; };
-		71C4B69A13A4A85B008E5639 /* N2UserDefaults.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E924D0110F277B0006FFFB /* N2UserDefaults.h */; };
-		71C4B69B13A4A85B008E5639 /* N2PopUpButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 5903BBA01111E15D00F4358B /* N2PopUpButton.h */; };
-		71C4B69C13A4A85B008E5639 /* N2UserDefaultsTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 595B87EA1116DC870026B899 /* N2UserDefaultsTest.h */; };
-		71C4B69D13A4A85B008E5639 /* NSWindow+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3CA118ABA6E00880192 /* NSWindow+N2.h */; };
-		71C4B69E13A4A85B008E5639 /* N2AdaptiveBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856111B6767B002DB107 /* N2AdaptiveBox.h */; };
-		71C4B69F13A4A85B008E5639 /* N2CustomTitledPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856611B676DA002DB107 /* N2CustomTitledPopUpButtonCell.h */; };
-		71C4B6A013A4A85B008E5639 /* N2FlippedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997856C11B676F8002DB107 /* N2FlippedView.h */; };
-		71C4B6A113A4A85B008E5639 /* N2HexadecimalNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857011B67701002DB107 /* N2HexadecimalNumberFormatter.h */; };
-		71C4B6A213A4A85B008E5639 /* N2HighlightImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857411B6770C002DB107 /* N2HighlightImageButtonCell.h */; };
-		71C4B6A313A4A85B008E5639 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857811B6771B002DB107 /* N2ImageView.h */; };
-		71C4B6A413A4A85B008E5639 /* NSFileManager+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997857C11B67788002DB107 /* NSFileManager+N2.h */; };
-		71C4B6A513A4A85B008E5639 /* NSUserDefaultsController+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 5997858C11B67851002DB107 /* NSUserDefaultsController+N2.h */; };
-		71C4B6A613A4A85B008E5639 /* NSXMLNode+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */; };
-		71C4B6A713A4A85B008E5639 /* N2CSV.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28DF11C6164F00DAD5B4 /* N2CSV.h */; };
-		71C4B6A813A4A85B008E5639 /* NSAppleEventDescriptor+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */; };
-		71C4B6A913A4A85B008E5639 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28E711C6168100DAD5B4 /* NSThread+N2.h */; };
-		71C4B6AA13A4A85B008E5639 /* N2ImageButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 59F5F4AF11F4822E0047A90D /* N2ImageButtonCell.h */; };
-		71C4B6AB13A4A85B008E5639 /* N2WebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD0A1212898800176E39 /* N2WebServiceClient.h */; };
-		71C4B6AC13A4A85B008E5639 /* N2RedundantWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD1712128D3300176E39 /* N2RedundantWebServiceClient.h */; };
-		71C4B6AD13A4A85B008E5639 /* N2SOAPWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2512128DAE00176E39 /* N2SOAPWebServiceClient.h */; };
-		71C4B6AE13A4A85B008E5639 /* N2XMLRPCWebServiceClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD2D12128E8700176E39 /* N2XMLRPCWebServiceClient.h */; };
-		71C4B6AF13A4A85B008E5639 /* N2WSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 592CFD311212CA7D00176E39 /* N2WSDL.h */; };
-		71C4B6B013A4A85B008E5639 /* NSMutableString+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59ECEA7D12AE36A7003231BF /* NSMutableString+N2.h */; };
-		71C4B6B113A4A85B008E5639 /* N2Task.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E5234F12BF5DC30094E668 /* N2Task.h */; };
-		71C4B6B213A4A85B008E5639 /* N2DirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 592FD7FA13390188008BADC7 /* N2DirectoryEnumerator.h */; };
-		71C4B6B413A4A85B008E5639 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = 5903BBA61111E3B800F4358B /* PopUpArrows.png */; };
-		71C4B6B813A4A85B008E5639 /* N2StepView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330C10428715003F4069 /* N2StepView.mm */; };
-		71C4B6B913A4A85B008E5639 /* N2Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6330E10428715003F4069 /* N2Window.mm */; };
-		71C4B6BA13A4A85B008E5639 /* N2Steps.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331010428715003F4069 /* N2Steps.mm */; };
-		71C4B6BB13A4A85B008E5639 /* N2StepsView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331410428715003F4069 /* N2StepsView.mm */; };
-		71C4B6BC13A4A85B008E5639 /* N2Step.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331710428715003F4069 /* N2Step.mm */; };
-		71C4B6BD13A4A85B008E5639 /* N2View.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331A10428715003F4069 /* N2View.mm */; };
-		71C4B6BE13A4A85B008E5639 /* N2Pair.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331B10428715003F4069 /* N2Pair.mm */; };
-		71C4B6BF13A4A85B008E5639 /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6331D10428715003F4069 /* N2Operators.mm */; };
-		71C4B6C013A4A85B008E5639 /* N2DisclosureButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332110428715003F4069 /* N2DisclosureButtonCell.mm */; };
-		71C4B6C113A4A85B008E5639 /* N2SingletonObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332210428715003F4069 /* N2SingletonObject.mm */; };
-		71C4B6C213A4A85B008E5639 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332610428715003F4069 /* N2Debug.mm */; };
-		71C4B6C313A4A85B008E5639 /* NSTextView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332810428715003F4069 /* NSTextView+N2.mm */; };
-		71C4B6C413A4A85B008E5639 /* NSString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332A10428715003F4069 /* NSString+N2.mm */; };
-		71C4B6C513A4A85B008E5639 /* NSData+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332C10428715003F4069 /* NSData+N2.mm */; };
-		71C4B6C613A4A85B008E5639 /* NSButton+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6332E10428715003F4069 /* NSButton+N2.mm */; };
-		71C4B6C713A4A85B008E5639 /* NSBitmapImageRep+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333010428715003F4069 /* NSBitmapImageRep+N2.mm */; };
-		71C4B6C813A4A85B008E5639 /* NS(Attributed)String+Geometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333210428715003F4069 /* NS(Attributed)String+Geometrics.m */; };
-		71C4B6C913A4A85B008E5639 /* N2DisclosureBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A6333510428715003F4069 /* N2DisclosureBox.mm */; };
-		71C4B6CA13A4A85B008E5639 /* NSImage+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A63F3F1042DB51003F4069 /* NSImage+N2.mm */; };
-		71C4B6CB13A4A85B008E5639 /* N2Panel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59A641BB1042E108003F4069 /* N2Panel.mm */; };
-		71C4B6CC13A4A85B008E5639 /* N2ButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598E50311043CB90005BCDC7 /* N2ButtonCell.mm */; };
-		71C4B6CD13A4A85B008E5639 /* NSColor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E6DD10105E3DBD002C8245 /* NSColor+N2.mm */; };
-		71C4B6CE13A4A85B008E5639 /* NSDictionary+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF7A391068CDEA00A4444F /* NSDictionary+N2.mm */; };
-		71C4B6CF13A4A85B008E5639 /* N2Connection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF837F1069301700A4444F /* N2Connection.mm */; };
-		71C4B6D013A4A85B008E5639 /* N2ConnectionListener.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83801069301700A4444F /* N2ConnectionListener.mm */; };
-		71C4B6D113A4A85B008E5639 /* N2XMLRPCConnection.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83871069302D00A4444F /* N2XMLRPCConnection.mm */; };
-		71C4B6D213A4A85B008E5639 /* NSInvocation+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59CF838B1069306800A4444F /* NSInvocation+N2.mm */; };
-		71C4B6D313A4A85B008E5639 /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 59CF83AA1069309F00A4444F /* ISO8601DateFormatter.m */; };
-		71C4B6D413A4A85B008E5639 /* N2XMLRPC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 598D1D101070D63400EE85EA /* N2XMLRPC.mm */; };
-		71C4B6D513A4A85B008E5639 /* NSURL+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E7A17A108C9ACF007F82BA /* NSURL+N2.mm */; };
-		71C4B6D613A4A85B008E5639 /* NSPanel+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E7AA79108DDA4C007F82BA /* NSPanel+N2.mm */; };
-		71C4B6D713A4A85B008E5639 /* N2Shell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5915D5EF1099D8CC0024F610 /* N2Shell.mm */; };
-		71C4B6D813A4A85B008E5639 /* N2Layout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8755C10AABD1900AAA0FE /* N2Layout.mm */; };
-		71C4B6D913A4A85B008E5639 /* N2ColumnLayout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8756010AABE2200AAA0FE /* N2ColumnLayout.mm */; };
-		71C4B6DA13A4A85B008E5639 /* NSView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8756510AAC39C00AAA0FE /* NSView+N2.mm */; };
-		71C4B6DB13A4A85B008E5639 /* N2Exceptions.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8757A10AAC94900AAA0FE /* N2Exceptions.mm */; };
-		71C4B6DC13A4A85B008E5639 /* N2CellDescriptor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D875A710AAEE8000AAA0FE /* N2CellDescriptor.mm */; };
-		71C4B6DD13A4A85B008E5639 /* N2MinMax.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D875AB10AAEF2000AAA0FE /* N2MinMax.mm */; };
-		71C4B6DE13A4A85B008E5639 /* N2Alignment.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8775C10AC0F7C00AAA0FE /* N2Alignment.mm */; };
-		71C4B6DF13A4A85B008E5639 /* N2Resizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D8899E10B1812500AAA0FE /* N2Resizer.mm */; };
-		71C4B6E013A4A85B008E5639 /* NSMutableDictionary+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D892CB10B2E8D100AAA0FE /* NSMutableDictionary+N2.mm */; };
-		71C4B6E113A4A85B008E5639 /* N2Button.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59D89B8810B3FFAE00AAA0FE /* N2Button.mm */; };
-		71C4B6E213A4A85B008E5639 /* NSImageView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596F881310C6CCDC007D6C82 /* NSImageView+N2.mm */; };
-		71C4B6E313A4A85B008E5639 /* N2ColorWell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924CD110F25CD0006FFFB /* N2ColorWell.mm */; };
-		71C4B6E413A4A85B008E5639 /* N2UserDefaults.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E924D1110F277B0006FFFB /* N2UserDefaults.mm */; };
-		71C4B6E513A4A85B008E5639 /* N2PopUpButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5903BBA11111E15D00F4358B /* N2PopUpButton.mm */; };
-		71C4B6E613A4A85B008E5639 /* NSWindow+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3CB118ABA6E00880192 /* NSWindow+N2.mm */; };
-		71C4B6E713A4A85B008E5639 /* N2AdaptiveBox.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856211B6767B002DB107 /* N2AdaptiveBox.mm */; };
-		71C4B6E813A4A85B008E5639 /* N2CustomTitledPopUpButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856711B676DA002DB107 /* N2CustomTitledPopUpButtonCell.mm */; };
-		71C4B6E913A4A85B008E5639 /* N2FlippedView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997856D11B676F8002DB107 /* N2FlippedView.mm */; };
-		71C4B6EA13A4A85B008E5639 /* N2HexadecimalNumberFormatter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857111B67701002DB107 /* N2HexadecimalNumberFormatter.mm */; };
-		71C4B6EB13A4A85B008E5639 /* N2HighlightImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857511B6770C002DB107 /* N2HighlightImageButtonCell.mm */; };
-		71C4B6EC13A4A85B008E5639 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857911B6771B002DB107 /* N2ImageView.mm */; };
-		71C4B6ED13A4A85B008E5639 /* NSFileManager+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997857D11B67788002DB107 /* NSFileManager+N2.mm */; };
-		71C4B6EE13A4A85B008E5639 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997858D11B67851002DB107 /* NSUserDefaultsController+N2.mm */; };
-		71C4B6EF13A4A85B008E5639 /* NSXMLNode+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */; };
-		71C4B6F013A4A85B008E5639 /* N2CSV.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E011C6164F00DAD5B4 /* N2CSV.mm */; };
-		71C4B6F113A4A85B008E5639 /* NSAppleEventDescriptor+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */; };
-		71C4B6F213A4A85B008E5639 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */; };
-		71C4B6F313A4A85B008E5639 /* N2ImageButtonCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59F5F4B011F4822E0047A90D /* N2ImageButtonCell.mm */; };
-		71C4B6F413A4A85B008E5639 /* N2WebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD0B1212898800176E39 /* N2WebServiceClient.mm */; };
-		71C4B6F513A4A85B008E5639 /* N2RedundantWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD1812128D3300176E39 /* N2RedundantWebServiceClient.mm */; };
-		71C4B6F613A4A85B008E5639 /* N2SOAPWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2612128DAE00176E39 /* N2SOAPWebServiceClient.mm */; };
-		71C4B6F713A4A85B008E5639 /* N2XMLRPCWebServiceClient.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD2E12128E8700176E39 /* N2XMLRPCWebServiceClient.mm */; };
-		71C4B6F813A4A85B008E5639 /* N2WSDL.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592CFD321212CA7D00176E39 /* N2WSDL.mm */; };
-		71C4B6F913A4A85B008E5639 /* NSMutableString+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59ECEA7E12AE36A7003231BF /* NSMutableString+N2.mm */; };
-		71C4B6FA13A4A85B008E5639 /* N2Task.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E5235012BF5DC30094E668 /* N2Task.mm */; };
-		71C4B6FB13A4A85B008E5639 /* N2DirectoryEnumerator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592FD7FB13390188008BADC7 /* N2DirectoryEnumerator.mm */; };
-		71C4B6FD13A4A85B008E5639 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
-		71C4B6FE13A4A85B008E5639 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59A63F481042DC22003F4069 /* Accelerate.framework */; };
-		71C4B6FF13A4A85B008E5639 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D6A5FE840307C02AAC07 /* AppKit.framework */; };
-		71C4B70013A4A85B008E5639 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
-		71C4B70113A4A85B008E5639 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -473,7 +327,6 @@
 		59F5F88C11F5D9A10047A90D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		71060F6D13A5015600DEB093 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+N2.h"; sourceTree = "<group>"; };
 		71060F6E13A5015600DEB093 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSException+N2.mm"; sourceTree = "<group>"; };
-		71C4B70413A4A85B008E5639 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71C4B70513A4A85B008E5639 /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info copy.plist"; path = "Resources/Info copy.plist"; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
@@ -488,18 +341,6 @@
 				5903B51F1110328500F4358B /* Cocoa.framework in Frameworks */,
 				5903B5FE1110328E00F4358B /* AppKit.framework in Frameworks */,
 				5903B6811110329A00F4358B /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		71C4B6FC13A4A85B008E5639 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				71C4B6FD13A4A85B008E5639 /* Cocoa.framework in Frameworks */,
-				71C4B6FE13A4A85B008E5639 /* Accelerate.framework in Frameworks */,
-				71C4B6FF13A4A85B008E5639 /* AppKit.framework in Frameworks */,
-				71C4B70013A4A85B008E5639 /* Foundation.framework in Frameworks */,
-				71C4B70113A4A85B008E5639 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,7 +364,6 @@
 			children = (
 				8DC2EF5B0486A6940098B216 /* Nitrogen.framework */,
 				591403A21105B88A00D6A504 /* Unit Tests.octest */,
-				71C4B70413A4A85B008E5639 /* Nitrogen.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -863,84 +703,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		71C4B66C13A4A85B008E5639 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				71C4B66D13A4A85B008E5639 /* N2StepView.h in Headers */,
-				71C4B66E13A4A85B008E5639 /* N2Step.h in Headers */,
-				71C4B66F13A4A85B008E5639 /* N2Steps.h in Headers */,
-				71C4B67013A4A85B008E5639 /* N2View.h in Headers */,
-				71C4B67113A4A85B008E5639 /* N2StepsView.h in Headers */,
-				71C4B67213A4A85B008E5639 /* N2Window.h in Headers */,
-				71C4B67313A4A85B008E5639 /* N2Pair.h in Headers */,
-				71C4B67413A4A85B008E5639 /* N2Operators.h in Headers */,
-				71C4B67513A4A85B008E5639 /* N2SingletonObject.h in Headers */,
-				71C4B67613A4A85B008E5639 /* N2Debug.h in Headers */,
-				71C4B67713A4A85B008E5639 /* N2DisclosureBox.h in Headers */,
-				71C4B67813A4A85B008E5639 /* NSTextView+N2.h in Headers */,
-				71C4B67913A4A85B008E5639 /* NSString+N2.h in Headers */,
-				71C4B67A13A4A85B008E5639 /* NSData+N2.h in Headers */,
-				71C4B67B13A4A85B008E5639 /* NSButton+N2.h in Headers */,
-				71C4B67C13A4A85B008E5639 /* NSBitmapImageRep+N2.h in Headers */,
-				71C4B67D13A4A85B008E5639 /* NS(Attributed)String+Geometrics.h in Headers */,
-				71C4B67E13A4A85B008E5639 /* N2DisclosureButtonCell.h in Headers */,
-				71C4B67F13A4A85B008E5639 /* Nitrogen.pch in Headers */,
-				71C4B68013A4A85B008E5639 /* NSImage+N2.h in Headers */,
-				71C4B68113A4A85B008E5639 /* N2Panel.h in Headers */,
-				71C4B68213A4A85B008E5639 /* N2ButtonCell.h in Headers */,
-				71C4B68313A4A85B008E5639 /* NSColor+N2.h in Headers */,
-				71C4B68413A4A85B008E5639 /* NSDictionary+N2.h in Headers */,
-				71C4B68513A4A85B008E5639 /* N2Connection.h in Headers */,
-				71C4B68613A4A85B008E5639 /* N2ConnectionListener.h in Headers */,
-				71C4B68713A4A85B008E5639 /* N2XMLRPCConnection.h in Headers */,
-				71C4B68813A4A85B008E5639 /* NSInvocation+N2.h in Headers */,
-				71C4B68913A4A85B008E5639 /* ISO8601DateFormatter.h in Headers */,
-				71C4B68A13A4A85B008E5639 /* N2XMLRPC.h in Headers */,
-				71C4B68B13A4A85B008E5639 /* NSURL+N2.h in Headers */,
-				71C4B68C13A4A85B008E5639 /* NSPanel+N2.h in Headers */,
-				71C4B68D13A4A85B008E5639 /* N2Shell.h in Headers */,
-				71C4B68E13A4A85B008E5639 /* N2Layout.h in Headers */,
-				71C4B68F13A4A85B008E5639 /* N2ColumnLayout.h in Headers */,
-				71C4B69013A4A85B008E5639 /* NSView+N2.h in Headers */,
-				71C4B69113A4A85B008E5639 /* N2Exceptions.h in Headers */,
-				71C4B69213A4A85B008E5639 /* N2CellDescriptor.h in Headers */,
-				71C4B69313A4A85B008E5639 /* N2MinMax.h in Headers */,
-				71C4B69413A4A85B008E5639 /* N2Alignment.h in Headers */,
-				71C4B69513A4A85B008E5639 /* N2Resizer.h in Headers */,
-				71C4B69613A4A85B008E5639 /* NSMutableDictionary+N2.h in Headers */,
-				71C4B69713A4A85B008E5639 /* N2Button.h in Headers */,
-				71C4B69813A4A85B008E5639 /* NSImageView+N2.h in Headers */,
-				71C4B69913A4A85B008E5639 /* N2ColorWell.h in Headers */,
-				71C4B69A13A4A85B008E5639 /* N2UserDefaults.h in Headers */,
-				71C4B69B13A4A85B008E5639 /* N2PopUpButton.h in Headers */,
-				71C4B69C13A4A85B008E5639 /* N2UserDefaultsTest.h in Headers */,
-				71C4B69D13A4A85B008E5639 /* NSWindow+N2.h in Headers */,
-				71C4B69E13A4A85B008E5639 /* N2AdaptiveBox.h in Headers */,
-				71C4B69F13A4A85B008E5639 /* N2CustomTitledPopUpButtonCell.h in Headers */,
-				71C4B6A013A4A85B008E5639 /* N2FlippedView.h in Headers */,
-				71C4B6A113A4A85B008E5639 /* N2HexadecimalNumberFormatter.h in Headers */,
-				71C4B6A213A4A85B008E5639 /* N2HighlightImageButtonCell.h in Headers */,
-				71C4B6A313A4A85B008E5639 /* N2ImageView.h in Headers */,
-				71C4B6A413A4A85B008E5639 /* NSFileManager+N2.h in Headers */,
-				71C4B6A513A4A85B008E5639 /* NSUserDefaultsController+N2.h in Headers */,
-				71C4B6A613A4A85B008E5639 /* NSXMLNode+N2.h in Headers */,
-				71C4B6A713A4A85B008E5639 /* N2CSV.h in Headers */,
-				71C4B6A813A4A85B008E5639 /* NSAppleEventDescriptor+N2.h in Headers */,
-				71C4B6A913A4A85B008E5639 /* NSThread+N2.h in Headers */,
-				71C4B6AA13A4A85B008E5639 /* N2ImageButtonCell.h in Headers */,
-				71C4B6AB13A4A85B008E5639 /* N2WebServiceClient.h in Headers */,
-				71C4B6AC13A4A85B008E5639 /* N2RedundantWebServiceClient.h in Headers */,
-				71C4B6AD13A4A85B008E5639 /* N2SOAPWebServiceClient.h in Headers */,
-				71C4B6AE13A4A85B008E5639 /* N2XMLRPCWebServiceClient.h in Headers */,
-				71C4B6AF13A4A85B008E5639 /* N2WSDL.h in Headers */,
-				71C4B6B013A4A85B008E5639 /* NSMutableString+N2.h in Headers */,
-				71C4B6B113A4A85B008E5639 /* N2Task.h in Headers */,
-				71C4B6B213A4A85B008E5639 /* N2DirectoryEnumerator.h in Headers */,
-				71060F7113A5015600DEB093 /* NSException+N2.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8DC2EF500486A6940098B216 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -1041,27 +803,6 @@
 			productReference = 591403A21105B88A00D6A504 /* Unit Tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
-		71C4B66B13A4A85B008E5639 /* Nitrogen GC */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 71C4B70213A4A85B008E5639 /* Build configuration list for PBXNativeTarget "Nitrogen GC" */;
-			buildPhases = (
-				71C4B66C13A4A85B008E5639 /* Headers */,
-				71C4B6B313A4A85B008E5639 /* Resources */,
-				71C4B6B513A4A85B008E5639 /* Change Info.plist Version */,
-				71C4B6B613A4A85B008E5639 /* Copy Headers and Create Nitrogen.h */,
-				71C4B6B713A4A85B008E5639 /* Sources */,
-				71C4B6FC13A4A85B008E5639 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Nitrogen GC";
-			productInstallPath = "$(HOME)/Library/Frameworks";
-			productName = Nitrogen;
-			productReference = 71C4B70413A4A85B008E5639 /* Nitrogen.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		8DC2EF4F0486A6940098B216 /* Nitrogen */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB91AD08733DA50010E9CD /* Build configuration list for PBXNativeTarget "Nitrogen" */;
@@ -1104,7 +845,6 @@
 			projectRoot = "";
 			targets = (
 				8DC2EF4F0486A6940098B216 /* Nitrogen */,
-				71C4B66B13A4A85B008E5639 /* Nitrogen GC */,
 				591403A11105B88A00D6A504 /* Unit Tests */,
 			);
 		};
@@ -1115,14 +855,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		71C4B6B313A4A85B008E5639 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				71C4B6B413A4A85B008E5639 /* PopUpArrows.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1178,34 +910,6 @@
 			shellPath = /usr/bin/perl;
 			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = \"$ENV{PROJECT_DIR}/Sources\";\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Nitrogen_h, \">\", \"$destination/Nitrogen.h\" or die $!;\n\nprint Nitrogen_h \"#ifndef __Nitrogen\\n#define __Nitrogen\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint Nitrogen_h \"#include <Nitrogen/$filename>\\n\";\n}\n\nprint Nitrogen_h \"\\n#endif\\n\";\nclose Nitrogen_h;\n\nexit 0;";
 		};
-		71C4B6B513A4A85B008E5639 /* Change Info.plist Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Change Info.plist Version";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/bash;
-			shellScript = "cd \"${PROJECT_DIR}\"\nSVNVERSION=`/usr/bin/svnversion -n | /usr/bin/sed -e 's/^[^:]*://;s/[A-Za-z]/+/'`\nif [ -n \"${DEBUG:+x}\" ]; then\n\tSVNVERSION=\"${SVNVERSION}d\"\nfi\n\nPLISTPATH=\"${PROJECT_DIR}/Resources/Info.plist\"\nINFOVERSION=`/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \"$PLISTPATH\"`\n\nVERSION=\"$INFOVERSION b$SVNVERSION\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nINFOVERSIONSTR=`/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \"$PLISTPATH\"`\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString ${INFOVERSIONSTR/__VERSION__/$VERSION}\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n\nexit 0";
-		};
-		71C4B6B613A4A85B008E5639 /* Copy Headers and Create Nitrogen.h */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Headers and Create Nitrogen.h";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/perl;
-			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = \"$ENV{PROJECT_DIR}/Sources\";\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen Nitrogen_h, \">\", \"$destination/Nitrogen.h\" or die $!;\n\nprint Nitrogen_h \"#ifndef __Nitrogen\\n#define __Nitrogen\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tcopy(\"$root/$filename\", \"$destination/\".(basename $filename)) or die \"Copy failed: $!\";\n\tprint Nitrogen_h \"#include <Nitrogen/$filename>\\n\";\n}\n\nprint Nitrogen_h \"\\n#endif\\n\";\nclose Nitrogen_h;\n\nexit 0;";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1216,82 +920,6 @@
 				597C87C61108A0E100794DF3 /* DebugTest.mm in Sources */,
 				597C87C91108A0FF00794DF3 /* NSTextViewOptimalSizeTest.mm in Sources */,
 				595B88261116E1550026B899 /* N2UserDefaultsTest.mm in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		71C4B6B713A4A85B008E5639 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				71C4B6B813A4A85B008E5639 /* N2StepView.mm in Sources */,
-				71C4B6B913A4A85B008E5639 /* N2Window.mm in Sources */,
-				71C4B6BA13A4A85B008E5639 /* N2Steps.mm in Sources */,
-				71C4B6BB13A4A85B008E5639 /* N2StepsView.mm in Sources */,
-				71C4B6BC13A4A85B008E5639 /* N2Step.mm in Sources */,
-				71C4B6BD13A4A85B008E5639 /* N2View.mm in Sources */,
-				71C4B6BE13A4A85B008E5639 /* N2Pair.mm in Sources */,
-				71C4B6BF13A4A85B008E5639 /* N2Operators.mm in Sources */,
-				71C4B6C013A4A85B008E5639 /* N2DisclosureButtonCell.mm in Sources */,
-				71C4B6C113A4A85B008E5639 /* N2SingletonObject.mm in Sources */,
-				71C4B6C213A4A85B008E5639 /* N2Debug.mm in Sources */,
-				71C4B6C313A4A85B008E5639 /* NSTextView+N2.mm in Sources */,
-				71C4B6C413A4A85B008E5639 /* NSString+N2.mm in Sources */,
-				71C4B6C513A4A85B008E5639 /* NSData+N2.mm in Sources */,
-				71C4B6C613A4A85B008E5639 /* NSButton+N2.mm in Sources */,
-				71C4B6C713A4A85B008E5639 /* NSBitmapImageRep+N2.mm in Sources */,
-				71C4B6C813A4A85B008E5639 /* NS(Attributed)String+Geometrics.m in Sources */,
-				71C4B6C913A4A85B008E5639 /* N2DisclosureBox.mm in Sources */,
-				71C4B6CA13A4A85B008E5639 /* NSImage+N2.mm in Sources */,
-				71C4B6CB13A4A85B008E5639 /* N2Panel.mm in Sources */,
-				71C4B6CC13A4A85B008E5639 /* N2ButtonCell.mm in Sources */,
-				71C4B6CD13A4A85B008E5639 /* NSColor+N2.mm in Sources */,
-				71C4B6CE13A4A85B008E5639 /* NSDictionary+N2.mm in Sources */,
-				71C4B6CF13A4A85B008E5639 /* N2Connection.mm in Sources */,
-				71C4B6D013A4A85B008E5639 /* N2ConnectionListener.mm in Sources */,
-				71C4B6D113A4A85B008E5639 /* N2XMLRPCConnection.mm in Sources */,
-				71C4B6D213A4A85B008E5639 /* NSInvocation+N2.mm in Sources */,
-				71C4B6D313A4A85B008E5639 /* ISO8601DateFormatter.m in Sources */,
-				71C4B6D413A4A85B008E5639 /* N2XMLRPC.mm in Sources */,
-				71C4B6D513A4A85B008E5639 /* NSURL+N2.mm in Sources */,
-				71C4B6D613A4A85B008E5639 /* NSPanel+N2.mm in Sources */,
-				71C4B6D713A4A85B008E5639 /* N2Shell.mm in Sources */,
-				71C4B6D813A4A85B008E5639 /* N2Layout.mm in Sources */,
-				71C4B6D913A4A85B008E5639 /* N2ColumnLayout.mm in Sources */,
-				71C4B6DA13A4A85B008E5639 /* NSView+N2.mm in Sources */,
-				71C4B6DB13A4A85B008E5639 /* N2Exceptions.mm in Sources */,
-				71C4B6DC13A4A85B008E5639 /* N2CellDescriptor.mm in Sources */,
-				71C4B6DD13A4A85B008E5639 /* N2MinMax.mm in Sources */,
-				71C4B6DE13A4A85B008E5639 /* N2Alignment.mm in Sources */,
-				71C4B6DF13A4A85B008E5639 /* N2Resizer.mm in Sources */,
-				71C4B6E013A4A85B008E5639 /* NSMutableDictionary+N2.mm in Sources */,
-				71C4B6E113A4A85B008E5639 /* N2Button.mm in Sources */,
-				71C4B6E213A4A85B008E5639 /* NSImageView+N2.mm in Sources */,
-				71C4B6E313A4A85B008E5639 /* N2ColorWell.mm in Sources */,
-				71C4B6E413A4A85B008E5639 /* N2UserDefaults.mm in Sources */,
-				71C4B6E513A4A85B008E5639 /* N2PopUpButton.mm in Sources */,
-				71C4B6E613A4A85B008E5639 /* NSWindow+N2.mm in Sources */,
-				71C4B6E713A4A85B008E5639 /* N2AdaptiveBox.mm in Sources */,
-				71C4B6E813A4A85B008E5639 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
-				71C4B6E913A4A85B008E5639 /* N2FlippedView.mm in Sources */,
-				71C4B6EA13A4A85B008E5639 /* N2HexadecimalNumberFormatter.mm in Sources */,
-				71C4B6EB13A4A85B008E5639 /* N2HighlightImageButtonCell.mm in Sources */,
-				71C4B6EC13A4A85B008E5639 /* N2ImageView.mm in Sources */,
-				71C4B6ED13A4A85B008E5639 /* NSFileManager+N2.mm in Sources */,
-				71C4B6EE13A4A85B008E5639 /* NSUserDefaultsController+N2.mm in Sources */,
-				71C4B6EF13A4A85B008E5639 /* NSXMLNode+N2.mm in Sources */,
-				71C4B6F013A4A85B008E5639 /* N2CSV.mm in Sources */,
-				71C4B6F113A4A85B008E5639 /* NSAppleEventDescriptor+N2.mm in Sources */,
-				71C4B6F213A4A85B008E5639 /* NSThread+N2.mm in Sources */,
-				71C4B6F313A4A85B008E5639 /* N2ImageButtonCell.mm in Sources */,
-				71C4B6F413A4A85B008E5639 /* N2WebServiceClient.mm in Sources */,
-				71C4B6F513A4A85B008E5639 /* N2RedundantWebServiceClient.mm in Sources */,
-				71C4B6F613A4A85B008E5639 /* N2SOAPWebServiceClient.mm in Sources */,
-				71C4B6F713A4A85B008E5639 /* N2XMLRPCWebServiceClient.mm in Sources */,
-				71C4B6F813A4A85B008E5639 /* N2WSDL.mm in Sources */,
-				71C4B6F913A4A85B008E5639 /* NSMutableString+N2.mm in Sources */,
-				71C4B6FA13A4A85B008E5639 /* N2Task.mm in Sources */,
-				71C4B6FB13A4A85B008E5639 /* N2DirectoryEnumerator.mm in Sources */,
-				71060F7213A5015600DEB093 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1413,7 +1041,11 @@
 		1DEB91B208733DA50010E9CD /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = (
+					ppc,
+					x86_64,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1464,35 +1096,6 @@
 			};
 			name = Development;
 		};
-		71C4B70313A4A85B008E5639 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					i386,
-					x86_64,
-					ppc,
-				);
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = B;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Sources/Nitrogen.pch;
-				INFOPLIST_FILE = "Resources/Info copy.plist";
-				INSTALL_PATH = "@loader_path/../Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				PRODUCT_NAME = Nitrogen;
-				WRAPPER_EXTENSION = framework;
-			};
-			name = Development;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1516,14 +1119,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				591403A41105B88A00D6A504 /* Development */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Development;
-		};
-		71C4B70213A4A85B008E5639 /* Build configuration list for PBXNativeTarget "Nitrogen GC" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				71C4B70313A4A85B008E5639 /* Development */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Development;

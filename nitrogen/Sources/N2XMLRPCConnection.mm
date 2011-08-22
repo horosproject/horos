@@ -21,6 +21,14 @@
 @implementation N2XMLRPCConnection
 @synthesize delegate = _delegate;
 
+-(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
+	if ((self = [super initWithAddress:address port:port tls:tlsFlag is:is os:os])) {
+		[self setCloseOnRemoteClose:YES];
+	}
+	
+	return self;
+}
+
 -(void)dealloc {
 	[self setDelegate:NULL];
 	[super dealloc];

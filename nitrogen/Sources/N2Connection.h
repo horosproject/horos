@@ -23,7 +23,11 @@ enum N2ConnectionStatus {
 	N2ConnectionStatusOk
 };
 
-@interface N2Connection : NSObject<NSStreamDelegate> {
+@interface N2Connection : NSObject
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_6)
+<NSStreamDelegate>
+#endif
+{
 	NSString* _address;
 	NSInteger _port;
 	NSInputStream* _inputStream;
