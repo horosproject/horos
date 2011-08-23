@@ -110,9 +110,13 @@
 
 @end
 
+CF_EXTERN_C_BEGIN
+
 NSString* valuesKeyPath(NSString* key) {
 	return [NSString stringWithFormat:@"values.%@", key];
 }
+
+CF_EXTERN_C_END
 
 @implementation NSObject (N2ValuesBinding)
 
