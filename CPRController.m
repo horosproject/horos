@@ -2548,7 +2548,7 @@ static float deg2rad = M_PI / 180.0;
                 }
                 else
                 {
-                    requestStretched = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStretched = [[[CPRStretchedGeneratorRequest alloc] init] autorelease];
                     requestStretched.pixelsWide = exportWidth;
                     requestStretched.pixelsHigh = exportHeight;
                     if (self.exportSequenceNumberOfFrames > 1)
