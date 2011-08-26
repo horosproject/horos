@@ -1,3 +1,4 @@
+- XA 1047 x 1047 subtraction?
 - 3D First Slice
 - Series separation for phase MR
 
