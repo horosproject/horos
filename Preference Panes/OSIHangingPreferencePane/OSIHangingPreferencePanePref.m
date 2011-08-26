@@ -155,7 +155,7 @@
     [hangingProtocolTableView reloadData];
 	
 //Set to edit new entry
-	[hangingProtocolTableView  selectRow:[hangingProtocolArray count] - 1 byExtendingSelection:NO];
+	[hangingProtocolTableView  selectRowIndexes: [NSIndexSet indexSetWithIndex: [hangingProtocolArray count] - 1] byExtendingSelection:NO];
 	[hangingProtocolTableView  editColumn:0 row:[hangingProtocolArray count] - 1  withEvent:nil select:YES];
 
 }

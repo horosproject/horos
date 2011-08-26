@@ -229,7 +229,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	[self.portal updateLogEntryForStudy: [[images lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [dicomNodeDescription objectForKey:@"Address"]] forUser:user.name ip:asyncSocket.connectedHost];
 	
 	@try {
-		NSDictionary* todo = [NSDictionary dictionaryWithObjectsAndKeys: [dicomNodeDescription objectForKey:@"Address"], @"Address", [dicomNodeDescription objectForKey:@"TransferSyntax"], @"TransferSyntax", [dicomNodeDescription objectForKey:@"Port"], @"Port", [dicomNodeDescription objectForKey:@"AETitle"], @"AETitle", [images valueForKey: @"completePath"], @"Files", nil];
+		NSDictionary* todo = [NSDictionary dictionaryWithObjectsAndKeys: [dicomNodeDescription objectForKey:@"Address"], @"Address", [dicomNodeDescription objectForKey:@"TransferSyntax"], @"TransferSyntax", [dicomNodeDescription objectForKey:@"Port"], @"Port", [dicomNodeDescription objectForKey:@"AETitle"], @"AETitle", [images valueForKey: @"completePath"], @"Files", dicomNodeDescription, @"dicomNode", nil];
 		[NSThread detachNewThreadSelector:@selector(sendImagesToDicomNodeThread:) toTarget:self withObject:todo];
 	} @catch (NSException* e) {
 		NSLog( @"Error: [WebPortalConnection sendImages:toDicomNode:] %@", e);
@@ -248,7 +248,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 										filesToSend:[todo valueForKey: @"Files"]
 									 transferSyntax:[[todo objectForKey:@"TransferSyntax"] intValue] 
 										compression:1.0
-									extraParameters:NULL] autorelease] run:self];
+									extraParameters:nil] autorelease] run:self];
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebServiceConnection sendImagesToDicomNodeThread:] %@", e);
 	} @finally {

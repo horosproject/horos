@@ -2295,7 +2295,7 @@ static NSConditionLock *threadLock = nil;
 																filesToSend: [samePatientArray valueForKey: @"completePath"]
 															 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
-															extraParameters: nil];
+															extraParameters: server];
 		
 	@try
 	{
@@ -11609,46 +11609,6 @@ static BOOL needToRezoom;
 			}
 		}
 	}
-}
-
-- (void)sendDICOMFilesToOsiriXNode: (NSDictionary*)todo
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	NSLog( @"sendDICOMFilesToOsiriXNode started");
-	
-	[autoroutingInProgress lock];
-	
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
-															  calledAET: [todo objectForKey:@"AETitle"] 
-															   hostname: [todo objectForKey:@"Address"] 
-																   port: [[todo objectForKey:@"Port"] intValue] 
-															filesToSend: [todo valueForKey: @"Files"]
-														 transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
-															compression: 1.0
-														extraParameters: nil];
-	
-	@try
-	{
-		[storeSCU run:self];
-	}
-	
-	@catch (NSException *ne)
-	{
-		NSLog( @"Bonjour DICOM Send FAILED");
-		NSLog( @"%@", ne.name);
-		NSLog( @"%@", ne.reason);
-		[AppController printStackTrace: ne];
-	}
-	
-	[storeSCU release];
-	storeSCU = nil;
-	
-	[autoroutingInProgress unlock];
-	
-	NSLog( @"sendDICOMFilesToOsiriXNode ended");
-	
-	[pool release];
 }
 
 - (NSManagedObject*) findStudyUID: (NSString*) uid

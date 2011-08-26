@@ -224,7 +224,7 @@ static BOOL newRouteMode = NO;
 		
 		[routesTable reloadData];
 		
-		[routesTable selectRow: [routesArray count]-1 byExtendingSelection: NO];
+		[routesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [routesArray count]-1] byExtendingSelection: NO];
 		
 		[self editRoute: self];
 		

@@ -658,7 +658,7 @@
 	{
 		NSMutableDictionary *aServer = [serverList objectAtIndex: i];
 		
-		[[dicomNodes tableView] selectRow: i byExtendingSelection: NO];
+		[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
 		[[dicomNodes tableView] display];
 		
 		if ([OSILocationsPreferencePanePref echoServer:aServer])
@@ -671,7 +671,7 @@
 	
 	[progress stopAnimation: self];
 	
-	[[dicomNodes tableView] selectRow: selectedRow byExtendingSelection: NO];
+	[[dicomNodes tableView] selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
 	[[dicomNodes tableView] display];
 }
 
