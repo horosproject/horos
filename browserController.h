@@ -300,6 +300,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;
+- (void) saveDeleteQueue;
 - (void) setDockIcon;
 - (void)drawerToggle: (id)sender;
 - (void) showEntireDatabase;

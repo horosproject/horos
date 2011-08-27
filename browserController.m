@@ -251,7 +251,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 		}
 		
 		[NSThread sleepForTimeInterval: 0.1];
-//		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
+        //		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
 	}
 	
 	NSLog( @"******* tryLockDuring failed for this lock: %@ (%f sec)", c, sec);
@@ -14701,7 +14701,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
 		// ----------
-		
+        
 		[BrowserController tryLock: checkIncomingLock during: 120];
 		[BrowserController tryLock: managedObjectContext during: 120];
 		[BrowserController tryLock: checkBonjourUpToDateThreadLock during: 60];
@@ -14715,10 +14715,11 @@ static NSArray*	openSubSeriesArray = nil;
 				[wait showWindow:self];
 		}
 		[BrowserController tryLock: decompressThreadRunning during: 120];
-		[BrowserController tryLock: deleteInProgress during: 600];
-		
 		[BrowserController tryLock: autoroutingInProgress during: 120];
 		
+        //Something in the delete queue? Write it to the disk
+        [self saveDeleteQueue];
+            
 		[self emptyAutoroutingQueue:self];
 		
 		[BrowserController tryLock: autoroutingInProgress during: 120];
@@ -15179,6 +15180,35 @@ static NSArray*	openSubSeriesArray = nil;
 	IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 }
 
+- (void) saveDeleteQueue
+{
+    [deleteQueue lock];
+	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
+	[deleteQueueArray removeAllObjects];
+	
+    if( copyArray.count)
+	{
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
+        {
+            NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
+            
+            copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
+            
+            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+            
+            [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        }
+	
+		NSMutableArray *folders = [NSMutableArray array];
+		
+		NSLog( @"---- save delete queue: %d objects", [copyArray count]);
+		
+        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
+    }
+    [deleteQueue unlock];
+}
+
 - (void) emptyDeleteQueueThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -15187,7 +15217,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue lock];
 	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
 	[deleteQueueArray removeAllObjects];
-	[deleteQueue unlock];
 	
     if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
     {
@@ -15209,6 +15238,8 @@ static NSArray*	openSubSeriesArray = nil;
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
         
+        [deleteQueue unlock];
+        
 		int f = 0;
 		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
@@ -15223,56 +15254,66 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
 			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+            
+            if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
+                break;
 		}
 		
-        //Delete the DELETEQUEUEFILE
-        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        if( [NSThread currentThread].isCancelled == NO)
+            [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         
 		[deleteInProgress unlock];
 		
-		[folders removeDuplicatedStrings];
-		
-		[checkIncomingLock lock];
-		
-		@try 
-		{
-			for( NSString *f in folders)
-			{
-				NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
-				
-				if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
-				{
-					if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
-					{
-						int numberOfValidFiles = 0;
-						for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
-						{
-							if( [[s lastPathComponent] characterAtIndex: 0] != '.')
-								numberOfValidFiles++;
-						}
-						
-						if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
-						{
-							NSLog( @"delete Queue: delete folder: %@", f);
-							[[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
-							
-						}
-					}
-				}
-				
-			}
+        if( [NSThread currentThread].isCancelled == NO)
+        {
+            [folders removeDuplicatedStrings];
+            
+            [checkIncomingLock lock];
+            
+            @try 
+            {
+                for( NSString *f in folders)
+                {
+                    NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath: f traverseLink: NO];
+                    
+                    if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
+                    {
+                        if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
+                        {
+                            int numberOfValidFiles = 0;
+                            for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
+                            {
+                                if( [[s lastPathComponent] characterAtIndex: 0] != '.')
+                                    numberOfValidFiles++;
+                            }
+                            
+                            if( numberOfValidFiles == 0 && [[f lastPathComponent] isEqualToString: @"ROIs"] == NO)
+                            {
+                                NSLog( @"delete Queue: delete folder: %@", f);
+                                [[NSFileManager defaultManager] removeFileAtPath: f handler: nil];
+                                
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            @catch (NSException * e) 
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                [AppController printStackTrace: e];
+            }
+            
+            [checkIncomingLock unlock];
 		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
-		}
-		
-		[checkIncomingLock unlock];
-		
+        
 		NSLog(@"delete Queue end");
 	}
-	else [deleteInProgress unlock];
+	else
+    {
+        [deleteQueue unlock];
+        [deleteInProgress unlock];
+    }
 	
 	[pool release];
 }
@@ -15356,6 +15397,7 @@ static NSArray*	openSubSeriesArray = nil;
             t.name = NSLocalizedString( @"Deleting files...", nil);
             t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
             t.progress = 0;
+            t.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
         }
     }
