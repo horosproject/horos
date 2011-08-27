@@ -7316,7 +7316,8 @@ return YES;
 				long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
 				long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
 				
-				if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
+                enableSubtraction = TRUE;
+//				if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
 				
 				for( DCMPix *pix in pixList[ 0])
 				{
