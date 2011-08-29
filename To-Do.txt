@@ -1,5 +1,4 @@
 - 3D First Slice
-- Series separation for phase MR
 
 - CPR save last curved points
 - Option for Tiling Windows: always order from oldest study to ...
