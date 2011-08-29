@@ -12892,33 +12892,33 @@ static BOOL needToRezoom;
 				{
 					[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
 					
-					if( [[[singleSeries lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
-					{
-						for( id o in singleSeries)	//We need to extract the *true* sliceLocation
-						{
-							DCMPix *p = [[DCMPix alloc] initWithPath:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
-							
-							[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
-							
-							[p release];
-						}
-					}
-					else
-					{
+//					if( [[[singleSeries lastObject] valueForKey: @"numberOfFrames"] intValue] > 1)
+//					{
+//						for( id o in singleSeries)	//We need to extract the *true* sliceLocation
+//						{
+//							DCMPix *p = [[DCMPix alloc] initWithPath:[o valueForKey:@"completePath"] :0 :1 :nil :[[o valueForKey:@"frameID"] intValue] :[[o valueForKeyPath:@"series.id"] intValue] isBonjour:isCurrentDatabaseBonjour imageObj: o];
+//							
+//							[intervalArray addObject: [NSNumber numberWithFloat: [p sliceLocation]]];
+//							
+//							[p release];
+//						}
+//					}
+//					else
+//					{
 						for( id o in singleSeries)
 							[intervalArray addObject: [NSNumber numberWithFloat: [[o valueForKey:@"sliceLocation"] floatValue]]];
-					}
+//					}
 					
 					interval = [[intervalArray objectAtIndex: 0] floatValue] - [[intervalArray objectAtIndex: 1] floatValue];
 					
 					if( interval == 0)
 					{ // 4D - 3D
 						int pos3Dindex = 1;
+						
 						for( int x = 1; x < [singleSeries count]; x++)
 						{
-							interval = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
-							
-							if( interval != 0) pos3Dindex = 0;
+							int interval4D = [[intervalArray objectAtIndex: x -1] floatValue] - [[intervalArray objectAtIndex: x] floatValue];
+							if( interval4D != 0) pos3Dindex = 0;
 							
 							if( [splittedSeries count] <= pos3Dindex) [splittedSeries addObject: [NSMutableArray array]];
 							
@@ -12929,10 +12929,27 @@ static BOOL needToRezoom;
 						
 						if( pos3Dindex == [singleSeries count]) // No 3D-4D.... Try something else...
 						{
+							[intervalArray removeAllObjects];
 							
+							// Let's try the comment field Cardiac Magnitude, Phase, Flow
+							for( id o in singleSeries)
+							{
+								[intervalArray addObject: [NSNumber numberWithFloat: [[o valueForKey:@"comment"] floatValue]]];
+								
+								if( [[o valueForKey:@"comment"] floatValue] != 0)
+									interval = 1; // To enter in the: if( interval != 0)
+							}
+							
+							if( interval)
+							{
+								splittedSeries = [NSMutableArray array];
+								[splittedSeries addObject: [NSMutableArray array]];
+								[[splittedSeries lastObject] addObject: [singleSeries objectAtIndex: 0]];
+							}
 						}
 					}
-					else
+					
+					if( interval != 0)
 					{	// 3D - 4D
 						BOOL	fixedRepetition = YES;
 						int		repetition = 0, previousPos = 0;
