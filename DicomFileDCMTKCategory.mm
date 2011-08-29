@@ -781,6 +781,7 @@ extern NSRecursiveLock *PapyrusLock;
 		int i = 0;
         DcmItem *ditem = NULL;
 		NSMutableArray *sliceLocationArray = [NSMutableArray array];
+		NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
 		do
 		{
 			if (dataset->findAndGetSequenceItem(DCM_PerFrameFunctionalGroupsSequence, ditem, i++).good())
@@ -791,6 +792,14 @@ extern NSRecursiveLock *PapyrusLock;
 				DcmItem *eitem = NULL;
 				do
 				{
+					if (ditem->findAndGetSequenceItem(DCM_CardiacTriggerSequence, eitem, x).good())
+					{
+						Float64 triggerSequence = 0;
+						
+						if( eitem->findAndGetFloat64(DCM_TriggerDelayTime, triggerSequence, 0, OFFalse).good())
+							[imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", triggerSequence]];
+					}
+				
 					BOOL succeed = YES;
 					
 					if (ditem->findAndGetSequenceItem(DCM_PlanePositionSequence, eitem, x).good())
@@ -848,6 +857,14 @@ extern NSRecursiveLock *PapyrusLock;
 				[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 			else
 				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", NoOfFrames, sliceLocationArray.count);
+		}
+		if( imageCardiacTriggerArray.count)
+		{
+			if( NoOfFrames == imageCardiacTriggerArray.count)
+				[dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
+			else
+				NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageCardiacTriggerArray.count);
+			
 		}
 		
 		// Is it PDF DICOM file?
