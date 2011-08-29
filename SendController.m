@@ -278,7 +278,7 @@ static volatile int sendControllerObjects = 0;
 	sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
 	
 	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: _files] autorelease];
-	t.name = NSLocalizedString( @"Sending DICOM files...", nil);
+	t.name = NSLocalizedString( @"Sending...", nil);
 	t.supportsCancel = YES;
 	t.progress = 0;
 	t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [_files count]];
@@ -299,7 +299,7 @@ static volatile int sendControllerObjects = 0;
 	if( [NSThread currentThread].isCancelled)
 		return;
 	
-	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending DICOM files...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
+	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
 		
 	if( sendROIs == NO)
 	{
@@ -396,8 +396,13 @@ static volatile int sendControllerObjects = 0;
 			else
 			{
 				if( [samePatientArray count])
+				{
+					[[DicomStudy dbModifyLock] unlock];
+					
 					[self executeSend: samePatientArray];
-				
+					
+					[[DicomStudy dbModifyLock] lock];
+				}
 				// Reset
 				[samePatientArray removeAllObjects];
 				[samePatientArray addObject: loopItem];
@@ -406,7 +411,10 @@ static volatile int sendControllerObjects = 0;
 			}
 		}
 		
-		if( [samePatientArray count]) [self executeSend: samePatientArray];
+		[[DicomStudy dbModifyLock] unlock];
+		
+		if( [samePatientArray count])
+			[self executeSend: samePatientArray];
 		
 		NSMutableDictionary *info = [NSMutableDictionary dictionary];
 		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
