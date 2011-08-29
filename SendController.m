@@ -299,7 +299,7 @@ static volatile int sendControllerObjects = 0;
 	if( [NSThread currentThread].isCancelled)
 		return;
 	
-	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending DICOM files...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
+	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
 		
 	if( sendROIs == NO)
 	{
