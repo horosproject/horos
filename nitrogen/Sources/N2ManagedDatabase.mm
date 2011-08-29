@@ -80,17 +80,17 @@
 	sqlFilePath = sqlFilePath.stringByExpandingTildeInPath;
 	
     N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] init] autorelease];
-//	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
+    //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
 	moc.database = self;
 	
-//	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
+    //	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
 	
 	@synchronized (self) {
 		if ([sqlFilePath isEqualToString:self.sqlFilePath])
 			moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
 		if (!moc.persistentStoreCoordinator) {
-//			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
+            //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
 			
 			BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
 			if (isNewFile)
@@ -98,7 +98,7 @@
 			
 			if (!moc.persistentStoreCoordinator) {
 				NSPersistentStoreCoordinator* persistentStoreCoordinator = moc.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
-//				[persistentStoreCoordinatorsDictionary setObject:persistentStoreCoordinator forKey:sqlFilePath];
+                //				[persistentStoreCoordinatorsDictionary setObject:persistentStoreCoordinator forKey:sqlFilePath];
 				
 				NSPersistentStore* pStore = nil;
 				int i = 0;
@@ -133,7 +133,7 @@
 				NSLog(@"New database file created at %@", sqlFilePath);
 		}
 	}
-
+    
     return moc;
 }
 

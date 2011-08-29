@@ -267,7 +267,13 @@
 // (eg., /usr/bin/more), arguments should be an array of strings each containing
 // a single argument.
 //
--(BOOL)executeCommand:(NSString *)pathToCommand withArgs:(NSArray *)arguments {
+-(BOOL)executeCommand:(NSString *)pathToCommand withArgs:(NSArray *)arguments
+{
+    #ifdef MACAPPSTORE
+    NSTask *task = [NSTask launchedTaskWithLaunchPath: pathToCommand arguments: arguments];
+    [task waitUntilExit];
+    return YES;
+    #else
 	char* args[30]; // can only handle 30 arguments to a given command
 	OSStatus err = 0;
 	int i = 0;
@@ -295,7 +301,7 @@
     if(err!=0)
 	{
 		NSBeep();
-		NSLog(@"Error %d in AuthorizationExecuteWithPrivileges",err);
+		NSLog(@"Error %d in AuthorizationExecuteWithPrivileges",(int)err);
 		return NO;
 	}
 	else
@@ -306,6 +312,7 @@
 		
 		return YES;
 	}
+    #endif
 }
 
 

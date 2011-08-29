@@ -95,6 +95,9 @@
 	
 	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
 	
+    NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"];
+    [xp addEntriesFromDictionary:server];
+    
 	DCMTKStoreSCU* storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle] 
 															  calledAET: [server objectForKey:@"AETitle"] 
 															   hostname: [server objectForKey:@"Address"] 
@@ -102,7 +105,7 @@
 															filesToSend: [samePatientArray valueForKey: @"completePath"]
 														 transferSyntax: [[server objectForKey:@"TransferSyntax"] intValue] 
 															compression: 1.0
-														extraParameters: [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"]];
+														extraParameters: xp];
 	
 	@try {
 		[storeSCU run:self];

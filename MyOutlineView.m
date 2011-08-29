@@ -343,7 +343,7 @@
 	 multiple items to be selected), otherwise selects the row under the mouse */
 	BOOL currentRowIsSelected = [[self selectedRowIndexes] containsIndex:row];
 	if (!currentRowIsSelected)
-		[self selectRow:row byExtendingSelection:NO];
+		[self selectRowIndexes: [NSIndexSet indexSetWithIndex: row] byExtendingSelection:NO];
 	
 	if ([self numberOfSelectedRows] <=0)
 	{

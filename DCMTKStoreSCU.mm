@@ -503,7 +503,7 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	OFCondition cond;
 	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 	
-	NSLog( @"SEND - decompress: %@", [NSString stringWithUTF8String: fname]);
+	NSLog( @"SEND - decompress: %@", [[NSString stringWithUTF8String: fname] lastPathComponent]);
 
 	#ifndef OSIRIX_LIGHT
 	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
@@ -938,6 +938,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		_transferSyntax = transferSyntax;
 		_compression = compression;
 		
+        
+        if( extraParameters == nil)
+            NSLog( @"--- DCMTKStoreSCU extraParameters == nil : TLS support not available");
+        
 		//TLS
 		_secureConnection = [[extraParameters objectForKey:@"TLSEnabled"] boolValue];
 		_doAuthenticate = NO;
@@ -1571,7 +1575,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			
 			if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
 			{
-				if (_threadStatus) [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];
+                NSString *extraInfo = @"";
+                if( _secureConnection)
+                    extraInfo = @" (TLS Activated)";
+				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)%@", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], extraInfo];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
 		}
@@ -1765,7 +1772,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		
 		if( [[userInfo objectForKey: @"SendTotal"] floatValue] >= 1)
 		{
-			if (_threadStatus) [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue]];		
+            NSString *extraInfo = @"";
+            if( _secureConnection)
+                extraInfo = @" (TLS Activated)";
+            
+			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)%@", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], extraInfo];
 			[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 		}
 //		[self sendStatusNotification: userInfo];

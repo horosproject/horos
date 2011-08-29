@@ -302,6 +302,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) databaseDoublePressed:(id)sender;
 - (void) setDBDate;
 - (void) emptyDeleteQueueNow: (id) sender;
+- (void) saveDeleteQueue;
 - (void)drawerToggle: (id)sender;
 - (void) showEntireDatabase;
 - (void) subSelectFilesAndFoldersToAdd: (NSArray*) filenames;

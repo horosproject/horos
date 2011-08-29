@@ -108,6 +108,15 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 
+//#define USERDATABASEVERSION @"1.0"
+#define DATABASEVERSION @"2.5"
+#define DATABASEPATH @"/DATABASE.noindex/"
+#define DECOMPRESSIONPATH @"/DECOMPRESSION.noindex/"
+#define TOBEINDEXED @"/TOBEINDEXED.noindex/"
+#define ERRPATH @"/NOT READABLE/"
+#define DATABASEFPATH @"/DATABASE.noindex"
+#define DATAFILEPATH @"/Database.sql"
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 #include <IOKit/IOKitLib.h>
@@ -281,7 +290,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 		}
 		
 		[NSThread sleepForTimeInterval: 0.1];
-//		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
+        //		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
 	}
 	
 	NSLog( @"******* tryLockDuring failed for this lock: %@ (%f sec)", c, sec);
@@ -766,7 +775,6 @@ static NSConditionLock *threadLock = nil;
 	if (manually || [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOROUTINGACTIVATED"])
 		[_database applyRoutingRules:autoroutingRules toImages:newImages];
 }
-
 
 #pragma mark-
 #pragma mark Database functions
@@ -7932,42 +7940,6 @@ static BOOL needToRezoom;
     }
 }
 
-- (void)sendDICOMFilesToOsiriXNode: (NSDictionary*)todo
-{
-	NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-	
-	NSLog( @"sendDICOMFilesToOsiriXNode started");
-	
-	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
-															  calledAET: [todo objectForKey:@"AETitle"] 
-															   hostname: [todo objectForKey:@"Address"] 
-																   port: [[todo objectForKey:@"Port"] intValue] 
-															filesToSend: [todo valueForKey: @"Files"]
-														 transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
-															compression: 1.0
-														extraParameters: nil];
-	
-	@try
-	{
-		[storeSCU run:self];
-	}
-	
-	@catch (NSException *ne)
-	{
-		NSLog( @"Bonjour DICOM Send FAILED");
-		NSLog( @"%@", ne.name);
-		NSLog( @"%@", ne.reason);
-		[AppController printStackTrace: ne];
-	}
-	
-	[storeSCU release];
-	storeSCU = nil;
-	
-	NSLog( @"sendDICOMFilesToOsiriXNode ended");
-	
-	[pool release];
-}
-
 - (NSManagedObject*) findStudyUID: (NSString*) uid
 {
 	NSArray						*studyArray = nil;
@@ -10620,7 +10592,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] synchronize];
 		
 		// ----------
-		
+        
 //		[BrowserController tryLock:checkIncomingLock during: 120];
 		[BrowserController tryLock:_database during: 120];
 //		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
@@ -10634,12 +10606,13 @@ static NSArray*	openSubSeriesArray = nil;
 				[wait showWindow:self];
 		}
 	//	[BrowserController tryLock: decompressThreadRunning during: 120];
-		[BrowserController tryLock: deleteInProgress during: 600];
-		
 	//	[BrowserController tryLock: autoroutingInProgress during: 120];
 		
-	//	[self emptyAutoroutingQueue:self];
-		
+        //Something in the delete queue? Write it to the disk
+        [self saveDeleteQueue];
+
+    //	[self emptyAutoroutingQueue:self];
+
 	//	[BrowserController tryLock: autoroutingInProgress during: 120];
 		
 		[self syncReportsIfNecessary];
@@ -11067,6 +11040,35 @@ static NSArray*	openSubSeriesArray = nil;
 	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 }
 
+- (void) saveDeleteQueue
+{
+    [deleteQueue lock];
+	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
+	[deleteQueueArray removeAllObjects];
+	
+    if( copyArray.count)
+	{
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
+        {
+            NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
+            
+            copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
+            
+            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+            
+            [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        }
+	
+		NSMutableArray *folders = [NSMutableArray array];
+		
+		NSLog( @"---- save delete queue: %d objects", [copyArray count]);
+		
+        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
+    }
+    [deleteQueue unlock];
+}
+
 - (void) emptyDeleteQueueThread
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -11075,7 +11077,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[deleteQueue lock];
 	NSArray	*copyArray = [NSArray arrayWithArray: deleteQueueArray];
 	[deleteQueueArray removeAllObjects];
-	[deleteQueue unlock];
 	
     if( [[NSFileManager defaultManager] fileExistsAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]])
     {
@@ -11097,6 +11098,8 @@ static NSArray*	openSubSeriesArray = nil;
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
         
+        [deleteQueue unlock];
+        
 		int f = 0;
 		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
@@ -11111,17 +11114,19 @@ static NSArray*	openSubSeriesArray = nil;
 			
 			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
 			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+            
+            if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
+                break;
 		}
 		
-        //Delete the DELETEQUEUEFILE
-        [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
+        if( [NSThread currentThread].isCancelled == NO)
+            [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         
 		[deleteInProgress unlock];
 		
 		[folders removeDuplicatedStrings];
 		
 		[_database lock];
-		
 		@try 
 		{
 			for( NSString *f in folders)
@@ -11244,6 +11249,7 @@ static NSArray*	openSubSeriesArray = nil;
             t.name = NSLocalizedString( @"Deleting files...", nil);
             t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
             t.progress = 0;
+            t.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
         }
     }

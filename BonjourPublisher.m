@@ -298,7 +298,7 @@ extern const char *GetPrivateIP();
 																filesToSend: [todo valueForKey: @"Files"]
 																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
-																extraParameters: nil];
+																extraParameters: nil]; // nil == TLS not supported !
 							
 	@try
 	{

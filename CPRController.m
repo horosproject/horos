@@ -2058,19 +2058,11 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)setExportSlabThickness:(CGFloat)newExportSlabThickness
 {
-//    BOOL isSame;
-    
-//    isSame = self.exportSlabThinknessSameAsSlabThickness;
-    if (exportSlabThickness != newExportSlabThickness) {
-//        if (!isSame) {
-            [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
-//        }
+    if (exportSlabThickness != newExportSlabThickness)
+    {
+        [self willChangeValueForKey:@"exportSequenceNumberOfFrames"];
         exportSlabThickness = newExportSlabThickness;
-//        if (!isSame) {
-            [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];        
-//        }
-		
-		self.exportSeriesType = CPRSlabExportSeriesType;
+        [self didChangeValueForKey:@"exportSequenceNumberOfFrames"];
     }
 	
 	[mprView1 setNeedsDisplay: YES];
@@ -2548,7 +2540,7 @@ static float deg2rad = M_PI / 180.0;
                 }
                 else
                 {
-                    requestStretched = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
+                    requestStretched = [[[CPRStretchedGeneratorRequest alloc] init] autorelease];
                     requestStretched.pixelsWide = exportWidth;
                     requestStretched.pixelsHigh = exportHeight;
                     if (self.exportSequenceNumberOfFrames > 1)

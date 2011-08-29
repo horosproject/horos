@@ -15,7 +15,7 @@
 #ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
 #endif
-
+#import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
 #import "SRAnnotation.h"
 #import <dicomFile.h>
@@ -2658,7 +2658,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						Papy_List *dcmList = val->sq;
 						
 						NSMutableArray *sliceLocationArray = [NSMutableArray array];
-						NSMutableArray *imageTypeFrameArray = [NSMutableArray array];
+						NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
 						
 						// loop through the elements of the sequence
 						while (dcmList)
@@ -2684,7 +2684,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 											switch( gr->group)
 											{
 												case 0x0018:
-													valb = Papy3GetElement (gr, papMRImageFrameTypeSequence, &nbVal, &itemType);
+													valb = Papy3GetElement (gr, papCardiacTriggerSequence, &nbVal, &itemType);
 													if (valb != NULL && nbVal >= 1)
 													{
 														// there is a sequence
@@ -2700,21 +2700,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 																
 																switch( gr->group)
 																{
-																	case 0x0008:
+																	case 0x0020:
 																	{
-																		valc = Papy3GetElement ( gr, papFrameType, &nbVal, &itemType);
-																		if (valc != NULL && valc->a && validAPointer( itemType))
-																		{
-																			NSMutableArray *types = [NSMutableArray array];
-																			for( int z = 0; z < nbVal ; z++)
-																			{
-																				[types addObject: [[[NSString alloc] initWithCString: valc->a encoding: NSASCIIStringEncoding] autorelease]];
-																				valc++;
-																			}
-																			
-																			if( types.count > 2)
-																				[imageTypeFrameArray addObject: [imageTypeArray objectAtIndex: 2]];
-																		}
+																		valc = Papy3GetElement ( gr, papTriggerDelayTime, &nbVal, &itemType);
+																		if (itemType == 8)
+																			[imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
 																	}
 																}
 																
@@ -2863,11 +2853,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 							else
 								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
-							
-							if( NoOfFrames == [imageTypeFrameArray count])
-								[dicomElements setObject: imageTypeFrameArray forKey:@"imageTypeFrameArray"];
+						}
+                        
+                        if( imageCardiacTriggerArray.count)
+                        {
+                            if( NoOfFrames == imageCardiacTriggerArray.count)
+                                [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
 							else
-								NSLog( @"*** NoOfFrames != imageTypeFrameArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageTypeFrameArray.count);
+								NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageCardiacTriggerArray.count);
+                            
 						}
 					} // if ...there is a sequence of groups
 				} // if ...val is not NULL
