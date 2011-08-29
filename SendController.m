@@ -356,8 +356,11 @@ static volatile int sendControllerObjects = 0;
 
 - (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend 
 {
-	NSAutoreleasePool   *pool = [[NSAutoreleasePool alloc] init];
-	
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSMutableArray *samePatientArray = 0L;
+    NSMutableArray *objectsToSend = 0L;
+    NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+    
 	[[DicomStudy dbModifyLock] lock];
 	
 	@try
@@ -366,22 +369,22 @@ static volatile int sendControllerObjects = 0;
 		NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
 		
 		tempObjectsToSend = [tempObjectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-
-		NSString *calledAET = [[self server] objectForKey:@"AETitle"];
-		
+        
 		if( calledAET == nil)
 			calledAET = @"AETITLE";
 		
 		// Remove duplicated files 
-		NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
+		objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
+        
 		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
 		
 		[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
 		
 		NSLog(@"Server destination: %@", [[self server] description]);	
 				
-		NSString			*previousPatientUID = nil;
-		NSMutableArray		*samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
+		NSString *previousPatientUID = nil;
+        
+        samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
 		
 		for( id loopItem in objectsToSend)
 		{
@@ -411,23 +414,23 @@ static volatile int sendControllerObjects = 0;
 			}
 		}
 		
-		[[DicomStudy dbModifyLock] unlock];
 		
-		if( [samePatientArray count])
-			[self executeSend: samePatientArray];
-		
-		NSMutableDictionary *info = [NSMutableDictionary dictionary];
-		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
-		[info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
-		[info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
-		[info setObject:calledAET forKey:@"CalledAET"];
 	}
 	@catch (NSException *e)
 	{
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
-	
-	[[DicomStudy dbModifyLock] unlock];
+    
+    [[DicomStudy dbModifyLock] unlock];
+    
+    if( [samePatientArray count])
+        [self executeSend: samePatientArray];
+    
+    NSMutableDictionary *info = [NSMutableDictionary dictionary];
+    [info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
+    [info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
+    [info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
+    [info setObject:calledAET forKey:@"CalledAET"];
 	
 	[pool release];
 	
