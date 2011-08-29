@@ -2658,7 +2658,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 						Papy_List *dcmList = val->sq;
 						
 						NSMutableArray *sliceLocationArray = [NSMutableArray array];
-						NSMutableArray *imageTypeFrameArray = [NSMutableArray array];
+						NSMutableArray *imageCardiacTriggerArray = [NSMutableArray array];
 						
 						// loop through the elements of the sequence
 						while (dcmList)
@@ -2704,7 +2704,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 																	{
 																		valc = Papy3GetElement ( gr, papTriggerDelayTime, &nbVal, &itemType);
 																		if (itemType == 8)
-																			[imageTypeFrameArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
+																			[imageCardiacTriggerArray addObject: [NSString stringWithFormat: @"%lf", valc->fd]];
 																	}
 																}
 																
@@ -2855,12 +2855,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
 						}
                         
-                        if( imageTypeFrameArray.count)
+                        if( imageCardiacTriggerArray.count)
                         {
-                            if( NoOfFrames == imageTypeFrameArray.count)
-                                [dicomElements setObject: imageTypeFrameArray forKey:@"imageTypeFrameArray"];
+                            if( NoOfFrames == imageCardiacTriggerArray.count)
+                                [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
 							else
-								NSLog( @"*** NoOfFrames != imageTypeFrameArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageTypeFrameArray.count);
+								NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageCardiacTriggerArray.count);
                             
 						}
 					} // if ...there is a sequence of groups

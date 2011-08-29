@@ -1212,10 +1212,15 @@ static NSConditionLock *threadLock = nil;
 								[image setValue:[curDict objectForKey: @"studyDate"]  forKey:@"date"];
 								
 								[image setValue:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]] forKey:@"sopInstanceUID"];
+                                
 								if( [[curDict objectForKey: @"sliceLocationArray"] count] > f)
 									[image setValue: [[curDict objectForKey: @"sliceLocationArray"] objectAtIndex: f] forKey:@"sliceLocation"];
 								else
 									[image setValue:[curDict objectForKey: @"sliceLocation"] forKey:@"sliceLocation"];
+                                
+                                if( [[curDict objectForKey: @"imageCommentPerFrame"] count] > f)
+									[image setValue: [[curDict objectForKey: @"imageCommentPerFrame"] objectAtIndex: f] forKey:@"comment"];
+                                
 								[image setValue:[[newFile pathExtension] lowercaseString] forKey:@"extension"];
 								[image setValue:[curDict objectForKey: @"fileType"] forKey:@"fileType"];
 								
