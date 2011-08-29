@@ -391,7 +391,12 @@ NSString * documentsDirectoryFor( int mode, NSString *url)
 					path = [@"~/Library/Application Support/OsiriX/OsiriX Data/" stringByExpandingTildeInPath];
 				
 					if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
-						[[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
+                    {
+                        path = [@"~/Library/Application Support/OsiriX App/OsiriX Data/" stringByExpandingTildeInPath];
+                        
+                        if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
+                            [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
+                    }
 				}
 			}
 			#else
@@ -889,6 +894,7 @@ static NSDate *lastWarningDate = nil;
 				else
 					destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
 			}
+#ifndef MACAPPSTORE
 			else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:1]])
 			{
 				if(isActive)
@@ -904,6 +910,7 @@ static NSDate *lastWarningDate = nil;
 					destinationDirectory = [PluginManager appInactivePluginsDirectoryPath];
 			}
 			else
+#endif
 			{
 				if(isActive)
 					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
@@ -935,11 +942,13 @@ static NSDate *lastWarningDate = nil;
 				
 				if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil] == NO)			// Please leave this line! ANR
 				{
+                    #ifndef MACAPPSTORE
 					NSMutableArray *args = [NSMutableArray array];
 					[args addObject:@"-r"];
 					[args addObject:pathToDelete];
 					
 					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
+                    #endif
 				}
 				
 				[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil];			// Please leave this line! ANR
@@ -2844,7 +2853,7 @@ static BOOL initialized = NO;
 				#ifdef MACAPPSTORE
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
-				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX/)" forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX App/)" forKey:@"DefaultDatabasePath"];
 				#else
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];

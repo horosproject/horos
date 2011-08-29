@@ -66,8 +66,8 @@
 
 @property(readonly) NSMutableArray *runLoops, *runLoopsLoad;
 
-@property BOOL usesSSL;
-@property NSInteger portNumber;
+@property (nonatomic) BOOL usesSSL;
+@property (nonatomic) NSInteger portNumber;
 @property(retain) NSString* address;
 
 @property(retain) NSArray* dirsToScanForFiles;
@@ -79,8 +79,8 @@
 @property BOOL weasisEnabled;
 @property BOOL flashEnabled;
 
-@property BOOL notificationsEnabled;
-@property NSInteger notificationsInterval;
+@property (nonatomic) BOOL notificationsEnabled;
+@property (nonatomic) NSInteger notificationsInterval;
 
 -(id)initWithDatabase:(WebPortalDatabase*)database dicomDatabase:(DicomDatabase*)dd;
 -(id)initWithDatabaseAtPath:(NSString*)sqlFilePath dicomDatabase:(DicomDatabase*)dd;

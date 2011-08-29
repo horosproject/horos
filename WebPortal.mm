@@ -116,10 +116,15 @@
 
 @implementation WebPortal
 
-static const NSString* DefaultWebPortalDatabasePath = nil;
+static NSString* DefaultWebPortalDatabasePath = nil;
 
-+(void)initialize {
-	DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX/WebUsers.sql" stringByExpandingTildeInPath]];
++(void)initialize
+{
+    #ifdef MACAPPSTORE
+	DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX App/WebUsers.sql" stringByExpandingTildeInPath]];
+    #else
+    DefaultWebPortalDatabasePath = [[NSString alloc] initWithString: [@"~/Library/Application Support/OsiriX/WebUsers.sql" stringByExpandingTildeInPath]];
+    #endif
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
@@ -166,12 +171,18 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 			webPortal.address = NSUserDefaults.webPortalAddress;
 		else
 			
-		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalPrefersCustomWebPagesKey)]) {
+		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalPrefersCustomWebPagesKey)])
+        {
 			NSMutableArray* dirsToScanForFiles = [NSMutableArray arrayWithCapacity:2];
-			if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/OsiriX/WebServicesHTML" stringByExpandingTildeInPath]];
-			[dirsToScanForFiles addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
+            #ifdef MACAPPSTORE
+			if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/OsiriX App/WebServicesHTML" stringByExpandingTildeInPath]];
+            #else
+            if (NSUserDefaults.webPortalPrefersCustomWebPages) [dirsToScanForFiles addObject: [@"~/Library/Application Support/OsiriX/WebServicesHTML" stringByExpandingTildeInPath]];
+            #endif
+            [dirsToScanForFiles addObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"WebServicesHTML"]];
 			webPortal.dirsToScanForFiles = dirsToScanForFiles;
-		} else
+		}
+        else
 			
 		if ([keyPath isEqual:valuesKeyPath(OsirixWebPortalRequiresAuthenticationDefaultsKey)])
 			webPortal.authenticationRequired = NSUserDefaults.webPortalRequiresAuthentication;
@@ -385,7 +396,7 @@ static const NSString* DefaultWebPortalDatabasePath = nil;
 			server = [[WebPortalServer alloc] init];
 			server.portal = self;
 			
-			server.connectionClass = WebPortalConnection.class;
+			server.connectionClass = [WebPortalConnection class];
 			
 			if (self.usesSSL)
 				server.type = @"_https._tcp.";

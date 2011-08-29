@@ -53,6 +53,10 @@
     NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
 	NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, NULL]; // [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
 	NSError* err = NULL;
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: [sqlFilePath stringByDeletingLastPathComponent]] == NO)
+        [[NSFileManager defaultManager] createDirectoryAtPath: [sqlFilePath stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: nil];
+    
 	if (![moc.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:NULL URL:url options:options error:&err]) {
 		NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", err);
 		NSRunCriticalAlertPanel(NSLocalizedString(@"Database Error", NULL), err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);

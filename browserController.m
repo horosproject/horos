@@ -96,7 +96,11 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 
+#ifdef MACAPPSTORE
 #define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX/WebUsers.sql"
+#else
+#define DEFAULTUSERDATABASEPATH @"~/Library/Application Support/OsiriX App/WebUsers.sql"
+#endif
 //#define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.5"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -2725,8 +2729,13 @@ static NSConditionLock *threadLock = nil;
 		
 		BOOL newDB = NO;
 		if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO)
-			newDB = YES;
-		
+        {
+			if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingLastPathComponent]] == NO)
+                [[NSFileManager defaultManager] createDirectoryAtPath: [path stringByDeletingLastPathComponent] withIntermediateDirectories: YES attributes: nil error: nil];
+            
+            newDB = YES;
+        }
+        
 		NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, nil];
 		
 		if( [psc persistentStoreForURL: url] == nil)
