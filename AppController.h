@@ -92,7 +92,7 @@ extern "C"
 @end
 #endif
 
-@class AppController;
+@class AppController, ToolbarPanelController;
 
 extern AppController* OsiriX;
 
@@ -152,6 +152,7 @@ extern AppController* OsiriX;
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
 + (void) pause __deprecated;
 + (void) resetToolbars;
++ (ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen;
 + (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
 + (int) numberOfSubOsiriXProcesses;
 + (BOOL) isKDUEngineAvailable;

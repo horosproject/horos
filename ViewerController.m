@@ -2473,7 +2473,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
 	if( [AppController USETOOLBARPANEL])
-		screenRect.size.height -= [ToolbarPanelController exposedHeight];	
+		screenRect.size.height -= [[AppController toolbarForScreen:[sender screen]] exposedHeight];	
 
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
 		return standardRect;
@@ -7034,7 +7034,7 @@ return YES;
 	
 	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
-		screenRect.size.height -= [ToolbarPanelController exposedHeight];
+		screenRect.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 	}
 	
 	[[self window] setFrame:screenRect display:YES];

@@ -12099,7 +12099,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSArray *screens = [NSScreen screens];
 	
-	for( id loopItem in screens)
+	for(NSScreen* loopItem in screens)
 	{
 		if( NSPointInRect( center, [loopItem frame]))
 		{
@@ -12107,7 +12107,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 			{
-				screenFrame.size.height -= [ToolbarPanelController exposedHeight];
+				screenFrame.size.height -= [[AppController toolbarForScreen:loopItem] exposedHeight];
 			}
 			
 			if( newHeight > screenFrame.size.height) newHeight = screenFrame.size.height;
