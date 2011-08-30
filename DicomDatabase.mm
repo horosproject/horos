@@ -2054,9 +2054,6 @@ enum { Compress, Decompress };
 				continue;
 			}
 			
-			if (![ThreadsManager.defaultManager.threads containsObject:thread])
-				[ThreadsManager.defaultManager addThreadAndStart:thread];
-			
 			if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
 			{
 				NSDictionary *atr = [enumer fileAttributes];// [[NSFileManager defaultManager] attributesOfItemAtPath: srcPath error: nil];
@@ -2075,6 +2072,10 @@ enum { Compress, Decompress };
 				continue;
 			}
 			
+            if (![ThreadsManager.defaultManager.threads containsObject:thread])
+				[ThreadsManager.defaultManager addThreadAndStart:thread];
+			
+            
 			BOOL isAlias = NO;
 			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
 			
