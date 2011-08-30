@@ -109,8 +109,19 @@
 			[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
 	}
     
-    // And finally release memory on the father side
-    [NSThread sleepForTimeInterval: 60 * 30]; //45 min....
+    // And finally release memory on the father side, after the death of the process
+    inc = 0;
+    do
+	{
+		rc = waitpid( pid, &state, WNOHANG);	// Check to see if this pid is still alive?
+		
+        usleep( 100000);
+        inc++;
+	}
+    #define TIMEOUTRELEASE 60000 // 60000*100000 = 6000 secs = 100 min
+	while( inc < TIMEOUTRELEASE && rc >= 0);
+    
+    [NSThread sleepForTimeInterval: 5];
     
     T_ASC_Association *assoc = (T_ASC_Association*) [[dict valueForKey: @"assoc"] pointerValue];
     OFCondition cond = EC_Normal;
