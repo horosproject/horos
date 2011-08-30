@@ -700,9 +700,7 @@ static void dumpLSArchitecturesForX86_64()
 
 void exceptionHandler(NSException *exception)
 {
-    NSLog(@"%@", [exception reason]);
-    NSLog(@"%@", [exception userInfo]);
-	[AppController printStackTrace: exception];
+    N2LogExceptionWithStackTrace(exception);
 }
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -1993,7 +1991,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[pool release];
@@ -2096,7 +2094,7 @@ static NSDate *lastWarningDate = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[STORESCPTLS unlock];
@@ -2228,7 +2226,7 @@ static NSDate *lastWarningDate = nil;
 							}
 							@catch (NSException * e)
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							[context unlock];
@@ -2279,7 +2277,7 @@ static NSDate *lastWarningDate = nil;
 							}
 							@catch (NSException * e)
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							[wait end];
 							[wait close];
@@ -2573,7 +2571,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return r;
@@ -2633,10 +2631,7 @@ static BOOL initialized = NO;
 //	}
 //	@catch (NSException * e) 
 //	{
-//		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//		#ifdef OSIRIX_VIEWER
-//		[AppController printStackTrace: e];
-//		#endif
+//    N2LogExceptionWithStackTrace(e);
 //	}
 	
 //	NSSetUncaughtExceptionHandler( exceptionHandler);
@@ -3118,8 +3113,7 @@ static BOOL initialized = NO;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 		exit( 0);
 	}
 	
@@ -4462,7 +4456,7 @@ static BOOL initialized = NO;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 	}

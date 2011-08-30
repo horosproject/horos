@@ -44,6 +44,7 @@
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 #import "Notifications.h"
 #import "PluginManager.h"
+#import "N2Debug.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -1584,7 +1585,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2133,7 +2134,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2360,7 +2361,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 
 	
@@ -2491,7 +2492,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2582,7 +2583,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[drawLock unlock];
@@ -2844,7 +2845,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2962,7 +2963,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -3192,7 +3193,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		
@@ -3642,7 +3643,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 
 			[drawLock unlock];
@@ -3653,7 +3654,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	avoidMouseMovedRecursive = NO;
@@ -4435,7 +4436,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[drawLock unlock];
@@ -4927,7 +4928,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
         
 		[drawLock unlock];
@@ -8987,7 +8988,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	// Swap buffer to screen
@@ -11402,7 +11403,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];

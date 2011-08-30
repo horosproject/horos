@@ -21,6 +21,7 @@
 #import "MutableArrayCategory.h"
 #import "SRAnnotation.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -233,7 +234,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -341,7 +342,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 }
@@ -491,7 +492,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -591,7 +592,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -663,7 +664,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[cachedModalites release];
@@ -744,7 +745,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -857,7 +858,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -958,7 +959,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	if( local) return @"L";
@@ -1099,15 +1100,18 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if( cachedRawNoFiles)
 		return cachedRawNoFiles;
 	
-	@try 
-	{
+    [self.managedObjectContext lock];
+	@try  {
 		for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			sum += [[s valueForKey: @"rawNoFiles"] intValue];
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
+		N2LogExceptionWithStackTrace(e);
+	} 
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
 	cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
 	
@@ -1131,7 +1135,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -1179,7 +1183,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -1215,7 +1219,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1242,7 +1246,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 		
 	[[self managedObjectContext] unlock];
@@ -1303,7 +1307,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	
@@ -1327,7 +1331,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1353,7 +1357,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1379,7 +1383,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1433,7 +1437,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 		
@@ -1451,7 +1455,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1476,7 +1480,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return [images lastObject];
@@ -1525,13 +1529,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1582,13 +1586,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1653,7 +1657,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 					}
 					@catch (NSException * e)
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 				}
 			}
@@ -1682,7 +1686,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -1710,7 +1714,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return path;
@@ -1732,7 +1736,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];

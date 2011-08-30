@@ -21,6 +21,7 @@
 #import "DCMPix.h"
 #import "BrowserController.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DicomFileDCMTKCategory.h"
@@ -129,7 +130,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -167,7 +168,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -339,7 +340,7 @@
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		[pool release];
 	}
@@ -370,7 +371,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -396,7 +397,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -440,7 +441,7 @@
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -486,7 +487,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -507,7 +508,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -530,7 +531,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}	
 	
 	[[self managedObjectContext] unlock];

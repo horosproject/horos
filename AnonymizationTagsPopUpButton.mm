@@ -23,6 +23,7 @@
 #import "DicomFile.h"
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMAttribute.h>
+#import "N2Debug.h"
 
 @implementation AnonymizationTagsPopUpButton
 
@@ -97,7 +98,7 @@ NSInteger CompareDCMAttributeTagStringValues(DCMAttributeTag* lsp, DCMAttributeT
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 	}

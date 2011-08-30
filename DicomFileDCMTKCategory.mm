@@ -19,7 +19,7 @@
 #import "MutableArrayCategory.h"
 #import "DicomStudy.h"
 #import "SRAnnotation.h"
-#import "SRAnnotation.h"
+#import "N2Debug.h"
 
 #include "osconfig.h"
 #include "dcfilefo.h"
@@ -908,7 +908,7 @@ extern NSRecursiveLock *PapyrusLock;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 		#endif

@@ -20,6 +20,7 @@
 #import "DicomStudy.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
+#import "N2Debug.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -1024,7 +1025,7 @@ extern const char *GetPrivateIP();
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[connectionLock unlock];

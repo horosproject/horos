@@ -37,9 +37,8 @@
 #import "DCMAbstractSyntaxUID.h"
 #import "QueryController.h"
 #import "DCMTKStudyQueryNode.h"
-CF_EXTERN_C_BEGIN
+#import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
-CF_EXTERN_C_END
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -64,7 +63,7 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-	if (context == DicomDatabase.class) {
+	if (context == [DicomDatabase class]) {
 		if ([keyPath isEqualToString:valuesKeyPath(OsirixCanActivateDefaultDatabaseOnlyDefaultsKey)]) {
 			if ([NSUserDefaults canActivateOnlyDefaultDatabase])
 				[self setActiveLocalDatabase:self.defaultDatabase];
@@ -792,8 +791,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //		}
 //		@catch (NSException * e)
 //		{
-//			NSLog( @"**** listenerAnonymizeFiles : %@", e);
-//			[AppController printStackTrace: e];
+//          N2LogExceptionWithStackTrace(e);
 //		}
 //		
 //		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
@@ -1553,7 +1551,9 @@ enum { Compress, Decompress };
 												}
 											}
 										}
-										@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+										@catch (NSException * e) {
+                                            N2LogExceptionWithStackTrace(e);
+                                        }
 									}
 								}
 								
@@ -1740,8 +1740,7 @@ enum { Compress, Decompress };
 		}
 		@catch( NSException *ne)
 		{
-			NSLog(@"******* Compute no of images in studies/series: %@", [ne description]);
-			[AppController printStackTrace: ne];
+            N2LogExceptionWithStackTrace(ne);
 		}
 		
 		BOOL addFailed = NO;
@@ -1856,7 +1855,9 @@ enum { Compress, Decompress };
 								}
 								else NSLog( @"**** DicomFile *curFile = nil");
 							}
-							@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+							@catch (NSException * e) {
+                                N2LogExceptionWithStackTrace(e);
+                            }
 						}
 						else
 						{
@@ -1967,8 +1968,7 @@ enum { Compress, Decompress };
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"copyFilesThread exception: %@", e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[pool2 release];

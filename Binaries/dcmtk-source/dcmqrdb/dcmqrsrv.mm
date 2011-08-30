@@ -35,6 +35,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "AppController.h"
+#import "N2Debug.h"
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmqrsrv.h"
@@ -1472,7 +1473,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					@catch (NSException * e)
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 					[dbContext unlock];
@@ -1493,14 +1494,14 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					@catch( NSException *e)
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 					[staticContext release];
 					staticContext = nil;
 				}
 				@catch( NSException *e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    N2LogExceptionWithStackTrace(e);
 				}
 				
 				NSString *str = getErrorMessage();
@@ -1523,7 +1524,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 						[dbContext unlock];
 					}
@@ -1595,7 +1596,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							}
 							@catch (NSException * e)
 							{
-								printf( "***** exception in %s\r", __PRETTY_FUNCTION__);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							unlockFile();
@@ -1610,7 +1611,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					}
 					@catch( NSException *e)
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 //					[staticContext unlock];
@@ -1621,7 +1622,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[p release];

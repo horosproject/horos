@@ -30,6 +30,7 @@
 /* NSFont_OpenGL.m */
 
 #import "NSFont_OpenGL.h"
+#import "N2Debug.h"
 
 #define MAXCOUNT 256
 
@@ -227,7 +228,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 

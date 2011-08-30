@@ -29,6 +29,7 @@
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
 #import "DICOMToNSString.h"
+#import "N2Debug.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -168,7 +169,7 @@ extern int delayedTileWindows;
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];

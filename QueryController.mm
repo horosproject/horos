@@ -297,7 +297,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return YES;
@@ -728,7 +728,7 @@ extern "C"
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -835,7 +835,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return nil;
@@ -860,7 +860,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return NO;
@@ -882,7 +882,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return NO;
@@ -914,7 +914,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return [resultArray count];
@@ -939,7 +939,7 @@ extern "C"
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[context unlock];
@@ -998,7 +998,7 @@ extern "C"
             }
             @catch (NSException * e)
             {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
             }
             
             [context unlock];
@@ -1009,7 +1009,7 @@ extern "C"
             }
             @catch (NSException * e)
             {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
             }
             
             if( local_studyArrayCache && local_studyArrayInstanceUID)
@@ -1122,7 +1122,7 @@ extern "C"
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	return @"";
 }
@@ -1192,7 +1192,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 }
 
@@ -1257,7 +1257,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return nil;
@@ -1285,7 +1285,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	DatabaseIsEdited = NO;
@@ -1791,7 +1791,7 @@ extern "C"
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[autoQueryLock unlock];
@@ -2138,7 +2138,7 @@ extern "C"
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[autoQueryLock unlock];

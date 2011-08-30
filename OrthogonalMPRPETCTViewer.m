@@ -22,6 +22,7 @@
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
+#import "N2Debug.h"
 
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
@@ -2429,7 +2430,7 @@ return YES;
 						}
 						@catch (NSException * e) 
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 						[pool release];
 						
@@ -2466,7 +2467,7 @@ return YES;
 						}
 						@catch (NSException * e) 
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 						
 						[pool release];
@@ -2495,7 +2496,7 @@ return YES;
 						}
 						@catch (NSException * e) 
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 						
 						[pool release];
@@ -2524,7 +2525,7 @@ return YES;
 						}
 						@catch (NSException * e) 
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 						
 						[pool release];

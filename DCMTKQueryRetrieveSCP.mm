@@ -15,6 +15,7 @@
 #import "DCMTKQueryRetrieveSCP.h"
 #import "AppController.h"
 #import "DICOMTLS.h"
+#import "N2Debug.h"
 
 #undef verify
 
@@ -564,7 +565,7 @@ DcmQueryRetrieveConfig config;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 	}

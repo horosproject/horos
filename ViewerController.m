@@ -4077,7 +4077,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 							}
 							@catch (NSException * e) 
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
@@ -6218,10 +6218,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	isDataVolumicIn4DLevel--;
 	return volumicData;
@@ -6996,10 +6993,7 @@ return YES;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	
@@ -7304,7 +7298,7 @@ return YES;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[ThreadLoadImageLock unlock];
@@ -7510,7 +7504,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
@@ -7526,7 +7520,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
 	
@@ -13690,7 +13684,7 @@ int i,j,l;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[roiLock unlock];
@@ -15662,7 +15656,7 @@ int i,j,l;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 			return NO;
 		}
 		// Create the new series

@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2Debug.h"
 
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
@@ -1596,7 +1597,7 @@ return YES;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 				}
 				

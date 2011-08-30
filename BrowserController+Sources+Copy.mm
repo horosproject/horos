@@ -306,9 +306,7 @@
 			
 			@catch (NSException * e)
 			{
-				NSLog( @"%@", [e description]);
-				NSLog( @"Exception LOCAL PATH - DATABASE - tableView *******");
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e, @"local path database");
 			}
 		}
 		else NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil),  NSLocalizedString(@"Destination Database / Index file is not available.", nil), NSLocalizedString(@"OK",nil), nil, nil);

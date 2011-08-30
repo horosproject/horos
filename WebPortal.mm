@@ -24,6 +24,7 @@
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 
 @interface WebPortalServer ()
@@ -372,7 +373,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		{
 			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
 		}
-		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+		@catch (NSException * e) {
+            N2LogExceptionWithStackTrace(e);
+        }
 		
 		[runloopPool release];
 	}

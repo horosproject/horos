@@ -36,6 +36,7 @@
 #import "DicomImage.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2Debug.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -6556,7 +6557,7 @@ public:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];

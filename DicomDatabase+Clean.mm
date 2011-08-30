@@ -240,9 +240,7 @@
 					}
 					@catch (NSException * e)
 					{
-						NSLog( @"autoCleanDatabaseDate");
-						NSLog( @"%@", [e description]);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 					if( [toBeRemoved count] > 0)
@@ -283,9 +281,7 @@
 							
 //							[self outlineViewRefresh];
 						} @catch (NSException* e) {
-							NSLog( @"autoCleanDatabaseDate");
-							NSLog( @"%@", [e description]);
-							[AppController printStackTrace: e];
+                            N2LogExceptionWithStackTrace(e);
 						}
 //						[wait close];
 //						[wait release];

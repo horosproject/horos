@@ -37,6 +37,7 @@
 #import "DicomFileDCMTKCategory.h"
 #import "PluginManager.h"
 #import "NSString+N2.h"
+#import "N2Debug.h"
 
 #ifndef DECOMPRESS_APP
 #include "nifti1.h"
@@ -479,7 +480,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -2911,7 +2912,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			
@@ -2929,7 +2930,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 		#endif
@@ -3464,7 +3465,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    N2LogExceptionWithStackTrace(e);
 				}
 				
 				@try
@@ -3481,7 +3482,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 		}

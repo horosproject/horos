@@ -218,7 +218,9 @@ static NSTimeInterval lastConnection = 0;
 						found = YES;
 					}
 				}
-				@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+				@catch (NSException * e) { 
+                    N2LogExceptionWithStackTrace(e);
+                }
 				
 				[context unlock];
 			}
@@ -860,7 +862,9 @@ static NSTimeInterval lastConnection = 0;
                     ret = [NSNumber numberWithInt: -2];
                 }
             }
-            @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+            @catch (NSException * e) { 
+                N2LogExceptionWithStackTrace(e);
+            }
             
             // Done, we can send the response to the sender
 			

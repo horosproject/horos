@@ -160,7 +160,7 @@ void restartSTORESCP()
 //		}
 //		@catch (NSException * e)
 //		{
-//			NSLog( @"******* exception in restartSTORESCP() : %@", e);
+//          N2LogExceptionWithStackTrace(e);
 //		}
 //	}
 }
@@ -565,7 +565,7 @@ static NSConditionLock *threadLock = nil;
 		}
 	}
 	@catch ( NSException *e) {
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	WADODownload *downloader = [[WADODownload alloc] init];
 	
@@ -656,8 +656,7 @@ static NSConditionLock *threadLock = nil;
 							}
 							@catch( NSException *e)
 							{
-								NSLog( @"******** addFilesAndFolderToDatabase 2 exception : %@", e);
-								[AppController printStackTrace: e];
+                                N2LogExceptionWithStackTrace(e/*, @"addFilesAndFolderToDatabase 2"*/);
 							}
 						}
 					}
@@ -727,7 +726,7 @@ static NSConditionLock *threadLock = nil;
 			@catch( NSException *ne)
 			{
 				NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\rSee Routing Preferences.", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"]], nil, nil, nil);
-				[AppController printStackTrace: ne];
+				N2LogExceptionWithStackTrace(ne);
 			}
 		}
 	}
@@ -848,8 +847,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			@catch ( NSException *e)
 			{
-				NSLog( @"********* regenerateAutoComments exception : %@", e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[splash incrementBy:1];
@@ -1552,7 +1550,9 @@ static NSConditionLock *threadLock = nil;
 //			
 //			[[NSUserDefaults standardUserDefaults] setObject:DATABASEVERSION forKey: @"DATABASEVERSION"];
 //		}
-//		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+//		@catch (NSException * e) {
+//            N2LogExceptionWithStackTrace(e);
+//      }
 //		
 //		[context unlock];
 //	}
@@ -1651,8 +1651,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"******** copy to DB exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	} @finally {
 		[_database unlock];
 	}
@@ -1811,8 +1810,7 @@ static NSConditionLock *threadLock = nil;
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"copyFilesIntoDatabaseIfNeeded exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 				[splash incrementBy:1];
 				
@@ -2295,10 +2293,7 @@ static NSConditionLock *threadLock = nil;
 	@catch( NSException *ne)
 	{
 		pred = [NSPredicate predicateWithValue: NO];
-		
-		NSLog( @"filter error %@ : %@", [ne name] ,[ne reason]);
-		
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne/*, @"filter error"*/);
 	}
 	
 	return pred;
@@ -2458,8 +2453,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@catch( NSException *ne)
 	{
-		NSLog(@"OutlineRefresh exception: %@", [ne description]);
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne);
 		
 		[request setPredicate: [NSPredicate predicateWithValue: NO]];
 		outlineViewArray = [context executeFetchRequest:request error:&error];
@@ -2532,8 +2526,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		@catch( NSException *ne)
 		{
-			NSLog( @"********** OutlineRefresh exception: %@", [ne description]);
-			[AppController printStackTrace: ne];
+            N2LogExceptionWithStackTrace(ne);
 		}
 	}
 	else
@@ -2568,8 +2561,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch( NSException *ne)
 	{
-		NSLog( @"********** OutlineRefresh exception: %@", [ne description]);
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne);
 	}
 	
 	
@@ -2626,8 +2618,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 			 
 	[pool release];
@@ -2747,9 +2738,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"refreshDatabase exception");
-			NSLog( @"%@", [e description]);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	else
@@ -2813,8 +2802,7 @@ static NSConditionLock *threadLock = nil;
 		
 		@catch (NSException * e)
 		{
-			NSLog( @"***** children Array%@", [e description]);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 
 		[_database unlock];
@@ -2861,8 +2849,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"%@", [e description]);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[_database unlock];
@@ -2955,8 +2942,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@catch (NSException *e)
 	{
-		NSLog(@"imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[_database unlock];
@@ -3132,8 +3118,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"Exception in filesForDatabaseMatrixSelection: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context release];
@@ -3324,7 +3309,9 @@ static NSConditionLock *threadLock = nil;
 		
 	}
 	@catch (NSException * e)
-	{ NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+	{ 
+		N2LogExceptionWithStackTrace(e);
+    }
 }
 
 - (void) refreshMatrix:(id) sender
@@ -3651,8 +3638,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"******** proceedDeleteObjects exception : %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	WaitRendering *wait = nil;
@@ -3666,7 +3652,9 @@ static NSConditionLock *threadLock = nil;
 		[context save: nil];
 	}
 	@catch( NSException *e)
-	{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
+	{	
+        N2LogExceptionWithStackTrace(e/*, @"context save"*/);
+    }
 	
 	@try
 	{
@@ -3687,8 +3675,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			@catch( NSException *e)
 			{
-				NSLog( @"context deleteObject: series: %@", e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
 			}
 		}
 		
@@ -3697,7 +3684,9 @@ static NSConditionLock *threadLock = nil;
 			[context save: nil];
 		}
 		@catch( NSException *e)
-		{	NSLog( @"context save: nil: %@", e); [AppController printStackTrace: e];}
+		{
+            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
+        }
 			
 		// Remove studies without series !
 		for( NSManagedObject *study in studiesArray)
@@ -3716,7 +3705,9 @@ static NSConditionLock *threadLock = nil;
 				}
 			}
 			@catch( NSException *e)
-			{	NSLog( @"context deleteObject: study: %@", e); [AppController printStackTrace: e];}
+			{
+                N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
+            }
 		}
 		
 		[previousItem release];
@@ -3730,9 +3721,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@catch( NSException *ne)
 	{
-		NSLog( @"Exception during delItem");
-		NSLog( @"%@", [ne description]);
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne);
 	}
 	
 	[wait close];
@@ -3792,8 +3781,7 @@ static NSConditionLock *threadLock = nil;
 				
 				@catch (NSException *e)
 				{
-					NSLog(@"series.study.albums.@count exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			
@@ -3863,7 +3851,9 @@ static NSConditionLock *threadLock = nil;
 					}
 						
 					}
-				@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+				@catch (NSException * e) { 
+                    N2LogExceptionWithStackTrace(e);
+                }
 				[wait close];
 				[wait release];
 			}
@@ -3977,9 +3967,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		@catch( NSException *ne)
 		{
-			NSLog( @"Exception Updating database...");
-			NSLog( @"%@", [ne description]);
-			[AppController printStackTrace: ne];
+            N2LogExceptionWithStackTrace(ne);
 		}
 		
 		[wait close];
@@ -4156,8 +4144,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"%@", [e description]);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 
 	[_database unlock];
@@ -4511,8 +4498,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context unlock];
@@ -4894,16 +4880,14 @@ static NSConditionLock *threadLock = nil;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 					[context unlock];
 				}
 				@catch (NSException *e)
 				{
-					NSLog( @"**** databaseOpenStudy exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			
@@ -5140,8 +5124,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			@catch ( NSException *e)
 			{
-				NSLog( @"findAndSelectFile exception: %@", e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 				curFile = nil;
 			}
 			
@@ -5183,8 +5166,7 @@ static NSConditionLock *threadLock = nil;
 				}
 				@catch (NSException * e) 
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 				
 				[curFile release];
@@ -5407,9 +5389,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@catch (NSException * e)
 	{
-		NSLog( @"******* BrowserController findObject Exception");
-		NSLog( @"%@", [e description]);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 
 	[context unlock];
@@ -5458,8 +5438,7 @@ static NSConditionLock *threadLock = nil;
 				
 				@catch (NSException * e)
 				{
-					NSLog( @"findObject exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			
@@ -5499,9 +5478,7 @@ static NSConditionLock *threadLock = nil;
 			
 			@catch (NSException * e)
 			{
-				NSLog( @"******* BrowserController findObject Exception - Delete");
-				NSLog( @"%@", [e description]);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[context unlock];
@@ -5691,8 +5668,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** loadNextSeries exception : %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 		
 	[context unlock];
@@ -6039,8 +6015,7 @@ static BOOL withReset = NO;
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			[volumeData release];
 			[vFileList release];
@@ -6537,8 +6512,7 @@ static BOOL withReset = NO;
 		
 		@catch( NSException *ne)
 		{
-			NSLog(@"matrixNewIcon exception: %@", [ne description]);
-			[AppController printStackTrace: ne];
+            N2LogExceptionWithStackTrace(ne);
 		}
 		
 		[_database unlock];
@@ -6578,8 +6552,7 @@ static BOOL withReset = NO;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[_database unlock];
@@ -6646,8 +6619,7 @@ static BOOL withReset = NO;
 	
 	@catch( NSException *ne)
 	{
-		NSLog( @"matrixDisplayIcons exception: %@", [ne description]);
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne);
 	}
 }
 
@@ -6691,8 +6663,7 @@ static BOOL withReset = NO;
 		
 		@catch( NSException *ne)
 		{
-			NSLog(@"buildAllThumbnails exception: %@", [ne description]);
-			[AppController printStackTrace: ne];
+            N2LogExceptionWithStackTrace(ne);
 		}
 		
 		if( studyObject)
@@ -6710,8 +6681,7 @@ static BOOL withReset = NO;
 					
 				@catch( NSException *ne)
 				{
-					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
-					[AppController printStackTrace: ne];
+                    N2LogExceptionWithStackTrace(ne);
 				}
 				
 				[context unlock];
@@ -6756,8 +6726,7 @@ static BOOL withReset = NO;
 				
 				@catch( NSException *ne)
 				{
-					NSLog(@"buildAllThumbnails exception: %@", [ne description]);
-					[AppController printStackTrace: ne];
+                    N2LogExceptionWithStackTrace(ne);
 				}
 				
 				[context unlock];
@@ -6824,8 +6793,7 @@ static BOOL withReset = NO;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context unlock];
@@ -6927,8 +6895,7 @@ static BOOL withReset = NO;
 	
 	@catch( NSException *ne)
 	{
-		NSLog(@"matrixLoadIcons exception: %@", ne.description);
-		[AppController printStackTrace: ne];
+        N2LogExceptionWithStackTrace(ne);
 	}
 	
     [pool release];
@@ -7282,8 +7249,7 @@ static BOOL withReset = NO;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"Exception in filesForDatabaseMatrixSelection: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context release];
@@ -7335,8 +7301,7 @@ static BOOL withReset = NO;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 		
 	[self.managedObjectContext unlock];
@@ -7377,8 +7342,7 @@ static BOOL withReset = NO;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[self.managedObjectContext unlock];
@@ -7590,8 +7554,7 @@ static BOOL withReset = NO;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[context unlock];
@@ -7651,8 +7614,7 @@ static BOOL withReset = NO;
         }
         @catch (NSException * e) 
         {
-            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-            [AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
         }
         
         [context unlock];
@@ -7715,7 +7677,7 @@ static BOOL needToRezoom;
 		}
 		@catch (NSException * e)
 		{
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Error",nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK",nil), nil, nil);
 		}
 	}
@@ -7790,8 +7752,7 @@ static BOOL needToRezoom;
 				}
 				@catch (NSException * e) 
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 				
 				[context unlock];
@@ -7854,8 +7815,7 @@ static BOOL needToRezoom;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 					[context unlock];
@@ -7960,8 +7920,7 @@ static BOOL needToRezoom;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"**** findStudyUID exception: %@", [e description]);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context unlock];
@@ -7991,8 +7950,7 @@ static BOOL needToRezoom;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"**** findSeriesUID exception: %@", [e description]);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context unlock];
@@ -8530,8 +8488,7 @@ static BOOL needToRezoom;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@ / Pre-Flip Data", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e/*, @"pre-flip data"*/);
 					}
 				}
 				
@@ -8713,8 +8670,7 @@ static BOOL needToRezoom;
 	}
 	@catch( NSException *e)
 	{
-		NSLog(@"Exception opening Viewer: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@\r\r%@", nil), e, [AppController printStackTrace: e]] , nil, nil, nil);
 	}
 	
@@ -9173,8 +9129,7 @@ static BOOL needToRezoom;
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"***** exception during reparsing : %@", e);
-							[AppController printStackTrace: e];
+                            N2LogExceptionWithStackTrace(e/*, @"reparsing"*/);
 						}
 						
 						[context unlock];
@@ -9247,8 +9202,7 @@ static BOOL needToRezoom;
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"***** exception during reparsing : %@", e);
-							[AppController printStackTrace: e];
+                            N2LogExceptionWithStackTrace(e/*, @"reparsing"*/);
 						}
 						
 						[context unlock];
@@ -9496,8 +9450,7 @@ static BOOL needToRezoom;
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"viewerDICOMInt exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@\r\r%@", nil), e, [AppController printStackTrace: e]] , nil, nil, nil);
 	}
 	
@@ -9566,8 +9519,7 @@ static BOOL needToRezoom;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[_database unlock];
@@ -10638,8 +10590,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	waitForRunningProcess = NO;
@@ -11174,8 +11125,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[_database unlock];
@@ -11248,7 +11198,7 @@ static NSArray*	openSubSeriesArray = nil;
              }
              @catch (NSException *e)
              {
-                 NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                 N2LogExceptionWithStackTrace(e);
              }
              
              [deleteQueue unlock];
@@ -11327,8 +11277,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** unzipFile exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[wait close];
@@ -11524,8 +11473,7 @@ static NSArray*	openSubSeriesArray = nil;
 							
 							@catch (NSException *e)
 							{
-								NSLog( @"%@", e.description);
-								[AppController printStackTrace: e];
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							
@@ -11647,8 +11595,7 @@ static NSArray*	openSubSeriesArray = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			[wait close];
 			[wait release];
@@ -11762,8 +11709,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"**** listenerAnonymizeFiles : %@", e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
@@ -12122,8 +12068,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch( NSException *e)
 	{
-		NSLog( @"****** writeMovie exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	@finally
@@ -12321,8 +12266,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					@catch ( NSException *e)
 					{
-						NSLog( @"********* Failed to generate the thumbnail : %@", e);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 					if(!thumbnail)
@@ -12372,8 +12316,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"******* pdfData exportQuicktime exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			else if( [DCMAbstractSyntaxUID isStructuredReport: [curImage valueForKeyPath: @"series.seriesSOPClassUID"]])
@@ -12460,8 +12403,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch( NSException *e)
 				{
-					NSLog( @"*** exportQuicktimeInt Loop: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 				[pool release];
 			}
@@ -12529,8 +12471,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	@catch (NSException * e)
 	{
-		NSLog( @"******** %@", [e description]);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	@finally {
@@ -12777,8 +12718,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							}
 							@catch (NSException * e)
 							{
-								NSLog( @"********** [self.userManagedObjectContext save: nil]");
-								[AppController printStackTrace: e];
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
@@ -12791,8 +12731,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			[self.userManagedObjectContext unlock];
 		}
@@ -12895,8 +12834,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 									}
 									@catch (NSException * e)
 									{
-										NSLog( @"************ [self.userManagedObjectContext save: nil]");
-										[AppController printStackTrace: e];
+                                        N2LogExceptionWithStackTrace(e);
 									}
 									
 									studiesArrayStudyInstanceUID = [[[user valueForKey: @"studies"] allObjects] valueForKey: @"studyInstanceUID"];
@@ -12912,14 +12850,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch( NSException *e)
 				{
-					NSLog( @"***** sendEmailNotification exception: %@", e);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			@catch( NSException *e)
 			{
-				NSLog( @"***** sendEmailNotification exception: %@", e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[self.userManagedObjectContext unlock];
@@ -13118,8 +13054,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@catch (NSException * e)
 		{
-			NSLog( @"importCommentsAndStatusFromDictionary exception: %@", e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[context unlock];
@@ -13413,8 +13348,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[DicomStudy dbModifyLock] unlock];
@@ -13560,10 +13494,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	self.passwordForExportEncryption = @"";
@@ -13642,8 +13573,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"**** encryptFileOrFolder exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[wait close];
@@ -13711,8 +13641,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"**** encryptFileOrFolder exception: %@", e);
-		[AppController printStackTrace: e];
+        N2LogExceptionWithStackTrace(e);
 	}
 	
 	[wait close];
@@ -13768,8 +13697,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			@catch (NSException *e)
 			{
-				NSLog( @"**** exportDICOMFile exception: %@", e);
-				[AppController printStackTrace: e];
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			filesToExport = [[[dicomFiles2Export valueForKey: @"completePath"] mutableCopy] autorelease];
@@ -14484,9 +14412,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			@catch( NSException *ne)
 			{
-				NSLog( @"Unmount exception");
-				NSLog( @"%@", [ne description]);
-				[AppController printStackTrace: ne];
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			if( needsUpdate)
@@ -14899,8 +14825,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 //		[checkBonjourUpToDateThreadLock unlock];
@@ -14958,8 +14883,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
+                        N2LogExceptionWithStackTrace(e);
 					}
 					
 //					[checkBonjourUpToDateThreadLock unlock];
@@ -15073,8 +14997,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"Generate Report: %@", [e description]);
-					[AppController printStackTrace: e];
+                    N2LogExceptionWithStackTrace(e);
 				}
 				
 //				[checkBonjourUpToDateThreadLock unlock];
@@ -15205,7 +15128,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 }
 
@@ -15337,7 +15260,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 				@catch (NSException * e)
 				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    N2LogExceptionWithStackTrace(e);
 				}
 			}
 			
@@ -15351,7 +15274,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	#endif
@@ -15785,7 +15708,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 		
@@ -16660,8 +16583,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[context unlock];

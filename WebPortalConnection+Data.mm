@@ -44,7 +44,7 @@
 #import "NSManagedObject+N2.h"
 #import "N2Operators.h"
 #import "NSImage+OsiriX.h"
-
+#import "N2Debug.h"
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -376,7 +376,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[pool release];
@@ -480,7 +480,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[self.portal.dicomDatabase unlock];
@@ -703,7 +703,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[WADOURLs appendString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@\r", image.series.study.studyInstanceUID, image.series.seriesDICOMUID, image.sopInstanceUID, @"&useOrig=true"]];
 			}
 			@catch (NSException * e) {
-				NSLog( @"***** exception in WADOURLsRetrieve - %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			response.data = [WADOURLs dataUsingEncoding: NSUTF8StringEncoding];

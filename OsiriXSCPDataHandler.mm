@@ -24,6 +24,7 @@
 #import "DicomSeries.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 #include "dctk.h"
 
@@ -171,7 +172,7 @@ extern NSManagedObjectContext *staticContext;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
@@ -710,7 +711,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		dataset->print(COUT);
 	}
 	
@@ -1716,10 +1717,7 @@ extern NSManagedObjectContext *staticContext;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	[pool release];
 	

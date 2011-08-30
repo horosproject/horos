@@ -27,6 +27,7 @@
 #include <zlib.h>
 #import "DicomDatabase.h"
 #import "RemoteDicomDatabase.h"
+#import "N2Debug.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMPix.h"
@@ -509,7 +510,7 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 #endif
 #endif

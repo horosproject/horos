@@ -20,6 +20,7 @@
 #import "DicomFile.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DicomStudy.h"
+#import "N2Debug.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dsrtypes.h"
@@ -372,7 +373,7 @@
 	}
 	@catch( NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return dict;

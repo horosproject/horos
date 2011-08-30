@@ -84,7 +84,6 @@
 		4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A841302C72300A022D9 /* N3Geometry.m */; };
 		4FC5E3F6138AB91E00CB635F /* CPRStretchedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FC5E3F4138AB91E00CB635F /* CPRStretchedOperation.h */; };
 		4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC5E3F5138AB91E00CB635F /* CPRStretchedOperation.m */; };
-		5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
 		590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
 		590BB22012A002FA009E9758 /* WebPortalStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 590BB21E12A002FA009E9758 /* WebPortalStudy.h */; };
@@ -121,6 +120,12 @@
 		5923F29313FD302D009CF12D /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5923F29013FD302D009CF12D /* BrowserBottomSplitView.h */; };
 		5923F29413FD302D009CF12D /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5923F29113FD302D009CF12D /* BrowserBottomSplitView.m */; };
 		5923F29513FD302D009CF12D /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5923F29113FD302D009CF12D /* BrowserBottomSplitView.m */; };
+		5925C9BA140D0AC800D183C9 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
+		5925C9BB140D0AD700D183C9 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
+		5925C9C0140D0EDC00D183C9 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
+		5925C9C1140D0EDD00D183C9 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
+		5925C9C2140D0EE200D183C9 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
+		5925C9C3140D0EE400D183C9 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		59263547132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 59263545132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel */; };
 		592681AB11CF4A5E00CFA81F /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
@@ -999,7 +1004,6 @@
 		AB10FA241129302A009EB238 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA221129302A009EB238 /* PopUpArrows.png */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
 		AB10FAAD11293378009EB238 /* N2Debug.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FA9F11293378009EB238 /* N2Debug.h */; };
-		AB10FAAE11293378009EB238 /* N2Debug.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA011293378009EB238 /* N2Debug.mm */; };
 		AB10FAAF11293378009EB238 /* N2Operators.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAA111293378009EB238 /* N2Operators.h */; };
 		AB10FAB011293378009EB238 /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
 		AB10FAB111293378009EB238 /* N2MinMax.h in Headers */ = {isa = PBXBuildFile; fileRef = AB10FAA311293378009EB238 /* N2MinMax.h */; };
@@ -23537,6 +23541,8 @@
 				847BE42D128BF17F00A87E98 /* t2.c in Sources */,
 				847BE42F128BF17F00A87E98 /* tcd.c in Sources */,
 				847BE431128BF17F00A87E98 /* tgt.c in Sources */,
+				5925C9C0140D0EDC00D183C9 /* NSException+N2.mm in Sources */,
+				5925C9C3140D0EE400D183C9 /* N2Debug.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24236,7 +24242,6 @@
 				A9E0E4B611182C480086A15A /* SBJsonBase.m in Sources */,
 				A9E0E4B811182C480086A15A /* SBJsonParser.m in Sources */,
 				A9E0E4BA11182C480086A15A /* SBJsonWriter.m in Sources */,
-				AB10FAAE11293378009EB238 /* N2Debug.mm in Sources */,
 				AB10FAB011293378009EB238 /* N2Operators.mm in Sources */,
 				AB10FAB211293378009EB238 /* N2MinMax.mm in Sources */,
 				AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */,
@@ -24400,7 +24405,6 @@
 				4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */,
 				4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */,
 				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
-				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
 				59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
 				4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */,
 				59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
@@ -24827,6 +24831,8 @@
 				CEFF01471286FB2000D69BB8 /* djeijg2k.cc in Sources */,
 				597BB99912A9225700D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
 				597BB9E712A923FD00D0A172 /* N2Shell.mm in Sources */,
+				5925C9BA140D0AC800D183C9 /* N2Debug.mm in Sources */,
+				5925C9BB140D0AD700D183C9 /* NSException+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25067,6 +25073,8 @@
 				847BE458128BF18200A87E98 /* t2.c in Sources */,
 				847BE45A128BF18200A87E98 /* tcd.c in Sources */,
 				847BE45C128BF18200A87E98 /* tgt.c in Sources */,
+				5925C9C1140D0EDD00D183C9 /* NSException+N2.mm in Sources */,
+				5925C9C2140D0EE200D183C9 /* N2Debug.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

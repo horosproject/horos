@@ -14,6 +14,7 @@
 
 #import "DCMNetServiceDelegate.h"
 #import "SendController.h"
+#import "N2Debug.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -368,7 +369,7 @@ static NSMutableArray *cachedServersArray = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	

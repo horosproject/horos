@@ -25,6 +25,7 @@
 #import "ROI.h"
 #import "SRAnnotation.h"
 #import "Notifications.h"
+#import "N2Debug.h"
 
 #import <DCMView.h>
 
@@ -1388,10 +1389,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	
@@ -3567,7 +3565,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		while( feof(fp) == 0)
 		{
 			fread( &bnote, BIORAD_NOTE_LENGTH, 1, fp);
-			bnote.noteText[ BIORAD_NOTE_LENGTH-1] = 0;
+			bnote.noteText[ BIORAD_NOTE_TEXT_LENGTH-1] = 0;
 			
 			NSString *noteText = [NSString stringWithCString:bnote.noteText encoding: NSISOLatin1StringEncoding];
 			//NSLog(@"noteText %@",noteText);
@@ -4666,7 +4664,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	[moc unlock];
 	
@@ -5525,7 +5523,7 @@ END_CREATE_ROIS:
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 #else
 		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
@@ -5713,7 +5711,7 @@ END_CREATE_ROIS:
 			}
 			@catch (NSException *e)
 			{
-				NSLog( @"***** exception in overlays DCMFramework : %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e/*, @"overlays dcmframework"*/);
 			}
 		}
 		
@@ -6377,7 +6375,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6425,7 +6423,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	
@@ -6455,7 +6453,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6493,7 +6491,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -8162,7 +8160,7 @@ END_CREATE_ROIS:
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 	#else
 		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
@@ -8952,7 +8950,7 @@ END_CREATE_ROIS:
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[QTMovie exitQTKitOnThread];
@@ -10159,10 +10157,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return newPix;
@@ -10735,7 +10730,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[checking unlock];
@@ -12092,7 +12087,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[checking unlock];
