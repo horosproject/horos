@@ -218,9 +218,9 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	NSString *d;
 	
 	if (![[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
-		d = [DicomImage dbPathForManagedContext: [self managedObjectContext]];
+		d = [[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath];
 	else
-		d = [[DicomImage dbPathForManagedContext: [self managedObjectContext]] stringByAppendingPathComponent:ROIDATABASE];
+		d = [[[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath] stringByAppendingPathComponent:ROIDATABASE];
 	
 	return [d stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
 	#else
@@ -840,21 +840,6 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 	[self didChangeValueForKey: @"pathString"];
 }
 
-+ (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
-{
-	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
-	NSArray *stores = [sc persistentStores];
-	
-	if( [stores count] != 1)
-	{
-		NSLog( @"*** warning [stores count] != 1 : %@", stores);
-		
-		for( id s in stores)
-			NSLog( @"%@", [[[sc URLForPersistentStore: s] path] stringByDeletingLastPathComponent]);
-	}	
-	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
-}
-
 -(NSString*) completePathWithDownload:(BOOL) download
 {
 	if( completePathCache && download == NO)
@@ -887,7 +872,7 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 		{
 			if( [path characterAtIndex: 0] != '/')
 			{
-				completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
+				completePathCache = [[DicomImage completePathForLocalPath: path directory: [[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath]] retain];
 				
 				return completePathCache;
 			}

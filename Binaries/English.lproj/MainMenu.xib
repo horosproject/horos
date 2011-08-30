@@ -3838,8 +3838,8 @@
 																				<object class="NSTableColumn" id="584867147">
 																					<string key="NSIdentifier">Source</string>
 																					<double key="NSWidth">195</double>
-																					<double key="NSMinWidth">100</double>
-																					<double key="NSMaxWidth">230</double>
+																					<double key="NSMinWidth">48</double>
+																					<double key="NSMaxWidth">1000</double>
 																					<object class="NSTableHeaderCell" key="NSHeaderCell">
 																						<int key="NSCellFlags">75628096</int>
 																						<int key="NSCellFlags2">134219776</int>
@@ -4246,7 +4246,7 @@
 																				<object class="NSTableColumn" id="973283301">
 																					<string key="NSIdentifier">all</string>
 																					<double key="NSWidth">195</double>
-																					<double key="NSMinWidth">10</double>
+																					<double key="NSMinWidth">48</double>
 																					<double key="NSMaxWidth">1000</double>
 																					<object class="NSTableHeaderCell" key="NSHeaderCell">
 																						<int key="NSCellFlags">75628096</int>
