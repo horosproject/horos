@@ -1,3 +1,8 @@
+A:
+-Remove Adding Incoming Files
+-Decompressing message, but compressing
+-Blockage: if receiving AND in an album
+
 - 3D First Slice
 
 - CPR save last curved points
