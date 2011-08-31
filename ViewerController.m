@@ -6038,8 +6038,7 @@ return YES;
 							[[pixList[ x] objectAtIndex: j] orientation: o];
 							for( int k = 0 ; k < 9; k++)
 							{
-#define SENSIBILITY 0.05
-								
+                                #define SENSIBILITY 0.05
 								if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
 								{
 									volumicData = NO;
