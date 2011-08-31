@@ -187,6 +187,7 @@ void restartSTORESCP()
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize;
 -(void)splitViewDidResizeSubviews:(NSNotification*)notification;
 -(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
+-(void)initContextualMenus;
 
 @end
 
@@ -1139,6 +1140,8 @@ static NSConditionLock *threadLock = nil;
 		
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
+            [self setupAlbumsContextualMenu];
+            
 			NSString	*DBVersion;//, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
 			
 //			DBVersion = [NSString stringWithContentsOfFile:[database modelVersionFilePath]];
@@ -7378,43 +7381,53 @@ static BOOL withReset = NO;
 	}
 }
 
-- (void) createContextualMenu // MATRIX contextual menu
+-(void)setupAlbumsContextualMenu {
+	NSMenu* albumContextual	= nil;
+    
+    if ([_database isLocal]) {
+        albumContextual = [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Albums", nil)] autorelease];
+        NSMenuItem* item;
+        
+        if (![_database isReadOnly]) {
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Album", nil) action:@selector(addAlbum:) keyEquivalent:@""] autorelease];
+            [item setTarget:self];
+            [albumContextual addItem:item];
+            
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Smart Album", nil) action:@selector(addSmartAlbum:) keyEquivalent:@""] autorelease];
+            [item setTarget:self];
+            [albumContextual addItem:item];
+            
+            [albumContextual addItem: [NSMenuItem separatorItem]];
+            
+            item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete Album", nil) action:@selector(removeAlbum:) keyEquivalent:@""] autorelease];
+            [item setTarget:self];
+            [albumContextual addItem:item];
+            
+            [albumContextual addItem: [NSMenuItem separatorItem]];
+        }
+        
+        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
+        [item setTarget: self]; // required because the drawner is the first responder
+        [albumContextual addItem:item];
+        
+        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Import Albums", nil) action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
+        [item setTarget: self]; // required because the drawner is the first responder
+        [albumContextual addItem:item];
+        
+        [albumContextual addItem: [NSMenuItem separatorItem]];
+        
+        item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create Default Albums", nil) action:@selector( defaultAlbums:) keyEquivalent:@""] autorelease];
+        [item setTarget: self]; // required because the drawner is the first responder
+        [albumContextual addItem:item];
+    }
+	
+	[albumTable setMenu: albumContextual];   
+}
+
+- (void) initContextualMenus // MATRIX contextual menu
 {
 	NSMenuItem		*item;
 	
-	NSMenu *albumContextual	= [[[NSMenu alloc] initWithTitle: NSLocalizedString(@"Albums", nil)] autorelease];
-
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Album", nil) action:@selector(addAlbum:) keyEquivalent:@""] autorelease];
-	[item setTarget:self];
-	[albumContextual addItem:item];
-	
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add Smart Album", nil) action:@selector(addSmartAlbum:) keyEquivalent:@""] autorelease];
-	[item setTarget:self];
-	[albumContextual addItem:item];
-    
-	[albumContextual addItem: [NSMenuItem separatorItem]];
-
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete Album", nil) action:@selector(removeAlbum:) keyEquivalent:@""] autorelease];
-	[item setTarget:self];
-	[albumContextual addItem:item];
-
-    [albumContextual addItem: [NSMenuItem separatorItem]];
-
-    item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Save Albums", nil) action:@selector( saveAlbums:) keyEquivalent:@""] autorelease];
-	[item setTarget: self]; // required because the drawner is the first responder
-	[albumContextual addItem:item];
-	
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Import Albums", nil) action:@selector( addAlbums:) keyEquivalent:@""] autorelease];
-	[item setTarget: self]; // required because the drawner is the first responder
-	[albumContextual addItem:item];
-	
-	[albumContextual addItem: [NSMenuItem separatorItem]];
-	
-	item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create Default Albums", nil) action:@selector( defaultAlbums:) keyEquivalent:@""] autorelease];
-	[item setTarget: self]; // required because the drawner is the first responder
-	[albumContextual addItem:item];
-	
-	[albumTable setMenu: albumContextual];
 
     AlbumCell* cell = [[[AlbumCell alloc] init] autorelease];
     [cell setImagePosition:NSImageLeft];
@@ -7604,27 +7617,19 @@ static BOOL withReset = NO;
         NSString			*name;
         long				i = 2;
         
-        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-        [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-        
-        NSManagedObjectContext *context = self.managedObjectContext;
-        
-        [context lock];
+        [_database lock];
         
         @try 
         {
-            NSError *error = nil;
-            NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+            NSArray *albumsArray = [_database objectsForEntity:_database.albumEntity];
             
-            name = [newAlbumName stringValue];
-            while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-            {
+            NSString* name = [newAlbumName stringValue];
+            while ( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound) {
                 name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
             }
             
-            NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-            [album setValue:name forKey:@"name"];
+            DicomAlbum* album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext:_database.managedObjectContext];
+            album.name = name;
             
             [_database save:NULL];
             
@@ -7634,8 +7639,9 @@ static BOOL withReset = NO;
         {
             N2LogExceptionWithStackTrace(e);
         }
-        
-        [context unlock];
+        @finally {
+            [_database unlock];
+        }
         
         [self outlineViewRefresh];
     }
@@ -10424,7 +10430,7 @@ static NSArray*	openSubSeriesArray = nil;
 		//	[databaseOutline setGridColor:[NSColor darkGrayColor]];
 		//	[databaseOutline setGridStyleMask:NSTableViewSolidHorizontalGridLineMask];
 		
-		[self createContextualMenu];
+		[self initContextualMenus];
 		// opens a port for interapplication communication	
 		[[NSConnection defaultConnection] registerName:@"OsiriX"];
 		[[NSConnection defaultConnection] setRootObject:self];

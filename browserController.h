@@ -498,7 +498,6 @@ extern NSString* O2AlbumDragType;
 - (NSString*) askPassword;
 - (void) resetToLocalDatabase;
 - (void) switchToDefaultDBIfNeeded;
-- (void) createContextualMenu;
 - (void) checkIncomingThread:(id) sender __deprecated;
 - (void) checkIncoming:(id) sender __deprecated;
 - (void) checkIncomingNow:(id) sender __deprecated;

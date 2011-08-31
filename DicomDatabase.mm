@@ -665,7 +665,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
     [context lock];
     @try {
-        return [context executeFetchRequest:req error:NULL];
+        NSArray* albums = [context executeFetchRequest:req error:NULL];
+        NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+        return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
@@ -676,9 +678,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSArray*)albums {
-	NSArray* albums = [DicomDatabase albumsInContext:self.managedObjectContext];
-	NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-	return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
+	return [DicomDatabase albumsInContext:self.managedObjectContext];
 }
 
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string {
