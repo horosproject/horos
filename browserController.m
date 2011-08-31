@@ -2669,8 +2669,7 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	DicomDatabase* database = [self.database independentDatabase];
-	if (database) {
-        [database lock];
+	if (database)
         @try {
             if(/* displayEmptyDatabase == NO &&-*/ computeNumberOfStudiesForAlbums == NO) {
                 computeNumberOfStudiesForAlbums = YES;
@@ -2723,11 +2722,9 @@ static NSConditionLock *threadLock = nil;
         @catch (NSException * e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
-            [database unlock];
             [database release];
             [pool release];
         }
-    }
 }
 
 - (void)delayedRefreshAlbums {
@@ -4657,10 +4654,13 @@ static NSConditionLock *threadLock = nil;
 {
 	[_database lock];
 	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+    static BOOL dontrecurse = NO;
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask && !dontrecurse)
 	{
+        dontrecurse = YES;
 		for( id item in [self databaseSelection])
 			[databaseOutline expandItem: item];
+        dontrecurse = NO;
 	}
 	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
@@ -10435,6 +10435,8 @@ static NSArray*	openSubSeriesArray = nil;
 		//	[databaseOutline setGridStyleMask:NSTableViewSolidHorizontalGridLineMask];
 		
 		[self initContextualMenus];
+        [self setupAlbumsContextualMenu];
+        
 		// opens a port for interapplication communication	
 		[[NSConnection defaultConnection] registerName:@"OsiriX"];
 		[[NSConnection defaultConnection] setRootObject:self];
