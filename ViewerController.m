@@ -5994,32 +5994,48 @@ return YES;
 						}
 					}
                     
-//                    if( numberOfNonVolumicImages == 1 && (firstWrongImage == 0 || firstWrongImage == [pixList[ x] count]-1)) // First or last image with different matrix
-//                    {
-//                        NSMutableArray *newFileList = [NSMutableArray arrayWithArray: fileList[ x]];
-//                        NSMutableArray *newPixList = [NSMutableArray arrayWithArray: pixList[ x]];
-//                        NSData *newVolumeData = [NSData dataWithBytesNoCopy:  length:<#(NSUInteger)#> freeWhenDone:];
-//                        
-//                        recompute ppixList fImage;
-//                        
-//                        [newFileList removeObjectAtIndex: firstWrongImage];
-//                        [newPixList removeObjectAtIndex: firstWrongImage];
-//                        
-//                        [self changeImageData: newFileList :newPixList :v :NO];
-//                        
-//                        loadingPercentage = 1;
-//                        [self computeInterval];
-//                        [self setWindowTitle:self];
-//                        
-//                        [imageView setIndex: 0];
-//                        [imageView sendSyncMessage: 0];
-//                        
-//                        [self adjustSlider];
-//                        
-//                        postprocessed = YES;
-//                        
-//                        return;
-//                    }
+                    if( tryToCorrect && numberOfNonVolumicImages == 1 && (firstWrongImage == 0 || firstWrongImage == [pixList[ x] count]-1)) // First or last image with different matrix
+                    {
+                        NSMutableArray *newFileList = [NSMutableArray array];
+                        NSMutableArray *newPixList = [NSMutableArray array];
+                        
+                        long newSize = pw * ph * ([pixList[ x] count]-1) * sizeof( float);
+                        
+                        float *newPtr = (float*) malloc( newSize);
+                        
+                        NSData *newVolumeData = [NSData dataWithBytesNoCopy: newPtr length: newSize freeWhenDone: YES];
+                        
+                        for( int n = 0; n < [pixList[ x] count]; n++)
+                        {
+                            if( firstWrongImage != n)
+                            {
+                                DCMPix *newPix = [[[pixList[ x] objectAtIndex: n] copy] autorelease];
+                                
+                                memcpy( newPtr, [newPix fImage], pw * ph * sizeof( float));
+                                
+                                [newPix setfImage: newPtr];
+                                newPtr += pw * ph;
+                                
+                                [newPixList addObject: newPix];
+                                [newFileList addObject: [fileList[ x] objectAtIndex: n]];
+                            }
+                        }
+                        
+                        [self changeImageData: newPixList :newFileList :newVolumeData :NO];
+                        
+                        loadingPercentage = 1;
+                        [self computeInterval];
+                        [self setWindowTitle:self];
+                        
+                        [imageView setIndex: 0];
+                        [imageView sendSyncMessage: 0];
+                        
+                        [self adjustSlider];
+                        
+                        postprocessed = YES;
+                        
+                        return NO;
+                    }
 				}
 				else volumicData = NO;
 			}
