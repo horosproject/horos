@@ -5961,6 +5961,7 @@ return YES;
 					int firstWrongImage = -1;
                     int numberOfNonVolumicImages = 0;
                     
+                    // Check for non continuous matrix
 					for( int j = 0 ; j < [pixList[ x] count]; j++)
 					{
 						if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey: @"width"] intValue] || ph != [[[fileList[ x] objectAtIndex: j] valueForKey: @"height"] intValue])
@@ -5970,27 +5971,6 @@ return YES;
                             
                             if( firstWrongImage == -1)
                                 firstWrongImage = j;
-						}
-                        
-						if( volumicData)
-						{
-							float o[ 9];
-							[[pixList[ x] objectAtIndex: j] orientation: o];
-							for( int k = 0 ; k < 9; k++)
-							{
-								#define SENSIBILITY 0.05
-								
-								if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
-								{
-									volumicData = NO;
-									
-									if( j == 0)
-										firstImage = YES;
-								
-									if( j == [pixList[ x] count] -1)
-										lastImage = YES;
-								}
-							}
 						}
 					}
                     
@@ -6002,40 +5982,77 @@ return YES;
                         long newSize = pw * ph * ([pixList[ x] count]-1) * sizeof( float);
                         
                         float *newPtr = (float*) malloc( newSize);
-                        
-                        NSData *newVolumeData = [NSData dataWithBytesNoCopy: newPtr length: newSize freeWhenDone: YES];
-                        
-                        for( int n = 0; n < [pixList[ x] count]; n++)
+                        if( newPtr)
                         {
-                            if( firstWrongImage != n)
+                            NSData *newVolumeData = [NSData dataWithBytesNoCopy: newPtr length: newSize freeWhenDone: YES];
+                            
+                            for( int n = 0; n < [pixList[ x] count]; n++)
                             {
-                                DCMPix *newPix = [[[pixList[ x] objectAtIndex: n] copy] autorelease];
-                                
-                                memcpy( newPtr, [newPix fImage], pw * ph * sizeof( float));
-                                
-                                [newPix setfImage: newPtr];
-                                newPtr += pw * ph;
-                                
-                                [newPixList addObject: newPix];
-                                [newFileList addObject: [fileList[ x] objectAtIndex: n]];
+                                if( firstWrongImage != n)
+                                {
+                                    DCMPix *newPix = [[[pixList[ x] objectAtIndex: n] copy] autorelease];
+                                    
+                                    memcpy( newPtr, [newPix fImage], pw * ph * sizeof( float));
+                                    
+                                    [newPix setfImage: newPtr];
+                                    newPtr += pw * ph;
+                                    
+                                    [newPixList addObject: newPix];
+                                    [newFileList addObject: [fileList[ x] objectAtIndex: n]];
+                                }
                             }
+                            
+                            [self changeImageData: newPixList :newFileList :newVolumeData :NO];
+                            
+                            loadingPercentage = 1;
+                            [self computeInterval];
+                            [self setWindowTitle:self];
+                            
+                            [imageView setIndex: 0];
+                            [imageView sendSyncMessage: 0];
+                            
+                            [self adjustSlider];
+                            
+                            postprocessed = YES;
                         }
-                        
-                        [self changeImageData: newPixList :newFileList :newVolumeData :NO];
-                        
-                        loadingPercentage = 1;
-                        [self computeInterval];
-                        [self setWindowTitle:self];
-                        
-                        [imageView setIndex: 0];
-                        [imageView sendSyncMessage: 0];
-                        
-                        [self adjustSlider];
-                        
-                        postprocessed = YES;
-                        
-                        return NO;
                     }
+                    
+					[[pixList[ x] objectAtIndex: 1] orientation: orientation];
+					
+					pw = [[[fileList[ x] objectAtIndex: [pixList[ x] count]/2] valueForKey: @"width"] intValue];
+					ph = [[[fileList[ x] objectAtIndex: [pixList[ x] count]/2] valueForKey: @"height"] intValue];
+					firstWrongImage = -1;
+                    numberOfNonVolumicImages = 0;
+                    
+                     // Check for non same orientation
+                    for( int j = 0 ; j < [pixList[ x] count]; j++)
+					{
+						if( pw != [[[fileList[ x] objectAtIndex: j] valueForKey: @"width"] intValue] || ph != [[[fileList[ x] objectAtIndex: j] valueForKey: @"height"] intValue])
+                        {
+							volumicData = NO;
+						}
+                        
+						if( volumicData)
+						{
+							float o[ 9];
+							[[pixList[ x] objectAtIndex: j] orientation: o];
+							for( int k = 0 ; k < 9; k++)
+							{
+#define SENSIBILITY 0.05
+								
+								if( fabs( o[ k] - orientation[ k]) > SENSIBILITY)
+								{
+									volumicData = NO;
+									
+									if( j == 0)
+										firstImage = YES;
+                                    
+									if( j == [pixList[ x] count] -1)
+										lastImage = YES;
+								}
+							}
+						}
+					}
 				}
 				else volumicData = NO;
 			}
