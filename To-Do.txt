@@ -1,6 +1,9 @@
-- 3D First Slice
+A:
+- Decompressing message, but compressing
+- Blockage: if receiving AND in an album
 
 - CPR save last curved points
+- CPR : adapt coloscopy path algo to CPR vessels
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)

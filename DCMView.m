@@ -7424,40 +7424,42 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerRight"];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:-_stringSize.height] forKey:@"LowerMiddle"];
 		
-		int j, k, increment;
-		NSEnumerator *enumerator;
-		id annot;
-		
-		NSArray *orientationPositionKeys = [NSArray arrayWithObjects:@"TopMiddle", @"MiddleLeft", @"MiddleRight", @"LowerMiddle", nil];
-		BOOL orientationDrawn = NO;
-		
-		for (k=0; k<[orientationPositionKeys count]; k++)
-		{
-			NSArray *annotations = [annotationsDictionary objectForKey:[orientationPositionKeys objectAtIndex:k]];
-			xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
-			yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
-			increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
-			
-			if([[orientationPositionKeys objectAtIndex:k] hasPrefix:@"Lower"])
-				enumerator = [annotations reverseObjectEnumerator];
-			else
-				enumerator = [annotations objectEnumerator];
-			
-			while ((annot = [enumerator nextObject]))
-			{
-				for (j=0; j<[annot count]; j++)
-				{
-					if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
-					{
-						if(!orientationDrawn)
-						{
-							[self drawOrientation: size];
-						}
-						orientationDrawn = YES;
-					}
-				}
-			}
-		}
+        
+        int j, k, increment;
+        NSArray *orientationPositionKeys = [NSArray arrayWithObjects:@"TopMiddle", @"MiddleLeft", @"MiddleRight", @"LowerMiddle", nil];
+        BOOL orientationDrawn = NO;
+        {
+           id annot;
+           NSEnumerator *enumerator;
+            
+            for (k=0; k<[orientationPositionKeys count]; k++)
+            {
+                NSArray *annotations = [annotationsDictionary objectForKey:[orientationPositionKeys objectAtIndex:k]];
+                xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                
+                if([[orientationPositionKeys objectAtIndex:k] hasPrefix:@"Lower"])
+                    enumerator = [annotations reverseObjectEnumerator];
+                else
+                    enumerator = [annotations objectEnumerator];
+                
+                while ((annot = [enumerator nextObject]))
+                {
+                    for (j=0; j<[annot count]; j++)
+                    {
+                        if([[annot objectAtIndex:j] isEqualToString:@"Orientation"])
+                        {
+                            if(!orientationDrawn)
+                            {
+                                [self drawOrientation: size];
+                            }
+                            orientationDrawn = YES;
+                        }
+                    }
+                }
+            }
+        }
 		
 		if(orientationDrawn)
 		{
