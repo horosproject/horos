@@ -91,7 +91,9 @@ extern NSString* O2AlbumDragType;
     
 	BOOL					setDCMDone, dontUpdatePreviewPane;
 	
-	NSMutableArray			*albumNoOfStudiesCache;
+	NSMutableArray*         _albumNoOfStudiesCache;
+    NSArray*                _cachedAlbums;
+    NSManagedObjectContext* _cachedAlbumsContext;
 	
  //   volatile BOOL			bonjourDownloading;
 	
@@ -295,8 +297,7 @@ extern NSString* O2AlbumDragType;
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
-- (NSArray*) albums __deprecated;
-+ (NSArray*) albumsInContext:(NSManagedObjectContext*)context __deprecated;
+- (NSArray*) albums;
 - (BOOL) shouldTerminate: (id) sender;
 - (void) databaseOpenStudy: (NSManagedObject*) item;
 - (IBAction) databaseDoublePressed:(id)sender;

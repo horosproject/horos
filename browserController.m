@@ -134,8 +134,6 @@ static int DefaultFolderSizeForDB = 0; // TODO: change
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
-//static NSArray *cachedAlbumsArray = nil;
-//static NSManagedObjectContext *cachedAlbumsManagedObjectContext = nil;
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
@@ -183,17 +181,14 @@ void restartSTORESCP()
 
 @interface BrowserController ()
 
-- (void)setDBWindowTitle;
+-(void)setDBWindowTitle;
 -(void)reduceCoreDataFootPrint;
-- (void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
+-(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize;
-- (void)splitViewDidResizeSubviews: (NSNotification *)notification;
+-(void)splitViewDidResizeSubviews:(NSNotification*)notification;
+-(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
 
 @end
-
-/*@interface NSImage (ProportionalScaling)
-- (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize; // Moved to NSImage+N2
-@end*/
 
 @implementation BrowserController
 
@@ -320,12 +315,26 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 	return DefaultFolderSizeForDB;
 }
 
-+ (NSArray*) albumsInContext:(NSManagedObjectContext*)context { // __deprecated
-	return [DicomDatabase albumsInContext:context];
+-(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
+	@synchronized (self) {
+		if (_cachedAlbums && _cachedAlbumsContext && _cachedAlbumsContext == context)
+			return [[_cachedAlbums copy] autorelease];
+	}
+
+	NSArray* r = [DicomDatabase albumsInContext:context];
+    
+    if (context == _database.managedObjectContext)
+        @synchronized (self) {
+            [_cachedAlbums release];
+            _cachedAlbums = [r retain];
+            _cachedAlbumsContext = _database.managedObjectContext;
+        }
+    
+    return [[r copy] autorelease];
 }
 
--(NSArray*)albums { // __deprecated
-	return [_database albums];
+-(NSArray*)albums {
+	return [self albumsInContext:_database.managedObjectContext];
 }
 
 static NSConditionLock *threadLock = nil;
@@ -1047,6 +1056,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+-(void)_observeDatabaseInvalidateAlbumsCacheNotification:(NSNotification*)notification {
+    @synchronized (self) {
+        _cachedAlbumsContext = nil;
+    }
+}
+
 -(void)resetToLocalDatabase {
 	[self setDatabase:[DicomDatabase activeLocalDatabase]];
 }
@@ -1120,6 +1135,7 @@ static NSConditionLock *threadLock = nil;
 
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:@"InvalidateAlbumsCache" object:_database];
 		
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
@@ -1229,8 +1245,8 @@ static NSConditionLock *threadLock = nil;
 //			while( computeNumberOfStudiesForAlbums)
 //				[NSThread sleepForTimeInterval: 0.1];
 			
-			@synchronized(albumNoOfStudiesCache) {
-				[albumNoOfStudiesCache removeAllObjects];
+			@synchronized(_albumNoOfStudiesCache) {
+				[_albumNoOfStudiesCache removeAllObjects];
 			}
 			
 			//[self setFixedDocumentsDirectory];
@@ -2301,6 +2317,10 @@ static NSConditionLock *threadLock = nil;
 
 - (NSString*) outlineViewRefresh		// This function creates the 'root' array for the outlineView
 {
+    @synchronized (self) {
+		_cachedAlbumsContext = nil;
+	}
+
 	if( databaseOutline == nil) return nil;
 	if( loadingIsOver == NO) return nil;
 	
@@ -2445,9 +2465,9 @@ static NSConditionLock *threadLock = nil;
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
 		
-		@synchronized( albumNoOfStudiesCache) {
-			if ([albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
-				[albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]];
+		@synchronized (_albumNoOfStudiesCache) {
+			if ([_albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
+				[_albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]];
 		}
 	}
 	
@@ -2641,10 +2661,9 @@ static NSConditionLock *threadLock = nil;
 	if (![NSThread isMainThread])
 		pool = [[NSAutoreleasePool alloc] init];
 	
-//	@synchronized( [BrowserController currentBrowser])
-//	{
-//		cachedAlbumsManagedObjectContext = nil;
-//	}
+	@synchronized (self) {
+		_cachedAlbumsContext = nil;
+	}
 	
 	DicomDatabase* database = [self.database independentDatabase];
 	if (database) @try {
@@ -2664,7 +2683,7 @@ static NSConditionLock *threadLock = nil;
 			
 			[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
 			
-			NSArray *albums = [database albums];
+			NSArray *albums = [self albumsInContext:database.managedObjectContext];
 			
 			for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
 			{
@@ -2684,9 +2703,9 @@ static NSConditionLock *threadLock = nil;
 					[NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]];
 			}
 			
-			@synchronized(albumNoOfStudiesCache) {
-				[albumNoOfStudiesCache removeAllObjects];
-				[albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
+			@synchronized(_albumNoOfStudiesCache) {
+				[_albumNoOfStudiesCache removeAllObjects];
+				[_albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
 			}
 			
 			[self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
@@ -2710,9 +2729,9 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void)refreshAlbums {
-	//@synchronized (self) {
-	//	cachedAlbumsManagedObjectContext = nil;
-	//}
+	@synchronized (self) {
+		_cachedAlbumsContext = nil;
+	}
 
 	[NSThread detachNewThreadSelector: @selector(computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
 }
@@ -3179,10 +3198,9 @@ static NSConditionLock *threadLock = nil;
 {
 //	NSLog(@"outlineViewSelectionDidChange");
 	
-//	@synchronized( [BrowserController currentBrowser])
-//	{
-//		cachedAlbumsManagedObjectContext = nil;
-//	}
+	@synchronized (self) {
+		_cachedAlbumsContext = nil;
+	}
 	
 	if( loadingIsOver == NO) return;
 	
@@ -6932,7 +6950,7 @@ static BOOL withReset = NO;
         proposedPosition = rcs*hcells-oMatrix.intercellSpacing.width;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
-        proposedPosition += scrollbarWidth;
+        proposedPosition += scrollbarWidth+1;
         
         return proposedPosition;
     }
@@ -7742,6 +7760,10 @@ static BOOL needToRezoom;
 					
 					[album setValue:[editSmartAlbumQuery stringValue] forKey:@"predicateString"];
 					
+                    @synchronized (self) {
+                        _cachedAlbumsContext = nil;
+                    }
+                    
 					[_database save:NULL];
 					
 					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
@@ -7827,7 +7849,7 @@ static BOOL needToRezoom;
 }
 - (NSArray*) albumArray
 {
-	NSArray *albumsArray = [_database albums];
+	NSArray *albumsArray = [self albumsInContext:_database.managedObjectContext];
 	
 	return [[NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray: albumsArray];
 }
@@ -7886,14 +7908,14 @@ static BOOL needToRezoom;
         }
         
         NSString *noOfStudies = nil;
-		@synchronized( albumNoOfStudiesCache) {
-			if( albumNoOfStudiesCache == nil || rowIndex >= [albumNoOfStudiesCache count] || [[albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES) {
+		@synchronized (_albumNoOfStudiesCache) {
+			if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES) {
                     [self refreshAlbums];
 					// It will be computed in a separate thread, and then displayed later.
 					noOfStudies = @"#";
 				}
 				else
-					noOfStudies = [[[albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
+					noOfStudies = [[[_albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
         }
 
         [aCell setRightText:noOfStudies];
@@ -9910,7 +9932,7 @@ static NSArray*	openSubSeriesArray = nil;
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		
-		albumNoOfStudiesCache = [[NSMutableArray alloc] init];
+		_albumNoOfStudiesCache = [[NSMutableArray alloc] init];
 //		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
 //		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 //		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -15165,8 +15187,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	[self flagsChanged: 0L];
 	
-	if( albumNoOfStudiesCache.count == 0)
-		[self refreshAlbums];
+    @synchronized (_albumNoOfStudiesCache) {
+        if (_albumNoOfStudiesCache.count == 0)
+            [self refreshAlbums];
+    }
 }
 
 - (void) flagsChanged:(NSEvent *)event

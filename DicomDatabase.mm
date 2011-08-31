@@ -1644,10 +1644,7 @@ enum { Compress, Decompress };
 											album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
 											[album setValue:@"other" forKey:@"name"];
 											
-											//@synchronized( [BrowserController currentBrowser])
-											//											{
-											//												cachedAlbumsManagedObjectContext = nil;
-											//											}
+                                            [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:@"InvalidateAlbumsCache", self, [NSDictionary dictionary], nil] waitUntilDone:NO];
 										}
 									}
 									
