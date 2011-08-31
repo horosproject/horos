@@ -5924,7 +5924,7 @@ static BOOL withReset = NO;
 		}
 		else if([[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		{
-			NSArray *images = [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]];
+			NSArray *images = matrixViewArray.count? [self imagesArray: [matrixViewArray objectAtIndex: [cell tag]]] : nil;
 			
 			if( [images count])
 			{
