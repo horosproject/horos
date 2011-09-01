@@ -1,6 +1,5 @@
 A:
 - Decompressing message, but compressing
-- Blockage: if receiving AND in an album
 - Rebuild SQL Index
 
 - CPR save last curved points
