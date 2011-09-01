@@ -1,5 +1,4 @@
 A:
-- Rebuild SQL Index
 
 - CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels

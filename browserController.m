@@ -1898,9 +1898,8 @@ static NSConditionLock *threadLock = nil;
 	[NSApp endSheet: rebuildWindow];
 	[rebuildWindow orderOut: self];
 	
-	[self waitForRunningProcesses];
-	
 	if ([sender tag]) {
+        [self waitForRunningProcesses];
 		switch ([rebuildType selectedTag]) {
 			case 0:
 				[self initiateRebuildDatabase:YES];
@@ -1995,14 +1994,15 @@ static NSConditionLock *threadLock = nil;
 	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(rebuildSqlThread:) object:database];
 	thread.name = NSLocalizedString(@"Rebuilding database index...", nil);
 	
-	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
 	[thread start];
+    [thread startModalForWindow:self.window];
 	
 	return [thread autorelease];
 }
 
 -(void)_rebuildSqlSheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
 	[NSApp endSheet:sheet];
+	[sheet orderOut:self];
 	if (returnCode == NSAlertDefaultReturn)
 		[self initiateRebuildSql];
 }
@@ -2700,9 +2700,6 @@ static NSConditionLock *threadLock = nil;
                     } else
                         [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:album.studies.count]] : @"#"];
                 }
-                
-                NSLog(@"_computeNumberOfStudiesForAlbumsThread -->\n%@", NoOfStudies);
-
                 
                 @synchronized(_albumNoOfStudiesCache) {
                     [_albumNoOfStudiesCache removeAllObjects];
@@ -11163,7 +11160,10 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		NSLog(@"delete Queue end");
 	}
-	else [deleteInProgress unlock];
+	else {
+        [deleteQueue unlock];
+        [deleteInProgress unlock];
+    }
 	
 	[pool release];
 }
