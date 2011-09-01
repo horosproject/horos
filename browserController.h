@@ -46,7 +46,10 @@ extern NSString* O2AlbumDragType;
 *	and manges the database
 */
 
-@interface BrowserController : NSWindowController <NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate>   //NSObject
+@interface BrowserController : NSWindowController
+#if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
+<NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate>   //NSObject
+#endif
 {
 //	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
 //    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
@@ -235,6 +238,8 @@ extern NSString* O2AlbumDragType;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
+    BOOL                            _computingNumberOfStudiesForAlbums;
+    
 //	NSArray							*mountedVolumes;
 	
 	IBOutlet NSTableView* _activityTableView;//AtableView;

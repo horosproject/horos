@@ -221,13 +221,38 @@
     
     [self.managedObjectContext lock];
     @try {
-        return [self.managedObjectContext executeFetchRequest:req error:NULL];
+        return [self.managedObjectContext executeFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
 		[self.managedObjectContext unlock];
     }
 	return nil;
+}
+
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e {
+	return [self countObjectsForEntity:e predicate:nil error:NULL];
+}
+
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
+	return [self countObjectsForEntity:e predicate:p error:NULL];
+}
+
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	req.entity = e;
+	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
+    
+    [self.managedObjectContext lock];
+    @try {
+        return [self.managedObjectContext countForFetchRequest:req error:err];
+    } @catch (NSException* e) {
+        N2LogException(e);
+    } @finally {
+		[self.managedObjectContext unlock];
+    }
+    
+	return 0;
 }
 
 -(id)newObjectForEntity:(NSEntityDescription*)entity {

@@ -47,6 +47,9 @@
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err;
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e;
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
+-(NSUInteger)countObjectsForEntity:(NSEntityDescription*)entity predicate:(NSPredicate*)p error:(NSError**)err;
 -(id)newObjectForEntity:(NSEntityDescription*)entity;
 
 -(BOOL)isVolatile;

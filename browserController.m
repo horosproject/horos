@@ -241,7 +241,6 @@ static NSArray*	statesArray = nil;
 
 static NSNumberFormatter* decimalNumberFormatter = NULL;
 static volatile BOOL waitForRunningProcess = NO;
-static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 
 +(void)initialize {
 	decimalNumberFormatter = [[NSNumberFormatter alloc] init];
@@ -1245,7 +1244,7 @@ static NSConditionLock *threadLock = nil;
 //			[managedObjectContext release];
 //			managedObjectContext = nil;
 			
-//			while( computeNumberOfStudiesForAlbums)
+//			while (_computingNumberOfStudiesForAlbums)
 //				[NSThread sleepForTimeInterval: 0.1];
 			
 			@synchronized(_albumNoOfStudiesCache) {
@@ -2658,7 +2657,7 @@ static NSConditionLock *threadLock = nil;
 	[albumTable reloadData];
 }
 
-- (void) computeNumberOfStudiesForAlbums
+- (void)_computeNumberOfStudiesForAlbumsThread
 {
 	NSAutoreleasePool* pool = nil;
 	if (![NSThread isMainThread])
@@ -2673,50 +2672,42 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* database = [self.database independentDatabase];
 	if (database)
         @try {
-            if(/* displayEmptyDatabase == NO &&-*/ computeNumberOfStudiesForAlbums == NO) {
-                computeNumberOfStudiesForAlbums = YES;
+            if(/* displayEmptyDatabase == NO &&-*/ _computingNumberOfStudiesForAlbums == NO) {
+                _computingNumberOfStudiesForAlbums = YES;
                 
     //			NSManagedObjectContext* context = [database independentContext];
                 NSMutableArray* NoOfStudies = [NSMutableArray array];
-                NSError *error = nil;
                 
-                NSArray *studiesArray = nil;
+                NSInteger count = -1;
                 @try {
-                    studiesArray = [database objectsForEntity:database.studyEntity];
+                    count = [database countObjectsForEntity:database.studyEntity];
                 } @catch (NSException* e) {
                     N2LogExceptionWithStackTrace(e);
                 }
+                [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
                 
-                [NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
-                
-                NSArray *albums = [self albumsInContext:database.managedObjectContext];
-                
-                for( int rowIndex = 0 ; rowIndex < [albums count]; rowIndex++)
-                {
-                    NSManagedObject	*object = [albums objectAtIndex: rowIndex];
-                    
-                    if( [[object valueForKey:@"smartAlbum"] boolValue] == YES)
-                    {
+                NSArray* albums = [database albums];
+                for (DicomAlbum* album in albums) {
+                    if (album.smartAlbum.boolValue == YES) {
+                        count = -1;
                         @try {
-                            NSArray *studiesArray = [database objectsForEntity:database.studyEntity predicate:[self smartAlbumPredicate:object]];
-                            [NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]];
-                        } @catch( NSException *e) {
+                            count = [database countObjectsForEntity:database.studyEntity predicate:[self smartAlbumPredicate:album]];
+                        } @catch (NSException* e) {
                             N2LogExceptionWithStackTrace(e);
-                            [NoOfStudies addObject: @"err"];
                         }
-                    }
-                    else
-                        [NoOfStudies addObject: [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[[object valueForKey:@"studies"] count]]]];
+                        [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
+                    } else
+                        [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:album.studies.count]] : @"#"];
                 }
                 
                 @synchronized(_albumNoOfStudiesCache) {
                     [_albumNoOfStudiesCache removeAllObjects];
-                    [_albumNoOfStudiesCache addObjectsFromArray: NoOfStudies];
+                    [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
                 }
                 
                 [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
                 
-                computeNumberOfStudiesForAlbums = NO;
+                _computingNumberOfStudiesForAlbums = NO;
             }
             else
                 [self performSelectorOnMainThread: @selector(delayedRefreshAlbums) withObject: nil waitUntilDone: NO];
@@ -2730,8 +2721,8 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void)delayedRefreshAlbums {
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(computeNumberOfStudiesForAlbums) object:nil];
-	[self performSelector:@selector(computeNumberOfStudiesForAlbums) withObject:nil afterDelay:20];
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_computeNumberOfStudiesForAlbumsThread) object:nil];
+	[self performSelector:@selector(_computeNumberOfStudiesForAlbumsThread) withObject:nil afterDelay:20];
 }
 
 - (void)refreshAlbums {
@@ -2739,7 +2730,7 @@ static NSConditionLock *threadLock = nil;
 		_cachedAlbumsContext = nil;
 	}
 
-	[NSThread detachNewThreadSelector: @selector(computeNumberOfStudiesForAlbums) toTarget:self withObject: nil];
+	[NSThread detachNewThreadSelector: @selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
 }
 
 - (void)refreshDatabase: (id)sender
@@ -8119,6 +8110,8 @@ static BOOL needToRezoom;
 				[(RemoteDicomDatabase*)_database addStudies:studiesToAdd toAlbum:album];
 			}
 		}
+        
+        [self refreshAlbums];
 		
 		return YES;
 	}

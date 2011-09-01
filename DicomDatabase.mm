@@ -926,7 +926,7 @@ enum { Compress, Decompress };
 	NSMutableArray* retArray = [NSMutableArray array];
 
 	NSError* error = nil;
-	
+    
 	NSString* errorsDirPath = self.errorsDirPath;
 	NSString* dataDirPath = self.dataDirPath;
 	NSString* reportsDirPath = self.reportsDirPath;
