@@ -227,7 +227,6 @@
     } @finally {
 		[self.managedObjectContext unlock];
     }
-    
 	return nil;
 }
 

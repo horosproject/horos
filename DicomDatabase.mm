@@ -289,7 +289,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return dict;
 }*/
 
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c { // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
+{ 
 	p = [DicomDatabase baseDirPathForPath:p];
 //	NSLog(@"DicomDatabase initWithPath:%@", p);
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
@@ -307,7 +308,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (!_dataBaseDirPath) _dataBaseDirPath = p;
 	[_dataBaseDirPath retain];
 	
-	[DicomDatabase knowAbout:self];
+    if( [NSThread isMainThread]) // This should be : if( independant context from existing context) -> we don't need all these functions -> major slowdown, it resets albumsCache, ...
+        [DicomDatabase knowAbout:self];
 	
 	// post-init
 	
@@ -351,13 +353,16 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	if (isNewFile)
 		[self addDefaultAlbums];
-	[self modifyDefaultAlbums];
+    
+    if( [NSThread isMainThread]) // This should be : if( independant context from existing context) -> we don't need all these functions -> major slowdown, it resets albumsCache, ...
+	{
+        [self modifyDefaultAlbums];
+        [self initRouting];
+        [self initClean];
 	
-	[self initRouting];
-	[self initClean];
-	
-	[DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
-	
+        [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
+	}
+    
 	return self;
 }
 
@@ -409,7 +414,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	NSManagedObjectContext* context = [super contextAtPath:sqlFilePath];
 	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-	
+	[context setUndoManager: nil];
+     
 	return context;
 }
 
@@ -1109,6 +1115,10 @@ enum { Compress, Decompress };
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
 	[self lock];
 	@try {
+        
+        if( self != [[BrowserController currentBrowser] database])
+            NSLog( @"Arg");
+        
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
@@ -2275,6 +2285,7 @@ enum { Compress, Decompress };
 
 -(void)importFilesFromIncomingDirThread {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    [_importFilesFromIncomingDirLock lock];
 	@try {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
@@ -2286,6 +2297,7 @@ enum { Compress, Decompress };
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+        [_importFilesFromIncomingDirLock unlock];
 		[pool release];
 	}
 }
