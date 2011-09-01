@@ -2667,8 +2667,6 @@ static NSConditionLock *threadLock = nil;
 	@synchronized (self) {
 		_cachedAlbumsContext = nil;
 	}
-	
-    NSLog( @"computeNumberOfStudiesForAlbums");
     
 	DicomDatabase* database = [self.database independentDatabase];
 	if (database)

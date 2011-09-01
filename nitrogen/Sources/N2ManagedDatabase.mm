@@ -195,7 +195,7 @@
 }
 
 -(id)independentDatabase {
-	return [[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext]];
+	return [[[self class] alloc] initWithPath:self.sqlFilePath context: [self independentContext]];
 }
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
