@@ -223,6 +223,10 @@ static NSMutableDictionary* databasesDictionary = nil;
 	return nil;
 }
 
++(DicomDatabase*)existingDatabaseAtPath:(NSString*)path {
+    return [databasesDictionary objectForKey:[self baseDirPathForPath:path]];
+}
+
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
 	if (databasesDictionary)
 		@synchronized(databasesDictionary) {
@@ -353,7 +357,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (isNewFile)
 		[self addDefaultAlbums];
     
-    if ([DicomDatabase databaseAtPath:p] == self) // if is main (not independent)
+    if ([DicomDatabase existingDatabaseAtPath:p] == self) // if is main (not independent)
 	{
         [self modifyDefaultAlbums];
         [self initRouting];

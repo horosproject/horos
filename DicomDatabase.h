@@ -55,6 +55,7 @@ extern NSString* const OsirixDataDirName;
 +(DicomDatabase*)defaultDatabase;
 +(DicomDatabase*)databaseAtPath:(NSString*)path;
 +(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name;
++(DicomDatabase*)existingDatabaseAtPath:(NSString*)path;
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c; // hopefully one day this will be __deprecated
 +(DicomDatabase*)activeLocalDatabase;
 +(void)setActiveLocalDatabase:(DicomDatabase*)ldb;

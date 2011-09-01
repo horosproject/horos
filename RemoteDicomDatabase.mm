@@ -181,11 +181,13 @@
 	self.address = nil;
 	self.host = nil;
 	
-	NSString* baseBaseDirPath = [_baseBaseDirPath autorelease];
+    NSString* baseBaseDirPath = [_baseBaseDirPath autorelease];
 	
 	[super dealloc];
 	
-	[NSFileManager.defaultManager removeItemAtPath:baseBaseDirPath error:NULL];
+    if (baseBaseDirPath) {
+        [NSFileManager.defaultManager removeItemAtPath:baseBaseDirPath error:NULL];
+    }
 }
 
 -(BOOL)isLocal {
@@ -379,7 +381,7 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		
 		[_sqlFileName release];
 		_sqlFileName = [[path lastPathComponent] retain];
-		[_sqlFilePath autorelease];
+        NSString* oldSqlFilePath = [_sqlFilePath autorelease];
 		_sqlFilePath = [path retain];
 		self.managedObjectContext = context;
 		
@@ -387,6 +389,8 @@ const NSString* const InvalidResponseExceptionMessage = @"Invalid response data 
 		[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
 		
+        // delete old index file
+        [NSFileManager.defaultManager removeItemAtPath:oldSqlFilePath error:NULL];
 	} @catch (NSException* e) {
 		@throw;
 	} @finally {
@@ -739,9 +743,9 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting { // don't
 }
 
--(BOOL)save:(NSError**)err { // don't
+/*-(BOOL)save:(NSError**)err { // don't
 	return YES;
-}
+}*/
 
 -(void)rebuild:(BOOL)complete { // do nothing
 }

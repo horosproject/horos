@@ -1119,6 +1119,8 @@ static NSConditionLock *threadLock = nil;
 			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
 			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 			
+            _cachedAlbumsContext = nil;
+            
 			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
 			
@@ -2699,6 +2701,9 @@ static NSConditionLock *threadLock = nil;
                         [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:album.studies.count]] : @"#"];
                 }
                 
+                NSLog(@"_computeNumberOfStudiesForAlbumsThread -->\n%@", NoOfStudies);
+
+                
                 @synchronized(_albumNoOfStudiesCache) {
                     [_albumNoOfStudiesCache removeAllObjects];
                     [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
@@ -2714,7 +2719,6 @@ static NSConditionLock *threadLock = nil;
         @catch (NSException * e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
-            [database release];
             [pool release];
         }
 }
@@ -7903,11 +7907,8 @@ static BOOL needToRezoom;
             else [aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
         
         [aCell setTitle:nil];
-        if ([aTableView isEqual:albumTable]) {
-            NSArray *albumsArray = self.albumArray;
-            if (rowIndex >= 0 && rowIndex < albumsArray.count)
-                [aCell setTitle:[[albumsArray objectAtIndex:rowIndex] valueForKey:@"name"]];
-        }
+        if (rowIndex >= 0 && rowIndex < albumArray.count)
+            [aCell setTitle:[[albumArray objectAtIndex:rowIndex] valueForKey:@"name"]];
         
         NSString *noOfStudies = nil;
 		@synchronized (_albumNoOfStudiesCache) {
@@ -10714,6 +10715,8 @@ static NSArray*	openSubSeriesArray = nil;
 		if( NSRunInformationalAlertPanel( NSLocalizedString(@"DICOM Sending - STORE", nil), NSLocalizedString(@"Files are currently being sent to a DICOM node. Are you sure you want to quit now? The sending will be stopped.", nil), NSLocalizedString(@"No", nil), NSLocalizedString(@"Quit", nil), nil) == NSAlertDefaultReturn) return NO;
 	}
 	
+    [self setDatabase:nil];
+    
 	return YES;
 }
 
