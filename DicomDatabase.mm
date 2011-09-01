@@ -308,8 +308,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (!_dataBaseDirPath) _dataBaseDirPath = p;
 	[_dataBaseDirPath retain];
 	
-    if( [NSThread isMainThread]) // This should be : if( independant context from existing context) -> we don't need all these functions -> major slowdown, it resets albumsCache, ...
-        [DicomDatabase knowAbout:self];
+    [DicomDatabase knowAbout:self];
 	
 	// post-init
 	
@@ -354,7 +353,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (isNewFile)
 		[self addDefaultAlbums];
     
-    if( [NSThread isMainThread]) // This should be : if( independant context from existing context) -> we don't need all these functions -> major slowdown, it resets albumsCache, ...
+    if ([DicomDatabase databaseAtPath:p] == self) // if is main (not independent)
 	{
         [self modifyDefaultAlbums];
         [self initRouting];
