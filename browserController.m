@@ -6171,9 +6171,9 @@ static NSConditionLock *threadLock = nil;
 						{
 							[dbRequest setPredicate: predicate];
 							
-							NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+							NSUInteger count = [context countForFetchRequest:dbRequest error:&error];
 							
-							[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[studiesArray count]]]]];
+							[NoOfStudies addObject: [NSString stringWithFormat:@"%@", [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]]]];
 						}
 						else
 							[NoOfStudies addObject: @"err"];
