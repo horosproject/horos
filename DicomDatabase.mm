@@ -2271,12 +2271,13 @@ enum { Compress, Decompress };
 	
 #ifndef OSIRIX_LIGHT
 	if ([compressedPathArray count] > 0)  {// there are files to compress/decompress in the decompression dir
-		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d files...", nil), compressedPathArray.count];
-		
-		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
-			[self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
-		else if (listenerCompressionSettings == 2)	// compress
+		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) { // decompress, listenerCompressionSettings == 0 for zip support!
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@...", nil), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+            [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+		} else if (listenerCompressionSettings == 2) { // compress
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@...", nil), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
 			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+        }
 	}
 #endif
 	
