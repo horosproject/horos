@@ -1,6 +1,6 @@
 A:
-- Decompressing message, but compressing
 - Rebuild SQL Index
+- Add Albums submenu to File menu
 
 - CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels
