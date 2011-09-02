@@ -2239,7 +2239,7 @@ enum { Compress, Decompress };
 					}
 			}
 			
-			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d files...", nil), filesArray.count];
+			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
 			addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
 			
 			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
@@ -2272,10 +2272,10 @@ enum { Compress, Decompress };
 #ifndef OSIRIX_LIGHT
 	if ([compressedPathArray count] > 0)  {// there are files to compress/decompress in the decompression dir
 		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) { // decompress, listenerCompressionSettings == 0 for zip support!
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@...", nil), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@...", @"decompressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
             [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
 		} else if (listenerCompressionSettings == 2) { // compress
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@...", nil), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@...", @"compressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
 			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
         }
 	}
@@ -2733,13 +2733,20 @@ enum { Compress, Decompress };
 	//[[AppController sharedAppController] closeAllViewers: self];
 
 	[_importFilesFromIncomingDirLock lock];
-	
+    
 	if (complete) {	// Delete the database file
-		self.managedObjectContext = nil;
-		if ([NSFileManager.defaultManager fileExistsAtPath:self.sqlFilePath]) {
+        thread.status = NSLocalizedString(@"Locking database...", nil);
+        NSManagedObjectContext* oldContext = [self.managedObjectContext retain];
+        [oldContext lock];
+        self.managedObjectContext = nil;
+        [oldContext unlock];
+        [oldContext release];
+		
+        if ([NSFileManager.defaultManager fileExistsAtPath:self.sqlFilePath]) {
 			[NSFileManager.defaultManager removeItemAtPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 			[NSFileManager.defaultManager moveItemAtPath:self.sqlFilePath toPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 		}
+        
 		self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
 	} else [self save:NULL];
 	
@@ -2797,7 +2804,7 @@ enum { Compress, Decompress };
 	
 	
 		// ** Finish the rebuild
-		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d files...", nil), filesArray.count];
+		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
 		[self addFilesAtPaths:filesArray postNotifications:NO];
 		
 		NSLog(@"End Rebuild");
