@@ -75,11 +75,14 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 	else
 	{
 		//Search for a hanging Protocol for the study description in the modality array
-        NSMutableArray *hangingProtocolArray = [NSMutableArray array];
-        for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allObjects])
+        NSArray *hangingProtocolArray = [NSArray array];
+        for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allKeys])
         {
             if( [modalities rangeOfString: hangingModality].location != NSNotFound)
-                [hangingProtocolArray addObject: [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: hangingModality]];
+            {
+                hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: hangingModality];
+                break;
+            }
         }
         
 		if ([hangingProtocolArray count] > 0)
