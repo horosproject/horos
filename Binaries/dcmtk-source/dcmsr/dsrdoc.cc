@@ -567,7 +567,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* check for known character set */
                     setSpecificCharacterSet(doc.getStringFromNodeContent(cursor, tmpString));
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
-                    if ((encString == "?") || doc.setEncodingHandler(encString).bad())
+                    if (strncmp( encString, "?", strlen("?")) == 0 || doc.setEncodingHandler(encString).bad())
                     {
                         OFString message = "Character set '";
                         message += tmpString;

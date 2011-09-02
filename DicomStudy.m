@@ -625,7 +625,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	@try 
 	{
-		NSArray *seriesModalities = [[[self valueForKey:@"series"] allObjects] valueForKey:@"modality"];
+		NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
 		
 		NSMutableArray *r = [NSMutableArray array];
 		

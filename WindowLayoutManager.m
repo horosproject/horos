@@ -64,10 +64,10 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 
 #pragma mark-
 #pragma mark hanging protocol setters and getters
-- (void) setCurrentHangingProtocolForModality: (NSString *) modality description: (NSString *) description
+- (void) setCurrentHangingProtocolForModality: (NSString *) modalities description: (NSString *) description
 {
-	// if no modality set to 1 row and 1 column
-	if (!modality )
+	// if no modalities set to 1 row and 1 column
+	if ( !modalities)
 	{
 		IMAGECOLUMNS = 1;
 		IMAGEROWS = 1;
@@ -75,7 +75,13 @@ static WindowLayoutManager *sharedLayoutManager = nil;
 	else
 	{
 		//Search for a hanging Protocol for the study description in the modality array
-		NSArray *hangingProtocolArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: modality];
+        NSMutableArray *hangingProtocolArray = [NSMutableArray array];
+        for( NSString *hangingModality in [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] allObjects])
+        {
+            if( [modalities rangeOfString: hangingModality].location != NSNotFound)
+                [hangingProtocolArray addObject: [[[NSUserDefaults standardUserDefaults] objectForKey: @"HANGINGPROTOCOLS"] objectForKey: hangingModality]];
+        }
+        
 		if ([hangingProtocolArray count] > 0)
 		{
 			[_currentHangingProtocol release];

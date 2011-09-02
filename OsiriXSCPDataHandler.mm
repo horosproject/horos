@@ -276,7 +276,12 @@ extern NSManagedObjectContext *staticContext;
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
 					{
-						predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
+                        NSArray *modalities = [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+                        
+                        if( modalities.count <= 1)
+                            predicate = [NSPredicate predicateWithFormat:@"(modality CONTAINS[cd] %@)", [modalities lastObject]];
+						else
+                            predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", modalities];
 					}
 				}
 				else if (key ==  DCM_Modality)
@@ -284,7 +289,12 @@ extern NSManagedObjectContext *staticContext;
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
 					{
-						predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"]];
+                        NSArray *modalities = [[NSString stringWithCString:mis DICOMEncoding:nil] componentsSeparatedByString:@"\\"];
+                        
+                        if( modalities.count <= 1)
+                            predicate = [NSPredicate predicateWithFormat:@"(modality CONTAINS[cd] %@)", [modalities lastObject]];
+						else
+                            predicate = [NSPredicate predicateWithFormat:@"(ANY series.modality IN %@)", modalities];
 					}
 				}
 				else if (key == DCM_PatientsBirthDate)
@@ -470,7 +480,7 @@ extern NSManagedObjectContext *staticContext;
 				{
 					char *mis;
 					if (dcelem->getString(mis).good() && mis != NULL)
-						predicate = [NSPredicate predicateWithFormat:@"study.modality == %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
+						predicate = [NSPredicate predicateWithFormat:@"study.modality CONTAINS[cd] %@", [NSString stringWithCString:mis  DICOMEncoding:nil]];
 				}
 				
 				else if (key == DCM_SeriesDate)

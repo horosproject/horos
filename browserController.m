@@ -1016,7 +1016,7 @@ static NSConditionLock *threadLock = nil;
 						{
 							[study setValue:[curDict objectForKey: @"studyID"] forKey:@"studyInstanceUID"];
 							[study setValue:[curDict objectForKey: @"accessionNumber"] forKey:@"accessionNumber"];
-							[study setValue:[curDict objectForKey: @"modality"] forKey:@"modality"];
+							[study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
 							[study setValue:[curDict objectForKey: @"patientBirthDate"] forKey:@"dateOfBirth"];
 							[study setValue:[curDict objectForKey: @"patientSex"] forKey:@"patientSex"];
 							[study setValue:[curDict objectForKey: @"patientID"] forKey:@"patientID"];
@@ -1184,8 +1184,6 @@ static NSConditionLock *threadLock = nil;
 								if( DICOMSR == NO)
 									[seriesTable setValue:today forKey:@"dateAdded"];
 								
-								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-								
 								if( numberOfFrames > 1)
 								{
 									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
@@ -1239,6 +1237,7 @@ static NSConditionLock *threadLock = nil;
 								
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                                [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
 								
 								if( DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR
@@ -2587,7 +2586,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today MR", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2595,7 +2594,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today CT", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2603,7 +2602,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday MR", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2611,7 +2610,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday CT", nil);
-		album.predicateString = @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2642,6 +2641,12 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [[album valueForKey: @"predicateString"] isEqualToString: @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)"])
 				[album setValue: @"(comment != '' AND comment != NIL)" forKey: @"predicateString"];
+            
+            if( [album valueForKey: @"predicateString"] && [[album valueForKey: @"predicateString"] rangeOfString: @"ANY series.modality"].location != NSNotFound)
+            {
+                NSString *previousString = [album valueForKey: @"predicateString"];
+				[album setValue: [previousString stringByReplacingOccurrencesOfString:@"ANY series.modality" withString:@"modality"] forKey: @"predicateString"];
+            }
 		}
 	}
 	@catch (NSException * e) 
@@ -7756,10 +7761,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[tableColumn identifier] isEqualToString:@"modality"])
 	{
-		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
-			return [item valueForKey:@"modalities"];
-		else
-			return [item valueForKey:@"modality"];
+        return [item valueForKey:@"modality"];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"name"])
@@ -16111,7 +16113,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	for( NSDictionary *dict in array)
 	{
-		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
+		if( [mod rangeOfString: [dict valueForKey: @"modality"]].location != NSNotFound)
 		{
 			int compression = compression_none;
 			if( [[dict valueForKey: @"compression"] intValue] == compression_sameAsDefault)
@@ -21418,9 +21420,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
 				else
-					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
@@ -21447,7 +21449,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 			
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat: @"ANY series.modality CONTAINS[cd] %@", _searchString];
+				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
 			break;
 			
 			case 6:			// Accession Number 
