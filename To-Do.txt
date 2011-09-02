@@ -1,7 +1,5 @@
 A:
-- Rebuild SQL Index
 - Add Albums submenu to File menu
-- Queuing reload viewers?
 
 - Remove OpenJPEG
 - CPR save last curved points
