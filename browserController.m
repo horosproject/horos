@@ -7852,7 +7852,9 @@ static BOOL needToRezoom;
 }
 - (NSArray*) albumArray
 {
-	NSArray *albumsArray = [self albumsInContext:_database.managedObjectContext];
+	if (!_database) return [NSArray array];
+    
+    NSArray *albumsArray = [self albumsInContext:_database.managedObjectContext];
 	
 	return [[NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray: albumsArray];
 }

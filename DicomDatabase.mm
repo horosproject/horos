@@ -925,23 +925,30 @@ enum { Compress, Decompress };
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume {
 	NSThread* thread = [NSThread currentThread];
 	
-	NSArray* chunks = [paths splitArrayIntoArraysOfMinSize:100000 maxArrays:0];
-	NSMutableArray* retArray = [NSMutableArray array];
+    //#define RANDOMFILES
+#ifdef RANDOMFILES
+    NSMutableArray* randomArray = [NSMutableArray array];
+    for( int i = 0; i < 50000; i++)
+        [randomArray addObject:@"yahoo/google/osirix/microsoft"];
+    paths = randomArray;
+#endif
 
-	NSError* error = nil;
+	NSMutableArray* retArray = [NSMutableArray array];
     
 	NSString* errorsDirPath = self.errorsDirPath;
 	NSString* dataDirPath = self.dataDirPath;
 	NSString* reportsDirPath = self.reportsDirPath;
 	NSString* tempDirPath = self.tempDirPath;
 	
-	//[thread enterOperationWithRange:0:0.66]
+	[thread enterOperation];
 	
-	for (NSArray* newFilesArray in chunks) {
-		NSManagedObjectModel* model = self.managedObjectModel;
+    NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
+	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex) {
+        NSRange chunkRange = [[chunkRanges objectAtIndex:chunkIndex] rangeValue];
+        
 		NSMutableArray *completeImagesArray = nil, *modifiedStudiesArray = nil;
 		BOOL DELETEFILELISTENER = [[NSUserDefaults standardUserDefaults] boolForKey: @"DELETEFILELISTENER"], addFailed = NO;
-		NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity: [newFilesArray count]];
+		NSMutableArray *dicomFilesArray = [NSMutableArray arrayWithCapacity:chunkRange.length];
 		
 		if ([[NSFileManager defaultManager] fileExistsAtPath: dataDirPath] == NO)
 			[[NSFileManager defaultManager] createDirectoryAtPath: dataDirPath attributes:nil];
@@ -949,27 +956,19 @@ enum { Compress, Decompress };
 		if ([[NSFileManager defaultManager] fileExistsAtPath: reportsDirPath] == NO)
 			[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath attributes:nil];
 		
-		if ([newFilesArray count] == 0) return [NSMutableArray array];
+		if (chunkRange.length == 0) break;
 		
 		//	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 		
-//#define RANDOMFILES
-#ifdef RANDOMFILES
-		NSMutableArray* randomArray = [NSMutableArray array];
-		for( int i = 0; i < 50000; i++)
-			[randomArray addObject:@"yahoo/google/osirix/microsoft"];
-		newFilesArray = randomArray;
-#endif
-		
-		BOOL isCDMedia = [BrowserController isItCD:[newFilesArray objectAtIndex:0]];
+		BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
 		[DicomFile setFilesAreFromCDMedia:isCDMedia];
 		
-		for (NSInteger i = 0; i < newFilesArray.count; ++i) {
-	//		thread.progress = 1.0*i/newFilesArray.count;
+		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i) {
+			thread.progress = 1.0*i/paths.count;
 			
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 			@try {
-				NSString* newFile = [newFilesArray objectAtIndex:i];
+				NSString* newFile = [paths objectAtIndex:i];
 				DicomFile *curFile = nil;
 				NSMutableDictionary	*curDict = nil;
 				
@@ -979,7 +978,7 @@ enum { Compress, Decompress };
 #else
 					curFile = [[DicomFile alloc] init:newFile];
 #endif
-				} @catch (NSException * e) {
+				} @catch (NSException* e) {
 					N2LogExceptionWithStackTrace(e);
 				}
 				
@@ -1036,7 +1035,7 @@ enum { Compress, Decompress };
 		// Find all current studies
 		
 		
-		[thread enterOperation/*WithRange:0.66:0.34*/];
+		[thread enterOperationWithRange:thread.progress:0];
 		NSArray* addedImagesArray = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX mountedVolume:mountedVolume];
 		[thread exitOperation];
 		
@@ -1055,6 +1054,8 @@ enum { Compress, Decompress };
 		
 		[retArray addObjectsFromArray:addedImagesArray];
 	}
+    
+    [thread exitOperation];
 	
 	return retArray;
 }

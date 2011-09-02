@@ -12,19 +12,29 @@
 @implementation NSArray (N2)
 
 -(NSArray*)splitArrayIntoArraysOfMinSize:(NSUInteger)minSize maxArrays:(NSUInteger)maxArrays {
-	NSUInteger count = self.count, size = maxArrays? MAX(minSize, round(float(count)/maxArrays)) : minSize;
+	NSMutableArray* chunks = [NSMutableArray array];
+	
+	for (NSValue* rangeValue in [self splitArrayIntoChunksOfMinSize:minSize maxChunks:maxArrays]) 
+        [chunks addObject:[self subarrayWithRange:[rangeValue rangeValue]]];
+	
+	return chunks;
+}
+
+-(NSArray*)splitArrayIntoChunksOfMinSize:(NSUInteger)minSize maxChunks:(NSUInteger)maxChunks {
+	NSUInteger count = self.count, size = maxChunks? MAX(minSize, round(float(count)/maxChunks)) : minSize;
 	
 	NSMutableArray* chunks = [NSMutableArray array];
 	
 	NSRange range = NSMakeRange(0, size);
 	NSUInteger i = 0;
 	do {
-		if (++i == maxArrays)
+		if (++i == maxChunks)
 			range.length = count-range.location;
 		else if (range.location+range.length > count)
-				range.length = count-range.location;
-		[chunks addObject:[self subarrayWithRange:range]];
-	} while (range.location+range.length < count);
+            range.length = count-range.location;
+		[chunks addObject:[NSValue valueWithRange:range]];
+        range.location += range.length;
+	} while (range.location < count);
 	
 	return chunks;
 }
