@@ -8812,7 +8812,8 @@ static NSConditionLock *threadLock = nil;
 						}
 					}
 				}
-				else [browserWindow viewerDICOM: self]; // Study
+                else [browserWindow databaseOpenStudy: element];
+//				else [browserWindow viewerDICOM: self]; // Study
 			}
 		}
 	}
