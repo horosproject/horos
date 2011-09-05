@@ -53,6 +53,7 @@
 -(id)newObjectForEntity:(NSEntityDescription*)entity;
 
 -(BOOL)isVolatile;
+-(BOOL)save;
 -(BOOL)save:(NSError**)err;
 
 

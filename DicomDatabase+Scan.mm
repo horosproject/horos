@@ -257,7 +257,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %d %@...", nil), items.count, items.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil) ];
-	return [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO mountedVolume:YES];
+	return [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
 }
 
 +(NSString*)_findDicomdirIn:(NSArray*)allpaths  {
@@ -332,7 +332,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 				return;
 		}
 		
-		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO mountedVolume:YES];
+		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
 	}
 	
 	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
@@ -350,6 +350,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 																	  paths, @"filesInput",
 																	  [NSNumber numberWithBool:YES], @"mountedVolume",
 																	  [NSNumber numberWithBool:YES], @"copyFiles",
+                                                                      [NSNumber numberWithBool: YES], @"addToAlbum",
+                                                                      [NSNumber numberWithBool: YES], @"selectStudy",
 																	  NULL]];
 	
 		/*for (NSString* frompath in paths) {

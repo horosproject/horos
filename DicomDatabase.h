@@ -18,7 +18,7 @@
 extern NSString* const CurrentDatabaseVersion;
 extern NSString* const OsirixDataDirName;
 
-@class N2MutableUInteger;
+@class N2MutableUInteger, DicomAlbum;
 
 /*
  This class currently only does 1/1000 of what it is planned to do later.
@@ -111,13 +111,14 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 
+-(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum;
+
 #pragma mark Add files
 -(NSArray*)addFilesAtPaths:(NSArray*)paths;
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications;	
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems;	
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;	
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume;
--(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume;
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;
 
 
 

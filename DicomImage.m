@@ -441,29 +441,30 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 
 - (NSNumber*) mountedVolume
 {
-	if( mountedVolume) return mountedVolume;
-	
-	NSNumber	*f = [self primitiveValueForKey:@"storedMountedVolume"];
-	
-	if( f == nil)  f = [NSNumber numberWithBool: NO];
-
-	[mountedVolume release];
-	mountedVolume = [f retain];
-
-	return mountedVolume;
+//	if( mountedVolume) return mountedVolume;
+//	
+//	NSNumber	*f = [self primitiveValueForKey:@"storedMountedVolume"];
+//	
+//	if( f == nil)  f = [NSNumber numberWithBool: NO];
+//
+//	[mountedVolume release];
+//	mountedVolume = [f retain];
+//
+//	return mountedVolume;
+    return NO;
 }
 
 - (void) setMountedVolume:(NSNumber*) f
 {
-	[mountedVolume release];
-	mountedVolume = nil;
-	
-	[self willChangeValueForKey:@"storedMountedVolume"];
-	if( [f boolValue] == NO)
-		[self setPrimitiveValue: nil forKey:@"storedMountedVolume"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedMountedVolume"];
-	[self didChangeValueForKey:@"storedMountedVolume"];
+//	[mountedVolume release];
+//	mountedVolume = nil;
+//	
+//	[self willChangeValueForKey:@"storedMountedVolume"];
+//	if( [f boolValue] == NO)
+//		[self setPrimitiveValue: nil forKey:@"storedMountedVolume"];
+//	else
+//		[self setPrimitiveValue: f forKey:@"storedMountedVolume"];
+//	[self didChangeValueForKey:@"storedMountedVolume"];
 }
 
 #pragma mark-

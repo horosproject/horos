@@ -217,7 +217,7 @@ static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.icns";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.icns";
 static NSString*	SendToolbarItemIdentifier			= @"Send.icns";
 static NSString*	ViewerToolbarItemIdentifier			= @"Viewer.icns";
-static NSString*	CDRomToolbarItemIdentifier			= @"cd.icns";
+//static NSString*	CDRomToolbarItemIdentifier			= @"cd.icns";
 static NSString*	MovieToolbarItemIdentifier			= @"Movie.icns";
 static NSString*	TrashToolbarItemIdentifier			= @"trash.icns";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
@@ -2671,12 +2671,12 @@ static NSConditionLock *threadLock = nil;
 	}
     
 	DicomDatabase* database = [self.database independentDatabase];
+    [database lock];
 	if (database)
         @try {
-            if(/* displayEmptyDatabase == NO &&-*/ _computingNumberOfStudiesForAlbums == NO) {
+            if(_computingNumberOfStudiesForAlbums == NO) {
                 _computingNumberOfStudiesForAlbums = YES;
                 
-    //			NSManagedObjectContext* context = [database independentContext];
                 NSMutableArray* NoOfStudies = [NSMutableArray array];
                 
                 NSInteger count = -1;
@@ -2697,8 +2697,11 @@ static NSConditionLock *threadLock = nil;
                             N2LogExceptionWithStackTrace(e);
                         }
                         [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
-                    } else
+                    } else {
+                        NSSet* s = album.studies;
+                        count = [s count];
                         [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:album.studies.count]] : @"#"];
+                    }
                 }
                 
                 @synchronized(_albumNoOfStudiesCache) {
@@ -2715,9 +2718,10 @@ static NSConditionLock *threadLock = nil;
         }
         @catch (NSException * e) {
             N2LogExceptionWithStackTrace(e);
-        } @finally {
-            [pool release];
         }
+    
+    [database unlock];
+    [pool release];
 }
 
 - (void)delayedRefreshAlbums {
@@ -2726,10 +2730,6 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void)refreshAlbums {
-	@synchronized (self) {
-		_cachedAlbumsContext = nil;
-	}
-
 	[NSThread detachNewThreadSelector: @selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
 }
 
@@ -7911,6 +7911,8 @@ static BOOL needToRezoom;
         
         NSString *noOfStudies = nil;
 		@synchronized (_albumNoOfStudiesCache) {
+            if ([[aCell title] isEqualToString:@"retest"])
+                NSLog(@"oiuhsilhfsf");
 			if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES) {
                     [self refreshAlbums];
 					// It will be computed in a separate thread, and then displayed later.
@@ -8042,15 +8044,14 @@ static BOOL needToRezoom;
 {
 	if ([tableView isEqual:albumTable])
 	{
-		NSArray	*albumArray = self.albumArray;
+		NSArray* albumArray = self.albumArray;
 		
-		if (row >= [albumArray count] || row  == 0)
+		if (row >= [albumArray count] || row  == 0) // can't add to database
 			return NO;
+		if ([[[albumArray objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue]) // // can't add to smart album -- this should not be happening: validateDrop avoids it...
+            return NO;
 		
-		//can't add to smart Album
-		if ([[[albumArray objectAtIndex:row] valueForKey:@"smartAlbum"] boolValue]) return NO;
-		
-		DicomAlbum* album = [albumArray objectAtIndex: row];
+		DicomAlbum* album = [albumArray objectAtIndex:row];
 		
 		NSPasteboard* pb = [info draggingPasteboard];
 		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
@@ -8058,61 +8059,22 @@ static BOOL needToRezoom;
 		for (NSString* xid in xids)
 			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
 		
-		if (items)
-		{
-			NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-			
-			for( NSManagedObject *object in items)
-			{
-				if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
-				{
-					[studies addObject: object];
-					[(DicomStudy*) object archiveAnnotationsAsDICOMSR];
-				}
-				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
-				{
-					[studies addObject: [object valueForKey:@"study"]];
-					[[object valueForKey:@"study"] archiveAnnotationsAsDICOMSR];
-				}
-				
-				if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
-				{
-					[studies addObject: [object valueForKeyPath:@"series.study"]];
-					[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-				}
-			}
-			
-			[_database save:NULL];
-			
-			[self refreshAlbums];
-			
-			[tableView reloadData];
-			
-			if (![_database isLocal])
-			{
-				// Do it remotely
-				NSMutableArray *studiesToAdd = [NSMutableArray array];
-				
-				for( NSManagedObject *object in items)
-				{
-					if( [[object valueForKey:@"type"] isEqualToString:@"Study"])
-						[studiesToAdd addObject: object];
-					
-					if( [[object valueForKey:@"type"] isEqualToString:@"Series"])
-						[studiesToAdd addObject: [object valueForKey:@"study"]];
-						
-					if( [[object valueForKey:@"type"] isEqualToString:@"Image"])
-						[studiesToAdd addObject: [object valueForKeyPath:@"series.study"]];
-				}
-				
-				[(RemoteDicomDatabase*)_database addStudies:studiesToAdd toAlbum:album];
-			}
-		}
-        
-        [self refreshAlbums];
-		
-		return YES;
+        NSMutableArray* studies = [NSMutableArray array];
+        for (NSManagedObject* object in items) {
+            if ([object isKindOfClass:[DicomStudy class]])
+                [studies addObject:object];
+            if ([object isKindOfClass:[DicomSeries class]])
+                [studies addObject:[(DicomSeries*)object study]];
+            if ([object isKindOfClass:[DicomImage class]])
+                [studies addObject:[[(DicomImage*)object series] study]];
+        }
+
+		if ([studies count]) {
+            [_database addStudies:studies toAlbum:album];
+            [_database save];
+            [self refreshAlbums];
+            return YES;
+        }
 	}
 	
 	return NO;
@@ -14272,224 +14234,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 #endif
 
 
-
-/*
-
--(void)volumeMount: (NSNotification *)notification
-{
-	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
-		return;
-	
-	NSLog(@"volume mounted");
-	
-	[self loadDICOMFromiPod];
-	
-	if (![_database isLocal]) return;
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"] == NO) return;
-	
-	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
-	
-	NSLog( @"%@", sNewDrive);
-	
-	if( [BrowserController isItCD: sNewDrive] == YES)
-	{
-		[self ReadDicomCDRom: self];
-	}
-	
-	[mountedVolumes release];
-	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
-	
-	[self displayBonjourServices];
-}
-
-- (void)removeAllMounted
-{
-	if (![_database isLocal]) return;
-	
-	[self removeMountedImages: nil];
-}
-
-- (void)willVolumeUnmount: (NSNotification *)notification
-{
-	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
-	
-	[DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
-	
-	// Is it an iPod?
-	if ([[NSFileManager defaultManager] fileExistsAtPath: [sNewDrive stringByAppendingPathComponent:@"iPod_Control"]])
-	{
-		// Is it currently selected? -> switch back to default DB path
-		int row = [_sourcesTableView selectedRow];
-		if( row > 0)
-		{
-			if( [[[[bonjourBrowser services] objectAtIndex: row-1] valueForKey:@"Path"] isEqualToString: sNewDrive])
-				[self resetToLocalDatabase];
-		}
-		
-		// Remove it from the Source list
-		
-		int z = self.currentBonjourService;
-		NSDictionary	*selectedDict = nil;
-		if( z >= 0) selectedDict = [[[bonjourBrowser services] objectAtIndex: z] retain];
-		
-		for( int x = 0; x < [[bonjourBrowser services] count]; x++)
-		{
-			NSDictionary	*c = [[bonjourBrowser services] objectAtIndex: x];
-			
-			if( [[c valueForKey:@"type"] isEqualToString:@"localPath"])
-			{
-				if( [[c valueForKey:@"Path"] isEqualToString: sNewDrive])
-				{
-					[[bonjourBrowser services] removeObjectAtIndex: x];
-					x--;
-				}
-			}
-		}
-		
-		if( selectedDict)
-		{
-			NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
-			
-			if( index == NSNotFound)
-				[self resetToLocalDatabase];
-			else
-				[self setCurrentBonjourService: index];
-			
-			[selectedDict release];
-		}
-		
-		[mountedVolumes release];
-		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
-	
-		[self displayBonjourServices];
-	}
-	
-	checkForMountedFiles = YES;
-	
-//	if( [BrowserController isItCD: sNewDrive] == YES)
-//		checkForMountedFiles = YES;
-//	else
-//		checkForMountedFiles = NO;
-}
-
-- (void) removeMountedImages: (NSString*) sNewDrive
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"someImagesAreMounted"] == NO)
-		return;
-	
-	// FIND ALL images that ARE NOT local, and REMOVE non-available images
-	NSManagedObjectContext *context = self.managedObjectContext;
-	NSManagedObjectModel *model = self.managedObjectModel;
-	BOOL needsUpdate = NO;
-	
-	NSRange range;
-	range.location = 0;
-	range.length = [sNewDrive length];
-	
-	if( [context tryLock])
-	{
-		[context retain];
-		
-		DatabaseIsEdited = YES;
-		
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-		NSError	*error = nil;
-		NSArray *seriesArray = [[context executeFetchRequest:dbRequest error:&error] filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"mountedVolume == YES"]];
-		
-		if( [seriesArray count] > 0)
-		{
-			[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"someImagesAreMounted"];
-			
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			@try
-			{
-				// Find unavailable files
-				for( int i = 0; i < [seriesArray count]; i++)
-				{
-					NSManagedObject	*image = [[[seriesArray objectAtIndex:i] valueForKey:@"images"] anyObject];
-					if( sNewDrive == nil || [[image  valueForKey:@"completePath"] compare: sNewDrive options: NSCaseInsensitiveSearch range: range] == 0)
-					{
-						NSManagedObject	*study = [[seriesArray objectAtIndex:i] valueForKey:@"study"];
-						
-						needsUpdate = YES;
-						
-						// Is a viewer containing this study opened? -> close it
-						for( ViewerController *vc in viewersList)
-						{
-							if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
-							{
-								[[vc window] close];
-							}
-						}
-						
-						BOOL completeStudyIsMounted = YES;
-						
-						for( NSManagedObject *s in [[study valueForKey:@"series"] allObjects])
-						{
-							if( [[s valueForKey:@"mountedVolume"] boolValue] == NO)
-							{
-								completeStudyIsMounted = NO;
-							}
-						}
-						
-						if( completeStudyIsMounted)
-							[context deleteObject: study];
-						else
-							[context deleteObject: [seriesArray objectAtIndex:i]];
-					}
-				}
-			}
-			@catch( NSException *ne)
-			{
-                N2LogExceptionWithStackTrace(e);
-			}
-			
-			if( needsUpdate)
-				[_database save:NULL];
-			
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
-		}
-		
-		[context unlock];
-		[context release];
-		
-		DatabaseIsEdited = NO;
-	}
-}
-
-- (void)volumeUnmount: (NSNotification *)notification
-{
-	BOOL		needsUpdate = NO;
-	
-	if (![_database isLocal]) return;
-	if( checkForMountedFiles == NO) return;
-	
-	NSLog(@"volume unmounted");
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"UNMOUNT"] == NO) return;
-	
-	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];	//uppercaseString];
-	NSLog( @"%@", sNewDrive);
-	
-	[self removeMountedImages: sNewDrive];
-	
-	[mountedVolumes release];
-	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
-	
-	[self displayBonjourServices];
-}
-
-*/
-
-
-
-
-
 - (void)storeSCPComplete: (id)sender
 {
 	//release storescp when done
@@ -15440,16 +15184,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(viewerDICOM:)];
     } 
-	else if ([itemIdent isEqualToString: CDRomToolbarItemIdentifier])
-	{
-        
-		[toolbarItem setLabel: NSLocalizedString(@"CD-Rom",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"CD-Rom",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Load images from current DICOM CD-Rom",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: CDRomToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(ReadDicomCDRom:)];
-    }
+//	else if ([itemIdent isEqualToString: CDRomToolbarItemIdentifier])
+//	{
+//        
+//		[toolbarItem setLabel: NSLocalizedString(@"CD-Rom",nil)];
+//		[toolbarItem setPaletteLabel: NSLocalizedString(@"CD-Rom",nil)];
+//        [toolbarItem setToolTip: NSLocalizedString(@"Load images from current DICOM CD-Rom",nil)];
+//		[toolbarItem setImage: [NSImage imageNamed: CDRomToolbarItemIdentifier]];
+//		[toolbarItem setTarget: self];
+//		[toolbarItem setAction: @selector(ReadDicomCDRom:)];
+//    }
 	else if ([itemIdent isEqualToString: MovieToolbarItemIdentifier])
 	{
         
@@ -15582,7 +15326,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			ViewersToolbarItemIdentifier,
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
-			CDRomToolbarItemIdentifier,
+//			CDRomToolbarItemIdentifier,
 			MailToolbarItemIdentifier,
 			WebServerSingleNotification,
 			AddStudiesToUserItemIdentifier,
@@ -15619,7 +15363,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 NSToolbarSpaceItemIdentifier,
 			 NSToolbarSeparatorItemIdentifier,
 			 ImportToolbarItemIdentifier,
-			 CDRomToolbarItemIdentifier,
+//			 CDRomToolbarItemIdentifier,
 			 MailToolbarItemIdentifier,
 			 WebServerSingleNotification,
 			 AddStudiesToUserItemIdentifier,
@@ -16008,7 +15752,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		if ([[toolbarItem itemIdentifier] isEqualToString: ImportToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskSendToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskGetToolbarItemIdentifier]) return NO;
-		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
+//		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: TrashToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: QueryToolbarItemIdentifier]) return NO;
 	}

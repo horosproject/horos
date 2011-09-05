@@ -60,7 +60,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 @property(nonatomic, retain) NSNumber* storedInDatabaseFolder;
 @property(nonatomic, retain) NSNumber* storedIsKeyImage;
 @property(nonatomic, retain) NSString* storedModality;
-@property(nonatomic, retain) NSNumber* storedMountedVolume;
+@property(nonatomic, retain) NSNumber* storedMountedVolume __deprecated;
 @property(nonatomic, retain) NSNumber* storedNumberOfFrames;
 @property(nonatomic, retain) NSNumber* storedNumberOfSeries;
 @property(nonatomic, retain) NSNumber* storedWidth;

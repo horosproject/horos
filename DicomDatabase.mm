@@ -761,6 +761,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 }
 
+-(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum {
+    for (DicomStudy* study in dicomStudies)
+        [dicomAlbum addStudiesObject:study];
+}
+
 #pragma mark Lifecycle
 
 -(BOOL)isFileSystemFreeSizeLimitReached {
@@ -922,10 +927,6 @@ enum { Compress, Decompress };
 }
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
-	return [self addFilesAtPaths:paths postNotifications:postNotifications dicomOnly:dicomOnly rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX mountedVolume:NO];
-}
-
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume {
 	NSThread* thread = [NSThread currentThread];
 	
     //#define RANDOMFILES
@@ -1032,14 +1033,11 @@ enum { Compress, Decompress };
 				break;
 		}
 		
-		if( mountedVolume)
-			[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"someImagesAreMounted"];
-		
 		// Find all current studies
 		
 		
 		[thread enterOperationWithRange:thread.progress:0];
-		NSArray* addedImagesArray = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX mountedVolume:mountedVolume];
+		NSArray* addedImagesArray = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
 		[thread exitOperation];
 		
 		
@@ -1117,7 +1115,7 @@ enum { Compress, Decompress };
  album
  
  */
--(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX mountedVolume:(BOOL)mountedVolume {
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
 	[self lock];
@@ -1496,9 +1494,6 @@ enum { Compress, Decompress };
 								[image setValue:[curDict objectForKey: @"height"] forKey:@"height"];
 								[image setValue:[curDict objectForKey: @"width"] forKey:@"width"];
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
-								[image setValue:[NSNumber numberWithBool: mountedVolume] forKey:@"mountedVolume"];
-								if (mountedVolume)
-									[seriesTable setValue:[NSNumber numberWithBool:mountedVolume] forKey:@"mountedVolume"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 								
 								if (generatedByOsiriX)
@@ -1812,10 +1807,7 @@ enum { Compress, Decompress };
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
 			
-			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
-			
-			if( [[dict objectForKey: @"mountedVolume"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == NO)
-				twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 20.0;
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // fiveSeconds :)
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
@@ -1875,7 +1867,7 @@ enum { Compress, Decompress };
 						}
 						else
 						{
-							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
 							{
 								// Pre-load for faster validating
 								NSData *d = [NSData dataWithContentsOfFile: srcPath];
@@ -1926,20 +1918,7 @@ enum { Compress, Decompress };
 			
 			if( succeed)
 			{
-				BOOL mountedVolume = [[dict objectForKey: @"mountedVolume"] boolValue];
-				
-				if( [[dict objectForKey: @"copyFiles"] boolValue])
-					mountedVolume = NO;
-				
-				objects = 	   [BrowserController addFiles: copiedFiles
-												toContext: [[BrowserController currentBrowser] managedObjectContext]
-											   toDatabase: [BrowserController currentBrowser]
-												onlyDICOM: onlyDICOM 
-										 notifyAddedFiles: YES
-									  parseExistingObject: NO
-												 dbFolder: [[BrowserController currentBrowser] documentsDirectory]
-										generatedByOsiriX: NO
-											mountedVolume: mountedVolume];
+                objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
 				
 				total += [copiedFiles count];
 			}

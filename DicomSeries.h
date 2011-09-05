@@ -33,7 +33,7 @@
 @property(nonatomic, retain) NSNumber* displayStyle;
 @property(nonatomic, retain) NSNumber* id;
 @property(nonatomic, retain) NSString* modality;
-@property(nonatomic, retain) NSNumber* mountedVolume;
+@property(nonatomic, retain) NSNumber* mountedVolume __deprecated;
 @property(nonatomic, retain) NSString* name;
 @property(nonatomic, retain) NSNumber* numberOfImages;
 @property(nonatomic, retain) NSNumber* numberOfKeyImages;

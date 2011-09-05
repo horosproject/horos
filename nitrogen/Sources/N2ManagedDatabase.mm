@@ -126,12 +126,12 @@
 				} while (!pStore && i < 2);
 			}
 			
-			// this line is very important, if there is no sql file
-			[moc save:NULL];
-			
 			if (isNewFile)
 				NSLog(@"New database file created at %@", sqlFilePath);
 		}
+        
+        // this line is very important, if there is no sql file
+        [moc save:NULL];
 	}
     
     return moc;
@@ -263,9 +263,11 @@
 	return NO;
 }
 
+-(BOOL)save {
+    return [self save:NULL];
+}
+
 -(BOOL)save:(NSError**)err {
-	if (self.isVolatile)
-		return YES;
 	NSError* perr = NULL;
 	if (!err) err = &perr;
 	
