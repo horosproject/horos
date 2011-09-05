@@ -433,7 +433,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	[self lock];
 	@try {
+        NSError* error = nil;
+        if (!err) err = &error;
 		b = [super save:err];
+        if (*err) NSLog(@"DicomDatabase save error: %@", *err);
 		[NSUserDefaults.standardUserDefaults setObject:CurrentDatabaseVersion forKey:@"DATABASEVERSION"];
 		[CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
 	} @catch (NSException* e) {
