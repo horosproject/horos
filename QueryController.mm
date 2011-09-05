@@ -1794,7 +1794,7 @@ extern "C"
 	
 	[autoQueryLock unlock];
 	
-	[self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: YES];
+	[self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
 	
 	if( atLeastOneSource == NO)
 	{
