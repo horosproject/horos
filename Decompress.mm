@@ -63,7 +63,7 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 	
 	for( NSDictionary *dict in s)
 	{
-		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
+		if( [mod rangeOfString: [dict valueForKey: @"modality"]].location != NSNotFound)
 		{
 			int compression = compression_none;
 			if( [[dict valueForKey: @"compression"] intValue] == compression_sameAsDefault)

@@ -725,10 +725,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(void)addDefaultAlbums {
 	NSDictionary* albumDescriptors = [NSDictionary dictionaryWithObjectsAndKeys:
 									  @"(dateAdded >= CAST($LASTHOUR, 'NSDate'))", @"Just Added",
-									  @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))", @"Today MR",
-									  @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))", @"Today CT",
-									  @"(ANY series.modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday MR",
-									  @"(ANY series.modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday CT",
+									  @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))", @"Today MR",
+									  @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))", @"Today CT",
+									  @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday MR",
+									  @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday CT",
 									  [NSNull null], @"Interesting Cases",
 									  @"(comment != '' AND comment != NIL)", @"Cases with comments",
 									  NULL];
@@ -754,8 +754,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(void)modifyDefaultAlbums {
 	@try {
 		for (DicomAlbum* album in self.albums)
+        {
 			if ([album.predicateString isEqualToString:@"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)"])
 				album.predicateString = @"(comment != '' AND comment != NIL)";
+            
+            if( [album valueForKey: @"predicateString"] && [[album valueForKey: @"predicateString"] rangeOfString: @"ANY series.modality"].location != NSNotFound)
+            {
+                NSString *previousString = [album valueForKey: @"predicateString"];
+                [album setValue: [previousString stringByReplacingOccurrencesOfString:@"ANY series.modality" withString:@"modality"] forKey: @"predicateString"];
+            }
+        }
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
@@ -1282,7 +1290,7 @@ enum { Compress, Decompress };
 						{
 							study.studyInstanceUID = [curDict objectForKey: @"studyID"];
 							study.accessionNumber = [curDict objectForKey: @"accessionNumber"];
-							study.modality = [curDict objectForKey: @"modality"];
+							study.modality = study.modalities;
 							study.dateOfBirth = [curDict objectForKey: @"patientBirthDate"];
 							study.patientSex = [curDict objectForKey: @"patientSex"];
 							study.patientID = [curDict objectForKey: @"patientID"];
@@ -1451,8 +1459,6 @@ enum { Compress, Decompress };
 								if (DICOMSR == NO)
 									[seriesTable setValue:today forKey:@"dateAdded"];
 								
-								[image setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
-								
 								if (numberOfFrames > 1)
 								{
 									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
@@ -1503,6 +1509,7 @@ enum { Compress, Decompress };
 								
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                                [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
 								
 								if (DICOMSR && [curDict objectForKey: @"numberOfROIs"] && [curDict objectForKey: @"referencedSOPInstanceUID"]) // OsiriX ROI SR

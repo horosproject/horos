@@ -517,7 +517,7 @@ static NSConditionLock *threadLock = nil;
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) N2LogError(@"couldn't identify database");
-	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX mountedVolume:mountedVolume];
+	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX];
 }
 
 #pragma deprecated
@@ -2671,7 +2671,6 @@ static NSConditionLock *threadLock = nil;
 	}
     
 	DicomDatabase* database = [self.database independentDatabase];
-    [database lock];
 	if (database)
         @try {
             if(_computingNumberOfStudiesForAlbums == NO) {
@@ -2720,7 +2719,6 @@ static NSConditionLock *threadLock = nil;
             N2LogExceptionWithStackTrace(e);
         }
     
-    [database unlock];
     [pool release];
 }
 
@@ -4260,10 +4258,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[tableColumn identifier] isEqualToString:@"modality"])
 	{
-		if ([[item valueForKey:@"type"] isEqualToString:@"Study"])
-			return [item valueForKey:@"modalities"];
-		else
-			return [item valueForKey:@"modality"];
+        return [item valueForKey:@"modality"];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"name"])
@@ -5341,7 +5336,8 @@ static NSConditionLock *threadLock = nil;
 						}
 					}
 				}
-				else [browserWindow viewerDICOM: self]; // Study
+                else [browserWindow databaseOpenStudy: element];
+//				else [browserWindow viewerDICOM: self]; // Study
 			}
 		}
 	}
@@ -11829,7 +11825,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	for( NSDictionary *dict in array)
 	{
-		if( [[dict valueForKey: @"modality"] isEqualToString: mod])
+		if( [mod rangeOfString: [dict valueForKey: @"modality"]].location != NSNotFound)
 		{
 			int compression = compression_none;
 			if( [[dict valueForKey: @"compression"] intValue] == compression_sameAsDefault)
@@ -16257,9 +16253,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
 				else
-					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (ANY series.modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
@@ -16286,7 +16282,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			break;
 			
 			case 5:			// Modality
-				predicate = [NSPredicate predicateWithFormat: @"ANY series.modality CONTAINS[cd] %@", _searchString];
+				predicate = [NSPredicate predicateWithFormat: @"modality CONTAINS[cd] %@", _searchString];
 			break;
 			
 			case 6:			// Accession Number 
