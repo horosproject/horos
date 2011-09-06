@@ -111,8 +111,11 @@
 			NSLog( @"***** NSThread we should NOT be here");
 
 		if (![_threadsController.arrangedObjects containsObject:thread])
-			return;
-		
+        {
+			NSLog( @"***** [_threadsController.arrangedObjects containsObject:thread] == NO");
+            return;
+		}
+        
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
 		[_threadsController removeObject:thread];
 		

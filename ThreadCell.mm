@@ -132,7 +132,9 @@
 
 
 -(void)drawInteriorWithFrame:(NSRect)frame inView:(NSView*)view {
-	if ([self.thread isFinished]) return;
+    
+	if ([self.thread isFinished])
+        return;
 	
 	NSMutableParagraphStyle* paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -176,7 +178,19 @@
 //		[NSGraphicsContext restoreGraphicsState];
 //	}
 	
-	if ([self.thread isFinished]) return;
+	if ([self.thread isFinished])
+    {
+        // I agree this is U-G-L-Y... bug the panthom bug is even more ugly...
+        @synchronized( [[ThreadsManager defaultManager] threadsController])
+        {
+            if( [[[[ThreadsManager defaultManager] threadsController] arrangedObjects] containsObject: self.thread])
+            {
+                [[ThreadsManager defaultManager] removeThread: self.thread]; 
+                NSLog( @"**** phantom bug? drawWithFrame");
+            }
+        }
+        return;
+    }
 	
 	[self drawInteriorWithFrame:frame inView:view];
 	
