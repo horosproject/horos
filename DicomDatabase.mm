@@ -1507,6 +1507,8 @@ enum { Compress, Decompress };
 								else
 									[image setValue: 0L forKey: @"generatedByOsiriX"];
 								
+                                [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
+                                
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
                                 [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
