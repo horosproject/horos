@@ -25,10 +25,10 @@
 		NSArray* addresses = [self callStackReturnAddresses];
 		if (addresses.count) {
 			void* backtrace_frames[addresses.count];
-			for (int i = addresses.count-1; i >= 0; --i)
+			for (NSInteger i = addresses.count-1; i >= 0; --i)
 				backtrace_frames[i] = (void *)[[addresses objectAtIndex:i] unsignedLongValue];
 			
-			char** frameStrings = backtrace_symbols(backtrace_frames, addresses.count);
+			char** frameStrings = backtrace_symbols(backtrace_frames, (int)addresses.count);
 			if (frameStrings) {
 				for (int x = 0; x < addresses.count; ++x) {
 					if (x) [stackTrace appendString:@"\r"];

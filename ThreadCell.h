@@ -33,6 +33,8 @@
 
 -(id)initWithThread:(NSThread*)thread manager:(ThreadsManager*)manager view:(NSTableView*)view;
 
+-(void)cleanup;
+
 -(NSRect)statusFrame;
 
 @end

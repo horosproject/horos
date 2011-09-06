@@ -32,8 +32,8 @@
 			@try {
 				[self setUrl:url];
 				NSData* result = [super requestWithMethod:method content:content headers:headers context:context];
-				if (result)
-					return result;
+//				if (result) // on peut aussi vouloir retourner nil
+				return result;
 			} @catch (NSException* e) {
 				exception = e; // ignore, just try the next
 			}

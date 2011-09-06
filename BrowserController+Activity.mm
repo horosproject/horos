@@ -146,19 +146,32 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 	return nil;
 }
 
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSArrayController*)object change:(NSDictionary*)change context:(void*)context {
+	if (![NSThread isMainThread]) {
+        [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, object, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
+        return;
+    }
+
 	if (context == BrowserActivityHelperContext) {
-		// we are looking for removed threads
-		NSMutableArray* threadsThatHaveCellsToRemove = [[[_cells valueForKey:@"thread"] mutableCopy] autorelease];
-		[threadsThatHaveCellsToRemove removeObjectsInArray:object.arrangedObjects];
-		
-		for (NSThread* thread in threadsThatHaveCellsToRemove) {
-			id cell = [self cellForThread:thread];
-			if (cell)
-				[_cells removeObject:cell];
-		}
-		
-		return;
+        @synchronized (ThreadsManager.defaultManager.threadsController) {
+            // we are looking for removed threads
+            NSMutableArray* threadsThatHaveCellsToRemove = [[[_cells valueForKey:@"thread"] mutableCopy] autorelease];
+            [threadsThatHaveCellsToRemove removeObjectsInArray:object.arrangedObjects];
+            
+            for (NSThread* thread in threadsThatHaveCellsToRemove) {
+                ThreadCell* cell = (ThreadCell*)[self cellForThread:thread];
+                if (cell) {
+                    [cell cleanup];
+                    [_cells removeObject:cell];
+                }
+            }
+            
+            return;
+        }
 	}
 	
 	[super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -166,13 +179,15 @@ static NSString* const BrowserActivityHelperContext = @"BrowserActivityHelperCon
 
 -(NSCell*)tableView:(NSTableView*)tableView dataCellForTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
 	@try {
-		id cell = [self cellForThread: [[ThreadsManager defaultManager] threadAtIndex:row]];
-		if (cell == nil) {
-			[_cells addObject: cell = [[[ThreadCell alloc] initWithThread:[[ThreadsManager defaultManager] threadAtIndex:row] manager:ThreadsManager.defaultManager view:_browser._activityTableView] autorelease]];
-		}
-		
-		return cell;
-	} @catch (...) {
+        @synchronized (ThreadsManager.defaultManager.threadsController) {
+            id cell = [self cellForThread: [[ThreadsManager defaultManager] threadAtIndex:row]];
+            if (cell == nil) {
+                [_cells addObject: cell = [[[ThreadCell alloc] initWithThread:[[ThreadsManager defaultManager] threadAtIndex:row] manager:ThreadsManager.defaultManager view:_browser._activityTableView] autorelease]];
+            }
+            
+            return cell;
+        }
+    } @catch (...) {
 	}
 	
 	return NULL;

@@ -55,14 +55,19 @@
 	return self;
 }
 
--(void)dealloc {
-//	NSLog(@"cell destroyed!");
-	[self.progressIndicator removeFromSuperview];
-	[_progressIndicator release];
+-(void)cleanup {
+    [self.progressIndicator removeFromSuperview];
+	[_progressIndicator release]; _progressIndicator = nil;
 	
 	[self.cancelButton removeFromSuperview];
-	[_cancelButton release];
-	
+	[_cancelButton release]; _cancelButton = nil;
+
+}
+
+-(void)dealloc {
+//	NSLog(@"cell destroyed!");
+	[self cleanup];
+    
 	[self.thread.threadDictionary release];
 	self.thread = nil;
 	
