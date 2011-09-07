@@ -7243,7 +7243,7 @@ return YES;
 		ThreadLoadImage = YES;
 		
 		loadingPercentage = 0;
-			
+		
 		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 		
 		while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
