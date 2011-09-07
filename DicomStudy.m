@@ -1113,6 +1113,8 @@ static NSRecursiveLock *dbModifyLock = nil;
         [self.managedObjectContext unlock];
     }
 	
+    [[self managedObjectContext] unlock];
+    
 	cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
 	
 	return cachedRawNoFiles;

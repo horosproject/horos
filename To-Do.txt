@@ -1,3 +1,8 @@
+- logContext == nil
+- addFiles : auto select?
+- CD (/tmp ?)
+- phantom threadcell
+
 - Add Albums submenu to File menu
 
 - Copy all Viewers
