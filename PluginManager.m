@@ -435,7 +435,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		{
             NSArray* donotloadnames = nil;
             if (![path isKindOfClass:[NSNull class]]) {
-                [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 if ([donotloadnames containsObject:@"*"])
                     break;
             }
