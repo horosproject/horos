@@ -1,7 +1,7 @@
 A:
 - logContext == nil
-- CD (/tmp ?)
-- phantom threadcell
+- CD :  /tmp
+	Don't display in sources, if copy
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
