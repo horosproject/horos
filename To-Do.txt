@@ -2,6 +2,11 @@ A:
 - logContext == nil
 - CD :  /tmp
 	Don't display in sources, if copy
+	DICOMDIR: scan for thumbnails, if available
+	Cancel Copy
+	Conflit avec Auto Q&R : retrieve restart….
+	Should be read-only (drag & drop, import, delete, …)
+- Phantom cells
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)

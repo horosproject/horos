@@ -7229,6 +7229,10 @@ return YES;
 		
 		[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];
 		
+        if( compressed)
+            if( [BrowserController isItCD: [[pixList[ 0] objectAtIndex:0] sourceFile]]) //Always Single thread for CD/DVD
+                compressed = NO;
+        
 		if( compressed)
 			NSLog( @"start loading multiple thread : compressed data");
 		else
