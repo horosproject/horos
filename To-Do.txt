@@ -1,10 +1,10 @@
 A:
 - logContext == nil
-- addFiles : auto select?
 - CD (/tmp ?)
 - phantom threadcell
 
 - Add Albums submenu to File menu
+- Add Reslice submenu (Orientation item)
 
 - Copy all Viewers
 - Remove OpenJPEG
