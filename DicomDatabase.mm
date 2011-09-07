@@ -1939,15 +1939,16 @@ enum { Compress, Decompress };
 			
 			if( [objects count])
 			{
+                BrowserController* bc = [BrowserController currentBrowser];
+                
 				if( studySelected == NO)
 				{
 					if( [[dict objectForKey: @"selectStudy"] boolValue])
-						[self performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+						[bc performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
 					
 					studySelected = YES;
 				}
 				
-				BrowserController* bc = [BrowserController currentBrowser];
 				if (bc.database == self && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
 				{
 					NSManagedObject *album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
