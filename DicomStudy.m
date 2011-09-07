@@ -1225,6 +1225,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return set;
 }
 
+- (NSSet*) pathsForForkedProcess
+{
+	[[self managedObjectContext] lock];
+	
+	NSMutableSet *set = [NSMutableSet set];
+	
+	@try 
+	{
+		NSSet *sets = [self valueForKeyPath: @"series.images.completePathWithNoDownloadAndLocalOnly"];
+        
+		for (id subset in sets)
+			[set unionSet: subset];
+	}
+	@catch (NSException * e) 
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return set;
+}
+
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 

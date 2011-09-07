@@ -1129,9 +1129,6 @@ enum { Compress, Decompress };
 	[self lock];
 	@try {
         
-        if( self != [[BrowserController currentBrowser] database])
-            NSLog( @"Arg");
-        
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];

@@ -842,18 +842,41 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 	[self didChangeValueForKey: @"pathString"];
 }
 
--(NSString*) completePathWithDownload:(BOOL) download
++ (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c
+{
+	NSPersistentStoreCoordinator *sc = [c persistentStoreCoordinator];
+	NSArray *stores = [sc persistentStores];
+	
+	if( [stores count] != 1)
+	{
+		NSLog( @"*** warning [stores count] != 1 : %@", stores);
+		
+		for( id s in stores)
+			NSLog( @"%@", [[[sc URLForPersistentStore: s] path] stringByDeletingLastPathComponent]);
+	}	
+	return [[[sc URLForPersistentStore: [stores lastObject]] path] stringByDeletingLastPathComponent];
+}
+
+
+-(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
 	if( completePathCache && download == NO)
 		return completePathCache;
-		
-	DicomDatabase* db = [DicomDatabase databaseForContext:self.managedObjectContext];
-	
+    
+	DicomDatabase* db = nil;
+    BOOL isLocal = YES;
+    
+    if( supportNonLocalDatabase)
+    {
+        db = [DicomDatabase databaseForContext:self.managedObjectContext];
+        isLocal = [db isLocal];
+    }
+    
 	if( completePathCache)
 	{
 		if( download == NO)
 			return completePathCache;
-		else if ([db isLocal])
+		else if ( isLocal)
 			return completePathCache;
 	}
 	
@@ -862,11 +885,12 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 	{
 		NSString *path = [self valueForKey:@"path"];
 		
-		if(![db isLocal])
+		if( !isLocal)
 		{
 			if( download)
 				completePathCache = [[(RemoteDicomDatabase*)db fetchDataForImage:self maxFiles:1] retain];
-			else completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+			else
+                completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
 			
 			return completePathCache;
 		}
@@ -874,7 +898,7 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 		{
 			if( [path characterAtIndex: 0] != '/')
 			{
-				completePathCache = [[DicomImage completePathForLocalPath: path directory: [[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath]] retain];
+				completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
 				
 				return completePathCache;
 			}
@@ -885,9 +909,19 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 	return [self valueForKey:@"path"];
 }
 
+-(NSString*) completePathWithDownload:(BOOL) download
+{
+    return [self completePathWithDownload: download supportNonLocalDatabase: YES];
+}
+
 -(NSString*) completePathResolved
 {
 	return [self completePathWithDownload: YES];
+}
+
+-(NSString*) completePathWithNoDownloadAndLocalOnly
+{
+    return [self completePathWithDownload: NO supportNonLocalDatabase: NO];
 }
 
 -(NSString*) completePath
@@ -926,6 +960,11 @@ const NSInteger O2DicomImageSizeUnknown = NSNotFound;
 - (NSSet *)paths
 {
 	return [NSSet setWithObject:[self completePath]];
+}
+
+- (NSSet *)pathsForForkedProcess
+{
+	return [NSSet setWithObject:[self completePathWithNoDownloadAndLocalOnly]];
 }
 
 #ifndef OSIRIX_LIGHT

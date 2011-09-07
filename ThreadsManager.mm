@@ -113,12 +113,9 @@
 	{
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
-
-		if ( [_threadsController.arrangedObjects containsObject:thread])
-        {
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
-            [_threadsController removeObject:thread];
-		}
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+        [_threadsController removeObject:thread];
         
 		[thread release]; // This is not a memory leak - See Below
 	}

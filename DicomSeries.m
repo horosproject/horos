@@ -495,6 +495,26 @@
 	return set;
 }
 
+- (NSSet *)pathsForForkedProcess
+{
+	[[self managedObjectContext] lock];
+	
+	NSSet *set = nil;
+	@try 
+	{
+		set = [self valueForKeyPath:@"images.completePathWithNoDownloadAndLocalOnly"];
+	}
+	@catch (NSException * e) 
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return set;
+}
+
+
 - (NSSet *)keyImages
 {
 	[[self managedObjectContext] lock];

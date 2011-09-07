@@ -33,6 +33,7 @@
 
 #import "browserController.h"
 #import "ThreadsManager.h"
+#import "DicomDatabase.h"
 #import "NSThread+N2.h"
 #import "AppController.h"
 #import "N2Debug.h"
@@ -1542,6 +1543,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					
 					[dbContext release];
 					
+                    if( [[DicomDatabase defaultDatabase] isLocal] == NO)
+                        NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
+                    
 					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
 					[staticContext retain];
 //					[staticContext lock]; //Try to avoid deadlock
