@@ -180,12 +180,12 @@
 	
 	if ([self.thread isFinished])
     {
-//        // I agree this is U-G-L-Y... bug the panthom bug is even more ugly...
-//        @synchronized( [[ThreadsManager defaultManager] threadsController])
-//        {
-//            if( [[[[ThreadsManager defaultManager] threadsController] arrangedObjects] containsObject: self.thread])
-//                [[ThreadsManager defaultManager] removeThread: self.thread];
-//        }
+        // I agree this is U-G-L-Y... bug the panthom bug is even more ugly...
+        @synchronized( [[ThreadsManager defaultManager] threadsController])
+        {
+            if( [[[[ThreadsManager defaultManager] threadsController] arrangedObjects] containsObject: self.thread])
+                [[ThreadsManager defaultManager] removeThread: self.thread];
+        }
         return;
     }
 	
