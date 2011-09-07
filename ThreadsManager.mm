@@ -72,19 +72,23 @@
 			NSLog( @"***** NSThread we should NOT be here");
 		
 		if ([_threadsController.arrangedObjects containsObject:thread] || [thread isFinished])
-			return;
-		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
-		[_threadsController addObject:thread];
-		
-		if (![thread isMainThread] && ![thread isExecuting])
-			@try {
-				[thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
-			} @catch (NSException* e) { // ignore
-			}
-		
-		[thread release]; // This is not a memory leak - See Below
-	}
+		{
+            // Do nothing
+        }
+		else
+        {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+            [_threadsController addObject:thread];
+            
+            if (![thread isMainThread] && ![thread isExecuting])
+                @try {
+                    [thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+                } @catch (NSException* e) { // ignore
+                }
+            }
+            
+            [thread release]; // This is not a memory leak - See Below
+        }
 	}
 }
 
@@ -110,15 +114,12 @@
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
 
-		if (![_threadsController.arrangedObjects containsObject:thread])
+		if ( [_threadsController.arrangedObjects containsObject:thread])
         {
-			NSLog( @"***** [_threadsController.arrangedObjects containsObject:thread] == NO");
-            return;
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+            [_threadsController removeObject:thread];
 		}
         
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
-		[_threadsController removeObject:thread];
-		
 		[thread release]; // This is not a memory leak - See Below
 	}
 	}
