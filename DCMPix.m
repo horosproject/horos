@@ -5771,7 +5771,7 @@ END_CREATE_ROIS:
 			
 			NSString *radioTime = [[radionuclideTotalDoseObject attributeValueWithName:@"RadiopharmaceuticalStartTime"] timeString];
 			
-			if( preferredDate && preferredTime)
+			if( preferredDate && preferredTime && radioTime)
 			{
 				if( [preferredTime length] >= 6)
 				{

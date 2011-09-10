@@ -3248,6 +3248,14 @@ static BOOL initialized = NO;
 	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
 	#endif
 	#endif
+    
+    // Remove PluginManager items...
+    #ifdef MACAPPSTORE
+    NSMenu *pluginsMenu = [filtersMenu supermenu];
+    
+    [pluginsMenu removeItemAtIndex: [pluginsMenu numberOfItems]-1];
+    [pluginsMenu removeItemAtIndex: [pluginsMenu numberOfItems]-1];
+    #endif
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) // Server mode
 		[[[BrowserController currentBrowser] window] orderOut: self];

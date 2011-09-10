@@ -8,6 +8,7 @@ A:
 	Should be read-only (drag & drop, import, delete, …)
 	Crashes (DicomSeries thumbnail, -1 versus 512, …)
 - Phantom cells
+- DB migration
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
