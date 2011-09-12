@@ -70,6 +70,7 @@
 @interface MountedBrowserSource : BrowserSource {
 	NSString* _devicePath;
 	DicomDatabase* _database;
+    BOOL _available;
 }
 
 @property(retain) NSString* devicePath;
@@ -78,6 +79,9 @@
 
 @end
 
+@interface UnavaliableSourceException : NSException
+
+@end
 
 
 @implementation BrowserController (Sources)
@@ -231,24 +235,28 @@
 	if ([source isEqualToSource:[self sourceForDatabase:_database]])
 		return;
 	
-	DicomDatabase* db = [source database];
-	
-	if (db) 
-		[self setDatabase:db];
-	else
-		switch (source.type) {
-			case BrowserSourceTypeLocal: {
-				[self initiateSetDatabaseAtPath:source.location name:source.description];
-			} break;
-			case BrowserSourceTypeRemote: {
-				NSString* host; NSInteger port; [RemoteDicomDatabase address:source.location toAddress:&host port:&port];
-				[self initiateSetRemoteDatabaseWithAddress:host port:port name:source.description];
-			} break;
-			default: {
-				NSBeginAlertSheet(NSLocalizedString(@"DICOM Destination", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, NSLocalizedString(@"It is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil));
-				[self selectCurrentDatabaseSource];
-			} break;
-		}
+    @try {
+        DicomDatabase* db = [source database];
+        
+        if (db) 
+            [self setDatabase:db];
+        else
+            switch (source.type) {
+                case BrowserSourceTypeLocal: {
+                    [self initiateSetDatabaseAtPath:source.location name:source.description];
+                } break;
+                case BrowserSourceTypeRemote: {
+                    NSString* host; NSInteger port; [RemoteDicomDatabase address:source.location toAddress:&host port:&port];
+                    [self initiateSetRemoteDatabaseWithAddress:host port:port name:source.description];
+                } break;
+                default: {
+                    [UnavaliableSourceException raise:NSGenericException format:@"%@", NSLocalizedString(@"This is a DICOM destination node: you cannot browse its content. You can only drag & drop studies on them.", nil)];
+                } break;
+            }
+    } @catch (UnavaliableSourceException* e) {
+        NSBeginAlertSheet(NSLocalizedString(@"Sources", nil), nil, nil, nil, self.window, NSApp, @selector(endSheet:), nil, nil, [e reason]);
+        [self selectCurrentDatabaseSource];
+    }
 }
 
 -(void)redrawSources {
@@ -786,8 +794,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			return;
 		}
 		
+        _available = YES;
+        
 		if ([NSUserDefaults.standardUserDefaults boolForKey:@"autoSelectSourceCDDVD"] && [NSFileManager.defaultManager fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSource:) withObject:self waitUntilDone:NO];
+        else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -796,7 +807,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 -(DicomDatabase*)database {
-	return _database;
+	if (!_available)
+        [UnavaliableSourceException raise:NSGenericException format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
+    return _database;
 }
 
 +(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary {
@@ -843,6 +856,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSImage* im = [NSWorkspace.sharedWorkspace iconForFile:self.devicePath];
 	im.size = [im sizeByScalingProportionallyToSize: cell.image? cell.image.size : NSMakeSize(16,16) ];
 	cell.image = im;
+    
+    if (!_available)
+        cell.textColor = [NSColor grayColor];
 }
 
 -(NSString*)toolTip {
@@ -862,6 +878,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 
+
+@end
+
+@implementation UnavaliableSourceException
 
 @end
 

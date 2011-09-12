@@ -1807,6 +1807,8 @@ enum { Compress, Decompress };
 	
 	for( int i = 0; i < [filesInput count];)
 	{
+        if ([[NSThread currentThread] isCancelled]) break;
+
 		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 		
 		@try
@@ -1817,7 +1819,9 @@ enum { Compress, Decompress };
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
-				NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
+				if ([[NSThread currentThread] isCancelled]) break;
+                
+                NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
 				if( [[dict objectForKey: @"copyFiles"] boolValue])
 				{

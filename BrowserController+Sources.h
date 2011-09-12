@@ -15,6 +15,8 @@
 -(void)awakeSources;
 -(void)deallocSources;
 
+-(void)redrawSources;
+
 -(BrowserSource*)sourceAtRow:(int)row;
 -(int)rowForDatabase:(DicomDatabase*)database;
 -(BrowserSource*)sourceForDatabase:(DicomDatabase*)database;

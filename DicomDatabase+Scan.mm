@@ -336,8 +336,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
 	
 	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
-		thread.name = NSLocalizedString(@"Copying files from media...", nil);
-		
+		NSString* previousThreadName = [[thread.name retain] autorelease];
+        thread.name = NSLocalizedString(@"Copying files from media...", nil);
+		thread.supportsCancel = YES;
+        
 //		DicomDatabase* db = [DicomDatabase activeLocalDatabase];
 		
 		NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
@@ -365,8 +367,10 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
 			thread.progress = CGFloat(++progress)/paths.count;
 		}*/
+        
+        thread.name = previousThreadName;
 		
-		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"]) {
+		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![thread isCancelled]) {
 			thread.status = NSLocalizedString(@"Ejecting...", nil);
 			thread.progress = -1;
 			
@@ -374,6 +378,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 			
 			return;
 		}
+        
+        thread.isCancelled = NO;
 	}
 	
 	thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
