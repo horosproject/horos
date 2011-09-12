@@ -35,6 +35,7 @@
 #import "Notifications.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Debug.h"
+#import "DicomDatabase.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -706,7 +707,7 @@ extern "C"
 	NSIndexSet* indices = [outlineView selectedRowIndexes];
 	BOOL extendingSelection = NO;
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
 	
 	@try 
 	{
@@ -731,7 +732,7 @@ extern "C"
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
 	
 	if( extendingSelection)
 	{
@@ -929,7 +930,7 @@ extern "C"
 	
 	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 	{
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
 		
 		[context lock];
 		
@@ -984,7 +985,7 @@ extern "C"
 
             NSError *error = nil;
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+            NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
             NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
             
             [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
@@ -2719,7 +2720,7 @@ extern "C"
 	
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
 	
 	NSArray *studyArray, *seriesArray;
 	BOOL success = NO;

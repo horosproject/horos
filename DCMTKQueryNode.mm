@@ -30,6 +30,7 @@
 #import "MutableArrayCategory.h"
 #import "WADODownload.h"
 #import "N2Debug.h"
+#import "DicomDatabase.h"
 
 #include <libkern/OSAtomic.h>
 
@@ -813,7 +814,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSError *error = nil;
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextIndependentContext: YES];
+		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] independentContext];
 		
 		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
 		if( [self isMemberOfClass: [DCMTKSeriesQueryNode class]])
