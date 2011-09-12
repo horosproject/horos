@@ -308,7 +308,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
-const NSInteger O2DicomImageSizeUnknown = NSNotFound;
+const NSInteger O2DicomImageSizeUnknown = INT_MAX;
 
 -(void)_updateMetaData_size {
 	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
