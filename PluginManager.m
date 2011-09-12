@@ -430,8 +430,28 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		[fusionPluginsMenu insertItemWithTitle:NSLocalizedString(@"Select a fusion plug-in", nil) action:nil keyEquivalent:@"" atIndex:0];
 		
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
-		#ifndef OSIRIX_LIGHT
-		for (id path in paths)
+        #ifndef OSIRIX_LIGHT
+		
+        NSString *pluginCrash = [documentsDirectory() stringByAppendingPathComponent:@"/Plugin_Loading"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash])
+        {
+            NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
+            
+            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), [pluginCrashPath lastPathComponent]], NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil);
+            
+            if( result == NSAlertDefaultReturn) // Delete Plugin
+            {
+                NSError *error = nil;
+                [[NSFileManager defaultManager] removeItemAtPath: pluginCrashPath error: &error];
+                
+                if( error)
+                    NSLog( @"**** Cannot Delete File : Crashing Plugin Delete Error: %@", error);
+            }
+            
+            [[NSFileManager defaultManager] removeItemAtPath: pluginCrash error: nil];
+        }
+        
+        for (id path in paths)
 		{
             NSArray* donotloadnames = nil;
             if (![path isKindOfClass:[NSNull class]]) {
@@ -474,7 +494,11 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 						
 						@try
 						{
-							NSBundle *plugin = [NSBundle bundleWithPath: [PluginManager pathResolved: [path stringByAppendingPathComponent:name]]];
+                            NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent:name]];
+                            
+                            [pathResolved writeToFile: pluginCrash atomically: YES encoding: NSUTF8StringEncoding error: nil];
+                            
+							NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
 							
 							if( plugin == nil)
 								NSLog( @"**** Bundle opening failed for plugin: %@", [path stringByAppendingPathComponent:name]);
@@ -541,6 +565,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 									else NSLog( @"********* principal class not found for: %@ - %@", name, [plugin principalClass]);
 								}
 							}
+                            
+                            [[NSFileManager defaultManager] removeItemAtPath: pluginCrash error: nil];
 						}
 						@catch( NSException *e)
 						{

@@ -254,6 +254,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
 			filepath = [self _fixedPathForPath:filepath withPaths:allpaths];
 			if (filepath) [item setObject:filepath forKey:@"filePath"];
 		}
+        
+        if ([thread isCancelled]) 
+            break;
 	}
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %d %@...", nil), items.count, items.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil) ];
@@ -378,24 +381,22 @@ static NSString* _dcmElementKey(DcmElement* element) {
 			
 			return;
 		}
-        
-        thread.isCancelled = NO;
-	}
+    }
 	
-	thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
-	NSMutableArray* dicomSeries	= [NSMutableArray array];
-	for (DicomImage* di in dicomImages)
-		if (![dicomSeries containsObject:di.series])
-			[dicomSeries addObject:di.series];
-	for (NSInteger i = 0; i < dicomSeries.count; ++i)
-		@try {
-			thread.progress = 1.0*i/dicomSeries.count;
-			[[dicomSeries objectAtIndex:i] thumbnail];
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
-		}
-	
-	
+    if (![[[BrowserController currentBrowser] sourceForDatabase:self] isBeingEjected]) {
+        thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
+        NSMutableArray* dicomSeries	= [NSMutableArray array];
+        for (DicomImage* di in dicomImages)
+            if (![dicomSeries containsObject:di.series])
+                [dicomSeries addObject:di.series];
+        for (NSInteger i = 0; i < dicomSeries.count; ++i)
+            @try {
+                thread.progress = 1.0*i/dicomSeries.count;
+                [[dicomSeries objectAtIndex:i] thumbnail];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+    }
 	
 	/*
 	

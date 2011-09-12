@@ -71,11 +71,14 @@
 	NSString* _devicePath;
 	DicomDatabase* _database;
     BOOL _available;
+    NSThread* _scanThread;
 }
 
 @property(retain) NSString* devicePath;
 
 +(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+
+-(void)willUnmount;
 
 @end
 
@@ -611,11 +614,27 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 }
 
 -(void)_observeVolumeNotification:(NSNotification*)notification {
+	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
+
 	[_browser redrawSources];
 	
 	if ([notification.name isEqualToString:NSWorkspaceDidMountNotification]) {
 		[self _analyzeVolumeAtPath:[notification.userInfo objectForKey:@"NSDevicePath"]];
 	}
+    
+    if ([notification.name isEqualToString:NSWorkspaceDidUnmountNotification]) {
+        MountedBrowserSource* mbs = nil;
+        for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
+            if ([ibs isKindOfClass:[MountedBrowserSource class]] && [ibs.devicePath isEqualToString:path]) {
+                mbs = ibs;
+                break;
+            }
+        if (mbs) {
+            if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs])
+                [_browser setDatabase:DicomDatabase.defaultDatabase];
+            [_browser.sources removeObject:mbs];
+        }
+    }
 	
 //	for (BrowserSource* bs in _browser.sources)
 //		if (bs.type == BrowserSourceTypeLocal && [bs.location hasPrefix:root]) {
@@ -639,11 +658,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			mbs = ibs;
 			break;
 		}
-	if (mbs) {
-		if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs])
-			[_browser setDatabase:DicomDatabase.defaultDatabase];
-		[_browser.sources removeObject:mbs];
-	}
+    
+	if (mbs)
+        [mbs willUnmount];
 }
 
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
@@ -785,6 +802,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
 	@try {
 		NSThread* thread = [NSThread currentThread];
+        @synchronized (self) {
+            _scanThread = thread;
+        }
+        
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
 		[ThreadsManager.defaultManager addThreadAndStart:thread];
 		[_database scanAtPath:self.devicePath];
@@ -802,6 +823,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+        @synchronized (self) {
+            _scanThread = nil;
+        }
+
 		[pool release];
 	}
 }
@@ -877,7 +902,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return NSIntegerMin+1;
 }
 
-
+-(void)willUnmount {
+    @synchronized (self) {
+        if (_scanThread)
+            [_scanThread cancel];
+    }
+}
 
 @end
 

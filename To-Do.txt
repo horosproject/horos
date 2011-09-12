@@ -1,11 +1,19 @@
 - logContext == nil
-- addFiles : auto select?
-- CD (/tmp ?)
-- phantom threadcell
+- CD :  /tmp
+	Don't display in sources, if copy
+	DICOMDIR: scan for thumbnails, if available
+	Cancel Copy
+	Conflit avec Auto Q&R : retrieve restart….
+	Should be read-only (drag & drop, import, delete, …)
+	Crashes (DicomSeries thumbnail, -1 versus 512, …)
+- Phantom cells
+- DB migration
 
 - Add Albums submenu to File menu
+- Add Reslice submenu (Orientation item)
 
-- Copy all Viewers
+- Copy all Viewers (copy&paste)
+- PDF Open in Viewer -> Preview
 - Remove OpenJPEG
 - CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels
