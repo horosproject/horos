@@ -13,7 +13,8 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
-- Copy all Viewers
+- Copy all Viewers (copy&paste)
+- PDF Open in Viewer -> Preview
 - Remove OpenJPEG
 - CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels
