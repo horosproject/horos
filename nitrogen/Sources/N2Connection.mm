@@ -147,7 +147,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		_hasBytesAvailable = NO;
 		
 		NSUInteger maxLength = 1024; uint8_t buffer[maxLength];
-		unsigned int length = [_inputStream read:buffer maxLength:maxLength];
+		NSInteger length = [_inputStream read:buffer maxLength:maxLength];
 		if (length > 0) {
 			DLog(@"%@ Read %d Bytes", self, length);
 			//			std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
