@@ -15,6 +15,7 @@
 
 #import "MyOutlineView.h"
 #import "browserController.h"
+#import "DicomDatabase.h"
 #import "DicomStudy.h"
 
 @implementation MyOutlineView
@@ -167,6 +168,11 @@
 	if ([[sender draggingSource] isEqual:self]) {
 		return NSDragOperationNone;
 	}
+    
+    if ([[[BrowserController currentBrowser] database] isReadOnly]) {
+		return NSDragOperationNone;
+    }
+    
     if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
     {
         //this means that the sender is offering the type of operation we want
@@ -192,6 +198,11 @@
 
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender
 {
+    
+    if ([[[BrowserController currentBrowser] database] isReadOnly]) {
+		return NSDragOperationNone;
+    }
+    
     if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) 
                     == NSDragOperationGeneric)
     {
@@ -215,12 +226,22 @@
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
 {
+    
+    if ([[[BrowserController currentBrowser] database] isReadOnly]) {
+		return NO;
+    }
+    
     return YES;
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
 {
-	if (![[sender draggingSource] isEqual:self])
+    
+    if ([[[BrowserController currentBrowser] database] isReadOnly]) {
+		return NO;
+    }
+    
+    if (![[sender draggingSource] isEqual:self])
 	{
 		NSPasteboard *paste = [sender draggingPasteboard];
 		

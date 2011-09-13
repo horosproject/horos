@@ -4557,6 +4557,13 @@ static NSConditionLock *threadLock = nil;
 
 }
 
+//-(NSDragOperation)outlineView:(NSOutlineView*)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
+//{
+//    if ([self.database isReadOnly])
+//        return NSDragOperationNone;
+//    return NSDragOperationGeneric;
+//}
+
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
 	NSArray *r = nil;
