@@ -308,7 +308,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 #pragma mark-
 
-const NSInteger O2DicomImageSizeUnknown = INT_MAX;
+const NSInteger OsirixDicomImageSizeUnknown = INT_MAX;
 
 -(void)_updateMetaData_size {
 	DicomFile* df = [[DicomFile alloc] init:[self completePath]];
@@ -323,7 +323,7 @@ const NSInteger O2DicomImageSizeUnknown = INT_MAX;
 	
 	NSNumber* f = [self primitiveValueForKey:@"storedHeight"];
 	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == O2DicomImageSizeUnknown) {
+	else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
 		[self _updateMetaData_size];
 		f = [self primitiveValueForKey:@"storedHeight"];
 	}
@@ -355,7 +355,7 @@ const NSInteger O2DicomImageSizeUnknown = INT_MAX;
 	
 	NSNumber* f = [self primitiveValueForKey:@"storedWidth"];
 	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == O2DicomImageSizeUnknown) {
+	else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
 		[self _updateMetaData_size];
 		f = [self primitiveValueForKey:@"storedWidth"];
 	}

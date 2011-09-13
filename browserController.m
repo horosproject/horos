@@ -6939,7 +6939,7 @@ static BOOL withReset = NO;
 
 		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-        NSScrollView* scrollView = (NSScrollView*)[[sender subviews] objectAtIndex:0];
+        NSScrollView* scrollView = [[(NSScrollView*)[[sender subviews] objectAtIndex:0] subviews] objectAtIndex:0];
         CGFloat scrollbarWidth = 0;
         if ([scrollView isKindOfClass:[NSScrollView class]]) {
             NSScroller* scroller = [scrollView verticalScroller];

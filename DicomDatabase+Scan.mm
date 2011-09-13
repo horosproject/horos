@@ -177,9 +177,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValue] forKey:@"performingPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : O2DicomImageSizeUnknown] forKey:@"height"];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
-		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : O2DicomImageSizeUnknown] forKey:@"width"];
+		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
 		
 /*		[item setObject:path forKey:@"date"];
 		[item setObject:path forKey:@"seriesDICOMUID"];

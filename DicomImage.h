@@ -96,7 +96,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSString*) extension;
 - (NSNumber*) height;
 - (NSNumber*) width;
-extern const NSInteger O2DicomImageSizeUnknown;
+extern const NSInteger OsirixDicomImageSizeUnknown;
 
 +(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
 
