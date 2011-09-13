@@ -141,7 +141,7 @@ static DicomDatabase* defaultDatabase = nil;
 +(DicomDatabase*)defaultDatabase {
 	@synchronized(self) {
 		if (!defaultDatabase)
-			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name:NSLocalizedString(@"Default DB", nil)] retain];
+			defaultDatabase = [[self databaseAtPath:[self defaultBaseDirPath] name:NSLocalizedString(@"Default Database", nil)] retain];
 	}
 	
 	return defaultDatabase;

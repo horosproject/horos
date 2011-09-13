@@ -304,7 +304,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 			if (_maximumReadSizePerEvent && maxLength > _maximumReadSizePerEvent-readSizeForThisEvent)
 				maxLength = _maximumReadSizePerEvent-readSizeForThisEvent;
 			uint8_t buffer[maxLength];
-			unsigned int length = [_inputStream read:buffer maxLength:maxLength];
+			NSInteger length = [_inputStream read:buffer maxLength:maxLength];
 			
 			if (length > 0) {
 				// DLog(@"%@ Read %d Bytes", self, length);
