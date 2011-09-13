@@ -204,17 +204,21 @@
 }
 
 -(NSString*)destinationOfAliasAtPath:(NSString*)inPath {
+    if (inPath == nil)
+        return nil;
+    
 	CFStringRef resolvedPath = nil;
-	CFURLRef url = CFURLCreateWithFileSystemPath(NULL /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
-	if (url != NULL) {
+    
+	CFURLRef url = CFURLCreateWithFileSystemPath(nil /*allocator*/, (CFStringRef)inPath, kCFURLPOSIXPathStyle, NO /*isDirectory*/);
+	if (url != nil) {
 		FSRef fsRef;
 		if (CFURLGetFSRef(url, &fsRef))
 		{
 			Boolean targetIsFolder, wasAliased;
 			if (FSResolveAliasFile (&fsRef, true /*resolveAliasChains*/, &targetIsFolder, &wasAliased) == noErr && wasAliased)
 			{
-				CFURLRef resolvedurl = CFURLCreateFromFSRef(NULL /*allocator*/, &fsRef);
-				if (resolvedurl != NULL)
+				CFURLRef resolvedurl = CFURLCreateFromFSRef(nil /*allocator*/, &fsRef);
+				if (resolvedurl != nil)
 				{
 					resolvedPath = CFURLCopyFileSystemPath(resolvedurl, kCFURLPOSIXPathStyle);
 					CFRelease(resolvedurl);
@@ -223,6 +227,7 @@
 		}
 		CFRelease(url);
 	}
+    
 	return [(NSString*)resolvedPath autorelease];	
 }
 
