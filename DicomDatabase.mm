@@ -238,7 +238,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 			for (DicomDatabase* dbi in [databasesDictionary allValues])
 				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator) {
 					// we must return a valid DicomDatabase with the specified context
-					DicomDatabase* db = [[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c]; // TODO: MEMORY LEAK?? SHOULD IT BE : autorelease] ???
+					DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c] autorelease];
 					db.name = dbi.name;
 					return db;
 				}
