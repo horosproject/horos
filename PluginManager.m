@@ -20,6 +20,7 @@
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
 #import "Notifications.h"
+#import "NSFileManager+N2.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil;
@@ -432,7 +433,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
         #ifndef OSIRIX_LIGHT
 		
-        NSString *pluginCrash = [documentsDirectory() stringByAppendingPathComponent:@"/Plugin_Loading"];
+        NSString *pluginCrash = [[[NSFileManager defaultManager] userApplicationSupportFolderForApp] stringByAppendingPathComponent:@"Plugin_Loading"];
         if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash])
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];

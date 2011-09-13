@@ -85,7 +85,6 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
 //    	return nil;
 //    if (self.isCancelled)
 //    	return nil;
-    
 	
 	NSMutableArray* a = nil;
 	
@@ -94,7 +93,8 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
 		if (!a) {
 			a = [NSMutableArray array];
 			[self.threadDictionary setObject:a forKey:NSThreadStackArrayKey];
-			[self enterOperation];
+			if ([self.threadDictionary objectForKey:NSThreadStackArrayKey])
+                [self enterOperation];
 		}
 	}
 	
