@@ -1,5 +1,6 @@
 A:
 - logContext == nil
+- ScrollBar Matrix Thumbnails
 - CD :  /tmp
 	Don't display in sources, if copy
 	DICOMDIR: scan for thumbnails, if available
