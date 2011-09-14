@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
+		<string key="IBDocument.SystemVersion">11B26</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
 		<string key="IBDocument.AppKitVersion">1138</string>
 		<string key="IBDocument.HIToolboxVersion">566.00</string>
@@ -3725,7 +3725,7 @@
 													<string key="NSFrameSize">{2534, 317}</string>
 													<reference key="NSSuperview" ref="613998968"/>
 													<reference key="NSWindow"/>
-													<reference key="NSNextKeyView" ref="8580273"/>
+													<reference key="NSNextKeyView" ref="435897027"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSTableHeaderView" key="NSHeaderView" id="658526862">
 														<reference key="NSNextResponder" ref="903567248"/>
@@ -3733,10 +3733,10 @@
 														<string key="NSFrameSize">{2534, 17}</string>
 														<reference key="NSSuperview" ref="903567248"/>
 														<reference key="NSWindow"/>
-														<reference key="NSNextKeyView" ref="1005257844"/>
+														<reference key="NSNextKeyView" ref="613998968"/>
 														<reference key="NSTableView" ref="300364488"/>
 													</object>
-													<object class="_NSCornerView" key="NSCornerView" id="1005257844">
+													<object class="_NSCornerView" key="NSCornerView">
 														<nil key="NSNextResponder"/>
 														<int key="NSvFlags">256</int>
 														<string key="NSFrame">{{1108, 0}, {16, 17}}</string>
@@ -4151,7 +4151,7 @@
 															<string key="NSIdentifier">date</string>
 															<double key="NSWidth">130</double>
 															<double key="NSMinWidth">130</double>
-															<double key="NSMaxWidth">150</double>
+															<double key="NSMaxWidth">180</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">75628096</int>
 																<int key="NSCellFlags2">2048</int>
@@ -4207,7 +4207,7 @@
 															<string key="NSIdentifier">dateAdded</string>
 															<double key="NSWidth">130</double>
 															<double key="NSMinWidth">130</double>
-															<double key="NSMaxWidth">170</double>
+															<double key="NSMaxWidth">180</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">75628096</int>
 																<int key="NSCellFlags2">2048</int>
@@ -4235,7 +4235,7 @@
 															<string key="NSIdentifier">dateOpened</string>
 															<double key="NSWidth">130</double>
 															<double key="NSMinWidth">130</double>
-															<double key="NSMaxWidth">170</double>
+															<double key="NSMaxWidth">180</double>
 															<object class="NSTableHeaderCell" key="NSHeaderCell">
 																<int key="NSCellFlags">75628096</int>
 																<int key="NSCellFlags2">2048</int>
@@ -4567,7 +4567,7 @@
 											<string key="NSFrame">{{1108, 17}, {15, 311}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="435897027"/>
+											<reference key="NSNextKeyView" ref="766578884"/>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
 											<double key="NSCurValue">0.53527202522019668</double>
@@ -4579,7 +4579,7 @@
 											<string key="NSFrame">{{1, 319}, {1116, 15}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="766578884"/>
+											<reference key="NSNextKeyView" ref="8580273"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSsFlags">1</int>
 											<reference key="NSTarget" ref="832526649"/>
