@@ -51,7 +51,7 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
 -(void)modifyDefaultAlbums;
--(void)recomputePatientUIDs;
++(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
 
 @end
@@ -308,11 +308,12 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	// init and register
 	
-	self = [super initWithPath:sqlFilePath context:c];
-	
 	self.baseDirPath = p;
 	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
 	if (!_dataBaseDirPath) _dataBaseDirPath = p;
+
+	self = [super initWithPath:sqlFilePath context:c];
+	
 	[_dataBaseDirPath retain];
 	
     [DicomDatabase knowAbout:self];
@@ -411,10 +412,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
 	if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
 	
-	if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
-		if ([self upgradeSqlFileFromModelVersion:modelVersion])
-			[self recomputePatientUIDs]; // if upgradeSqlFileFromModelVersion returns NO, the database was rebuilt so no need to recompute IDs
-	}
+    BOOL rebuildSaidYes = NO;
+	if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion])
+		rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
 	
 	// super + spec
 	
@@ -422,6 +422,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 	[context setUndoManager: nil];
      
+    if (rebuildSaidYes)
+        [DicomDatabase recomputePatientUIDsInContext:context]; // if upgradeSqlFileFromModelVersion returns NO, the database was rebuilt so no need to recompute IDs
+    
 	return context;
 }
 
@@ -481,9 +484,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	return [basePath stringByAppendingPathComponent:SqlFileName];
 }
 
--(NSString*)sqlFilePath {
+/*-(NSString*)sqlFilePath {
 	return [DicomDatabase sqlFilePathForBasePath:self.baseDirPath];
-}
+}*/
 
 -(NSString*)dataDirPath {
 	return [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:[self.dataBaseDirPath stringByAppendingPathComponent:@"DATABASE.noindex"]];
@@ -2688,17 +2691,17 @@ enum { Compress, Decompress };
 
 
 
-- (void)recomputePatientUIDs { // TODO: this is SLOW -> show advancement
++(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context { // TODO: this is SLOW -> show advancement
 	NSLog(@"In %s", __PRETTY_FUNCTION__);
 	
 	// Find all studies
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: self.studyEntity];
-	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+	[dbRequest setEntity:[NSEntityDescription entityForName:@"Study" inManagedObjectContext:context]];
+	[dbRequest setPredicate:[NSPredicate predicateWithValue:YES]];
 	
-	[self.managedObjectContext lock];
+	[context lock];
 	@try {
-		NSArray* studiesArray = [self.managedObjectContext executeFetchRequest:dbRequest error:nil];
+		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:nil];
 		for (DicomStudy* study in studiesArray) {
 			@try {
 				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
@@ -2713,7 +2716,7 @@ enum { Compress, Decompress };
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-		[self.managedObjectContext unlock];
+		[context unlock];
 	}
 }
 

@@ -867,10 +867,11 @@ const NSInteger OsirixDicomImageSizeUnknown = INT_MAX;
     BOOL isLocal = YES;
     
     if( supportNonLocalDatabase)
-    {
+     @try {
         db = [DicomDatabase databaseForContext:self.managedObjectContext];
         isLocal = [db isLocal];
-    }
+     } @catch (...) {
+     }
     
 	if( completePathCache)
 	{
