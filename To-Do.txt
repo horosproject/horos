@@ -1,10 +1,14 @@
 A:
 - logContext == nil
-- DB Remote: crash
+- DB Remote: Notice: strange, we seem to have redownloaded a remote image
+- DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
+- Cancel copy files from DB to DB
 - CD :  /tmp
 	Should be read-only (drag & drop, import, delete, …)
+	Copy from CD to DB much slow (250 Kb/s) DicomFile isDICOMFile?
+	Cases are added to CD… (Auto Q&R, DICOM Listener?)
 - Phantom cells
 - DB migration
 

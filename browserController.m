@@ -3974,8 +3974,28 @@ static NSConditionLock *threadLock = nil;
 					
 					dstPath = [self getNewFileDatabasePath: extension];
 					
-					if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error: nil])
-					{
+#define USECORESERVICESFORCOPY 1
+                    
+#ifdef USECORESERVICESFORCOPY
+                    char *targetPath = nil;
+                    OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+                    OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+                    
+                    if( err != 0)
+                    {
+                        NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
+                    }
+                    else
+                    {
+#else
+                        NSError* err = nil;
+                        if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err] == NO)
+                        {
+                            NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
+                        }
+                        else
+                        {
+#endif
 						if( [extension isEqualToString: @"dcm"] == NO)
 						{
 							DicomFile *dcmFile = [[[DicomFile alloc] init: dstPath] autorelease];
@@ -3992,8 +4012,6 @@ static NSConditionLock *threadLock = nil;
 						
 						[copiedFiles addObject: dstPath];
 					}
-					else
-						NSLog( @"***** copyItemAtPath failed : srcPath");
 				}
 				else
 				{
