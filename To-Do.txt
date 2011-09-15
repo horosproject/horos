@@ -7,8 +7,8 @@ A:
 - Cancel copy files from DB to DB
 - CD :  /tmp
 	Should be read-only (drag & drop, import, delete, …)
-	Copy from CD to DB much slow (250 Kb/s) DicomFile isDICOMFile?
 	Cases are added to CD… (Auto Q&R, DICOM Listener?)
+	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
 - Phantom cells
 - DB migration
 
