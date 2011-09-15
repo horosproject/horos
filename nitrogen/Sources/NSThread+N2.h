@@ -17,6 +17,8 @@
 
 @interface NSThread (N2)
 
+extern NSString* const NSThreadNameKey;
+
 extern NSString* const NSThreadUniqueIdKey;
 -(NSString*)uniqueId;
 -(void)setUniqueId:(NSString*)uniqueId;

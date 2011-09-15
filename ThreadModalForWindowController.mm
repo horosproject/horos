@@ -47,25 +47,33 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	return self;	
 }
 
+static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModalForWindowControllerObservationContext";
+
 -(void)awakeFromNib {
 	[self.progressIndicator setMinValue:0];
 	[self.progressIndicator setMaxValue:1];
 	[self.progressIndicator setUsesThreadedAnimation:YES];
 	[self.progressIndicator startAnimation:self];
 	
-    [self.titleField bind:@"value" toObject:self.thread withKeyPath:@"name" options:NULL];
+    [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
+    [self.window bind:@"title" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
     [self.statusField bind:@"value" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	[self.cancelButton bind:@"hidden2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
 	
-	[_thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:NULL];
+	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadNameKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadStatusKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadProgressDetailsKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 }
 
 -(void)sheetDidEndOnMainThread:(NSWindow*)sheet {
 //	[[_thread threadDictionary] removeObjectForKey:ThreadIsCurrentlyModal];
 	[sheet orderOut:self];
-	[NSApp endSheet:sheet];
+//	[NSApp endSheet:sheet];
 	[self release];
 }
 
@@ -77,6 +85,11 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	DLog(@"[ThreadModalForWindowController dealloc]");
 	
 	[self.thread removeObserver:self forKeyPath:NSThreadProgressKey];
+	[self.thread removeObserver:self forKeyPath:NSThreadNameKey];
+	[self.thread removeObserver:self forKeyPath:NSThreadStatusKey];
+	[self.thread removeObserver:self forKeyPath:NSThreadProgressDetailsKey];
+	[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
+	[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
 	
 	[[_thread threadDictionary] release];
 	[_thread release];
@@ -86,14 +99,31 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	if (obj == self.thread)
+	if (context == ThreadModalForWindowControllerObservationContext) {
 		if ([keyPath isEqual:NSThreadProgressKey]) {
 			[self.progressIndicator setIndeterminate: self.thread.progress < 0];	
 			if (self.thread.progress >= 0)
 				[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-			return;
 		}
-	
+        
+        if ([NSThread isMainThread]) {
+            if ([keyPath isEqual:NSThreadProgressKey])
+                [self.progressIndicator display];
+            if ([keyPath isEqual:NSThreadNameKey])
+                [self.window display];
+            if ([keyPath isEqual:NSThreadStatusKey])
+                [self.statusField display];
+            if ([keyPath isEqual:NSThreadProgressDetailsKey])
+                [self.progressDetailsField display];
+            if ([keyPath isEqual:NSThreadSupportsCancelKey])
+                [self.cancelButton display];
+            if ([keyPath isEqual:NSThreadIsCancelledKey])
+                [self.cancelButton display];
+        }
+        
+        return;
+	}
+        
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
@@ -101,7 +131,16 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
 	[self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
-	[NSApp performSelectorOnMainThread:@selector(endSheet:) withObject:self.window waitUntilDone:NO];
+    
+	if ([NSThread isMainThread]) 
+		[NSApp endSheet:self.window];
+	else [NSApp performSelectorOnMainThread:@selector(endSheet:) withObject:self.window waitUntilDone:NO];
+//    if (![self.window isSheet]) {
+//        if ([NSThread isMainThread]) 
+//            [self.window orderOut:self];
+//        else [self.window performSelectorOnMainThread:@selector(orderOut:) withObject:self waitUntilDone:NO];
+//    }
+    
 }
 
 -(void)threadWillExitNotification:(NSNotification*)notification {

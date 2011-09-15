@@ -231,7 +231,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 }
 
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
-	if (databasesDictionary)
+	//if (databasesDictionary)
 		@synchronized(databasesDictionary) {
 			// is it the MOC of a listed database?
 			for (DicomDatabase* dbi in [databasesDictionary allValues])
@@ -245,9 +245,27 @@ static NSMutableDictionary* databasesDictionary = nil;
 					db.name = dbi.name;
 					return db;
 				}
+            // uhm, let's try with the persistentStores
+            //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
+            //    
+            //}
 		}
-	[NSException raise:NSGenericException format:@"Unidentified database context"];
-	return nil;
+
+    NSString* path = nil;
+    for (NSPersistentStore* ps in c.persistentStoreCoordinator.persistentStores)
+        if ([NSFileManager.defaultManager fileExistsAtPath:ps.URL.path]) {
+            path = ps.URL.path;
+            break;
+        }
+    
+    DicomDatabase* dbp = [self databaseAtPath:path];
+    if (dbp)
+        return dbp;
+    
+    return [[[self class] alloc] initWithPath:path context:c];
+    
+//	[NSException raise:NSGenericException format:@"Unidentified database context"];
+//  return nil;
 }
 
 static DicomDatabase* activeLocalDatabase = nil;
@@ -311,12 +329,11 @@ static DicomDatabase* activeLocalDatabase = nil;
 	self.baseDirPath = p;
 	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
 	if (!_dataBaseDirPath) _dataBaseDirPath = p;
-
-	self = [super initWithPath:sqlFilePath context:c];
-	
 	[_dataBaseDirPath retain];
 	
     [DicomDatabase knowAbout:self];
+
+	self = [super initWithPath:sqlFilePath context:c];
 	
 	// post-init
 	
@@ -413,8 +430,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
 	
     BOOL rebuildSaidYes = NO;
-	if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion])
+	if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
 		rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
+        [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    }
 	
 	// super + spec
 	
@@ -2374,32 +2393,47 @@ enum { Compress, Decompress };
 }
 
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion {
-	NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
-	if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
-	
-	if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]]) {
-		int r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
-		if (r == NSAlertAlternateReturn) {
-			[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil]; // to avoid the crash message during next startup
-			[NSApp terminate:self];
-		}
-		
-		[[NSFileManager defaultManager] removeItemAtPath:self.sqlFilePath error:nil];
-		
-		[self rebuild:YES];
-		
-		return NO;
-	}
-	
-	NSManagedObjectModel* oldModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:oldModelFilename]]];
-	NSPersistentStoreCoordinator* oldPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:oldModel];
-	NSManagedObjectContext* oldContext = [[NSManagedObjectContext alloc] init];
-
-	NSManagedObjectModel* newModel = self.managedObjectModel;
-	NSPersistentStoreCoordinator* newPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:newModel];
-	NSManagedObjectContext* newContext = [[NSManagedObjectContext alloc] init];
-	
+	NSThread* thread = [NSThread currentThread];
+    NSString* oldThreadName = thread.name;
+    
+    NSManagedObjectModel* oldModel = nil;
+    NSPersistentStoreCoordinator* oldPersistentStoreCoordinator = nil;
+    NSManagedObjectContext* oldContext = nil;
+    NSManagedObjectModel* newModel = nil;
+    NSPersistentStoreCoordinator* newPersistentStoreCoordinator = nil;
+    NSManagedObjectContext* newContext = nil;
+    
+    [thread enterOperation];
 	@try {
+        thread.name = NSLocalizedString(@"Upgrading database...", nil);
+        
+     //   [NSThread sleepForTimeInterval:2];
+        
+        NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
+        if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
+        
+        if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]]) {
+            int r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
+            if (r == NSAlertAlternateReturn) {
+                [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil]; // to avoid the crash message during next startup
+                [NSApp terminate:self];
+            }
+            
+            [[NSFileManager defaultManager] removeItemAtPath:self.sqlFilePath error:nil];
+            
+            [self rebuild:YES];
+            
+            return NO;
+        }
+        
+        NSManagedObjectModel* oldModel = [[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:oldModelFilename]]];
+        NSPersistentStoreCoordinator* oldPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:oldModel];
+        NSManagedObjectContext* oldContext = [[NSManagedObjectContext alloc] init];
+
+        NSManagedObjectModel* newModel = self.managedObjectModel;
+        NSPersistentStoreCoordinator* newPersistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:newModel];
+        NSManagedObjectContext* newContext = [[NSManagedObjectContext alloc] init];
+	
 		NSError* err = NULL;
 		NSMutableArray* upgradeProblems = [NSMutableArray array];
 		
@@ -2440,6 +2474,10 @@ enum { Compress, Decompress };
 		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		
 		NSMutableArray* studies = [NSMutableArray arrayWithArray: [oldContext executeFetchRequest:dbRequest error:nil]];
+        NSInteger studiesCount = studies.count;
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Upgrading %d %@...", nil), studiesCount, (studiesCount != 1 ? NSLocalizedString(@"studies", nil) : NSLocalizedString(@"study", nil))];
+        thread.progress = 0;
+     //   [NSThread sleepForTimeInterval:2];
 		
 		//[[splash progress] setMaxValue:[studies count]];
 		
@@ -2466,7 +2504,9 @@ enum { Compress, Decompress };
 		
 		while( [studies count] > 0)
 		{
-			NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
+			thread.progress = 1.0*counter/studiesCount;
+            
+            NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
 			
 			
 			NSString *studyName = nil;
@@ -2474,7 +2514,6 @@ enum { Compress, Decompress };
 			@try
 			{
 				NSManagedObject *oldStudy = [studies lastObject];
-				
 				[studies removeLastObject];
 				
 				newStudyTable = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext: newContext];
@@ -2668,6 +2707,8 @@ enum { Compress, Decompress };
 			
 			[poolLoop release];
 		}
+        
+        thread.progress = -1;
 		
 		[newContext save:NULL];
 		
@@ -2701,8 +2742,11 @@ enum { Compress, Decompress };
 		[newContext release];
 		[newPersistentStoreCoordinator release];
 		[newModel release];
-	}
-	
+
+        [thread exitOperation];
+        thread.name = oldThreadName;
+    }
+    
 	return NO;
 }
 
@@ -2763,6 +2807,8 @@ enum { Compress, Decompress };
 			[NSFileManager.defaultManager removeItemAtPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 			[NSFileManager.defaultManager moveItemAtPath:self.sqlFilePath toPath:[self.sqlFilePath stringByAppendingString:@" - old"] error:NULL];
 		}
+        
+        [NSFileManager.defaultManager removeItemAtPath:self.modelVersionFilePath error:NULL];
         
 		self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
 	} else [self save:NULL];

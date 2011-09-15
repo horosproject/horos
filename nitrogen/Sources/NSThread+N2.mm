@@ -24,6 +24,8 @@
 	return NSOrderedSame;
 }
 
+NSString* const NSThreadNameKey = @"name";
+
 #pragma mark Id
 
 NSString* const NSThreadUniqueIdKey = @"uniqueId";

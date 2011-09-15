@@ -114,8 +114,8 @@
 					}
 					
 					if (!pStore && i == 1) {
-						NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", err);
-//						NSRunCriticalAlertPanel(NSLocalizedString(@"Database Error", NULL), err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);
+						NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", [err description]);
+						NSRunCriticalAlertPanel([NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);
 						
 						// error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 						

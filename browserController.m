@@ -488,8 +488,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated (checkForExistingReport:dbFolder:)
 - (void) checkForExistingReport: (NSManagedObject*) study dbFolder: (NSString*) dbFolder {
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:study.managedObjectContext]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:study.managedObjectContext];
 	[db checkForExistingReportForStudy:study];
 }
 
@@ -497,8 +496,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
@@ -508,8 +506,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
@@ -519,8 +516,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && browserController) db = [browserController database];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
@@ -530,8 +526,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
 	if (!db) N2LogError(@"couldn't identify database");
@@ -540,8 +535,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 -(NSArray*)subAddFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
 	return [db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
@@ -554,8 +548,7 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM produceAddedFiles:(BOOL)produceAddedFiles parseExistingObject:(BOOL)parseExistingObject context:(NSManagedObjectContext*)context dbFolder:(NSString*)dbFolder { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
     return [_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
@@ -1055,9 +1048,14 @@ static NSConditionLock *threadLock = nil;
 	if (![NSThread isMainThread])
 		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
 	else {
-		[self outlineViewRefresh];
-		[self refreshAlbums];
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_reactToDatabaseAdd) object:nil];
+        [self performSelector:@selector(_reactToDatabaseAdd) withObject:nil afterDelay:0.01];
 	}
+}
+
+-(void)_reactToDatabaseAdd {
+    [self outlineViewRefresh];
+    [self refreshAlbums];
 }
 
 -(void)_observeDatabaseDidChangeContextNotification:(NSNotification*)notification {
@@ -1539,8 +1537,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 -(BOOL)isBonjour:(NSManagedObjectContext*)c { // __deprecated
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:c]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:c];
 	return ![db isLocal];
 }
 
@@ -1550,8 +1547,7 @@ static NSConditionLock *threadLock = nil;
 
 -(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context { // __deprecated
 	NSError* err = nil;
-	DicomDatabase* db = nil;
-    @try { db = [DicomDatabase databaseForContext:context]; } @catch (...) {}
+	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	[db save:&err];
 	return [err code];
 
@@ -9963,7 +9959,29 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 		
-		self.database = [DicomDatabase activeLocalDatabase];
+        NSThread* thread = [NSThread currentThread];
+        NSString* oldThreadName = thread.name;
+        DicomDatabase* theDatabase = nil;
+        [thread enterOperation];
+        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+        @try {
+            thread.name = NSLocalizedString(@"Opening database...", nil);
+            ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:thread window:nil];
+            
+            theDatabase = [[DicomDatabase activeLocalDatabase] retain]; // explicitly released later
+            
+            [tmfwc invalidate];
+            [tmfwc release];
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        } @finally {
+            [thread exitOperation];
+            [pool release];
+        }
+        
+        thread.name = oldThreadName;
+        self.database = [theDatabase autorelease]; // explicitly retained earlier
+        
 //		currentDatabasePath = [[[self documentsDirectory] stringByAppendingPathComponent:DATAFILEPATH] retain];
 //		
 //		NSString *dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];

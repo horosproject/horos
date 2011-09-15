@@ -218,10 +218,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	#ifdef OSIRIX_VIEWER
 	NSString *d;
 	
-	if (![[DicomDatabase databaseForContext:[self managedObjectContext]] isLocal])
-		d = [[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath];
+    DicomDatabase* db = [DicomDatabase databaseForContext:[self managedObjectContext]];
+	if (![db isLocal])
+		d = [db dataBaseDirPath];
 	else
-		d = [[[DicomDatabase databaseForContext:[self managedObjectContext]] dataBaseDirPath] stringByAppendingPathComponent:ROIDATABASE];
+		d = [[db dataBaseDirPath] stringByAppendingPathComponent:ROIDATABASE];
 	
 	return [d stringByAppendingPathComponent: [self SRFilenameForFrame: frameNo]];
 	#else
