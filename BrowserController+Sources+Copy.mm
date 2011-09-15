@@ -36,15 +36,46 @@
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d files...", nil), imagePaths.count];
 	NSMutableArray* dstPaths = [NSMutableArray array];
-	for (NSInteger i = 0; i < imagePaths.count; ++i) {
+    
+    NSTimeInterval fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+    
+    for (NSInteger i = 0; i < imagePaths.count; ++i)
+    {
 		thread.progress = 1.0*i/imagePaths.count;
 		NSString* srcPath = [imagePaths objectAtIndex:i];
+		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
 		
-		NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
-		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
-		
-		if ([NSFileManager.defaultManager copyItemAtPath:srcPath toPath:dstPath error:nil])
-			[dstPaths addObject:dstPath];
+#define USECORESERVICESFORCOPY 1
+        
+#ifdef USECORESERVICESFORCOPY
+        char *targetPath = nil;
+        OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
+        OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+        
+        if( err == 0)
+#else
+        NSError* err = nil;
+        if([NSFileManager.defaultManager copyItemAtPath:srcPath toPath:dstPath error:nil])
+#endif
+        {
+            if( [DicomFile isDICOMFile: dstPath] == NO)
+            {
+                [[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: [srcPath pathExtension]] error: nil];
+            }
+            
+            [dstPaths addObject:dstPath];
+        }
+        
+        if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
+        {
+            thread.status = NSLocalizedString(@"Indexing files...", nil);
+            [dstDatabase addFilesAtPaths:dstPaths];
+            [dstPaths removeAllObjects];
+            
+            fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
+        }
+        
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d files...", nil), imagePaths.count-i];
 	}
 	
 	thread.status = NSLocalizedString(@"Indexing files...", nil);
