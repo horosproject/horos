@@ -132,20 +132,27 @@
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d %@...", nil), dicomImages.count, (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
-	for (NSInteger i = 0; i < dicomImages.count; ++i) {
+	for (NSInteger i = 0; i < dicomImages.count; ++i)
+    {
+        @try
+        {
+            DicomImage* dicomImage = [dicomImages objectAtIndex:i];
+            NSString* srcPath = [srcDatabase fetchDataForImage:dicomImage maxFiles:0];
+            
+            if (srcPath) {
+                NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
+                NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
+                
+                if ([NSFileManager.defaultManager moveItemAtPath:srcPath toPath:dstPath error:NULL])
+                    [dstPaths addObject:dstPath];
+            }
+        }
+        @catch (NSException *exception)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
 		thread.progress = 1.0*i/dicomImages.count;
 		
-		DicomImage* dicomImage = [dicomImages objectAtIndex:i];
-		NSString* srcPath = [srcDatabase fetchDataForImage:dicomImage maxFiles:0];
-		
-        if (srcPath) {
-            NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
-            NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
-            
-            if ([NSFileManager.defaultManager moveItemAtPath:srcPath toPath:dstPath error:NULL])
-                [dstPaths addObject:dstPath];
-        }
-        
         if (thread.isCancelled)
             break;
 	}
