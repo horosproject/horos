@@ -31,6 +31,7 @@
 #import <netinet/in.h>
 #import <arpa/inet.h>
 #import "DicomDatabase+Scan.h"
+#import "DCMPix.h"
 
 /*
 #include <IOKit/IOKitLib.h>
@@ -652,6 +653,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)_observeVolumeWillUnmountNotification:(NSNotification*)notification {
 	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
 	
+    [DCMPix purgeCachedDictionaries];
+    
 	MountedBrowserSource* mbs = nil;
 	for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
 		if ([ibs isKindOfClass:[MountedBrowserSource class]] && [ibs.devicePath isEqualToString:path]) {
@@ -904,6 +907,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)willUnmount {
     @synchronized (self) {
+        
+        [DCMPix purgeCachedDictionaries];
+        
         if (_scanThread)
             [_scanThread cancel];
     }

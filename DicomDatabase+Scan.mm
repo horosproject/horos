@@ -17,6 +17,7 @@
 #import "DicomFile.h"
 #import "MutableArrayCategory.h"
 #import "BrowserController.h"
+#import "DCMPix.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -377,7 +378,23 @@ static NSString* _dcmElementKey(DcmElement* element) {
 			thread.status = NSLocalizedString(@"Ejecting...", nil);
 			thread.progress = -1;
 			
-			[NSWorkspace.sharedWorkspace unmountAndEjectDeviceAtPath:path];
+            [DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
+            
+            int attempts = 0;
+            BOOL success = NO;
+            while( success == NO)
+            {
+                success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+                if( success == NO)
+                {
+                    attempts++;
+                    if( attempts < 5)
+                    {
+                        [NSThread sleepForTimeInterval: 1.0];
+                    }
+                    else success = YES;
+                }
+            }
 			
 			return;
 		}
