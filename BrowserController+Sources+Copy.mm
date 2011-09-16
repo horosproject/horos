@@ -149,7 +149,7 @@
         }
         @catch (NSException *exception)
         {
-            N2LogExceptionWithStackTrace(e);
+            N2LogExceptionWithStackTrace( exception);
         }
 		thread.progress = 1.0*i/dicomImages.count;
 		
