@@ -526,11 +526,16 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
 				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
 				
-				[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
-				
+				NSData* resp = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+				if (!resp)
+                    [NSException raise:NSGenericException format:@"Send error"];
+                
 				[request setLength:6+count.length];
 				[filesInRequest removeAllObjects];
 			}
+            
+            if (thread.isCancelled)
+                break;
 		}
 	} @catch (...) {
 		@throw;

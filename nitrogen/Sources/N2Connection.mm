@@ -23,6 +23,8 @@
 
 @interface N2Connection ()
 
+@property(readwrite,retain) NSError* error;
+
 -(void)open;
 
 @end
@@ -41,7 +43,7 @@
 NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
 
 @implementation N2Connection
-@synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent, closeOnRemoteClose = _closeOnRemoteClose;
+@synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent, closeOnRemoteClose = _closeOnRemoteClose, error = _error;
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
 	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
@@ -61,6 +63,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	id response = io.count? [io lastObject] : nil;
 	if ([response isKindOfClass:[NSException class]])
 		@throw response;
+    
 	return response;
 } 
 
@@ -121,7 +124,10 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		
 		[io removeAllObjects];
 		[io addObject:[c readData:0]];
-		
+        
+        if (c.error)
+            [NSException raise:NSGenericException format:@"%@", c.error.description];
+        
 	} @catch (NSException* e) {
 		[io addObject:e];
 	} @finally {
@@ -335,6 +341,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	
 	if (event == NSStreamEventErrorOccurred) {
 		NSLog(@"Stream error: %@ %@", stream.streamError, stream.streamError.userInfo);
+        self.error = stream.streamError;
 		[self close];
 	}
 }

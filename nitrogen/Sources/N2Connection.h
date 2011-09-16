@@ -38,12 +38,14 @@ enum N2ConnectionStatus {
 	N2ConnectionStatus _status;
 	BOOL _tlsFlag;
     BOOL _closeOnRemoteClose;
+    NSError* _error;
 }
 
 @property(readonly) NSString* address;
 @property(nonatomic) N2ConnectionStatus status;
 @property NSUInteger maximumReadSizePerEvent;
 @property BOOL closeOnRemoteClose;
+@property(readonly,retain) NSError* error;
 
 // non-tls
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port;

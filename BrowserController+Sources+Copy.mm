@@ -16,6 +16,7 @@
 #import "ThreadsManager.h"
 #import "RemoteDicomDatabase.h"
 #import "NSThread+N2.h"
+#import "N2Debug.h"
 
 
 @implementation BrowserController (SourcesCopy)
@@ -34,7 +35,7 @@
 	thread.status = NSLocalizedString(@"Opening database...", nil);
 	DicomDatabase* dstDatabase = [DicomDatabase databaseAtPath:destination.location];
 	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d files...", nil), imagePaths.count];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
     
     NSTimeInterval fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
@@ -42,6 +43,10 @@
     for (NSInteger i = 0; i < imagePaths.count; ++i)
     {
 		thread.progress = 1.0*i/imagePaths.count;
+        
+        if (thread.isCancelled)
+            break;
+        
 		NSString* srcPath = [imagePaths objectAtIndex:i];
 		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension: @"dcm"];
 		
@@ -68,17 +73,17 @@
         
         if( fiveSeconds < [NSDate timeIntervalSinceReferenceDate])
         {
-            thread.status = NSLocalizedString(@"Indexing files...", nil);
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %d %@...", nil), dstPaths.count, (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
             [dstDatabase addFilesAtPaths:dstPaths];
             [dstPaths removeAllObjects];
             
             fiveSeconds = [NSDate timeIntervalSinceReferenceDate] + 5;
         }
         
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d files...", nil), imagePaths.count-i];
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Copying %d %@...", nil), imagePaths.count-i, (imagePaths.count-i == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	}
 	
-	thread.status = NSLocalizedString(@"Indexing files...", nil);
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Indexing %d %@...", nil), dstPaths.count, (dstPaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
 	thread.progress = -1;
 	[dstDatabase addFilesAtPaths:dstPaths];
 	
@@ -99,9 +104,16 @@
 	thread.status = NSLocalizedString(@"Opening database...", nil);
 	RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForAddress:destination.location name:destination.description update:NO];
 	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d files...", nil), imagePaths.count];
-	[dstDatabase uploadFilesAtPaths:imagePaths];
+	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	
+    @try {
+        [dstDatabase uploadFilesAtPaths:imagePaths];
+	} @catch (NSException* e) {
+        thread.status = NSLocalizedString(@"Error: destination is unavailable", nil);
+        N2LogExceptionWithStackTrace(e);
+        [NSThread sleepForTimeInterval:1];
+    }
+    
 	[pool release];
 }
 
@@ -118,7 +130,7 @@
 	thread.status = NSLocalizedString(@"Opening database...", nil);
 	DicomDatabase* dstDatabase = [DicomDatabase databaseAtPath:destination.location name:destination.description];
 	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d files...", nil), dicomImages.count];
+	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d %@...", nil), dicomImages.count, (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
 	for (NSInteger i = 0; i < dicomImages.count; ++i) {
 		thread.progress = 1.0*i/dicomImages.count;
@@ -126,11 +138,16 @@
 		DicomImage* dicomImage = [dicomImages objectAtIndex:i];
 		NSString* srcPath = [srcDatabase fetchDataForImage:dicomImage maxFiles:0];
 		
-		NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
-		NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
-		
-		if ([NSFileManager.defaultManager moveItemAtPath:srcPath toPath:dstPath error:NULL])
-			[dstPaths addObject:dstPath];
+        if (srcPath) {
+            NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
+            NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
+            
+            if ([NSFileManager.defaultManager moveItemAtPath:srcPath toPath:dstPath error:NULL])
+                [dstPaths addObject:dstPath];
+        }
+        
+        if (thread.isCancelled)
+            break;
 	}
 	
 	thread.status = NSLocalizedString(@"Indexing files...", nil);
@@ -161,7 +178,14 @@
 		if (!dstAET || !dstPort || !dstSyntax) {
 			thread.status = NSLocalizedString(@"Fetching destination information...", nil);
 			RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForAddress:destination.location name:destination.description update:NO];
-			NSDictionary* dstInfo = [dstDatabase fetchDicomDestinationInfo];
+            NSDictionary* dstInfo = nil;
+            @try {
+                dstInfo = [dstDatabase fetchDicomDestinationInfo];
+            } @catch (NSException* e) {
+                thread.status = NSLocalizedString(@"Error: destination is unavailable", nil);
+                N2LogExceptionWithStackTrace(e);
+                [NSThread sleepForTimeInterval:1];
+            }
 			if ([dstInfo objectForKey:@"AETitle"]) dstAET = [dstInfo objectForKey:@"AETitle"];
 			if ([dstInfo objectForKey:@"Port"]) dstPort = [[dstInfo objectForKey:@"Port"] integerValue];
 			if ([dstInfo objectForKey:@"TransferSyntax"]) dstSyntax = [[dstInfo objectForKey:@"TransferSyntax"] integerValue];
@@ -183,11 +207,13 @@
 			case BrowserSourceTypeLocal: { // local OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
+                thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 			} break;
 			case BrowserSourceTypeRemote: { // local OsiriX to remote OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+                thread.supportsCancel = YES;
 				thread.name = NSLocalizedString(@"Sending images...", nil);
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
@@ -207,6 +233,7 @@
 			case BrowserSourceTypeLocal: { // remote OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
+                thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 			} break;
