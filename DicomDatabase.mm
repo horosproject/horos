@@ -37,30 +37,24 @@
     return managedObjectModel;
 }
 
-const NSString* const DicomDatabaseImageEntityName = @"Image";
-const NSString* const DicomDatabaseSeriesEntityName = @"Series";
-const NSString* const DicomDatabaseStudyEntityName = @"Study";
-const NSString* const DicomDatabaseAlbumEntityName = @"Album";
-const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
-
 -(NSEntityDescription*)imageEntity {
-	return [self entityForName:DicomDatabaseImageEntityName];
+	return [self entityForName: @"Image"];
 }
 
 -(NSEntityDescription*)seriesEntity {
-	return [self entityForName:DicomDatabaseSeriesEntityName];
+	return [self entityForName: @"Series"];
 }
 
 -(NSEntityDescription*)studyEntity {
-	return [self entityForName:DicomDatabaseStudyEntityName];
+	return [self entityForName: @"Study"];
 }
 
 -(NSEntityDescription*)albumEntity {
-	return [self entityForName:DicomDatabaseAlbumEntityName];
+	return [self entityForName: @"Album"];
 }
 
 -(NSEntityDescription*)logEntryEntity {
-	return [self entityForName:DicomDatabaseLogEntryEntityName];
+	return [self entityForName: @"LogEntry"];
 }
 
 
@@ -76,7 +70,7 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
+	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
 	return [context executeFetchRequest:req error:NULL];	
 }
@@ -95,19 +89,20 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	
 	// DATES
 	NSCalendarDate* now = [NSCalendarDate calendarDate];
-	NSCalendarDate* start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
+	NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
+    
 	NSDictionary* sub = [NSDictionary dictionaryWithObjectsAndKeys:
-						 [now addTimeInterval: -60*60*1],			@"LASTHOUR",
-						 [now addTimeInterval: -60*60*6],			@"LAST6HOURS",
-						 [now addTimeInterval: -60*60*12],			@"LAST12HOURS",
+						 [now dateByAddingTimeInterval: -60*60*1],			@"LASTHOUR",
+						 [now dateByAddingTimeInterval: -60*60*6],			@"LAST6HOURS",
+						 [now dateByAddingTimeInterval: -60*60*12],			@"LAST12HOURS",
 						 start,										@"TODAY",
-						 [start addTimeInterval: -60*60*24],		@"YESTERDAY",
-						 [start addTimeInterval: -60*60*24*2],		@"2DAYS",
-						 [start addTimeInterval: -60*60*24*7],		@"WEEK",
-						 [start addTimeInterval: -60*60*24*31],		@"MONTH",
-						 [start addTimeInterval: -60*60*24*31*2],	@"2MONTHS",
-						 [start addTimeInterval: -60*60*24*31*3],	@"3MONTHS",
-						 [start addTimeInterval: -60*60*24*365],	@"YEAR",
+						 [start dateByAddingTimeInterval: -60*60*24],		@"YESTERDAY",
+						 [start dateByAddingTimeInterval: -60*60*24*2],		@"2DAYS",
+						 [start dateByAddingTimeInterval: -60*60*24*7],		@"WEEK",
+						 [start dateByAddingTimeInterval: -60*60*24*31],		@"MONTH",
+						 [start dateByAddingTimeInterval: -60*60*24*31*2],	@"2MONTHS",
+						 [start dateByAddingTimeInterval: -60*60*24*31*3],	@"3MONTHS",
+						 [start dateByAddingTimeInterval: -60*60*24*365],	@"YEAR",
 						 nil];
 	
 	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: sub];

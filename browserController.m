@@ -2604,7 +2604,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday MR", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= $YESTERDAY AND date <= $TODAY)";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date between{$YESTERDAY, $TODAY})";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2612,7 +2612,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday CT", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= $YESTERDAY AND date <= $TODAY)";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date between{$YESTERDAY, $TODAY})";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -5678,20 +5678,20 @@ static NSConditionLock *threadLock = nil;
 	
 	// Today:
 	NSCalendarDate	*now = [NSCalendarDate calendarDate];
-	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
+	NSDate	*start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
 	
 	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:
-                            [now addTimeInterval: -60*60*1],			@"LASTHOUR",
-							[now addTimeInterval: -60*60*6],			@"LAST6HOURS",
-							[now addTimeInterval: -60*60*12],			@"LAST12HOURS",
+                            [now dateByAddingTimeInterval: -60*60*1],			@"LASTHOUR",
+							[now dateByAddingTimeInterval: -60*60*6],			@"LAST6HOURS",
+							[now dateByAddingTimeInterval: -60*60*12],			@"LAST12HOURS",
 							start,										@"TODAY",
-							[start addTimeInterval: -60*60*24],         @"YESTERDAY",
-							[start addTimeInterval: -60*60*24*2],		@"2DAYS",
-							[start addTimeInterval: -60*60*24*7],		@"WEEK",
-							[start addTimeInterval: -60*60*24*31],		@"MONTH",
-							[start addTimeInterval: -60*60*24*31*2],	@"2MONTHS",
-							[start addTimeInterval: -60*60*24*31*3],	@"3MONTHS",
-							[start addTimeInterval: -60*60*24*365],     @"YEAR",
+							[start dateByAddingTimeInterval: -60*60*24],         @"YESTERDAY",
+							[start dateByAddingTimeInterval: -60*60*24*2],		@"2DAYS",
+							[start dateByAddingTimeInterval: -60*60*24*7],		@"WEEK",
+							[start dateByAddingTimeInterval: -60*60*24*31],		@"MONTH",
+							[start dateByAddingTimeInterval: -60*60*24*31*2],	@"2MONTHS",
+							[start dateByAddingTimeInterval: -60*60*24*31*3],	@"3MONTHS",
+							[start dateByAddingTimeInterval: -60*60*24*365],     @"YEAR",
 							nil];
 	
 	NSPredicate *predicate;
