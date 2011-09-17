@@ -18,6 +18,8 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- Web Server: fetch limit: pages with setFetchOffset, setFetchLimit, setSortDescriptors
+- Raw Data Import: 32-bit float
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
 - PDF Open in Viewer -> Preview
