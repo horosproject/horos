@@ -2580,7 +2580,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Just Added", nil);
-		album.predicateString = @"(dateAdded >= CAST($LASTHOUR, 'NSDate'))";
+		album.predicateString = @"(dateAdded >= $LASTHOUR)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2588,7 +2588,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today MR", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= $TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2596,7 +2596,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today CT", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= $TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2604,7 +2604,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday MR", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= $YESTERDAY AND date <= $TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2612,7 +2612,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday CT", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= $YESTERDAY AND date <= $TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2644,10 +2644,25 @@ static NSConditionLock *threadLock = nil;
 			if( [[album valueForKey: @"predicateString"] isEqualToString: @"(ANY series.comment != '' AND ANY series.comment != NIL) OR (comment != '' AND comment != NIL)"])
 				[album setValue: @"(comment != '' AND comment != NIL)" forKey: @"predicateString"];
             
-            if( [album valueForKey: @"predicateString"] && [[album valueForKey: @"predicateString"] rangeOfString: @"ANY series.modality"].location != NSNotFound)
+            if( [album valueForKey: @"predicateString"])
             {
-                NSString *previousString = [album valueForKey: @"predicateString"];
-				[album setValue: [previousString stringByReplacingOccurrencesOfString:@"ANY series.modality" withString:@"modality"] forKey: @"predicateString"];
+                if( [[album valueForKey: @"predicateString"] rangeOfString: @"ANY series.modality"].location != NSNotFound)
+                {
+                    NSString *previousString = [album valueForKey: @"predicateString"];
+                    [album setValue: [previousString stringByReplacingOccurrencesOfString:@"ANY series.modality" withString:@"modality"] forKey: @"predicateString"];
+                }
+                
+                NSArray *dates = [NSArray arrayWithObjects: @"LASTHOUR", @"LAST6HOURS", @"LAST12HOURS", @"TODAY", @"YESTERDAY", @"2DAYS", @"WEEK", @"MONTH", @"2MONTHS", @"3MONTHS", @"YEAR", nil];
+                
+                for( NSString *date in dates)
+                {
+                    if( [[album valueForKey: @"predicateString"] rangeOfString: [NSString stringWithFormat: @"CAST($%@, \"NSDate\")", date]].location != NSNotFound)
+                    {
+                        NSString *previousString = [album valueForKey: @"predicateString"];
+                        
+                        [album setValue: [previousString stringByReplacingOccurrencesOfString: [NSString stringWithFormat: @"CAST($%@, \"NSDate\")", date] withString: [NSString stringWithFormat: @"$%@", date]] forKey: @"predicateString"];
+                    }
+                }
             }
 		}
 	}
@@ -5665,34 +5680,29 @@ static NSConditionLock *threadLock = nil;
 	NSCalendarDate	*now = [NSCalendarDate calendarDate];
 	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
 	
-	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
-							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
-							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
-							[NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:
+                            [now addTimeInterval: -60*60*1],			@"LASTHOUR",
+							[now addTimeInterval: -60*60*6],			@"LAST6HOURS",
+							[now addTimeInterval: -60*60*12],			@"LAST12HOURS",
+							start,										@"TODAY",
+							[start addTimeInterval: -60*60*24],         @"YESTERDAY",
+							[start addTimeInterval: -60*60*24*2],		@"2DAYS",
+							[start addTimeInterval: -60*60*24*7],		@"WEEK",
+							[start addTimeInterval: -60*60*24*31],		@"MONTH",
+							[start addTimeInterval: -60*60*24*31*2],	@"2MONTHS",
+							[start addTimeInterval: -60*60*24*31*3],	@"3MONTHS",
+							[start addTimeInterval: -60*60*24*365],     @"YEAR",
 							nil];
-	
-	NSEnumerator *enumerator = [sub keyEnumerator];
-	NSString *key;
-	
-	while ((key = [enumerator nextObject]))
-	{
-		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
-	}
 	
 	NSPredicate *predicate;
 	
-	if( [string isEqualToString:@""]) predicate = [NSPredicate predicateWithValue: YES];
+	if( [string isEqualToString:@""])
+        predicate = [NSPredicate predicateWithValue: YES];
 	else
-	{
 		predicate = [NSPredicate predicateWithFormat: pred];
-	}
+    
+    predicate = [predicate predicateWithSubstitutionVariables: sub];
+    
 	return predicate;
 }
 
@@ -5755,7 +5765,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 	
-	predicate = [NSPredicate predicateWithValue:YES];
+	predicate = nil;
 	
 	if( displayEmptyDatabase)
 		predicate = [NSPredicate predicateWithValue:NO];
@@ -5789,7 +5799,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				subPredicate = [self smartAlbumPredicate: album];
 				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
-				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, nil]];
+				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 			}
 			else
 			{
@@ -5820,7 +5830,7 @@ static NSConditionLock *threadLock = nil;
 			
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalStart]];
 		}
-		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, nil]];
+		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 		filtered = YES;
 	}
 	
@@ -5830,7 +5840,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( self.filterPredicate)
 	{
-		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, self.filterPredicate, nil]];
+		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: self.filterPredicate, predicate, nil]];
 		description = [description stringByAppendingString: self.filterPredicateDescription];
 		filtered = YES;
 	}
@@ -5838,6 +5848,9 @@ static NSConditionLock *threadLock = nil;
 	if( testPredicate)
 		predicate = testPredicate;
 	
+    if( predicate == nil)
+        predicate = [NSPredicate predicateWithValue: YES];
+    
 	[request setPredicate: predicate];
 	
 	NSManagedObjectContext *context = self.managedObjectContext;
@@ -21329,17 +21342,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-		[searchField setTextColor: [NSColor whiteColor]];
-	else
-		[searchField setTextColor: [NSColor blackColor]];
-	
-	[_searchString release];
-	_searchString = [searchString retain];
-	
-	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
-	[self outlineViewRefresh];
-	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+        [searchField setTextColor: [NSColor whiteColor]];
+    else
+        [searchField setTextColor: [NSColor blackColor]];
+    
+    [_searchString release];
+    _searchString = [searchString retain];
+    
+    [self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
+    [self outlineViewRefresh];
+    [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender

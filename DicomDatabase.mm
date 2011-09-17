@@ -97,23 +97,20 @@ const NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSCalendarDate* now = [NSCalendarDate calendarDate];
 	NSCalendarDate* start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
 	NSDictionary* sub = [NSDictionary dictionaryWithObjectsAndKeys:
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
-						 [NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],		@"$YESTERDAY",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],	@"$YEAR",
+						 [now addTimeInterval: -60*60*1],			@"LASTHOUR",
+						 [now addTimeInterval: -60*60*6],			@"LAST6HOURS",
+						 [now addTimeInterval: -60*60*12],			@"LAST12HOURS",
+						 start,										@"TODAY",
+						 [start addTimeInterval: -60*60*24],		@"YESTERDAY",
+						 [start addTimeInterval: -60*60*24*2],		@"2DAYS",
+						 [start addTimeInterval: -60*60*24*7],		@"WEEK",
+						 [start addTimeInterval: -60*60*24*31],		@"MONTH",
+						 [start addTimeInterval: -60*60*24*31*2],	@"2MONTHS",
+						 [start addTimeInterval: -60*60*24*31*3],	@"3MONTHS",
+						 [start addTimeInterval: -60*60*24*365],	@"YEAR",
 						 nil];
 	
-	for (NSString* key in sub)
-		[pred replaceOccurrencesOfString:key withString:[sub valueForKey:key] options:NSCaseInsensitiveSearch range:pred.range];
-	
-	return [NSPredicate predicateWithFormat:pred];
+	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: sub];
 }
 
 
