@@ -202,27 +202,27 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property long frameNo;
 @property(setter=setID:) long ID;
 @property (readonly) NSRecursiveLock *checking;
-@property float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
+@property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
 
 // Dimensions in pixels
-@property long pwidth, pheight;
+@property (nonatomic) long pwidth, pheight;
 
 /** Is it an RGB image (ARGB) or float image?
 Note setter is different to not break existing usage. :-( */
-@property(setter=setRGB:) BOOL isRGB;  
+@property(nonatomic, setter=setRGB:) BOOL isRGB;  
 
 /** Pointer to image data */
 @property(setter=setfImage:) float* fImage;
 
 /** WW & WL */
 @property(readonly) float ww, wl, fullww, fullwl;
-@property float slope, offset, savedWW, savedWL, *subtractedfImage;
+@property(nonatomic) float slope, offset, savedWW, savedWL, *subtractedfImage;
 
 @property(readonly) BOOL notAbleToLoadImage;
 @property(readonly) NSPoint *shutterPolygonal;
 
 /**  X/Y ratio - non-square pixels */
-@property double pixelRatio;
+@property(nonatomic) double pixelRatio;
 
 /**  pixel size */
 @property double pixelSpacingX, pixelSpacingY;
@@ -255,9 +255,9 @@ Note setter is different to not break existing usage. :-( */
 @property(readonly) double spacingBetweenSlices;
 
 /**  8-bit TransferFunction */
-@property(retain) NSData *transferFunction; 
+@property(nonatomic, retain) NSData *transferFunction; 
 
-@property NSPoint subPixOffset;
+@property(nonatomic) NSPoint subPixOffset;
 
 @property long DCMPixShutterRectWidth, DCMPixShutterRectHeight;
 @property long DCMPixShutterRectOriginX, DCMPixShutterRectOriginY;

@@ -11,7 +11,8 @@ A:
 	Cases are added to CD… (Auto Q&R, DICOM Listener?)
 	Copy & Eject : Eject doesn't occur... Unmount small icon
 	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
-	Test iPod
+	iPod doesn't appear automatically
+	iPod eject button doesn't work….
 - Phantom cells
 - DB migration
 

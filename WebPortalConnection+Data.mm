@@ -224,7 +224,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
     int page = [[parameters objectForKey:@"page"] intValue];
     
-	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: FETCHLIMIT fetchOffset: page*FETCHLIMIT];
+    int fetchLimitPerPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"FetchLimitForWebPortal"];
+    
+	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage];
 }
 
 -(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription {
