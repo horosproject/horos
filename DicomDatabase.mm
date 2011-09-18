@@ -91,21 +91,40 @@
 	NSCalendarDate* now = [NSCalendarDate calendarDate];
 	NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
     
-	NSDictionary* sub = [NSDictionary dictionaryWithObjectsAndKeys:
-						 [now dateByAddingTimeInterval: -60*60*1],			@"LASTHOUR",
-						 [now dateByAddingTimeInterval: -60*60*6],			@"LAST6HOURS",
-						 [now dateByAddingTimeInterval: -60*60*12],			@"LAST12HOURS",
-						 start,										@"TODAY",
-						 [start dateByAddingTimeInterval: -60*60*24],		@"YESTERDAY",
-						 [start dateByAddingTimeInterval: -60*60*24*2],		@"2DAYS",
-						 [start dateByAddingTimeInterval: -60*60*24*7],		@"WEEK",
-						 [start dateByAddingTimeInterval: -60*60*24*31],		@"MONTH",
-						 [start dateByAddingTimeInterval: -60*60*24*31*2],	@"2MONTHS",
-						 [start dateByAddingTimeInterval: -60*60*24*31*3],	@"3MONTHS",
-						 [start dateByAddingTimeInterval: -60*60*24*365],	@"YEAR",
-						 nil];
+    NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
+							[NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+							nil];
 	
-	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: sub];
+	NSEnumerator *enumerator = [sub keyEnumerator];
+	NSString *key;
+	
+	while ((key = [enumerator nextObject]))
+	{
+		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
+	}
+	
+	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                        [now dateByAddingTimeInterval: -60*60*1],			@"NSDATE_LASTHOUR",
+                                                                                        [now dateByAddingTimeInterval: -60*60*6],			@"NSDATE_LAST6HOURS",
+                                                                                        [now dateByAddingTimeInterval: -60*60*12],			@"NSDATE_LAST12HOURS",
+                                                                                        start,                                              @"NSDATE_TODAY",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24],        @"NSDATE_YESTERDAY",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*2],		@"NSDATE_2DAYS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*7],		@"NSDATE_WEEK",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31],		@"NSDATE_MONTH",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31*2],	@"NSDATE_2MONTHS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31*3],	@"NSDATE_3MONTHS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*365],    @"NSDATE_YEAR",
+                                                                                        nil]];
 }
 
 

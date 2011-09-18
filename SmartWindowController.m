@@ -265,26 +265,26 @@
 			switch ([[view searchTypePopup] indexOfSelectedItem] + 4)
 			{
 				case SearchToday:
-					predicateString = [NSString stringWithFormat:@"%@ >= $TODAY", field];
+					predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_TODAY", field];
 				break;
 				
 				case searchYesterday:
-					predicateString = [NSString stringWithFormat:@"%@ >= $YESTERDAY AND %@ <= $TODAY", field, field];
+					predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YESTERDAY AND %@ <= $NSDATE_TODAY", field, field];
 				break;
 														
 				case searchWithin:
 					switch( [[view dateRangePopup] indexOfSelectedItem])
 					{
-						case 0:		predicateString = [NSString stringWithFormat:@"%@ >= $YESTERDAY", field];		break;
-						case 1:		predicateString = [NSString stringWithFormat:@"%@ >= $2DAYS", field];			break;
-						case 2:		predicateString = [NSString stringWithFormat:@"%@ >= $WEEK", field];			break;
-						case 3:		predicateString = [NSString stringWithFormat:@"%@ >= $MONTH", field];			break;
-						case 4:		predicateString = [NSString stringWithFormat:@"%@ >= $2MONTHS", field];			break;
-						case 5:		predicateString = [NSString stringWithFormat:@"%@ >= $3MONTHS", field];			break;
-						case 6:		predicateString = [NSString stringWithFormat:@"%@ >= $YEAR", field];			break;
-						case 8:		predicateString = [NSString stringWithFormat:@"%@ >= $LASTHOUR", field];		break;
-						case 9:		predicateString = [NSString stringWithFormat:@"%@ >= $LAST6HOURS", field];		break;
-						case 10:	predicateString = [NSString stringWithFormat:@"%@ >= $LAST12HOURS", field];		break;
+						case 0:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YESTERDAY", field];		break;
+						case 1:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2DAYS", field];			break;
+						case 2:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_WEEK", field];			break;
+						case 3:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_MONTH", field];			break;
+						case 4:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2MONTHS", field];			break;
+						case 5:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_3MONTHS", field];			break;
+						case 6:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YEAR", field];			break;
+						case 8:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LASTHOUR", field];		break;
+						case 9:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST6HOURS", field];		break;
+						case 10:	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST12HOURS", field];		break;
 					}
 				break;
 				

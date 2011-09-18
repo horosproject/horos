@@ -2580,7 +2580,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Just Added", nil);
-		album.predicateString = @"(dateAdded >= $LASTHOUR)";
+		album.predicateString = @"(dateAdded >= $NSDATE_LASTHOUR)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2588,7 +2588,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today MR", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= $TODAY)";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2596,7 +2596,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Today CT", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= $TODAY)";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_TODAY)";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2604,7 +2604,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday MR", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date between{$YESTERDAY, $TODAY})";
+		album.predicateString = @"(modality CONTAINS[cd] 'MR') AND (date between{$NSDATE_YESTERDAY, $NSDATE_TODAY})";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2612,7 +2612,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		album = [NSEntityDescription insertNewObjectForEntityForName: @"Album" inManagedObjectContext: managedObjectContext];
 		album.name = NSLocalizedString( @"Yesterday CT", nil);
-		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date between{$YESTERDAY, $TODAY})";
+		album.predicateString = @"(modality CONTAINS[cd] 'CT') AND (date between{$NSDATE_YESTERDAY, $NSDATE_TODAY})";
 		album.smartAlbum = [NSNumber numberWithBool: YES];
 	}
 
@@ -2650,18 +2650,6 @@ static NSConditionLock *threadLock = nil;
                 {
                     NSString *previousString = [album valueForKey: @"predicateString"];
                     [album setValue: [previousString stringByReplacingOccurrencesOfString:@"ANY series.modality" withString:@"modality"] forKey: @"predicateString"];
-                }
-                
-                NSArray *dates = [NSArray arrayWithObjects: @"LASTHOUR", @"LAST6HOURS", @"LAST12HOURS", @"TODAY", @"YESTERDAY", @"2DAYS", @"WEEK", @"MONTH", @"2MONTHS", @"3MONTHS", @"YEAR", nil];
-                
-                for( NSString *date in dates)
-                {
-                    if( [[album valueForKey: @"predicateString"] rangeOfString: [NSString stringWithFormat: @"CAST($%@, \"NSDate\")", date]].location != NSNotFound)
-                    {
-                        NSString *previousString = [album valueForKey: @"predicateString"];
-                        
-                        [album setValue: [previousString stringByReplacingOccurrencesOfString: [NSString stringWithFormat: @"CAST($%@, \"NSDate\")", date] withString: [NSString stringWithFormat: @"$%@", date]] forKey: @"predicateString"];
-                    }
                 }
             }
 		}
@@ -5674,26 +5662,30 @@ static NSConditionLock *threadLock = nil;
 	
 	NSMutableString *pred = [NSMutableString stringWithString: string];
 	
-	// DATES
-	
-	// Today:
-	NSCalendarDate	*now = [NSCalendarDate calendarDate];
+    NSCalendarDate	*now = [NSCalendarDate calendarDate];
 	NSDate	*start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
 	
-	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:
-                            [now dateByAddingTimeInterval: -60*60*1],			@"LASTHOUR",
-							[now dateByAddingTimeInterval: -60*60*6],			@"LAST6HOURS",
-							[now dateByAddingTimeInterval: -60*60*12],			@"LAST12HOURS",
-							start,										@"TODAY",
-							[start dateByAddingTimeInterval: -60*60*24],         @"YESTERDAY",
-							[start dateByAddingTimeInterval: -60*60*24*2],		@"2DAYS",
-							[start dateByAddingTimeInterval: -60*60*24*7],		@"WEEK",
-							[start dateByAddingTimeInterval: -60*60*24*31],		@"MONTH",
-							[start dateByAddingTimeInterval: -60*60*24*31*2],	@"2MONTHS",
-							[start dateByAddingTimeInterval: -60*60*24*31*3],	@"3MONTHS",
-							[start dateByAddingTimeInterval: -60*60*24*365],     @"YEAR",
+	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
+							[NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
 							nil];
 	
+	NSEnumerator *enumerator = [sub keyEnumerator];
+	NSString *key;
+	
+	while ((key = [enumerator nextObject]))
+	{
+		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
+	}
+    
 	NSPredicate *predicate;
 	
 	if( [string isEqualToString:@""])
@@ -5701,7 +5693,19 @@ static NSConditionLock *threadLock = nil;
 	else
 		predicate = [NSPredicate predicateWithFormat: pred];
     
-    predicate = [predicate predicateWithSubstitutionVariables: sub];
+    predicate = [predicate predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                [now dateByAddingTimeInterval: -60*60*1],			@"NSDATE_LASTHOUR",
+                                                                [now dateByAddingTimeInterval: -60*60*6],			@"NSDATE_LAST6HOURS",
+                                                                [now dateByAddingTimeInterval: -60*60*12],			@"NSDATE_LAST12HOURS",
+                                                                start,                                              @"NSDATE_TODAY",
+                                                                [start dateByAddingTimeInterval: -60*60*24],        @"NSDATE_YESTERDAY",
+                                                                [start dateByAddingTimeInterval: -60*60*24*2],		@"NSDATE_2DAYS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*7],		@"NSDATE_WEEK",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31],		@"NSDATE_MONTH",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31*2],	@"NSDATE_2MONTHS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31*3],	@"NSDATE_3MONTHS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*365],    @"NSDATE_YEAR",
+                                                                nil]];
     
 	return predicate;
 }
@@ -12198,21 +12202,30 @@ static BOOL needToRezoom;
 
 - (void)tableViewSelectionDidChange: (NSNotification *)aNotification
 {
-	if( [[aNotification object] isEqual: albumTable])
-	{
-		// Clear search field
-		[self setSearchString: nil];
-		
-		[self refreshAlbums];
-	}
+    @try
+    {
+        if( [[aNotification object] isEqual: albumTable])
+        {
+            // Clear search field
+            [self setSearchString: nil];
+            
+            [self refreshAlbums];
+        }
+        
+        if( [[aNotification object] isEqual: bonjourServicesList])
+        {
+            if( dontLoadSelectionSource == NO)
+            {
+                [self bonjourServiceClicked: bonjourServicesList];
+            }
+        }
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"viewerDICOMInt exception: %@", e);
+		[AppController printStackTrace: e];
+    }
 	
-	if( [[aNotification object] isEqual: bonjourServicesList])
-	{
-		if( dontLoadSelectionSource == NO)
-		{
-			[self bonjourServiceClicked: bonjourServicesList];
-		}
-	}
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
