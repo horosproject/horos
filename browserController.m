@@ -19471,6 +19471,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 					isSigned = YES;
 					isLittleEndian = NO;
 					break;
+                case 6: spp = 1;
+					numberBytes = 4;
+					highBit = 31;
+					bitsAllocated = 32;
+					isSigned = YES;
+					isLittleEndian = YES;
+					break;
+                    
 				default:	spp = 1;
 					numberBytes = 2;
 			}
