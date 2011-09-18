@@ -7442,6 +7442,9 @@ static NSConditionLock *threadLock = nil;
 			matrixThumbnails = NO;
 	}
 	
+    if( matrixThumbnails == NO && [databaseOutline selectedRow] == -1)
+        return;
+    
 	NSString *level = nil;
 	
 	if( matrixThumbnails)
@@ -18789,6 +18792,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	[bonjourServicesList display];
 	
+    NSArray *allKeys = [persistentStoreCoordinatorDictionary allKeys];
+    for( NSString *storePath in allKeys)
+    {
+        if( [storePath hasPrefix: path])
+        {
+            [persistentStoreCoordinatorDictionary removeObjectForKey: storePath];
+        }
+    }
+    
 	int attempts = 0;
 	BOOL success = NO;
 	while( success == NO)
@@ -18831,12 +18843,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)loadDICOMFromiPod
 {
+    [self loadDICOMFromiPod: nil];
+}
+    
+- (void)loadDICOMFromiPod: path
+{
 	if( mountedVolumes == nil)
 		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
 	
 	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
-	for ( NSString *path in mountedVolumes)
+    NSArray *pathsList = nil;
+    
+    if( path == nil)
+        pathsList = mountedVolumes;
+    else
+        pathsList = [NSArray arrayWithObject: path];
+    
+	for( NSString *path in pathsList)
 	{
 		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
@@ -18860,7 +18884,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"])
 					{
-						if( [[service valueForKey:@"Path"] isEqualToString: path]) found = YES;
+						if( [[service valueForKey:@"Path"] isEqualToString: path])
+                            found = YES;
 					}
 				}
 				
@@ -18874,8 +18899,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					NSString	*name = nil;
 					
-					if( isItAnIpod) name = volumeName;
-					else name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
+					if( isItAnIpod)
+                        name = volumeName;
+					else
+                        name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
 					
 					[dict setValue:path forKey:@"Path"];
 					[dict setValue:name forKey:@"Description"];
@@ -19186,25 +19213,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
 	
-	NSLog(@"volume mounted");
-	
-	[self loadDICOMFromiPod];
+	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
+	NSLog( @"volume mounted: %@", sNewDrive);
+    
+    [mountedVolumes release];
+	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
+    
+	[self loadDICOMFromiPod: sNewDrive];
 	
 	if (isCurrentDatabaseBonjour) return;
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"] == NO) return;
 	
-	NSString *sNewDrive = [[ notification userInfo] objectForKey : @"NSDevicePath"];
-	
-	NSLog( @"%@", sNewDrive);
-	
 	if( [BrowserController isItCD: sNewDrive] == YES)
-	{
 		[self ReadDicomCDRom: self];
-	}
-	
-	[mountedVolumes release];
-	mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
 	
 	[self displayBonjourServices];
 }

@@ -345,6 +345,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (void) selectServer: (NSArray*) files;
 - (void) loadDICOMFromiPod;
+- (void) loadDICOMFromiPod: path;
 - (long) saveDatabase;
 - (long) saveDatabase:(NSString*) path;
 - (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context;
