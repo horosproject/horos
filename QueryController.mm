@@ -1813,15 +1813,15 @@ extern "C"
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
 	
+    if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
+	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
+    
 	[l release];
 }
 
 - (void) displayQueryResults
 {
 	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesTable selectedRow]] byExtendingSelection: NO];
-	
-	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
-	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
