@@ -92,6 +92,7 @@
 #import "MPRController.h"
 #import "CPRController.h"
 #import "Notifications.h"
+#import "OSIEnvironment+Private.h"
 #import "NSString+N2.h"
 
 int delayedTileWindows = NO;
@@ -2579,6 +2580,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+#ifndef OSIRIX_LIGHT
+	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
+#endif
+
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[imageView stopROIEditingForce: YES];
@@ -6344,6 +6349,10 @@ return YES;
 	
 	[self willChangeValueForKey: @"KeyImageCounter"];
 	[self didChangeValueForKey: @"KeyImageCounter"];
+	
+#ifndef OSIRIX_LIGHT
+	[[OSIEnvironment sharedEnvironment] addViewerController:self];
+#endif
 	
 	return self;
 }

@@ -74,6 +74,35 @@
 		4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */; };
 		4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F368CA2139B7E1D00BE3D1C /* CPRView.h */; };
 		4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F368CA3139B7E1D00BE3D1C /* CPRView.m */; };
+		4F832D4113FA5F8C00511070 /* OSICoalescedROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */; };
+		4F832D4213FA5F8C00511070 /* OSICoalescedROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */; };
+		4F832D4313FA5F8C00511070 /* OSIEnvironment.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2613FA5F8C00511070 /* OSIEnvironment.h */; };
+		4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2713FA5F8C00511070 /* OSIEnvironment.m */; };
+		4F832D4513FA5F8C00511070 /* OSIEnvironment+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */; };
+		4F832D4613FA5F8C00511070 /* OSIFloatVolumeData.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2913FA5F8C00511070 /* OSIFloatVolumeData.h */; };
+		4F832D4713FA5F8C00511070 /* OSIFloatVolumeData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2A13FA5F8C00511070 /* OSIFloatVolumeData.m */; };
+		4F832D4813FA5F8C00511070 /* OSIGeometry.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2B13FA5F8C00511070 /* OSIGeometry.h */; };
+		4F832D4913FA5F8C00511070 /* OSIGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2C13FA5F8C00511070 /* OSIGeometry.m */; };
+		4F832D4A13FA5F8C00511070 /* OSIPathROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2D13FA5F8C00511070 /* OSIPathROI.h */; };
+		4F832D4B13FA5F8C00511070 /* OSIPathROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2E13FA5F8C00511070 /* OSIPathROI.m */; };
+		4F832D4C13FA5F8C00511070 /* OSIPlanarPathROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2F13FA5F8C00511070 /* OSIPlanarPathROI.h */; };
+		4F832D4D13FA5F8C00511070 /* OSIPlanarPathROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3013FA5F8C00511070 /* OSIPlanarPathROI.m */; };
+		4F832D4E13FA5F8C00511070 /* OSIROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3113FA5F8C00511070 /* OSIROI.h */; };
+		4F832D4F13FA5F8C00511070 /* OSIROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3213FA5F8C00511070 /* OSIROI.m */; };
+		4F832D5013FA5F8C00511070 /* OSIROI+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3313FA5F8C00511070 /* OSIROI+Private.h */; };
+		4F832D5113FA5F8C00511070 /* OSIROIFloatPixelData.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3413FA5F8C00511070 /* OSIROIFloatPixelData.h */; };
+		4F832D5213FA5F8C00511070 /* OSIROIFloatPixelData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3513FA5F8C00511070 /* OSIROIFloatPixelData.m */; };
+		4F832D5313FA5F8C00511070 /* OSIROIManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3613FA5F8C00511070 /* OSIROIManager.h */; };
+		4F832D5413FA5F8C00511070 /* OSIROIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3713FA5F8C00511070 /* OSIROIManager.m */; };
+		4F832D5513FA5F8C00511070 /* OSIROIMask.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3813FA5F8C00511070 /* OSIROIMask.h */; };
+		4F832D5613FA5F8C00511070 /* OSIROIMask.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3913FA5F8C00511070 /* OSIROIMask.m */; };
+		4F832D5713FA5F8C00511070 /* OSIStudy.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3A13FA5F8C00511070 /* OSIStudy.h */; };
+		4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3B13FA5F8C00511070 /* OSIStudy.m */; };
+		4F832D5913FA5F8C00511070 /* OSIVolumeWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3C13FA5F8C00511070 /* OSIVolumeWindow.h */; };
+		4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D3D13FA5F8C00511070 /* OSIVolumeWindow.m */; };
+		4F832D5B13FA5F8C00511070 /* OSIVolumeWindow+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3E13FA5F8C00511070 /* OSIVolumeWindow+Private.h */; };
+		4F832D5C13FA5F8C00511070 /* pluginSDKAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D3F13FA5F8C00511070 /* pluginSDKAdditions.h */; };
+		4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D4013FA5F8C00511070 /* pluginSDKAdditions.m */; };
 		4F8A1A851302C72300A022D9 /* N3BezierCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */; };
 		4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */; };
 		4F8A1A871302C72300A022D9 /* N3BezierCoreAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */; };
@@ -8188,6 +8217,35 @@
 		4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRObliqueSliceOperation.m; sourceTree = "<group>"; };
 		4F368CA2139B7E1D00BE3D1C /* CPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRView.h; sourceTree = "<group>"; };
 		4F368CA3139B7E1D00BE3D1C /* CPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRView.m; sourceTree = "<group>"; };
+		4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSICoalescedROI.h; sourceTree = "<group>"; };
+		4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSICoalescedROI.m; sourceTree = "<group>"; };
+		4F832D2613FA5F8C00511070 /* OSIEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIEnvironment.h; sourceTree = "<group>"; };
+		4F832D2713FA5F8C00511070 /* OSIEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIEnvironment.m; sourceTree = "<group>"; };
+		4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OSIEnvironment+Private.h"; sourceTree = "<group>"; };
+		4F832D2913FA5F8C00511070 /* OSIFloatVolumeData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIFloatVolumeData.h; sourceTree = "<group>"; };
+		4F832D2A13FA5F8C00511070 /* OSIFloatVolumeData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIFloatVolumeData.m; sourceTree = "<group>"; };
+		4F832D2B13FA5F8C00511070 /* OSIGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIGeometry.h; sourceTree = "<group>"; };
+		4F832D2C13FA5F8C00511070 /* OSIGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIGeometry.m; sourceTree = "<group>"; };
+		4F832D2D13FA5F8C00511070 /* OSIPathROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPathROI.h; sourceTree = "<group>"; };
+		4F832D2E13FA5F8C00511070 /* OSIPathROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPathROI.m; sourceTree = "<group>"; };
+		4F832D2F13FA5F8C00511070 /* OSIPlanarPathROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPlanarPathROI.h; sourceTree = "<group>"; };
+		4F832D3013FA5F8C00511070 /* OSIPlanarPathROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPlanarPathROI.m; sourceTree = "<group>"; };
+		4F832D3113FA5F8C00511070 /* OSIROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIROI.h; sourceTree = "<group>"; };
+		4F832D3213FA5F8C00511070 /* OSIROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIROI.m; sourceTree = "<group>"; };
+		4F832D3313FA5F8C00511070 /* OSIROI+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OSIROI+Private.h"; sourceTree = "<group>"; };
+		4F832D3413FA5F8C00511070 /* OSIROIFloatPixelData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIROIFloatPixelData.h; sourceTree = "<group>"; };
+		4F832D3513FA5F8C00511070 /* OSIROIFloatPixelData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIROIFloatPixelData.m; sourceTree = "<group>"; };
+		4F832D3613FA5F8C00511070 /* OSIROIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIROIManager.h; sourceTree = "<group>"; };
+		4F832D3713FA5F8C00511070 /* OSIROIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIROIManager.m; sourceTree = "<group>"; };
+		4F832D3813FA5F8C00511070 /* OSIROIMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIROIMask.h; sourceTree = "<group>"; };
+		4F832D3913FA5F8C00511070 /* OSIROIMask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIROIMask.m; sourceTree = "<group>"; };
+		4F832D3A13FA5F8C00511070 /* OSIStudy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIStudy.h; sourceTree = "<group>"; };
+		4F832D3B13FA5F8C00511070 /* OSIStudy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIStudy.m; sourceTree = "<group>"; };
+		4F832D3C13FA5F8C00511070 /* OSIVolumeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIVolumeWindow.h; sourceTree = "<group>"; };
+		4F832D3D13FA5F8C00511070 /* OSIVolumeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIVolumeWindow.m; sourceTree = "<group>"; };
+		4F832D3E13FA5F8C00511070 /* OSIVolumeWindow+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OSIVolumeWindow+Private.h"; sourceTree = "<group>"; };
+		4F832D3F13FA5F8C00511070 /* pluginSDKAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pluginSDKAdditions.h; sourceTree = "<group>"; };
+		4F832D4013FA5F8C00511070 /* pluginSDKAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pluginSDKAdditions.m; sourceTree = "<group>"; };
 		4F8A1A7D1302C72300A022D9 /* N3BezierCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCore.h; path = nitrogen/Sources/N3BezierCore.h; sourceTree = "<group>"; };
 		4F8A1A7E1302C72300A022D9 /* N3BezierCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3BezierCore.m; path = nitrogen/Sources/N3BezierCore.m; sourceTree = "<group>"; };
 		4F8A1A7F1302C72300A022D9 /* N3BezierCoreAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N3BezierCoreAdditions.h; path = nitrogen/Sources/N3BezierCoreAdditions.h; sourceTree = "<group>"; };
@@ -12299,6 +12357,7 @@
 				A93CFF6E0A5169FE00078038 /* LL */,
 				A9333D280F56E68B0097DAB7 /* MPR */,
 				CE90547412F5B5D700263AB6 /* CPR */,
+				4F832D2213FA5E9E00511070 /* PluginSDK */,
 				AB3F4A1D0672674000E61A6C /* Window3DController.h */,
 				AB3F4A1E0672674000E61A6C /* Window3DController.m */,
 				A9F2E557092227A400055899 /* DarkWindow.h */,
@@ -12592,6 +12651,42 @@
 				CEA048460C76E2A600B4CA0A /* DICOMQuickLook.xcodeproj */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		4F832D2213FA5E9E00511070 /* PluginSDK */ = {
+			isa = PBXGroup;
+			children = (
+				4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */,
+				4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */,
+				4F832D2613FA5F8C00511070 /* OSIEnvironment.h */,
+				4F832D2713FA5F8C00511070 /* OSIEnvironment.m */,
+				4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */,
+				4F832D2913FA5F8C00511070 /* OSIFloatVolumeData.h */,
+				4F832D2A13FA5F8C00511070 /* OSIFloatVolumeData.m */,
+				4F832D2B13FA5F8C00511070 /* OSIGeometry.h */,
+				4F832D2C13FA5F8C00511070 /* OSIGeometry.m */,
+				4F832D2D13FA5F8C00511070 /* OSIPathROI.h */,
+				4F832D2E13FA5F8C00511070 /* OSIPathROI.m */,
+				4F832D2F13FA5F8C00511070 /* OSIPlanarPathROI.h */,
+				4F832D3013FA5F8C00511070 /* OSIPlanarPathROI.m */,
+				4F832D3113FA5F8C00511070 /* OSIROI.h */,
+				4F832D3213FA5F8C00511070 /* OSIROI.m */,
+				4F832D3313FA5F8C00511070 /* OSIROI+Private.h */,
+				4F832D3413FA5F8C00511070 /* OSIROIFloatPixelData.h */,
+				4F832D3513FA5F8C00511070 /* OSIROIFloatPixelData.m */,
+				4F832D3613FA5F8C00511070 /* OSIROIManager.h */,
+				4F832D3713FA5F8C00511070 /* OSIROIManager.m */,
+				4F832D3813FA5F8C00511070 /* OSIROIMask.h */,
+				4F832D3913FA5F8C00511070 /* OSIROIMask.m */,
+				4F832D3A13FA5F8C00511070 /* OSIStudy.h */,
+				4F832D3B13FA5F8C00511070 /* OSIStudy.m */,
+				4F832D3C13FA5F8C00511070 /* OSIVolumeWindow.h */,
+				4F832D3D13FA5F8C00511070 /* OSIVolumeWindow.m */,
+				4F832D3E13FA5F8C00511070 /* OSIVolumeWindow+Private.h */,
+				4F832D3F13FA5F8C00511070 /* pluginSDKAdditions.h */,
+				4F832D4013FA5F8C00511070 /* pluginSDKAdditions.m */,
+			);
+			name = PluginSDK;
 			sourceTree = "<group>";
 		};
 		4F8A1A791302C6E100A022D9 /* 3DGeometry */ = {
@@ -19715,6 +19810,22 @@
 				4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */,
 				4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */,
 				84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
+				4F832D4113FA5F8C00511070 /* OSICoalescedROI.h in Headers */,
+				4F832D4313FA5F8C00511070 /* OSIEnvironment.h in Headers */,
+				4F832D4513FA5F8C00511070 /* OSIEnvironment+Private.h in Headers */,
+				4F832D4613FA5F8C00511070 /* OSIFloatVolumeData.h in Headers */,
+				4F832D4813FA5F8C00511070 /* OSIGeometry.h in Headers */,
+				4F832D4A13FA5F8C00511070 /* OSIPathROI.h in Headers */,
+				4F832D4C13FA5F8C00511070 /* OSIPlanarPathROI.h in Headers */,
+				4F832D4E13FA5F8C00511070 /* OSIROI.h in Headers */,
+				4F832D5013FA5F8C00511070 /* OSIROI+Private.h in Headers */,
+				4F832D5113FA5F8C00511070 /* OSIROIFloatPixelData.h in Headers */,
+				4F832D5313FA5F8C00511070 /* OSIROIManager.h in Headers */,
+				4F832D5513FA5F8C00511070 /* OSIROIMask.h in Headers */,
+				4F832D5713FA5F8C00511070 /* OSIStudy.h in Headers */,
+				4F832D5913FA5F8C00511070 /* OSIVolumeWindow.h in Headers */,
+				4F832D5B13FA5F8C00511070 /* OSIVolumeWindow+Private.h in Headers */,
+				4F832D5C13FA5F8C00511070 /* pluginSDKAdditions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24310,6 +24421,19 @@
 				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
 				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
 				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				4F832D4213FA5F8C00511070 /* OSICoalescedROI.m in Sources */,
+				4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */,
+				4F832D4713FA5F8C00511070 /* OSIFloatVolumeData.m in Sources */,
+				4F832D4913FA5F8C00511070 /* OSIGeometry.m in Sources */,
+				4F832D4B13FA5F8C00511070 /* OSIPathROI.m in Sources */,
+				4F832D4D13FA5F8C00511070 /* OSIPlanarPathROI.m in Sources */,
+				4F832D4F13FA5F8C00511070 /* OSIROI.m in Sources */,
+				4F832D5213FA5F8C00511070 /* OSIROIFloatPixelData.m in Sources */,
+				4F832D5413FA5F8C00511070 /* OSIROIManager.m in Sources */,
+				4F832D5613FA5F8C00511070 /* OSIROIMask.m in Sources */,
+				4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */,
+				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
+				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
