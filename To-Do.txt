@@ -18,7 +18,7 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
-- Web Server: fetch limit: pages with setFetchOffset, setFetchLimit, setSortDescriptors
+- Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
 - PDF Open in Viewer -> Preview

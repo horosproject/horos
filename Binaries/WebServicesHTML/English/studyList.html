@@ -8,12 +8,6 @@
 	%INCLUDE:/messages.pvt.html%
 
 	<div>
-		%[IF:Studies.count>=500%
-		<div class="title">Studies (Fetch limit reached : only the first 500 studies are displayed)</div>
-		%ELSE:Studies.count>=500%
-		<div class="title">Studies</div>
-		%]IF:Studies.count>=500%
-		%[IF:Studies.count%
 		<div>
 			<div class="smaller right gray">
 				Sorted by:
