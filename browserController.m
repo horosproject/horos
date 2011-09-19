@@ -14247,7 +14247,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(AlternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 				
 //		[[NSNotificationCenter defaultCenter] addObserver: self
@@ -18790,7 +18790,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void) unmountPath:(NSString*) path
 {
-	[bonjourServicesList display];
+    [bonjourServicesList display];
 	
     NSArray *allKeys = [persistentStoreCoordinatorDictionary allKeys];
     for( NSString *storePath in allKeys)
@@ -18817,8 +18817,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[path release];
-	
 	[bonjourServicesList display];
 	[bonjourServicesList setNeedsDisplay];
 	
@@ -18828,16 +18826,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
-- (void)AlternateButtonPressed: (NSNotification*)n
+- (void)alternateButtonPressed: (NSNotification*)n
 {
 	int i = [bonjourServicesList selectedRow];
 	if( i > 0)
 	{
-		NSString *path = [[[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"] retain];
+		NSString *path = [[[bonjourBrowser services] objectAtIndex: i-1] valueForKey:@"Path"];
 	
 		[self resetToLocalDatabase];
-		
-		[self performSelector:@selector(unmountPath:) withObject:path afterDelay:0.2];
+        [self unmountPath: path];
 	}
 }
 

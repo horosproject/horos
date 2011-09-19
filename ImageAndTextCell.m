@@ -45,7 +45,7 @@
 				[controlView display];
 			}
 			
-			[[BrowserController currentBrowser] performSelector:@selector( AlternateButtonPressed:) withObject:nil afterDelay: 0.02];
+            [[BrowserController currentBrowser] alternateButtonPressed: nil];
 		}
 		else
 		{
@@ -81,7 +81,11 @@
 - copyWithZone:(NSZone *)zone {
     ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
 	if( cell == nil) return nil;
+    
     cell->image = [image retain];
+    cell->lastImage = [lastImage retain];
+    cell->lastImageAlternate = [lastImageAlternate retain];
+    
 	[cell setEditable:[self isEditable]];
     return cell;
 }

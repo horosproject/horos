@@ -325,6 +325,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSManagedObjectContext *) defaultManagerObjectContext;
 - (NSManagedObjectContext *) defaultManagerObjectContextIndependentContext: (BOOL) independentContext;
 
+- (void) alternateButtonPressed: (NSNotification*)n;
 - (BOOL) isBonjour: (NSManagedObjectContext*) c;
 - (NSString *) localDocumentsDirectory;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
