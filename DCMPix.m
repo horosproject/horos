@@ -7197,7 +7197,7 @@ END_CREATE_ROIS:
 			{
 				if( clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0)
 				{
-					NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
+//					NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
 					clutEntryR = 65535;
 					clutEntryG = 65535;
 					clutEntryB = 65535;
