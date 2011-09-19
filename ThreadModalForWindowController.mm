@@ -56,7 +56,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.progressIndicator startAnimation:self];
 	
     [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
-    [self.window bind:@"title" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
+//  [self.window bind:@"title" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
     [self.statusField bind:@"value" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
@@ -110,7 +110,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             if ([keyPath isEqual:NSThreadProgressKey])
                 [self.progressIndicator display];
             if ([keyPath isEqual:NSThreadNameKey])
-                [self.window display];
+                [self.titleField display];
             if ([keyPath isEqual:NSThreadStatusKey])
                 [self.statusField display];
             if ([keyPath isEqual:NSThreadProgressDetailsKey])

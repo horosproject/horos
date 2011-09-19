@@ -110,6 +110,9 @@
 	NSInteger port;
 	[self address:address toHost:&host port:&port];
 	
+    if (!host.addresses.count && !host.names.count)
+        [NSException raise:NSGenericException format:@"%@", NSLocalizedString(@"This remote database is unaccessible because its address could not be resolved.", nil)];
+    
 	NSArray* dbs = [DicomDatabase allDatabases];
 	for (RemoteDicomDatabase* db in dbs)
 		if ([db isKindOfClass:[RemoteDicomDatabase class]])

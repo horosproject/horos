@@ -3263,6 +3263,9 @@ static BOOL initialized = NO;
 	}
 	else [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
 	
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYDATABASEMODE"] intValue] == 1) // tag 1 "if on CD", disappeared after new CD/DVD import system
+        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"COPYDATABASEMODE"];
+        
 //	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
 	
 	if( dialog == NO)

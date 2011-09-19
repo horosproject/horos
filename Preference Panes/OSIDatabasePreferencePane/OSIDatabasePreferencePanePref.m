@@ -88,7 +88,7 @@
 
 
 //	[[scrollView verticalScroller] setFloatValue: 0]; 
-////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0];
+////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0]; //// now with bindings
 //	[scrollView setVerticalScroller: [scrollView verticalScroller]];
 	
 //	[[scrollView contentView] scrollToPoint: NSMakePoint(600,600)];
@@ -96,7 +96,7 @@
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	//setup GUI
-	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]];
+////	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
@@ -107,7 +107,7 @@
 	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
-	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
+////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
 	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]];
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];
@@ -371,13 +371,6 @@
 	[[[self mainView] window] makeKeyAndOrderFront: self];
 }
 
-- (IBAction) setCopyDatabaseMode:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"COPYDATABASEMODE"];
-}
-- (IBAction)setCopyDatabaseOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"COPYDATABASE"];
-//	[copyDatabaseModeMatrix setEnabled:[sender state]];
-}
 - (IBAction)setLocalizerOnOff:(id)sender{
 	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NOLOCALIZER"];
 
