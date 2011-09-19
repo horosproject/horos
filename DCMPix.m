@@ -5365,6 +5365,20 @@ END_CREATE_ROIS:
 #ifndef OSIRIX_LIGHT
 - (BOOL)loadDICOMDCMFramework
 {
+    // Memory test: DCMFramework requires a lot of memory...
+    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath: srcFile error: nil] fileSize];
+    fileSize *= 1.5;
+    
+    void *memoryTest = malloc( fileSize);
+    if( memoryTest == nil)
+    {
+        NSLog( @"------ loadDICOMDCMFramework memory test failed -> return");
+        return NO;
+    }
+    free( memoryTest);
+    
+    /////////////////////////
+    
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL returnValue = YES;
 	DCMObject *dcmObject = 0L;
@@ -5936,25 +5950,29 @@ END_CREATE_ROIS:
 			NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
 			if( [pixData length] > 0)
 			{
-				oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
+				oImage =  malloc( [pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 				if( oImage)
 					[pixData getBytes:oImage];
+                else
+                    NSLog( @"----- Major memory problems 1...");
 			}
 			
 			if( oImage == nil) //there was no data for this frame -> create empty image
 			{
 				//NSLog(@"image size: %d", ( height * width * 2));
 				oImage = malloc( height * width * 2);
-				//gArrPhotoInterpret [fileNb] = MONOCHROME2;
-				
-				long yo = 0;
-				for( unsigned long i = 0 ; i < height * width; i++)
+				if( oImage)
 				{
-					oImage[ i] = yo++;
-					if( yo>= width) yo = 0;
-				}
+                    long yo = 0;
+                    for( unsigned long i = 0 ; i < height * width; i++)
+                    {
+                        oImage[ i] = yo++;
+                        if( yo>= width) yo = 0;
+                    }
+                }
+                else
+                    NSLog( @"----- Major memory problems 2...");
 			}
-			
 			
 			//-----------------------frame data already loaded in (short) oImage --------------
 			
@@ -5987,7 +6005,7 @@ END_CREATE_ROIS:
 				unsigned char   *ptr, *tmpImage;
 				int loop = (int) height * (int) width;
 				tmpImage = malloc (loop * 4L);
-				ptr   = tmpImage;
+				ptr = tmpImage;
 				
 				if( bitsAllocated > 8)
 				{
