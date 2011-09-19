@@ -907,7 +907,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)willUnmount {
     @synchronized (self) {
-        
         [DCMPix purgeCachedDictionaries];
         
         if (_scanThread)

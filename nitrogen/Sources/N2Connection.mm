@@ -97,6 +97,16 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	NSConditionLock* conditionLock = [io objectAtIndex:0];
 	NSThread* motherThread = [io objectAtIndex:1];
 	
+#define MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS 10
+    static MPSemaphoreID semaphoreId = 0;
+    @synchronized(self) {
+        if (!semaphoreId) {
+            /*NSStatus err =*/ MPCreateSemaphore(MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, &semaphoreId);
+        }
+    }
+    
+    if (semaphoreId)
+        MPWaitOnSemaphore(semaphoreId, kDurationForever);
 	N2Connection* c = nil;
 	@try {
 		NSData* request = [io objectAtIndex:2]; 
@@ -126,12 +136,14 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		[io addObject:[c readData:0]];
         
         if (c.error)
-            [NSException raise:NSGenericException format:@"%@", c.error.description];
+            [NSException raise:NSGenericException format:@"%@", [c.error localizedDescription]];
         
 	} @catch (NSException* e) {
 		[io addObject:e];
 	} @finally {
 		[c release];
+        if (semaphoreId)
+            MPSignalSemaphore(semaphoreId);
 		[pool release];
 		[conditionLock lockWhenCondition:0];
 		[conditionLock unlockWithCondition:1];

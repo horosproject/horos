@@ -480,23 +480,23 @@ NSString* const DicomDatabaseAlbumEntityName = @"Album";
 NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSEntityDescription*)imageEntity {
-	return [self entityForName:DicomDatabaseImageEntityName];
+	return [self entityForName: @"Image"];
 }
 
 -(NSEntityDescription*)seriesEntity {
-	return [self entityForName:DicomDatabaseSeriesEntityName];
+	return [self entityForName: @"Series"];
 }
 
 -(NSEntityDescription*)studyEntity {
-	return [self entityForName:DicomDatabaseStudyEntityName];
+	return [self entityForName: @"Study"];
 }
 
 -(NSEntityDescription*)albumEntity {
-	return [self entityForName:DicomDatabaseAlbumEntityName];
+	return [self entityForName: @"Album"];
 }
 
 -(NSEntityDescription*)logEntryEntity {
-	return [self entityForName:DicomDatabaseLogEntryEntityName];
+	return [self entityForName: @"LogEntry"];
 }
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath {
@@ -697,7 +697,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 +(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
 	if (!context) return [NSArray array];
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName:DicomDatabaseAlbumEntityName inManagedObjectContext:context];
+	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
     
     [context lock];
@@ -726,34 +726,51 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	
 	// DATES
 	NSCalendarDate* now = [NSCalendarDate calendarDate];
-	NSCalendarDate* start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
-	NSDictionary* sub = [NSDictionary dictionaryWithObjectsAndKeys:
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
-						 [NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
-						 [NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],		@"$YESTERDAY",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
-						 [NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],	@"$YEAR",
-						 nil];
+	NSDate *start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
+    
+    NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
+							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*12] timeIntervalSinceReferenceDate]],			@"$LAST12HOURS",
+							[NSString stringWithFormat:@"%lf", [start timeIntervalSinceReferenceDate]],										@"$TODAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24] timeIntervalSinceReferenceDate]],			@"$YESTERDAY",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*2] timeIntervalSinceReferenceDate]],		@"$2DAYS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*7] timeIntervalSinceReferenceDate]],		@"$WEEK",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31] timeIntervalSinceReferenceDate]],		@"$MONTH",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*2] timeIntervalSinceReferenceDate]],	@"$2MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*31*3] timeIntervalSinceReferenceDate]],	@"$3MONTHS",
+							[NSString stringWithFormat:@"%lf", [[start addTimeInterval: -60*60*24*365] timeIntervalSinceReferenceDate]],		@"$YEAR",
+							nil];
 	
-	for (NSString* key in sub)
-		[pred replaceOccurrencesOfString:key withString:[sub valueForKey:key] options:NSCaseInsensitiveSearch range:pred.range];
+	NSEnumerator *enumerator = [sub keyEnumerator];
+	NSString *key;
 	
-	return [NSPredicate predicateWithFormat:pred];
+	while ((key = [enumerator nextObject]))
+	{
+		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
+	}
+	
+	return [[NSPredicate predicateWithFormat:pred] predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                        [now dateByAddingTimeInterval: -60*60*1],			@"NSDATE_LASTHOUR",
+                                                                                        [now dateByAddingTimeInterval: -60*60*6],			@"NSDATE_LAST6HOURS",
+                                                                                        [now dateByAddingTimeInterval: -60*60*12],			@"NSDATE_LAST12HOURS",
+                                                                                        start,                                              @"NSDATE_TODAY",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24],        @"NSDATE_YESTERDAY",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*2],		@"NSDATE_2DAYS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*7],		@"NSDATE_WEEK",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31],		@"NSDATE_MONTH",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31*2],	@"NSDATE_2MONTHS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*31*3],	@"NSDATE_3MONTHS",
+                                                                                        [start dateByAddingTimeInterval: -60*60*24*365],    @"NSDATE_YEAR",
+                                                                                        nil]];
 }
 
 -(void)addDefaultAlbums {
 	NSDictionary* albumDescriptors = [NSDictionary dictionaryWithObjectsAndKeys:
-									  @"(dateAdded >= CAST($LASTHOUR, 'NSDate'))", @"Just Added",
-									  @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($TODAY, 'NSDate'))", @"Today MR",
-									  @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($TODAY, 'NSDate'))", @"Today CT",
-									  @"(modality CONTAINS[cd] 'MR') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday MR",
-									  @"(modality CONTAINS[cd] 'CT') AND (date >= CAST($YESTERDAY, 'NSDate') AND date <= CAST($TODAY, 'NSDate'))", @"Yesterday CT",
+									  @"(dateAdded >= $NSDATE_LASTHOUR)", @"Just Added",
+									  @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_TODAY)", @"Today MR",
+									  @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_TODAY)", @"Today CT",
+									  @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", @"Yesterday MR",
+									  @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", @"Yesterday CT",
 									  [NSNull null], @"Interesting Cases",
 									  @"(comment != '' AND comment != NIL)", @"Cases with comments",
 									  NULL];

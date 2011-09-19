@@ -973,63 +973,63 @@ extern "C"
 	[pool release];
 }
 
--(void)computeStudyArrayInstanceUID:(NSNumber*)sender {
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
-    static NSString* lock = @"lock";
-    @synchronized(lock) {
-        @try
-        {
-            NSArray *local_studyArrayCache = nil;
-            NSArray *local_studyArrayInstanceUID = nil;
-
-            NSError *error = nil;
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-            NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
-            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
-            
-            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-            [request setPredicate: predicate];
-            
-            [context lock];
-            
-            @try
-            {
-                local_studyArrayCache = [context executeFetchRequest:request error: &error];
-            }
-            @catch (NSException * e)
-            {
-                N2LogExceptionWithStackTrace(e);
-            }
-            
-            [context unlock];
-            
-            @try
-            {
-                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
-            }
-            @catch (NSException * e)
-            {
-                N2LogExceptionWithStackTrace(e);
-            }
-            
-            if( local_studyArrayCache && local_studyArrayInstanceUID)
-            {
-                if( [NSThread isMainThread])
-                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
-                else
-                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
-            }
-            else
-                NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
-        }
-        @catch (NSException* e) {
-            N2LogException(e);
-        }
-    }
-    
-    afterDelayRefresh = NO;
-    [pool release];
+- (void) computeStudyArrayInstanceUID: (NSNumber*) sender
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSArray *local_studyArrayCache = nil;
+	NSArray *local_studyArrayInstanceUID = nil;
+	
+	@try
+	{
+		NSError *error = nil;
+		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
+		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
+		
+		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[request setPredicate: predicate];
+		
+		[context lock];
+		
+		@try
+		{
+			local_studyArrayCache = [context executeFetchRequest:request error: &error];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		[context unlock];
+		
+		@try
+		{
+			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
+		
+		if( local_studyArrayCache && local_studyArrayInstanceUID)
+		{
+			if( [NSThread isMainThread])
+				[self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+			else
+				[self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
+		}
+		else
+			NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	afterDelayRefresh = NO;
+	
+	[pool release];
 }
 
 - (NSArray*) localStudy:(id) item
@@ -1816,15 +1816,15 @@ extern "C"
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
 	
+    if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
+	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
+    
 	[l release];
 }
 
 - (void) displayQueryResults
 {
 	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesTable selectedRow]] byExtendingSelection: NO];
-	
-	if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
-	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected

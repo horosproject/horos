@@ -1,15 +1,23 @@
 - logContext == nil
-- DB Remote: crash
+- DB Remote: Notice: strange, we seem to have redownloaded a remote image
+- DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
+- Cancel copy files from DB to DB
 - CD :  /tmp
 	Should be read-only (drag & drop, import, delete, …)
+	Cases are added to CD… (Auto Q&R, DICOM Listener?)
+	Copy & Eject : Eject doesn't occur... Unmount small icon
+	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
+	iPod doesn't appear automatically
+	iPod eject button doesn't work….
 - Phantom cells
 - DB migration
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
 - PDF Open in Viewer -> Preview

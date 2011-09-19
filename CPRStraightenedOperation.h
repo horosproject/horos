@@ -26,7 +26,7 @@
     BOOL _operationFinished;
     BOOL _operationFailed;
     
-    CGFloat _sampleSpacing;
+    CGFloat _sampleSpacing; // renerated and cached by the operation based on the width and the length of the bezier
 }
 
 - (id)initWithRequest:(CPRStraightenedGeneratorRequest *)request volumeData:(CPRVolumeData *)volumeData;

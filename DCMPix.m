@@ -3480,7 +3480,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -3488,7 +3488,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -4208,7 +4208,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					// if this is a multi channel image, check that serieNo has a sensible value
 					if(LENGTH2>1 && serieNo>=LENGTH2)
 					{ 
-						NSLog(@"LoadLSM: zero indexed serieNo (%d) is greater than number of channels (%d)",serieNo,LENGTH2);
+						NSLog(@"LoadLSM: zero indexed serieNo (%d) is greater than number of channels (%d)",(int)serieNo,(int)LENGTH2);
 						return;
 					}
 					// ok serieNo is sensible use the TIF_STRIPOFFSETS to move to the right place
@@ -4221,7 +4221,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					}
 				}
 				// break out of the do/while loop since we have found the image we want
-				if(lsmDebug)  NSLog(@"Found frame number %d - breaking out of first loop",frameNo);
+				if(lsmDebug)  NSLog(@"Found frame number %d - breaking out of first loop",(int)frameNo);
 				break;
 			}
 			
@@ -4283,7 +4283,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedWidthInDB != 0 && savedWidthInDB != width)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 						if( width > savedWidthInDB)
 							width = savedWidthInDB;
@@ -4295,7 +4295,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedHeightInDB != 0 && savedHeightInDB != height)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 						if( height > savedHeightInDB)
 							height = savedHeightInDB;
@@ -5237,7 +5237,7 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -5245,7 +5245,7 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -5363,6 +5363,20 @@ END_CREATE_ROIS:
 #ifndef OSIRIX_LIGHT
 - (BOOL)loadDICOMDCMFramework
 {
+    // Memory test: DCMFramework requires a lot of memory...
+    unsigned long long fileSize = [[[NSFileManager defaultManager] attributesOfItemAtPath: srcFile error: nil] fileSize];
+    fileSize *= 1.5;
+    
+    void *memoryTest = malloc( fileSize);
+    if( memoryTest == nil)
+    {
+        NSLog( @"------ loadDICOMDCMFramework memory test failed -> return");
+        return NO;
+    }
+    free( memoryTest);
+    
+    /////////////////////////
+    
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	BOOL returnValue = YES;
 	DCMObject *dcmObject = 0L;
@@ -5934,25 +5948,29 @@ END_CREATE_ROIS:
 			NSData *pixData = [pixelAttr decodeFrameAtIndex:imageNb];
 			if( [pixData length] > 0)
 			{
-				oImage =  malloc([pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
+				oImage =  malloc( [pixData length]);	//pointer to a memory zone where each pixel of the data has a short value reserved
 				if( oImage)
 					[pixData getBytes:oImage];
+                else
+                    NSLog( @"----- Major memory problems 1...");
 			}
 			
 			if( oImage == nil) //there was no data for this frame -> create empty image
 			{
 				//NSLog(@"image size: %d", ( height * width * 2));
 				oImage = malloc( height * width * 2);
-				//gArrPhotoInterpret [fileNb] = MONOCHROME2;
-				
-				long yo = 0;
-				for( unsigned long i = 0 ; i < height * width; i++)
+				if( oImage)
 				{
-					oImage[ i] = yo++;
-					if( yo>= width) yo = 0;
-				}
+                    long yo = 0;
+                    for( unsigned long i = 0 ; i < height * width; i++)
+                    {
+                        oImage[ i] = yo++;
+                        if( yo>= width) yo = 0;
+                    }
+                }
+                else
+                    NSLog( @"----- Major memory problems 2...");
 			}
-			
 			
 			//-----------------------frame data already loaded in (short) oImage --------------
 			
@@ -5985,7 +6003,7 @@ END_CREATE_ROIS:
 				unsigned char   *ptr, *tmpImage;
 				int loop = (int) height * (int) width;
 				tmpImage = malloc (loop * 4L);
-				ptr   = tmpImage;
+				ptr = tmpImage;
 				
 				if( bitsAllocated > 8)
 				{
@@ -6841,7 +6859,7 @@ END_CREATE_ROIS:
 		height = (int) (*val).us;
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -6855,7 +6873,7 @@ END_CREATE_ROIS:
 		width = (int) (*val).us;
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -7195,7 +7213,7 @@ END_CREATE_ROIS:
 			{
 				if( clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0)
 				{
-					NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
+//					NSLog( @"****** clutEntryR == 0 && clutEntryG == 0 && clutEntryB == 0");
 					clutEntryR = 65535;
 					clutEntryG = 65535;
 					clutEntryB = 65535;
@@ -8789,7 +8807,7 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", height, savedHeightInDB);
+		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -8797,7 +8815,7 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", width, savedWidthInDB);
+		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -11970,7 +11988,7 @@ END_CREATE_ROIS:
 	if( baseAddr)
 		[self changeWLWW: wl : ww];
 	else
-		NSLog( @"****** allocate8bitRepresentation calloc failed: %d %d", width, height);
+		NSLog( @"****** allocate8bitRepresentation calloc failed: %d %d", (int)width, (int)height);
 }
 
 - (long)ID { return imID; }

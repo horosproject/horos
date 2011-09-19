@@ -38,7 +38,7 @@ struct BioradNote
   := 2 for note including file name,
   := 3 if note for multiplier file,
   := 4, 5, etc.,; additional descriptive notes */
-	char noteText[BIORAD_NOTE_TEXT_LENGTH];
+	char noteText[BIORAD_NOTE_LENGTH];
 } __attribute__((__packed__));
 
 

@@ -81,16 +81,18 @@
 	return specificArray;
 }
 
--(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate {
+-(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate
+{
 	return [self studiesForUser:user predicate:predicate sortBy:NULL];
 }
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue
 {
-	return [self studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0];
+	return [self studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0];
 }
 
--(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit {
+-(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset
+{
 	NSArray* studiesArray = nil;
 	
 	[self.dicomDatabase.managedObjectContext lock];
@@ -99,9 +101,6 @@
 	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-		
-		if( fetchLimit)
-			[req setFetchLimit: fetchLimit];
 		
 		BOOL allStudies = NO;
 		if( user.studyPredicate.length == 0)
@@ -146,14 +145,27 @@
 			
 			studiesArray = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 		}
-		
-		if( [sortValue length])
+        
+        if( [sortValue length])
 		{
 			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
-				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)]]];
 			else
-				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: NO] autorelease]]];
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
 		}
+        
+        if( fetchLimit)
+        {
+            NSRange range = NSMakeRange( fetchOffset, fetchLimit);
+            
+            if( range.location >= studiesArray.count)
+                range.location = studiesArray.count-1;
+            
+            if( range.location + range.length > studiesArray.count)
+                range.length = studiesArray.count - range.location;
+            
+            studiesArray = [studiesArray subarrayWithRange: range];
+        }
 		
 	} @catch(NSException* e) {
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);

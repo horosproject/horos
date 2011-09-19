@@ -53,7 +53,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
     _fillOperations = nil;
 	[_projectionOperation release];
 	_projectionOperation = nil;
-    [super dealloc];
+	[super dealloc];
 }
 
 - (BOOL)isConcurrent
@@ -316,6 +316,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                     [self willChangeValueForKey:@"isExecuting"];
                     _operationExecuting = NO;
                     _operationFinished = YES;
+					
                     [self didChangeValueForKey:@"isExecuting"];
                     [self didChangeValueForKey:@"isFinished"];
                 }

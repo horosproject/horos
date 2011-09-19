@@ -14,8 +14,6 @@
 
 #import "WebPortalConnection.h"
 
-#define FETCHLIMIT 500 //Maximum number of studies displayed in a list - This number has be IDENTICAL to the number in studyList.html
-
 @interface WebPortalConnection (Data)
 
 +(NSArray*)MakeArray:(id)obj;

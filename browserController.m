@@ -1611,6 +1611,10 @@ static NSConditionLock *threadLock = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
+- (void) copyFilesThread: (NSDictionary*) dict
+{
+	[self.database performSelector:@selector(copyFilesThread:) withObject:dict];
+}
 
 - (IBAction) copyToDBFolder: (id) sender
 {
@@ -2277,11 +2281,8 @@ static NSConditionLock *threadLock = nil;
 	
 	NSMutableString *pred = [NSMutableString stringWithString: string];
 	
-	// DATES
-	
-	// Today:
-	NSCalendarDate	*now = [NSCalendarDate calendarDate];
-	NSCalendarDate	*start = [NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]];
+    NSCalendarDate	*now = [NSCalendarDate calendarDate];
+	NSDate	*start = [NSDate dateWithTimeIntervalSinceReferenceDate: [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:0 minute:0 second:0 timeZone: [now timeZone]] timeIntervalSinceReferenceDate]];
 	
 	NSDictionary	*sub = [NSDictionary dictionaryWithObjectsAndKeys:	[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*1] timeIntervalSinceReferenceDate]],			@"$LASTHOUR",
 							[NSString stringWithFormat:@"%lf", [[now addTimeInterval: -60*60*6] timeIntervalSinceReferenceDate]],			@"$LAST6HOURS",
@@ -2303,14 +2304,28 @@ static NSConditionLock *threadLock = nil;
 	{
 		[pred replaceOccurrencesOfString:key withString: [sub valueForKey: key]	options: NSCaseInsensitiveSearch range:pred.range];
 	}
-	
+    
 	NSPredicate *predicate;
 	
-	if( [string isEqualToString:@""]) predicate = [NSPredicate predicateWithValue: YES];
+	if( [string isEqualToString:@""])
+        predicate = [NSPredicate predicateWithValue: YES];
 	else
-	{
 		predicate = [NSPredicate predicateWithFormat: pred];
-	}
+    
+    predicate = [predicate predicateWithSubstitutionVariables: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                                [now dateByAddingTimeInterval: -60*60*1],			@"NSDATE_LASTHOUR",
+                                                                [now dateByAddingTimeInterval: -60*60*6],			@"NSDATE_LAST6HOURS",
+                                                                [now dateByAddingTimeInterval: -60*60*12],			@"NSDATE_LAST12HOURS",
+                                                                start,                                              @"NSDATE_TODAY",
+                                                                [start dateByAddingTimeInterval: -60*60*24],        @"NSDATE_YESTERDAY",
+                                                                [start dateByAddingTimeInterval: -60*60*24*2],		@"NSDATE_2DAYS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*7],		@"NSDATE_WEEK",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31],		@"NSDATE_MONTH",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31*2],	@"NSDATE_2MONTHS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*31*3],	@"NSDATE_3MONTHS",
+                                                                [start dateByAddingTimeInterval: -60*60*24*365],    @"NSDATE_YEAR",
+                                                                nil]];
+    
 	return predicate;
 }
 
@@ -2369,7 +2384,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
 	
-	predicate = [NSPredicate predicateWithValue:YES];
+	predicate = nil;
 	
 //	if( displayEmptyDatabase) // TODO: shu
 //		predicate = [NSPredicate predicateWithValue:NO];
@@ -2403,7 +2418,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				subPredicate = [self smartAlbumPredicate: album];
 				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
-				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, nil]];
+				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 			}
 			else
 			{
@@ -2434,7 +2449,7 @@ static NSConditionLock *threadLock = nil;
 			
 			description = [description stringByAppendingFormat:NSLocalizedString(@" / Time Interval: since: %@", nil), [[NSUserDefaults dateTimeFormatter] stringFromDate: timeIntervalStart]];
 		}
-		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, subPredicate, nil]];
+		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 		filtered = YES;
 	}
 	
@@ -2444,7 +2459,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( self.filterPredicate)
 	{
-		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: predicate, self.filterPredicate, nil]];
+		predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: self.filterPredicate, predicate, nil]];
 		description = [description stringByAppendingString: self.filterPredicateDescription];
 		filtered = YES;
 	}
@@ -2452,6 +2467,9 @@ static NSConditionLock *threadLock = nil;
 	if( testPredicate)
 		predicate = testPredicate;
 	
+    if( predicate == nil)
+        predicate = [NSPredicate predicateWithValue: YES];
+    
 	[request setPredicate: predicate];
 	
 	NSManagedObjectContext *context = self.managedObjectContext;
@@ -3916,6 +3934,9 @@ static NSConditionLock *threadLock = nil;
 			matrixThumbnails = NO;
 	}
 	
+    if( matrixThumbnails == NO && [databaseOutline selectedRow] == -1)
+        return;
+    
 	NSString *level = nil;
 	
 	if( matrixThumbnails)
@@ -8117,13 +8138,21 @@ static BOOL needToRezoom;
 
 - (void)tableViewSelectionDidChange: (NSNotification *)aNotification
 {
-	if( [[aNotification object] isEqual: albumTable])
-	{
-		// Clear search field
-		[self setSearchString: nil];
-		
-		[self refreshAlbums];
-	}
+    @try
+    {
+        if( [[aNotification object] isEqual: albumTable])
+        {
+            // Clear search field
+            [self setSearchString: nil];
+            
+            [self refreshAlbums];
+        }
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"viewerDICOMInt exception: %@", e);
+		[AppController printStackTrace: e];
+    }
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -13877,7 +13906,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void) unmountPath:(NSString*) path
 {
 	[_sourcesTableView display];
-	
+    
 	int attempts = 0;
 	BOOL success = NO;
 	while( success == NO)
@@ -13920,12 +13949,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 /*- (void)loadDICOMFromiPod
 {
+    [self loadDICOMFromiPod: nil];
+}
+    
+- (void)loadDICOMFromiPod: path
+{
 	if( mountedVolumes == nil)
 		mountedVolumes = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] copy];
 	
 	NSString *defaultPath = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]);
 	
-	for ( NSString *path in mountedVolumes)
+    NSArray *pathsList = nil;
+    
+    if( path == nil)
+        pathsList = mountedVolumes;
+    else
+        pathsList = [NSArray arrayWithObject: path];
+    
+	for( NSString *path in pathsList)
 	{
 		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
 		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
@@ -13949,7 +13990,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"])
 					{
-						if( [[service valueForKey:@"Path"] isEqualToString: path]) found = YES;
+						if( [[service valueForKey:@"Path"] isEqualToString: path])
+                            found = YES;
 					}
 				}
 				
@@ -13963,8 +14005,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					NSString	*name = nil;
 					
-					if( isItAnIpod) name = volumeName;
-					else name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
+					if( isItAnIpod)
+                        name = volumeName;
+					else
+                        name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
 					
 					[dict setValue:path forKey:@"Path"];
 					[dict setValue:name forKey:@"Description"];
@@ -14270,7 +14314,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 }
 #endif
 
-
 - (void)storeSCPComplete: (id)sender
 {
 	//release storescp when done
@@ -14363,6 +14406,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 					isSigned = YES;
 					isLittleEndian = NO;
 					break;
+                case 6: spp = 1;
+					numberBytes = 4;
+					highBit = 31;
+					bitsAllocated = 32;
+					isSigned = YES;
+					isLittleEndian = YES;
+					break;
+                    
 				default:	spp = 1;
 					numberBytes = 2;
 			}
@@ -16182,17 +16233,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)setSearchString: (NSString *)searchString
 {
-	if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-		[searchField setTextColor: [NSColor whiteColor]];
-	else
-		[searchField setTextColor: [NSColor blackColor]];
-	
-	[_searchString release];
-	_searchString = [searchString retain];
-	
-	[self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
-	[self outlineViewRefresh];
-	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    if( searchType == 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+        [searchField setTextColor: [NSColor whiteColor]];
+    else
+        [searchField setTextColor: [NSColor blackColor]];
+    
+    [_searchString release];
+    _searchString = [searchString retain];
+    
+    [self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
+    [self outlineViewRefresh];
+    [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender
