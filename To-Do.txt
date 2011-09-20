@@ -6,6 +6,8 @@ A:
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 - Cancel copy files from DB to DB
+- QR: delete study
+- Cancel button for routing thread
 - CD :  /tmp
 	Should be read-only (drag & drop, import, delete, …)
 	Copy & Eject : Eject doesn't occur... Unmount small icon
@@ -18,6 +20,7 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- storescu: No presentation context for: (MRe) 1.2.840.10008.5.1.4.1.1.4.1
 - Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?

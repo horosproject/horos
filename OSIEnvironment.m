@@ -36,8 +36,10 @@ static OSIEnvironment *sharedEnvironment = nil;
 + (OSIEnvironment*)sharedEnvironment
 {
 	@synchronized (self) {
-		if (sharedEnvironment == nil) {
-			sharedEnvironment = [[super allocWithZone:NULL] init];
+		if (sharedEnvironment == nil)
+        {
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"OSIEnvironmentActivated"])
+                sharedEnvironment = [[super allocWithZone:NULL] init];
 		}
 	}
     return sharedEnvironment;
