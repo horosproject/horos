@@ -14,6 +14,7 @@
 
 #import "WADODownload.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 #include <libkern/OSAtomic.h>
 
 @implementation WADODownload
@@ -104,7 +105,7 @@
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
+		NSString *path = [[DicomDatabase defaultDatabase] incomingDirPath];
 		
 		NSString *key = [NSString stringWithFormat:@"%ld", connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
