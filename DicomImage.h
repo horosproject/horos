@@ -17,6 +17,8 @@
 NSString* sopInstanceUIDDecode( unsigned char *r, int length);
 void* sopInstanceUIDEncode( NSString *sopuid);
 
+#define OsirixDicomImageSizeUnknown INT_MAX
+
 @class DCMSequenceAttribute, DicomSeries;
 
 @interface NSData (OsiriX)
@@ -96,7 +98,6 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSString*) extension;
 - (NSNumber*) height;
 - (NSNumber*) width;
-extern const NSInteger OsirixDicomImageSizeUnknown;
 
 +(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
 

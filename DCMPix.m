@@ -3480,7 +3480,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -3488,7 +3489,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3698,7 +3700,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int) savedHeightInDB, (int) height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3706,7 +3709,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int) savedWidthInDB, (int) width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -4283,7 +4287,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedWidthInDB != 0 && savedWidthInDB != width)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+                        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 						if( width > savedWidthInDB)
 							width = savedWidthInDB;
@@ -4295,7 +4300,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedHeightInDB != 0 && savedHeightInDB != height)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+                        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 						if( height > savedHeightInDB)
 							height = savedHeightInDB;
@@ -5237,7 +5243,8 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -5245,7 +5252,8 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -6859,7 +6867,8 @@ END_CREATE_ROIS:
 		height = (int) (*val).us;
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -6873,7 +6882,8 @@ END_CREATE_ROIS:
 		width = (int) (*val).us;
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -8807,7 +8817,8 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
+        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -8815,7 +8826,8 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
+        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
