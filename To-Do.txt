@@ -8,7 +8,6 @@ A:
 - Cancel copy files from DB to DB
 - CD :  /tmp
 	Should be read-only (drag & drop, import, delete, …)
-	Cases are added to CD… (Auto Q&R, DICOM Listener?)
 	Copy & Eject : Eject doesn't occur... Unmount small icon
 	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
 	iPod doesn't appear automatically
