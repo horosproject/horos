@@ -8,7 +8,7 @@ A:
 - Cancel copy files from DB to DB (done)
 - QR: delete study
 - Cancel button for routing thread
-- CD :  /tmp ==> /tmp/OsiriX_Username/.. + détruit au lancement, à la fermeture
+- CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
 		viewer toolbar: delete, (report: readonly...))
