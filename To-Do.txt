@@ -8,6 +8,7 @@ A:
 - Cancel copy files from DB to DB (done)
 - QR: delete study
 - Cancel button for routing thread
+- Burning CD: Decompress files doesn't work
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
