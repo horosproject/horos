@@ -821,6 +821,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)initiateVolumeScan {
 	_database = [[DicomDatabase databaseAtPath:self.location] retain];
     _database.isReadOnly = YES;
+    _database.name = self.description;
 	for (NSManagedObject* obj in _database.albums)
 		[_database.managedObjectContext deleteObject:obj];
 	[self performSelectorInBackground:@selector(volumeScanThread) withObject:nil];

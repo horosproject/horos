@@ -48,8 +48,14 @@
 	return nsPath;
 }
 
+-(NSString*)tmpDirPath {
+    NSString* path = [NSString stringWithFormat:@"/tmp/%@_%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], NSUserName()];
+    [self confirmDirectoryAtPath:path];
+    return path;
+}
+
 -(NSString*)tmpFilePathInTmp {
-	return [self tmpFilePathInDir:@"/tmp"];
+	return [self tmpFilePathInDir:[self tmpDirPath]];
 }
 
 -(NSString*)confirmDirectoryAtPath:(NSString*)dirPath {

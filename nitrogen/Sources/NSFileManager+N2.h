@@ -21,6 +21,7 @@
 -(NSString*)findSystemFolderOfType:(int)folderType forDomain:(int)domain;
 -(NSString*)userApplicationSupportFolderForApp;
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath;
+-(NSString*)tmpDirPath;
 -(NSString*)tmpFilePathInTmp;
 -(NSString*)confirmDirectoryAtPath:(NSString*)dirPath;
 -(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path;

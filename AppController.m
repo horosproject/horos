@@ -2449,6 +2449,8 @@ static NSDate *lastWarningDate = nil;
 	[NSSplitView saveSplitView];
 	
 	[[NSFileManager defaultManager] removeItemAtPath:@"/tmp/zippedCD/" error:nil];
+
+    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
 }
 
 
@@ -2481,6 +2483,8 @@ static NSDate *lastWarningDate = nil;
 	self = [super init];
 	OsiriX = appController = self;
 	
+    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
+    
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
 		[N2Debug setActive:YES];
 	
