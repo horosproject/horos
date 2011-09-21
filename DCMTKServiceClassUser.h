@@ -75,6 +75,8 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 }
 
 @property BOOL _abortAssociation;
+@property (readonly) NSString *_hostname;
+@property int _port;
 
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  

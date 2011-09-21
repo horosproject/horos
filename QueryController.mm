@@ -2533,8 +2533,40 @@ extern "C"
 		numberOfRunningRetrieve++;
 	}
 	
-	[array retain];
-	
+    // Apply the same order for retrieving, as the sources order
+    NSArray *copiedSourcesArray = [NSArray arrayWithArray: sourcesArray];
+    NSMutableArray *reorderedArray = [NSMutableArray array];
+    
+    @try
+    {
+        for( NSDictionary *source in sourcesArray)
+        {
+            for( DCMTKQueryNode *node in array)
+            {
+                if( [[node _hostname] isEqualToString: [[source valueForKey: @"server"] valueForKey: @"Address"]] && [node _port] == [[[source valueForKey: @"server"] valueForKey: @"Port"] intValue])
+                    if( [reorderedArray containsObject: node] == NO)
+                        [reorderedArray addObject: node];
+            }
+        }
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+    }
+    
+    for( DCMTKQueryNode *node in array)
+    {
+        if( [reorderedArray containsObject: node] == NO)
+            [reorderedArray addObject: node];
+    }
+    
+    if( array.count == reorderedArray.count)
+        array = reorderedArray;
+    else
+        NSLog( @"------- array.count != reorderedArray.count : QueryController performRetrieve");
+    
+    [array retain];
+    
 	@try
 	{
 		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
