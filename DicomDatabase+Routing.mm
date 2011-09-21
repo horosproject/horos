@@ -108,6 +108,7 @@
 														extraParameters: xp];
 	
 	@try {
+        NSThread.currentThread.supportsCancel = YES;
 		[storeSCU run:self];
 	} @catch (NSException *ne) {
 		NSLog( @"Autorouting FAILED : %@", ne);
@@ -239,7 +240,7 @@
 				
 				[thread exitOperation];
 				
-				if (NSThread.currentThread.isCancelled)
+				if (thread.isCancelled)
 					break;
 			}
 			

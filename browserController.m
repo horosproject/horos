@@ -3430,6 +3430,8 @@ static NSConditionLock *threadLock = nil;
 					}
 				}
 			}
+            
+            // TODO: when merging multiframe series, we should reevaluate the instanceNumbers in order to have a well-sorted [DicomSeries sortedImages] array
 			
 			[destSeries setValue:[NSNumber numberWithInt:0] forKey:@"numberOfImages"];
 			

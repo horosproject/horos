@@ -1577,10 +1577,14 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			{
                 NSString *extraInfo = @"";
                 if( _secureConnection)
-                    extraInfo = @" (TLS Activated)";
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)%@", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], extraInfo];
+                    extraInfo = NSLocalizedString(@" (TLS)", @"don't remove leading space");
+                NSInteger theNumber = [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue];
+				[NSThread currentThread].status = [NSString stringWithFormat:@"%d %@%@", theNumber, (theNumber != 1? NSLocalizedString(@"files", nil) : NSLocalizedString(@"file", nil)), extraInfo];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
+            
+            if ([[NSThread currentThread] isCancelled]) // alessandro
+                break;
 		}
 		
 		/* tear down association, i.e. terminate network connection to SCP */
