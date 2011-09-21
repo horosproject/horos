@@ -399,18 +399,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return style;
 }
 
--(void) awakeFromNib
-{
-	if( [style isEqualToString:@"panel"])
-	{
-		[self setShouldCascadeWindows: NO];
-		[[self window] setFrameAutosaveName:@"3D Panel"];
-		[[self window] setFrameUsingName:@"3D Panel"];
-	}
-	
-	[shadingsPresetsController setWindowController: self];
-}
-
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
 	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
@@ -814,6 +802,15 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
 	
+    if( [style isEqualToString:@"panel"])
+	{
+		[self setShouldCascadeWindows: NO];
+		[[self window] setFrameAutosaveName:@"3D Panel"];
+		[[self window] setFrameUsingName:@"3D Panel"];
+	}
+	
+	[shadingsPresetsController setWindowController: self];
+    
     return self;
 }
 
