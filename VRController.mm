@@ -197,7 +197,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) windowDidLoad
 {
-    [self setupToolbar];
+//    [self setupToolbar];
 }
 
 -(ViewerController*) blendingController
@@ -594,6 +594,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
     [[self window] setDelegate:self];
     
+    
+    
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
     if( err != 0)
     {
@@ -810,6 +812,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 	
 	[shadingsPresetsController setWindowController: self];
+    
+    [self setupToolbar];
     
     return self;
 }
