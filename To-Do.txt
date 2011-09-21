@@ -1,21 +1,24 @@
 A:
 - Bonjour Detection of iOS devices doesn't work
 - logContext == nil
-- DB Remote: Notice: strange, we seem to have redownloaded a remote image
+- DB Remote: Notice: strange, we seem to have redownloaded a remote image (happens when scrolling through a series: the next few images are transferred in background, then the user selects one of these, and its transfer is done again... normal)
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
-- Cancel copy files from DB to DB
+- Cancel copy files from DB to DB (done)
 - QR: delete study
 - Cancel button for routing thread
-- CD :  /tmp
-	Should be read-only (drag & drop, import, delete, …)
+- CD :  /tmp ==> /tmp/OsiriX_Username/.. + détruit au lancement, à la fermeture
+	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
+		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
+		viewer toolbar: delete, (report: readonly...))
+		contextual menu nsoutline et nsmatrix
+	Cases are added to CD… (Auto Q&R, DICOM Listener?) 
 	Copy & Eject : Eject doesn't occur... Unmount small icon
-	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
+	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD (done)
 	iPod doesn't appear automatically
 	iPod eject button doesn't work….
-- Phantom cells
-- DB migration
+- Phantom cells (antoines fix ok?)
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
