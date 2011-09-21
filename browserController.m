@@ -95,7 +95,7 @@
 #import "WADODownload.h"
 #import "NSManagedObject+N2.h"
 #import "DICOMExport.h"
-#import "AlbumCell.h"
+#import "PrettyCell.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -7461,19 +7461,9 @@ static BOOL withReset = NO;
 {
 	NSMenuItem		*item;
 	
-
-    AlbumCell* cell = [[[AlbumCell alloc] init] autorelease];
-    [cell setImagePosition:NSImageLeft];
-    [cell setAlignment:NSLeftTextAlignment];
-    [cell setHighlightsBy:NSNoCellMask];
-    [cell setShowsStateBy:NSNoCellMask];
-    [cell setBordered:NO];
-    [cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
-    [cell setButtonType:NSMomentaryChangeButton];
-	[cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
+    PrettyCell* cell = [[[PrettyCell alloc] init] autorelease];
 	[[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 
-    
 	// ****************
 	
 	if ( contextual == nil) contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
@@ -7917,9 +7907,9 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(AlbumCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(PrettyCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if ([aTableView isEqual:albumTable])
+    if ([aTableView isEqual:albumTable])
 	{
 		//if( displayEmptyDatabase) return;
 		

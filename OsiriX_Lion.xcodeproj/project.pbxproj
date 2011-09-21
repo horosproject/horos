@@ -141,10 +141,6 @@
 		591F5F7E13E9468D004D9ADF /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */; };
 		591F5F7F13E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
 		591F5F8013E9468D004D9ADF /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */; };
-		592230F113FA968B00A124C4 /* AlbumCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 592230EF13FA968A00A124C4 /* AlbumCell.h */; };
-		592230F213FA968B00A124C4 /* AlbumCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 592230EF13FA968A00A124C4 /* AlbumCell.h */; };
-		592230F313FA968B00A124C4 /* AlbumCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592230F013FA968A00A124C4 /* AlbumCell.mm */; };
-		592230F413FA968B00A124C4 /* AlbumCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592230F013FA968A00A124C4 /* AlbumCell.mm */; };
 		5923F29213FD302D009CF12D /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5923F29013FD302D009CF12D /* BrowserBottomSplitView.h */; };
 		5923F29313FD302D009CF12D /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5923F29013FD302D009CF12D /* BrowserBottomSplitView.h */; };
 		5923F29413FD302D009CF12D /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5923F29113FD302D009CF12D /* BrowserBottomSplitView.m */; };
@@ -218,6 +214,14 @@
 		592CFF671212F91D00176E39 /* ISO8601DateFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB1E1129338A009EB238 /* ISO8601DateFormatter.m */; };
 		592D333912F2C71A00C7C002 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 592D333512F2C71A00C7C002 /* NSException+N2.h */; };
 		592D333A12F2C71A00C7C002 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
+		5939417014286EB300038DBA /* PrettyCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5939416E14286EB300038DBA /* PrettyCell.h */; };
+		5939417114286EB300038DBA /* PrettyCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5939416E14286EB300038DBA /* PrettyCell.h */; };
+		5939417214286EB300038DBA /* PrettyCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5939416F14286EB300038DBA /* PrettyCell.mm */; };
+		5939417314286EB300038DBA /* PrettyCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5939416F14286EB300038DBA /* PrettyCell.mm */; };
+		5939417A1428BE5200038DBA /* Eject_gray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 593941781428BE5200038DBA /* Eject_gray.pdf */; };
+		5939417B1428BE5200038DBA /* Eject_gray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 593941781428BE5200038DBA /* Eject_gray.pdf */; };
+		5939417C1428BE5200038DBA /* Eject_lightgray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 593941791428BE5200038DBA /* Eject_lightgray.pdf */; };
+		5939417D1428BE5200038DBA /* Eject_lightgray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 593941791428BE5200038DBA /* Eject_lightgray.pdf */; };
 		594830CD118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
 		594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 594830CC118B0AC100D7E606 /* N2ImageView.mm */; };
 		594830CF118B0AC100D7E606 /* N2ImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 594830CB118B0AC100D7E606 /* N2ImageView.h */; };
@@ -8327,8 +8331,6 @@
 		591F5F7613E9464F004D9ADF /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2MutableUInteger.mm; path = nitrogen/Sources/N2MutableUInteger.mm; sourceTree = "<group>"; };
 		591F5F7B13E9468D004D9ADF /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
 		591F5F7C13E9468D004D9ADF /* RemoteDicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteDicomDatabase.mm; sourceTree = "<group>"; };
-		592230EF13FA968A00A124C4 /* AlbumCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlbumCell.h; sourceTree = "<group>"; };
-		592230F013FA968A00A124C4 /* AlbumCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AlbumCell.mm; sourceTree = "<group>"; };
 		5923F29013FD302D009CF12D /* BrowserBottomSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserBottomSplitView.h; sourceTree = "<group>"; };
 		5923F29113FD302D009CF12D /* BrowserBottomSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserBottomSplitView.m; sourceTree = "<group>"; };
 		59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 4.xcdatamodel"; sourceTree = "<group>"; };
@@ -8362,6 +8364,10 @@
 		592CFF071212F84F00176E39 /* N2SOAPWebServiceClient.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2SOAPWebServiceClient.mm; path = nitrogen/Sources/N2SOAPWebServiceClient.mm; sourceTree = "<group>"; };
 		592D333512F2C71A00C7C002 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSException+N2.h"; path = "nitrogen/Sources/NSException+N2.h"; sourceTree = "<group>"; };
 		592D333612F2C71A00C7C002 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSException+N2.mm"; path = "nitrogen/Sources/NSException+N2.mm"; sourceTree = "<group>"; };
+		5939416E14286EB300038DBA /* PrettyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrettyCell.h; sourceTree = "<group>"; };
+		5939416F14286EB300038DBA /* PrettyCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PrettyCell.mm; sourceTree = "<group>"; };
+		593941781428BE5200038DBA /* Eject_gray.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Eject_gray.pdf; sourceTree = "<group>"; };
+		593941791428BE5200038DBA /* Eject_lightgray.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Eject_lightgray.pdf; sourceTree = "<group>"; };
 		594830CB118B0AC100D7E606 /* N2ImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2ImageView.h; path = nitrogen/Sources/N2ImageView.h; sourceTree = "<group>"; };
 		594830CC118B0AC100D7E606 /* N2ImageView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ImageView.mm; path = nitrogen/Sources/N2ImageView.mm; sourceTree = "<group>"; };
 		59526E8312816FDC0016F6C0 /* WebPortalSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalSession.h; sourceTree = "<group>"; };
@@ -13907,6 +13913,8 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				593941781428BE5200038DBA /* Eject_gray.pdf */,
+				593941791428BE5200038DBA /* Eject_lightgray.pdf */,
 				84EBD98213F41800005A5D02 /* horizontalPosition.tif */,
 				84EBD98313F41800005A5D02 /* normalPosition.tif */,
 				84EBD98413F41800005A5D02 /* verticalPosition.tif */,
@@ -14173,8 +14181,8 @@
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
-				592230EF13FA968A00A124C4 /* AlbumCell.h */,
-				592230F013FA968A00A124C4 /* AlbumCell.mm */,
+				5939416E14286EB300038DBA /* PrettyCell.h */,
+				5939416F14286EB300038DBA /* PrettyCell.mm */,
 				5923F29013FD302D009CF12D /* BrowserBottomSplitView.h */,
 				5923F29113FD302D009CF12D /* BrowserBottomSplitView.m */,
 			);
@@ -19930,7 +19938,6 @@
 				5915F16F13E94CBA002591FF /* BrowserSource.h in Headers */,
 				5915F17513E991CB002591FF /* NSDate+N2.h in Headers */,
 				5915F17B13E99243002591FF /* NSArray+N2.h in Headers */,
-				592230F113FA968B00A124C4 /* AlbumCell.h in Headers */,
 				5923F29213FD302D009CF12D /* BrowserBottomSplitView.h in Headers */,
 				4F832D4113FA5F8C00511070 /* OSICoalescedROI.h in Headers */,
 				4F832D4313FA5F8C00511070 /* OSIEnvironment.h in Headers */,
@@ -19948,6 +19955,7 @@
 				4F832D5913FA5F8C00511070 /* OSIVolumeWindow.h in Headers */,
 				4F832D5B13FA5F8C00511070 /* OSIVolumeWindow+Private.h in Headers */,
 				4F832D5C13FA5F8C00511070 /* pluginSDKAdditions.h in Headers */,
+				5939417014286EB300038DBA /* PrettyCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22177,8 +22185,8 @@
 				5915F17013E94CBA002591FF /* BrowserSource.h in Headers */,
 				5915F17613E991CB002591FF /* NSDate+N2.h in Headers */,
 				5915F17C13E99243002591FF /* NSArray+N2.h in Headers */,
-				592230F213FA968B00A124C4 /* AlbumCell.h in Headers */,
 				5923F29313FD302D009CF12D /* BrowserBottomSplitView.h in Headers */,
+				5939417114286EB300038DBA /* PrettyCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22863,6 +22871,8 @@
 				84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */,
 				84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
+				5939417A1428BE5200038DBA /* Eject_gray.pdf in Resources */,
+				5939417C1428BE5200038DBA /* Eject_lightgray.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23223,6 +23233,8 @@
 				84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */,
 				84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
+				5939417B1428BE5200038DBA /* Eject_gray.pdf in Resources */,
+				5939417D1428BE5200038DBA /* Eject_lightgray.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24566,7 +24578,6 @@
 				5915F17113E94CBA002591FF /* BrowserSource.mm in Sources */,
 				5915F17713E991CB002591FF /* NSDate+N2.mm in Sources */,
 				5915F17D13E99243002591FF /* NSArray+N2.mm in Sources */,
-				592230F313FA968B00A124C4 /* AlbumCell.mm in Sources */,
 				5923F29413FD302D009CF12D /* BrowserBottomSplitView.m in Sources */,
 				4F832D4213FA5F8C00511070 /* OSICoalescedROI.m in Sources */,
 				4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */,
@@ -24581,6 +24592,7 @@
 				4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */,
 				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
 				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
+				5939417214286EB300038DBA /* PrettyCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25854,8 +25866,8 @@
 				5915F17213E94CBA002591FF /* BrowserSource.mm in Sources */,
 				5915F17813E991CB002591FF /* NSDate+N2.mm in Sources */,
 				5915F17E13E99243002591FF /* NSArray+N2.mm in Sources */,
-				592230F413FA968B00A124C4 /* AlbumCell.mm in Sources */,
 				5923F29513FD302D009CF12D /* BrowserBottomSplitView.m in Sources */,
+				5939417314286EB300038DBA /* PrettyCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

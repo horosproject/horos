@@ -9,7 +9,7 @@
 #import "BrowserController+Sources.h"
 #import "BrowserController+Sources+Copy.h"
 #import "BrowserSource.h"
-#import "ImageAndTextCell.h"
+#import "PrettyCell.h"
 #import "DicomDatabase.h"
 #import "RemoteDicomDatabase.h"
 #import "NSManagedObject+N2.h"
@@ -73,6 +73,7 @@
 	DicomDatabase* _database;
     BOOL _available;
     NSThread* _scanThread;
+    NSButton* _unmountButton;
 }
 
 @property(retain) NSString* devicePath;
@@ -100,9 +101,7 @@
 	[_sourcesTableView setDataSource:_sourcesHelper];
 	[_sourcesTableView setDelegate:_sourcesHelper];
 	
-	NSCell* cell = [[[ImageAndTextCell alloc] init] autorelease];
-	[cell setEditable:NO];
-	[cell setLineBreakMode:NSLineBreakByTruncatingMiddle];
+	PrettyCell* cell = [[[PrettyCell alloc] init] autorelease];
 	[[_sourcesTableView tableColumnWithIdentifier:@"Source"] setDataCell:cell];
 	
 	[_sourcesTableView registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
@@ -673,13 +672,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return bs.location;
 }
 
--(void)tableView:(NSTableView*)aTableView willDisplayCell:(ImageAndTextCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
+-(void)tableView:(NSTableView*)aTableView willDisplayCell:(PrettyCell*)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row {
 	cell.image = nil;
-	cell.lastImage = nil;
-	cell.lastImageAlternate = nil;
 	cell.font = [NSFont systemFontOfSize:11];
-	cell.textColor = NSColor.blackColor;
+	cell.textColor = nil;
+    [cell.rightSubviews removeAllObjects];
 	BrowserSource* bs = [_browser sourceAtRow:row];
+    cell.title = bs.description;
 	[bs willDisplayCell:cell];
 }
 
@@ -738,7 +737,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	return source;
 }
 
--(void)willDisplayCell:(ImageAndTextCell*)cell {
+-(void)willDisplayCell:(PrettyCell*)cell {
 	cell.font = [NSFont boldSystemFontOfSize:11];
 	cell.image = [NSImage imageNamed:@"osirix16x16.tif"];
 }
@@ -762,7 +761,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super dealloc];
 }
 
--(void)willDisplayCell:(ImageAndTextCell*)cell {
+-(void)willDisplayCell:(PrettyCell*)cell {
 	[super willDisplayCell:cell];
 	
 	NSImage* bonjour = [NSImage imageNamed:@"bonjour_whitebg.png"];
@@ -792,6 +791,32 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 @implementation MountedBrowserSource
 
 @synthesize devicePath = _devicePath;
+
+-(id)init {
+    if ((self = [super init])) {
+        _unmountButton = [[NSButton alloc] initWithFrame:NSMakeRect(0,0,14,14)];
+        _unmountButton.image = [NSImage imageNamed:@"Eject_gray"];
+        _unmountButton.image.size = NSMakeSize(10,11);
+        _unmountButton.alternateImage = [NSImage imageNamed:@"Eject_lightgray"];
+        _unmountButton.alternateImage.size = NSMakeSize(10,11);
+        _unmountButton.imagePosition = NSImageOnly;
+        _unmountButton.bezelStyle = 0;
+        [_unmountButton setButtonType:NSMomentaryLightButton];
+        [_unmountButton setBordered:NO];
+        NSButtonCell* cell = _unmountButton.cell;
+        cell.gradientType = NSGradientNone;
+        [cell setHighlightsBy:NSContentsCellMask];
+        
+        _unmountButton.target = self;
+        _unmountButton.action = @selector(_eject:);
+    }
+
+    return self;
+}
+
+-(void)_eject:(id)sender {
+    [[NSWorkspace sharedWorkspace] performSelectorInBackground:@selector(unmountAndEjectDeviceAtPath:) withObject:self.devicePath];
+}
 
 -(void)initiateVolumeScan {
 	_database = [[DicomDatabase databaseAtPath:self.location] retain];
@@ -865,6 +890,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)dealloc {
 	[_database release];
+    
+    [_unmountButton removeFromSuperview];
+    [_unmountButton release];
+    
     [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL];
     self.devicePath = nil;
 	[super dealloc];
@@ -877,7 +906,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 //	return r;
 //}
 
--(void)willDisplayCell:(ImageAndTextCell*)cell {
+-(void)willDisplayCell:(PrettyCell*)cell {
 	[super willDisplayCell:cell];
 	
 //	NSLog(@"%@", [self _bcsChars:self.devicePath]);
@@ -887,6 +916,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
     if (!_available)
         cell.textColor = [NSColor grayColor];
+    
+    [cell.rightSubviews addObject:_unmountButton];
 }
 
 -(NSString*)toolTip {
@@ -911,6 +942,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         
         if (_scanThread)
             [_scanThread cancel];
+        
+        [[BrowserController currentBrowser] redrawSources];
     }
 }
 

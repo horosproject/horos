@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class DicomDatabase, ImageAndTextCell;
+@class DicomDatabase, PrettyCell;
 
 enum {
 	BrowserSourceTypeDefault,
@@ -45,7 +45,7 @@ typedef NSInteger BrowserSourceType;
 
 -(DicomDatabase*)database;
 
--(void)willDisplayCell:(ImageAndTextCell*)cell;
+-(void)willDisplayCell:(PrettyCell*)cell;
 
 -(BOOL)isVolatile; // like bonjour sources, CD/DVDs, ...
 -(BOOL)isReadOnly;

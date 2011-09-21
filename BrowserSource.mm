@@ -7,7 +7,7 @@
 //
 
 #import "BrowserSource.h"
-#import "ImageAndTextCell.h"
+#import "PrettyCell.h"
 #import "RemoteDicomDatabase.h"
 #import "NSImage+N2.h"
 #import <stdlib.h>
@@ -91,7 +91,7 @@
 	return nil;
 }
 
--(void)willDisplayCell:(ImageAndTextCell*)cell {
+-(void)willDisplayCell:(PrettyCell*)cell {
 	switch (self.type) {
 		case BrowserSourceTypeLocal: {
 			BOOL isDir;
@@ -110,8 +110,8 @@
 		//	NSLog(@"mountedRemovableMedia %@", [[NSWorkspace sharedWorkspace] mountedRemovableMedia]);
 			BOOL atRemovableMediaRoot = [[[NSWorkspace sharedWorkspace] mountedRemovableMedia] containsObject:self.location];
 			if (isIPod || atRemovableMediaRoot) {
-				cell.lastImage = [NSImage imageNamed:@"iPodEjectOff.tif"];
-				cell.lastImageAlternate = [NSImage imageNamed:@"iPodEjectOn.tif"];
+//				cell.lastImage = [NSImage imageNamed:@"iPodEjectOff.tif"]; // TODO: eject button
+//				cell.lastImageAlternate = [NSImage imageNamed:@"iPodEjectOn.tif"];
 			}
 			
 			NSString* path = self.location;
