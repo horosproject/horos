@@ -5,7 +5,7 @@ A:
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 - QR: delete study
-- Cancel button for routing thread
+- Cancel button for routing thread (DONE)
 - Burning CD: Decompress files doesn't work
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
@@ -18,6 +18,8 @@ A:
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
+
+- When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage 
 
 - storescu (autorouting): No presentation context for: (MRe) 1.2.840.10008.5.1.4.1.1.4.1
 - Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
