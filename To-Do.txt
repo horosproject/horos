@@ -14,7 +14,7 @@ A:
 		viewer toolbar: delete, (report: readonly...))
 		contextual menu nsoutline et nsmatrix
 	Cases are added to CD… (Auto Q&R, DICOM Listener?) 
-	Copy & Eject : Eject doesn't occur... Unmount small icon
+	Copy & Eject : Eject doesn't occur... Unmount small icon (done)
 	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD (done)
 	iPod doesn't appear automatically
 	iPod eject button doesn't work….
