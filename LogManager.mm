@@ -68,7 +68,7 @@ static LogManager *currentLogManager = nil;
 
 - (NSString *) logFolder
 {
-	NSString *path =  [NSString stringWithUTF8String: [[BrowserController currentBrowser] cfixedTempNoIndexDirectory]];
+	NSString *path =  [NSString stringWithUTF8String: [[[BrowserController currentBrowser] database] tempDirPathC]];
 	NSFileManager *manager = [NSFileManager defaultManager];
 	BOOL isDir;
 	if (!([manager fileExistsAtPath:path isDirectory:&isDir] && isDir))
@@ -82,10 +82,10 @@ static LogManager *currentLogManager = nil;
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
 		if( context == nil)
 		{
-			NSLog(@"***** log context == nil");
+			NSLog(@"----- [[[BrowserController currentBrowser] database] managedObjectContext] == nil");
 			return;
 		}
 		
