@@ -7284,7 +7284,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) delObjects:(NSMutableArray*) objectsToDelete
 {
-	NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 	int result;
 	NSMutableArray *studiesArray = [NSMutableArray array] , *seriesArray = [NSMutableArray array];
 	NSManagedObjectContext	*context = self.managedObjectContext;
@@ -7397,8 +7396,6 @@ static NSConditionLock *threadLock = nil;
                             }
                         }
                     }
-                    
-                    [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
                 }
             }
             @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
@@ -7572,7 +7569,11 @@ static NSConditionLock *threadLock = nil;
 		
 		if( [databaseOutline selectedRow] >= 0)
 		{
+            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+            
 			[self delObjects: objectsToDelete];
+            
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 		}
 	}
 	
