@@ -4338,7 +4338,7 @@ static NSConditionLock *threadLock = nil;
 
     if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                                                                         // only Series
         if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"] || [[tableColumn identifier] isEqualToString:@"modality"])    // only name & description & modality
-            if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
+            if (!value || ([value isKindOfClass:[NSString class]] && [(NSString*)value length] == 0))
                 return NSLocalizedString(@"unknown", nil);
 
 	return value;
@@ -4573,7 +4573,7 @@ static NSConditionLock *threadLock = nil;
                     if (!accessed)
                         value = [item valueForKey:[tableColumn identifier]];
                     
-                    if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
+                    if (!value || ([value isKindOfClass:[NSString class]] && [(NSString*)value length] == 0))
                         gray = YES;
                 }
             [cell setTextColor: gray? [NSColor grayColor] : [NSColor blackColor]];
@@ -10652,14 +10652,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[BrowserController tryLock:_database during: 120];
 //		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
 		
-		while( [SendController sendControllerObjects] > 0)
-		{
-			//[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-			[NSThread sleepForTimeInterval: 0.1];
-			
-			if( wait && [[wait window] isVisible] == NO)
-				[wait showWindow:self];
-		}
 	//	[BrowserController tryLock: decompressThreadRunning during: 120];
 	//	[BrowserController tryLock: autoroutingInProgress during: 120];
 		
