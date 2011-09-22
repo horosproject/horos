@@ -678,7 +678,8 @@ extern "C"
 	
     if ([item action] == @selector( deleteSelection:))
 	{
-		[[BrowserController currentBrowser] showEntireDatabase];
+		[[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
+        [[BrowserController currentBrowser] showEntireDatabase];
 	
 		NSIndexSet* indices = [outlineView selectedRowIndexes];
 		
@@ -702,6 +703,7 @@ extern "C"
 
 -(void) deleteSelection:(id) sender
 {
+    [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
 	[[BrowserController currentBrowser] showEntireDatabase];
 	
 	NSIndexSet* indices = [outlineView selectedRowIndexes];
@@ -1279,6 +1281,7 @@ extern "C"
 			
 			if( [array count] > 0)
 			{
+                [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
 				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
 			}
 			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
@@ -2014,7 +2017,7 @@ extern "C"
 	if( autoQuery == NO)
 		goto returnFromThread;
 	
-	if( [BrowserController currentBrowser].isCurrentDatabaseBonjour)
+	if( [[BrowserController currentBrowser] database] != [DicomDatabase activeLocalDatabase])
 		goto returnFromThread;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
@@ -2716,6 +2719,7 @@ extern "C"
 		return;
 	}
 	
+    [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
 	NSError *error = nil;
