@@ -1,6 +1,5 @@
 A:
 - Bonjour Detection of iOS devices doesn't work
-- logContext == nil
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
