@@ -181,7 +181,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
 		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
-		
+        
 /*		[item setObject:path forKey:@"date"];
 		[item setObject:path forKey:@"seriesDICOMUID"];
 		[item setObject:path forKey:@"protocolName"];

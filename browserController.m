@@ -4320,13 +4320,32 @@ static NSConditionLock *threadLock = nil;
 		if( [[tableColumn identifier] isEqualToString:@"referringPhysician"])	return @"";
 		if( [[tableColumn identifier] isEqualToString:@"performingPhysician"])	return @"";
 		if( [[tableColumn identifier] isEqualToString:@"institutionName"])		return @"";
-		if( [[tableColumn identifier] isEqualToString:@"studyName"])			return [item valueForKey:@"seriesDescription"];
 		if( [[tableColumn identifier] isEqualToString:@"patientID"])			return @"";
 		if( [[tableColumn identifier] isEqualToString:@"yearOld"])				return @"";
 		if( [[tableColumn identifier] isEqualToString:@"accessionNumber"])		return @"";
 	}
-	
-	return [item valueForKey: [tableColumn identifier]];
+    
+    id value = nil;
+    BOOL accessed = NO;
+    
+    if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && [[tableColumn identifier] isEqualToString:@"studyName"]) {
+        value = [item valueForKey:@"seriesDescription"];
+        accessed = YES;
+    }
+    
+    if (!accessed)
+        value = [item valueForKey:[tableColumn identifier]];
+    
+    if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) {
+        if ([[tableColumn identifier] isEqualToString:@"name"])
+            if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
+                return NSLocalizedString(@"unknown", nil);
+        if ([[tableColumn identifier] isEqualToString:@"studyName"])
+            if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
+                return NSLocalizedString(@"unknown", nil);
+    }
+
+	return value;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
@@ -4539,7 +4558,30 @@ static NSConditionLock *threadLock = nil;
 			[cell setFont: [NSFont boldSystemFontOfSize:10]];
 		}
 		[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
-		
+        
+        // gray "unknown" values
+
+        if ([cell respondsToSelector:@selector(setTextColor:)]) {
+            BOOL gray = NO;
+            if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                 // only Series
+                if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"])      // only name & description
+                {
+                    id value = nil;
+                    BOOL accessed = NO;
+                    
+                    if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && [[tableColumn identifier] isEqualToString:@"studyName"]) {
+                        value = [item valueForKey:@"seriesDescription"];
+                        accessed = YES;
+                    }
+                    
+                    if (!accessed)
+                        value = [item valueForKey:[tableColumn identifier]];
+                    
+                    if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
+                        gray = YES;
+                }
+            [cell setTextColor: gray? [NSColor grayColor] : [NSColor blackColor]];
+        }
 	}
 	@catch (NSException * e) 
 	{
