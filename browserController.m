@@ -4335,15 +4335,11 @@ static NSConditionLock *threadLock = nil;
     
     if (!accessed)
         value = [item valueForKey:[tableColumn identifier]];
-    
-    if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) {
-        if ([[tableColumn identifier] isEqualToString:@"name"])
+
+    if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                                                                         // only Series
+        if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"] || [[tableColumn identifier] isEqualToString:@"modality"])    // only name & description & modality
             if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
                 return NSLocalizedString(@"unknown", nil);
-        if ([[tableColumn identifier] isEqualToString:@"studyName"])
-            if (!value || ([value isKindOfClass:[NSString class]] && [value length] == 0))
-                return NSLocalizedString(@"unknown", nil);
-    }
 
 	return value;
 }
@@ -4563,8 +4559,8 @@ static NSConditionLock *threadLock = nil;
 
         if ([cell respondsToSelector:@selector(setTextColor:)]) {
             BOOL gray = NO;
-            if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                 // only Series
-                if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"])      // only name & description
+            if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                                                                         // only Series
+                if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"] || [[tableColumn identifier] isEqualToString:@"modality"])    // only name & description & modality
                 {
                     id value = nil;
                     BOOL accessed = NO;

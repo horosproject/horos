@@ -663,6 +663,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
 	if (mbs)
         [mbs willUnmount];
+    
+    if (mbs && [[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs]) {
+        DicomDatabase* db = [DicomDatabase activeLocalDatabase];
+        if (db == _browser.database)
+            db = [DicomDatabase defaultDatabase];
+        [_browser setDatabase:db];
+    }
 }
 
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation {
