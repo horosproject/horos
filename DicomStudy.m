@@ -1265,6 +1265,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 		return NO;
 }
 
+- (NSSet *)images
+{
+    [[self managedObjectContext] lock];
+	
+	NSMutableSet *images = [NSMutableSet set];
+	
+	@try 
+	{
+		NSSet *sets = [self valueForKeyPath: @"series.images"];
+        
+		for (id subset in sets)
+			[images unionSet: subset];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return images;
+}
+
 - (NSArray *)imageSeries
 {
 	[[self managedObjectContext] lock];

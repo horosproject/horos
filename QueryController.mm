@@ -33,6 +33,7 @@
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "DicomStudy.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -699,42 +700,43 @@ extern "C"
 
 -(void) deleteSelection:(id) sender
 {
-	[[BrowserController currentBrowser] showEntireDatabase];
-	
-	NSIndexSet* indices = [outlineView selectedRowIndexes];
-	BOOL extendingSelection = NO;
-	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try 
-	{
-		for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
-		{
-			if( [indices containsIndex: i])
-			{
-				NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
-				
-				if( [studyArray count] > 0)
-				{
-					NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
-					[[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
-					extendingSelection = YES;
-				}
-				else NSBeep();
-			} 
-		}
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	
-	if( extendingSelection)
-	{
-		[[BrowserController currentBrowser] delItem: nil];
-	}
+    NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Are you sure you want to delete the selected images?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+    
+    if( result == NSAlertDefaultReturn)
+    {
+        NSIndexSet* indices = [outlineView selectedRowIndexes];
+        BOOL extendingSelection = NO;
+        
+        [[[BrowserController currentBrowser] managedObjectContext] lock];
+        
+        @try 
+        {
+            for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+            {
+                if( [indices containsIndex: i])
+                {
+                    NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+                    
+                    if( [studyArray count] > 0)
+                    {
+                        NSMutableArray *images = [NSMutableArray array];
+                        
+                        for( DicomStudy *study in studyArray)
+                           [images addObjectsFromArray: [[study images] allObjects]];
+                        
+                        [[BrowserController currentBrowser] delObjects: images];
+                    }
+                    else NSBeep();
+                } 
+            }
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+        
+        [[[BrowserController currentBrowser] managedObjectContext] unlock];
+    }
 }
 
 - (void)keyDown:(NSEvent *)event
