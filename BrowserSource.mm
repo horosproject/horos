@@ -106,13 +106,13 @@
 				break;
 			}
 			
-			BOOL isIPod = [NSFileManager.defaultManager fileExistsAtPath:[self.location stringByAppendingPathComponent:@"iPod_Control"]];
+	/*		BOOL isIPod = [NSFileManager.defaultManager fileExistsAtPath:[self.location stringByAppendingPathComponent:@"iPod_Control"]];
 		//	NSLog(@"mountedRemovableMedia %@", [[NSWorkspace sharedWorkspace] mountedRemovableMedia]);
 			BOOL atRemovableMediaRoot = [[[NSWorkspace sharedWorkspace] mountedRemovableMedia] containsObject:self.location];
 			if (isIPod || atRemovableMediaRoot) {
 //				cell.lastImage = [NSImage imageNamed:@"iPodEjectOff.tif"]; // TODO: eject button
 //				cell.lastImageAlternate = [NSImage imageNamed:@"iPodEjectOn.tif"];
-			}
+			}*/
 			
 			NSString* path = self.location;
 			BOOL atMediaRoot = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] containsObject:path];

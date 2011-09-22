@@ -94,7 +94,7 @@
     static const CGFloat spacer = 2;
 
     NSMutableAttributedString* mutableTitle = [[title mutableCopy] autorelease];
-    if (self.textColor) [mutableTitle setAttributes:[NSDictionary dictionaryWithObject:self.textColor forKey:NSForegroundColorAttributeName] range:mutableTitle.range];
+    if (self.textColor) [mutableTitle setAttributes:[NSDictionary dictionaryWithObjectsAndKeys:self.textColor, NSForegroundColorAttributeName, self.font, NSFontAttributeName, nil] range:mutableTitle.range];
     title = mutableTitle;
     
     if (self.rightText) {
