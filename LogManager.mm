@@ -87,7 +87,7 @@ static LogManager *currentLogManager = nil;
 		if( context == nil)
 			return;
 		
-		if( [[[BrowserController currentBrowser] database] isLocal])
+		if( [[[BrowserController currentBrowser] database] isLocal] == NO)
             return;
 		
 		char logPatientName[ 1024];

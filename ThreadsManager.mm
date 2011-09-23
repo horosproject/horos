@@ -65,7 +65,8 @@
 
 -(void)subAddThread:(NSThread*)thread
 {
-	@synchronized (_threadsController) {
+	@synchronized (_threadsController)
+    {
 	@synchronized (thread)
 	{
 		if (![NSThread isMainThread])
@@ -77,17 +78,24 @@
         }
 		else
         {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
-            [_threadsController addObject:thread];
-            
             if (![thread isMainThread] && ![thread isExecuting])
-                @try {
+            {
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+                [_threadsController addObject:thread];
+                
+                @try
+                {
                     [thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
-                } @catch (NSException* e) { // ignore
+                }
+                @catch (NSException* e)
+                {
+                    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+                    [_threadsController removeObject:thread];
                 }
             }
         }
 	}
+    }
 }
 
 -(void)addThreadAndStart:(NSThread*)thread
