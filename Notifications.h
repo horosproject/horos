@@ -78,6 +78,7 @@ extern NSString* const OsirixPerformDragOperationNotification;
 extern NSString* const OsirixViewerWillChangeNotification;
 extern NSString* const OsirixViewerDidChangeNotification;
 extern NSString* const OsirixUpdateViewNotification;
+extern NSString* const OsirixViewerControllerDidLoadImagesNotification;
 extern NSString* const KFSplitViewDidCollapseSubviewNotification;
 extern NSString* const KFSplitViewDidExpandSubviewNotification;
 extern NSString* const BLAuthenticatedNotification;

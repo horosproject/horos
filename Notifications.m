@@ -78,6 +78,7 @@ NSString* const OsirixPerformDragOperationNotification = @"PluginDragOperationNo
 NSString* const OsirixViewerWillChangeNotification = @"ViewerWillChangeNotification";
 NSString* const OsirixViewerDidChangeNotification = @"ViewerDidChangeNotification";
 NSString* const OsirixUpdateViewNotification = @"updateView";
+NSString* const OsirixViewerControllerDidLoadImagesNotification = @"OsirixViewerControllerDidLoadImagesNotification";
 NSString* const KFSplitViewDidCollapseSubviewNotification = @"KFSplitViewDidCollapseSubviewNotification";
 NSString* const KFSplitViewDidExpandSubviewNotification = @"KFSplitViewDidExpandSubviewNotification";
 NSString* const BLAuthenticatedNotification = @"BLAuthenticatedNotification";

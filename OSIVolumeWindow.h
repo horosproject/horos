@@ -44,6 +44,7 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
 	ViewerController *_viewerController; // this is retained
     NSMutableArray *_OSIROIs; // additional ROIs that have been added to the VolumeWindow 
 	OSIROIManager *_ROIManager; // should this really be an ROI manager? or is that another beast altogether?
+    BOOL _dataLoaded;
 }
 
 ///-----------------------------------
@@ -63,6 +64,13 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
  @return The title of the window represented by this Volume Window.
  */
 - (NSString *)title;
+
+/** Returns YES if the `ViewerController` paired with this Volume Window has all it's data loaded, ROIs for example will not be accessible until all the data is loaded.
+ Observable.
+ 
+ @see viewerController
+ */
+- (BOOL)isDataLoaded;
 
 ///-----------------------------------
 /// @name Managing ROIs

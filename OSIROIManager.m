@@ -34,8 +34,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 - (void)_removeROICallbackHack:(ROI *)roi;
 - (void)_addROINotification:(NSNotification *)notification;
 - (void)_drawObjectsNotification:(NSNotification *)notification;
-- (NSArray *)_ROIList;
-- (NSArray *)_coalescedROIList;
+- (NSArray *)_ROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs; // returned watchedROI is the OsiriX rois the returned OSIROIs are based on
+- (NSArray *)_coalescedROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs;
 
 - (BOOL)_isROIManaged:(ROI *)roi;
 
@@ -51,6 +51,15 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 @synthesize delegate = _delegate;
 
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
+{
+	if ([key isEqualToString:@"allROIsLoaded"]) {
+		return NO;
+	}
+	
+	return [super automaticallyNotifiesObserversForKey:key];
+}
+
 - (id)initWithVolumeWindow:(OSIVolumeWindow *)volumeWindow
 {
 	return [self initWithVolumeWindow:volumeWindow coalesceROIs:NO];
@@ -61,14 +70,17 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	if ( (self = [super init]) ) {
 		_volumeWindow = [volumeWindow retain]; // it is ok to retain the volumeWindow even if this is the ROIManager that is owned by an OSIVolumeWindow because it will be released when the window closes 
 		_OSIROIs = [[NSMutableArray alloc] init];
+        _watchedROIs = [[NSMutableSet alloc] init];
 		_coalesceROIs = coalesceROIs;
+        _allROIsLoaded = [_volumeWindow isDataLoaded];
 		[self _rebuildOSIROIs];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_volumeWindowDidCloseNotification:) name:OSIVolumeWindowDidCloseNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_volumeWindowDidCloseNotification:) name:OSIVolumeWindowDidCloseNotification object:_volumeWindow];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_ROIChangeNotification:) name:OsirixROIChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_removeROINotification:) name:OsirixRemoveROINotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_addROINotification:) name:OsirixAddROINotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_drawObjectsNotification:) name:OsirixDrawObjectsNotification object:nil];
 		[_volumeWindow addObserver:self forKeyPath:@"OSIROIs" options:NSKeyValueObservingOptionInitial context:self];
+		[_volumeWindow addObserver:self forKeyPath:@"dataLoaded" options:NSKeyValueObservingOptionInitial context:self];
 	}
 	return self;
 }
@@ -77,6 +89,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [_volumeWindow removeObserver:self forKeyPath:@"OSIROIs"];
+    [_volumeWindow removeObserver:self forKeyPath:@"dataLoaded"];
 	
 	_delegate = nil;
 	
@@ -84,6 +97,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	_volumeWindow = nil;
 	[_OSIROIs release];
 	_OSIROIs = nil;
+    [_watchedROIs release];
+    _watchedROIs = nil;
 	
 	[super dealloc];
 }
@@ -136,9 +151,19 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	return [roiNames allObjects];
 }
 
+- (BOOL)allROIsLoaded
+{
+    return _allROIsLoaded;
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if ([keyPath isEqualToString:@"OSIROIs"] && object == _volumeWindow) {
+        [self _rebuildOSIROIs];
+    } else if ([keyPath isEqualToString:@"dataLoaded"] && object == _volumeWindow) {
+        [self willChangeValueForKey:@"allROIsLoaded"];
+        _allROIsLoaded = [_volumeWindow isDataLoaded];
+        [self didChangeValueForKey:@"allROIsLoaded"];
         [self _rebuildOSIROIs];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -147,6 +172,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (void)_volumeWindowDidCloseNotification:(NSNotification *)notification
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:OSIVolumeWindowDidCloseNotification object:_volumeWindow];
 	[_volumeWindow release];
 	_volumeWindow = nil;
 	[self _rebuildOSIROIs];
@@ -154,9 +180,9 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (void)_ROIChangeNotification:(NSNotification *)notification
 {
-//	if ([self _isROIManaged:[notification object]]) {
+	if ([self _isROIManaged:[notification object]]) {
 		[self _rebuildOSIROIs];
-//	}
+	}
 //	[self _sendDidModifyROI:];
 }
 
@@ -253,19 +279,25 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (BOOL)_isROIManaged:(ROI *)roi
 {
-	OSIROI *osiROI;
-	
-	for (osiROI in [self ROIs]) {
-		if ([[osiROI osiriXROIs] containsObject:roi]) {
-			return YES;
-		}
-	}
-	return NO;
+    return [_watchedROIs containsObject:roi];
+//	OSIROI *osiROI;
+//	
+//    
+//    
+//	for (osiROI in [self ROIs]) {
+//		if ([[osiROI osiriXROIs] containsObject:roi]) {
+//			return YES;
+//		}
+//	}
+//	return NO;
 }
 
 - (void)_rebuildOSIROIs
 {
 	NSAutoreleasePool *pool;
+    
+    NSArray *watchedROIs;
+    
 	// because the OsiriX ROI post notifications at super weird times (like within dealloc!?!?!) 
 	// we need to make surewe don't renter our ROI rebuilding call while rebuilding the ROIs;
 
@@ -273,25 +305,33 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 		return;
 	}
 	
+    if (_volumeWindow && _allROIsLoaded == NO) { // don't do jack until everything is loaded
+        return;
+    }
+    
 	pool = [[NSAutoreleasePool alloc] init];
 	
 	_rebuildingROIs = YES;
 	
 	[self willChangeValueForKey:@"ROIs"];
 	[_OSIROIs removeAllObjects];
+    [_watchedROIs removeAllObjects];
 	if (_coalesceROIs) {
-		[_OSIROIs addObjectsFromArray:[self _coalescedROIList]];
+		[_OSIROIs addObjectsFromArray:[self _coalescedROIListForWatchedOsiriXROIs:&watchedROIs]];
 	} else {
-		[_OSIROIs addObjectsFromArray:[self _ROIList]];
+		[_OSIROIs addObjectsFromArray:[self _ROIListForWatchedOsiriXROIs:&watchedROIs]];
 	}
 	[self didChangeValueForKey:@"ROIs"];
+    
+    [_watchedROIs addObjectsFromArray:watchedROIs];
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
 	
 	_rebuildingROIs = NO;
 	[pool release];
 }
 
-- (NSArray *)_ROIList;
+- (NSArray *)_ROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs;
 {
 	ViewerController *viewController;
 	NSArray *movieFrameROIList;
@@ -305,9 +345,14 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	NSArray *pixROIList;
 	DCMPix *pix;
 	N3AffineTransform pixToDicomTransform;
+    NSMutableArray *mutableWatchedROIs;
 	
 	newROIs = [NSMutableArray array];
-	
+    mutableWatchedROIs = nil;
+	if (watchedROIs) {
+        mutableWatchedROIs = [NSMutableArray array];
+    }
+    
 	viewController = [_volumeWindow viewerController];
 	if (viewController) {
 		maxMovieIndex = [viewController maxMovieIndex];
@@ -329,6 +374,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 					roi = [OSIROI ROIWithOsiriXROI:osirixROI pixToDICOMTransfrom:pixToDicomTransform homeFloatVolumeData:[viewController floatVolumeDataForMovieIndex:i]];
 					if (roi) {
 						[newROIs addObject:roi];
+                        [mutableWatchedROIs addObject:osirixROI];
 					}
 				}				
 			}
@@ -339,10 +385,14 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
         }
 	}
 	
+    if (watchedROIs) {
+        *watchedROIs = mutableWatchedROIs;
+    }
+    
 	return newROIs;
 }
 
-- (NSArray *)_coalescedROIList;
+- (NSArray *)_coalescedROIListForWatchedOsiriXROIs:(NSArray **)watchedROIs;
 {
 	NSArray *roiList;
 	NSArray *roisToCoalesce;
@@ -352,8 +402,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	NSMutableDictionary *groupedNamesDict;
 	OSIROI *roi;
     OSIFloatVolumeData *homeVolumeData;
-	
-	roiList = [self _ROIList];
+    
+	roiList = [self _ROIListForWatchedOsiriXROIs:watchedROIs];
 	roiNames = [[NSMutableSet alloc] init];
 	coalescedROIs = [NSMutableArray array];
 	groupedNamesDict = [[NSMutableDictionary alloc] init];

@@ -16,10 +16,25 @@
 #import "OSIVolumeWindow+Private.h"
 #import "OSIROIManager.h"
 #import "pluginSDKAdditions.h"
+#import "Notifications.h"
 
 NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseNotification";
 
+@interface OSIVolumeWindow ()
+- (void)_viewerControllerDidLoadImagesNotification:(NSNotification *)notification;
+@end
+
 @implementation OSIVolumeWindow
+
++ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key
+{
+	if ([key isEqualToString:@"dataLoaded"]) {
+		return NO;
+	}
+	
+	return [super automaticallyNotifiesObserversForKey:key];
+}
+
 
 // don't call this!
 - (id)init
@@ -32,6 +47,8 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 	[_viewerController release];
 	_viewerController = nil;
 	_ROIManager.delegate = nil;
@@ -50,6 +67,11 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 - (BOOL)isOpen
 {
 	return (_viewerController ? YES : NO);
+}
+
+- (BOOL)isDataLoaded
+{
+    return _dataLoaded;
 }
 
 - (OSIROIManager *)ROIManager
@@ -142,6 +164,29 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
     return _OSIROIs;
 }
 
+- (void)_viewerControllerDidLoadImagesNotification:(NSNotification *)notification
+{
+    ViewerController *viewerController = [notification object];
+    
+    assert([viewerController isKindOfClass:[ViewerController class]]);
+    if ([viewerController isKindOfClass:[ViewerController class]] == NO) {
+        NSLog(@"_viewerControllerDidLoadImagesNotification: recieved an object that is not ViewerController");
+        return;
+    }
+    
+    assert(viewerController == _viewerController);
+    if (viewerController != _viewerController) {
+        NSLog(@"_viewerControllerDidLoadImagesNotification: recieved the wrong viewerController");
+        return;
+    }
+    
+    [self willChangeValueForKey:@"dataLoaded"];
+    _dataLoaded = YES;
+    [self didChangeValueForKey:@"dataLoaded"];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixViewerControllerDidLoadImagesNotification object:_viewerController];
+}
+
 @end
 
 @implementation OSIVolumeWindow (Private)
@@ -153,7 +198,12 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 		_ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:self];
 		_ROIManager.delegate = self;
         _OSIROIs = [[NSMutableArray alloc] init];
-	}
+    
+        _dataLoaded = [_viewerController isEverythingLoaded];
+        if (_dataLoaded == NO) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerDidLoadImagesNotification:) name:OsirixViewerControllerDidLoadImagesNotification object:_viewerController];
+        }
+    }
 	return self;
 }
 

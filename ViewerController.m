@@ -7406,6 +7406,9 @@ return YES;
 		
 		originalOrientation = -1;
 		[self performSelectorOnMainThread:@selector( computeIntervalAsync) withObject: nil waitUntilDone: NO];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];}];
 	}
 	
 	ThreadLoadImage = NO;
