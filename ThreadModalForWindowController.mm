@@ -38,7 +38,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
-//	[[_thread threadDictionary] retain];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
 	[NSApp beginSheet:self.window modalForWindow:self.docWindow modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
@@ -71,8 +71,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 }
 
--(void)sheetDidEndOnMainThread:(NSWindow*)sheet {
-//	[[_thread threadDictionary] removeObjectForKey:ThreadIsCurrentlyModal];
+-(void)sheetDidEndOnMainThread:(NSWindow*)sheet
+{
 	[sheet orderOut:self];
 //	[NSApp endSheet:sheet];
 	[self release];
@@ -92,7 +92,6 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
 	
-//	[[_thread threadDictionary] release];
 	[_thread release];
 	[_docWindow release];
 	
