@@ -42,7 +42,8 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
 	[NSApp beginSheet:self.window modalForWindow:self.docWindow modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-	[self retain];
+    
+//	[self retain]; // <- MEMORY LEAK! WHY THIS?
 
 	return self;	
 }

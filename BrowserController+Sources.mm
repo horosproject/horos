@@ -211,7 +211,7 @@
 -(NSThread*)initiateSetDatabaseAtPath:(NSString*)path name:(NSString*)name {
 	NSArray* io = [NSMutableArray arrayWithObjects: @"Local", path, name, nil];
 	
-	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io];
+	NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(setDatabaseThread:) object:io] autorelease];
 	thread.name = NSLocalizedString(@"Loading OsiriX database...", nil);
 	thread.supportsCancel = YES;
 	thread.status = NSLocalizedString(@"Reading data...", nil);
@@ -219,7 +219,7 @@
 	ThreadModalForWindowController* tmc = [thread startModalForWindow:self.window];
 	[thread start];
 	
-	return [thread autorelease];
+	return thread;
 }
 
 -(NSThread*)initiateSetRemoteDatabaseWithAddress:(NSString*)address port:(NSInteger)port name:(NSString*)name {
