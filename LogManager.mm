@@ -83,13 +83,12 @@ static LogManager *currentLogManager = nil;
 	if( [[BrowserController currentBrowser] isNetworkLogsActive])
 	{
 		NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
+        
 		if( context == nil)
-		{
-			NSLog(@"----- [[[BrowserController currentBrowser] database] managedObjectContext] == nil");
 			return;
-		}
 		
-		if( [[BrowserController currentBrowser] isBonjour: context]) return;
+		if( [[[BrowserController currentBrowser] database] isLocal])
+            return;
 		
 		char logPatientName[ 1024];
 		char logStudyDescription[ 1024];
