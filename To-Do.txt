@@ -3,8 +3,6 @@ A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
-- QR: delete study (DONE)
-- QR: open-study if another DB selected (DONE)
 - Burning CD: Decompress files doesn't work
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
