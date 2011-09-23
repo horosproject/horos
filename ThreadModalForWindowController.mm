@@ -38,12 +38,12 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
-	[[_thread threadDictionary] retain];
+//	[[_thread threadDictionary] retain];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
 	[NSApp beginSheet:self.window modalForWindow:self.docWindow modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     
-//	[self retain]; // <- MEMORY LEAK! WHY THIS?
+	[self retain];
 
 	return self;	
 }
@@ -92,7 +92,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
 	
-	[[_thread threadDictionary] release];
+//	[[_thread threadDictionary] release];
 	[_thread release];
 	[_docWindow release];
 	
