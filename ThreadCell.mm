@@ -48,7 +48,7 @@
 	_cancelButton.action = @selector(cancelThreadAction:);
 
 	self.thread = thread;
-	[thread.threadDictionary retain];
+//	[thread.threadDictionary retain];
 
 //	NSLog(@"cell created!");
 	
@@ -68,10 +68,10 @@
 //	NSLog(@"cell destroyed!");
 	[self cleanup];
     
-	[self.thread.threadDictionary release];
+//	[self.thread.threadDictionary release];
 	self.thread = nil;
 	
-//	[_view release];
+	[_view release];
 	[_manager release];
 	
 	[super dealloc];

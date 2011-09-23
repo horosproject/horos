@@ -86,8 +86,6 @@
                 } @catch (NSException* e) { // ignore
                 }
             }
-            
-            [thread release]; // This is not a memory leak - See Below
         }
 	}
 }
@@ -97,8 +95,6 @@
 	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
-		[thread retain]; // This is not a memory leak - release will happen in subAddThread:
-		
 		if (![NSThread isMainThread])
 			[self performSelectorOnMainThread:@selector(subAddThread:) withObject:thread waitUntilDone: NO];
 		else [self subAddThread:thread];
@@ -116,8 +112,6 @@
         
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
         [_threadsController removeObject:thread];
-        
-		[thread release]; // This is not a memory leak - See Below
 	}
 	}
 }
@@ -127,8 +121,6 @@
 	@synchronized (_threadsController) {
 	@synchronized (thread)
 	{
-		[thread retain]; // This is not a memory leak - release will happen in subRemoveThread:
-		
 		if (![NSThread isMainThread])
 			[self performSelectorOnMainThread:@selector(subRemoveThread:) withObject:thread waitUntilDone:NO];
 		else [self subRemoveThread:thread];
