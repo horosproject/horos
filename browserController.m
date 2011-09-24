@@ -6636,11 +6636,17 @@ static BOOL withReset = NO;
 				
 				NSString *name = [curFile valueForKey:@"name"];
 				
+                if( name == nil)
+                    name = @"";
+                
 				if( name.length > 18)
 				{
 					[cell setFont:[NSFont systemFontOfSize: 8.5]];
 					name = [name stringByTruncatingToLength: 36]; // 2 lines
 				}
+                
+                if( name.length == 0)
+                    name = modality;
 				
 				if ( [modality hasPrefix: @"RT"])
 				{

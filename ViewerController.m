@@ -4001,9 +4001,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setBordered: YES];
 				[cell setLineBreakMode: NSLineBreakByCharWrapping];
 				
+                NSString *modality = [curStudy valueForKey:@"modality"];
+				if( modality == nil) modality = @"OT";
+                
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 //				if( [name length] > 15) name = [name substringToIndex: 15];
 				
+                if( name == nil)
+                    name = @"";
+                
+                if( name.length == 0)
+                    name = modality;
+                
 				name = [name stringByTruncatingToLength: 34];
 				
 				NSString *stateText;
@@ -4014,10 +4023,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( comment == nil) comment = @"";
 				
 				comment = [comment stringWithTruncatingToLength: 32];
-				
-				NSString	*modality = [curStudy valueForKey:@"modality"];
-				
-				if( modality == nil) modality = @"OT:";
 				
 				NSString *action;
 				if( [curStudy isHidden]) action = NSLocalizedString( @"Show Series", nil);
