@@ -11,7 +11,6 @@ A:
 		keystrokes: delete key, ...
 	iPod doesn't appear automatically
 	iPod eject button doesn't work…
-	'unnamed' for SeriesDescription and ProtocolName (DONE for series name and description, in browsercontroller)
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
