@@ -4063,6 +4063,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[cell setEnabled:YES];
 						
 						NSString *name = [curSeries valueForKey:@"name"];
+                        
+                        if( name == nil)
+                            name = @"";
+                        
+                        if( name.length == 0)
+                            name = modality;
+                        
 						if( [name length] > 18)
 						{
 							[cell setFont:[NSFont boldSystemFontOfSize: 7.8]];
