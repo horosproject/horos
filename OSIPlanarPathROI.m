@@ -146,12 +146,13 @@
 	BOOL zSet;
 	NSValue *vectorValue;
 	NSNumber *number;
-	NSUInteger i;
-	NSUInteger j;
-	NSUInteger runStart;
-	NSUInteger runEnd;
+	NSInteger i;
+	NSInteger j;
+	NSInteger runStart;
+	NSInteger runEnd;
 	
-	volumeBezierPath = [[[_bezierPath bezierPathByApplyingTransform:floatVolume.volumeTransform] mutableCopy] autorelease];
+	volumeBezierPath = [[_bezierPath mutableCopy] autorelease];
+    [volumeBezierPath applyAffineTransform:N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, -.5, 0))];
 	[volumeBezierPath flatten:N3BezierDefaultFlatness];
 	zSet = NO;
 	ROIRuns = [NSMutableArray array];
@@ -181,8 +182,16 @@
 	minY = floor(minY);
 	maxY = ceil(maxY);
 	maskRun.depthIndex = z;
+    
+    if (z < 0 || z >= floatVolume.pixelsDeep) {
+        return [[[OSIROIMask alloc] initWithMaskRuns:[NSArray array]] autorelease];
+    }
 	
 	for (i = minY; i <= maxY; i++) {
+        if (i < 0 || i >= floatVolume.pixelsHigh) {
+            continue;
+        }
+        
 		maskRun.heightIndex = i;
 		intersections = [volumeBezierPath intersectionsWithPlane:N3PlaneMake(N3VectorMake(0, i, 0), N3VectorMake(0, 1, 0))];
 		
@@ -191,22 +200,32 @@
 			[intersectionNumbers addObject:[NSNumber numberWithDouble:[vectorValue N3VectorValue].x]];
 		}
 		[intersectionNumbers sortUsingSelector:@selector(compare:)];
-		for(j = 0; j+1 < [intersectionNumbers count]; j++) {
+		for(j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
 			runStart = round([[intersectionNumbers objectAtIndex:j] doubleValue]);
 			runEnd = round([[intersectionNumbers objectAtIndex:j+1] doubleValue]);
+            
+            if (runStart == runEnd || runStart >= (NSInteger)floatVolume.pixelsWide || runEnd < 0) {
+                continue;
+            }
+            
+            runStart = MAX(runStart, 0);
+            runEnd = MIN(runEnd, floatVolume.pixelsWide - 1);
+            
 			if (runEnd > runStart) {
 				maskRun.widthRange = NSMakeRange(runStart, runEnd - runStart);
                 [ROIRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRun]];
 			}
-			j++;
+//			j++;
 		}
 	}
 	
-	if ([ROIRuns count] > 0) {
-		return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
-	} else {
-		return nil;
-	}
+    return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
+
+//	if ([ROIRuns count] > 0) {
+//		return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
+//	} else {
+//		return nil;
+//	}
 }
 
 - (NSArray *)osiriXROIs
@@ -267,8 +286,8 @@
     for (maskRunValue in maskRuns) {
         maskRun = [maskRunValue OSIROIMaskRunValue];
         
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex, maskRun.depthIndex);
+        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
+        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
         
         lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
         lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);

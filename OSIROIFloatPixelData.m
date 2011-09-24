@@ -103,7 +103,7 @@
 	NSValue *runValue;
 	OSIROIMaskRun maskRun;
 	float *floatBuffer;
-	NSRange volumeRange;
+//	NSRange volumeRange;
 	
 	bytesCopied = 0;
 	floatBuffer = buffer;
@@ -112,20 +112,21 @@
 	for (runValue in [_ROIMask maskRuns]) {
 		maskRun = [runValue OSIROIMaskRunValue];
 		if (count >= bytesCopied + maskRun.widthRange.length) {
-			volumeRange = [self volumeRangeForROIMaskRun:maskRun];
-			[_volumeData getFloatData:floatBuffer range:volumeRange];
-			bytesCopied += volumeRange.length;
-			floatBuffer += volumeRange.length;
+//			volumeRange = [self volumeRangeForROIMaskRun:maskRun];
+            [_volumeData getFloatRun:floatBuffer atPixelCoordinateX:maskRun.widthRange.location y:maskRun.heightIndex z:maskRun.depthIndex length:maskRun.widthRange.length]; 
+//			[_volumeData getFloatData:floatBuffer range:volumeRange];
+			bytesCopied += maskRun.widthRange.length;
+			floatBuffer += maskRun.widthRange.length;
 		}
 	}
 	return bytesCopied;
 }
 
-- (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun
-{
-	return NSMakeRange(maskRun.depthIndex*_volumeData.pixelsWide*_volumeData.pixelsHigh + 
-					   maskRun.heightIndex*_volumeData.pixelsWide + maskRun.widthRange.location, maskRun.widthRange.length);
-}
+//- (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun
+//{
+//	return NSMakeRange(maskRun.depthIndex*_volumeData.pixelsWide*_volumeData.pixelsHigh + 
+//					   maskRun.heightIndex*_volumeData.pixelsWide + maskRun.widthRange.location, maskRun.widthRange.length);
+//}
 
 
 - (NSRange)volumeRangeForROIMaskIndex:(OSIROIMaskIndex)maskIndex

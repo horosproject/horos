@@ -73,7 +73,11 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
                         // if the data is not owned by the CPRVolumeData, make sure to call invalidateData before freeing the data, even before releasing,
                         // in case other objects have retained the receiver
 
-- (BOOL)getFloatData:(float *)buffer range:(NSRange)range; // returns YES if the data was sucessfully filled
+//- (BOOL)getFloatData:(float *)buffer range:(NSRange)range; // returns YES if the data was sucessfully filled
+
+// will copy fill length*sizeof(float) bytes, the coordinates better be within the volume!!!
+// a run a is a series of pixels in the x direction
+- (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length; 
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z;
 - (CPRVolumeData *)volumeDataForSliceAtIndex:(NSUInteger)z;
@@ -112,6 +116,9 @@ CF_INLINE const float* CPRVolumeDataFloatBytes(CPRVolumeDataInlineBuffer *inline
 
 CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, NSUInteger x, NSUInteger y, NSUInteger z)
 {
+    assert(x < inlineBuffer->pixelsWide);
+    assert(y < inlineBuffer->pixelsHigh);
+    assert(z < inlineBuffer->pixelsDeep);
     if (inlineBuffer->floatBytes) {
         return (inlineBuffer->floatBytes)[x + y*inlineBuffer->pixelsWide + z*inlineBuffer->pixelsWideTimesPixelsHigh];
     } else {

@@ -45,7 +45,7 @@ BOOL OSIROIMaskIndexInRun(OSIROIMaskIndex maskIndex, OSIROIMaskRun maskRun);
 /** Returns an array of all the OSIROIMaskIndex structs in the `maskRun` 
  
  */
-NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun); // should this be a function, or a static method on OSIROIMask?
+NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun); // should this be a function, or a class method on OSIROIMask?
 
 CF_EXTERN_C_END
 
@@ -120,7 +120,7 @@ CF_EXTERN_C_END
 
 /** Returns the mask as a set ofOSIROIMaskRun structs in NSValues.
  
- @return The mask as a set ofOSIROIMaskRun structs in NSValues.
+ @return The mask as a set of OSIROIMaskRun structs in NSValues.
  */
 - (NSArray *)maskRuns;
 

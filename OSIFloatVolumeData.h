@@ -15,6 +15,8 @@
 #import <Cocoa/Cocoa.h>
 #import <CPRVolumeData.h>
 
+@class OSIROIMask;
+
 // volume data represents a volume in the three natural dimensions
 // this strictly represents a float volume, color volumes will be supported with a OSIRGBVolumeData, but no one really cares about that so it is being put off
 
@@ -103,23 +105,34 @@
  */
 @property (readonly) N3AffineTransform volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data coordinates.
 
-///-----------------------------------
-/// @name Accessing Volume Pixel Data
-///-----------------------------------
+// /-----------------------------------
+// / @name Accessing Volume Pixel Data
+// /-----------------------------------
 
-/** Copies a range of floats from the receiver’s data into a given buffer.
+// /** Copies a range of floats from the receiver’s data into a given buffer.
+// 
+// This will copy `range.length * sizeof(float)` bytes into the given buffer.
+// 
+// @param buffer The memory buffer to fill.
+// @param range The range of floats in the receiver's data to copy to buffer. The range must lie within the receiver's data.
+// 
+// @return YES if the data was available and the buffer was filled.
+// 
+// @see floatAtPixelCoordinateX:y:z:
+// @see linearInterpolatedFloatAtDicomVector:
+// */
+// //- (BOOL)getFloatData:(void *)buffer range:(NSRange)range;
+
+/** Copies a run of floats from the receiver’s data into a given buffer.
  
- This will copy `range.length * sizeof(float)` bytes into the given buffer.
- 
- @param buffer The memory buffer to fill.
- @param range The range of floats in the receiver's data to copy to buffer. The range must lie within the receiver's data.
- 
- @return YES if the data was available and the buffer was filled.
+ This will copy `length * sizeof(float)` bytes into the given buffer. A run a is a series of pixels in the x direction.
  
  @see floatAtPixelCoordinateX:y:z:
  @see linearInterpolatedFloatAtDicomVector:
- */
-- (BOOL)getFloatData:(void *)buffer range:(NSRange)range;
+*/
+
+- (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length;
+
 
 /** Returns by indirection the value of the float at the given pixel coordinates.
 
@@ -150,5 +163,7 @@
  @see floatAtPixelCoordinateX:y:z:
  */
 - (BOOL)getLinearInterpolatedFloat:(float *)floatPtr atDicomVector:(N3Vector)vector; // these are slower, use the inline buffer if you care about speed
+
+- (BOOL)checkDebugROIMask:(OSIROIMask *)roiMask; // returns true if the ROI mask is entirely with the float volume; 
 
 @end

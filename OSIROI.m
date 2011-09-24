@@ -17,6 +17,7 @@
 #import "OSIPlanarPathROI.h"
 #import "OSICoalescedROI.h"
 #import "OSIROIFloatPixelData.h"
+#import "OSIFloatVolumeData.h"
 #import "DCMView.h"
 #import "N3Geometry.h"
 #import "ROI.h"
@@ -74,14 +75,14 @@
 	return nil;
 }
 
-- (NSString *)unitForMetric:(NSString *)metric // make me smarter! this is not always HU values
+- (NSString *)unitForMetric:(NSString *)metric // make me smarter!
 {
 	if ([metric isEqualToString:@"meanIntensity"]) {
-		return @"HU";
+		return @"";
 	} else if ([metric isEqualToString:@"maxIntensity"]) {
-		return @"HU"; 
+		return @""; 
 	} else if ([metric isEqualToString:@"minIntensity"]) {
-		return @"HU";
+		return @"";
 	}
 	return nil;
 }
@@ -105,7 +106,12 @@
 
 - (OSIROIFloatPixelData *)ROIFloatPixelDataForFloatVolumeData:(OSIFloatVolumeData *)floatVolume; // convenience method
 {
-	return [[[OSIROIFloatPixelData alloc] initWithROIMask:[self ROIMaskForFloatVolumeData:floatVolume] floatVolumeData:floatVolume] autorelease];
+    OSIROIMask *roiMask;
+    roiMask = [self ROIMaskForFloatVolumeData:floatVolume];
+
+    assert([floatVolume checkDebugROIMask:roiMask]);
+    
+	return [[[OSIROIFloatPixelData alloc] initWithROIMask:roiMask floatVolumeData:floatVolume] autorelease];
 }
 
 - (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn

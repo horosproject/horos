@@ -16,6 +16,11 @@
 #import "OSIEnvironment.h"
 #import "OSIVolumeWindow.h"
 #import "OSIFloatVolumeData.h"
+#import "N3Geometry.h"
+
+@interface DCMPix (PrivatePluginSDKAdditions)
+- (BOOL)_testOrientationMatrix:(double[9])orientationMatrix; // returns YES if the orientation matrix's determinant is non-zero
+@end
 
 @implementation ViewerController (PluginSDKAdditions)
 
@@ -44,6 +49,12 @@
     
     memset(pixOrientation, 0, sizeof(double) * 9);
     [self orientationDouble:pixOrientation];
+    
+    if ([self _testOrientationMatrix:pixOrientation] == NO) {
+        memset(pixOrientation, 0, sizeof(double)*9);
+        pixOrientation[0] = pixOrientation[4] = pixOrientation[8] = 1;
+    }
+    
     spacingX = [self pixelSpacingX];
     spacingY = [self pixelSpacingY];
     //    spacingZ = pix.sliceInterval;
@@ -65,5 +76,26 @@
     return pixToDicomTransform;
 }
 
+@end
+
+@implementation DCMPix (PrivatePluginSDKAdditions)
+
+- (BOOL)_testOrientationMatrix:(double[9])orientationMatrix // returns YES if the orientation matrix's determinant is non-zero
+{
+    N3AffineTransform transform;
+    
+    transform = N3AffineTransformIdentity;
+    transform.m11 = orientationMatrix[0];
+    transform.m12 = orientationMatrix[1];
+    transform.m13 = orientationMatrix[2];
+    transform.m21 = orientationMatrix[3];
+    transform.m22 = orientationMatrix[4];
+    transform.m23 = orientationMatrix[5];
+    transform.m31 = orientationMatrix[6];
+    transform.m32 = orientationMatrix[7];
+    transform.m33 = orientationMatrix[8];
+    
+    return N3AffineTransformDeterminant(transform) != 0.0;
+}
 
 @end
