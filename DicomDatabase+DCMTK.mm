@@ -259,7 +259,8 @@
 //	NSLog( @"** END");	
 }
 
-+(BOOL)decompressDicomFilesAtPaths:(NSArray*)files intoDirAtPath:(NSString*)dest {
++(BOOL)decompressDicomFilesAtPaths:(NSArray*)files intoDirAtPath:(NSString*)dest
+{
 	if (dest == nil)
 		dest = @"sameAsDestination";
 	
@@ -286,12 +287,15 @@
 			NSArray* subArray = [NSArray arrayWithObjects:objs count:no];
 			
 			NSTask* theTask = [[NSTask alloc] init];
-			@try {
+			@try
+            {
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
 				[theTask waitUntilExit];
-			} @catch (NSException *e) {
+			}
+            @catch (NSException *e)
+            {
 				N2LogExceptionWithStackTrace(e);
 			}
 			

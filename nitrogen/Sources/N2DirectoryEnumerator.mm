@@ -1,10 +1,16 @@
-//
-//  N2DirectoryEnumerator.mm
-//  OsiriX
-//
-//  Created by Alessandro Volz on 21.03.11.
-//  Copyright 2011 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "N2DirectoryEnumerator.h"
 #include <dirent.h>

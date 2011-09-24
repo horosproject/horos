@@ -867,35 +867,41 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //#endif
 //}
 
-enum { Compress, Decompress };
-
--(BOOL)compressFilesAtPaths:(NSArray*)paths {
+-(BOOL)compressFilesAtPaths:(NSArray*)paths
+{
 	return [DicomDatabase compressDicomFilesAtPaths:paths];
 }
 
--(BOOL)compressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+-(BOOL)compressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir
+{
 	return [DicomDatabase compressDicomFilesAtPaths:paths intoDirAtPath:destDir];
 }
 
--(BOOL)decompressFilesAtPaths:(NSArray*)paths {
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths
+{
 	return [DicomDatabase decompressDicomFilesAtPaths:paths];
 }
 
--(BOOL)decompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+-(BOOL)decompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir
+{
 	return [DicomDatabase decompressDicomFilesAtPaths:paths intoDirAtPath:destDir];
 }
 
 -(void)_processFilesAtPaths_processChunk:(NSArray*)io {
 	NSArray* chunk = [io objectAtIndex:0];
-	NSString* destDir = [io objectAtIndex:1];
-	int mode = [[io objectAtIndex:2] intValue];
+    int mode = [[io objectAtIndex:1] intValue];
+	NSString* destDir = nil;
+    if( io.count >= 3)
+        destDir = [io objectAtIndex:2];
 	
 	if (mode == Compress)
 		[DicomDatabase compressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
-	else [DicomDatabase decompressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
+	else
+        [DicomDatabase decompressDicomFilesAtPaths:chunk intoDirAtPath:destDir];
 }
 
--(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode {
+-(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
+{
 	NSString* nameFormat = mode == Compress ? NSLocalizedString(@"Compressing %d DICOM files...", nil) : NSLocalizedString(@"Decompressing %d DICOM files...", nil);
 	
 	NSThread* thread = [NSThread currentThread];
@@ -904,7 +910,8 @@ enum { Compress, Decompress };
 	thread.status = NSLocalizedString(@"Waiting for similar threads to complete...", nil);
 	
 	[_processFilesLock lock];
-	@try {
+	@try
+    {
 		thread.status = NSLocalizedString(@"Processing...", nil);
 		
 		size_t nTasks = MPProcessors();
@@ -915,29 +922,40 @@ enum { Compress, Decompress };
 		
 		NSOperationQueue* queue = [NSOperationQueue new];
 		for (NSArray* chunk in chunks)
-			[queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(_processFilesAtPaths_processChunk:) object:[NSArray arrayWithObjects: chunk, destDir, [NSNumber numberWithInt:mode], nil]] autorelease]];
+			[queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(_processFilesAtPaths_processChunk:) object:[NSArray arrayWithObjects: chunk, [NSNumber numberWithInt:mode], destDir, nil]] autorelease]]; // Warning! DestDir can be nil : at the end !
 		[queue waitUntilAllOperationsAreFinished];
 		[queue release];
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e)
+    {
 		N2LogExceptionWithStackTrace(e);
-	} @finally {
+	}
+    @finally
+    {
 		[_processFilesLock unlock];
 //		[thread popLevel];
 	}
 }
 
--(void)threadBridgeForProcessFilesAtPaths:(NSDictionary*)params {
+-(void)threadBridgeForProcessFilesAtPaths:(NSDictionary*)params
+{
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	@try {
+	@try
+    {
 		[self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e)
+    {
 		N2LogExceptionWithStackTrace(e);
-	} @finally {
+	}
+    @finally
+    {
 		[pool release];
 	}
 }
 
--(void)initiateProcessFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode {
+-(void)initiateProcessFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
+{
 	[self performSelectorInBackground:@selector(threadBridgeForProcessFilesAtPaths:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
 																								 paths, @":",
 																								 [NSNumber numberWithInt:mode], @"mode:",
@@ -945,38 +963,43 @@ enum { Compress, Decompress };
 																								 nil]];
 }
 
--(void)initiateCompressFilesAtPaths:(NSArray*)paths {
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths
+{
 	[self initiateProcessFilesAtPaths:paths intoDirAtPath:nil mode:Compress];
 }
 
--(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+-(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir
+{
 	[self initiateProcessFilesAtPaths:paths intoDirAtPath:destDir mode:Compress];
 }
 
--(void)initiateDecompressFilesAtPaths:(NSArray*)paths {
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths
+{
 	[self initiateProcessFilesAtPaths:paths intoDirAtPath:nil mode:Decompress];
 }
 
--(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir {
+-(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir
+{
 	[self initiateProcessFilesAtPaths:paths intoDirAtPath:destDir mode:Decompress];
 }
 
-
-
-
--(NSArray*)addFilesAtPaths:(NSArray*)paths {
+-(NSArray*)addFilesAtPaths:(NSArray*)paths
+{
 	return [self addFilesAtPaths:paths postNotifications:YES];
 }
 
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications {
-	return [self addFilesAtPaths:paths postNotifications:postNotifications dicomOnly:NO rereadExistingItems:NO];
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications
+{
+	return [self addFilesAtPaths:paths postNotifications:postNotifications dicomOnly:[[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems:NO];
 }
 
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems {
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems
+{
 	return [self addFilesAtPaths:paths postNotifications:postNotifications dicomOnly:dicomOnly rereadExistingItems:rereadExistingItems generatedByOsiriX:NO];
 }
 
--(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
+{
 	NSThread* thread = [NSThread currentThread];
 	
     //#define RANDOMFILES
@@ -997,7 +1020,8 @@ enum { Compress, Decompress };
 	[thread enterOperation];
 	
     NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
-	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex) {
+	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex)
+    {
         NSRange chunkRange = [[chunkRanges objectAtIndex:chunkIndex] rangeValue];
         
 		NSMutableArray *completeImagesArray = nil, *modifiedStudiesArray = nil;
@@ -1011,8 +1035,6 @@ enum { Compress, Decompress };
 			[[NSFileManager defaultManager] createDirectoryAtPath: reportsDirPath attributes:nil];
 		
 		if (chunkRange.length == 0) break;
-		
-		//	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"]) onlyDICOM = YES;
 		
 		BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
 		[DicomFile setFilesAreFromCDMedia:isCDMedia];
@@ -1165,11 +1187,13 @@ enum { Compress, Decompress };
  album
  
  */
--(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
+{
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
 	[self lock];
-	@try {
+	@try
+    {
         
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 		
@@ -1197,10 +1221,12 @@ enum { Compress, Decompress };
 		NSString* newFile = nil;
 		
 		// Add the new files
-		for (NSInteger i = 0; i < dicomFilesArray.count; ++i) {
+		for (NSInteger i = 0; i < dicomFilesArray.count; ++i)
+        {
 			thread.progress = 1.0*i/dicomFilesArray.count;
 			
-			@try {
+			@try
+            {
 				NSMutableDictionary *curDict = [dicomFilesArray objectAtIndex:i];
 //				NSLog(@"curDict: %@", curDict);
 				
@@ -2116,6 +2142,12 @@ enum { Compress, Decompress };
 				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
 				continue;
 			}
+            
+//            if ([[lastPathComponent uppercaseString] hasSuffix:@".APP"]) // We don't want to scan MacOS applications
+//			{
+//				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
+//				continue;
+//			}
 			
 			if ( [lastPathComponent length] > 0 && [lastPathComponent characterAtIndex: 0] == '.')
 			{
@@ -2186,13 +2218,15 @@ enum { Compress, Decompress };
 							 [DicomFile isNRRDFile:srcPath])
 							&& [[NSFileManager defaultManager] fileExistsAtPath:dstPath] == NO))
 						{
-							if (isDicomFile && isImage) {
+							if (isDicomFile && isImage)
+                            {
 								if ((isJPEGCompressed == YES && listenerCompressionSettings == 1) || (isJPEGCompressed == NO && listenerCompressionSettings == 2
 #ifndef OSIRIX_LIGHT
 																									  && [DicomDatabase fileNeedsDecompression: srcPath]
 #else	
 #endif
-								)) {
+								))
+                                {
 									NSString *compressedPath = [self.decompressionDirPath stringByAppendingPathComponent: lastPathComponent];
 									
 									[[NSFileManager defaultManager] movePath:srcPath toPath:compressedPath handler:nil];
@@ -2203,7 +2237,8 @@ enum { Compress, Decompress };
 								}
 								
 								dstPath = [self uniquePathForNewDataFileWithExtension:@"dcm"];
-							} else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
+							}
+                            else dstPath = [self uniquePathForNewDataFileWithExtension:[[srcPath pathExtension] lowercaseString]];
 							
 							BOOL result;
 							
@@ -2282,14 +2317,20 @@ enum { Compress, Decompress };
 //				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
 //					[self listenerAnonymizeFiles: filesArray];
 			
-			if ([[PluginManager preProcessPlugins] count]) {
+			if ([[PluginManager preProcessPlugins] count])
+            {
 				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Preprocessing %d files with %d plugins...", nil), filesArray.count, [[PluginManager preProcessPlugins] count]];
 				for (id filter in [PluginManager preProcessPlugins])
-					@try {
+                {
+					@try
+                    {
 						[filter processFiles: filesArray];
-					} @catch (NSException* e) {
+					}
+                    @catch (NSException* e)
+                    {
 						N2LogExceptionWithStackTrace(e);
 					}
+                }
 			}
 			
 			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
@@ -2300,7 +2341,7 @@ enum { Compress, Decompress };
 				NSString *dstPath;
 				int x = 0;
 				
-				NSLog(@"Move the files back to the incoming folder...");
+				NSLog( @"------------ Move the files back to the incoming folder...");
 				
 				for( NSString *file in filesArray)
 				{
@@ -2316,18 +2357,26 @@ enum { Compress, Decompress };
 			}
 		}
 		
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e)
+    {
 		N2LogExceptionWithStackTrace(e);
-	} @finally {
+	}
+    @finally
+    {
 		[_importFilesFromIncomingDirLock unlock];
 	}
 	
 #ifndef OSIRIX_LIGHT
-	if ([compressedPathArray count] > 0)  {// there are files to compress/decompress in the decompression dir
-		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) { // decompress, listenerCompressionSettings == 0 for zip support!
+	if ([compressedPathArray count] > 0) // there are files to compress/decompress in the decompression dir
+    {
+		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
+        { 
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@...", @"decompressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
             [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
-		} else if (listenerCompressionSettings == 2) { // compress
+		}
+        else if (listenerCompressionSettings == 2) // compress
+        { 
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@...", @"compressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
 			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
         }
@@ -2340,10 +2389,12 @@ enum { Compress, Decompress };
 	return addedFiles.count;
 }
 
--(void)importFilesFromIncomingDirThread {
+-(void)importFilesFromIncomingDirThread
+{
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     [_importFilesFromIncomingDirLock lock];
-	@try {
+	@try
+    {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
 		NSInteger importCount = [self importFilesFromIncomingDir];
@@ -2351,9 +2402,13 @@ enum { Compress, Decompress };
 		if (self == DicomDatabase.activeLocalDatabase)
 			[AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject:(importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil) waitUntilDone:NO];
 		
-	} @catch (NSException* e) {
+	}
+    @catch (NSException* e)
+    {
 		N2LogExceptionWithStackTrace(e);
-	} @finally {
+	}
+    @finally
+    {
         [_importFilesFromIncomingDirLock unlock];
 		[pool release];
 	}

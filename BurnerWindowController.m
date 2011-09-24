@@ -26,6 +26,7 @@
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
 #import "ThreadsManager.h"
+#import "NSThread+N2.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -65,7 +66,7 @@
 	{
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
 		[wait showWindow:self];
-		
+		        
 		@try
 		{
 			[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
@@ -769,9 +770,10 @@
 
 - (void) addDicomdir
 {
+    NSThread* thread = [NSThread currentThread];
+    
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
-
-	//NSLog(@"add Dicomdir");
+    
 	NS_DURING
 	NSEnumerator *enumerator;
 	if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
@@ -866,6 +868,8 @@
 			[[NSUserDefaults standardUserDefaults] setInteger: copyCompressionResolutionLimit forKey: @"CompressionResolutionLimit"];
 		}
 		
+        thread.name = NSLocalizedString( @"Burning...", nil);
+        thread.status = NSLocalizedString( @"Writing DICOMDIR...", nil);
 		[self addDICOMDIRUsingDCMTK];
 		
 		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
@@ -873,6 +877,8 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Weasis...", nil);
 			NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
 			for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
 				[[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
@@ -882,6 +888,8 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding OsiriX Lite...", nil);
 			// unzip the file
 			NSTask *unzipTask = [[NSTask alloc] init];
 			[unzipTask setLaunchPath: @"/usr/bin/unzip"];
@@ -890,54 +898,12 @@
 			[unzipTask launch];
 			[unzipTask waitUntilExit];
 			[unzipTask release];
-			
-//			[manager removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"/OsiriX.app/Contents/Resources/sn64"]  error: nil];
-//			
-//			// Remove 64-bit binaries
-//			
-//			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder]] executablePath];
-//			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
-//			
-//			// **********
-//			
-//			@try
-//			{
-//				NSTask *todo = [[[NSTask alloc]init] autorelease];
-//				[todo setLaunchPath: @"/usr/bin/lipo"];
-//				
-//				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-output", pathLightExecutable, nil];
-//
-//				[todo setArguments:args];
-//				[todo launch];
-//				[todo waitUntilExit];
-//				
-//				// **********
-//				
-//				todo = [[[NSTask alloc]init]autorelease];
-//				[todo setLaunchPath: @"/usr/bin/mv"];
-//
-//				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", nil];
-//
-//				[todo setArguments:args];
-//				[todo launch];
-//				[todo waitUntilExit];
-//			}
-//			
-//			@catch( NSException *ne)
-//			{
-//				NSLog( @"lipo / mv exception");
-//			}
-//			
-//			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
-//			{
-//				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: nil];
-//				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: nil];
-//			}
-			// **********
 		}
 		
 		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
 			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
@@ -945,6 +911,8 @@
 
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Supplementary folder...", nil);
 			NSString *supplementaryBurnPath = [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
 			if (supplementaryBurnPath)
 			{
@@ -962,6 +930,9 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Reports...", nil);
+            
 			NSMutableArray *studies = [NSMutableArray array];
 			
 			[[[BrowserController currentBrowser] managedObjectContext] lock];
@@ -993,6 +964,9 @@
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
 	{
+        thread.name = NSLocalizedString( @"Burning...", nil);
+        thread.status = NSLocalizedString( @"Encrypting CD...", nil);
+        
 		self.password = @"";
 		int result = 0;
 		do
@@ -1046,6 +1020,9 @@
 		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 	}
 	
+    thread.name = NSLocalizedString( @"Burning...", nil);
+    thread.status = [NSString stringWithFormat: NSLocalizedString( @"Writing %3.2fMB...", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)];
+    
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	
 	NS_HANDLER

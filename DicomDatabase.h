@@ -14,6 +14,7 @@
 
 #import "N2ManagedDatabase.h"
 
+enum {Compress, Decompress};
 
 extern NSString* const CurrentDatabaseVersion;
 extern NSString* const OsirixDataDirName;
@@ -137,6 +138,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(void)initiateCompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths;
 -(void)initiateDecompressFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir;
+-(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode;
 
 #pragma mark Other
 -(BOOL)rebuildAllowed;
