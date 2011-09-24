@@ -2342,17 +2342,21 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[self window] setTitle: NSLocalizedString( @"No images", nil)];
 		else
 		{
-			NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
-			NSString* windowTitle;
-			
+			NSDate *dob = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
+			NSString *windowTitle;
+			NSString *seriesName = [curImage valueForKeyPath:@"series.name"];
+            
+            if( seriesName == nil)
+                seriesName = @"";
+            
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [NSUserDefaults formatDate:bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [NSUserDefaults formatDate: dob], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 				else
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			}	
-			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			
 			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
 				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
