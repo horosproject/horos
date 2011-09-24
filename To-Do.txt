@@ -1,5 +1,4 @@
 A:
-- Bonjour Detection of iOS devices doesn't work
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
@@ -11,7 +10,7 @@ A:
 		contextual menu nsoutline et nsmatrix
 		keystrokes: delete key, ...
 	iPod doesn't appear automatically
-	iPod eject button doesn't work…
+	iPod eject button…
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
