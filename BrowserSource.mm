@@ -97,17 +97,22 @@
 	return nil;
 }
 
--(void)willDisplayCell:(PrettyCell*)cell {
-	switch (self.type) {
-		case BrowserSourceTypeLocal: {
+-(void)willDisplayCell:(PrettyCell*)cell
+{
+	switch (self.type)
+    {
+		case BrowserSourceTypeLocal:
+        {
 			BOOL isDir;
-			if (![NSFileManager.defaultManager fileExistsAtPath:self.location isDirectory:&isDir]) {
+			if (![NSFileManager.defaultManager fileExistsAtPath:self.location isDirectory:&isDir])
+            {
 				cell.image = [NSImage imageNamed:@"away.tif"];
 				cell.textColor = NSColor.grayColor;
 				break;
 			}
 			
-			if (!isDir) {
+			if (!isDir)
+            {
 				cell.image = [NSImage imageNamed:@"FileIcon.tif"];
 				break;
 			}
@@ -128,14 +133,24 @@
 			NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.location];
 			im.size = [im sizeByScalingProportionallyToSize:NSMakeSize(16,16)];
 			cell.image = im;
-		} break;
-		case BrowserSourceTypeRemote: {
+		}
+        break;
+            
+		case BrowserSourceTypeRemote:
+        {
 			cell.image = [NSImage imageNamed:@"FixedIP.tif"];
-		} break;
-		case BrowserSourceTypeDicom: {
+		}
+        break;
+            
+		case BrowserSourceTypeDicom:
+        {
 			cell.image = [NSImage imageNamed:@"DICOMDestination.tif"];
-		} break;
+		}
+        break;
 	}
+    
+    if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed: [_dictionary valueForKey: @"icon"]])
+        cell.image = [NSImage imageNamed: [_dictionary valueForKey: @"icon"]];
 }
 
 -(NSComparisonResult)compare:(BrowserSource*)other {
