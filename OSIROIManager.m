@@ -173,6 +173,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 - (void)_volumeWindowDidCloseNotification:(NSNotification *)notification
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:OSIVolumeWindowDidCloseNotification object:_volumeWindow];
+    [_volumeWindow removeObserver:self forKeyPath:@"OSIROIs"];
+    [_volumeWindow removeObserver:self forKeyPath:@"dataLoaded"];
 	[_volumeWindow release];
 	_volumeWindow = nil;
 	[self _rebuildOSIROIs];
