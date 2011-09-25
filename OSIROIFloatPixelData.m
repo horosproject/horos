@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #import "OSIROIFloatPixelData.h"
-#import "OSIFloatVolumeData.h";
+#import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
 #include <Accelerate/Accelerate.h>
 
