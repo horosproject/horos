@@ -70,6 +70,8 @@
 		32E422150C97301600E193CA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F00A9E3139A778000ABD529 /* CPRStretchedView.m */; };
 		4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F00A9E7139A779200ABD529 /* CPRStretchedView.h */; };
+		4F1FCE1B143092DC008683F9 /* OSIPlanarBrushROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1FCE19143092DC008683F9 /* OSIPlanarBrushROI.h */; };
+		4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F1FCE1A143092DC008683F9 /* OSIPlanarBrushROI.m */; };
 		4F2446B11320F1B500D55426 /* CPRObliqueSliceOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F2446AF1320F1B500D55426 /* CPRObliqueSliceOperation.h */; };
 		4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */; };
 		4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F368CA2139B7E1D00BE3D1C /* CPRView.h */; };
@@ -8213,6 +8215,8 @@
 		4A16D0A30965E21800F82EC4 /* UnitTestingBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UnitTestingBase.m; path = UnitTesting/UnitTestingBase.m; sourceTree = "<group>"; };
 		4F00A9E3139A778000ABD529 /* CPRStretchedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRStretchedView.m; sourceTree = "<group>"; };
 		4F00A9E7139A779200ABD529 /* CPRStretchedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRStretchedView.h; sourceTree = "<group>"; };
+		4F1FCE19143092DC008683F9 /* OSIPlanarBrushROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPlanarBrushROI.h; sourceTree = "<group>"; };
+		4F1FCE1A143092DC008683F9 /* OSIPlanarBrushROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPlanarBrushROI.m; sourceTree = "<group>"; };
 		4F2446AF1320F1B500D55426 /* CPRObliqueSliceOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRObliqueSliceOperation.h; sourceTree = "<group>"; };
 		4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRObliqueSliceOperation.m; sourceTree = "<group>"; };
 		4F368CA2139B7E1D00BE3D1C /* CPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRView.h; sourceTree = "<group>"; };
@@ -12669,6 +12673,8 @@
 				4F832D2E13FA5F8C00511070 /* OSIPathROI.m */,
 				4F832D2F13FA5F8C00511070 /* OSIPlanarPathROI.h */,
 				4F832D3013FA5F8C00511070 /* OSIPlanarPathROI.m */,
+				4F1FCE19143092DC008683F9 /* OSIPlanarBrushROI.h */,
+				4F1FCE1A143092DC008683F9 /* OSIPlanarBrushROI.m */,
 				4F832D3113FA5F8C00511070 /* OSIROI.h */,
 				4F832D3213FA5F8C00511070 /* OSIROI.m */,
 				4F832D3313FA5F8C00511070 /* OSIROI+Private.h */,
@@ -19826,6 +19832,7 @@
 				4F832D5913FA5F8C00511070 /* OSIVolumeWindow.h in Headers */,
 				4F832D5B13FA5F8C00511070 /* OSIVolumeWindow+Private.h in Headers */,
 				4F832D5C13FA5F8C00511070 /* pluginSDKAdditions.h in Headers */,
+				4F1FCE1B143092DC008683F9 /* OSIPlanarBrushROI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24434,6 +24441,7 @@
 				4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */,
 				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
 				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
+				4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
