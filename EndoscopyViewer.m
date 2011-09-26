@@ -24,6 +24,9 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 #define	NAVIGATORMODE_BASIC 1
 #define NAVIGATORMODE_2POINT 2
@@ -1254,26 +1257,32 @@ return YES;
 	return dataPtr;
 }
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy *)currentStudy
+{
 	return [vrController currentStudy];
 }
-- (NSManagedObject *)currentSeries{
+- (DicomSeries *)currentSeries
+{
 	return [vrController currentSeries];
 }
 
-- (NSManagedObject *)currentImage{
+- (DicomImage *)currentImage
+{
 	return [vrController currentImage];
 }
 
--(float)curWW{
+-(float)curWW
+{
 	return [vrController curWW];
 }
 
--(float)curWL{
+-(float)curWL
+{
 	return [vrController curWL];
 }
 
-- (NSString *)curCLUTMenu{
+- (NSString *)curCLUTMenu
+{
 	return [vrController curCLUTMenu];
 }
 

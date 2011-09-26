@@ -2,7 +2,7 @@ A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
-- Compress/Decompress: not thread info?
+- Compress/Decompress: no thread info?
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 

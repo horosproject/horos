@@ -29,6 +29,9 @@
 #import "MutableArrayCategory.h"
 #import "Notifications.h"
 #import "DICOMToNSString.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";

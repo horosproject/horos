@@ -22,6 +22,9 @@
 #import "ROIVolume.h"
 #import "BrowserController.h"
 #import "Notifications.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
 static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.icns";
@@ -1426,213 +1429,272 @@ return YES;
 	[view squareView: self];
 }
 
-- (ViewerController *) viewer2D{
+- (ViewerController *) viewer2D
+{
 	return viewer2D;
 }
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy *)currentStudy
+{
 	return [viewer2D currentStudy];
 }
-- (NSManagedObject *)currentSeries{
+
+- (DicomSeries *)currentSeries
+{
 	return [viewer2D currentSeries];
 }
 
-- (NSManagedObject *)currentImage{
+- (DicomImage *)currentImage
+{
 	return [viewer2D currentImage];
 }
 
 //Surface values
 
-- (float) firstSurface{
+- (float) firstSurface
+{
 	return _firstSurface;
 }
-- (float) secondSurface{
+- (float) secondSurface
+{
 	return _secondSurface;
 }
-- (float) resolution{
+- (float) resolution
+{
 	return _resolution;
 }
-- (float) firstTransparency{
+- (float) firstTransparency
+{
 	return _firstTransparency;
 }
-- (float) secondTransparency{
+- (float) secondTransparency
+{
 	return _secondTransparency;
 }
 
-- (float) decimate{
+- (float) decimate
+{
 	return _decimate;
 }
 
-- (int)smooth{
+- (int)smooth
+{
 	return _smooth;
 }
 
-- (NSColor *) firstColor{
+- (NSColor *) firstColor
+{
 	return _firstColor;
 }
 
-- (NSColor *) secondColor{
+- (NSColor *) secondColor
+{
 	return _secondColor;
 }
 
-- (BOOL)shouldDecimate{
+- (BOOL)shouldDecimate
+{
 	
 	return _shouldDecimate;
 }
-- (BOOL	)shouldSmooth{
+- (BOOL	)shouldSmooth
+{
 	return _shouldSmooth;
 }
 
-- (BOOL) useFirstSurface{
+- (BOOL) useFirstSurface
+{
 	return _useFirstSurface;
 }
-- (BOOL) useSecondSurface{
+- (BOOL) useSecondSurface
+{
 	return _useSecondSurface;
 }
 
-- (void) setFirstSurface:(float)pixelValue{
+- (void) setFirstSurface:(float)pixelValue
+{
 	_firstSurface = pixelValue;
 }
-- (void) setSecondSurface:(float)pixelValue{
+- (void) setSecondSurface:(float)pixelValue
+{
 	_secondSurface = pixelValue;
 }
 
-- (void) setResolution:(float)resolution{
+- (void) setResolution:(float)resolution
+{
 	_resolution = resolution;
 }
-- (void) setFirstTransparency:(float)transparency{
+- (void) setFirstTransparency:(float)transparency
+{
 	_firstTransparency = transparency;
 }
-- (void) setSecondTransparency:(float)transparency{
+- (void) setSecondTransparency:(float)transparency
+{
 	_secondTransparency = transparency;
 }
-- (void) setDecimate:(float)decimateItr{
+- (void) setDecimate:(float)decimateItr
+{
 	_decimate = decimateItr;
 }
-- (void) setSmooth:(int)iteration{
+- (void) setSmooth:(int)iteration
+{
 	_smooth = iteration;
 }
-- (void) setFirstColor:(NSColor *)color{
+- (void) setFirstColor:(NSColor *)color
+{
 	_firstColor  = color;
 }
 
-- (void) setSecondColor: (NSColor *)color{
+- (void) setSecondColor: (NSColor *)color
+{
 	_secondColor  = color;
 }
 
-- (void) setShouldDecimate: (BOOL)shouldDecimate{
+- (void) setShouldDecimate: (BOOL)shouldDecimate
+{
 	_shouldDecimate = shouldDecimate;
 }
-- (void) setShouldSmooth: (BOOL)shouldSmooth{
+- (void) setShouldSmooth: (BOOL)shouldSmooth
+{
 	_shouldSmooth = shouldSmooth;
 }
 
-- (void) setUseFirstSurface:(BOOL)useSurface{
+- (void) setUseFirstSurface:(BOOL)useSurface
+{
 	_useFirstSurface = useSurface;
 }
-- (void) setUseSecondSurface:(BOOL)useSurface{
+- (void) setUseSecondSurface:(BOOL)useSurface
+{
 	_useSecondSurface = useSurface;
 }
 
 // Fusionm Surface values
 
-- (float) fusionFirstSurface{
+- (float) fusionFirstSurface
+{
 	return _fusionFirstSurface;
 }
-- (float) fusionSecondSurface{
+- (float) fusionSecondSurface
+{
 	return _fusionSecondSurface;
 }
-- (float) fusionResolution{
+- (float) fusionResolution
+{
 	return _fusionResolution;
 }
-- (float) fusionFirstTransparency{
+- (float) fusionFirstTransparency
+{
 	return _fusionFirstTransparency;
 }
-- (float) fusionSecondTransparency{
+- (float) fusionSecondTransparency
+{
 	return _fusionSecondTransparency;
 }
 
-- (float) fusionDecimate{
+- (float) fusionDecimate
+{
 	return _fusionDecimate;
 }
 
-- (int)fusionSmooth{
+- (int)fusionSmooth
+{
 	return _fusionSmooth;
 }
 
-- (NSColor *) fusionFirstColor{
+- (NSColor *) fusionFirstColor
+{
 	return _fusionFirstColor;
 }
 
-- (NSColor *) fusionSecondColor{
+- (NSColor *) fusionSecondColor
+{
 	return _fusionSecondColor;
 }
 
-- (BOOL) fusionShouldDecimate{
+- (BOOL) fusionShouldDecimate
+{
 	
 	return _fusionShouldDecimate;
 }
-- (BOOL	)fusionShouldSmooth{
+- (BOOL	)fusionShouldSmooth
+{
 	return _fusionShouldSmooth;
 }
 
-- (BOOL) fusionUseFirstSurface{
+- (BOOL) fusionUseFirstSurface
+{
 	return _fusionUseFirstSurface;
 }
-- (BOOL) fusionUseSecondSurface{
+- (BOOL) fusionUseSecondSurface
+{
 	return _fusionUseSecondSurface;
 }
 
-- (BOOL) shouldRenderFusion{
+- (BOOL) shouldRenderFusion
+{
 	return _shouldRenderFusion;
 }
 
 
-- (void) setFusionFirstSurface:(float)pixelValue{
+- (void) setFusionFirstSurface:(float)pixelValue
+{
 	_fusionFirstSurface = pixelValue;
 }
-- (void) setFusionSecondSurface:(float)pixelValue{
+- (void) setFusionSecondSurface:(float)pixelValue
+{
 	_fusionSecondSurface = pixelValue;
 }
 
-- (void) setFusionResolution:(float)resolution{
+- (void) setFusionResolution:(float)resolution
+{
 	_fusionResolution = resolution;
 }
-- (void) setFusionFirstTransparency:(float)transparency{
+- (void) setFusionFirstTransparency:(float)transparency
+{
 	_fusionFirstTransparency = transparency;
 }
-- (void) setFusionSecondTransparency:(float)transparency{
+- (void) setFusionSecondTransparency:(float)transparency
+{
 	_fusionSecondTransparency = transparency;
 }
-- (void) setFusionDecimate:(float)decimateItr{
+- (void) setFusionDecimate:(float)decimateItr
+{
 	_fusionDecimate = decimateItr;
 }
-- (void) setFusionSmooth:(int)iteration{
+- (void) setFusionSmooth:(int)iteration
+{
 	_fusionSmooth = iteration;
 }
-- (void) setFusionFirstColor:(NSColor *)color{
+- (void) setFusionFirstColor:(NSColor *)color
+{
 	_fusionFirstColor  = color;
 }
 
-- (void) setFusionSecondColor: (NSColor *)color{
+- (void) setFusionSecondColor: (NSColor *)color
+{
 	_fusionSecondColor  = color;
 }
 
-- (void) setFusionShouldDecimate: (BOOL)shouldDecimate{
+- (void) setFusionShouldDecimate: (BOOL)shouldDecimate
+{
 	_fusionShouldDecimate = shouldDecimate;
 }
-- (void) setFusionShouldSmooth: (BOOL)shouldSmooth{
+- (void) setFusionShouldSmooth: (BOOL)shouldSmooth
+{
 	_fusionShouldSmooth = shouldSmooth;
 }
 
-- (void) setFusionUseFirstSurface:(BOOL)useSurface{
+- (void) setFusionUseFirstSurface:(BOOL)useSurface
+{
 	_fusionUseFirstSurface = useSurface;
 }
-- (void) setFusionUseSecondSurface:(BOOL)useSurface{
+- (void) setFusionUseSecondSurface:(BOOL)useSurface
+{
 	_fusionUseSecondSurface = useSurface;
 }
 
-- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion{
+- (void) setShouldRenderFusion:(BOOL)shouldRenderFusion
+{
 	_shouldRenderFusion = shouldRenderFusion;
 }
 
