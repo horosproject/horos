@@ -15,7 +15,7 @@
 #import "OSIROI.h"
 #import "OSIROI+Private.h"
 #import "OSIPlanarPathROI.h"
-#import "OSICoalescedROI.h"
+#import "OSICoalescedPlanarROI.h"
 #import "OSIROIFloatPixelData.h"
 #import "OSIFloatVolumeData.h"
 #import "DCMView.h"
@@ -41,9 +41,9 @@
 	return nil;
 }
 
-- (NSArray *)osiriXROIs
+- (NSSet *)osiriXROIs
 {
-	return [NSArray array];
+	return [NSSet set];
 }
 
 - (NSString *)label
@@ -143,7 +143,7 @@
 
 + (id)ROICoalescedWithSourceROIs:(NSArray *)rois homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
-	return [[[OSICoalescedROI alloc] initWithSourceROIs:rois homeFloatVolumeData:floatVolumeData] autorelease];
+	return [[[OSICoalescedPlanarROI alloc] initWithSourceROIs:rois homeFloatVolumeData:floatVolumeData] autorelease];
 }
 
 

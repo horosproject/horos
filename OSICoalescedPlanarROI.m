@@ -12,10 +12,10 @@
  PURPOSE.
  =========================================================================*/
 
-#import "OSICoalescedROI.h"
+#import "OSICoalescedPlanarROI.h"
 #import "OSIROIMask.h"
 
-@implementation OSICoalescedROI
+@implementation OSICoalescedPlanarROI
 
 @synthesize sourceROIs = _sourceROIs;
 
@@ -74,18 +74,18 @@
     return [[[OSIROIMask alloc] initWithMaskRuns:maskRuns] autorelease];
 }
 
-- (NSArray *)osiriXROIs
+- (NSSet *)osiriXROIs
 {
-    NSMutableArray *rois;
     OSIROI *roi;
+    NSMutableSet *osirixROIs;
     
-    rois = [NSMutableArray array];
+    osirixROIs = [NSMutableSet setWithCapacity:[_sourceROIs count]];
     
     for (roi in _sourceROIs) {
-        [rois addObjectsFromArray:[roi osiriXROIs]];
+        [osirixROIs unionSet:[roi osiriXROIs]];
     }
     
-    return rois;
+    return osirixROIs;
 }
 
 - (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn

@@ -22,6 +22,12 @@
 #import "OSIROIMask.h"
 #import "OSIROI.h"
 
+@interface OSIPlanarPathROI ()
+
+- (NSArray *)_transformNodes:(NSArray *)nodes transform:(N3AffineTransform)transform;
+
+@end
+
 @implementation OSIPlanarPathROI (Private)
 
 - (id)initWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
@@ -33,7 +39,7 @@
 	
 	if ( (self = [super init]) ) {
 		_osiriXROI = [roi retain];
-		
+		        
 		_plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDICOMTransfrom);
 		_homeFloatVolumeData = [floatVolumeData retain];
 		
@@ -48,16 +54,20 @@
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
-				[nodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMakeFromNSPoint([myPoint point]), pixToDICOMTransfrom)]];
+				[nodes addObject:[NSValue valueWithN3Vector:N3VectorMakeFromNSPoint([myPoint point])]];
 			}
 			_bezierPath = [[N3MutableBezierPath alloc] initWithNodeArray:nodes style:N3BezierNodeEndsMeetStyle];
+            if ([_bezierPath elementCount]) {
+				[_bezierPath close];
+			}
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
 		} else if ([roi type] == tCPolygon) {
 			pointArray = [roi points];
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
-				[nodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMakeFromNSPoint([myPoint point]), pixToDICOMTransfrom)]];
+				[nodes addObject:[NSValue valueWithN3Vector:N3VectorMakeFromNSPoint([myPoint point])]];
 			}
             if ([pointArray count] > 1) {
                 [nodes addObject:[nodes objectAtIndex:0]];
@@ -66,6 +76,7 @@
 			if ([_bezierPath elementCount]) {
 				[_bezierPath close];
 			}
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
 		} else {
 			[self release];
@@ -151,6 +162,9 @@
 	NSInteger runStart;
 	NSInteger runEnd;
 	
+    // make sure floatVolume's z direction is perpendicular to the plane
+    assert(N3VectorIsOnLine(N3VectorApplyTransformToDirectionalVector(_plane.normal, floatVolume.volumeTransform), N3LineMake(N3VectorZero, N3VectorMake(0, 0, 1))));
+    
 	volumeBezierPath = [[_bezierPath mutableCopy] autorelease];
     [volumeBezierPath applyAffineTransform:N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, -.5, 0))];
 	[volumeBezierPath flatten:N3BezierDefaultFlatness];
@@ -228,9 +242,9 @@
 //	}
 }
 
-- (NSArray *)osiriXROIs
+- (NSSet *)osiriXROIs
 {
-	return [NSArray arrayWithObject:_osiriXROI];
+	return [NSSet setWithObject:_osiriXROI];
 }
 
 - (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
@@ -300,6 +314,20 @@
     glPopMatrix();
 }
 
+
+- (NSArray *)_transformNodes:(NSArray *)nodes transform:(N3AffineTransform)transform
+{
+    NSMutableArray *newNodes;
+    NSValue *value;
+    
+    newNodes = [NSMutableArray array];
+    
+    for (value in nodes) {
+        [newNodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform([value N3VectorValue], transform)]];
+    }
+    
+    return newNodes;
+}
 
 @end
 

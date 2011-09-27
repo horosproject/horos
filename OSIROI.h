@@ -196,9 +196,9 @@
  
  Concrete subclasses must implement this method.
  
- @return An array of points that represent the outside bounds of the ROI.
+ @return An array of N3Vectors stored at NSValues that represent the outside bounds of the ROI.
  */
-- (NSArray *)convexHull; // OSIVectors stored in NSValue objects. The ROI promises to live inside of these points
+- (NSArray *)convexHull; // N3Vectors stored in NSValue objects. The ROI promises to live inside of these points
 
 ///-----------------------------------
 /// @name Drawing
@@ -225,9 +225,9 @@
  
  Concrete subclasses need to implement this method if the receiver depends on OsiriX `ROI` objects.
  
- @return An array of OsiriX `ROI` objects that are the basis of this OSIROI.
+ @return A set of OsiriX `ROI` objects that are the basis of this OSIROI.
  */
-- (NSArray *)osiriXROIs; // returns the primitive ROIs that are represented by this object
+- (NSSet *)osiriXROIs; // returns the primitive ROIs that are represented by this object
 
 // at some point I would love to support drawing new ROI types...
 

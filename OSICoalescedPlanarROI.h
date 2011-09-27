@@ -15,7 +15,7 @@
 #import <Cocoa/Cocoa.h>
 #import "OSIROI.h"
 
-@interface OSICoalescedROI : OSIROI {
+@interface OSICoalescedPlanarROI : OSIROI {
     NSArray *_sourceROIs;
     OSIFloatVolumeData *_homeFloatVolumeData;
 }

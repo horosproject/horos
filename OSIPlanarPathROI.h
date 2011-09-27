@@ -30,5 +30,7 @@
 	N3Plane _plane;
 }
 
+- (OSIROIMask *)ROIMaskForFloatVolumeData:(OSIFloatVolumeData *)floatVolume; // for this class the passed floatVolume's z direction needs to be perpendicular to the plane 
+
 
 @end

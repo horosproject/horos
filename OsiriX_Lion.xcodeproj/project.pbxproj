@@ -76,8 +76,8 @@
 		4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */; };
 		4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F368CA2139B7E1D00BE3D1C /* CPRView.h */; };
 		4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F368CA3139B7E1D00BE3D1C /* CPRView.m */; };
-		4F832D4113FA5F8C00511070 /* OSICoalescedROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */; };
-		4F832D4213FA5F8C00511070 /* OSICoalescedROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */; };
+		4F832D4113FA5F8C00511070 /* OSICoalescedPlanarROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2413FA5F8C00511070 /* OSICoalescedPlanarROI.h */; };
+		4F832D4213FA5F8C00511070 /* OSICoalescedPlanarROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2513FA5F8C00511070 /* OSICoalescedPlanarROI.m */; };
 		4F832D4313FA5F8C00511070 /* OSIEnvironment.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2613FA5F8C00511070 /* OSIEnvironment.h */; };
 		4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F832D2713FA5F8C00511070 /* OSIEnvironment.m */; };
 		4F832D4513FA5F8C00511070 /* OSIEnvironment+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */; };
@@ -8221,8 +8221,8 @@
 		4F2446B01320F1B500D55426 /* CPRObliqueSliceOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRObliqueSliceOperation.m; sourceTree = "<group>"; };
 		4F368CA2139B7E1D00BE3D1C /* CPRView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRView.h; sourceTree = "<group>"; };
 		4F368CA3139B7E1D00BE3D1C /* CPRView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRView.m; sourceTree = "<group>"; };
-		4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSICoalescedROI.h; sourceTree = "<group>"; };
-		4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSICoalescedROI.m; sourceTree = "<group>"; };
+		4F832D2413FA5F8C00511070 /* OSICoalescedPlanarROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSICoalescedPlanarROI.h; sourceTree = "<group>"; };
+		4F832D2513FA5F8C00511070 /* OSICoalescedPlanarROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSICoalescedPlanarROI.m; sourceTree = "<group>"; };
 		4F832D2613FA5F8C00511070 /* OSIEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIEnvironment.h; sourceTree = "<group>"; };
 		4F832D2713FA5F8C00511070 /* OSIEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIEnvironment.m; sourceTree = "<group>"; };
 		4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OSIEnvironment+Private.h"; sourceTree = "<group>"; };
@@ -12660,8 +12660,8 @@
 		4F832D2213FA5E9E00511070 /* PluginSDK */ = {
 			isa = PBXGroup;
 			children = (
-				4F832D2413FA5F8C00511070 /* OSICoalescedROI.h */,
-				4F832D2513FA5F8C00511070 /* OSICoalescedROI.m */,
+				4F832D2413FA5F8C00511070 /* OSICoalescedPlanarROI.h */,
+				4F832D2513FA5F8C00511070 /* OSICoalescedPlanarROI.m */,
 				4F832D2613FA5F8C00511070 /* OSIEnvironment.h */,
 				4F832D2713FA5F8C00511070 /* OSIEnvironment.m */,
 				4F832D2813FA5F8C00511070 /* OSIEnvironment+Private.h */,
@@ -19816,7 +19816,7 @@
 				4F00A9E8139A779200ABD529 /* CPRStretchedView.h in Headers */,
 				4F368CA4139B7E1D00BE3D1C /* CPRView.h in Headers */,
 				84281FFF13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
-				4F832D4113FA5F8C00511070 /* OSICoalescedROI.h in Headers */,
+				4F832D4113FA5F8C00511070 /* OSICoalescedPlanarROI.h in Headers */,
 				4F832D4313FA5F8C00511070 /* OSIEnvironment.h in Headers */,
 				4F832D4513FA5F8C00511070 /* OSIEnvironment+Private.h in Headers */,
 				4F832D4613FA5F8C00511070 /* OSIFloatVolumeData.h in Headers */,
@@ -24428,7 +24428,7 @@
 				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
 				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
 				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
-				4F832D4213FA5F8C00511070 /* OSICoalescedROI.m in Sources */,
+				4F832D4213FA5F8C00511070 /* OSICoalescedPlanarROI.m in Sources */,
 				4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */,
 				4F832D4713FA5F8C00511070 /* OSIFloatVolumeData.m in Sources */,
 				4F832D4913FA5F8C00511070 /* OSIGeometry.m in Sources */,

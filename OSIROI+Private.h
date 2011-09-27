@@ -14,6 +14,7 @@
 
 #import "OSIROI.h"
 #import "OSIPlanarPathROI.h"
+#import "OSIPlanarBrushROI.h"
 #import "N3Geometry.h"
 
 @class ROI;
@@ -27,6 +28,12 @@
 @end
 
 @interface OSIPlanarPathROI (Private)
+
+- (id)initWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
+
+@end
+
+@interface OSIPlanarBrushROI (Private)
 
 - (id)initWithOsiriXROI:(ROI *)roi pixToDICOMTransfrom:(N3AffineTransform)pixToDICOMTransfrom homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
 
