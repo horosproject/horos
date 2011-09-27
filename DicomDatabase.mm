@@ -1039,7 +1039,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		BOOL isCDMedia = [BrowserController isItCD:[paths objectAtIndex:chunkRange.location]];
 		[DicomFile setFilesAreFromCDMedia:isCDMedia];
 		
-		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i) {
+		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i)
+        {
 			thread.progress = 1.0*i/paths.count;
 			
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -1054,7 +1055,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 #else
 					curFile = [[DicomFile alloc] init:newFile];
 #endif
-				} @catch (NSException* e) {
+				} @catch (NSException* e)
+                {
 					N2LogExceptionWithStackTrace(e);
 				}
 				
@@ -1095,9 +1097,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					
 					[curFile release];
 				}
-			} @catch (NSException* e) {
+			}
+            @catch (NSException* e)
+            {
 				N2LogExceptionWithStackTrace(e);
-			} @finally {
+			}
+            @finally
+            {
 				[pool release];
 			}
 			
@@ -1111,8 +1117,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[thread enterOperationWithRange:thread.progress:0];
 		NSArray* addedImagesArray = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
 		[thread exitOperation];
-		
-		
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
 		
@@ -1191,6 +1195,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 {
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
+    
 	[self lock];
 	@try
     {
@@ -1856,14 +1863,18 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[self unlock];
 	}
 	
+    [pool release];
+    
 	return addedImagesArray;
 }
 
--(void)_notify:(NSArray*)args {
+-(void)_notify:(NSArray*)args
+{
     [NSNotificationCenter.defaultCenter postNotificationName:[args objectAtIndex:0] object:[args objectAtIndex:1] userInfo:[args objectAtIndex:2]];
 }
 
--(void)copyFilesThread:(NSDictionary*)dict {
+-(void)copyFilesThread:(NSDictionary*)dict
+{
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	//	[autoroutingInProgress lock];
