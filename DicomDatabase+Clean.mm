@@ -333,9 +333,6 @@
 			}
 			else freeMemoryRequested = [acss longLongValue];
 			
-			// if (sender == 0L)	// Received by the NSTimer : have a larger amount of free memory !
-				freeMemoryRequested = 1.3*freeMemoryRequested;
-			
 			[self cleanForFreeSpaceMB:freeMemoryRequested];
 		}
 		
