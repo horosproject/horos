@@ -79,6 +79,8 @@ extern NSString* const OsirixViewerWillChangeNotification;
 extern NSString* const OsirixViewerDidChangeNotification;
 extern NSString* const OsirixUpdateViewNotification;
 extern NSString* const OsirixViewerControllerDidLoadImagesNotification;
+extern NSString* const OsirixViewerControllerWillFreeVolumeDataNotification; // userinfo dict will contain an NSData with @"volumeData" key and a NSNumber with @"movieIndex" key
+extern NSString* const OsirixViewerControllerDidAllocateVolumeDataNotification; // userinfo dict will contain an NSData with @"volumeData" key and a NSNumber with @"movieIndex" key
 extern NSString* const KFSplitViewDidCollapseSubviewNotification;
 extern NSString* const KFSplitViewDidExpandSubviewNotification;
 extern NSString* const BLAuthenticatedNotification;

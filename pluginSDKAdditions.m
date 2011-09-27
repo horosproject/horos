@@ -29,10 +29,10 @@
 	return [[OSIEnvironment sharedEnvironment] volumeWindowForViewerController:self];
 }
 
-- (OSIFloatVolumeData *)floatVolumeDataForMovieIndex:(long)index
-{
-	return [[[OSIFloatVolumeData alloc] initWithWithPixList:pixList[index] volume:volumeData[index]] autorelease];
-}
+//- (OSIFloatVolumeData *)floatVolumeDataForMovieIndex:(long)index
+//{
+//	return [[[OSIFloatVolumeData alloc] initWithWithPixList:pixList[index] volume:volumeData[index]] autorelease];
+//}
 
 @end
 

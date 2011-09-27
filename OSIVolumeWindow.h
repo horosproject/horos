@@ -42,6 +42,8 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
 
 @interface OSIVolumeWindow : NSObject <OSIROIManagerDelegate>  {
 	ViewerController *_viewerController; // this is retained
+    NSMutableDictionary *_generatedFloatVolumeDataToInvalidate; // we want to keep track of OSIFloatVolumeData objects that have been generated so that we can invalidate them. The key is the pointer to the NSData in the ViewerController
+    NSMutableDictionary *_generatedFloatVolumeDatas; // The lazily created VolumeDatas
     NSMutableArray *_OSIROIs; // additional ROIs that have been added to the VolumeWindow 
 	OSIROIManager *_ROIManager; // should this really be an ROI manager? or is that another beast altogether?
     BOOL _dataLoaded;
@@ -110,6 +112,8 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
 
 /** Returns a Volume Data object that can be used to access the data at the  given dimension coordinates
  
+ @warning *Important:*  OsiriX allocates and deallocates memory at sometimes seemingly odd times, if the OSIFloatVolumeData all of a sudden is invalid, call this function again to try to get a new one 
+ 
  @return The Volume Data for the dimension coordinates.
  @param dimensions An array of dimension names as NSString objects.
  @param indexes An array of indexes as NSNumber objects in the corresponding dimension 
@@ -117,6 +121,8 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
 - (OSIFloatVolumeData *)floatVolumeDataForDimensions:(NSArray *)dimensions indexes:(NSArray *)indexes;
 
 /** Returns a Volume Data object that can be used to access the data at the  given dimension coordinates
+ 
+ @warning *Important:*  OsiriX allocates and deallocates memory at sometimes seemingly odd times, if the OSIFloatVolumeData all of a sudden is invalid, call this function again to try to get a new one 
  
  @return The Volume Data for the dimension coordinates.
  @param firstDimension The first dimension name.

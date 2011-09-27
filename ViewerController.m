@@ -179,6 +179,9 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 -(NSMenu*)contextualMenu;
 -(NSMenu*)contextualMenuForROI:(ROI*)roi;
 
+- (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)volumeData movieIndex:(NSInteger)movieIndex;
+- (void)sendDidAllocateVolumeDataNotificationWithVolumeData:(NSData *)volumeData movieIndex:(NSInteger)movieIndex;
+
 @end
 
 enum
@@ -2070,6 +2073,25 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	return [menu autorelease];
 }
+
+- (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)freeingVolumeData movieIndex:(NSInteger)movieIndex
+{
+    if (freeingVolumeData) {
+        [[NSNotificationCenter defaultCenter] postNotification:
+         [NSNotification notificationWithName:OsirixViewerControllerWillFreeVolumeDataNotification object:self
+                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:freeingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+    }
+}
+
+- (void)sendDidAllocateVolumeDataNotificationWithVolumeData:(NSData *)allocatingVolumeData movieIndex:(NSInteger)movieIndex
+{
+    if(allocatingVolumeData) {
+        [[NSNotificationCenter defaultCenter] postNotification:
+         [NSNotification notificationWithName:OsirixViewerControllerDidAllocateVolumeDataNotification object:self
+                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:allocatingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+    }
+}
+
 
 -(void)roiContextualMenuActionRemove:(NSMenuItem*)source
 {
@@ -6435,6 +6457,7 @@ return YES;
 		[roiList[ i] release];
 		[pixList[ i] release];
 		[fileList[ i] release];
+        [self sendWillFreeVolumeDataNotificationWithVolumeData:volumeData[ i] movieIndex:i];
 		[volumeData[ i] release];
 	}
 	
@@ -6669,6 +6692,7 @@ return YES;
 					
 					volumeData[ 0] = v;
 					[volumeData[ 0] retain];
+                    [self sendDidAllocateVolumeDataNotificationWithVolumeData:volumeData[0] movieIndex:0];
 					
 					direction = 1;
 					
@@ -15226,6 +15250,7 @@ int i,j,l;
 	
 	volumeData[ maxMovieIndex] = v;
 	[volumeData[ maxMovieIndex] retain];
+    [self sendDidAllocateVolumeDataNotificationWithVolumeData:volumeData[ maxMovieIndex] movieIndex:maxMovieIndex];
 	
     [f retain];
     pixList[ maxMovieIndex] = f;

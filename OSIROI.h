@@ -34,7 +34,7 @@
  
  OSIROI is an abstract ROI class. It is the super class of all OsiriX SDK plugin ROI types and provides basic support for accessing pixel data and properties common to all ROIs.
  
- Subclasses must implement convexHull, name, label, homeFloatVolumeData, and ROIMaskForFloatVolumeData:.
+ Subclasses must implement convexHull, name, label, and ROIMaskForFloatVolumeData:.
  
  @warning *Important:* For now the Plugin SDK classes only works with intensity data and does not work with RGB data.
 
@@ -43,6 +43,7 @@
 
 
 @interface OSIROI : NSObject {
+    OSIFloatVolumeData *_homeFloatVolumeData;
 }
 
 //@property (nonatomic, readwrite, assign) void *context;
@@ -168,10 +169,8 @@
 
 
 /** Returns the original Float Volume Data on which the receiver or the OsiriX `ROI` objects this reciever represents were drawn on.
- 
- Concrete subclasses must override this method.
- 
- @warning *Important:* This concept will probably go away since, for example, a coalesced ROI might span mutiple volumes, (such as time).
+  
+ @warning The homeFloatVolumeData can change or become nil as OsiriX allocates and deallocates memory.
 
  
  @return The a OSIROIFloatPixelData object that can be used to access pixels under this ROI in the given Float Volume data
@@ -180,6 +179,17 @@
  @see ROIFloatPixelDataForFloatVolumeData:
  */
 - (OSIFloatVolumeData *)homeFloatVolumeData; // the volume data on which the ROI was drawn
+
+
+/** Set the original Float Volume Data on which the receiver or the OsiriX `ROI` objects this reciever represents were drawn on.
+  
+ @warning The homeFloatVolumeData can change or become nil as OsiriX allocates and deallocates memory.
+  
+ @see ROIFloatPixelData
+ @see ROIMaskForFloatVolumeData:
+ @see ROIFloatPixelDataForFloatVolumeData:
+ */
+- (void)setHomeFloatVolumeData:(OSIFloatVolumeData *)homeVolumeData;
 
 //- (NSDictionary *)dictionaryRepresentation; // make sure this is a plist serializable dictionary;
 

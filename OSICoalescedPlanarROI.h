@@ -17,7 +17,6 @@
 
 @interface OSICoalescedPlanarROI : OSIROI {
     NSArray *_sourceROIs;
-    OSIFloatVolumeData *_homeFloatVolumeData;
 }
 
 - (id)initWithSourceROIs:(NSArray *)rois homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData;

@@ -23,7 +23,7 @@
 {
     if ( (self = [super init]) ) {
         _sourceROIs = [rois copy];
-        _homeFloatVolumeData = [floatVolumeData retain];
+        [self setHomeFloatVolumeData:floatVolumeData];
     }
     
     return self;
@@ -33,8 +33,6 @@
 {
     [_sourceROIs release];
     _sourceROIs = nil;
-    [_homeFloatVolumeData release];
-    _homeFloatVolumeData = nil;
     [super dealloc];
 }
 
@@ -88,9 +86,14 @@
     return osirixROIs;
 }
 
-- (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
+- (void)setHomeFloatVolumeData:(OSIFloatVolumeData *)homeFloatVolumeData
 {
-	return _homeFloatVolumeData;
+    OSIROI *roi;
+
+    for (roi in _sourceROIs) {
+        [roi setHomeFloatVolumeData:homeFloatVolumeData];
+    }
+    [super setHomeFloatVolumeData:homeFloatVolumeData];
 }
 
 //- (void)drawPlane:(N3Plane)plane inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform

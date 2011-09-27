@@ -24,6 +24,13 @@
 
 @implementation OSIROI
 
+- (void)dealloc
+{
+    [_homeFloatVolumeData release];
+    _homeFloatVolumeData = nil;
+    [super dealloc];
+}
+
 - (NSString *)name
 {
 	assert(0);
@@ -116,7 +123,15 @@
 
 - (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
 {
-	return nil;
+	return _homeFloatVolumeData;
+}
+
+- (void)setHomeFloatVolumeData:(OSIFloatVolumeData *)homeFloatVolumeData
+{
+    if (homeFloatVolumeData != _homeFloatVolumeData) {
+        [_homeFloatVolumeData release];
+        _homeFloatVolumeData = [homeFloatVolumeData retain];
+    }
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
@@ -133,6 +148,8 @@
 		case tMesure:
 		case tOPolygon:
 		case tCPolygon:
+		case tOval:
+		case tROI:
 			return [[[OSIPlanarPathROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 			break;
 		default:

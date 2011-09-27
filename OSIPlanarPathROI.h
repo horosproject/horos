@@ -26,7 +26,6 @@
 	ROI *_osiriXROI;
 	
 	N3MutableBezierPath *_bezierPath;
-	OSIFloatVolumeData *_homeFloatVolumeData;
 	N3Plane _plane;
 }
 

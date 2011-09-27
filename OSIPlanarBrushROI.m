@@ -29,7 +29,7 @@
 		_osiriXROI = [roi retain];
 		
 		_plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDICOMTransfrom);
-		_homeFloatVolumeData = [floatVolumeData retain];
+        [self setHomeFloatVolumeData:floatVolumeData];
 		
 		if ([roi type] == tPlain) {
             hullPoints = [[NSMutableArray alloc] init];

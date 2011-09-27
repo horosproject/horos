@@ -17,11 +17,14 @@
 #import "OSIROIManager.h"
 #import "pluginSDKAdditions.h"
 #import "Notifications.h"
+#import "OSIFloatVolumeData.h"
 
 NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseNotification";
 
 @interface OSIVolumeWindow ()
 - (void)_viewerControllerDidLoadImagesNotification:(NSNotification *)notification;
+- (void)_viewerControllerWillFreeVolumeDataNotification:(NSNotification *)notification;
+- (void)_viewerControllerDidAllocateVolumeDataNotification:(NSNotification *)notification;
 @end
 
 @implementation OSIVolumeWindow
@@ -56,6 +59,10 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 	_ROIManager = nil;
     [_OSIROIs release];
     _OSIROIs = nil;
+    [_generatedFloatVolumeDatas release];
+    _generatedFloatVolumeDatas = nil;
+    [_generatedFloatVolumeDataToInvalidate release];
+    _generatedFloatVolumeDataToInvalidate = nil;
 	[super dealloc];
 }
 
@@ -104,7 +111,40 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 
 - (OSIFloatVolumeData *)floatVolumeDataForDimensions:(NSArray *)dimensions indexes:(NSArray *)indexes;
 {
-	return [_viewerController floatVolumeDataForMovieIndex:0];
+    NSString *dimensionAndIndexKey;
+    NSArray *pixList;
+    NSData *volumeData;
+    OSIFloatVolumeData *floatVolumeData;
+    
+    assert([dimensions count] == 1);
+    assert([indexes count] == 1);
+    
+    assert([[dimensions objectAtIndex:0] isEqual:@"movieIndex"]);
+    assert([[indexes objectAtIndex:0] isKindOfClass:[NSNumber class]]);
+    
+    dimensionAndIndexKey = [NSString stringWithFormat:@"movieIndex_%@", [indexes objectAtIndex:0]]; // THIS is totally bogus once we handle more than one dimension
+    
+    floatVolumeData = [_generatedFloatVolumeDatas objectForKey:dimensionAndIndexKey];
+    if (floatVolumeData) {
+        if ([floatVolumeData isDataValid]) {
+            return floatVolumeData;
+        } else {
+            [_generatedFloatVolumeDatas removeObjectForKey:dimensionAndIndexKey];
+        }
+    }
+    
+    pixList = [_viewerController pixList:[[indexes objectAtIndex:0] integerValue]];
+    volumeData = [_viewerController volumeData:[[indexes objectAtIndex:0] integerValue]];
+    
+    assert(pixList);
+    assert(volumeData);
+    
+    floatVolumeData = [[[OSIFloatVolumeData alloc] initWithWithPixList:pixList volume:volumeData] autorelease];
+    
+    [_generatedFloatVolumeDatas setObject:floatVolumeData forKey:dimensionAndIndexKey];
+    [_generatedFloatVolumeDataToInvalidate setObject:floatVolumeData forKey:[NSNumber numberWithInteger:(NSInteger)volumeData]];
+    
+    return floatVolumeData;
 }
 
 - (OSIFloatVolumeData *)floatVolumeDataForDimensionsAndIndexes:(NSString *)firstDimenstion, ...
@@ -141,7 +181,8 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 		
 		return [self floatVolumeDataForDimensions:dimensions indexes:indexes];
 	} else {
-		return [_viewerController floatVolumeDataForMovieIndex:0];
+        assert(0);
+		return nil;
 	}
 }
 
@@ -187,6 +228,27 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
     [[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixViewerControllerDidLoadImagesNotification object:_viewerController];
 }
 
+- (void)_viewerControllerWillFreeVolumeDataNotification:(NSNotification *)notification
+{
+    NSData *volumeData;
+    OSIFloatVolumeData *floatVolumeData;
+    
+    volumeData = [[notification userInfo] objectForKey:@"volumeData"];
+    assert(volumeData);
+    
+    floatVolumeData = [_generatedFloatVolumeDataToInvalidate objectForKey:[NSNumber numberWithInteger:(NSInteger)volumeData]];
+    if (floatVolumeData) {
+        [floatVolumeData invalidateData];
+        [_generatedFloatVolumeDataToInvalidate removeObjectForKey:[NSNumber numberWithInteger:(NSInteger)volumeData]];
+    }
+}
+
+- (void)_viewerControllerDidAllocateVolumeDataNotification:(NSNotification *)notification
+{
+    // Do something here
+}
+
+
 @end
 
 @implementation OSIVolumeWindow (Private)
@@ -198,11 +260,16 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 		_ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:self];
 		_ROIManager.delegate = self;
         _OSIROIs = [[NSMutableArray alloc] init];
+        _generatedFloatVolumeDatas = [[NSMutableDictionary alloc] init];
+        _generatedFloatVolumeDataToInvalidate = [[NSMutableDictionary alloc] init];
     
         _dataLoaded = [_viewerController isEverythingLoaded];
         if (_dataLoaded == NO) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerDidLoadImagesNotification:) name:OsirixViewerControllerDidLoadImagesNotification object:_viewerController];
         }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerWillFreeVolumeDataNotification:) name:OsirixViewerControllerWillFreeVolumeDataNotification object:_viewerController];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerDidAllocateVolumeDataNotification:) name:OsirixViewerControllerDidAllocateVolumeDataNotification object:_viewerController];
+
     }
 	return self;
 }

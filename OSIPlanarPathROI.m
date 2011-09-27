@@ -21,10 +21,9 @@
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
 #import "OSIROI.h"
+#import "MyPoint.h"
 
 @interface OSIPlanarPathROI ()
-
-- (NSArray *)_transformNodes:(NSArray *)nodes transform:(N3AffineTransform)transform;
 
 @end
 
@@ -36,12 +35,13 @@
 	NSArray *pointArray;
 	MyPoint *myPoint;
 	NSMutableArray *nodes;
+    NSInteger i;
 	
 	if ( (self = [super init]) ) {
 		_osiriXROI = [roi retain];
 		        
 		_plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDICOMTransfrom);
-		_homeFloatVolumeData = [floatVolumeData retain];
+        [self setHomeFloatVolumeData:floatVolumeData];
 		
 		if ([roi type] == tMesure && [[roi points] count] > 1) {
 			_bezierPath = [[N3MutableBezierPath alloc] init];
@@ -51,6 +51,10 @@
 			[_bezierPath lineToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
 		} else if ([roi type] == tOPolygon) {
 			pointArray = [roi points];
+            
+            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+                return nil;
+            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
@@ -62,8 +66,12 @@
 			}
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
-		} else if ([roi type] == tCPolygon) {
+		} else if ([roi type] == tCPolygon || [roi type] == tOval) {
 			pointArray = [roi points];
+            
+            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+                return nil;
+            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
@@ -78,6 +86,24 @@
 			}
             [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
+        } else if ([roi type] == tROI) {
+			pointArray = [roi points];
+        
+            if ([pointArray count] == 0) {
+                return nil;
+            }
+            
+            _bezierPath = [[N3MutableBezierPath alloc] init];
+            [_bezierPath moveToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:0] point])];
+            
+            for (i = 1; i < [pointArray count]; i++) {
+                [_bezierPath lineToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:i] point])];
+            }
+            
+            if ([_bezierPath elementCount]) {
+                [_bezierPath close];
+            }
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 		} else {
 			[self release];
 			self = nil;
@@ -99,9 +125,6 @@
 	
 	[_osiriXROI release];
 	_osiriXROI = nil;
-	
-	[_homeFloatVolumeData release];
-	_homeFloatVolumeData = nil;
 	
 	[super dealloc];
 }
@@ -163,8 +186,8 @@
 	NSInteger runEnd;
 	
     // make sure floatVolume's z direction is perpendicular to the plane
-    assert(N3VectorIsOnLine(N3VectorApplyTransformToDirectionalVector(_plane.normal, floatVolume.volumeTransform), N3LineMake(N3VectorZero, N3VectorMake(0, 0, 1))));
-    
+    assert(N3VectorLength(N3VectorCrossProduct(N3VectorApplyTransformToDirectionalVector(_plane.normal, floatVolume.volumeTransform), N3VectorMake(0, 0, 1))) < 0.0001);
+        
 	volumeBezierPath = [[_bezierPath mutableCopy] autorelease];
     [volumeBezierPath applyAffineTransform:N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, -.5, 0))];
 	[volumeBezierPath flatten:N3BezierDefaultFlatness];
@@ -247,11 +270,6 @@
 	return [NSSet setWithObject:_osiriXROI];
 }
 
-- (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
-{
-	return _homeFloatVolumeData;
-}
-
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
 {
 	double dicomToPixGLTransform[16];
@@ -312,21 +330,6 @@
     glEnd();
     
     glPopMatrix();
-}
-
-
-- (NSArray *)_transformNodes:(NSArray *)nodes transform:(N3AffineTransform)transform
-{
-    NSMutableArray *newNodes;
-    NSValue *value;
-    
-    newNodes = [NSMutableArray array];
-    
-    for (value in nodes) {
-        [newNodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform([value N3VectorValue], transform)]];
-    }
-    
-    return newNodes;
 }
 
 @end

@@ -23,7 +23,6 @@
     ROI *_osiriXROI;
     
     OSIROIMask *_roiMask;
-    OSIFloatVolumeData *_homeFloatVolumeData;
     N3Plane _plane;
     NSArray *_convexHull; // mask onto the _homeFloatVolumeData
 }

@@ -373,7 +373,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 				}
 				
 				for (osirixROI in pixROIList) {
-					roi = [OSIROI ROIWithOsiriXROI:osirixROI pixToDICOMTransfrom:pixToDicomTransform homeFloatVolumeData:[viewController floatVolumeDataForMovieIndex:i]];
+					roi = [OSIROI ROIWithOsiriXROI:osirixROI pixToDICOMTransfrom:pixToDicomTransform homeFloatVolumeData:[_volumeWindow floatVolumeDataForDimensionsAndIndexes:@"movieIndex", [NSNumber numberWithInteger:i], nil]];
 					if (roi) {
 						[newROIs addObject:roi];
                         [mutableWatchedROIs addObject:osirixROI];
