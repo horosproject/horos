@@ -2077,18 +2077,32 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)freeingVolumeData movieIndex:(NSInteger)movieIndex
 {
     if (freeingVolumeData) {
+        NSAutoreleasePool *pool;
+        pool = [[NSAutoreleasePool alloc] init];
+        // this Autorelease pool is here to deal with some sort of race condition when freeing the ViewerController, if the viewercontroler
+        // get's retain/autoreleased we get a crash in the main run loop. This is a hack...
+        
         [[NSNotificationCenter defaultCenter] postNotification:
          [NSNotification notificationWithName:OsirixViewerControllerWillFreeVolumeDataNotification object:self
                                      userInfo:[NSDictionary dictionaryWithObjectsAndKeys:freeingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+        
+        [pool release];
     }
 }
 
 - (void)sendDidAllocateVolumeDataNotificationWithVolumeData:(NSData *)allocatingVolumeData movieIndex:(NSInteger)movieIndex
 {
     if(allocatingVolumeData) {
+        NSAutoreleasePool *pool;
+        pool = [[NSAutoreleasePool alloc] init];
+        // this Autorelease pool is here to deal with some sort of race condition when freeing the ViewerController, if the viewercontroler
+        // get's retain/autoreleased we get a crash in the main run loop. This is a hack...
+        
         [[NSNotificationCenter defaultCenter] postNotification:
          [NSNotification notificationWithName:OsirixViewerControllerDidAllocateVolumeDataNotification object:self
                                      userInfo:[NSDictionary dictionaryWithObjectsAndKeys:allocatingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+        
+        [pool release];
     }
 }
 

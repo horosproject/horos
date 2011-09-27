@@ -230,6 +230,7 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 
 - (void)_viewerControllerWillFreeVolumeDataNotification:(NSNotification *)notification
 {
+    assert([NSThread isMainThread]);
     NSData *volumeData;
     OSIFloatVolumeData *floatVolumeData;
     
