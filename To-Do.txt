@@ -43,6 +43,7 @@ A:
 - Echo/US : map zone
 - DICOM Listener: preferences to force re-index
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
+- QR : Add last 3 hours
 - 'Archived' field (comments?)
 - Custom DB time interval: floating panel
 - 3D ROI -> 2D Viewer

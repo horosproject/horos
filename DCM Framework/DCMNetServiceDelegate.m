@@ -269,7 +269,7 @@ static NSMutableArray *cachedServersArray = nil;
 									transferSyntax = SendJPEG2000Lossless;
 									
 								if( [ts isEqualToString: @"JPEG2000"])
-									transferSyntax = SendJPEG2000Lossy50;
+									transferSyntax = SendJPEG2000Lossy10;
 									
 								if( [ts isEqualToString: @"RLELossless"])
 									transferSyntax = SendRLE;
