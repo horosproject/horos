@@ -1198,24 +1198,25 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
+    NSMutableArray* modifiedStudiesArray = [NSMutableArray array];
+    NSMutableArray* completeImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
+    BOOL newStudy = NO;
+    
+    [self cleanForFreeSpace];
+    
 	[self lock];
 	@try
     {
-        
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
-		
-		NSMutableArray* completeImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
-		NSMutableArray* modifiedStudiesArray = [NSMutableArray array];
 		
 		DicomStudy *study = nil;
 		DicomSeries *seriesTable = nil;
 		DicomImage *image = nil;
 		NSMutableArray *studiesArrayStudyInstanceUID = [[studiesArray valueForKey:@"studyInstanceUID"] mutableCopy];
-		
 		NSString *curPatientUID = nil, *curStudyID = nil, *curSerieID = nil;
-		BOOL newStudy = NO, newObject = NO;
+		BOOL newObject = NO;
 		
 		NSDate* today = [NSDate date];
 		NSString* dataDirPath = self.dataDirPath;
@@ -1777,48 +1778,63 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				N2LogExceptionWithStackTrace(e);
 			}
 		}
-		
-		[studiesArrayStudyInstanceUID release];
+        
+        [studiesArrayStudyInstanceUID release];
 		[studiesArray release];
 		
+        // Compute no of images in studies/series
+        for( NSManagedObject *study in modifiedStudiesArray) [study valueForKey:@"noFiles"];
+        
+        // Reapply annotations from DICOMSR file
+        for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
+        
+        //				if (isBonjour && [bonjourFilesToSend count] > 0)
+        //				{
+        //					if (generatedByOsiriX)
+        //						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourGeneratedByOsiriXDB:) toTarget: browserController withObject: bonjourFilesToSend];
+        //					else 
+        //						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
+        //				}
+        
+    }
+    @catch (NSException* e)
+    {
+		N2LogExceptionWithStackTrace(e);
+	}
+    @finally
+    {
+		[self unlock];
+	}
+    
+	@try
+    {
 		NSString* growlString = nil;
 		NSString* growlStringNewStudy = nil;
 		
 		@try
 		{
-			// Compute no of images in studies/series
-			for( NSManagedObject *study in modifiedStudiesArray) [study valueForKey:@"noFiles"];
-			
-			// Reapply annotations from DICOMSR file
-			for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
-			
-			//				if (isBonjour && [bonjourFilesToSend count] > 0)
-			//				{
-			//					if (generatedByOsiriX)
-			//						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourGeneratedByOsiriXDB:) toTarget: browserController withObject: bonjourFilesToSend];
-			//					else 
-			//						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
-			//				}
-			
-			
-			NSAutoreleasePool* pool = [NSAutoreleasePool new];
+			NSAutoreleasePool* pool2 = [NSAutoreleasePool new];
 			@try {
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
 				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
                 [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayNotification, self, userInfo, nil] waitUntilDone:NO];
                 [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
-				if (postNotifications) {
+				if (postNotifications)
+                {
                     [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBNotification, self, userInfo, nil] waitUntilDone:NO];
                     [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
 				}
-			} @catch (NSException* e) {
+			} @catch (NSException* e)
+            {
 				N2LogExceptionWithStackTrace(e);
 			} @finally {
-				[pool release];
+				[pool2 release];
 			}
 				
-			if (postNotifications) {
-				if ([addedImagesArray count] > 0) { // && generatedByOsiriX == NO)
+			if (postNotifications)
+            {
+				if ([addedImagesArray count] > 0)  // && generatedByOsiriX == NO)
+                {
 					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
 					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
@@ -1835,34 +1851,39 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		BOOL addFailed = NO;
 		
-		@try {
-			[self cleanForFreeSpace];
-			
+		@try
+        {
 			NSError* err = nil;
-			if (![self save:&err]) {
+			if (![self save:&err])
+            {
 				NSLog( @"***** error saving DB: %@", [[err userInfo] description]);
 				NSLog( @"***** saveDatabase ERROR: %@", [err localizedDescription]);
 				addFailed = YES;
 			}
-		} @catch (NSException* e) {
+		} @catch (NSException* e)
+        {
 			N2LogExceptionWithStackTrace(e);
 		}
 		
-		if (addFailed == NO) {
+		if (addFailed == NO)
+        {
 			self.timeOfLastModification = [NSDate timeIntervalSinceReferenceDate];
-			if (postNotifications) {
+			if (postNotifications)
+            {
 				if (growlString)
 					[self performSelectorOnMainThread:@selector(_growlImagesAdded:) withObject:growlString waitUntilDone:NO];
+                
 				if (newStudy && growlStringNewStudy)
 					[self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
 			}
 		}
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	} @finally {
-		[self unlock];
-	}
 	
+	}
+    @catch (NSException* e)
+    {
+		N2LogExceptionWithStackTrace(e);
+    }
+    
     [pool release];
     
 	return addedImagesArray;
