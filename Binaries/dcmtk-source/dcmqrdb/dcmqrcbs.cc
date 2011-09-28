@@ -41,6 +41,7 @@
 #include "dcfilefo.h"
 #include "dcmqrdbs.h"
 #include "dcmqrdbi.h"
+#include "dcmetinf.h"
 
 //@interface writeClass : NSObject
 //{
@@ -258,6 +259,13 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
         if (!options_.ignoreStoreData_ && rsp->DimseStatus == STATUS_Success) {
             if ((imageDataSet)&&(*imageDataSet))
 			{
+                if( req && dcmff && req->MoveOriginatorApplicationEntityTitle)
+                {
+                    DcmMetaInfo *metaInfo = dcmff->getMetaInfo();
+                    if( metaInfo)
+                        metaInfo->putAndInsertString( DCM_SourceApplicationEntityTitle, req->MoveOriginatorApplicationEntityTitle);
+                }
+                
 				writeToFile(dcmff, fileName, rsp);
             }
             if (rsp->DimseStatus == STATUS_Success)
