@@ -35,6 +35,7 @@
 	NSArray *pointArray;
 	MyPoint *myPoint;
 	NSMutableArray *nodes;
+    NSMutableArray *tempPointArray;
     NSInteger i;
 	
 	if ( (self = [super init]) ) {
@@ -52,9 +53,9 @@
 		} else if ([roi type] == tOPolygon) {
 			pointArray = [roi points];
             
-            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
-                return nil;
-            }
+//            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+//                return nil;
+//            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
@@ -69,9 +70,22 @@
 		} else if ([roi type] == tCPolygon || [roi type] == tOval) {
 			pointArray = [roi points];
             
-            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
-                return nil;
+            if ([roi type] == tOval && [pointArray count] >= 2 && [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+                tempPointArray = [NSMutableArray array];
+                point = [[pointArray objectAtIndex:0] point];
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.x += 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.y += 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.x -= 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                pointArray = tempPointArray;
             }
+            
+//            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+//                return nil;
+//            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
@@ -218,6 +232,7 @@
 	
 	minY = floor(minY);
 	maxY = ceil(maxY);
+    maskRun = OSIROIMaskRunZero;
 	maskRun.depthIndex = z;
     
     if (z < 0 || z >= floatVolume.pixelsDeep) {

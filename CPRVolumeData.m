@@ -26,13 +26,14 @@
 
 @implementation CPRVolumeData
 
+@synthesize outOfBoundsValue = _outOfBoundsValue;
 @synthesize pixelsWide = _pixelsWide;
 @synthesize pixelsHigh = _pixelsHigh;
 @synthesize pixelsDeep = _pixelsDeep;
 @synthesize volumeTransform = _volumeTransform;
 
 - (id)initWithFloatBytesNoCopy:(const float *)floatBytes pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh pixelsDeep:(NSUInteger)pixelsDeep
-               volumeTransform:(N3AffineTransform)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
+               volumeTransform:(N3AffineTransform)volumeTransform outOfBoundsValue:(float)outOfBoundsValue freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
 {
     if ( (self = [super init]) ) {
         if (floatBytes == NULL) {
@@ -40,6 +41,7 @@
         } else {
             _floatBytes = floatBytes;
         }
+        _outOfBoundsValue = outOfBoundsValue;
         _isValid = YES;
         _pixelsWide = pixelsWide;
         _pixelsHigh = pixelsHigh;
@@ -154,29 +156,6 @@
     return;
 }
 
-// commented out until this proves no to be a giant brain fart
-//- (BOOL)getFloatData:(float *)buffer range:(NSRange)range
-//{
-//    if (_isValid == NO) {
-//        memset(buffer, 0, sizeof(float) * range.length);
-//        return NO;
-//    }
-//    
-//    assert(range.location > 0);
-//    assert(range.location > 0); // fix this once we know what the hell we are talking about!
-//    
-//    OSAtomicIncrement32Barrier(&_readerCount);
-//    if (_isValid) {
-//        memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
-//        OSAtomicDecrement32Barrier(&_readerCount);
-//        return YES;
-//    } else {
-//        OSAtomicDecrement32Barrier(&_readerCount);
-//        memset(buffer, 0, sizeof(float) * range.length);
-//        return NO;
-//    }
-//}
-
 // will copy fill length*sizeof(float) bytes
 - (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length
 {
@@ -257,7 +236,7 @@
     
     childVolumeTransform = N3AffineTransformConcat(_volumeTransform, N3AffineTransformMakeTranslation(0, 0, -z));
     childVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes + (_pixelsWide*_pixelsHigh*z) pixelsWide:_pixelsWide pixelsHigh:_pixelsHigh pixelsDeep:1
-                                                  volumeTransform:childVolumeTransform freeWhenDone:NO];
+                                                  volumeTransform:childVolumeTransform outOfBoundsValue:_outOfBoundsValue freeWhenDone:NO];
     
     OSAtomicIncrement32Barrier(&_readerCount);
     if ([self isDataValid] == NO) {
@@ -454,6 +433,7 @@
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
         inlineBuffer->floatBytes = _floatBytes;
+        inlineBuffer->outOfBoundsValue = _outOfBoundsValue;
         inlineBuffer->pixelsWide = _pixelsWide;
         inlineBuffer->pixelsHigh = _pixelsHigh;
         inlineBuffer->pixelsDeep = _pixelsDeep;
@@ -547,7 +527,7 @@
     pixToDicomTransform.m33 = orientation[8]*spacingZ;
     
     self = [self initWithFloatBytesNoCopy:(const float *)[volume bytes] pixelsWide:[firstPix pwidth] pixelsHigh:[firstPix pheight] pixelsDeep:[pixList count]
-                            volumeTransform:N3AffineTransformInvert(pixToDicomTransform) freeWhenDone:NO];
+                          volumeTransform:N3AffineTransformInvert(pixToDicomTransform) outOfBoundsValue:-1000 freeWhenDone:NO];
     return self;
 }
 

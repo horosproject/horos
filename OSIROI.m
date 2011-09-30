@@ -15,6 +15,7 @@
 #import "OSIROI.h"
 #import "OSIROI+Private.h"
 #import "OSIPlanarPathROI.h"
+#import "OSIPlanarBrushROI.h"
 #import "OSICoalescedPlanarROI.h"
 #import "OSIROIFloatPixelData.h"
 #import "OSIFloatVolumeData.h"
@@ -152,6 +153,8 @@
 		case tROI:
 			return [[[OSIPlanarPathROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 			break;
+        case tPlain:
+            return [[[OSIPlanarBrushROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 		default:
 			return nil;;
 	}

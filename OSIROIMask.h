@@ -13,6 +13,9 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
+#import "N3Geometry.h"
+
+@class OSIFloatVolumeData;
 
 /** A structure used to describe a single run length of a mask.
  
@@ -22,8 +25,11 @@ struct OSIROIMaskRun {
 	NSRange widthRange;
     NSUInteger heightIndex;
     NSUInteger depthIndex;
+    float intensity;
 };
 typedef struct OSIROIMaskRun OSIROIMaskRun;
+
+extern const OSIROIMaskRun OSIROIMaskRunZero;
 
 /** A structure used to describe a single point in a mask.
  
@@ -103,6 +109,14 @@ CF_EXTERN_C_END
 /// @name Creating ROI Masks
 ///-----------------------------------
 
+/** Returns a newly created ROI Mask based on the intesities of the floatVolumeData.
+ 
+ The returned mask  is a mask on the floatVolumeData with the intensities of the floatVolumeData.
+ 
+ @return The newly crated and initialized ROI Mask object or `nil` if there was a problem initializing the object.
+ @param floatVolumeData The OSIFloatVolumeData on which to build and base the mask.
+ */
++ (id)ROIMaskFromVolumeData:(OSIFloatVolumeData *)floatVolumeData;
 
 // create the thing, maybe we should really be working with C arrays.... or at least give the option
 /** Initializes and returns a newly created ROI Mask.
@@ -117,6 +131,11 @@ CF_EXTERN_C_END
 ///-----------------------------------
 /// @name Working with the Mask
 ///-----------------------------------
+
+/** Returns a mask made by translating the receiever by the given distances.
+ 
+ */
+- (OSIROIMask *)ROIMaskByTranslatingByX:(NSInteger)x Y:(NSInteger)y Z:(NSInteger)z;
 
 /** Returns the mask as a set ofOSIROIMaskRun structs in NSValues.
  
