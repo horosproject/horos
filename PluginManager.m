@@ -469,8 +469,10 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                 NSMutableArray* cl = [NSMutableArray array];
                 NSArray* args = [[NSProcessInfo processInfo] arguments];
                 for (NSInteger i = 0; i < [args count]; ++i)
-                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1)
+                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
                         [cl addObject:[args objectAtIndex:++i]];
+                        // NSLog(@"Should load plugin at %@", [cl lastObject]);
+                    }
                 e = [cl objectEnumerator];
             }
             

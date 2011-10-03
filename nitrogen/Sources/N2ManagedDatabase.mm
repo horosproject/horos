@@ -58,7 +58,8 @@
 -(void)setManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	if (managedObjectContext != _managedObjectContext) {
 		// the database's main databaseObjectContext doesn't retain the database
-		((N2ManagedObjectContext*)managedObjectContext).database = nil;
+		if ([managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
+            ((N2ManagedObjectContext*)managedObjectContext).database = nil;
 		[self willChangeValueForKey:@"managedObjectContext"];
 		[_managedObjectContext release];
 		_managedObjectContext = [managedObjectContext retain];

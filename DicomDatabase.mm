@@ -166,7 +166,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 			databasesDictionary = [[NSMutableDictionary alloc] init];
 	}
 	
-	if (db)
+	if (db && db.baseDirPath)
 		@synchronized(databasesDictionary) {
 			if (![[databasesDictionary allValues] containsObject:db] && ![databasesDictionary objectForKey:db.baseDirPath])
 				[databasesDictionary setObject:db forKey:db.baseDirPath];
@@ -258,10 +258,12 @@ static NSMutableDictionary* databasesDictionary = nil;
             break;
         }
     
-    DicomDatabase* dbp = [self databaseAtPath:path];
-    if (dbp)
-        return dbp;
-    
+    if (path) {
+        DicomDatabase* dbp = [self databaseAtPath:path];
+        if (dbp)
+            return dbp;
+    }
+        
     return [[[self class] alloc] initWithPath:path context:c];
     
 //	[NSException raise:NSGenericException format:@"Unidentified database context"];
@@ -350,9 +352,9 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
-	strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC));
-	strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC));
-	strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC));
+	if (self.baseDirPath) strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC)); else baseDirPathC[0] = 0;
+	if (self.incomingDirPath) strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC)); else incomingDirPathC[0] = 0;
+	if (self.tempDirPath) strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC)); else tempDirPathC[0] = 0;
 	
 	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
 	
@@ -363,7 +365,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.doc", @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
 		NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-		if (![NSFileManager.defaultManager fileExistsAtPath:rfp])
+		if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp])
 			[NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
 	}
 	

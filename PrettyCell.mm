@@ -44,10 +44,20 @@
 }
 
 -(void)dealloc {
-   // self.rightText = nil;
-   // self.textColor = nil;
-   // self.rightSubviews = nil;
+    self.rightText = nil;
+    self.textColor = nil;
+    self.rightSubviews = nil;
     [super dealloc];
+}
+
+-(id)copyWithZone:(NSZone *)zone {
+    PrettyCell* copy = [super copyWithZone:zone];
+    
+    copy->_rightText = [self.rightText retain];
+    copy->_textColor = [self.textColor retain];
+    copy->_rightSubviews = [self.rightSubviews mutableCopyWithZone:zone];
+    
+    return copy;
 }
 
 -(NSRect)rectForSubviewAtIndex:(NSInteger)index withFrame:(NSRect)frame {
