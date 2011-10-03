@@ -1610,7 +1610,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[DicomFile setFilesAreFromCDMedia: NO];
 	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
+//	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil]; // multithreaded addfiles will FAIL, dont remove this dir, let osirix destroy it when quitting
 	
 	if( addFailed)
 	{
