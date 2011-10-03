@@ -206,6 +206,15 @@
 		5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
 		5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
 		5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
+		596D30AD1439B97B004EE9EC /* odt2pdf in Copy Auxiliary Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; };
+		596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AE1439B98A004EE9EC /* pages2pdf.applescript */; };
+		596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AF1439B98A004EE9EC /* word2pdf.applescript */; };
+		596D30B61439BA17004EE9EC /* DicomStudy+Report.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B41439BA17004EE9EC /* DicomStudy+Report.h */; };
+		596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */; };
+		596D30BA1439BABD004EE9EC /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */; };
+		596D30BB1439BABD004EE9EC /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */; };
+		596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */; };
+		596D30BD1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */; };
 		596EB3061189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
 		596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */; };
 		596EB3081189D9A600880192 /* NSPreferencePane+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */; };
@@ -8146,6 +8155,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		596D30AB1439B8CD004EE9EC /* Copy Auxiliary Executables */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				596D30AD1439B97B004EE9EC /* odt2pdf in Copy Auxiliary Executables */,
+			);
+			name = "Copy Auxiliary Executables";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE9B516D0CA8F42E00C6C982 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -8314,6 +8334,13 @@
 		5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortalConnection+Data.mm"; sourceTree = "<group>"; };
 		5969034312DDE5EA00379E41 /* WebPortalResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalResponse.h; sourceTree = "<group>"; };
 		5969034412DDE5EA00379E41 /* WebPortalResponse.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalResponse.mm; sourceTree = "<group>"; };
+		596D30AC1439B979004EE9EC /* odt2pdf */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = odt2pdf; path = Binaries/ReportsToPDF/odt2pdf/build/odt2pdf; sourceTree = "<group>"; };
+		596D30AE1439B98A004EE9EC /* pages2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = pages2pdf.applescript; path = Binaries/ReportsToPDF/pages2pdf.applescript; sourceTree = "<group>"; };
+		596D30AF1439B98A004EE9EC /* word2pdf.applescript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.applescript; name = word2pdf.applescript; path = Binaries/ReportsToPDF/word2pdf.applescript; sourceTree = "<group>"; };
+		596D30B41439BA17004EE9EC /* DicomStudy+Report.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomStudy+Report.h"; sourceTree = "<group>"; };
+		596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomStudy+Report.mm"; sourceTree = "<group>"; };
+		596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAppleScript+N2.h"; path = "nitrogen/Sources/NSAppleScript+N2.h"; sourceTree = "<group>"; };
+		596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSAppleScript+N2.mm"; path = "nitrogen/Sources/NSAppleScript+N2.mm"; sourceTree = "<group>"; };
 		596EB3041189D9A600880192 /* NSPreferencePane+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSPreferencePane+OsiriX.h"; sourceTree = "<group>"; };
 		596EB3051189D9A600880192 /* NSPreferencePane+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSPreferencePane+OsiriX.mm"; sourceTree = "<group>"; };
 		596EB3F4118ABBB000880192 /* NSWindow+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSWindow+N2.h"; path = "nitrogen/Sources/NSWindow+N2.h"; sourceTree = "<group>"; };
@@ -12521,6 +12548,9 @@
 				844003990E8CF99500A00EBD /* dciodvfy */,
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
+				596D30AC1439B979004EE9EC /* odt2pdf */,
+				596D30AE1439B98A004EE9EC /* pages2pdf.applescript */,
+				596D30AF1439B98A004EE9EC /* word2pdf.applescript */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
 				CEFB8A9810C19902000DCCB0 /* ReportTemplate.odt */,
 				ABEF846909A23EF5006CEC3E /* ReportTemplate.doc */,
@@ -12842,6 +12872,8 @@
 				CE9DD280086B35050058DD2A /* DicomStudy.m */,
 				CE9DD282086B35050058DD2A /* DicomSeries.h */,
 				CE9DD283086B35050058DD2A /* DicomSeries.m */,
+				596D30B41439BA17004EE9EC /* DicomStudy+Report.h */,
+				596D30B51439BA17004EE9EC /* DicomStudy+Report.mm */,
 				59E379D6116B295B00E84FE3 /* DicomAlbum.h */,
 				59E379D7116B295B00E84FE3 /* DicomAlbum.m */,
 				BF26843B0A5CBB1C004EB838 /* DicomImageDCMTKCategory.h */,
@@ -13466,6 +13498,8 @@
 				AB10FB1B1129338A009EB238 /* NSImageView+N2.mm */,
 				5912DCD6118EF447007F7D40 /* N2FlippedView.h */,
 				5912DCD7118EF447007F7D40 /* N2FlippedView.mm */,
+				596D30B81439BABD004EE9EC /* NSAppleScript+N2.h */,
+				596D30B91439BABD004EE9EC /* NSAppleScript+N2.mm */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -19833,6 +19867,8 @@
 				4F832D5B13FA5F8C00511070 /* OSIVolumeWindow+Private.h in Headers */,
 				4F832D5C13FA5F8C00511070 /* pluginSDKAdditions.h in Headers */,
 				4F1FCE1B143092DC008683F9 /* OSIPlanarBrushROI.h in Headers */,
+				596D30B61439BA17004EE9EC /* DicomStudy+Report.h in Headers */,
+				596D30BA1439BABD004EE9EC /* NSAppleScript+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22050,6 +22086,7 @@
 				59B696661337C957009356ED /* N2DirectoryEnumerator.h in Headers */,
 				84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */,
 				8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */,
+				596D30BB1439BABD004EE9EC /* NSAppleScript+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22119,6 +22156,7 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
+				596D30AB1439B8CD004EE9EC /* Copy Auxiliary Executables */,
 				59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
@@ -22318,6 +22356,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
+				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
 				CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */,
 				CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
@@ -23123,7 +23163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip -d weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT/Binaries/KDU SDK\"\nunzip -uo libkdu_v64R.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\n#cd \"$SRCROOT\"\n#cd VolumePRO\n#unzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo ReportsToPDF.zip\nunzip -uo weasis-portable.zip -d weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT/Binaries/KDU SDK\"\nunzip -uo libkdu_v64R.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\n#cd \"$SRCROOT\"\n#cd VolumePRO\n#unzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		595717A0131E342900367A22 /* SVN Revision Number */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -24442,6 +24482,8 @@
 				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
 				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
 				4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.m in Sources */,
+				596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */,
+				596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25700,6 +25742,7 @@
 				59B696671337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
 				8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				596D30BD1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

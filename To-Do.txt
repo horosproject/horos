@@ -15,6 +15,8 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
+
 - Web Server: OsiriX Web Server
 - Display Password in web server
 
