@@ -88,10 +88,10 @@
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue
 {
-	return [self studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0];
+	return [self studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
 }
 
--(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset
+-(NSArray*)studiesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
 	NSArray* studiesArray = nil;
 	
@@ -155,12 +155,15 @@
 				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
 		}
         
+		if( numberOfStudies)
+			*numberOfStudies = studiesArray.count;
+		
         if( fetchLimit)
         {
             NSRange range = NSMakeRange( fetchOffset, fetchLimit);
             
-            if( range.location >= studiesArray.count)
-                range.location = studiesArray.count-1;
+            if( range.location > studiesArray.count)
+                range.location = studiesArray.count;
             
             if( range.location + range.length > studiesArray.count)
                 range.length = studiesArray.count - range.location;

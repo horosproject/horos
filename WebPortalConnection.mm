@@ -1056,7 +1056,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[self fillSessionAndUserVariables];
 	
-	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
+	NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
+	
+	if( webPortalDefaultTitle.length == 0)
+		webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
+	
+	[response.tokens setObject: webPortalDefaultTitle forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
 	if (session) [response.tokens setObject:session forKey:@"Session"];

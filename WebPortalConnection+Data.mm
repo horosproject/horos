@@ -211,7 +211,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 							browsePredicate = [NSPredicate predicateWithFormat:search];
 						}
 	
-	if (!browsePredicate) {
+	if (!browsePredicate)
+	{
 		*title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
 		//browsePredicate = [NSPredicate predicateWithValue:YES];
 	}	
@@ -224,9 +225,21 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
     int page = [[parameters objectForKey:@"page"] intValue];
     
+	if( [parameters objectForKey:@"page"])
+		[self.session setObject: [parameters objectForKey:@"page"] forKey:@"Page"];
+	
     int fetchLimitPerPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"FetchLimitForWebPortal"];
-    
-	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage];
+	
+	if( [self.session objectForKey:@"FetchLimitForWebPortal"])
+		fetchLimitPerPage = [[self.session objectForKey:@"FetchLimitForWebPortal"] intValue];
+	
+	int numberOfStudies;
+	NSArray *result = [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+	
+	[self.session setObject: [NSNumber numberWithInt: numberOfStudies] forKey:@"NumberOfStudies"];
+	[self.session setObject: [NSNumber numberWithInt: numberOfStudies/fetchLimitPerPage] forKey:@"NumberOfPages"];
+
+	return result;
 }
 
 -(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription {
