@@ -188,14 +188,13 @@ static int increment = 0, previousNumberOfScreens = 0;
 				{
 					[[self window] orderBack:self];
 					[[self window] close];
-					NSLog( @"problem.... ToolbarPanel.m");
+					NSLog( @"ToolbarPanel.m : [[viewer window] isVisible] == NO -> hide toolbar");
 				}
 			}
 			else
 			{
 				[self setToolbar: nil viewer: nil];
 				[[self window] orderOut:self];
-				NSLog(@"hide toolbar");
 			}
 		}
 	}
