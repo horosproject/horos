@@ -102,6 +102,7 @@ CF_EXTERN_C_END
 
 
 @interface OSIROIMask : NSObject {
+    NSData *_maskRunsData;
 	NSArray *_maskRuns;
 }
 
@@ -142,6 +143,12 @@ CF_EXTERN_C_END
  @return The mask as a set of OSIROIMaskRun structs in NSValues.
  */
 - (NSArray *)maskRuns;
+
+/** Returns the mask as an NSData that contains a C array of OSIROIMaskRun structs.
+ 
+ @return The mask as an NSData that contains a C array of OSIROIMaskRun structs.
+ */
+- (NSData *)maskRunsData;
 
 /** Returns the mask as a set OSIROIMaskIndex structs in NSValues.
  

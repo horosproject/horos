@@ -113,6 +113,16 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 	return self;
 }
 
+- (void)dealloc
+{
+    [_maskRunsData release];
+    _maskRunsData = nil;
+    [_maskRuns release];
+    _maskRuns = nil;
+    
+    [super dealloc];
+}
+
 - (OSIROIMask *)ROIMaskByTranslatingByX:(NSInteger)x Y:(NSInteger)y Z:(NSInteger)z
 {
     OSIROIMaskRun maskRun;
@@ -142,6 +152,24 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 - (NSArray *)maskRuns 
 {
 	return _maskRuns;
+}
+
+- (NSData *)maskRunsData
+{
+    OSIROIMaskRun *maskRunArray;
+    NSInteger i;;
+    
+    if (_maskRunsData == nil) {
+        maskRunArray = malloc([_maskRuns count] * sizeof(OSIROIMaskRun));
+        
+        for (i = 0; i < [_maskRuns count]; i++) {
+            maskRunArray[i] = [[_maskRuns objectAtIndex:i] OSIROIMaskRunValue];
+        }
+        
+        _maskRunsData = [[NSData alloc] initWithBytesNoCopy:maskRunArray length:[_maskRuns count] * sizeof(OSIROIMaskRun) freeWhenDone:YES];
+    }
+    
+    return _maskRunsData;
 }
 
 - (NSArray *)maskIndexes

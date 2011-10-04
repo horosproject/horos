@@ -10665,6 +10665,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	memcpy( correctedOrientation, o, sizeof o );
 }
 
+#ifndef OSIRIX_LIGHT
+- (N3AffineTransform)pixToSubDrawRectTransform // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+{
+    N3AffineTransform pixToSubDrawRectTransform;
+    
+#ifndef NDEBUG
+	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
+		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+#endif
+	
+    pixToSubDrawRectTransform = N3AffineTransformIdentity;
+    //    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(1.0/curDCM.pixelSpacingX, 1.0/curDCM.pixelSpacingY, 1));
+    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeTranslation(curDCM.pwidth * -0.5, curDCM.pheight * -0.5, 0));
+    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(scaleValue, scaleValue, 1));
+    
+    pixToSubDrawRectTransform.m14 = 0.0;
+    pixToSubDrawRectTransform.m24 = 0.0;
+    pixToSubDrawRectTransform.m34 = 0.0;
+    pixToSubDrawRectTransform.m44 = 1.0;
+    
+    return pixToSubDrawRectTransform;
+}
+#endif
+
 -(void) setOrigin:(NSPoint) x
 {
 	[self setOriginX: x.x Y: x.y];

@@ -17,6 +17,9 @@
 #import "DCMView.h"
 #import "VRController.h"
 #import "MPRController.h"
+#import "N3Geometry.h"
+
+@class OSIROIManager;
 
 @interface MPRDCMView : DCMView
 {
@@ -27,7 +30,8 @@
 	MPRController *windowController;
 	float angleMPR;
 	BOOL dontUseAutoLOD;
-	
+	OSIROIManager *_ROIManager;
+
 	float crossLinesA[2][3];
 	float crossLinesB[2][3];
 	
@@ -68,5 +72,7 @@
 - (void) detect2DPointInThisSlice;
 - (void) magicTrick;
 - (void) removeROI: (NSNotification*) note;
+
+- (N3AffineTransform)pixToDicomTransform; // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
 
 @end
