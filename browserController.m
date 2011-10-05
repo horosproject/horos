@@ -9487,6 +9487,8 @@ static BOOL withReset = NO;
 	//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
 	for( ViewerController *v in [ViewerController get2DViewers])
 	{
+        [v retain];
+        
 		if( ![v windowWillClose])
 		{
 			NSArray *vFileList = nil;
@@ -9557,6 +9559,8 @@ static BOOL withReset = NO;
 			[vFileList release];
 			[vPixList release];
 		}
+        
+        [v release];
 	}
 	
 	return returnPix;
