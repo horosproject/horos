@@ -276,6 +276,8 @@ static float deg2rad = M_PI/180.0;
 {
 	if( windowWillClose) return;
 	
+    NSDisableScreenUpdates();
+    
 	id view = [[self window] firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
@@ -302,6 +304,8 @@ static float deg2rad = M_PI/180.0;
 	[mprView1 setNeedsDisplay: YES];
 	[mprView2 setNeedsDisplay: YES];
 	[mprView3 setNeedsDisplay: YES];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void) showWindow:(id) sender

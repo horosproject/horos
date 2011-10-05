@@ -146,6 +146,8 @@ static	BOOL frameZoomed = NO;
 
 - (void) setFrame:(NSRect)frameRect
 {
+    NSDisableScreenUpdates();
+    
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
@@ -159,6 +161,8 @@ static	BOOL frameZoomed = NO;
 	}
 	
 	[super setFrame: frameRect];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void) checkForFrame
