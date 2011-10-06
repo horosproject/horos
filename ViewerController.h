@@ -273,8 +273,6 @@ enum
 	
 	ThickSlabController		*thickSlab;
 	
-//	CurvedMPR				*curvedController;
-	
 	DICOMExport				*exportDCM;
 	
 	BOOL					windowWillClose;
@@ -292,7 +290,6 @@ enum
 	BOOL					morphoFunctionPreviewApplied;
 	IBOutlet NSPopUpButton	*keyImagePopUpButton;
 	
-//	KeyObjectPopupController *keyObjectPopupController;
 	BOOL					displayOnlyKeyImages;
 	
 	int						qt_to, qt_from, qt_interval, qt_dimension, current_qt_interval, qt_allViewers;
