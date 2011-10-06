@@ -38,6 +38,7 @@
 #import "PluginManager.h"
 #import "NSString+N2.h"
 #import "N2Debug.h"
+#include "NSFileManager+N2.h"
 
 #ifndef DECOMPRESS_APP
 #include "nifti1.h"
@@ -1770,8 +1771,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
 
-	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+	[[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
 	
 	NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [filePath lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 	

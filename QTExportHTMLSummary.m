@@ -130,7 +130,7 @@
 	return [pathsForSeries keyForObject:path];
 }
 
--(NSString*)imagePathForSeriesId:(int)seriesId kind:(NSString*)kind relativeTo:(NSString*)passedRootPath {
+-(NSString*)imagePathForSeriesId:(int)seriesId kind:(NSString*)kind {
 	// TODO: find and remove from dict and return corresponding item
 	if (imagePathsDictionary) {
 		NSNumber* seriesIdK = [NSNumber numberWithInt:seriesId];
@@ -139,7 +139,7 @@
 		if (!pathsForSeries)
 			return NULL;
 		
-		return [passedRootPath stringByAppendingPathComponent:[pathsForSeries objectForKey:kind]];
+		return [pathsForSeries objectForKey:kind];
 	}
 	
 	return NULL;
@@ -176,7 +176,7 @@
 
 	int i, imagesCount = 0;
 	
-	NSMutableString *fileName, *thumbnailName, *htmlName;
+	NSMutableString *fileName, *htmlName;
 	NSString *studyDate, *studyTime, *seriesName;
 	NSString *extension;
 
@@ -210,8 +210,10 @@
 			
 			[fileName appendFormat: @"_%d", uniqueSeriesID];
 			
-			thumbnailName = [[[self imagePathForSeriesId:[iId intValue] kind:@"thumb" relativeTo:rootPath] mutableCopy] autorelease];
-			if (!thumbnailName) thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
+            NSString* thumbnailName;
+			if ((thumbnailName = [self imagePathForSeriesId:[iId intValue] kind:@"thumb"])) // thumbnailName is in patient/study/series format, should be study/series
+                thumbnailName = [[[thumbnailName componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(1,2)] componentsJoinedByString:@"/"];
+            else thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];
 			
 			htmlName = [NSMutableString stringWithFormat:@"%@.html", fileName];
 			
@@ -221,9 +223,9 @@
 			if( [DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
 				extension = @"pdf";
-				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath] mutableCopy] autorelease];
-				if (tempPdfPath)
-					[fileName setString:tempPdfPath];
+				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension] mutableCopy] autorelease];
+				if (tempPdfPath) // tempPdfPath is in patient/study/series format, should be study/series
+					[fileName setString:[[[tempPdfPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(1,2)] componentsJoinedByString:@"/"]];
 				else [fileName appendFormat:@".%@",extension];
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:tempListItemTemplate.range];
 			
@@ -231,18 +233,18 @@
 			else if( [DCMAbstractSyntaxUID isStructuredReport: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
 				extension = @"pdf";
-				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath] mutableCopy] autorelease];
-				if (tempPdfPath)
-					[fileName setString:tempPdfPath];
+				NSString* tempPdfPath = [[[self imagePathForSeriesId:[iId intValue] kind:extension] mutableCopy] autorelease];
+				if (tempPdfPath) // tempPdfPath is in patient/study/series format, should be study/series
+					[fileName setString:[[[tempPdfPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(1,2)] componentsJoinedByString:@"/"]];
 				else [fileName appendFormat:@".%@",extension];
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString: fileName] options:NSLiteralSearch range:tempListItemTemplate.range];
 			
 			}
 			else
 			{
-				NSString* tempXXXPath = [self imagePathForSeriesId:[iId intValue] kind:extension relativeTo:rootPath];
-				if (tempXXXPath)
-					[fileName setString:tempXXXPath];
+				NSString* tempXXXPath = [self imagePathForSeriesId:[iId intValue] kind:extension];
+				if (tempXXXPath) // tempXXXPath is in patient/study/series format, should be study/series
+					[fileName setString:[[[tempXXXPath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(1,2)] componentsJoinedByString:@"/"]];
 				else [fileName appendFormat:@".%@",extension];
 				[tempListItemTemplate replaceOccurrencesOfString:@"%series_i_file%" withString:[QTExportHTMLSummary nonNilString:htmlName] options:NSLiteralSearch range:tempListItemTemplate.range];
 			}
@@ -361,9 +363,9 @@
 	
 	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
 	
-	NSString* tempXXXPath = [self imagePathForSeriesId:[seriesId intValue] kind:extension relativeTo:rootPath];
-	if (tempXXXPath)
-		[fileName setString:tempXXXPath];
+	NSString* tempXXXPath = [self imagePathForSeriesId:[seriesId intValue] kind:extension];
+	if (tempXXXPath) // tempXXXPath is in patient/study/series format, should be series
+		[fileName setString:[tempXXXPath lastPathComponent]];
 	else [fileName appendFormat:@".%@",extension];
 	
 	[tempHTML replaceOccurrencesOfString:@"%series_file_path%" withString:[QTExportHTMLSummary nonNilString:fileName] options:NSLiteralSearch range:tempHTML.range];

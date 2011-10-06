@@ -45,6 +45,7 @@
 
 #include <Accelerate/Accelerate.h>
 #include "AppController.h"
+#include "NSFileManager+N2.h"
 
 #import <QTKit/QTKit.h>
 #import "Point3D.h"
@@ -5493,8 +5494,7 @@ END_CREATE_ROIS:
 		
 		@try
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+            [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
 			
 			NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 			
@@ -8141,8 +8141,7 @@ END_CREATE_ROIS:
 
 						@try
 						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-								[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+                            [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
 							
 							NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 							

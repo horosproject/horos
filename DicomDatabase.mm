@@ -1122,7 +1122,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
 		
-		[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil];
+	//	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/dicomsr_osirix" handler: nil]; // nooooooo because other threads may be using it
 		
 		if (addFailed)
 		{
