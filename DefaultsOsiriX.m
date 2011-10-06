@@ -707,6 +707,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"3000" forKey:@"MAXWindowSize"];
 	[defaultValues setObject:@"1" forKey:@"ScreenCaptureSmartCropping"];
 	[defaultValues setObject:@"1" forKey:@"checkForUpdatesPlugins"];
+    [defaultValues setObject:@"0" forKey:@"DoNotDeleteCrashingPlugins"];
 	[defaultValues setObject:@"1" forKey:@"magnifyingLens"];
 	[defaultValues setObject:@"12" forKey:@"LabelFONTSIZE"];
 	[defaultValues setObject:@"Geneva" forKey:@"LabelFONTNAME"];

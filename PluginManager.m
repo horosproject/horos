@@ -433,7 +433,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         #ifndef OSIRIX_LIGHT
 		
         NSString *pluginCrash = [documentsDirectory() stringByAppendingPathComponent:@"/Plugin_Loading"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash])
+        if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotDeleteCrashingPlugins"])
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
