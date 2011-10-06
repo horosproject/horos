@@ -177,6 +177,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void) setFrame:(NSRect)frameRect
 {
+    NSDisableScreenUpdates();
+    
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
@@ -190,6 +192,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
 	[super setFrame: frameRect];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath

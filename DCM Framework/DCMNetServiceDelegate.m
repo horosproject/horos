@@ -23,7 +23,6 @@
 #include <unistd.h>
 
 static DCMNetServiceDelegate *_netServiceDelegate = nil;
-static BOOL bugFixedForDNSResolve = NO;
 static NSMutableArray *cachedServersArray = nil;
 
 @implementation DCMNetServiceDelegate
@@ -45,19 +44,6 @@ static NSMutableArray *cachedServersArray = nil;
 {
 	if (self = [super init])
 	{
-		OSErr err;
-		SInt32 osVersion;
-		
-		err = Gestalt ( gestaltSystemVersion, &osVersion );       
-		if ( err == noErr)       
-		{
-			if ( osVersion >= 0x1052UL ) bugFixedForDNSResolve = YES;
-		}
-		
-		#if !__LP64__
-			bugFixedForDNSResolve = YES;
-		#endif
-		
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
 		[self update];
@@ -113,17 +99,12 @@ static NSMutableArray *cachedServersArray = nil;
 	{
 	
 	}
-	else
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-	{
-		if( bugFixedForDNSResolve)
-		{
-			[_dicomServices addObject: aNetService];
-			
-			[aNetService resolveWithTimeout: 5];
-			[aNetService setDelegate:self];
-		}
-	}
+	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+    {    
+        [_dicomServices addObject: aNetService];
+        [aNetService resolveWithTimeout: 5];
+        [aNetService setDelegate: self];
+    }
 }
 
 //Bonjour Delegate methods
