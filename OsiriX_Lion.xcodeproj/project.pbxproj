@@ -26005,9 +26005,6 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					Binaries,
-					Binaries/Jasper,
-					"$(SRCROOT)/Binaries/Jasper",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26461,9 +26458,6 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					Binaries,
-					Binaries/Jasper,
-					"$(SRCROOT)/Binaries/Jasper",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26757,9 +26751,6 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					Binaries,
-					Binaries/Jasper,
-					"$(SRCROOT)/Binaries/Jasper",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26901,8 +26892,6 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26921,8 +26910,6 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26941,8 +26928,6 @@
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/lib\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
@@ -26989,11 +26974,8 @@
 				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/Jasper,
 					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
@@ -27056,11 +27038,8 @@
 				INFOPLIST_FILE = "Deployment-Info OsiriXLite.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/Jasper,
 					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
@@ -27124,11 +27103,8 @@
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				KEEP_PRIVATE_EXTERNS = YES;
 				LIBRARY_SEARCH_PATHS = (
-					Binaries/Jasper,
 					AYDicomPrint,
-					"\"$(SRCROOT)/Binaries/openjpeg\"",
 					"\"$(SRCROOT)/Binaries\"",
-					"\"$(SRCROOT)/Binaries/Jasper\"",
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				OTHER_CPLUSPLUSFLAGS = (
