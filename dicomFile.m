@@ -1750,7 +1750,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				[node addAttribute:[NSXMLNode attributeWithName:@"vr" stringValue:@""]];
 				[node addAttribute:[NSXMLNode attributeWithName:@"attributeTag" stringValue:@""]];
 				
-				NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithCString:ext->edata]] autorelease];
+				NSXMLElement *childNode = [[[NSXMLElement alloc] initWithName:@"value" stringValue:[NSString stringWithUTF8String:ext->edata]] autorelease];
 				[childNode addAttribute:[NSXMLNode attributeWithName:@"number" stringValue:@"0"]];
 				[node addChild:childNode];
 				
@@ -2579,7 +2579,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x5200);
 			if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
 			{
-				UValue_T *val3 = nil;
+//				UValue_T *val3 = nil;
 //				// ****** ****** ****** ************************************************************************
 //				// SHARED FRAME
 //				// ****** ****** ****** ************************************************************************

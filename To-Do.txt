@@ -1,3 +1,6 @@
+- Web Server
+- Pages: create front?
+
 A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs

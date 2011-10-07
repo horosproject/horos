@@ -7430,8 +7430,6 @@ END_CREATE_ROIS:
 				
 				for( int v = 0; v < 8;)
 				{
-					NSString *value;
-					
 					if( preferredDate == nil && (val = Papy3GetElement (theGroupP, priority[ v], &nbVal, &elemType)))
 					{
 						if ( val && val->a && validAPointer( elemType))
