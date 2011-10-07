@@ -264,7 +264,13 @@
 	return [self studiesForUser:user album:albumName sortBy:nil];
 }
 
--(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue {
+-(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue
+{
+    return [self studiesForUser: user album: albumName sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
+-(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
 	
 	NSArray *studiesArray = nil, *albumArray = nil;
 	
@@ -326,7 +332,22 @@
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];								
 	}
 	
-	//return [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+    if( numberOfStudies)
+        *numberOfStudies = studiesArray.count;
+    
+    if( fetchLimit)
+    {
+        NSRange range = NSMakeRange( fetchOffset, fetchLimit);
+        
+        if( range.location > studiesArray.count)
+            range.location = studiesArray.count;
+        
+        if( range.location + range.length > studiesArray.count)
+            range.length = studiesArray.count - range.location;
+        
+        studiesArray = [studiesArray subarrayWithRange: range];
+    }
+    
 	return studiesArray;
 }
 

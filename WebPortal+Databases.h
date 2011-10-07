@@ -27,6 +27,7 @@
 
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName;
 -(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue;
+-(NSArray*)studiesForUser:(WebPortalUser*)user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
 
 //-(NSArray*)seriesForUser:(WebPortalUser*)user predicate:(NSPredicate*)predicate;
 

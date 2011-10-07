@@ -42,7 +42,7 @@
 @property(retain) NSString* title;
 @property(retain) NSBundle* parentBundle;
 @property(retain) NSString* resourceName;
-@property(retain) NSPreferencePane* pane;
+@property(nonatomic, retain) NSPreferencePane* pane;
 
 -(id)initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle;
 
@@ -112,7 +112,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
 			if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr) {
 				#ifndef NDEBUG
-				NSLog(@"Could not create default right (error %d)", err);
+				NSLog(@"Could not create default right (error %d)", (int) err);
 				#endif
 			}
 	}
