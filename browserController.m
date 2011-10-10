@@ -1508,8 +1508,6 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{
-			[browserController autoCleanDatabaseFreeSpace: browserController];
-			
 			NSError *error = nil;
 			[context save: &error];
 			
@@ -1618,6 +1616,8 @@ static NSConditionLock *threadLock = nil;
 		
 		return nil;
 	}
+	
+	[browserController autoCleanDatabaseFreeSpace: browserController];
 	
 	return addedImagesArray;
 }
@@ -5270,6 +5270,7 @@ static NSConditionLock *threadLock = nil;
 				{
 					[request setEntity: [self.managedObjectModel.entitiesByName objectForKey:@"Study"]];
 					[request setPredicate: [NSPredicate predicateWithValue: YES]];
+					[request setSortDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"patientID" ascending: YES]]];
 					
 					do
 					{
@@ -5284,9 +5285,6 @@ static NSConditionLock *threadLock = nil;
 						{
 							NSError *error = nil;
 							studiesArray = [self.managedObjectContext executeFetchRequest:request error:&error];
-							
-							NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-							studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
 							
 							unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
 							
@@ -5389,7 +5387,6 @@ static NSConditionLock *threadLock = nil;
 							}
 							
 							[self saveDatabase: currentDatabasePath];
-							
 						}
 						@catch ( NSException *e)
 						{

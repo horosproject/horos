@@ -206,7 +206,6 @@
 		5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969033A12DDE30800379E41 /* WebPortalConnection+Data.mm */; };
 		5969034512DDE5EA00379E41 /* WebPortalResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 5969034312DDE5EA00379E41 /* WebPortalResponse.h */; };
 		5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5969034412DDE5EA00379E41 /* WebPortalResponse.mm */; };
-		596D30AD1439B97B004EE9EC /* odt2pdf in Copy Auxiliary Executables */ = {isa = PBXBuildFile; fileRef = 596D30AC1439B979004EE9EC /* odt2pdf */; };
 		596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AE1439B98A004EE9EC /* pages2pdf.applescript */; };
 		596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */ = {isa = PBXBuildFile; fileRef = 596D30AF1439B98A004EE9EC /* word2pdf.applescript */; };
 		596D30B61439BA17004EE9EC /* DicomStudy+Report.h in Headers */ = {isa = PBXBuildFile; fileRef = 596D30B41439BA17004EE9EC /* DicomStudy+Report.h */; };
@@ -7976,17 +7975,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		596D30AB1439B8CD004EE9EC /* Copy Auxiliary Executables */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 6;
-			files = (
-				596D30AD1439B97B004EE9EC /* odt2pdf in Copy Auxiliary Executables */,
-			);
-			name = "Copy Auxiliary Executables";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CE9B516D0CA8F42E00C6C982 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -21775,7 +21763,7 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
-				596D30AB1439B8CD004EE9EC /* Copy Auxiliary Executables */,
+				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
 				59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
@@ -22851,6 +22839,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /usr/bin/perl;
 			shellScript = "#!/usr/bin/perl\n\nuse strict;\nuse File::Copy;\nuse File::Basename;\nmy $root = $ENV{PROJECT_DIR};\nmy $destination = \"$ENV{TARGET_BUILD_DIR}/$ENV{PUBLIC_HEADERS_FOLDER_PATH}\";\n\nmkdir $destination unless -d $destination;\nopen OsiriX_h, \">\", \"$destination/OsiriX.h\" or die $!;\n\nprint OsiriX_h \"#ifndef __OsiriX_API\\n#define __OsiriX_API\\n\\n\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\tprint OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n}\n\nmy $root = \"$ENV{PROJECT_DIR}/Nitrogen/Sources\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\tprint OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n}\n\nmy $root = \"$ENV{PROJECT_DIR}/cocoahttpserver\";\n\nopendir(DIR, $root);\nmy @files = readdir(DIR);\nforeach (@files) {\n\tmy $filename = $_;\n\tnext unless -f \"$root/$filename\" && $filename =~ /\\.h$/s;\n\tmy @args = ( \"cp\", \"-fp\", \"$root/$filename\", \"$destination/\".(basename $filename) );\n\tsystem(@args) == 0 or die \"Copy failed: $?\";\n\tprint OsiriX_h \"#include <OsiriXAPI/$filename>\\n\";\n}\n\nprint OsiriX_h \"\\n#endif\\n\";\nclose OsiriX_h;\n\nchdir \"$ENV{TARGET_BUILD_DIR}/$ENV{FULL_PRODUCT_NAME}\";\nsymlink \"Versions/Current/Headers\", \"Headers\";\n\nexit 0;";
+		};
+		ABF307FB1443330100BBC96A /* Copy odt2pdf script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy odt2pdf script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -f \"$PROJECT_DIR/Binaries/ReportsToPDF/odt2pdf/build/odt2pdf\" \"$BUILT_PRODUCTS_DIR/$CONTENTS_FOLDER_PATH/MacOS/\"\nexit 0";
 		};
 		BF7486A40CC6AA5C00198387 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -26293,6 +26295,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = i386;
+				COPY_PHASE_STRIP = NO;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -26578,6 +26581,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = i386;
+				COPY_PHASE_STRIP = NO;
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
