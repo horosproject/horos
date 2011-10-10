@@ -16551,7 +16551,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		ListenerCompressionSettings = 0;
 		#endif
 		
-		if( [checkIncomingLock tryLock])
+		if( [checkIncomingLock lockBeforeDate: [NSDate dateWithTimeIntervalSinceNow: 5]])
         {
             lastCheckIncoming = [NSDate timeIntervalSinceReferenceDate];
             
