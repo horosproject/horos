@@ -16,6 +16,7 @@ A:
 - Add Reslice submenu (Orientation item)
 
 - Storage Commitment Service
+- CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 - When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
 - storescu (autorouting): No presentation context for: (MRe) 1.2.840.10008.5.1.4.1.1.4.1
