@@ -1980,7 +1980,7 @@ extern "C"
 	if( [studyArray count])
 		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 	
-	if( [item valueForKey:@"numberImages"] == nil || [[item valueForKey:@"numberImages"] intValue] == 0)
+	if( [item valueForKey:@"numberImages"] == nil || ([[NSUserDefaults standardUserDefaults] boolForKey: @"SupportPACSWithNoNumberOfImagesField"] && [[item valueForKey:@"numberImages"] intValue] == 0))
 	{
 		// We dont know how many images are stored on the distant PACS... add it, if we have no images on our side...
 		if( localFiles == 0)
@@ -2905,21 +2905,19 @@ extern "C"
 			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];									break;
 			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
-			case 106:
-			case 112:
-				searchType = searchAfter;
-				
-				if( [sender selectedTag] == 106)
-				{
-					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*6];
-					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*6] descriptionWithCalendarFormat: @"%H%M%S"]];
-				}
-				if( [sender selectedTag] == 112)
-				{
-					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*12];
-					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*12] descriptionWithCalendarFormat: @"%H%M%S"]];
-				}
-				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];				
+            default:
+                if( [sender selectedTag] >= 100 && [sender selectedTag] <= 200)
+                {
+                    int hours = [sender selectedTag] - 100;
+                    
+                    searchType = searchAfter;
+                    
+                    date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours];
+                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    
+                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                }
+                else NSLog( @"******* unknown setDateQuery tag: %@", (int) [sender selectedTag]);
 			break;
 				
 			case 10:	// AM & PM
