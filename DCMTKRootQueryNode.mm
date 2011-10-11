@@ -67,13 +67,18 @@
 	if( dataset == nil)
 		return;
 	
-	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
-			callingAET:_callingAET  
-			calledAET:_calledAET
-			hostname:_hostname 
-			port:_port 
-			transferSyntax:_transferSyntax
-			compression: _compression
-			extraParameters:_extraParameters]];
+    @synchronized( _children)
+	{
+        [_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
+                callingAET:_callingAET  
+                calledAET:_calledAET
+                hostname:_hostname 
+                port:_port 
+                transferSyntax:_transferSyntax
+                compression: _compression
+                extraParameters:_extraParameters]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"realtimeCFindResults" object: self];  
+    }
 }
 @end

@@ -72,6 +72,9 @@
 	NSRecursiveLock							*autoQueryLock;
 	
 	NSInteger								numberOfRunningRetrieve;
+    
+    NSTimeInterval                          lastTemporaryCFindResultUpdate;
+    NSMutableArray                          *temporaryCFindResultArray;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;

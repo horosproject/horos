@@ -1471,6 +1471,47 @@ extern "C"
 	return result;
 }
 
+-(void) realtimeCFindResults: (NSNotification*) notification
+{
+    if( [notification object] == [queryManager rootNode] && temporaryCFindResultArray)
+    {
+        if( [[self window] isVisible] && [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
+        {
+            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
+            
+            NSArray	*curResult = [[notification object] children];
+            
+            @synchronized( curResult)
+            {
+                NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
+                
+                for( NSUInteger x = 0 ; x < [curResult count] ; x++)
+                {
+                    int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                    
+                    if( index == -1) // not found
+                        [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
+                    else 
+                    {
+                        if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
+                        {
+                            if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                            {
+                                [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                            }
+                        }
+                    }
+                }
+                
+                if( [temporaryCFindResultArray count])
+                    [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                
+                [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
+            }
+        }
+    }
+}
+
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError
 {
 	NSString			*theirAET;
@@ -1481,7 +1522,12 @@ extern "C"
 	int					selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	NSMutableArray		*tempResultArray = [NSMutableArray array];
-	
+    
+    [temporaryCFindResultArray release];
+    temporaryCFindResultArray = nil;
+    if( [NSThread isMainThread])
+        temporaryCFindResultArray = [[NSMutableArray array] retain];
+    
 	[autoQueryLock lock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
@@ -1502,6 +1548,8 @@ extern "C"
 		atLeastOneSource = NO;
 		BOOL firstResults = YES;
 		
+        [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
+        
 		for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 		{
 			if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
@@ -1519,8 +1567,6 @@ extern "C"
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
 					
-					//get rid of white space at end and append "*"
-						
 					[queryManager release];
 					queryManager = nil;
 
@@ -1742,6 +1788,9 @@ extern "C"
 						else i = [sourcesArray count];
 					}
 					
+                    lastTemporaryCFindResultUpdate = 0;
+                    [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
+                    
 					if( firstResults)
 					{
 						firstResults = NO;
@@ -1804,6 +1853,9 @@ extern "C"
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
 	
+    [temporaryCFindResultArray release];
+    temporaryCFindResultArray = nil;
+    
 	return error;
 }
 
@@ -3421,8 +3473,10 @@ extern "C"
 	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
 	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
 
+    
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];
 	[buttonCell setTarget:self];
