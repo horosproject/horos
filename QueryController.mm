@@ -1548,7 +1548,8 @@ extern "C"
 		atLeastOneSource = NO;
 		BOOL firstResults = YES;
 		
-        [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
+        if( [NSThread isMainThread])
+            [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
         
 		for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 		{
@@ -1788,8 +1789,11 @@ extern "C"
 						else i = [sourcesArray count];
 					}
 					
-                    lastTemporaryCFindResultUpdate = 0;
-                    [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
+                    if( [NSThread isMainThread])
+                    {
+                        lastTemporaryCFindResultUpdate = 0;
+                        [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
+                    }
                     
 					if( firstResults)
 					{

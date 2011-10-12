@@ -19,6 +19,7 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
