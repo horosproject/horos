@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #import "N2SOAPWebServiceClient.h"
-#import "N2WSDL.h";
+#import "N2WSDL.h"
 
 @implementation N2SOAPWebServiceClient
 @synthesize wsdl = _wsdl;

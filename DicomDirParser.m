@@ -12,6 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
+#import "DicomDirParser.h"
+
 extern int maindcmdump(int argc, char *argv[]);
 
 @implementation NSString(NumberStuff)
@@ -32,7 +34,6 @@ extern int maindcmdump(int argc, char *argv[]);
 }
 @end
 
-#import "DicomDirParser.h"
 
 
 //————————————————————————————————————————————————————————————————————————————————————————————————————————————————————

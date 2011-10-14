@@ -853,8 +853,6 @@ extern "C"
 		else
 		{
 			DatabaseIsEdited = NO;
-			[0 reloadData];
-			
 			return NO;
 		}
 	}

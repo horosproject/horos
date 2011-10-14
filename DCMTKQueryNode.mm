@@ -1264,7 +1264,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	 */
 	if( tLayer)
 		delete tLayer;
-#endif WITH_OPENSSL
+#endif
 	
 	[pool release];
 }

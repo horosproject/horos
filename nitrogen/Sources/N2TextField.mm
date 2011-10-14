@@ -17,7 +17,7 @@
 
 @interface N2TextField ()
 
-@property(readwrite) BOOL formatIsOk;
+@property(nonatomic, readwrite) BOOL formatIsOk;
 
 @end
 

@@ -165,8 +165,8 @@ typedef struct _xyzArray
 	[self display];
 }
 
-- (void)getOrientationText:(char *) orientation : (float *) vector :(BOOL) inv {
-	
+- (void)getOrientationText:(char *) orientation vector: (float *) vector inversion:(BOOL) inv
+{	
 	NSString *orientationX;
 	NSString *orientationY;
 	NSString *orientationZ;
@@ -980,16 +980,16 @@ typedef struct _xyzArray
 	
 	[self getOrientation: vectors];
 	
-	[self getOrientationText:string :vectors :YES];
+	[self getOrientationText:string vector:vectors inversion:YES];
 	oText[ 0]->SetInput( string);
 	
-	[self getOrientationText:string :vectors :NO];
+	[self getOrientationText:string vector:vectors inversion:NO];
 	oText[ 1]->SetInput( string);
 	
-	[self getOrientationText:string :vectors+3 :NO];
+	[self getOrientationText:string vector:vectors+3 inversion:NO];
 	oText[ 2]->SetInput( string);
 	
-	[self getOrientationText:string :vectors+3 :YES];
+	[self getOrientationText:string vector:vectors+3 inversion:YES];
 	oText[ 3]->SetInput( string);
 }
 
@@ -1965,7 +1965,7 @@ typedef struct _xyzArray
 		
 		previousOutput = isoSmoother[ actor]->GetOutput();
 		
-		NSLog(@"Use Smooth: %d", smoothVal);
+		NSLog(@"Use Smooth: %d", (int) smoothVal);
 	}
 
 
@@ -2951,7 +2951,7 @@ typedef struct _xyzArray
 	{
 		// remove 2D Point
 		double position[3];
-		NSLog(@"[point3DPositionsArray count]: %d", [point3DPositionsArray count]);
+		NSLog(@"[point3DPositionsArray count]: %d", (int) [point3DPositionsArray count]);
 		[[point3DPositionsArray objectAtIndex:[self selected3DPointIndex]] getValue:position];
 		[controller remove2DPoint: position[0] : position[1] : position[2]];
 		// remove 3D Point
@@ -3448,7 +3448,7 @@ typedef struct _xyzArray
 
 -(void) squareView:(id) sender
 {
-	NSLog(@"%d", [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
+	NSLog(@"%d", (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"]);
 	
 	if( [[NSUserDefaults standardUserDefaults] integerForKey:@"VRDefaultViewSize"] == 1) return;
 	

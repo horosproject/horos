@@ -21879,7 +21879,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = NO;
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "OsiriX Team";
 			};
 			buildConfigurationList = 7E76BED8085757B70073649A /* Build configuration list for PBXProject "OsiriX_Lion" */;
@@ -23278,6 +23278,321 @@
 				A94D784D09A0D58E0039F5A2 /* EndoscopyVRView.mm in Sources */,
 				ABEF7E7909A21070006CEC3E /* Reports.m in Sources */,
 				A9D780B109A4D2A6004302DC /* ITKBrushROIFilter.mm in Sources */,
+				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
+				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
+				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
+				BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
+				BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
+				BF432BCE09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
+				BF432BDC09E31B9B00AC322E /* DCMTKStudyQueryNode.mm in Sources */,
+				BF432BE609E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
+				BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
+				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
+				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
+				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
+				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
+				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
+				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
+				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
+				AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
+				A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */,
+				A93CFFA90A516A5100078038 /* LLMPRView.m in Sources */,
+				A93CFFAB0A516A5100078038 /* LLMPRViewer.m in Sources */,
+				A93CFFAD0A516A5100078038 /* LLScoutOrthogonalReslice.m in Sources */,
+				A93CFFAF0A516A5100078038 /* LLScoutView.m in Sources */,
+				A93CFFB10A516A5100078038 /* LLScoutViewer.m in Sources */,
+				A93CFFB30A516A5100078038 /* LLSubtraction.m in Sources */,
+				BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */,
+				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
+				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
+				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
+				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
+				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
+				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
+				AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
+				CE6692DB0AF545F90073D923 /* printView.m in Sources */,
+				BF4108EB0B126C7800AAC648 /* DarkBox.m in Sources */,
+				BF09B1400B2E681D00AA97E2 /* OSIWindowController.m in Sources */,
+				ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */,
+				ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */,
+				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
+				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
+				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
+				A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */,
+				A94469E40BA7FFE7008643E5 /* BLAuthentication.m in Sources */,
+				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
+				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
+				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
+				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
+				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
+				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
+				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
+				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
+				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
+				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
+				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
+				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
+				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
+				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
+				CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */,
+				CE882AC70C889B6500D4F982 /* XMLRPCMethods.mm in Sources */,
+				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
+				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
+				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
+				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
+				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
+				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
+				A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */,
+				A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */,
+				A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */,
+				A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */,
+				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */,
+				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
+				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
+				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
+				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
+				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
+				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
+				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
+				A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */,
+				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
+				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
+				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
+				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
+				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
+				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
+				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */,
+				CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
+				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
+				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
+				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
+				59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */,
+				84C4510B10033B8100138F70 /* OSIWindow.m in Sources */,
+				CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */,
+				CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */,
+				841721B910D8D745001A833F /* AsyncSocket.m in Sources */,
+				841721BB10D8D745001A833F /* DDData.m in Sources */,
+				841721BD10D8D745001A833F /* DDNumber.m in Sources */,
+				841721BF10D8D745001A833F /* DDRange.m in Sources */,
+				841721C110D8D745001A833F /* HTTPAsyncFileResponse.m in Sources */,
+				841721C310D8D745001A833F /* HTTPAuthenticationRequest.m in Sources */,
+				841721C510D8D745001A833F /* HTTPConnection.m in Sources */,
+				841721C710D8D745001A833F /* HTTPResponse.m in Sources */,
+				841721C910D8D745001A833F /* HTTPServer.m in Sources */,
+				841721CB10D8D745001A833F /* SSCrypto.m in Sources */,
+				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
+				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
+				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
+				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
+				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,
+				A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */,
+				A9E0E4B011182C480086A15A /* NSObject+SBJSON.m in Sources */,
+				A9E0E4B211182C480086A15A /* NSString+SBJSON.m in Sources */,
+				A9E0E4B411182C480086A15A /* SBJSON.m in Sources */,
+				A9E0E4B611182C480086A15A /* SBJsonBase.m in Sources */,
+				A9E0E4B811182C480086A15A /* SBJsonParser.m in Sources */,
+				A9E0E4BA11182C480086A15A /* SBJsonWriter.m in Sources */,
+				AB10FAAE11293378009EB238 /* N2Debug.mm in Sources */,
+				AB10FAB011293378009EB238 /* N2Operators.mm in Sources */,
+				AB10FAB211293378009EB238 /* N2MinMax.mm in Sources */,
+				AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */,
+				AB10FAB611293378009EB238 /* N2Resizer.mm in Sources */,
+				AB10FAB811293378009EB238 /* N2Shell.mm in Sources */,
+				AB10FABA11293378009EB238 /* N2UserDefaults.mm in Sources */,
+				AB10FB201129338A009EB238 /* N2ButtonCell.mm in Sources */,
+				AB10FB221129338A009EB238 /* N2Button.mm in Sources */,
+				AB10FB241129338A009EB238 /* N2DisclosureBox.mm in Sources */,
+				AB10FB261129338A009EB238 /* N2DisclosureButtonCell.mm in Sources */,
+				AB10FB281129338A009EB238 /* N2ColorWell.mm in Sources */,
+				AB10FB2A1129338A009EB238 /* N2PopUpButton.mm in Sources */,
+				AB10FB2C1129338A009EB238 /* N2Exceptions.mm in Sources */,
+				AB10FB361129338A009EB238 /* N2View.mm in Sources */,
+				AB10FB381129338A009EB238 /* N2Panel.mm in Sources */,
+				AB10FB3A1129338A009EB238 /* N2Window.mm in Sources */,
+				AB10FB3C1129338A009EB238 /* N2Layout.mm in Sources */,
+				AB10FB3E1129338A009EB238 /* N2ColumnLayout.mm in Sources */,
+				AB10FB401129338A009EB238 /* N2CellDescriptor.mm in Sources */,
+				AB10FB421129338A009EB238 /* N2Step.mm in Sources */,
+				AB10FB441129338A009EB238 /* N2Steps.mm in Sources */,
+				AB10FB461129338A009EB238 /* N2StepView.mm in Sources */,
+				AB10FB481129338A009EB238 /* N2StepsView.mm in Sources */,
+				AB10FB4A1129338A009EB238 /* N2Pair.mm in Sources */,
+				AB10FB4C1129338A009EB238 /* N2SingletonObject.mm in Sources */,
+				AB10FB4E1129338A009EB238 /* NSTextView+N2.mm in Sources */,
+				AB10FB501129338A009EB238 /* NSString+N2.mm in Sources */,
+				AB10FB521129338A009EB238 /* NSImage+N2.mm in Sources */,
+				AB10FB541129338A009EB238 /* NSBitmapImageRep+N2.mm in Sources */,
+				AB10FB561129338A009EB238 /* NSData+N2.mm in Sources */,
+				AB10FB581129338A009EB238 /* NSColor+N2.mm in Sources */,
+				AB10FB5A1129338A009EB238 /* NSButton+N2.mm in Sources */,
+				AB10FB5C1129338A009EB238 /* NS(Attributed)String+Geometrics.m in Sources */,
+				AB10FB5E1129338A009EB238 /* NSDictionary+N2.mm in Sources */,
+				AB10FB601129338A009EB238 /* NSMutableDictionary+N2.mm in Sources */,
+				AB10FB621129338A009EB238 /* NSInvocation+N2.mm in Sources */,
+				AB10FB641129338A009EB238 /* NSURL+N2.mm in Sources */,
+				AB10FB661129338A009EB238 /* NSPanel+N2.mm in Sources */,
+				AB10FB681129338A009EB238 /* NSView+N2.mm in Sources */,
+				AB10FB6A1129338A009EB238 /* NSImageView+N2.mm in Sources */,
+				AB10FB6C1129338A009EB238 /* ISO8601DateFormatter.m in Sources */,
+				84ADF473115B622D00FE18B2 /* SRController+StereoVision.mm in Sources */,
+				84ADF475115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m in Sources */,
+				84ADF477115B622D00FE18B2 /* SRView+StereoVision.mm in Sources */,
+				84ADF479115B622D00FE18B2 /* VRController+StereoVision.mm in Sources */,
+				84ADF47B115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m in Sources */,
+				84ADF47D115B622D00FE18B2 /* VRView+StereoVision.mm in Sources */,
+				84ADF47F115B622D00FE18B2 /* VTKStereoSRView.mm in Sources */,
+				84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */,
+				84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */,
+				CE1119351165CA2000EDD254 /* jcdiffct.c in Sources */,
+				59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */,
+				59E379D9116B295B00E84FE3 /* DicomAlbum.m in Sources */,
+				59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
+				59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
+				59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
+				59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */,
+				59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
+				596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
+				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
+				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,
+				5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */,
+				5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */,
+				5997896011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm in Sources */,
+				5997896211B7B3E9002DB107 /* AnonymizationPanelController.mm in Sources */,
+				5997896411B7B3E9002DB107 /* AnonymizationSavePanelController.mm in Sources */,
+				5997896611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm in Sources */,
+				5997896811B7B3E9002DB107 /* AnonymizationTagsView.mm in Sources */,
+				5997896A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm in Sources */,
+				5997896C11B7B3E9002DB107 /* AnonymizationViewController.mm in Sources */,
+				5997898311B7B461002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */,
+				5997898711B7B46A002DB107 /* N2HighlightImageButtonCell.mm in Sources */,
+				5997898B11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
+				5997899311B7B48F002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
+				5997899711B7B4A0002DB107 /* N2AdaptiveBox.mm in Sources */,
+				5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */,
+				59A31D5211BF9371001D4844 /* N2TextField.mm in Sources */,
+				59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */,
+				59DC28B711C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
+				59DC28C111C614A100DAD5B4 /* NSXMLNode+N2.mm in Sources */,
+				59DC28C711C6152400DAD5B4 /* N2CSV.mm in Sources */,
+				59DC290B11C6178500DAD5B4 /* DiscBurningOptions.mm in Sources */,
+				59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */,
+				5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
+				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
+				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
+				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
+				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
+				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
+				59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
+				592CFF091212F84F00176E39 /* N2Connection.mm in Sources */,
+				592CFF0B1212F84F00176E39 /* N2ConnectionListener.mm in Sources */,
+				592CFF0D1212F84F00176E39 /* N2WebServiceClient.mm in Sources */,
+				592CFF0F1212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */,
+				592CFF111212F84F00176E39 /* N2XMLRPC.mm in Sources */,
+				592CFF131212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
+				592CFF151212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */,
+				592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */,
+				592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
+				CEED77D8123038F300258D00 /* PapyVars3.c in Sources */,
+				59526E8612816FDC0016F6C0 /* WebPortalSession.mm in Sources */,
+				59526E9F1281896F0016F6C0 /* NSMutableString+N2.mm in Sources */,
+				59526F331281ACA90016F6C0 /* WebPortalDB.xcdatamodeld in Sources */,
+				59526F3D1281ADC10016F6C0 /* WebPortalUser.mm in Sources */,
+				59526F6D1281AFCA0016F6C0 /* WebPortalConnection.mm in Sources */,
+				59526F7D1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel in Sources */,
+				CEFFFE271286895300D69BB8 /* djdec2k.cc in Sources */,
+				CEFFFE3C12868F5400D69BB8 /* djdijp2k.cc in Sources */,
+				CEFF00FE1286F7A700D69BB8 /* djenc2k.cc in Sources */,
+				CEFF01461286FB2000D69BB8 /* djeijg2k.cc in Sources */,
+				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
+				8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */,
+				590BB22112A002FA009E9758 /* WebPortalStudy.mm in Sources */,
+				597BB90C12A7D3C000D0A172 /* WebPortal.mm in Sources */,
+				597BB93212A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
+				590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */,
+				59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */,
+				59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */,
+				59E5236012BF5E440094E668 /* N2Task.mm in Sources */,
+				59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */,
+				599115F012D7224A00924B5C /* browserController.m in Sources */,
+				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
+				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
+				CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */,
+				CE9054F812F5B64300263AB6 /* CPRController.m in Sources */,
+				CE9054FA12F5B64300263AB6 /* CPRCurvedPath.m in Sources */,
+				CE9054FC12F5B64300263AB6 /* CPRDisplayInfo.m in Sources */,
+				CE9054FE12F5B64300263AB6 /* CPRGenerator.m in Sources */,
+				CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */,
+				CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */,
+				CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */,
+				CE90550812F5B64300263AB6 /* CPRMPRDCMView.m in Sources */,
+				CE90550A12F5B64300263AB6 /* CPRProjectionOperation.m in Sources */,
+				CE90550C12F5B64300263AB6 /* CPRStraightenedOperation.m in Sources */,
+				CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */,
+				CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */,
+				CE90551212F5B64300263AB6 /* CPRStraightenedView.m in Sources */,
+				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
+				59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
+				59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
+				4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */,
+				4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */,
+				4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */,
+				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
+				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
+				59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
+				4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */,
+				59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
+				CEB98990133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */,
+				CEB98A04133507AC0083F3FD /* OSIViewerPreferencePanePref.m in Sources */,
+				CEB98A0E133507BB0083F3FD /* OSIPETPreferencePane.m in Sources */,
+				CEB98A1A133507C80083F3FD /* OSILocationsPreferencePanePref.m in Sources */,
+				CEB98A1C133507C80083F3FD /* ServerTableView.m in Sources */,
+				CEB98BB3133507F50083F3FD /* OSIListenerPreferencePanePref.mm in Sources */,
+				CEB98BC5133508040083F3FD /* HotKeyArrayController.m in Sources */,
+				CEB98BC7133508040083F3FD /* HotKeyFormatter.m in Sources */,
+				CEB98BC9133508040083F3FD /* HotKeyTableView.m in Sources */,
+				CEB98BCB133508040083F3FD /* HotKeyTextFieldCell.m in Sources */,
+				CEB98BCD133508040083F3FD /* OSIHotKeysPref.m in Sources */,
+				CEB98BE8133508180083F3FD /* BodyRegionArrayController.m in Sources */,
+				CEB98BEB133508180083F3FD /* HangingTableView.m in Sources */,
+				CEB98BED133508180083F3FD /* KeywordsArrayController.m in Sources */,
+				CEB98BEF133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */,
+				CEB98BF1133508180083F3FD /* UpperCaseStringFormatter.m in Sources */,
+				CEB98BF3133508180083F3FD /* UpperCaseTableColumn.m in Sources */,
+				CEB98C07133508280083F3FD /* OSIGeneralPreferencePanePref.m in Sources */,
+				CEB98C11133508350083F3FD /* OSIDatabasePreferencePanePref.m in Sources */,
+				CEB98C2F1335084F0083F3FD /* CIAAnnotation.m in Sources */,
+				CEB98C331335084F0083F3FD /* CIALayoutController.m in Sources */,
+				CEB98C351335084F0083F3FD /* CIALayoutView.m in Sources */,
+				CEB98C371335084F0083F3FD /* CIAPlaceHolder.m in Sources */,
+				CEB98C401335084F0083F3FD /* OSICustomImageAnnotations.m in Sources */,
+				CEB98C421335084F0083F3FD /* RWTokenField.m in Sources */,
+				CEB98C611335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
+				CEB98C6D1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */,
+				CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */,
+				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
+				CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */,
+				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
+				84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */,
+				4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.m in Sources */,
+				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
+				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
+				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
+				4F832D4213FA5F8C00511070 /* OSICoalescedPlanarROI.m in Sources */,
+				4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */,
+				4F832D4713FA5F8C00511070 /* OSIFloatVolumeData.m in Sources */,
+				4F832D4913FA5F8C00511070 /* OSIGeometry.m in Sources */,
+				4F832D4B13FA5F8C00511070 /* OSIPathROI.m in Sources */,
+				4F832D4D13FA5F8C00511070 /* OSIPlanarPathROI.m in Sources */,
+				4F832D4F13FA5F8C00511070 /* OSIROI.m in Sources */,
+				4F832D5213FA5F8C00511070 /* OSIROIFloatPixelData.m in Sources */,
+				4F832D5413FA5F8C00511070 /* OSIROIManager.m in Sources */,
+				4F832D5613FA5F8C00511070 /* OSIROIMask.m in Sources */,
+				4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */,
+				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
+				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
+				4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.m in Sources */,
+				596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */,
+				596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
 				BFBF3E7209B6828D00545F5E /* dcbytstr.cc in Sources */,
 				BFBF3E7409B6828D00545F5E /* dcchrstr.cc in Sources */,
 				BFBF3E7609B6828D00545F5E /* dccodec.cc in Sources */,
@@ -23496,83 +23811,54 @@
 				BFBF420C09B6828D00545F5E /* ofstring.cc in Sources */,
 				BFBF420E09B6828D00545F5E /* ofthread.cc in Sources */,
 				BFBF421009B6828D00545F5E /* oftime.cc in Sources */,
-				BF7A836009B8B8E70051F091 /* DICOMToNSString.m in Sources */,
-				BF7A838109B8D1C20051F091 /* DCMTKStoreSCU.mm in Sources */,
-				A9E5AC9409BF301F00F408B7 /* ITKTransform.mm in Sources */,
-				BF8E5AC109CA0D8200DE02FF /* DCMTKQueryRetrieveSCP.mm in Sources */,
-				BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */,
-				BF3F214709CB86E5002736A5 /* diargimg.cc in Sources */,
-				BF3F214A09CB86E7002736A5 /* dicmyimg.cc in Sources */,
-				BF3F215009CB86EC002736A5 /* dicoimg.cc in Sources */,
-				BF3F215309CB86F3002736A5 /* dicoopx.cc in Sources */,
-				BF3F215609CB86F6002736A5 /* dicopx.cc in Sources */,
-				BF3F215C09CB86FA002736A5 /* dihsvimg.cc in Sources */,
-				BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */,
-				BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */,
-				BF3F216909CB8708002736A5 /* diqtfs.cc in Sources */,
-				BF3F216B09CB870A002736A5 /* diqthash.cc in Sources */,
-				BF3F216D09CB870B002736A5 /* diqthitl.cc in Sources */,
-				BF3F217109CB870E002736A5 /* diqtpbox.cc in Sources */,
-				BF3F217609CB8715002736A5 /* diquant.cc in Sources */,
-				BF3F217709CB8718002736A5 /* diregist.cc in Sources */,
-				BF3F217909CB8719002736A5 /* dirgbimg.cc in Sources */,
-				BF3F217D09CB871D002736A5 /* diybrimg.cc in Sources */,
-				BF3F218009CB8720002736A5 /* diyf2img.cc in Sources */,
-				BF3F218309CB8722002736A5 /* diyp2img.cc in Sources */,
-				BF3F218609CB8737002736A5 /* dcmimage.cc in Sources */,
-				BF3F218809CB8737002736A5 /* dibaslut.cc in Sources */,
-				BF3F218A09CB8738002736A5 /* diciefn.cc in Sources */,
-				BF3F218C09CB873A002736A5 /* dicielut.cc in Sources */,
-				BF3F218F09CB873B002736A5 /* didislut.cc in Sources */,
-				BF3F219109CB873D002736A5 /* didispfn.cc in Sources */,
-				BF3F219309CB873E002736A5 /* didocu.cc in Sources */,
-				BF3F219609CB8741002736A5 /* digsdfn.cc in Sources */,
-				BF3F219809CB8743002736A5 /* digsdlut.cc in Sources */,
-				BF3F219A09CB8745002736A5 /* diimage.cc in Sources */,
-				BF3F219C09CB8745002736A5 /* diinpx.cc in Sources */,
-				BF3F219F09CB8748002736A5 /* diluptab.cc in Sources */,
-				BF3F21A109CB8749002736A5 /* dimo1img.cc in Sources */,
-				BF3F21A309CB8752002736A5 /* dimo2img.cc in Sources */,
-				BF3F21A709CB8755002736A5 /* dimoimg.cc in Sources */,
-				BF3F21A909CB8758002736A5 /* dimoimg3.cc in Sources */,
-				BF3F21AA09CB8758002736A5 /* dimoimg4.cc in Sources */,
-				BF3F21AB09CB8758002736A5 /* dimoimg5.cc in Sources */,
-				BF3F21AD09CB875A002736A5 /* dimomod.cc in Sources */,
-				BF3F21AF09CB875C002736A5 /* dimoopx.cc in Sources */,
-				BF3F21B209CB875D002736A5 /* dimopx.cc in Sources */,
-				BF3F21B809CB8764002736A5 /* diovdat.cc in Sources */,
-				BF3F21BA09CB8767002736A5 /* diovlay.cc in Sources */,
-				BF3F21BC09CB8769002736A5 /* diovlimg.cc in Sources */,
-				BF3F21BE09CB876B002736A5 /* diovpln.cc in Sources */,
-				BF3F21C809CB8773002736A5 /* diutils.cc in Sources */,
-				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
-				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
 				BFDF1D5709E06985008A4EC4 /* dcmqrcbm.mm in Sources */,
-				BF18A85C09E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm in Sources */,
-				BF432BCE09E313EF00AC322E /* DCMTKQueryNode.mm in Sources */,
-				BF432BDC09E31B9B00AC322E /* DCMTKStudyQueryNode.mm in Sources */,
-				BF432BE609E31BE800AC322E /* DCMTKSeriesQueryNode.mm in Sources */,
-				BF432BF209E31C0F00AC322E /* DCMTKImageQueryNode.mm in Sources */,
-				BF432BFD09E31CD800AC322E /* DCMTKRootQueryNode.mm in Sources */,
-				BFBCD8A809E4C2E40078ABB6 /* DCMTKServiceClassUser.mm in Sources */,
-				BF83CD8D09E741BC002041F3 /* ReportPluginFilter.m in Sources */,
-				BF90552309EB4985009C30D1 /* MoveManager.m in Sources */,
-				BF8B2A4C09F470F400F1F759 /* dcmqrsrv.mm in Sources */,
-				BFF5D24109F93B3F0077E16B /* LogManager.mm in Sources */,
-				BF9999010A1E695800F50753 /* DCMTKPrintSCU.mm in Sources */,
-				AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */,
-				A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */,
-				A93CFFA90A516A5100078038 /* LLMPRView.m in Sources */,
-				A93CFFAB0A516A5100078038 /* LLMPRViewer.m in Sources */,
-				A93CFFAD0A516A5100078038 /* LLScoutOrthogonalReslice.m in Sources */,
-				A93CFFAF0A516A5100078038 /* LLScoutView.m in Sources */,
-				A93CFFB10A516A5100078038 /* LLScoutViewer.m in Sources */,
-				A93CFFB30A516A5100078038 /* LLSubtraction.m in Sources */,
-				BFA7D2190A51D1460013F76E /* BrowserControllerDCMTKCategory.mm in Sources */,
-				BF2425520A51D39500D3D76B /* DicomFileDCMTKCategory.mm in Sources */,
-				A9944C120A52A54D004C5E0A /* LLDCMView.m in Sources */,
-				BF26843E0A5CBB1C004EB838 /* DicomImageDCMTKCategory.mm in Sources */,
-				A95B98A50A6E65B100E476D4 /* QTExportHTMLSummary.m in Sources */,
+				BFE2CDA809D1FFAE00AE615D /* dcmqrdbq.mm in Sources */,
+				BF36E2F009CDC6BF003991D3 /* dcmqrdbi.cc in Sources */,
+				BF3F21C809CB8773002736A5 /* diutils.cc in Sources */,
+				BF3F21BE09CB876B002736A5 /* diovpln.cc in Sources */,
+				BF3F21BC09CB8769002736A5 /* diovlimg.cc in Sources */,
+				BF3F21BA09CB8767002736A5 /* diovlay.cc in Sources */,
+				BF3F21B809CB8764002736A5 /* diovdat.cc in Sources */,
+				BF3F21B209CB875D002736A5 /* dimopx.cc in Sources */,
+				BF3F21AF09CB875C002736A5 /* dimoopx.cc in Sources */,
+				BF3F21AD09CB875A002736A5 /* dimomod.cc in Sources */,
+				BF3F21AB09CB8758002736A5 /* dimoimg5.cc in Sources */,
+				BF3F21AA09CB8758002736A5 /* dimoimg4.cc in Sources */,
+				BF3F21A909CB8758002736A5 /* dimoimg3.cc in Sources */,
+				BF3F21A709CB8755002736A5 /* dimoimg.cc in Sources */,
+				BF3F21A309CB8752002736A5 /* dimo2img.cc in Sources */,
+				BF3F21A109CB8749002736A5 /* dimo1img.cc in Sources */,
+				BF3F219F09CB8748002736A5 /* diluptab.cc in Sources */,
+				BF3F219C09CB8745002736A5 /* diinpx.cc in Sources */,
+				BF3F219A09CB8745002736A5 /* diimage.cc in Sources */,
+				BF3F219809CB8743002736A5 /* digsdlut.cc in Sources */,
+				BF3F219609CB8741002736A5 /* digsdfn.cc in Sources */,
+				BF3F219309CB873E002736A5 /* didocu.cc in Sources */,
+				BF3F219109CB873D002736A5 /* didispfn.cc in Sources */,
+				BF3F218F09CB873B002736A5 /* didislut.cc in Sources */,
+				BF3F218C09CB873A002736A5 /* dicielut.cc in Sources */,
+				BF3F218A09CB8738002736A5 /* diciefn.cc in Sources */,
+				BF3F218809CB8737002736A5 /* dibaslut.cc in Sources */,
+				BF3F218609CB8737002736A5 /* dcmimage.cc in Sources */,
+				BF3F218309CB8722002736A5 /* diyp2img.cc in Sources */,
+				BF3F218009CB8720002736A5 /* diyf2img.cc in Sources */,
+				BF3F217D09CB871D002736A5 /* diybrimg.cc in Sources */,
+				BF3F217909CB8719002736A5 /* dirgbimg.cc in Sources */,
+				BF3F217709CB8718002736A5 /* diregist.cc in Sources */,
+				BF3F217609CB8715002736A5 /* diquant.cc in Sources */,
+				BF3F217109CB870E002736A5 /* diqtpbox.cc in Sources */,
+				BF3F216D09CB870B002736A5 /* diqthitl.cc in Sources */,
+				BF3F216B09CB870A002736A5 /* diqthash.cc in Sources */,
+				BF3F216909CB8708002736A5 /* diqtfs.cc in Sources */,
+				BF3F216709CB8706002736A5 /* diqtctab.cc in Sources */,
+				BF3F215F09CB86FC002736A5 /* dipalimg.cc in Sources */,
+				BF3F215C09CB86FA002736A5 /* dihsvimg.cc in Sources */,
+				BF3F215609CB86F6002736A5 /* dicopx.cc in Sources */,
+				BF3F215309CB86F3002736A5 /* dicoopx.cc in Sources */,
+				BF3F215009CB86EC002736A5 /* dicoimg.cc in Sources */,
+				BF3F214A09CB86E7002736A5 /* dicmyimg.cc in Sources */,
+				BF3F214709CB86E5002736A5 /* diargimg.cc in Sources */,
+				BF4CEBD609CB736D0073E928 /* dcmqrcnf.mm in Sources */,
 				ABE46F910A76410F00327466 /* jaricom.c in Sources */,
 				ABE46F920A76410F00327466 /* jcapimin.c in Sources */,
 				ABE46F930A76410F00327466 /* jcapistd.c in Sources */,
@@ -23764,293 +24050,7 @@
 				ABE471140A76412700327466 /* jquant1.c in Sources */,
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
-				A95837B40AAF0DC80001D415 /* SRAnnotation.mm in Sources */,
-				AB80EBAC0AF1F5B600E7E934 /* AYDicomPrintWindowController.mm in Sources */,
-				AB80EBAE0AF1F5B600E7E934 /* AYNSImageToDicom.m in Sources */,
-				CE6692DB0AF545F90073D923 /* printView.m in Sources */,
-				BF4108EB0B126C7800AAC648 /* DarkBox.m in Sources */,
-				BF09B1400B2E681D00AA97E2 /* OSIWindowController.m in Sources */,
-				ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */,
-				ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */,
-				B78490FC0B4BE86400BA93EF /* MenuDictionary.m in Sources */,
-				A9F8A4190B5F6460002CC763 /* CLUTOpacityView.mm in Sources */,
-				CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */,
-				A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */,
-				A94469E40BA7FFE7008643E5 /* BLAuthentication.m in Sources */,
-				BFF97D720BDE8BE6008333CF /* ShadingArrayController.m in Sources */,
-				CE96D0E40BEE6F9800C4E397 /* XMLControllerDCMTKCategory.mm in Sources */,
-				CE96D0F80BEE71E800C4E397 /* mdfconen.cc in Sources */,
-				CE96D11D0BEE732A00C4E397 /* mdfdsman.cc in Sources */,
-				A90A04980BF09BA000D00273 /* VRPresetPreview.mm in Sources */,
-				A9154D8D0BF34D4E00BAF408 /* SelectionView.m in Sources */,
-				A91115620BFB354F001000B4 /* ColorView.m in Sources */,
-				A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */,
-				ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */,
-				AB87FA7B0C06BEB200CD2976 /* nifti1_io.c in Sources */,
-				AB87FA7D0C06BEB200CD2976 /* znzlib.c in Sources */,
-				BF30B3A90C079D570003390C /* vtkPowerCrustSurfaceReconstruction.cxx in Sources */,
-				ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */,
-				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
-				CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */,
-				CE882AC70C889B6500D4F982 /* XMLRPCMethods.mm in Sources */,
-				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
-				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
-				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
-				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
-				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
-				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
-				A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */,
-				A978DE9D0CB0D4BE00FB2C3D /* NFHUDButton.m in Sources */,
-				A978DEA10CB0D4BE00FB2C3D /* NFHUDSliderCell.m in Sources */,
-				A978DEA30CB0D4BE00FB2C3D /* NFHUDSlider.m in Sources */,
-				A978DEA40CB0D4BE00FB2C3D /* NFHUDPopUpButtonCell.m in Sources */,
-				A978DEA70CB0D4BE00FB2C3D /* NSImage+FrameworkImage.m in Sources */,
-				A978DEB00CB0D4BE00FB2C3D /* NFHUDPopUpButton.m in Sources */,
-				BF84E5420CB16A2900431BC2 /* FlyThruTableView.m in Sources */,
-				CE4701000CC51A6600ECF78A /* WindowLayoutManager.m in Sources */,
-				A97D4C620CE3459D003FE2E6 /* PieChartImage.m in Sources */,
-				CE6CD06E0CFB0462001DF429 /* OsiriXToolbar.m in Sources */,
-				CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */,
-				A910FB320D5767610095A956 /* NavigatorWindowController.m in Sources */,
-				A910FB380D57728A0095A956 /* NavigatorView.m in Sources */,
-				CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */,
-				CE0E3A560D87C56D008135A8 /* ThreeDPanView.m in Sources */,
-				CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */,
-				CE087B0C0DE9BD6E000E5593 /* GLString.m in Sources */,
-				CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */,
-				CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */,
-				CE291D8F0F5A99B700F95B43 /* OsiriXFixedPointVolumeRayCastMapper.cxx in Sources */,
-				A9333D260F56E6800097DAB7 /* MPRDCMView.m in Sources */,
-				A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */,
-				AB4CD7690F72619900699111 /* FlyThruController.mm in Sources */,
-				59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */,
-				84C4510B10033B8100138F70 /* OSIWindow.m in Sources */,
-				CE94FC031053FFD3006D92E4 /* CurveFitter.m in Sources */,
-				CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */,
-				841721B910D8D745001A833F /* AsyncSocket.m in Sources */,
-				841721BB10D8D745001A833F /* DDData.m in Sources */,
-				841721BD10D8D745001A833F /* DDNumber.m in Sources */,
-				841721BF10D8D745001A833F /* DDRange.m in Sources */,
-				841721C110D8D745001A833F /* HTTPAsyncFileResponse.m in Sources */,
-				841721C310D8D745001A833F /* HTTPAuthenticationRequest.m in Sources */,
-				841721C510D8D745001A833F /* HTTPConnection.m in Sources */,
-				841721C710D8D745001A833F /* HTTPResponse.m in Sources */,
-				841721C910D8D745001A833F /* HTTPServer.m in Sources */,
-				841721CB10D8D745001A833F /* SSCrypto.m in Sources */,
-				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
-				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
-				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
-				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
-				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,
-				A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */,
-				A9E0E4B011182C480086A15A /* NSObject+SBJSON.m in Sources */,
-				A9E0E4B211182C480086A15A /* NSString+SBJSON.m in Sources */,
-				A9E0E4B411182C480086A15A /* SBJSON.m in Sources */,
-				A9E0E4B611182C480086A15A /* SBJsonBase.m in Sources */,
-				A9E0E4B811182C480086A15A /* SBJsonParser.m in Sources */,
-				A9E0E4BA11182C480086A15A /* SBJsonWriter.m in Sources */,
-				AB10FAAE11293378009EB238 /* N2Debug.mm in Sources */,
-				AB10FAB011293378009EB238 /* N2Operators.mm in Sources */,
-				AB10FAB211293378009EB238 /* N2MinMax.mm in Sources */,
-				AB10FAB411293378009EB238 /* N2Alignment.mm in Sources */,
-				AB10FAB611293378009EB238 /* N2Resizer.mm in Sources */,
-				AB10FAB811293378009EB238 /* N2Shell.mm in Sources */,
-				AB10FABA11293378009EB238 /* N2UserDefaults.mm in Sources */,
-				AB10FB201129338A009EB238 /* N2ButtonCell.mm in Sources */,
-				AB10FB221129338A009EB238 /* N2Button.mm in Sources */,
-				AB10FB241129338A009EB238 /* N2DisclosureBox.mm in Sources */,
-				AB10FB261129338A009EB238 /* N2DisclosureButtonCell.mm in Sources */,
-				AB10FB281129338A009EB238 /* N2ColorWell.mm in Sources */,
-				AB10FB2A1129338A009EB238 /* N2PopUpButton.mm in Sources */,
-				AB10FB2C1129338A009EB238 /* N2Exceptions.mm in Sources */,
-				AB10FB361129338A009EB238 /* N2View.mm in Sources */,
-				AB10FB381129338A009EB238 /* N2Panel.mm in Sources */,
-				AB10FB3A1129338A009EB238 /* N2Window.mm in Sources */,
-				AB10FB3C1129338A009EB238 /* N2Layout.mm in Sources */,
-				AB10FB3E1129338A009EB238 /* N2ColumnLayout.mm in Sources */,
-				AB10FB401129338A009EB238 /* N2CellDescriptor.mm in Sources */,
-				AB10FB421129338A009EB238 /* N2Step.mm in Sources */,
-				AB10FB441129338A009EB238 /* N2Steps.mm in Sources */,
-				AB10FB461129338A009EB238 /* N2StepView.mm in Sources */,
-				AB10FB481129338A009EB238 /* N2StepsView.mm in Sources */,
-				AB10FB4A1129338A009EB238 /* N2Pair.mm in Sources */,
-				AB10FB4C1129338A009EB238 /* N2SingletonObject.mm in Sources */,
-				AB10FB4E1129338A009EB238 /* NSTextView+N2.mm in Sources */,
-				AB10FB501129338A009EB238 /* NSString+N2.mm in Sources */,
-				AB10FB521129338A009EB238 /* NSImage+N2.mm in Sources */,
-				AB10FB541129338A009EB238 /* NSBitmapImageRep+N2.mm in Sources */,
-				AB10FB561129338A009EB238 /* NSData+N2.mm in Sources */,
-				AB10FB581129338A009EB238 /* NSColor+N2.mm in Sources */,
-				AB10FB5A1129338A009EB238 /* NSButton+N2.mm in Sources */,
-				AB10FB5C1129338A009EB238 /* NS(Attributed)String+Geometrics.m in Sources */,
-				AB10FB5E1129338A009EB238 /* NSDictionary+N2.mm in Sources */,
-				AB10FB601129338A009EB238 /* NSMutableDictionary+N2.mm in Sources */,
-				AB10FB621129338A009EB238 /* NSInvocation+N2.mm in Sources */,
-				AB10FB641129338A009EB238 /* NSURL+N2.mm in Sources */,
-				AB10FB661129338A009EB238 /* NSPanel+N2.mm in Sources */,
-				AB10FB681129338A009EB238 /* NSView+N2.mm in Sources */,
-				AB10FB6A1129338A009EB238 /* NSImageView+N2.mm in Sources */,
-				AB10FB6C1129338A009EB238 /* ISO8601DateFormatter.m in Sources */,
-				84ADF473115B622D00FE18B2 /* SRController+StereoVision.mm in Sources */,
-				84ADF475115B622D00FE18B2 /* SRFlyThruAdapter+StereoVision.m in Sources */,
-				84ADF477115B622D00FE18B2 /* SRView+StereoVision.mm in Sources */,
-				84ADF479115B622D00FE18B2 /* VRController+StereoVision.mm in Sources */,
-				84ADF47B115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m in Sources */,
-				84ADF47D115B622D00FE18B2 /* VRView+StereoVision.mm in Sources */,
-				84ADF47F115B622D00FE18B2 /* VTKStereoSRView.mm in Sources */,
-				84ADF481115B622D00FE18B2 /* VTKStereoVRView.mm in Sources */,
-				84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */,
-				CE1119351165CA2000EDD254 /* jcdiffct.c in Sources */,
-				59E379D0116B293A00E84FE3 /* NSImage+OsiriX.m in Sources */,
-				59E379D9116B295B00E84FE3 /* DicomAlbum.m in Sources */,
-				59BDEF42117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm in Sources */,
-				59BDF113117EE6A1007F1F2C /* PreferencesWindowController.mm in Sources */,
-				59BDF11F117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm in Sources */,
-				59BDF128117EFA41007F1F2C /* PreferencesView.mm in Sources */,
-				59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */,
-				596EB3071189D9A600880192 /* NSPreferencePane+OsiriX.mm in Sources */,
-				596EB3F7118ABBB000880192 /* NSWindow+N2.mm in Sources */,
-				594830CE118B0AC100D7E606 /* N2ImageView.mm in Sources */,
-				5912DCD9118EF447007F7D40 /* N2FlippedView.mm in Sources */,
-				5997895E11B7B3E9002DB107 /* Anonymization.mm in Sources */,
-				5997896011B7B3E9002DB107 /* AnonymizationCustomTagPanelController.mm in Sources */,
-				5997896211B7B3E9002DB107 /* AnonymizationPanelController.mm in Sources */,
-				5997896411B7B3E9002DB107 /* AnonymizationSavePanelController.mm in Sources */,
-				5997896611B7B3E9002DB107 /* AnonymizationTagsPopUpButton.mm in Sources */,
-				5997896811B7B3E9002DB107 /* AnonymizationTagsView.mm in Sources */,
-				5997896A11B7B3E9002DB107 /* AnonymizationTemplateNamePanelController.mm in Sources */,
-				5997896C11B7B3E9002DB107 /* AnonymizationViewController.mm in Sources */,
-				5997898311B7B461002DB107 /* N2HexadecimalNumberFormatter.mm in Sources */,
-				5997898711B7B46A002DB107 /* N2HighlightImageButtonCell.mm in Sources */,
-				5997898B11B7B476002DB107 /* N2CustomTitledPopUpButtonCell.mm in Sources */,
-				5997899311B7B48F002DB107 /* NSUserDefaultsController+N2.mm in Sources */,
-				5997899711B7B4A0002DB107 /* N2AdaptiveBox.mm in Sources */,
-				5997899B11B7B4BD002DB107 /* NSFileManager+N2.mm in Sources */,
-				59A31D5211BF9371001D4844 /* N2TextField.mm in Sources */,
-				59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */,
-				59DC28B711C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm in Sources */,
-				59DC28C111C614A100DAD5B4 /* NSXMLNode+N2.mm in Sources */,
-				59DC28C711C6152400DAD5B4 /* N2CSV.mm in Sources */,
-				59DC290B11C6178500DAD5B4 /* DiscBurningOptions.mm in Sources */,
-				59DC290F11C617A300DAD5B4 /* DicomCompressor.mm in Sources */,
-				5926824D11CF62DA00CFA81F /* ThreadCell.mm in Sources */,
-				5926824F11CF62DA00CFA81F /* ThreadModalForWindowController.mm in Sources */,
-				5926825111CF62DA00CFA81F /* ThreadsManager.mm in Sources */,
-				84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */,
-				EC9BD81D11EDF349007421B2 /* FlyAssistant.mm in Sources */,
-				59F5F3FA11F476030047A90D /* N2ImageButtonCell.mm in Sources */,
-				59F5F4ED11F485CC0047A90D /* BrowserController+Activity.mm in Sources */,
-				592CFF091212F84F00176E39 /* N2Connection.mm in Sources */,
-				592CFF0B1212F84F00176E39 /* N2ConnectionListener.mm in Sources */,
-				592CFF0D1212F84F00176E39 /* N2WebServiceClient.mm in Sources */,
-				592CFF0F1212F84F00176E39 /* N2RedundantWebServiceClient.mm in Sources */,
-				592CFF111212F84F00176E39 /* N2XMLRPC.mm in Sources */,
-				592CFF131212F84F00176E39 /* N2XMLRPCWebServiceClient.mm in Sources */,
-				592CFF151212F84F00176E39 /* N2XMLRPCConnection.mm in Sources */,
-				592CFF171212F84F00176E39 /* N2WSDL.mm in Sources */,
-				592CFF191212F84F00176E39 /* N2SOAPWebServiceClient.mm in Sources */,
-				CEED77D8123038F300258D00 /* PapyVars3.c in Sources */,
-				59526E8612816FDC0016F6C0 /* WebPortalSession.mm in Sources */,
-				59526E9F1281896F0016F6C0 /* NSMutableString+N2.mm in Sources */,
-				59526F331281ACA90016F6C0 /* WebPortalDB.xcdatamodeld in Sources */,
-				59526F3D1281ADC10016F6C0 /* WebPortalUser.mm in Sources */,
-				59526F6D1281AFCA0016F6C0 /* WebPortalConnection.mm in Sources */,
-				59526F7D1281B1AA0016F6C0 /* WebPortalDB 1-2.xcmappingmodel in Sources */,
-				CEFFFE271286895300D69BB8 /* djdec2k.cc in Sources */,
-				CEFFFE3C12868F5400D69BB8 /* djdijp2k.cc in Sources */,
-				CEFF00FE1286F7A700D69BB8 /* djenc2k.cc in Sources */,
-				CEFF01461286FB2000D69BB8 /* djeijg2k.cc in Sources */,
-				592BA51E12966ABD00179C27 /* NSError+OsiriX.mm in Sources */,
-				8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */,
-				590BB22112A002FA009E9758 /* WebPortalStudy.mm in Sources */,
-				597BB90C12A7D3C000D0A172 /* WebPortal.mm in Sources */,
-				597BB93212A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
-				590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */,
-				59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */,
-				59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */,
-				59E5236012BF5E440094E668 /* N2Task.mm in Sources */,
-				59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */,
-				599115F012D7224A00924B5C /* browserController.m in Sources */,
-				5969033E12DDE30800379E41 /* WebPortalConnection+Data.mm in Sources */,
-				5969034612DDE5EA00379E41 /* WebPortalResponse.mm in Sources */,
-				CE9054F612F5B64300263AB6 /* CPRClusterView.m in Sources */,
-				CE9054F812F5B64300263AB6 /* CPRController.m in Sources */,
-				CE9054FA12F5B64300263AB6 /* CPRCurvedPath.m in Sources */,
-				CE9054FC12F5B64300263AB6 /* CPRDisplayInfo.m in Sources */,
-				CE9054FE12F5B64300263AB6 /* CPRGenerator.m in Sources */,
-				CE90550012F5B64300263AB6 /* CPRGeneratorOperation.m in Sources */,
-				CE90550212F5B64300263AB6 /* CPRGeneratorRequest.m in Sources */,
-				CE90550612F5B64300263AB6 /* CPRHorizontalFillOperation.m in Sources */,
-				CE90550812F5B64300263AB6 /* CPRMPRDCMView.m in Sources */,
-				CE90550A12F5B64300263AB6 /* CPRProjectionOperation.m in Sources */,
-				CE90550C12F5B64300263AB6 /* CPRStraightenedOperation.m in Sources */,
-				CE90550E12F5B64300263AB6 /* CPRTransverseView.m in Sources */,
-				CE90551012F5B64300263AB6 /* CPRUnsignedInt16ImageRep.m in Sources */,
-				CE90551212F5B64300263AB6 /* CPRStraightenedView.m in Sources */,
-				CE90551412F5B64300263AB6 /* CPRVolumeData.m in Sources */,
-				59E8352812F9ABAC006B930A /* N2ManagedDatabase.mm in Sources */,
-				59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */,
-				4F8A1A861302C72300A022D9 /* N3BezierCore.m in Sources */,
-				4F8A1A881302C72300A022D9 /* N3BezierCoreAdditions.m in Sources */,
-				4F8A1A8A1302C72300A022D9 /* N3BezierPath.m in Sources */,
-				4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */,
-				5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */,
-				59DD2406131D47D700A24DCD /* WebPortalDB 2-3.xcmappingmodel in Sources */,
-				4F2446B21320F1B500D55426 /* CPRObliqueSliceOperation.m in Sources */,
-				59263546132E47E70055E3AB /* WebPortalDB 3-4.xcmappingmodel in Sources */,
-				CEB98990133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm in Sources */,
-				CEB98A04133507AC0083F3FD /* OSIViewerPreferencePanePref.m in Sources */,
-				CEB98A0E133507BB0083F3FD /* OSIPETPreferencePane.m in Sources */,
-				CEB98A1A133507C80083F3FD /* OSILocationsPreferencePanePref.m in Sources */,
-				CEB98A1C133507C80083F3FD /* ServerTableView.m in Sources */,
-				CEB98BB3133507F50083F3FD /* OSIListenerPreferencePanePref.mm in Sources */,
-				CEB98BC5133508040083F3FD /* HotKeyArrayController.m in Sources */,
-				CEB98BC7133508040083F3FD /* HotKeyFormatter.m in Sources */,
-				CEB98BC9133508040083F3FD /* HotKeyTableView.m in Sources */,
-				CEB98BCB133508040083F3FD /* HotKeyTextFieldCell.m in Sources */,
-				CEB98BCD133508040083F3FD /* OSIHotKeysPref.m in Sources */,
-				CEB98BE8133508180083F3FD /* BodyRegionArrayController.m in Sources */,
-				CEB98BEB133508180083F3FD /* HangingTableView.m in Sources */,
-				CEB98BED133508180083F3FD /* KeywordsArrayController.m in Sources */,
-				CEB98BEF133508180083F3FD /* OSIHangingPreferencePanePref.m in Sources */,
-				CEB98BF1133508180083F3FD /* UpperCaseStringFormatter.m in Sources */,
-				CEB98BF3133508180083F3FD /* UpperCaseTableColumn.m in Sources */,
-				CEB98C07133508280083F3FD /* OSIGeneralPreferencePanePref.m in Sources */,
-				CEB98C11133508350083F3FD /* OSIDatabasePreferencePanePref.m in Sources */,
-				CEB98C2F1335084F0083F3FD /* CIAAnnotation.m in Sources */,
-				CEB98C331335084F0083F3FD /* CIALayoutController.m in Sources */,
-				CEB98C351335084F0083F3FD /* CIALayoutView.m in Sources */,
-				CEB98C371335084F0083F3FD /* CIAPlaceHolder.m in Sources */,
-				CEB98C401335084F0083F3FD /* OSICustomImageAnnotations.m in Sources */,
-				CEB98C421335084F0083F3FD /* RWTokenField.m in Sources */,
-				CEB98C611335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
-				CEB98C6D1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */,
-				CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */,
-				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
-				CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */,
-				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
-				84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */,
-				4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.m in Sources */,
-				4F00A9E4139A778000ABD529 /* CPRStretchedView.m in Sources */,
-				4F368CA5139B7E1D00BE3D1C /* CPRView.m in Sources */,
-				84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
-				4F832D4213FA5F8C00511070 /* OSICoalescedPlanarROI.m in Sources */,
-				4F832D4413FA5F8C00511070 /* OSIEnvironment.m in Sources */,
-				4F832D4713FA5F8C00511070 /* OSIFloatVolumeData.m in Sources */,
-				4F832D4913FA5F8C00511070 /* OSIGeometry.m in Sources */,
-				4F832D4B13FA5F8C00511070 /* OSIPathROI.m in Sources */,
-				4F832D4D13FA5F8C00511070 /* OSIPlanarPathROI.m in Sources */,
-				4F832D4F13FA5F8C00511070 /* OSIROI.m in Sources */,
-				4F832D5213FA5F8C00511070 /* OSIROIFloatPixelData.m in Sources */,
-				4F832D5413FA5F8C00511070 /* OSIROIManager.m in Sources */,
-				4F832D5613FA5F8C00511070 /* OSIROIMask.m in Sources */,
-				4F832D5813FA5F8C00511070 /* OSIStudy.m in Sources */,
-				4F832D5A13FA5F8C00511070 /* OSIVolumeWindow.m in Sources */,
-				4F832D5D13FA5F8C00511070 /* pluginSDKAdditions.m in Sources */,
-				4F1FCE1C143092DC008683F9 /* OSIPlanarBrushROI.m in Sources */,
-				596D30B71439BA17004EE9EC /* DicomStudy+Report.mm in Sources */,
-				596D30BC1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25893,6 +25893,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -25912,6 +25913,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -25931,6 +25933,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriX Launcher/Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_LDFLAGS = (
@@ -25998,6 +26001,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
@@ -26047,6 +26051,7 @@
 				GCC_PREFIX_HEADER = OsiriX_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -26101,6 +26106,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
@@ -26166,6 +26172,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -26194,6 +26201,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -26219,6 +26227,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "OsiriXAPI-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_LDFLAGS = (
@@ -26248,6 +26257,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -26273,6 +26283,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
 			name = Development;
@@ -26280,6 +26291,7 @@
 		BF7486A80CC6AA5D00198387 /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
 			name = "Deployment 32-bit";
@@ -26287,6 +26299,7 @@
 		BF7486A90CC6AA5D00198387 /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				PRODUCT_NAME = Documentation;
 			};
 			name = "Deployment 64-bit";
@@ -26347,6 +26360,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -26453,6 +26467,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
@@ -26486,6 +26501,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
@@ -26525,6 +26541,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -26560,6 +26577,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -26634,6 +26652,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -26747,6 +26766,7 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
@@ -26773,6 +26793,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = Binaries;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
@@ -26800,6 +26821,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREFIX_HEADER = Decompres_Prefix.pch;
 				GCC_UNROLL_LOOPS = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -26835,6 +26857,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,
@@ -26860,6 +26883,7 @@
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -26878,6 +26902,7 @@
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -26896,6 +26921,7 @@
 					i386,
 				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -26932,6 +26958,7 @@
 				GCC_PREFIX_HEADER = OsiriXLite_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -26996,6 +27023,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -27058,6 +27086,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = NO;
 				GCC_USE_GCC3_PFE_SUPPORT = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = YES;
@@ -27113,6 +27142,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -27140,6 +27170,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -27167,6 +27198,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				IBC_FLATTEN_NIBS = NO;
 				INFOPLIST_FILE = "32bit shell-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
@@ -27199,6 +27231,7 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					Binaries/LibTiff,

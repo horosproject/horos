@@ -125,7 +125,7 @@ static PSGenerator *generator = nil;
 }
 
 -(BOOL)validatePassword:(NSString**)value error:(NSError**)error {
-	if (value->length < 4) {
+	if ([*value length] < 4) {
 		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"Password needs to be at least 4 characters long.", NULL)];
 		return NO;
 	}
@@ -134,7 +134,7 @@ static PSGenerator *generator = nil;
 }
 
 -(BOOL)validateDownloadZIP:(NSNumber**)value error:(NSError**)error {
-	if (value->boolValue && !AppController.hasMacOSXSnowLeopard) {
+	if ([*value boolValue] && !AppController.hasMacOSXSnowLeopard) {
 		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"ZIP download requires MacOS 10.6 or higher.", NULL)];
 		return NO;
 	}
@@ -143,7 +143,7 @@ static PSGenerator *generator = nil;
 }
 
 -(BOOL)validateName:(NSString**)value error:(NSError**)error {
-	if (value->length < 2) {
+	if ([*value length] < 2) {
 		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"Name needs to be at least 2 characters long.", NULL)];
 		return NO;
 	}

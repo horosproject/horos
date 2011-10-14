@@ -30,13 +30,13 @@
 	viewGroups = [[NSMutableArray alloc] init];
 	intercellSpacing = NSMakeSize(13,1);
 	
-	dcmTagsPopUpButton = [[AnonymizationTagsPopUpButton alloc] initWithSize:NSZeroSize];
+	dcmTagsPopUpButton = [[AnonymizationTagsPopUpButton alloc] initWithFrame:NSZeroRect];
 	[dcmTagsPopUpButton.cell setControlSize:NSMiniControlSize];
 	[dcmTagsPopUpButton setFont:[NSFont labelFontOfSize:[NSFont smallSystemFontSize]-2]];
 	[self addSubview:dcmTagsPopUpButton];
 	
 	NSButtonCell* addButtonCell = [[N2HighlightImageButtonCell alloc] initWithImage:[NSImage imageNamed:@"PlusButton"]];
-	dcmTagAddButton = [[NSButton alloc] initWithSize:NSZeroSize];
+	dcmTagAddButton = [[NSButton alloc] initWithFrame:NSZeroRect];
 	dcmTagAddButton.cell = addButtonCell;
 	[addButtonCell release];
 	dcmTagAddButton.target = self;
@@ -140,9 +140,9 @@
 }
 
 -(void)addTag:(DCMAttributeTag*)tag {
-	static const NSFont* font = [[NSFont labelFontOfSize:[NSFont smallSystemFontSize]-1] retain];
+	static NSFont* font = [[NSFont labelFontOfSize:[NSFont smallSystemFontSize]-1] retain];
 
-	NSButton* checkBox = [[NSButton alloc] initWithSize:NSZeroSize];
+	NSButton* checkBox = [[NSButton alloc] initWithFrame:NSZeroRect];
 	[[checkBox cell] setControlSize:NSMiniControlSize];
 	[checkBox setFont:font];
 	[[checkBox cell] setLineBreakMode:NSLineBreakByTruncatingMiddle];
@@ -150,7 +150,7 @@
 	[checkBox setTitle:tag.name];
 	[self addSubview:checkBox];
 	
-	N2TextField* textField = [[N2TextField alloc] initWithSize:NSZeroSize];
+	N2TextField* textField = [[N2TextField alloc] initWithFrame:NSZeroRect];
 	[[textField cell] setControlSize:NSMiniControlSize];
 	[textField setFont:font];
 	[textField setBezeled:YES];
@@ -209,7 +209,7 @@
 	}
 	
 	NSButtonCell* rmButtonCell = [[N2HighlightImageButtonCell alloc] initWithImage:[NSImage imageNamed:@"MinusButton"]];
-	NSButton* rmButton = [[NSButton alloc] initWithSize:NSZeroSize];
+	NSButton* rmButton = [[NSButton alloc] initWithFrame:NSZeroRect];
 	rmButton.cell = rmButtonCell;
 	[rmButtonCell release];
 	rmButton.target = self;

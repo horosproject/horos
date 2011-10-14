@@ -1532,7 +1532,7 @@ extern const char *GetPrivateIP();
 					
 					if( BonjourDatabaseIndexFileSize)
 					{
-						NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", BonjourDatabaseIndexFileSize/1024);
+						NSLog( @"BonjourDatabaseIndexFileSize = %d Kb", (int) BonjourDatabaseIndexFileSize/1024);
 						
 						if( currentDataPtr)
 						{
@@ -1642,7 +1642,7 @@ extern const char *GetPrivateIP();
 	@try 
 	{
 		[paths release];
-		paths = [ip retain];
+		paths = [ip mutableCopy];
 		
 		[dicomDestination release];
 		if( indexTo >= 0)
@@ -1692,7 +1692,7 @@ extern const char *GetPrivateIP();
 	@try 
 	{
 		[paths release];
-		paths = [ip retain];
+		paths = [ip mutableCopy];
 		
 		NSString *order = nil;
 		if( generatedByOsiriX) order = @"SENDG";

@@ -199,7 +199,7 @@ int executeProcess(int argc, char *argv[])
 					}
 					@catch (NSException * e)
 					{
-						NSLog( @"***** exception shell main class: &@", e);
+						NSLog( @"***** exception shell main class: %@", e);
 					}
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?", nil), NSLocalizedString(@"Unable to contact dotMac service.", nil), NSLocalizedString(@"OK",nil),nil, nil);
@@ -257,7 +257,7 @@ int executeProcess(int argc, char *argv[])
 					}
 					@catch (NSException * e)
 					{
-						NSLog( @"***** exception shell main class: &@", e);
+						NSLog( @"***** exception shell main class: %@", e);
 					}
 				}
 				else NSRunCriticalAlertPanel(NSLocalizedString(@"iDisk?",@"iDisk?"), NSLocalizedString(@"Unable to contact dotMac service.",@"Unable to contact dotMac service."), NSLocalizedString(@"OK",nil),nil, nil);
@@ -373,7 +373,7 @@ int executeProcess(int argc, char *argv[])
 					err = MovieExportGetSettingsAsAtomContainer(exporter, &settings);
 					if(err)
 					{
-						NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer");
+						NSLog(@"Got error %d when calling MovieExportGetSettingsAsAtomContainer", (int) err);
 					}
 					else
 					{
@@ -523,7 +523,7 @@ int executeProcess(int argc, char *argv[])
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception shell main class: &@", e);
+		NSLog( @"***** exception shell main class: %@", e);
 	}
 	
 	exit( 0);

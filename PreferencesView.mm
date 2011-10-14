@@ -138,7 +138,7 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 -(void)addItemWithTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName context:(id)context {
 	PreferencesViewGroup* group = [self groupWithName:groupName];
 	
-	NSButton* button = [[[NSButton alloc] initWithSize:NSZeroSize] autorelease];
+	NSButton* button = [[[NSButton alloc] initWithFrame:NSZeroRect] autorelease];
 	[button setCell:[[[PreferencesViewButtonCell alloc] init] autorelease]];
 	[button setTitle:title];
 	[button setImage:image];

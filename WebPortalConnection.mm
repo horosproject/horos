@@ -432,7 +432,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSMutableString* str = [NSMutableString string];
 	for (NSString* key in dict) {
 		NSString* value = [dict objectForKey:key];
-		if ([value isKindOfClass:NSArray.class])
+		if ([value isKindOfClass: [NSArray class]])
 			for (NSString* v2 in (NSArray*)value)
 				[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [v2 urlEncodedString]];
 		else [str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [value urlEncodedString]];
@@ -945,7 +945,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		@try
 		{
-			if( [[multipartData lastObject] isKindOfClass: NSFileHandle.class])
+			if( [[multipartData lastObject] isKindOfClass: [NSFileHandle class]])
 				[(NSFileHandle*)[multipartData lastObject] writeData: [postDataChunk subdataWithRange: fileDataRange]];
 			else
 			{

@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import "OSIEnvironment.h";
+#import "OSIEnvironment.h"
 
 @class ViewerController;
 

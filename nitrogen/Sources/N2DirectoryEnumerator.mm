@@ -54,7 +54,7 @@
 }
 
 -(id)nextObject {
-	if (max >= 0 && counter >= max)
+	if (counter >= max)
 		return nil;
 	++counter;
 	
@@ -62,7 +62,8 @@
 	
 	NSString* subpath;
 	DIR* dir;
-	while (dir = [self DIRAndSubpath:&subpath]) {
+	while((dir = [self DIRAndSubpath:&subpath]))
+    {
 		struct dirent* dirp = readdir(dir);
 		if (dirp) {
 			NSString* subsubpath = [fm stringWithFileSystemRepresentation:dirp->d_name length:strlen(dirp->d_name)];

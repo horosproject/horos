@@ -19,25 +19,30 @@
 
 @implementation AnonymizationCustomTagPanelController
 
--(id)init {
+-(id)init
+{
 	self = [super initWithWindowNibName:@"AnonymizationCustomTagPanel"];
-	self.window; // load
+	[self window]; // load
 	return self;
 }
 
--(IBAction)cancelButtonAction:(id)sender {
+-(IBAction)cancelButtonAction:(id)sender
+{
 	[NSApp endSheet:self.window returnCode:NSRunAbortedResponse];
 }
 
--(IBAction)okButtonAction:(id)sender {
+-(IBAction)okButtonAction:(id)sender
+{
 	[NSApp endSheet:self.window];
 }
 
--(DCMAttributeTag*)attributeTag {
+-(DCMAttributeTag*)attributeTag
+{
 	return [DCMAttributeTag tagWithGroup:[[groupField objectValue] unsignedIntValue] element:[[elementField objectValue] unsignedIntValue]];
 }
 
--(void)setAttributeTag:(DCMAttributeTag*)tag {
+-(void)setAttributeTag:(DCMAttributeTag*)tag
+{
 	[groupField setObjectValue:[NSNumber numberWithUnsignedInt:tag.group]];
 	[elementField setObjectValue:[NSNumber numberWithUnsignedInt:tag.element]];
 }

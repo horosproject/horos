@@ -3700,7 +3700,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", savedHeightInDB, height);
+			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3708,7 +3708,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", savedWidthInDB, width);
+			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -9063,7 +9063,7 @@ END_CREATE_ROIS:
 			
 #ifdef OSIRIX_VIEWER
 			id fileFormatBundle;
-			if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]])
+			if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]))
 			{
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
 				fImage = [decoder checkLoadAtPath:srcFile];

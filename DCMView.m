@@ -957,7 +957,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo]; 
 		
-		NSLog(@"Orientation %d", [printInfo orientation]);
+		NSLog(@"Orientation %d", (int) [printInfo orientation]);
 		
 		NSImage *im = [self nsimage: NO];
 		

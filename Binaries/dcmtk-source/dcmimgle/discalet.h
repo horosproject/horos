@@ -201,12 +201,12 @@ class DiScaleTemplate
                     ofConsole.unlockCerr();
                 }
 #endif
-                fillPixel(dest, value);                                         // ... fill bitmap
+                this->fillPixel(dest, value);                                         // ... fill bitmap
             }
             else if ((this->Src_X == this->Dest_X) && (this->Src_Y == this->Dest_Y))                    // no scaling
             {
                 if ((Left == 0) && (Top == 0) && (Columns == this->Src_X) && (Rows == this->Src_Y))
-                    copyPixel(src, dest);                                       // copying
+                    this->copyPixel(src, dest);                                       // copying
                 else if ((Left >= 0) && (OFstatic_cast(Uint16, Left + this->Src_X) <= Columns) &&
                          (Top >= 0) && (OFstatic_cast(Uint16, Top + this->Src_Y) <= Rows))
                     clipPixel(src, dest);                                       // clipping

@@ -21,6 +21,6 @@
 }
 
 //@property(retain) NSColor* invalidContentBackgroundColor;
-@property(readonly) BOOL formatIsOk;
+@property(nonatomic, readonly) BOOL formatIsOk;
 
 @end

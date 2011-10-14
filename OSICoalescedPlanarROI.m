@@ -83,7 +83,7 @@
 
     maskRuns = [NSMutableArray array];
     
-    if (floatVolume = self.homeFloatVolumeData) {
+    if ((floatVolume = self.homeFloatVolumeData)) {
         for (roi in _sourceROIs) {
             [maskRuns addObjectsFromArray:[[roi ROIMaskForFloatVolumeData:floatVolume] maskRuns]];
         }

@@ -213,7 +213,7 @@
 		texSize.width = [bitmap pixelsWide];
 		texSize.height = [bitmap pixelsHigh];
 		
-		if (cgl_ctx = CGLGetCurrentContext ()) // if we successfully retrieve a current context (required)
+		if ((cgl_ctx = CGLGetCurrentContext ())) // if we successfully retrieve a current context (required)
 		{ 
 			glPushAttrib(GL_TEXTURE_BIT);
 			if (0 != texName) glDeleteTextures( 1, &texName);

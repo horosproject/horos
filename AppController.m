@@ -5028,7 +5028,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
 	
-	dcmView = [[DCMView alloc] initWithSize:NSMakeSize(size,size)];
+	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
 	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];
@@ -5059,7 +5059,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-	dcmView = [[DCMView alloc] initWithSize:NSMakeSize(size,size)];
+	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
 	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];

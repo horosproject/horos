@@ -25,19 +25,19 @@
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
 
-const NSString *filmOrientationTag[] = {@"Portrait", @"Landscape"};
-const NSString *filmDestinationTag[] = {@"Processor", @"Magazine"};
-const NSString *filmSizeTag[] = {@"8 IN x 10 IN", @"8.5 IN x 11 IN", @"10 IN x 12 IN", @"10 IN x 14 IN", @"11 IN x 14 IN", @"11 IN x 17 IN", @"14 IN x 14 IN", @"14 IN x 17 IN", @"24 CM x  24 CM", @"24 CM x  30 CM", @"A4", @"A3"};
-const NSString *magnificationTypeTag[] = {@"NONE", @"BILINEAR", @"CUBIC", @"REPLICATE"};
-const NSString *trimTag[] = {@"NO", @"YES"};
-const NSString *imageDisplayFormatTag[] = {@"Standard 1,1",@"Standard 1,2",@"Standard 2,1",@"Standard 2,2",@"Standard 2,3",@"Standard 2,4",@"Standard 3,3",@"Standard 3,4",@"Standard 3,5",@"Standard 4,4",@"Standard 4,5",@"Standard 4,6",@"Standard 5,6",@"Standard 5,7"};
-const int imageDisplayFormatNumbers[] = {1,2,2,4,6,8,9,12,15,16,20,24,30,35};
-const int imageDisplayFormatRows[] =    {1,1,2,2,2,2,3, 3, 3, 4, 4, 4, 5, 5};
-const int imageDisplayFormatColumns[] = {1,2,1,2,3,4,3, 4, 5, 4, 5, 6, 6, 7};
-const NSString *borderDensityTag[] = {@"BLACK", @"WHITE"};
-const NSString *emptyImageDensityTag[] = {@"BLACK", @"WHITE"};
-const NSString *priorityTag[] = {@"HIGH", @"MED", @"LOW"};
-const NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
+NSString *filmOrientationTag[] = {@"Portrait", @"Landscape"};
+NSString *filmDestinationTag[] = {@"Processor", @"Magazine"};
+NSString *filmSizeTag[] = {@"8 IN x 10 IN", @"8.5 IN x 11 IN", @"10 IN x 12 IN", @"10 IN x 14 IN", @"11 IN x 14 IN", @"11 IN x 17 IN", @"14 IN x 14 IN", @"14 IN x 17 IN", @"24 CM x  24 CM", @"24 CM x  30 CM", @"A4", @"A3"};
+NSString *magnificationTypeTag[] = {@"NONE", @"BILINEAR", @"CUBIC", @"REPLICATE"};
+NSString *trimTag[] = {@"NO", @"YES"};
+NSString *imageDisplayFormatTag[] = {@"Standard 1,1",@"Standard 1,2",@"Standard 2,1",@"Standard 2,2",@"Standard 2,3",@"Standard 2,4",@"Standard 3,3",@"Standard 3,4",@"Standard 3,5",@"Standard 4,4",@"Standard 4,5",@"Standard 4,6",@"Standard 5,6",@"Standard 5,7"};
+int imageDisplayFormatNumbers[] = {1,2,2,4,6,8,9,12,15,16,20,24,30,35};
+int imageDisplayFormatRows[] =    {1,1,2,2,2,2,3, 3, 3, 4, 4, 4, 5, 5};
+int imageDisplayFormatColumns[] = {1,2,1,2,3,4,3, 4, 5, 4, 5, 6, 6, 7};
+NSString *borderDensityTag[] = {@"BLACK", @"WHITE"};
+NSString *emptyImageDensityTag[] = {@"BLACK", @"WHITE"};
+NSString *priorityTag[] = {@"HIGH", @"MED", @"LOW"};
+NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 
 
 @interface AYDicomPrintWindowController (Private)
@@ -80,6 +80,7 @@ const NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 			NSMutableDictionary *mDict = [NSMutableDictionary dictionaryWithDictionary: dict];
 			
 			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmOrientation"] array: filmOrientationTag size: NUM_OF(filmOrientationTag)] forKey: @"filmOrientationTag"];
+             
 			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmDestination"] array: filmDestinationTag size: NUM_OF(filmDestinationTag)] forKey: @"filmDestinationTag"];
 			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"filmSize"] array: filmSizeTag size: NUM_OF(filmSizeTag)] forKey: @"filmSizeTag"];
 			[mDict setObject: [AYDicomPrintWindowController tagForKey: [dict valueForKey: @"magnificationType"] array: magnificationTypeTag size: NUM_OF(magnificationTypeTag)] forKey: @"magnificationTypeTag"];

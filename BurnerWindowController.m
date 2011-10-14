@@ -109,7 +109,7 @@
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
-		files = [theFiles retain];
+		files = [theFiles mutableCopy];
 		burning = NO;
 		
 		[[self window] center];
@@ -292,7 +292,7 @@
 			NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags:panelController.anonymizationViewController.tagsValues];
 			
 			[anonymizedFiles release];
-			anonymizedFiles = [[anonOut allValues] retain];
+			anonymizedFiles = [[anonOut allValues] mutableCopy];
 		}
 		else
 		{

@@ -1174,7 +1174,7 @@ extern int splitPosition[ 3];
 												 :0.0 :0.0 :0.0 :NO];
 		} else {
 			assert(0);
-			newPix = [[DCMView alloc] init];
+			newPix = [[DCMPix alloc] init];
 		}
 		[self.curvedVolumeData releaseInlineBuffer:&inlineBuffer];
 
@@ -1249,7 +1249,7 @@ extern int splitPosition[ 3];
             return 1;
             break;
         default:
-            NSLog(@"%s asking for invalid clipping range mode: %d", __func__,  clippingRangeMode);
+            NSLog(@"%s asking for invalid clipping range mode: %d", __func__,  (int) clippingRangeMode);
             return 0;
             break;
     }

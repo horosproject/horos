@@ -22,7 +22,7 @@
 }
 
 @property(readonly, retain) NSString* identifier;
-@property BOOL autosave;
+@property(nonatomic) BOOL autosave;
 
 +(N2UserDefaults*)defaultsForObject:(id)o __deprecated;
 +(N2UserDefaults*)defaultsForClass:(Class)c __deprecated;

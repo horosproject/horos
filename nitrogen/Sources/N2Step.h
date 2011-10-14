@@ -27,12 +27,12 @@ extern NSString* N2StepTitleDidChangeNotification;
 	BOOL _necessary, _active, _enabled, _done, _shouldStayVisibleWhenInactive;
 }
 
-@property(retain) NSString* title;
+@property(nonatomic, retain) NSString* title;
 @property(readonly) NSView* enclosedView;
 @property(retain) NSButton* defaultButton;
 @property(getter=isNecessary) BOOL necessary;
-@property(getter=isActive) BOOL active;
-@property(getter=isEnabled) BOOL enabled;
+@property(nonatomic, getter=isActive) BOOL active;
+@property(nonatomic, getter=isEnabled) BOOL enabled;
 @property(getter=isDone) BOOL done;
 @property BOOL shouldStayVisibleWhenInactive;
 

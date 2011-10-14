@@ -1435,7 +1435,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		// Take the most recent series
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) annotationsSRImage: Delete the extra series and merge the images...", [newArray count]);
+			NSLog( @"****** multiple (%d) annotationsSRImage: Delete the extra series and merge the images...", (int) [newArray count]);
 			
 			@try
 			{
@@ -1527,7 +1527,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", [newArray count]);
+			NSLog( @"****** multiple (%d) reportSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
 			
 			@try
 			{
@@ -1584,7 +1584,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		
 		if( [newArray count] > 1)
 		{
-			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", [newArray count]);
+			NSLog( @"****** multiple (%d) roiSRSeries: Delete the extra series and merge the images...", (int) [newArray count]);
 			
 			@try
 			{
@@ -1644,7 +1644,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
-			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", [found count]);
+			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
 			
 			// Merge the other ROIs with this ROI, and empty the old ones
 			NSMutableArray *r = [NSMutableArray array];

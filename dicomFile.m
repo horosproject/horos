@@ -1700,7 +1700,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		if([allLines count] > 0)
 		{
-			NSLog(@"allLines Count:  %d", [allLines count]);
+			NSLog(@"allLines Count:  %d", (int) [allLines count]);
 			for(id loopItem1 in allLines)
 			{
 				NSString* aLine = (NSString *) loopItem1;
@@ -2852,7 +2852,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 							if( NoOfFrames == sliceLocationArray.count)
 								[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 							else
-								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%ld, %d)", NoOfFrames, sliceLocationArray.count);
+								NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
 						}
                         
                         if( imageCardiacTriggerArray.count)
@@ -2860,7 +2860,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                             if( NoOfFrames == imageCardiacTriggerArray.count)
                                 [dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
 							else
-								NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageCardiacTriggerArray.count);
+								NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%d, %d)", (int) NoOfFrames, (int) imageCardiacTriggerArray.count);
                             
 						}
 					} // if ...there is a sequence of groups
@@ -3757,7 +3757,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	id fileFormatBundle;
 	
-	if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension])
+	if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension]))
 	{
 		fileType = [[NSString stringWithString:@"IMAGE"] retain];
 		

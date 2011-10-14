@@ -112,7 +112,7 @@ extern short Altivec;
 	wl = 0;
 	ww = 0;
 	
-	NSLog( @"Count: %d", count);
+	NSLog( @"Count: %d", (int) count);
 	
 	// VIMAGE CONVERTER
 	

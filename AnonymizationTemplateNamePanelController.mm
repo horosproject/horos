@@ -31,7 +31,7 @@
 
 -(id)initWithReplaceValues:(NSArray*)values {
 	self = [super initWithWindowNibName:@"AnonymizationTemplateNamePanel"];
-	self.window; // load
+	[self window]; // load
 	
 	self.replaceValues = values;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeTextDidChangeNotification:) name:NSControlTextDidChangeNotification object:self.nameField];

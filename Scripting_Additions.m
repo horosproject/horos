@@ -29,7 +29,7 @@
 		return(nil);
 	}
 
-	if (hfsStyle = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle))
+	if ((hfsStyle = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle)))
 	{
 		CFRelease(url);
 		return  [((NSString*) hfsStyle) autorelease];

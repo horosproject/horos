@@ -2354,7 +2354,7 @@ static NSConditionLock *threadLock = nil;
 	if( [copyArray count])
 	{
 		NSLog( @"______________________________________________");
-		NSLog( @" Autorouting Queue START: %d objects", [copyArray count]);
+		NSLog( @" Autorouting Queue START: %d objects", (int) [copyArray count]);
 		for ( NSDictionary *copy in copyArray)
 		{
 			NSArray			*objectsToSend = [copy objectForKey:@"objects"];
@@ -4151,7 +4151,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"] && filesInput.count > 0)
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
 	}
 	
@@ -8115,14 +8115,14 @@ static NSConditionLock *threadLock = nil;
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
 	
 	[draggedItems release];
-	draggedItems = [pbItems retain];
+	draggedItems = [pbItems mutableCopy];
 	return YES;
 }
 
 - (void) setDraggedItems:(NSArray*) pbItems
 {
 	[draggedItems release];
-	draggedItems = [pbItems retain];
+	draggedItems = [pbItems mutableCopy];
 }
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
@@ -15442,8 +15442,8 @@ static NSArray*	openSubSeriesArray = nil;
 	//////////////////////////////////////////////////
 	
     if( deleteQueueArray == nil) deleteQueueArray = [[NSMutableArray array] retain];
-	if( deleteQueue == nil) deleteQueue = [[NSLock alloc] init];
-	if( deleteInProgress == nil) deleteInProgress = [[NSLock alloc] init];
+	if( deleteQueue == nil) deleteQueue = [[NSRecursiveLock alloc] init];
+	if( deleteInProgress == nil) deleteInProgress = [[NSRecursiveLock alloc] init];
     
      if( [deleteInProgress tryLock])
      {
@@ -15489,8 +15489,8 @@ static NSArray*	openSubSeriesArray = nil;
 - (void)addFileToDeleteQueue: (NSString*)file
 {
 	if( deleteQueueArray == nil) deleteQueueArray = [[NSMutableArray array] retain];
-	if( deleteQueue == nil) deleteQueue = [[NSLock alloc] init];
-	if( deleteInProgress == nil) deleteInProgress = [[NSLock alloc] init];
+	if( deleteQueue == nil) deleteQueue = [[NSRecursiveLock alloc] init];
+	if( deleteInProgress == nil) deleteInProgress = [[NSRecursiveLock alloc] init];
 	
 	[deleteQueue lock];
 	if( file)

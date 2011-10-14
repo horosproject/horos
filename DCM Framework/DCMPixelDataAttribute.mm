@@ -791,7 +791,7 @@ static inline int int_ceildivpow2(int a, int b) {
 		_framesDecoded = nil;
 		
 		if (dicomData) 
-			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] retain];
+			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] mutableCopy];
 		else
 			_values = [[NSMutableArray array] retain];
 		

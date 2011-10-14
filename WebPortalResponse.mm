@@ -145,22 +145,22 @@
 		keyPath = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."];
 	}*/
 
-	if ([o isKindOfClass:NSString.class])
+	if ([o isKindOfClass: [NSString class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[StringTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:NSDate.class])
+	if ([o isKindOfClass: [NSDate class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
 //	if ([o isKindOfClass:NSArray.class])
 //		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
 //	if ([o isKindOfClass:NSSet.class])
 //		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:WebPortalUser.class])
+	if ([o isKindOfClass: [WebPortalUser class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalUserTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:DicomStudy.class])
+	if ([o isKindOfClass: [DicomStudy class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomStudyTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass:DicomSeries.class])
+	if ([o isKindOfClass: [DicomSeries class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomSeriesTransformer create]] valueForKeyPath:keyPath context:context];
 	
-	if ([o isKindOfClass:NSManagedObject.class])
+	if ([o isKindOfClass: [NSManagedObject class]])
 		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalProxyObjectTransformer create]] valueForKeyPath:keyPath context:context];
 
 	/*@try {
@@ -172,10 +172,10 @@
 	
 	@try {
 		id value = NULL;
-		if ([o isKindOfClass:WebPortalProxy.class])
+		if ([o isKindOfClass: [WebPortalProxy class]])
 			value = [o valueForKey:part0 context:context];
 		else {
-			if ([o isKindOfClass:NSArray.class] || [o isKindOfClass:NSSet.class])
+			if ([o isKindOfClass: [NSArray class]] || [o isKindOfClass: [NSSet class]])
 				part0 = [@"@" stringByAppendingString:part0];
 			value = [o valueForKey:part0];
 		}
@@ -213,7 +213,7 @@
 		NSMutableDictionary* idict = [[dict mutableCopy] autorelease];
 		NSInteger c = 0;
 		id array = [self object:dict valueForKeyPath:arrayName context:context];
-		if ([array isKindOfClass:NSSet.class])
+		if ([array isKindOfClass: [NSSet class]])
 			array = [array allObjects];
 		for (id i in array) {
 			[idict setObject:i forKey:iName];
@@ -272,7 +272,7 @@
 					else vr = [self object:dict valueForKeyPath:sr context:context];
 					
 					if ([vl isKindOfClass:[vr class]] || [vr isKindOfClass:[vl class]])
-						if ([vl isKindOfClass:NSString.class] || [vl isKindOfClass:NSNumber.class]) {
+						if ([vl isKindOfClass:[NSString class]] || [vl isKindOfClass:[NSNumber class]]) {
 							NSComparisonResult cr = [(NSNumber*)vl compare:(NSNumber*)vr];
 							NSString* op = [condition substringWithRange:NSMakeRange(sl.length, condition.length-sl.length-sr.length)];
 							
@@ -470,7 +470,7 @@
 
 -(id)valueForKey:(NSString*)key object:(NSObject*)o context:(WebPortalConnection*)wpc {
 
-	if ([o isKindOfClass:NSManagedObject.class] && [key isEqual:@"isSelected"]) {
+	if ([o isKindOfClass: [NSManagedObject class]] && [key isEqual:@"isSelected"]) {
 		NSString* xid = ((NSManagedObject*)o).XID;
 		for (NSString* selectedID in [WebPortalConnection MakeArray:[wpc.parameters objectForKey:@"selected"]])
 			if ([selectedID isEqualToString:xid])

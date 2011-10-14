@@ -31,8 +31,8 @@ extern NSString* N2ViewBoundsSizeDidChangeNotificationOldBoundsSize;
 @property NSControlSize controlSize;
 @property NSSize minSize, maxSize;
 @property(retain) N2Layout* layout;
-@property(retain) NSColor* foreColor;
-@property(retain) NSColor* backColor;
+@property(nonatomic, retain) NSColor* foreColor;
+@property(nonatomic, retain) NSColor* backColor;
 
 -(void)formatSubview:(NSView*)view;
 -(void)resizeSubviews;

@@ -24,7 +24,7 @@
 }
 
 +(NSTextView*)labelWithText:(NSString*)text alignment:(NSTextAlignment)alignment {
-	NSTextView* ret = [[NSTextView alloc] initWithSize:NSZeroSize];
+	NSTextView* ret = [[NSTextView alloc] initWithFrame:NSZeroRect];
 	[ret setString:text];
 	[ret setAlignment:alignment];
 	[ret setEditable:NO];

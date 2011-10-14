@@ -243,7 +243,7 @@ static float deg2rad = M_PI/180.0;
 	
 	char* textureBuffer = [pix baseAddr];
 	
-	GLuint textureName = -1;
+	GLuint textureName = 0;
 	
 	if( textureBuffer)
 	{
@@ -377,7 +377,6 @@ static float deg2rad = M_PI/180.0;
 				
 				GLuint textureId = [self generateTextureForSlice:correctedZ movieIndex:t arrayIndex:i];
 				
-				if( textureId >= 0)
 				{
 					DCMPix *pix = [pixList objectAtIndex:correctedZ];
 					

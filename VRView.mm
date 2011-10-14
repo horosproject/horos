@@ -552,7 +552,7 @@ public:
 	[controller print: sender];
 }
 
-- (void)getOrientationText:(char *) o : (float *) vector :(BOOL) inv
+- (void)getOrientationText:(char *) o vector: (float *) vector inversion:(BOOL) inv
 {	
 	NSString *orientationX;
 	NSString *orientationY;
@@ -2508,16 +2508,16 @@ public:
 	
 	[self getOrientation: vectors];
 	
-	[self getOrientationText:string :vectors :YES];
+	[self getOrientationText:string vector:vectors inversion:YES];
 	oText[ 0]->SetInput( string);
 	
-	[self getOrientationText:string :vectors :NO];
+	[self getOrientationText:string vector:vectors inversion:NO];
 	oText[ 1]->SetInput( string);
 	
-	[self getOrientationText:string :vectors+3 :NO];
+	[self getOrientationText:string vector:vectors+3 inversion:NO];
 	oText[ 2]->SetInput( string);
 	
-	[self getOrientationText:string :vectors+3 :YES];
+	[self getOrientationText:string vector:vectors+3 inversion:YES];
 	oText[ 3]->SetInput( string);
 }
 

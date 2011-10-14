@@ -847,7 +847,7 @@ OFCondition MdfDatasetManager::hasValidGroupNumber(const DcmTagKey &key)
     OFString msg;
     unsigned int group=key.getGroup();
     //if group is 0 or 2 return error, these tags shouldn't be modified directly
-    if ( (group==0))	//|| (group==2) )
+    if ( group==0)	//|| (group==2) )
     {
         return makeOFCondition(OFM_dcmdata,22,OF_error,
         "Dcmodify won't insert/modify tags with group 0000 or 0002!");

@@ -856,14 +856,14 @@ extern NSRecursiveLock *PapyrusLock;
 			if( NoOfFrames == sliceLocationArray.count)
 				[dicomElements setObject: sliceLocationArray forKey:@"sliceLocationArray"];
 			else
-				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", NoOfFrames, sliceLocationArray.count);
+				NSLog( @"*** NoOfFrames != sliceLocationArray.count for MR/CT multiframe sliceLocation computation (%d, %d)", (int) NoOfFrames, (int) sliceLocationArray.count);
 		}
 		if( imageCardiacTriggerArray.count)
 		{
 			if( NoOfFrames == imageCardiacTriggerArray.count)
 				[dicomElements setObject: imageCardiacTriggerArray forKey:@"imageCommentPerFrame"];
 			else
-				NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%ld, %d)", NoOfFrames, imageCardiacTriggerArray.count);
+				NSLog( @"*** NoOfFrames != imageCardiacTriggerArray.count for MR/CT multiframe image type frame computation (%d, %d)", (int) NoOfFrames, (int) imageCardiacTriggerArray.count);
 			
 		}
 		

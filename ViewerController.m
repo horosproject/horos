@@ -18378,7 +18378,7 @@ int i,j,l;
 	
 	if( pts)
 	{
-		NSLog( @"number of points: %d", [*pts count]);
+		NSLog( @"number of points: %d", (int) [*pts count]);
 		
 		#define MAXPOINTS 7000
 		
@@ -18395,7 +18395,7 @@ int i,j,l;
 					[newpts addObject: [*pts objectAtIndex: i]];
 				}
 				
-				NSLog( @"too much points, reducing from: %d, to: %d", [*pts count], [newpts count]);
+				NSLog( @"too much points, reducing from: %d, to: %d", (int) [*pts count], (int) [newpts count]);
 				
 				[*pts removeAllObjects];
 				[*pts addObjectsFromArray: newpts];
@@ -18988,7 +18988,7 @@ int i,j,l;
 	SRController *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	if (viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]])
+	if ((viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]]))
 		return viewer;
 	viewer = [[SRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
 	return viewer;
@@ -19089,7 +19089,7 @@ int i,j,l;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-	if (viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]])
+	if ((viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]]))
 		return viewer;
 		
 	if (blendingController)
