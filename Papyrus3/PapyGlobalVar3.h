@@ -438,7 +438,7 @@ WHERE3 char            *sLabel_MR_Image [49];
 WHERE3 char            *sLabel_Multi_Frame [3];
 WHERE3 char            *sLabel_Multi_frame_Overlay [3];
 WHERE3 char            *sLabel_NM_Detector [2];
-WHERE3 char            *sLabel_NM_Image [20];
+WHERE3 char            *sLabel_NM_Image [23];
 WHERE3 char            *sLabel_NM_Image_Pixel [7];
 WHERE3 char            *sLabel_NM_Isotope [4];
 WHERE3 char            *sLabel_NM_Multi_Frame [18];
