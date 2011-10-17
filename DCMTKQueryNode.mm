@@ -644,6 +644,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					string = [(NSString*)value cStringUsingEncoding:encoding];
 					dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
 				}
+                else if ([key isEqualToString:@"Modality"])
+				{
+					string = [(NSString*)value cStringUsingEncoding:encoding];
+					dataset->putAndInsertString(DCM_Modality, string);
+				}
 			}
 		}
 		

@@ -1736,7 +1736,10 @@ extern "C"
 					
 					if ([modalityQueryFilter object])
 					{
-						[queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+                            [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                        else
+                            [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"Modality"];
 						queryItem = YES;
 					}
 					
@@ -2092,7 +2095,58 @@ extern "C"
 		
 		for( id item in list)
 		{
-			[self addStudyIfNotAvailable: item toArray: selectedItems];
+            BOOL addItem = YES;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_CheckForDuplicateAccessionNumber"])
+            {
+                for( id study in selectedItems)
+                {
+                    if( [[study valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]])
+                    {
+                        NSLog( @"--- Identical AccessionNumber: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
+                        
+                        addItem = NO;
+                        break;
+                    }
+                }
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontReDownloadStudies"])
+            {
+                @synchronized( self)
+                {
+                    if( downloadedStudies == nil)
+                        downloadedStudies = [[NSMutableArray alloc] init];
+                    
+                    for( NSDictionary *d in [NSArray arrayWithArray: downloadedStudies])
+                    {
+                        if( [[d valueForKey: @"date"] timeIntervalSinceNow] > -60*60) // 1 hour - dont redownload it !
+                        {
+                            if( [[d valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]] && [[d valueForKey: @"numberImages"] intValue] == [[item valueForKey: @"numberImages"] intValue])
+                            {
+                                addItem = NO;
+                            
+                                NSLog( @"--- Already downloaded during last hour: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
+                            }
+                        }
+                        else [downloadedStudies removeObject: d];
+                    }
+                }
+            }
+            
+            if( addItem)
+            {
+                [self addStudyIfNotAvailable: item toArray: selectedItems];
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontReDownloadStudies"])
+                {
+                    @synchronized( self)
+                    {
+                        [downloadedStudies addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSDate date], @"date", [item valueForKey: @"accessionNumber"], @"accessionNumber", [item valueForKey: @"numberImages"], @"numberImages", nil]];
+                    }
+                }
+            }
+                
 			if( [selectedItems count] >= 10) break;
 		}
 		
@@ -2916,10 +2970,20 @@ extern "C"
 		}
 	}
 	
-	if ( [m length])
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject:m ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
-	else
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+    {
+        if( [m length])
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+        else
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+    }
+    else
+    {
+        if( [m length])
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+        else
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+    }
 }
 
 
@@ -3471,13 +3535,16 @@ extern "C"
 	//set up Query Keys
 	currentQueryKey = PatientName;
 	
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
-	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
-	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
-	
+	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
+	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyTime"] retain];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+	else
+        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
-
     
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];

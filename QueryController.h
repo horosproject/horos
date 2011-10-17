@@ -75,6 +75,8 @@
     
     NSTimeInterval                          lastTemporaryCFindResultUpdate;
     NSMutableArray                          *temporaryCFindResultArray;
+    
+    NSMutableArray                          *downloadedStudies;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
