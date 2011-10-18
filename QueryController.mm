@@ -2087,7 +2087,7 @@ extern "C"
 	
 	[autoQueryLock lock];
 	
-	// Start to retrieve the first 10 studies...
+	// Start to retrieve the first XX studies...
 	
 	@try 
 	{
@@ -2147,7 +2147,7 @@ extern "C"
                 }
             }
                 
-			if( [selectedItems count] >= 10) break;
+			if( [selectedItems count] >= [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfRetrieveForAutoQR"]) break;
 		}
 		
 		if( [selectedItems count])
@@ -3032,6 +3032,17 @@ extern "C"
                     
                     date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours];
                     between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    
+                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                }
+                else if( [sender selectedTag] >= 200 && [sender selectedTag] <= 300)
+                {
+                    int min = [sender selectedTag] - 200;
+                    
+                    searchType = searchAfter;
+                    
+                    date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*min];
+                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"]];
                     
                     timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
                 }
