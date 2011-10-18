@@ -493,19 +493,19 @@
 
 -(id)valueForKey:(NSString*)key object:(WebPortalConnection*)wpc context:(WebPortalConnection*)wpcagain {
 	if ([key isEqual:@"isIOS"])
-		return [NSNumber numberWithBool:wpc.requestIsIOS];
+		return [NSNumber numberWithBool: wpc.requestIsIOS];
 	if ([key isEqual:@"isMacOS"])
-		return [NSNumber numberWithBool:wpc.requestIsMacOS];
+		return [NSNumber numberWithBool: wpc.requestIsMacOS];
 	if ([key isEqual:@"proposeWeasis"])
-		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS ];
+		return [NSNumber numberWithBool: wpc.portal.weasisEnabled && !wpc.requestIsIOS];
 	if ([key isEqual:@"proposeFlash"])
-		return [NSNumber numberWithBool: wpc.portal.flashEnabled && !wpc.requestIsIOS ];
+		return [NSNumber numberWithBool: wpc.portal.flashEnabled && !wpc.requestIsIOS];
 	if ([key isEqual:@"authenticationRequired"])
-		return [NSNumber numberWithBool: wpc.portal.authenticationRequired && !wpc.user ];
+		return [NSNumber numberWithBool: wpc.portal.authenticationRequired && !wpc.user];
 	if ([key isEqual:@"newToken"])
 		return [wpc.session createToken];
 	if ([key isEqual:@"passwordRestoreAllowed"])
-		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed ];
+		return [NSNumber numberWithBool: wpc.portal.passwordRestoreAllowed];
 	if ([key isEqual:@"baseUrl"])
 		return wpc.portalURL;
 	if ([key isEqual:@"dicomCStorePort"])
@@ -513,13 +513,11 @@
 	if ([key isEqual:@"newChallenge"])
 		return [wpc.session newChallenge];
 	if ([key isEqual:@"proposeDicomUpload"])
-		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS ];
-	if ([key isEqual:@"proposeDicomSend"]) {
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS];
+	if ([key isEqual:@"proposeDicomSend"])
 		return [NSNumber numberWithBool: !wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue)]; 
-	}
-	if ([key isEqual:@"proposeWADORetrieve"]) {
-		return [NSNumber numberWithBool: [[NSUserDefaults standardUserDefaults] boolForKey:@"wadoServer"] && (!wpc.user || wpc.user.sendDICOMtoSelfIP.boolValue || (wpc.user.sendDICOMtoAnyNodes.boolValue))]; 
-	}
+	if ([key isEqual:@"proposeWADORetrieve"])
+		return [NSNumber numberWithBool: wpc.portal.weasisEnabled]; 
 	if ([key isEqual:@"WADOBaseURL"])
 	{
 		NSString *protocol = [[NSUserDefaults standardUserDefaults] boolForKey:@"encryptedWebServer"] ? @"https" : @"http";
@@ -533,7 +531,7 @@
 		return baseURL; 
 	}
 	if ([key isEqual:@"proposeZipDownload"])
-		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS ];
+		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS];
 	
 	if ([key isEqual:@"proposeShare"])
 		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue) {

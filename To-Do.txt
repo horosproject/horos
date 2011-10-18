@@ -2,8 +2,6 @@ New Features:
 - DICOM Q&R: realtime C-Find updates
 - OsiriX SDK (see plugin)
 
-- Bug transfer OsiriX Web server? -> Activate OsiriX Download if wado activated, and Weasis+OsiriX available.
-
 A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
