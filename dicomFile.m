@@ -2075,102 +2075,70 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				else Modality = [[NSString alloc] initWithString:@"OT"];
 				[dicomElements setObject:Modality forKey:@"modality"];
 				
+                NSString *studyTime = nil, *studyDate = nil;
+                
 				val = Papy3GetElement (theGroupP, papImageDateGr, &nbVal, &itemType);
-				if (val != NULL && val->a && validAPointer( itemType))
-				{
-					NSString *studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-					if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-					
-					val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
-					if (val != NULL && val->a && validAPointer( itemType))
-					{
-						NSString*   completeDate;
-						NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-						
-						completeDate = [studyDate stringByAppendingString:studyTime];
-						
-						if( [studyTime length] >= 6)
-							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-						else
-							date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
-					}
-					else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
+				if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                    studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                else
+                {
+                    val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
+					if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                        studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                    else
+                    {
+                        val = Papy3GetElement (theGroupP, papSeriesDateGr, &nbVal, &itemType);
+                        if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                            studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                        else
+                        {
+                            val = Papy3GetElement (theGroupP, papStudyDateGr, &nbVal, &itemType);
+                            if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                                studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                        }
+                    }
+                }
+                if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
+                
+                val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
+                if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                    studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                else
+                {
+                    val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
+                    if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                        studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                    else
+                    {
+                        val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &itemType);
+                        if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                            studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                        else
+                        {
+                            val = Papy3GetElement (theGroupP, papStudyTimeGr, &nbVal, &itemType);
+                            if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                                studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                        }
+                    }
+                }
+                
+                if( studyDate && studyTime)
+                {
+                    NSString *completeDate = [studyDate stringByAppendingString:studyTime];
+                    
+                    if( [studyTime length] >= 6)
+                        date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
+                    else
+                        date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
 				}
-				else
-				{
-					val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
-					if (val != NULL && val->a && validAPointer( itemType))
-					{
-						NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-						if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-						
-						val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
-						if (val != NULL && val->a && validAPointer( itemType))
-						{
-							NSString*   completeDate;
-							NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-							
-							completeDate = [studyDate stringByAppendingString:studyTime];
-							
-							if( [studyTime length] >= 6)
-								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-							else
-								date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
-						}
-						else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-					}
-					else
-					{
-						val = Papy3GetElement (theGroupP, papSeriesDateGr, &nbVal, &itemType);
-						if (val != NULL && val->a && validAPointer( itemType))
-						{
-							NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-							if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-							
-							val = Papy3GetElement (theGroupP, papSeriesTimeGr, &nbVal, &itemType);
-							if (val != NULL && val->a && validAPointer( itemType))
-							{
-								NSString*   completeDate;
-								NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-								
-								completeDate = [studyDate stringByAppendingString:studyTime];
-								
-								if( [studyTime length] >= 6)
-									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-								else
-									date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
-							}
-							else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-						}
-						else
-						{
-							val = Papy3GetElement (theGroupP, papStudyDateGr, &nbVal, &itemType);
-							if (val != NULL && val->a && validAPointer( itemType))
-							{
-								NSString	*studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-								if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
-								
-								val = Papy3GetElement (theGroupP, papStudyTimeGr, &nbVal, &itemType);
-								if (val != NULL && val->a && validAPointer( itemType))
-								{
-									NSString*   completeDate;
-									NSString*   studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-									
-									completeDate = [studyDate stringByAppendingString:studyTime];
-									
-									if( [studyTime length] >= 6)
-										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M%S"];
-									else
-										date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
-								}
-								else date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-							}
-							else date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
-						}
-					}
-				}
-				
-				if( date) [dicomElements setObject:date forKey:@"studyDate"];
+                else if( studyDate)
+                    date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
+                
+                else
+                    date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
+                
+				if( date)
+                    [dicomElements setObject:date forKey:@"studyDate"];
 				
 				 val = Papy3GetElement (theGroupP, papSeriesDescriptionGr, &nbVal, &itemType);
 				if (val != NULL && val->a && validAPointer( itemType)) serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
