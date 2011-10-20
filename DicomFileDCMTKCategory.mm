@@ -441,16 +441,16 @@ extern NSRecursiveLock *PapyrusLock;
         if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 		
         NSString* studyTime = nil;
-        if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+        if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
-        else if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+        else if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
-        else if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+        else if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
-        else if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+        else if (dataset->findAndGetString(DCM_StudyTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
         if( studyDate && studyTime)
@@ -463,8 +463,10 @@ extern NSRecursiveLock *PapyrusLock;
                 date = [[NSCalendarDate alloc] initWithString:completeDate calendarFormat:@"%Y%m%d%H%M"];
         }
         else if( studyDate)
-            date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat:@"%Y%m%d"];
-        
+        {
+            studyDate = [studyDate stringByAppendingString: @"120000"];
+            date = [[NSCalendarDate alloc] initWithString:studyDate calendarFormat: @"%Y%m%d%H%M%S"];
+        }
         else
             date = [[NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil] retain];
         
