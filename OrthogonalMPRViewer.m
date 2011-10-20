@@ -24,6 +24,10 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import "N2Debug.h"
 
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
+
 static NSString* 	PETCTToolbarIdentifier					= @"MPROrtho Viewer Toolbar Identifier";
 static NSString*	AdjustSplitViewToolbarItemIdentifier	= @"sameSizeSplitView";
 //static NSString*	TurnSplitViewToolbarItemIdentifier		= @"turnSplitView";
@@ -1943,33 +1947,42 @@ return YES;
 	return viewer;
 }
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy*) currentStudy
+{
 	return [viewer currentStudy];
 }
-- (NSManagedObject *)currentSeries{
+- (DicomSeries*) currentSeries
+{
 	return [viewer currentSeries];
 }
 
-- (NSManagedObject *)currentImage{
+- (DicomImage*) currentImage
+{
 	return [viewer currentImage];
 }
 
--(float)curWW{
+-(float)curWW
+{
 	return [viewer curWW];
 }
 
--(float)curWL{
+-(float)curWL
+{
 	return [viewer curWL];
 }
-- (NSString *)curCLUTMenu{
+- (NSString *)curCLUTMenu
+{
 	return curCLUTMenu;
 }
-- (NSString *)curOpacityMenu{
+- (NSString *)curOpacityMenu
+{
 	return curOpacityMenu;
 }
 
-- (void)setCurrentTool:(int)currentTool{
-	if (currentTool >= 0) {
+- (void)setCurrentTool:(int)currentTool
+{
+	if (currentTool >= 0)
+    {
 		[controller setCurrentTool: currentTool];
 		[toolsMatrix selectCellWithTag:currentTool];
 	}

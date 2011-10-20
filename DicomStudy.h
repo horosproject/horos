@@ -60,12 +60,13 @@
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
 - (NSSet *) keyImages;
+- (NSSet *) images;
 - (NSString*) modalities;
-- (NSArray *)imageSeries;
-- (NSArray *)keyObjectSeries;
-- (NSArray *)keyObjects;
-- (NSArray *)presentationStateSeries;
-- (NSArray *)waveFormSeries;
+- (NSArray *) imageSeries;
+- (NSArray *) keyObjectSeries;
+- (NSArray *) keyObjects;
+- (NSArray *) presentationStateSeries;
+- (NSArray *) waveFormSeries;
 - (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSString*) roiPathForImage: (DicomImage*) image;
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
@@ -81,7 +82,7 @@
 - (NSDictionary*) annotationsAsDictionary;
 - (void) applyAnnotationsFromDictionary: (NSDictionary*) rootDict;
 - (void) reapplyAnnotationsFromDICOMSR;
-- (NSComparisonResult)compareName:(DicomStudy*)study;
+- (NSComparisonResult) compareName:(DicomStudy*)study;
 
 @end
 

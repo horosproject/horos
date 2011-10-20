@@ -22,7 +22,7 @@
 
 @implementation DCMTKServiceClassUser
 
-@synthesize _abortAssociation;
+@synthesize _abortAssociation, _hostname, _port;
 
 - (id) initWithCallingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  

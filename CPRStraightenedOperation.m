@@ -291,7 +291,7 @@ static NSOperationQueue *_straightenedOperationFillQueue = nil;
                 if (oustandingFillOperationCount == 0) { // done with the fill operations, now do the projection
                     volumeTransform = N3AffineTransformMakeScale(1.0/_sampleSpacing, 1.0/_sampleSpacing, 1.0/[self _slabSampleDistance]);
                     generatedVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes pixelsWide:self.request.pixelsWide pixelsHigh:self.request.pixelsHigh pixelsDeep:[self _pixelsDeep]
-                                                                      volumeTransform:volumeTransform freeWhenDone:YES];
+                                                                      volumeTransform:volumeTransform outOfBoundsValue:_volumeData.outOfBoundsValue freeWhenDone:YES];
                     _floatBytes = NULL;
                     projectionOperation = [[CPRProjectionOperation alloc] init];
 					[projectionOperation setQueuePriority:[self queuePriority]];

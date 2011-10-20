@@ -171,7 +171,7 @@
 				[newpts addObject: [pts objectAtIndex: i]];
 			}
 			
-			NSLog( @"too much points, reducing from: %d, to: %d", [pts count], [newpts count]);
+			NSLog( @"too much points, reducing from: %d, to: %d", (int) [pts count], (int) [newpts count]);
 			
 			pts = newpts;
 		}

@@ -27,7 +27,7 @@
 
 @property(retain) NSProgressIndicator* progressIndicator;
 @property(retain) NSButton* cancelButton;
-@property(retain) NSThread* thread;
+@property(nonatomic, retain) NSThread* thread;
 @property(retain, readonly) ThreadsManager* manager;
 @property(retain, readonly) NSTableView* view;
 

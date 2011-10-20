@@ -18,6 +18,10 @@
 #import "DCMCursor.h"
 #import "ROI.h"
 #import "Notifications.h"
+#import "OSIEnvironment.h"
+#import "OSIROI.h"
+#import "OSIVolumeWindow.h"
+#import "OSIGeometry.h"
 
 static float deg2rad = M_PI/180.0; 
 
@@ -46,6 +50,12 @@ BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 static	int splitPosition[ 2];
 static	BOOL frameZoomed = NO;
+
+@interface MPRDCMView ()
+- (void)drawOSIROIs;
+- (OSIROIManager *)ROIManager;
+- (N3Plane)plane;
+@end
 
 @implementation MPRDCMView
 
@@ -136,6 +146,8 @@ static	BOOL frameZoomed = NO;
 
 - (void) setFrame:(NSRect)frameRect
 {
+    NSDisableScreenUpdates();
+    
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
@@ -149,6 +161,8 @@ static	BOOL frameZoomed = NO;
 	}
 	
 	[super setFrame: frameRect];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void) checkForFrame
@@ -832,6 +846,8 @@ static	BOOL frameZoomed = NO;
 			glEnd();
 		}
 	}
+    
+    [self drawOSIROIs];
 	
 	glDisable(GL_LINE_SMOOTH);
 	glDisable(GL_POLYGON_SMOOTH);
@@ -877,6 +893,43 @@ static	BOOL frameZoomed = NO;
 		[windowController propagateWLWW: self];
 	}
 }
+
+- (N3AffineTransform)pixToDicomTransform // converts points in the DCMPix's coordinate space ("Slice Coordinates") into the DICOM space (patient space with mm units)
+{
+    N3AffineTransform pixToDicomTransform;
+    double spacingX;
+    double spacingY;
+    //    double spacingZ;
+    double orientation[9];
+    
+    memset(orientation, 0, sizeof(double) * 9);
+    [pix orientationDouble:orientation];
+    spacingX = pix.pixelSpacingX;
+    spacingY = pix.pixelSpacingY;
+    //    spacingZ = pix.sliceInterval;
+    
+    pixToDicomTransform = N3AffineTransformIdentity;
+    pixToDicomTransform.m41 = pix.originX;
+    pixToDicomTransform.m42 = pix.originY;
+    pixToDicomTransform.m43 = pix.originZ;
+    pixToDicomTransform.m11 = orientation[0]*spacingX;
+    pixToDicomTransform.m12 = orientation[1]*spacingX;
+    pixToDicomTransform.m13 = orientation[2]*spacingX;
+    pixToDicomTransform.m21 = orientation[3]*spacingY;
+    pixToDicomTransform.m22 = orientation[4]*spacingY;
+    pixToDicomTransform.m23 = orientation[5]*spacingY;
+    pixToDicomTransform.m31 = orientation[6];
+    pixToDicomTransform.m32 = orientation[7];
+    pixToDicomTransform.m33 = orientation[8];
+    
+#ifndef NDEBUG
+	if( isnan( pix.pixelSpacingX) || isnan( pix.pixelSpacingY) || pix.pixelSpacingX <= 0 || pix.pixelSpacingY <= 0 || pix.pixelSpacingX > 1000 || pix.pixelSpacingY > 1000)
+		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+#endif
+	
+    return pixToDicomTransform;
+}
+
 
 #pragma mark-
 #pragma mark 3D ROI Point	
@@ -1643,6 +1696,75 @@ static	BOOL frameZoomed = NO;
 		[view mouseMoved:theEvent];
 	}
 }
+
+#pragma mark-
+#pragma mark Private Methods
+- (void)drawOSIROIs
+{
+    double pixToSubdrawRectOpenGLTransform[16];
+    CGLContextObj cgl_ctx;
+    OSIROI *roi;
+    
+    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    
+    if ([self ROIManager] == nil) {
+        return;
+    }
+    
+    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+    
+    for (roi in [[self ROIManager] ROIs]) {
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+        
+        [roi drawSlab:OSISlabMake([self plane], 0) inCGLContext:cgl_ctx pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+                dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+        
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+        
+    }
+}
+
+- (OSIROIManager *)ROIManager
+{
+    if (_ROIManager == nil) {
+        OSIEnvironment *environment;
+        OSIVolumeWindow *volumeWindow;
+        environment = [OSIEnvironment sharedEnvironment];
+        
+        if (environment == nil) {
+            return nil;
+        }
+        
+        volumeWindow = [environment volumeWindowForViewerController:[windowController viewer]];
+        _ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:volumeWindow coalesceROIs:YES];
+    }
+    
+    return _ROIManager;
+}
+
+
+- (N3Plane)plane
+{
+    N3AffineTransform pixToDicomTransform;
+	N3Plane plane;
+    
+    pixToDicomTransform = [self pixToDicomTransform];
+    
+    plane.point = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, (CGFloat)curDCM.pheight/2.0, 0.0), pixToDicomTransform);
+    plane.normal = N3VectorNormalize(N3VectorApplyTransformToDirectionalVector(N3VectorMake(0.0, 0.0, 1.0), pixToDicomTransform));
+    
+	if (N3PlaneIsValid(plane)) {
+		return plane;
+	} else {
+		return N3PlaneInvalid;
+	}
+}
+
+
+
 
 #pragma mark-
 

@@ -955,7 +955,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
             if (userPresentationCtx == NULL) return EC_MemoryExhausted;
 
-            (void) memset(userPresentationCtx, 0, sizeof(userPresentationCtx));
+            (void) memset(userPresentationCtx, 0, sizeof(DUL_PRESENTATIONCONTEXT));
             userPresentationCtx->result = prvCtx->result;
             userPresentationCtx->presentationContextID = prvCtx->contextID;
             userPresentationCtx->proposedTransferSyntax = NULL;

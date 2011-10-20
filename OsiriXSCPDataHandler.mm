@@ -1095,7 +1095,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	@catch( NSException *e)
 	{
-		NSLog( @"********* seriesDatasetForFetchedObject exception: %@");
+		NSLog( @"********* seriesDatasetForFetchedObject exception: %@", e);
 		dataset->print(COUT);
 	}
 }
@@ -1310,7 +1310,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	@catch( NSException *e)
 	{
-		NSLog( @"********* imageDatasetForFetchedObject exception: %@");
+		NSLog( @"********* imageDatasetForFetchedObject exception: %@", e);
 		dataset->print(COUT);
 	}
 }

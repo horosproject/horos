@@ -2729,6 +2729,7 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 				
+                [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"OSIEnvironmentActivated"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"is12bitPluginAvailable"];
 //				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DONTCOPYWLWWSETTINGS"];
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"ROITEXTNAMEONLY"];
@@ -3452,6 +3453,9 @@ static BOOL initialized = NO;
 		
 	[[NSUserDefaults standardUserDefaults] setBool: [AppController hasMacOSXSnowLeopard] forKey: @"hasMacOSXSnowLeopard"];
 	
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseKDUForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
+    
 	if( [AppController hasMacOSXSnowLeopard] == NO)
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
@@ -4852,7 +4856,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
 	
-	dcmView = [[DCMView alloc] initWithSize:NSMakeSize(size,size)];
+	dcmView = [[DCMView alloc] initWithFrame:NSMakeRect(0, 0, size,size)];
 	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];
@@ -4883,7 +4887,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"NOINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"SOFTWAREINTERPOLATION"];
 	[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FULL32BITPIPELINE"];
-	dcmView = [[DCMView alloc] initWithSize:NSMakeSize(size,size)];
+	dcmView = [[DCMView alloc] initWithFrame: NSMakeRect(0, 0, size,size)];
 	[dcmView setPixels:[NSArray arrayWithObject:dcmPix] files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
 	[dcmView setScaleValueCentered:size];
 	[win.contentView addSubview:dcmView];

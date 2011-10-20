@@ -14,7 +14,6 @@
 
 #import "DCMNetServiceDelegate.h"
 #import "SendController.h"
-#import "N2Debug.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -24,7 +23,6 @@
 #include <unistd.h>
 
 static DCMNetServiceDelegate *_netServiceDelegate = nil;
-static BOOL bugFixedForDNSResolve = NO;
 static NSMutableArray *cachedServersArray = nil;
 
 @implementation DCMNetServiceDelegate
@@ -46,19 +44,6 @@ static NSMutableArray *cachedServersArray = nil;
 {
 	if (self = [super init])
 	{
-		OSErr err;
-		SInt32 osVersion;
-		
-		err = Gestalt ( gestaltSystemVersion, &osVersion );       
-		if ( err == noErr)       
-		{
-			if ( osVersion >= 0x1052UL ) bugFixedForDNSResolve = YES;
-		}
-		
-		#if !__LP64__
-			bugFixedForDNSResolve = YES;
-		#endif
-		
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
 		[self update];
@@ -114,17 +99,12 @@ static NSMutableArray *cachedServersArray = nil;
 	{
 	
 	}
-	else
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-	{
-		if( bugFixedForDNSResolve)
-		{
-			[_dicomServices addObject: aNetService];
-			
-			[aNetService resolveWithTimeout: 5];
-			[aNetService setDelegate:self];
-		}
-	}
+	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+    {    
+        [_dicomServices addObject: aNetService];
+        [aNetService resolveWithTimeout: 5];
+        [aNetService setDelegate: self];
+    }
 }
 
 //Bonjour Delegate methods
@@ -301,12 +281,59 @@ static NSMutableArray *cachedServersArray = nil;
 						
 						if( hostname)
 						{
-							NSMutableDictionary *s = [self DICOMNodeInfoFromTXTRecordData:[aServer TXTRecordData]];
-							[s setObject:hostname forKey:@"Address"];
-							[s setObject:[aServer name] forKey:@"AETitle"];
-							[s setObject:[NSString stringWithFormat:@"%d", port] forKey:@"Port"];
-							if (![s objectForKey:@"Description"])
-								[s setObject:[NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]] forKey:@"Description"];
+							NSDictionary *dict = [NSNetService dictionaryFromTXTRecordData: [aServer TXTRecordData]];
+							NSString *description = nil;
+							
+							if( [dict valueForKey: @"serverDescription"])
+								description = [[[NSString alloc] initWithData: [dict valueForKey: @"serverDescription"] encoding:NSUTF8StringEncoding] autorelease];
+							else
+								description = [NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]];
+							
+							int transferSyntax = 2;
+							
+							if( [dict valueForKey: @"preferredSyntax"])
+							{
+								NSString *ts = [[[NSString alloc] initWithData: [dict valueForKey: @"preferredSyntax"] encoding:NSUTF8StringEncoding] autorelease];
+								
+								if( [ts isEqualToString: @"LittleEndianImplicit"])
+									transferSyntax = 0;
+									
+								if( [ts isEqualToString: @"JPEGProcess14SV1TransferSyntax"])
+									transferSyntax = SendJPEGLossless;
+									
+								if( [ts isEqualToString: @"JPEG2000LosslessOnly"])
+									transferSyntax = SendJPEG2000Lossless;
+									
+								if( [ts isEqualToString: @"JPEG2000"])
+									transferSyntax = SendJPEG2000Lossy10;
+									
+								if( [ts isEqualToString: @"RLELossless"])
+									transferSyntax = SendRLE;
+							}
+							
+							BOOL retrieveMode = CMOVERetrieveMode;
+							
+							if( [dict valueForKey: @"CGET"])
+							{
+								NSString *cg = [[[NSString alloc] initWithData: [dict valueForKey: @"CGET"] encoding:NSUTF8StringEncoding] autorelease];
+								retrieveMode = CGETRetrieveMode;
+							}
+							
+							NSMutableDictionary *s = [NSMutableDictionary dictionaryWithObjectsAndKeys:	hostname, @"Address",
+																											[aServer name], @"AETitle",
+																											[NSString stringWithFormat:@"%d", port], @"Port",
+																											[NSNumber numberWithBool:YES] , @"QR",
+																											[NSNumber numberWithInt: retrieveMode] , @"retrieveMode",
+																											[NSNumber numberWithBool:YES] , @"Send",
+																											description, @"Description",
+																											[NSNumber numberWithInt: transferSyntax], @"TransferSyntax",
+																											nil];
+							
+							if( [dict valueForKey: @"icon"])
+							{
+								NSString *icon = [[[NSString alloc] initWithData: [dict valueForKey: @"icon"] encoding:NSUTF8StringEncoding] autorelease];
+								[s setObject: icon forKey: @"icon"];
+							}
 							
 							// Dont add duplicate addresses
 							BOOL alreadyHere = NO;
@@ -369,7 +396,7 @@ static NSMutableArray *cachedServersArray = nil;
 		}
 		@catch (NSException * e)
 		{
-            N2LogExceptionWithStackTrace(e);
+            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
 		}
 	}
 	

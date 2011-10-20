@@ -62,7 +62,7 @@
 		break;
 		
 		default:
-			NSLog( @"Orientation Unknown: %d", orientationVector);
+			NSLog( @"Orientation Unknown: %d", (int) orientationVector);
 		break;
 	}
 }

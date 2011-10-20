@@ -334,6 +334,7 @@ extern NSString* O2AlbumDragType;
 
 - (BOOL) isBonjour: (NSManagedObjectContext*) c __deprecated;
 - (NSString *) localDocumentsDirectory __deprecated;
+- (void) alternateButtonPressed: (NSNotification*)n;
 - (NSArray*) childrenArray: (NSManagedObject*) item;
 - (NSArray*) childrenArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages;
 - (NSArray*) imagesArray: (NSManagedObject*) item;

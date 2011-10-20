@@ -58,6 +58,7 @@ Manages the Window for creating Calcium Scoring ROIs
 - (void)setRois:(NSMutableSet *)rois;
 - (NSString *)roiName;
 - (void)setRoiName:(NSString *)roiName;
+- (id)initWithViewer:(ViewerController *)viewer;
 
 -(NSString *)startingPointPixelPosition;
 - (void)setStartingPointPixelPosition:(NSString *)position;

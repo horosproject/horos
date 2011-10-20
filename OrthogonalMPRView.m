@@ -801,7 +801,7 @@ extern int ANNOTATIONS;
 			if( slice < 0) slice = 0;
 			if( slice >= [[[controller originalView] dcmRoiList] count]) slice = [[[controller originalView] dcmRoiList] count]-1;
 			
-			NSLog(@"slice : %d", slice);
+			NSLog(@"slice : %d", (int) slice);
 			
 			[[[[controller originalView] dcmRoiList] objectAtIndex: slice] addObject: new2DPointROI];
 			[[controller originalView] setNeedsDisplay:YES];

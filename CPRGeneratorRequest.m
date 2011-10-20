@@ -26,6 +26,13 @@
 @synthesize slabSampleDistance = _slabSampleDistance;
 @synthesize context = _context;
 
+- (id)init
+{
+    if ( (self = [super init]) ) {
+    }
+    return self;
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     CPRGeneratorRequest *copy;
@@ -309,7 +316,7 @@
     _pixelSpacingX = N3VectorLength(_directionX);
     _directionX = N3VectorNormalize(_directionX);
     
-    _directionY = N3VectorMake(sliceToDicomTransform.m21, sliceToDicomTransform.m32, sliceToDicomTransform.m43);
+    _directionY = N3VectorMake(sliceToDicomTransform.m21, sliceToDicomTransform.m22, sliceToDicomTransform.m23);
     _pixelSpacingY = N3VectorLength(_directionY);
     _directionY = N3VectorNormalize(_directionY);
     

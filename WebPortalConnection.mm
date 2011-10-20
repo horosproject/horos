@@ -420,7 +420,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	NSMutableString* str = [NSMutableString string];
 	for (NSString* key in dict) {
 		NSString* value = [dict objectForKey:key];
-		if ([value isKindOfClass:NSArray.class])
+		if ([value isKindOfClass: [NSArray class]])
 			for (NSString* v2 in (NSArray*)value)
 				[str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [v2 urlEncodedString]];
 		else [str appendFormat:@"%@%@=%@", str.length?@"&":@"", [key urlEncodedString], [value urlEncodedString]];
@@ -928,7 +928,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		
 		@try
 		{
-			if( [[multipartData lastObject] isKindOfClass: NSFileHandle.class])
+			if( [[multipartData lastObject] isKindOfClass: [NSFileHandle class]])
 				[(NSFileHandle*)[multipartData lastObject] writeData: [postDataChunk subdataWithRange: fileDataRange]];
 			else
 			{
@@ -1039,7 +1039,12 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	[self fillSessionAndUserVariables];
 	
-	[response.tokens setObject:NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title") forKey:@"PageTitle"]; // the default title
+	NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
+	
+	if( webPortalDefaultTitle.length == 0)
+		webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
+	
+	[response.tokens setObject: webPortalDefaultTitle forKey:@"PageTitle"]; // the default title
 	[response.tokens setObject:[WebPortalProxy createWithObject:self transformer:[InfoTransformer create]] forKey:@"Info"];
 	if (user) [response.tokens setObject:[WebPortalProxy createWithObject:user transformer:[WebPortalUserTransformer create]] forKey:@"User"];	
 	if (session) [response.tokens setObject:session forKey:@"Session"];

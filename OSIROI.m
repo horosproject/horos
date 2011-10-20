@@ -15,13 +15,22 @@
 #import "OSIROI.h"
 #import "OSIROI+Private.h"
 #import "OSIPlanarPathROI.h"
-#import "OSICoalescedROI.h"
+#import "OSIPlanarBrushROI.h"
+#import "OSICoalescedPlanarROI.h"
 #import "OSIROIFloatPixelData.h"
+#import "OSIFloatVolumeData.h"
 #import "DCMView.h"
 #import "N3Geometry.h"
 #import "ROI.h"
 
 @implementation OSIROI
+
+- (void)dealloc
+{
+    [_homeFloatVolumeData release];
+    _homeFloatVolumeData = nil;
+    [super dealloc];
+}
 
 - (NSString *)name
 {
@@ -40,9 +49,9 @@
 	return nil;
 }
 
-- (NSArray *)osiriXROIs
+- (NSSet *)osiriXROIs
 {
-	return [NSArray array];
+	return [NSSet set];
 }
 
 - (NSString *)label
@@ -74,14 +83,14 @@
 	return nil;
 }
 
-- (NSString *)unitForMetric:(NSString *)metric // make me smarter! this is not always HU values
+- (NSString *)unitForMetric:(NSString *)metric // make me smarter!
 {
 	if ([metric isEqualToString:@"meanIntensity"]) {
-		return @"HU";
+		return @"";
 	} else if ([metric isEqualToString:@"maxIntensity"]) {
-		return @"HU"; 
+		return @""; 
 	} else if ([metric isEqualToString:@"minIntensity"]) {
-		return @"HU";
+		return @"";
 	}
 	return nil;
 }
@@ -105,12 +114,25 @@
 
 - (OSIROIFloatPixelData *)ROIFloatPixelDataForFloatVolumeData:(OSIFloatVolumeData *)floatVolume; // convenience method
 {
-	return [[[OSIROIFloatPixelData alloc] initWithROIMask:[self ROIMaskForFloatVolumeData:floatVolume] floatVolumeData:floatVolume] autorelease];
+    OSIROIMask *roiMask;
+    roiMask = [self ROIMaskForFloatVolumeData:floatVolume];
+
+    assert([floatVolume checkDebugROIMask:roiMask]);
+    
+	return [[[OSIROIFloatPixelData alloc] initWithROIMask:roiMask floatVolumeData:floatVolume] autorelease];
 }
 
 - (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
 {
-	return nil;
+	return _homeFloatVolumeData;
+}
+
+- (void)setHomeFloatVolumeData:(OSIFloatVolumeData *)homeFloatVolumeData
+{
+    if (homeFloatVolumeData != _homeFloatVolumeData) {
+        [_homeFloatVolumeData release];
+        _homeFloatVolumeData = [homeFloatVolumeData retain];
+    }
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;
@@ -127,8 +149,12 @@
 		case tMesure:
 		case tOPolygon:
 		case tCPolygon:
+		case tOval:
+		case tROI:
 			return [[[OSIPlanarPathROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 			break;
+        case tPlain:
+            return [[[OSIPlanarBrushROI alloc] initWithOsiriXROI:roi pixToDICOMTransfrom:pixToDICOMTransfrom homeFloatVolumeData:floatVolumeData] autorelease];
 		default:
 			return nil;;
 	}
@@ -137,7 +163,7 @@
 
 + (id)ROICoalescedWithSourceROIs:(NSArray *)rois homeFloatVolumeData:(OSIFloatVolumeData *)floatVolumeData
 {
-	return [[[OSICoalescedROI alloc] initWithSourceROIs:rois homeFloatVolumeData:floatVolumeData] autorelease];
+	return [[[OSICoalescedPlanarROI alloc] initWithSourceROIs:rois homeFloatVolumeData:floatVolumeData] autorelease];
 }
 
 

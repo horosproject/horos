@@ -51,7 +51,7 @@
  
  @param index The movie index for which to return a Float Volume Data.
 */
-- (OSIFloatVolumeData *)floatVolumeDataForMovieIndex:(long)index;
+//- (OSIFloatVolumeData *)floatVolumeDataForMovieIndex:(long)index;
 
 @end
 

@@ -34,7 +34,7 @@
 	NSString			*patientID;
 	NSString			*studyIDs;
 	NSString			*seriesNo;
-    NSCalendarDate		*date;
+    NSDate              *date;
 	
 	long				width, height;
 	long				NoOfFrames;

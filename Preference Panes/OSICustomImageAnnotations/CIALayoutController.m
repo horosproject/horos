@@ -92,7 +92,7 @@
 
 	// DICOM popup button
 	if(DICOMFieldsArray) [DICOMFieldsArray release];
-	DICOMFieldsArray = [[prefPane prepareDICOMFieldsArrays] retain];
+	DICOMFieldsArray = [[prefPane prepareDICOMFieldsArrays] mutableCopy];
 
 	NSMenu *DICOMFieldsMenu = [[prefPane DICOMFieldsPopUpButton] menu];
 	[DICOMFieldsMenu setAutoenablesItems:NO];

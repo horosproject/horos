@@ -158,7 +158,7 @@ static kern_return_t GetMACAddress(io_iterator_t intfIterator, UInt8 *MACAddress
     bzero(MACAddress, bufferSize);
     
     // IOIteratorNext retains the returned object, so release it when we're done with it.
-    while (intfService = IOIteratorNext(intfIterator))
+    while ((intfService = IOIteratorNext(intfIterator)))
     {
         CFTypeRef	MACAddressAsCFData;        
 

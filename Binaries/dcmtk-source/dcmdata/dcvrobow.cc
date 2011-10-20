@@ -452,7 +452,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
         {
             /* ... and convert it to a character string (hex mode) */
             char buffer[32];
-            sprintf(buffer, "%2.2hx", uint8Val);
+            sprintf(buffer, "%2.2hx", (unsigned short) uint8Val);
             /* assign result */
             stringVal = buffer;
         }
@@ -499,7 +499,7 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
             for (size_t i = 0; i < count; i++)
             {
                 /* ... convert numeric value to hexadecimal string representation */
-                sprintf(bufPtr, "%2.2hx\\", uint8Vals[i]);
+                sprintf(bufPtr, "%2.2hx\\", (unsigned short) uint8Vals[i]);
                 bufPtr += 3;
             }
             /* remove last '\' */

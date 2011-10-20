@@ -24,6 +24,7 @@
 #import "N2OpenGLViewWithSplitsWindow.h"
 #import "N2Debug.h"
 
+
 static NSString* 	PETCTToolbarIdentifier						= @"PETCT Viewer Toolbar Identifier";
 static NSString*	SameHeightSplitViewToolbarItemIdentifier	= @"sameHeightSplitView";
 static NSString*	SameWidthSplitViewToolbarItemIdentifier		= @"sameWidthSplitView";
@@ -2873,29 +2874,36 @@ return YES;
 //	[self propagateSettings];
 }
 
-- (ViewerController *)viewerController{
+- (ViewerController *)viewerController
+{
 	return viewer;
 }
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy*) currentStudy
+{
 	return [viewer currentStudy];
 }
-- (NSManagedObject *)currentSeries{
+- (DicomSeries*) currentSeries
+{
 	return [viewer currentSeries];
 }
 
-- (NSManagedObject *)currentImage{
+- (DicomImage*) currentImage
+{
 	return [viewer currentImage];
 }
 
--(float)curWW{
+-(float)curWW
+{
 	return [viewer curWW];
 }
 
--(float)curWL{
+-(float)curWL
+{
 	return [viewer curWL];
 }
-- (NSString *)curCLUTMenu{
+- (NSString *)curCLUTMenu
+{
 	return curCLUTMenu;
 }
 

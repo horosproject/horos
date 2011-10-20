@@ -173,7 +173,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 		}
 }
 
--(void)release { // TODO: remove logs..
+-(id)release { // TODO: remove logs..
 	NSInteger prc;
 	@synchronized(self) {
 		prc = self.retainCount;
@@ -201,6 +201,8 @@ static NSMutableDictionary* databasesDictionary = nil;
 			}
 		}
 	}
+    
+    return self;
 }
 
 //-(id)retain {

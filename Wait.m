@@ -47,23 +47,16 @@
 	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
 		[NSThread sleepForTimeInterval: 0.5];
 	
-	[super close];
-}
-
-- (void)windowWillClose:(NSNotification *)notification
-{
-	if( session != nil)
-	{
+    if( session != nil)
 		[NSApp endModalSession:session];
-	}
 	session = nil;
+    
+	[super close];
 }
 
 - (void) dealloc
 {
 	[startTime release];
-	
-	
 	
 	[super dealloc];
 }

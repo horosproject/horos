@@ -17,6 +17,7 @@
 #import "ViewerController.h"
 #import "AppController.h"
 #import "NSWindow+N2.h"
+#import "Notifications.h"
 
 extern BOOL USETOOLBARPANEL;
 
@@ -106,12 +107,13 @@ static int increment = 0, previousNumberOfScreens = 0;
 		toolbar = nil;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewerWillClose:) name: OsirixCloseViewerNotification object: nil];
 		
 		if( [AppController hasMacOSXSnowLeopard])
 			[[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
 		
 		[self applicationDidChangeScreenParameters:nil];
-		
 	}
 	
 	return self;
@@ -119,7 +121,8 @@ static int increment = 0, previousNumberOfScreens = 0;
 
 - (void) dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    
 	[emptyToolbar release];
 	[super dealloc];
 }
@@ -188,14 +191,13 @@ static int increment = 0, previousNumberOfScreens = 0;
 				{
 					[[self window] orderBack:self];
 					[[self window] close];
-					NSLog( @"problem.... ToolbarPanel.m");
+					NSLog( @"ToolbarPanel.m : [[viewer window] isVisible] == NO -> hide toolbar");
 				}
 			}
 			else
 			{
 				[self setToolbar: nil viewer: nil];
 				[[self window] orderOut:self];
-				NSLog(@"hide toolbar");
 			}
 		}
 	}
@@ -277,12 +279,21 @@ static int increment = 0, previousNumberOfScreens = 0;
 		[associatedScreen removeObjectForKey: [NSValue valueWithPointer: toolbar]];
 		
 		[toolbar release];
-		toolbar = 0;
+		toolbar = 0L;
 		
-		viewer = 0;
+        [viewer release];
+		viewer = 0L;
 		
 //		((ToolBarNSWindow*) [self window]).willClose = NO;
 	}
+}
+
+- (void) viewerWillClose: (NSNotification*) n
+{
+    if( [n object] == viewer)
+    {
+        [self setToolbar: nil viewer: nil];
+    }
 }
 
 - (void) setToolbar :(NSToolbar*) tb viewer:(ViewerController*) v
@@ -315,7 +326,8 @@ static int increment = 0, previousNumberOfScreens = 0;
 		return;
 	}
 	
-	viewer = v;
+    [viewer release];
+	viewer = [v retain];
 	
 	if( toolbar != tb)
 	{

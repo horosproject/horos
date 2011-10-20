@@ -101,13 +101,13 @@
  */
 - (NSUInteger)getFloatData:(float *)buffer floatCount:(NSUInteger)count;
 
-/** Returns the range within the receiver's floatVolumeData of the given Mask Run.
- 
- @return The range within the receiver's floatVolumeData of the given Mask Run.
- 
- @param maskRun The mask run for which to return a range
- */
-- (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun;
+//    /** Returns the range within the receiver's floatVolumeData of the given Mask Run.
+//     
+//     @return The range within the receiver's floatVolumeData of the given Mask Run.
+//     
+//     @param maskRun The mask run for which to return a range
+//     */
+//    - (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun;
 
 /** Returns the range within the receiver's floatVolumeData of the given Mask Index.
  

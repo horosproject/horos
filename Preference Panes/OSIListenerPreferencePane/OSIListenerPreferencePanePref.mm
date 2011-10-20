@@ -16,7 +16,7 @@
 #import <OsiriXAPI/DefaultsOsiriX.h>
 #import <OsiriXAPI/BrowserController.h>
 #import <OsiriXAPI/NSUserDefaultsController+OsiriX.h>
-#import "DDKeychain.h"
+//#import "DDKeychain.h"
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <OsiriXAPI/WebPortal.h>
 #import <OsiriXAPI/WebPortalDatabase.h>

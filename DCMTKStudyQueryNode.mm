@@ -227,31 +227,35 @@
 	if( queryLevel == nil)
 		return;
 	
-	if( strcmp( queryLevel, "IMAGE") == 0)
-	{
-		[_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
-				callingAET:_callingAET  
-				calledAET:_calledAET
-				hostname:_hostname 
-				port:_port 
-				transferSyntax:_transferSyntax
-				compression: _compression
-				extraParameters: _extraParameters]];
-	}
-	else if( strcmp( queryLevel, "SERIES") == 0)
-	{
-		[_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
-				callingAET:_callingAET  
-				calledAET:_calledAET
-				hostname:_hostname 
-				port:_port 
-				transferSyntax:_transferSyntax
-				compression: _compression
-				extraParameters: _extraParameters]];
-	}
-	else NSLog( @"******** unknown queryLevel *****");
-	
-	[_children sortUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"time" ascending: YES] autorelease]]];
+    
+    @synchronized( _children)
+    {
+        if( strcmp( queryLevel, "IMAGE") == 0)
+        {
+            [_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
+                    callingAET:_callingAET  
+                    calledAET:_calledAET
+                    hostname:_hostname 
+                    port:_port 
+                    transferSyntax:_transferSyntax
+                    compression: _compression
+                    extraParameters: _extraParameters]];
+        }
+        else if( strcmp( queryLevel, "SERIES") == 0)
+        {
+            [_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
+                    callingAET:_callingAET  
+                    calledAET:_calledAET
+                    hostname:_hostname 
+                    port:_port 
+                    transferSyntax:_transferSyntax
+                    compression: _compression
+                    extraParameters: _extraParameters]];
+        }
+        else NSLog( @"******** unknown queryLevel *****");
+        
+        [_children sortUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"time" ascending: YES] autorelease]]];
+    }
 }
 
 @end

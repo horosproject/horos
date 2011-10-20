@@ -1234,7 +1234,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseShutter = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseShutter"];
 		gDisplayDICOMOverlays = [[NSUserDefaults standardUserDefaults] boolForKey:@"DisplayDICOMOverlays"];
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
-		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX3"];
+		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
@@ -3702,7 +3702,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
-                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int) savedHeightInDB, (int) height);
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3711,7 +3711,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
-                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int) savedWidthInDB, (int) width);
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -5897,7 +5897,7 @@ END_CREATE_ROIS:
 		
 		
 	#pragma mark READ PIXEL DATA		
-		
+        
 		maxFrame = [[dcmObject attributeValueWithName:@"NumberofFrames"] intValue];
 		if( maxFrame == 0) maxFrame = 1;
 		if( pixArray == nil) maxFrame = 1;
@@ -7438,8 +7438,6 @@ END_CREATE_ROIS:
 				
 				for( int v = 0; v < 8;)
 				{
-					NSString *value;
-					
 					if( preferredDate == nil && (val = Papy3GetElement (theGroupP, priority[ v], &nbVal, &elemType)))
 					{
 						if ( val && val->a && validAPointer( elemType))
@@ -9074,7 +9072,7 @@ END_CREATE_ROIS:
 			
 #ifdef OSIRIX_VIEWER
 			id fileFormatBundle;
-			if (fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]])
+			if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]))
 			{
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
 				fImage = [decoder checkLoadAtPath:srcFile];

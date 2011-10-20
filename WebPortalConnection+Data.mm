@@ -114,122 +114,140 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	return o;
 }
 
--(NSArray*)studyList_requestedStudies:(NSString**)title {
-	NSString* ignore = NULL;
+-(NSArray*)studyList_requestedStudies:(NSString**)title
+{
+	NSString* ignore = nil;
+    NSArray* result = nil;
+    int fetchLimitPerPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"FetchLimitForWebPortal"];
+    int numberOfStudies;
+    int page = [[parameters objectForKey:@"page"] intValue];
+    
 	if (!title) title = &ignore;
 	
 	NSString* albumReq = [parameters objectForKey:@"album"];
-	if (albumReq.length) {
+	if (albumReq.length)
+    {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		return [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"sortKey"]];
-	}
-	
-	NSString* browseReq = [parameters objectForKey:@"browse"];
-	NSString* browseParameterReq = [parameters objectForKey:@"browseParameter"];
-	
-	NSPredicate* browsePredicate = NULL;
-	
-	if ([browseReq isEqual:@"newAddedStudies"] && browseParameterReq.doubleValue > 0)
-	{
-		*title = NSLocalizedString( @"New Studies", @"Web portal, study list, title");
-		browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", browseParameterReq.doubleValue];
+		result = [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"sortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
 	}
 	else
-		if ([browseReq isEqual:@"today"])
-		{
-			*title = NSLocalizedString( @"Today", @"Web portal, study list, title");
-			browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", StartOfDay(NSCalendarDate.calendarDate)];
-		}
-		else
-			if ([browseReq isEqual:@"6hours"])
-			{
-				*title = NSLocalizedString( @"Last 6 Hours", @"Web portal, study list, title");
-				NSCalendarDate *now = [NSCalendarDate calendarDate];
-				browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
-			}
-			else
-				if ([parameters objectForKey:@"search"])
-				{
-					*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
-					
-					NSMutableString* search = [NSMutableString string];
-					NSString *searchString = [parameters objectForKey:@"search"];
-					
-					NSArray* components = [searchString componentsSeparatedByString:@" "];
-					NSMutableArray *newComponents = [NSMutableArray array];
-					for (NSString *comp in components)
-					{
-						if (![comp isEqualToString:@""])
-							[newComponents addObject:comp];
-					}
-					
-					searchString = [newComponents componentsJoinedByString:@" "];
-					searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
-					searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
-					
-					[search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-					browsePredicate = [NSPredicate predicateWithFormat: search];
-				}
-				else
-					if ([parameters objectForKey:@"searchID"])
-					{
-						*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
-						NSMutableString *search = [NSMutableString string];
-						NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchID"]];
-						
-						NSArray *components = [searchString componentsSeparatedByString:@" "];
-						NSMutableArray *newComponents = [NSMutableArray array];
-						for (NSString *comp in components)
-						{
-							if (![comp isEqualToString:@""])
-								[newComponents addObject:comp];
-						}
-						
-						searchString = [newComponents componentsJoinedByString:@" "];
-						
-						[search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-						browsePredicate = [NSPredicate predicateWithFormat:search];
-					}
-					else
-						if ([parameters objectForKey:@"searchAccessionNumber"])
-						{
-							*title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
-							NSMutableString *search = [NSMutableString string];
-							NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchAccessionNumber"]];
-							
-							NSArray *components = [searchString componentsSeparatedByString:@" "];
-							NSMutableArray *newComponents = [NSMutableArray array];
-							for (NSString *comp in components)
-							{
-								if (![comp isEqualToString:@""])
-									[newComponents addObject:comp];
-							}
-							
-							searchString = [newComponents componentsJoinedByString:@" "];
-							
-							[search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
-							browsePredicate = [NSPredicate predicateWithFormat:search];
-						}
-	
-	if (!browsePredicate) {
-		*title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
-		//browsePredicate = [NSPredicate predicateWithValue:YES];
-	}	
-	
-	if ([parameters objectForKey:@"sortKey"])
-		if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
-			[self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
-	if (![self.session objectForKey:@"StudiesSortKey"])
-		[self.session setObject:@"name" forKey:@"StudiesSortKey"];
-	
-    int page = [[parameters objectForKey:@"page"] intValue];
+    {
+        NSString* browseReq = [parameters objectForKey:@"browse"];
+        NSString* browseParameterReq = [parameters objectForKey:@"browseParameter"];
+        
+        NSPredicate* browsePredicate = NULL;
+        
+        if ([browseReq isEqual:@"newAddedStudies"] && browseParameterReq.doubleValue > 0)
+        {
+            *title = NSLocalizedString( @"New Studies", @"Web portal, study list, title");
+            browsePredicate = [NSPredicate predicateWithFormat: @"dateAdded >= CAST(%lf, \"NSDate\")", browseParameterReq.doubleValue];
+        }
+        else
+            if ([browseReq isEqual:@"today"])
+            {
+                *title = NSLocalizedString( @"Today", @"Web portal, study list, title");
+                browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", StartOfDay(NSCalendarDate.calendarDate)];
+            }
+            else
+                if ([browseReq isEqual:@"6hours"])
+                {
+                    *title = NSLocalizedString( @"Last 6 Hours", @"Web portal, study list, title");
+                    NSCalendarDate *now = [NSCalendarDate calendarDate];
+                    browsePredicate = [NSPredicate predicateWithFormat: @"date >= CAST(%lf, \"NSDate\")", [[NSCalendarDate dateWithYear:[now yearOfCommonEra] month:[now monthOfYear] day:[now dayOfMonth] hour:[now hourOfDay]-6 minute:[now minuteOfHour] second:[now secondOfMinute] timeZone:nil] timeIntervalSinceReferenceDate]];
+                }
+                else
+                    if ([parameters objectForKey:@"search"])
+                    {
+                        *title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
+                        
+                        NSMutableString* search = [NSMutableString string];
+                        NSString *searchString = [parameters objectForKey:@"search"];
+                        
+                        NSArray* components = [searchString componentsSeparatedByString:@" "];
+                        NSMutableArray *newComponents = [NSMutableArray array];
+                        for (NSString *comp in components)
+                        {
+                            if (![comp isEqualToString:@""])
+                                [newComponents addObject:comp];
+                        }
+                        
+                        searchString = [newComponents componentsJoinedByString:@" "];
+                        searchString = [searchString stringByReplacingOccurrencesOfString: @"\"" withString: @"\'"];
+                        searchString = [searchString stringByReplacingOccurrencesOfString: @"\'" withString: @"\\'"];
+                        
+                        [search appendFormat:@"name CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+                        browsePredicate = [NSPredicate predicateWithFormat: search];
+                    }
+                    else
+                        if ([parameters objectForKey:@"searchID"])
+                        {
+                            *title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
+                            NSMutableString *search = [NSMutableString string];
+                            NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchID"]];
+                            
+                            NSArray *components = [searchString componentsSeparatedByString:@" "];
+                            NSMutableArray *newComponents = [NSMutableArray array];
+                            for (NSString *comp in components)
+                            {
+                                if (![comp isEqualToString:@""])
+                                    [newComponents addObject:comp];
+                            }
+                            
+                            searchString = [newComponents componentsJoinedByString:@" "];
+                            
+                            [search appendFormat:@"patientID CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+                            browsePredicate = [NSPredicate predicateWithFormat:search];
+                        }
+                        else
+                            if ([parameters objectForKey:@"searchAccessionNumber"])
+                            {
+                                *title = NSLocalizedString(@"Search Results", @"Web portal, study list, title");
+                                NSMutableString *search = [NSMutableString string];
+                                NSString *searchString = [NSString stringWithString:[parameters objectForKey:@"searchAccessionNumber"]];
+                                
+                                NSArray *components = [searchString componentsSeparatedByString:@" "];
+                                NSMutableArray *newComponents = [NSMutableArray array];
+                                for (NSString *comp in components)
+                                {
+                                    if (![comp isEqualToString:@""])
+                                        [newComponents addObject:comp];
+                                }
+                                
+                                searchString = [newComponents componentsJoinedByString:@" "];
+                                
+                                [search appendFormat:@"accessionNumber CONTAINS[cd] '%@'", searchString]; // [c] is for 'case INsensitive' and [d] is to ignore accents (diacritic)
+                                browsePredicate = [NSPredicate predicateWithFormat:search];
+                            }
+        
+        if (!browsePredicate)
+        {
+            *title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
+            //browsePredicate = [NSPredicate predicateWithValue:YES];
+        }	
+        
+        if ([parameters objectForKey:@"sortKey"])
+            if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+                [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
+        
+        if (![self.session objectForKey:@"StudiesSortKey"])
+            [self.session setObject:@"name" forKey:@"StudiesSortKey"];
+        
+        result = [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+    }
     
-    int fetchLimitPerPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"FetchLimitForWebPortal"];
+    if( [parameters objectForKey:@"page"])
+        [self.session setObject: [parameters objectForKey:@"page"] forKey:@"Page"];
+    else
+        [self.session setObject: [NSNumber numberWithInt: 0] forKey:@"Page"];
     
-	return [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage];
+    [self.session setObject: [NSNumber numberWithInt: numberOfStudies] forKey:@"NumberOfStudies"];
+    [self.session setObject: [NSNumber numberWithInt: numberOfStudies/fetchLimitPerPage] forKey:@"NumberOfPages"];
+    
+	return result;
 }
 
--(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription {
+-(void)sendImages:(NSArray*)images toDicomNode:(NSDictionary*)dicomNodeDescription
+{
 	[self.portal updateLogEntryForStudy: [[images lastObject] valueForKeyPath: @"series.study"] withMessage: [NSString stringWithFormat: @"DICOM Send to: %@", [dicomNodeDescription objectForKey:@"Address"]] forUser:user.name ip:asyncSocket.connectedHost];
 	
 	@try {

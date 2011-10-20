@@ -168,11 +168,11 @@ unsigned int dcmGuessModalityBytes(const char *sopClassUID);
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_354"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OSIRIX"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_354"
 #define OFFIS_DCMTK_RELEASEDATE                 "2005-12-20"
 
-#define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
+#define OFFIS_UID_ROOT                          "1.2.276.0.7238010.5"
 #define OFFIS_DCMTK_VERSION_NUMBER              354
 #define OFFIS_DCMTK_VERSION_STRING              "3.5.4"
 #define OFFIS_DCMTK_VERSION_SUFFIX              ""

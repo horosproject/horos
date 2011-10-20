@@ -27,7 +27,7 @@ extern NSString* N2StepsNotificationStep;
 }
 
 @property(retain) id delegate;
-@property(assign) N2Step* currentStep;
+@property(nonatomic, assign) N2Step* currentStep;
 //	@property(readonly) N2StepsView* view;
 
 -(void)enableDisableSteps;

@@ -22,6 +22,8 @@ CF_EXTERN_C_BEGIN
 typedef struct { // build one of these on the stack and then use -[CPRVolumeData aquireInlineBuffer:] to initialize it. Then make sure to release it too!
     const float *floatBytes;
     
+    float outOfBoundsValue;
+    
     NSUInteger pixelsWide;
     NSUInteger pixelsHigh;
     NSUInteger pixelsDeep;
@@ -37,6 +39,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
     volatile BOOL _isValid;
 
     const float *_floatBytes;
+    float _outOfBoundsValue;
     
     NSUInteger _pixelsWide;
     NSUInteger _pixelsHigh;
@@ -51,7 +54,7 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 
 
 - (id)initWithFloatBytesNoCopy:(const float *)floatBytes pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh pixelsDeep:(NSUInteger)pixelsDeep
-               volumeTransform:(N3AffineTransform)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
+               volumeTransform:(N3AffineTransform)volumeTransform outOfBoundsValue:(float)outOfBoundsValue freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
 
 @property (readonly) NSUInteger pixelsWide;
 @property (readonly) NSUInteger pixelsHigh;
@@ -60,9 +63,11 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
 @property (readonly, getter=isRectilinear) BOOL rectilinear;
 
 @property (readonly) CGFloat minPixelSpacing; // the smallest pixel spacing in any direction;
-@property (readonly) CGFloat pixelSpacingX;
+@property (readonly) CGFloat pixelSpacingX;// mm/pixel
 @property (readonly) CGFloat pixelSpacingY;
 @property (readonly) CGFloat pixelSpacingZ;
+
+@property (readonly) float outOfBoundsValue;
 
 @property (readonly) N3AffineTransform volumeTransform; // volumeTransform is the transform from Dicom (patient) space to pixel data
 
@@ -73,7 +78,11 @@ typedef struct { // build one of these on the stack and then use -[CPRVolumeData
                         // if the data is not owned by the CPRVolumeData, make sure to call invalidateData before freeing the data, even before releasing,
                         // in case other objects have retained the receiver
 
-- (BOOL)getFloatData:(float *)buffer range:(NSRange)range; // returns YES if the data was sucessfully filled
+//- (BOOL)getFloatData:(float *)buffer range:(NSRange)range; // returns YES if the data was sucessfully filled
+
+// will copy fill length*sizeof(float) bytes, the coordinates better be within the volume!!!
+// a run a is a series of pixels in the x direction
+- (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length; 
 
 - (CPRUnsignedInt16ImageRep *)unsignedInt16ImageRepForSliceAtIndex:(NSUInteger)z;
 - (CPRVolumeData *)volumeDataForSliceAtIndex:(NSUInteger)z;
@@ -110,36 +119,53 @@ CF_INLINE const float* CPRVolumeDataFloatBytes(CPRVolumeDataInlineBuffer *inline
 	return inlineBuffer->floatBytes;
 }
 
-CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, NSUInteger x, NSUInteger y, NSUInteger z)
+
+CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, NSInteger x, NSInteger y, NSInteger z)
 {
+    bool outside;
+    
     if (inlineBuffer->floatBytes) {
-        return (inlineBuffer->floatBytes)[x + y*inlineBuffer->pixelsWide + z*inlineBuffer->pixelsWideTimesPixelsHigh];
+        outside = false;
+        
+        outside |= x < 0;
+        outside |= y < 0;
+        outside |= z < 0;
+        outside |= x >= inlineBuffer->pixelsWide;
+        outside |= y >= inlineBuffer->pixelsHigh;
+        outside |= z >= inlineBuffer->pixelsDeep;
+        
+        if (!outside) {
+            return (inlineBuffer->floatBytes)[x + y*inlineBuffer->pixelsWide + z*inlineBuffer->pixelsWideTimesPixelsHigh];
+        } else {
+            return inlineBuffer->outOfBoundsValue;
+        }
     } else {
         return 0;
     }
 }
 
+
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, CGFloat x, CGFloat y, CGFloat z) // coordinate in the pixel space
 {
     float returnValue;
     
-    NSInteger floorX = x;
+    NSInteger floorX = floorf(x);
     NSInteger ceilX = floorX+1.0;
-    NSInteger floorY = y;
+    NSInteger floorY = floorf(y);
     NSInteger ceilY = floorY+1.0;
-    NSInteger floorZ = z;
+    NSInteger floorZ = floorf(z);
     NSInteger ceilZ = floorZ+1.0;
     
     bool outside = false;
-    outside |= floorX < 0;
-    outside |= floorY < 0;
-    outside |= floorZ < 0;
-    outside |= ceilX >= inlineBuffer->pixelsWide;
-    outside |= ceilY >= inlineBuffer->pixelsHigh;
-    outside |= ceilZ >= inlineBuffer->pixelsDeep;
+    outside |= floorX < -1;
+    outside |= floorY < -1;
+    outside |= floorZ < -1;
+    outside |= ceilX > inlineBuffer->pixelsWide;
+    outside |= ceilY > inlineBuffer->pixelsHigh;
+    outside |= ceilZ > inlineBuffer->pixelsDeep;
     
     if (outside) {
-        returnValue = -1000.0f;
+        returnValue = inlineBuffer->outOfBoundsValue;
     } else {
         float xd = x - floorf((float)x);
         float yd = y - floorf((float)y);

@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import "DCMAbstractSyntaxUID.h"
-#import "N2Debug.h"
 
 static NSArray *imagesSyntaxes = nil;
 static NSString *DCM_Verification = @"1.2.840.10008.1.1";
@@ -449,7 +448,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		}
 		@catch (NSException * e) 
 		{
-            N2LogExceptionWithStackTrace(e);
+            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
 		}
 		
 		[imagesSyntaxes retain];

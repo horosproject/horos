@@ -41,9 +41,9 @@
 	return [[[DCMDataContainer alloc] initWithContentsOfFile:path] autorelease];
 }
 
-+ (id)dataContainerWithContentsOfMappedFile:(NSString *)path{
-	return [[[DCMDataContainer alloc] initWithContentsOfMappedFile:path] autorelease];
-}
+//+ (id)dataContainerWithContentsOfMappedFile:(NSString *)path{
+//	return [[[DCMDataContainer alloc] initWithContentsOfMappedFile:path] autorelease];
+//}
 
 + (id)dataContainerWithContentsOfURL:(NSURL *)aURL{
 	return [[[DCMDataContainer alloc] initWithContentsOfURL:aURL] autorelease];
@@ -68,7 +68,7 @@
 - (id) initWithData:(NSData *)data{
 
 	if (self = [super init]) {
-		dicomData = [data retain];
+		dicomData = [data mutableCopy];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
 			return nil;
@@ -80,7 +80,7 @@
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
 	if (self = [super init]) {
-		dicomData = [data retain];
+		dicomData = [data mutableCopy];
 		transferSyntaxForMetaheader = [syntax retain];
 		transferSyntaxForDataset = [syntax retain];
 		transferSyntaxInUse = [transferSyntaxForDataset retain];

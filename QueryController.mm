@@ -36,6 +36,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Debug.h"
 #import "DicomDatabase.h"
+#import "DicomStudy.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -703,43 +704,48 @@ extern "C"
 
 -(void) deleteSelection:(id) sender
 {
-    [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
-	[[BrowserController currentBrowser] showEntireDatabase];
-	
-	NSIndexSet* indices = [outlineView selectedRowIndexes];
-	BOOL extendingSelection = NO;
-	
-	[[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
-	
-	@try 
-	{
-		for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
-		{
-			if( [indices containsIndex: i])
-			{
-				NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
-				
-				if( [studyArray count] > 0)
-				{
-					NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
-					[[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
-					extendingSelection = YES;
-				}
-				else NSBeep();
-			} 
-		}
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	[[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
-	
-	if( extendingSelection)
-	{
-		[[BrowserController currentBrowser] delItem: nil];
-	}
+    NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Are you sure you want to delete the selected images?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+    
+    if( result == NSAlertDefaultReturn)
+    {
+        [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
+        [[BrowserController currentBrowser] showEntireDatabase];
+        
+        NSIndexSet* indices = [outlineView selectedRowIndexes];
+        BOOL extendingSelection = NO;
+        
+        [[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
+        
+        @try 
+        {
+            for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+            {
+                if( [indices containsIndex: i])
+                {
+                    NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+                    
+                    if( [studyArray count] > 0)
+                    {
+                        NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
+                        [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+                        extendingSelection = YES;
+                    }
+                    else NSBeep();
+                } 
+            }
+        }
+        @catch (NSException * e) 
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        
+        [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
+        
+        if( extendingSelection)
+        {
+            [[BrowserController currentBrowser] delItem: nil];
+        }
+    }
 }
 
 - (void)keyDown:(NSEvent *)event
@@ -856,8 +862,6 @@ extern "C"
 		else
 		{
 			DatabaseIsEdited = NO;
-			[0 reloadData];
-			
 			return NO;
 		}
 	}
@@ -1475,6 +1479,47 @@ extern "C"
 	return result;
 }
 
+-(void) realtimeCFindResults: (NSNotification*) notification
+{
+    if( [notification object] == [queryManager rootNode] && temporaryCFindResultArray)
+    {
+        if( [[self window] isVisible] && [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
+        {
+            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
+            
+            NSArray	*curResult = [[notification object] children];
+            
+            @synchronized( curResult)
+            {
+                NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
+                
+                for( NSUInteger x = 0 ; x < [curResult count] ; x++)
+                {
+                    int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                    
+                    if( index == -1) // not found
+                        [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
+                    else 
+                    {
+                        if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
+                        {
+                            if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                            {
+                                [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                            }
+                        }
+                    }
+                }
+                
+                if( [temporaryCFindResultArray count])
+                    [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
+                
+                [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
+            }
+        }
+    }
+}
+
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError
 {
 	NSString			*theirAET;
@@ -1485,7 +1530,12 @@ extern "C"
 	int					selectedServer;
 	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
 	NSMutableArray		*tempResultArray = [NSMutableArray array];
-	
+    
+    [temporaryCFindResultArray release];
+    temporaryCFindResultArray = nil;
+    if( [NSThread isMainThread])
+        temporaryCFindResultArray = [[NSMutableArray array] retain];
+    
 	[autoQueryLock lock];
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
@@ -1506,6 +1556,9 @@ extern "C"
 		atLeastOneSource = NO;
 		BOOL firstResults = YES;
 		
+        if( [NSThread isMainThread])
+            [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
+        
 		for( NSUInteger i = 0; i < [sourcesArray count]; i++)
 		{
 			if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
@@ -1523,8 +1576,6 @@ extern "C"
 					[self setDateQuery: dateFilterMatrix];
 					[self setModalityQuery: modalityFilterMatrix];
 					
-					//get rid of white space at end and append "*"
-						
 					[queryManager release];
 					queryManager = nil;
 
@@ -1695,7 +1746,10 @@ extern "C"
 					
 					if ([modalityQueryFilter object])
 					{
-						[queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+                            [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
+                        else
+                            [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"Modality"];
 						queryItem = YES;
 					}
 					
@@ -1746,6 +1800,12 @@ extern "C"
 						else i = [sourcesArray count];
 					}
 					
+                    if( [NSThread isMainThread])
+                    {
+                        lastTemporaryCFindResultUpdate = 0;
+                        [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
+                    }
+                    
 					if( firstResults)
 					{
 						firstResults = NO;
@@ -1808,6 +1868,9 @@ extern "C"
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
 	}
 	
+    [temporaryCFindResultArray release];
+    temporaryCFindResultArray = nil;
+    
 	return error;
 }
 
@@ -1984,7 +2047,7 @@ extern "C"
 	if( [studyArray count])
 		localFiles = [[[studyArray objectAtIndex: 0] valueForKey: @"rawNoFiles"] intValue];
 	
-	if( [item valueForKey:@"numberImages"] == nil || [[item valueForKey:@"numberImages"] intValue] == 0)
+	if( [item valueForKey:@"numberImages"] == nil || ([[NSUserDefaults standardUserDefaults] boolForKey: @"SupportPACSWithNoNumberOfImagesField"] && [[item valueForKey:@"numberImages"] intValue] == 0))
 	{
 		// We dont know how many images are stored on the distant PACS... add it, if we have no images on our side...
 		if( localFiles == 0)
@@ -2034,7 +2097,7 @@ extern "C"
 	
 	[autoQueryLock lock];
 	
-	// Start to retrieve the first 10 studies...
+	// Start to retrieve the first XX studies...
 	
 	@try 
 	{
@@ -2042,8 +2105,59 @@ extern "C"
 		
 		for( id item in list)
 		{
-			[self addStudyIfNotAvailable: item toArray: selectedItems];
-			if( [selectedItems count] >= 10) break;
+            BOOL addItem = YES;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_CheckForDuplicateAccessionNumber"])
+            {
+                for( id study in selectedItems)
+                {
+                    if( [[study valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]])
+                    {
+                        NSLog( @"--- Identical AccessionNumber: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
+                        
+                        addItem = NO;
+                        break;
+                    }
+                }
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontReDownloadStudies"])
+            {
+                @synchronized( self)
+                {
+                    if( downloadedStudies == nil)
+                        downloadedStudies = [[NSMutableArray alloc] init];
+                    
+                    for( NSDictionary *d in [NSArray arrayWithArray: downloadedStudies])
+                    {
+                        if( [[d valueForKey: @"date"] timeIntervalSinceNow] > -60*60) // 1 hour - dont redownload it !
+                        {
+                            if( [[d valueForKey: @"accessionNumber"] isEqualToString: [item valueForKey: @"accessionNumber"]] && [[d valueForKey: @"numberImages"] intValue] == [[item valueForKey: @"numberImages"] intValue])
+                            {
+                                addItem = NO;
+                            
+                                NSLog( @"--- Already downloaded during last hour: %@ - %d images", item, [[item valueForKey: @"numberImages"] intValue]);
+                            }
+                        }
+                        else [downloadedStudies removeObject: d];
+                    }
+                }
+            }
+            
+            if( addItem)
+            {
+                [self addStudyIfNotAvailable: item toArray: selectedItems];
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QR_DontReDownloadStudies"])
+                {
+                    @synchronized( self)
+                    {
+                        [downloadedStudies addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSDate date], @"date", [item valueForKey: @"accessionNumber"], @"accessionNumber", [item valueForKey: @"numberImages"], @"numberImages", nil]];
+                    }
+                }
+            }
+                
+			if( [selectedItems count] >= [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfRetrieveForAutoQR"]) break;
 		}
 		
 		if( [selectedItems count])
@@ -2539,8 +2653,40 @@ extern "C"
 		numberOfRunningRetrieve++;
 	}
 	
-	[array retain];
-	
+    // Apply the same order for retrieving, as the sources order
+    NSArray *copiedSourcesArray = [NSArray arrayWithArray: sourcesArray];
+    NSMutableArray *reorderedArray = [NSMutableArray array];
+    
+    @try
+    {
+        for( NSDictionary *source in sourcesArray)
+        {
+            for( DCMTKQueryNode *node in array)
+            {
+                if( [[node _hostname] isEqualToString: [[source valueForKey: @"server"] valueForKey: @"Address"]] && [node _port] == [[[source valueForKey: @"server"] valueForKey: @"Port"] intValue])
+                    if( [reorderedArray containsObject: node] == NO)
+                        [reorderedArray addObject: node];
+            }
+        }
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+    }
+    
+    for( DCMTKQueryNode *node in array)
+    {
+        if( [reorderedArray containsObject: node] == NO)
+            [reorderedArray addObject: node];
+    }
+    
+    if( array.count == reorderedArray.count)
+        array = reorderedArray;
+    else
+        NSLog( @"------- array.count != reorderedArray.count : QueryController performRetrieve");
+    
+    [array retain];
+    
 	@try
 	{
 		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
@@ -2835,10 +2981,20 @@ extern "C"
 		}
 	}
 	
-	if ( [m length])
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject:m ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
-	else
-		modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+    {
+        if( [m length])
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+        else
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+    }
+    else
+    {
+        if( [m length])
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+        else
+            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+    }
 }
 
 
@@ -2878,21 +3034,30 @@ extern "C"
 			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];									break;
 			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
 			
-			case 106:
-			case 112:
-				searchType = searchAfter;
-				
-				if( [sender selectedTag] == 106)
-				{
-					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*6];
-					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*6] descriptionWithCalendarFormat: @"%H%M%S"]];
-				}
-				if( [sender selectedTag] == 112)
-				{
-					date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*12];
-					between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*12] descriptionWithCalendarFormat: @"%H%M%S"]];
-				}
-				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];				
+            default:
+                if( [sender selectedTag] >= 100 && [sender selectedTag] <= 200)
+                {
+                    int hours = [sender selectedTag] - 100;
+                    
+                    searchType = searchAfter;
+                    
+                    date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours];
+                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    
+                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                }
+                else if( [sender selectedTag] >= 200 && [sender selectedTag] <= 300)
+                {
+                    int min = [sender selectedTag] - 200;
+                    
+                    searchType = searchAfter;
+                    
+                    date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*min];
+                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    
+                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                }
+                else NSLog( @"******* unknown setDateQuery tag: %@", (int) [sender selectedTag]);
 			break;
 				
 			case 10:	// AM & PM
@@ -3396,12 +3561,17 @@ extern "C"
 	//set up Query Keys
 	currentQueryKey = PatientName;
 	
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyDate"] retain];
-	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
-	modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch  forKey:@"ModalitiesinStudy"] retain];
-	
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
-
+	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
+	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyTime"] retain];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+	else
+        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
+    
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];
+    
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier:@"Button"];
 	NSButtonCell *buttonCell = [[[NSButtonCell alloc] init] autorelease];
 	[buttonCell setTarget:self];

@@ -1,27 +1,34 @@
-- logContext == nil
-- DB Remote: Notice: strange, we seem to have redownloaded a remote image
+New Features:
+- DICOM Q&R: realtime C-Find updates
+- OsiriX SDK (see plugin)
+
+A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
-- Cancel copy files from DB to DB
-- CD :  /tmp
-	Should be read-only (drag & drop, import, delete, …)
-	Cases are added to CD… (Auto Q&R, DICOM Listener?)
-	Copy & Eject : Eject doesn't occur... Unmount small icon
-	Correct Preferences-Database-If files are on CD/DVD, Automatically Eject CD
+- Compress/Decompress: no thread info?
+- CD : 
+	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
+		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
+		viewer toolbar: delete, (report: readonly...))
+		contextual menu nsoutline et nsmatrix
+		keystrokes: delete key, ...
 	iPod doesn't appear automatically
-	iPod eject button doesn't work….
-- Phantom cells
-- DB migration
+	iPod eject button…
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
+- Storage Commitment Service
+- CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
+- At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
+- When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
+- storescu (autorouting): No presentation context for: (MRe) 1.2.840.10008.5.1.4.1.1.4.1
 - Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
 - PDF Open in Viewer -> Preview
-- Remove OpenJPEG, DCM Framework
 - CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels
 - Option for Tiling Windows: always order from oldest study to ...
@@ -43,6 +50,7 @@
 - Echo/US : map zone
 - DICOM Listener: preferences to force re-index
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
+- QR : Add last 3 hours
 - 'Archived' field (comments?)
 - Custom DB time interval: floating panel
 - 3D ROI -> 2D Viewer

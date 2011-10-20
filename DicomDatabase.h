@@ -63,7 +63,7 @@ extern NSString* const OsirixDataDirName;
 
 @property(readonly,retain) NSString* baseDirPath; // OsiriX Data
 @property(readonly,retain) NSString* dataBaseDirPath; // depends on the content of the file at baseDirPath/DBFOLDER_LOCATION
-@property(readwrite,retain) NSString* name;
+@property(readwrite,retain,nonatomic) NSString* name;
 @property(readwrite) NSTimeInterval timeOfLastModification;
 @property BOOL isReadOnly;
 

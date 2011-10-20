@@ -732,6 +732,7 @@ static float deg2rad = M_PI / 180.0f;
 					DcmMetaInfo *metaInfo = dcmtkFileFormat->getMetaInfo();
 					
 					[self removeAllFieldsOfGroup: 0x0028 dataset: dataset];
+					[self removeAllFieldsOfGroup: 0x5200 dataset: dataset];     //We don't support multiframe export
 					
 					if (dataset->findAndGetString(DCM_SpecificCharacterSet, string, OFFalse).good() && string != NULL)
 					{

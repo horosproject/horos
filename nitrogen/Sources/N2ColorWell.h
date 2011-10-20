@@ -19,6 +19,6 @@
 	NSColor* _color;
 }
 
-@property(retain) NSColor* color;
+@property(nonatomic, retain) NSColor* color;
 
 @end

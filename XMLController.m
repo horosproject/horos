@@ -30,6 +30,9 @@
 #import "Notifications.h"
 #import "DICOMToNSString.h"
 #import "N2Debug.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -99,7 +102,7 @@ extern int delayedTileWindows;
 		child = parent;
 		first = NO;
 	}
-	while( parent = [parent parent]);
+	while( (parent = [parent parent]));
 	
 	// NSLog( result);
 	// Example (0008,1111)[0].(0010,0010)
@@ -263,7 +266,7 @@ extern int delayedTileWindows;
 		hexscanner = [NSScanner scannerWithString:[addElement stringValue]];
 		[hexscanner scanHexInt:&element];
 		
-		if( group > 0 && element >= 0)
+		if( group > 0)
 		{
 			NSMutableArray *groupsAndElements = [NSMutableArray array];
 			
@@ -1062,7 +1065,7 @@ extern int delayedTileWindows;
 				[[NSScanner scannerWithString: [[item attributeForName:@"group"] objectValue]] scanHexInt:&gr];
 				[[NSScanner scannerWithString: [[item attributeForName:@"element"] objectValue]] scanHexInt:&el];
 				
-				if( gr > 0 && el >= 0)
+				if( gr > 0)
 				{
 					NSLog( @"Sort by 0x%04X / 0x%04X", gr, el);
 					[viewer sortSeriesByDICOMGroup: gr element: el];

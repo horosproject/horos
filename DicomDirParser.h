@@ -12,13 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
-
-
 #import <Foundation/Foundation.h>
 
 @interface NSString(NumberStuff)
 - (BOOL)holdsIntegerValue;
 @end
+
 
 /** \brief  Reads and parses DICOMDIRs */
 

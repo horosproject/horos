@@ -23,6 +23,9 @@
 #import "CPRCurvedPath.h"
 #import "CPRDisplayInfo.h"
 #import "N3BezierPath.h"
+#import "OSIEnvironment.h"
+#import "OSIROI.h"
+#import "OSIVolumeWindow.h"
 
 #include <OpenGL/CGLMacro.h>
 
@@ -60,6 +63,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 @interface CPRMPRDCMView ()
 
 - (void)drawCurvedPathInGL;
+- (void)drawOSIROIs;
+- (OSIROIManager *)ROIManager;
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize;
 - (void)drawCircleAtPoint:(NSPoint)point;
 - (void)sendWillEditCurvedPath;
@@ -172,6 +177,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void) setFrame:(NSRect)frameRect
 {
+    NSDisableScreenUpdates();
+    
 	if( NSEqualRects( frameRect, [self frame]) == NO)
 	{
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( updateViewsAccordingToFrame:) object: nil];
@@ -185,6 +192,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
 	[super setFrame: frameRect];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath
@@ -878,6 +887,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
 	[self drawCurvedPathInGL];
+    [self drawOSIROIs];
 	
 	if( windowController.displayMousePosition)
 	{
@@ -2435,6 +2445,52 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 //    [self _debugDrawDebugPoints];
 }
 
+- (void)drawOSIROIs
+{
+    double pixToSubdrawRectOpenGLTransform[16];
+    CGLContextObj cgl_ctx;
+    OSIROI *roi;
+    
+    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+    
+    if ([self ROIManager] == nil) {
+        return;
+    }
+    
+    N3AffineTransformGetOpenGLMatrixd([self pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+
+    for (roi in [[self ROIManager] ROIs]) {
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+                
+        [roi drawSlab:OSISlabMake([self plane], 0) inCGLContext:cgl_ctx pixelFormat:(CGLPixelFormatObj)[[self pixelFormat] CGLPixelFormatObj]
+                                            dicomToPixTransform:N3AffineTransformInvert([self pixToDicomTransform])];
+    
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+
+    }
+}
+
+- (OSIROIManager *)ROIManager
+{
+    if (_ROIManager == nil) {
+        OSIEnvironment *environment;
+        OSIVolumeWindow *volumeWindow;
+        environment = [OSIEnvironment sharedEnvironment];
+        
+        if (environment == nil) {
+            return nil;
+        }
+        
+        volumeWindow = [environment volumeWindowForViewerController:[windowController viewer]];
+        _ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:volumeWindow coalesceROIs:YES];
+    }
+    
+    return _ROIManager;
+}
+
 - (void)drawCircleAtPoint:(NSPoint)point pointSize:(CGFloat)pointSize
 {
     CGLContextObj cgl_ctx;
@@ -2570,26 +2626,5 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     return viewToPixTransform;
 }
 
-- (N3AffineTransform)pixToSubDrawRectTransform // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
-{
-    N3AffineTransform pixToSubDrawRectTransform;
-    
-	#ifndef NDEBUG
-	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
-		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
-	#endif
-	
-    pixToSubDrawRectTransform = N3AffineTransformIdentity;
-    //    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(1.0/curDCM.pixelSpacingX, 1.0/curDCM.pixelSpacingY, 1));
-    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeTranslation(curDCM.pwidth * -0.5, curDCM.pheight * -0.5, 0));
-    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(scaleValue, scaleValue, 1));
-    
-    pixToSubDrawRectTransform.m14 = 0.0;
-    pixToSubDrawRectTransform.m24 = 0.0;
-    pixToSubDrawRectTransform.m34 = 0.0;
-    pixToSubDrawRectTransform.m44 = 1.0;
-    
-    return pixToSubDrawRectTransform;
-}
 
 @end

@@ -36,7 +36,7 @@
 + (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length;
 + (id)dataContainerWithBytesNoCopy:(void *)bytes length:(NSUInteger)length freeWhenDone:(BOOL)freeWhenDone;
 + (id)dataContainerWithContentsOfFile:(NSString *)path;
-+ (id)dataContainerWithContentsOfMappedFile:(NSString *)path;
+//+ (id)dataContainerWithContentsOfMappedFile:(NSString *)path;
 + (id)dataContainerWithContentsOfURL:(NSURL *)aURL;
 + (id)dataContainerWithData:(NSData *)aData;
 + (id)dataContainerWithData:(NSData *)aData transferSyntax:(DCMTransferSyntax *)syntax;

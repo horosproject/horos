@@ -52,9 +52,12 @@ extern NSString* const OSIROIManagerROIsDidUpdateNotification;
 	OSIVolumeWindow *_volumeWindow;
 	BOOL _coalesceROIs;
 	
+    BOOL _allROIsLoaded;
+    
 	BOOL _rebuildingROIs;
 	
 	NSMutableArray *_OSIROIs;
+    NSMutableSet *_watchedROIs; // the osirix ROIs that are backing the OSIROIs that are being managed. These are the ROIs that need to be watched, and the OSIROIs need to be updated when these change
 }
 
 ///-----------------------------------
@@ -134,14 +137,21 @@ extern NSString* const OSIROIManagerROIsDidUpdateNotification;
  */
 - (NSArray *)ROINames; // returns all the unique ROI names
 
+/** Returns YES if all the ROIs in the volume have been loaded. Returns NO DCM objects are still loading and there not all ROIs are available yet.
+ Observable.
+ 
+ @see ROIs
+ @see viewerController
+ */
+- (BOOL)allROIsLoaded;
+
+
 // not done
 //- (id)init; // look at all ROIS
 //
 //- (id)initWithStudy:(OSIStudy *)study; // if a study is specifed, only ROIs the manager will only look at ROIs in this study
 //
 //- (NSArray *)ROIsOfType:(NSString *)type;
-
-
 
 @end
 

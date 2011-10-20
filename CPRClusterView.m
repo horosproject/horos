@@ -81,11 +81,14 @@
 - (void)setFrame:(NSRect)frameRect
 {
     [super setFrame:frameRect];
+    
     [self _updateClusterViewFrames];
 }
 
 - (void)_updateClusterViewFrames
 {
+    NSDisableScreenUpdates();
+    
     CGFloat rightViewHeight;
     CGFloat rightViewWidth;
     CGFloat rightViewX;
@@ -101,6 +104,8 @@
     [_topView setFrame:NSMakeRect(rightViewX, rightViewHeight*2.0, rightViewWidth, NSHeight(self.bounds) - 2.0*rightViewHeight)];
     
     [_mainView setFrame:NSMakeRect(0, 0, rightViewX, NSHeight(self.bounds))];
+    
+     NSEnableScreenUpdates();
 }
 
 @end

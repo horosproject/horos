@@ -243,8 +243,8 @@
 	if (cstr) [data appendBytes:cstr length:cstrlen];
 }
 
-const NSString* const FailedToConnectExceptionMessage = @"Failed to connect to the remote host. Is database sharing activated on the distant computer?";
-const NSString* const InvalidResponseExceptionMessage = @"Invalid response data from remote host.";
+NSString* const FailedToConnectExceptionMessage = @"Failed to connect to the remote host. Is database sharing activated on the distant computer?";
+NSString* const InvalidResponseExceptionMessage = @"Invalid response data from remote host.";
 
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];

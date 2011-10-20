@@ -82,9 +82,10 @@
 	[templatesPopup setEnabled:templates.count>0];
 }
 
--(id)initWithTags:(NSArray*)shownDcmTags values:(NSArray*)values {
+-(id)initWithTags:(NSArray*)shownDcmTags values:(NSArray*)values
+{
 	self = [super initWithNibName:@"AnonymizationView" bundle:NULL];
-	self.view; // load
+	[self view]; // load
 	
 	self.tags = [NSMutableArray array];
 	
@@ -247,7 +248,7 @@
 	return [[out copy] autorelease];
 }
 
-NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(NSArray* arg1, NSArray* arg2, void* context) {
+NSInteger CompareArraysByNameOfDCMAttributeTagAtIndexZero(id arg1, id arg2, void* context) {
 	return [[[arg1 objectAtIndex:0] name] caseInsensitiveCompare:[[arg2 objectAtIndex:0] name]];
 }
 

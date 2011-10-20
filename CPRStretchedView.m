@@ -1389,7 +1389,7 @@ extern int splitPosition[ 3];
             return 1;
             break;
         default:
-            NSLog(@"%s asking for invalid clipping range mode: %d", __func__,  clippingRangeMode);
+            NSLog(@"%s asking for invalid clipping range mode: %d", __func__, (int) clippingRangeMode);
             return 0;
             break;
     }

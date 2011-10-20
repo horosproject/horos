@@ -26,7 +26,7 @@
     return [NSString stringWithFormat:format, [number intValue]];
 }
 
--(BOOL)getObjectValue:(NSNumber**)outNumber forString:(NSString*)string errorDescription:(NSString**)outError {
+-(BOOL)getObjectValue:(id*)outNumber forString:(NSString*)string errorDescription:(NSString**)outError {
 	NSScanner* scanner = [NSScanner scannerWithString:string];
 
 	unsigned int value;

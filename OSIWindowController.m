@@ -22,6 +22,9 @@
 #import "Notifications.h"
 #import <Carbon/Carbon.h>
 #import "DCMPix.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
@@ -556,13 +559,16 @@ static BOOL protectedReentryWindowDidResize = NO;
 #pragma mark-
 #pragma mark current Core Data Objects
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy *)currentStudy
+{
 	return nil;
 }
-- (NSManagedObject *)currentSeries{
+- (DicomSeries *)currentSeries
+{
 	return nil;
 }
-- (NSManagedObject *)currentImage{
+- (DicomImage *)currentImage
+{
 	return nil;
 }
 

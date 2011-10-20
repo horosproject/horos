@@ -288,7 +288,7 @@ typedef char* VTKStereoVRView;
 	vtkColorTransferFunction	*colorTransferFunction;
 	vtkTextActor				*textWLWW, *textX;
 	BOOL						isViewportResizable;
-	vtkTextActor				*oText[ 4], oTextS[ 4];
+	vtkTextActor				*oText[ 4], *oTextS[ 4];
 	char						WLWWString[ 200];
 	vtkImageImport				*reader;
 	vtkVolumeRayCastCompositeFunction  *compositeFunction;

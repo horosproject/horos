@@ -52,7 +52,11 @@
 	dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
 	dataset-> insertEmptyElement(DCM_StudyID, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfStudyRelatedInstances, OFTrue);
-	dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+        dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);
+    else
+        dataset-> insertEmptyElement(DCM_Modality, OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "STUDY", OFTrue);
 	
 	return dataset;
@@ -67,13 +71,18 @@
 	if( dataset == nil)
 		return;
 	
-	[_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
-			callingAET:_callingAET  
-			calledAET:_calledAET
-			hostname:_hostname 
-			port:_port 
-			transferSyntax:_transferSyntax
-			compression: _compression
-			extraParameters:_extraParameters]];
+    @synchronized( _children)
+	{
+        [_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
+                callingAET:_callingAET  
+                calledAET:_calledAET
+                hostname:_hostname 
+                port:_port 
+                transferSyntax:_transferSyntax
+                compression: _compression
+                extraParameters:_extraParameters]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"realtimeCFindResults" object: self];  
+    }
 }
 @end

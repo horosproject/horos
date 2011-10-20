@@ -21,6 +21,11 @@
 #import "OSIFloatVolumeData.h"
 #import "OSIROIMask.h"
 #import "OSIROI.h"
+#import "MyPoint.h"
+
+@interface OSIPlanarPathROI ()
+
+@end
 
 @implementation OSIPlanarPathROI (Private)
 
@@ -30,12 +35,14 @@
 	NSArray *pointArray;
 	MyPoint *myPoint;
 	NSMutableArray *nodes;
+    NSMutableArray *tempPointArray;
+    NSInteger i;
 	
 	if ( (self = [super init]) ) {
 		_osiriXROI = [roi retain];
-		
+		        
 		_plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDICOMTransfrom);
-		_homeFloatVolumeData = [floatVolumeData retain];
+        [self setHomeFloatVolumeData:floatVolumeData];
 		
 		if ([roi type] == tMesure && [[roi points] count] > 1) {
 			_bezierPath = [[N3MutableBezierPath alloc] init];
@@ -45,19 +52,44 @@
 			[_bezierPath lineToVector:N3VectorApplyTransform(N3VectorMakeFromNSPoint(point), pixToDICOMTransfrom)];
 		} else if ([roi type] == tOPolygon) {
 			pointArray = [roi points];
+            
+//            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+//                return nil;
+//            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
-				[nodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMakeFromNSPoint([myPoint point]), pixToDICOMTransfrom)]];
+				[nodes addObject:[NSValue valueWithN3Vector:N3VectorMakeFromNSPoint([myPoint point])]];
 			}
 			_bezierPath = [[N3MutableBezierPath alloc] initWithNodeArray:nodes style:N3BezierNodeEndsMeetStyle];
+            if ([_bezierPath elementCount]) {
+				[_bezierPath close];
+			}
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
-		} else if ([roi type] == tCPolygon) {
+		} else if ([roi type] == tCPolygon || [roi type] == tOval) {
 			pointArray = [roi points];
+            
+            if ([roi type] == tOval && [pointArray count] >= 2 && [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+                tempPointArray = [NSMutableArray array];
+                point = [[pointArray objectAtIndex:0] point];
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.x += 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.y += 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                point.x -= 1;
+                [tempPointArray addObject:[MyPoint point:point]];
+                pointArray = tempPointArray;
+            }
+            
+//            if ([pointArray count] <= 1 || [[pointArray objectAtIndex:0] isEqualToPoint:[[pointArray objectAtIndex:1] point]]) {
+//                return nil;
+//            }
 			
 			nodes = [[NSMutableArray alloc] init];
 			for (myPoint in pointArray) {
-				[nodes addObject:[NSValue valueWithN3Vector:N3VectorApplyTransform(N3VectorMakeFromNSPoint([myPoint point]), pixToDICOMTransfrom)]];
+				[nodes addObject:[NSValue valueWithN3Vector:N3VectorMakeFromNSPoint([myPoint point])]];
 			}
             if ([pointArray count] > 1) {
                 [nodes addObject:[nodes objectAtIndex:0]];
@@ -66,7 +98,26 @@
 			if ([_bezierPath elementCount]) {
 				[_bezierPath close];
 			}
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 			[nodes release];
+        } else if ([roi type] == tROI) {
+			pointArray = [roi points];
+        
+            if ([pointArray count] == 0) {
+                return nil;
+            }
+            
+            _bezierPath = [[N3MutableBezierPath alloc] init];
+            [_bezierPath moveToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:0] point])];
+            
+            for (i = 1; i < [pointArray count]; i++) {
+                [_bezierPath lineToVector:N3VectorMakeFromNSPoint([[pointArray objectAtIndex:i] point])];
+            }
+            
+            if ([_bezierPath elementCount]) {
+                [_bezierPath close];
+            }
+            [_bezierPath applyAffineTransform:pixToDICOMTransfrom];
 		} else {
 			[self release];
 			self = nil;
@@ -88,9 +139,6 @@
 	
 	[_osiriXROI release];
 	_osiriXROI = nil;
-	
-	[_homeFloatVolumeData release];
-	_homeFloatVolumeData = nil;
 	
 	[super dealloc];
 }
@@ -146,12 +194,16 @@
 	BOOL zSet;
 	NSValue *vectorValue;
 	NSNumber *number;
-	NSUInteger i;
-	NSUInteger j;
-	NSUInteger runStart;
-	NSUInteger runEnd;
+	NSInteger i;
+	NSInteger j;
+	NSInteger runStart;
+	NSInteger runEnd;
 	
-	volumeBezierPath = [[[_bezierPath bezierPathByApplyingTransform:floatVolume.volumeTransform] mutableCopy] autorelease];
+    // make sure floatVolume's z direction is perpendicular to the plane
+    assert(N3VectorLength(N3VectorCrossProduct(N3VectorApplyTransformToDirectionalVector(_plane.normal, floatVolume.volumeTransform), N3VectorMake(0, 0, 1))) < 0.0001);
+        
+	volumeBezierPath = [[_bezierPath mutableCopy] autorelease];
+    [volumeBezierPath applyAffineTransform:N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, -.5, 0))];
 	[volumeBezierPath flatten:N3BezierDefaultFlatness];
 	zSet = NO;
 	ROIRuns = [NSMutableArray array];
@@ -180,9 +232,18 @@
 	
 	minY = floor(minY);
 	maxY = ceil(maxY);
+    maskRun = OSIROIMaskRunZero;
 	maskRun.depthIndex = z;
+    
+    if (z < 0 || z >= floatVolume.pixelsDeep) {
+        return [[[OSIROIMask alloc] initWithMaskRuns:[NSArray array]] autorelease];
+    }
 	
 	for (i = minY; i <= maxY; i++) {
+        if (i < 0 || i >= floatVolume.pixelsHigh) {
+            continue;
+        }
+        
 		maskRun.heightIndex = i;
 		intersections = [volumeBezierPath intersectionsWithPlane:N3PlaneMake(N3VectorMake(0, i, 0), N3VectorMake(0, 1, 0))];
 		
@@ -191,32 +252,37 @@
 			[intersectionNumbers addObject:[NSNumber numberWithDouble:[vectorValue N3VectorValue].x]];
 		}
 		[intersectionNumbers sortUsingSelector:@selector(compare:)];
-		for(j = 0; j+1 < [intersectionNumbers count]; j++) {
+		for(j = 0; j+1 < [intersectionNumbers count]; j++, j++) {
 			runStart = round([[intersectionNumbers objectAtIndex:j] doubleValue]);
 			runEnd = round([[intersectionNumbers objectAtIndex:j+1] doubleValue]);
+            
+            if (runStart == runEnd || runStart >= (NSInteger)floatVolume.pixelsWide || runEnd < 0) {
+                continue;
+            }
+            
+            runStart = MAX(runStart, 0);
+            runEnd = MIN(runEnd, floatVolume.pixelsWide - 1);
+            
 			if (runEnd > runStart) {
 				maskRun.widthRange = NSMakeRange(runStart, runEnd - runStart);
                 [ROIRuns addObject:[NSValue valueWithOSIROIMaskRun:maskRun]];
 			}
-			j++;
+//			j++;
 		}
 	}
 	
-	if ([ROIRuns count] > 0) {
-		return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
-	} else {
-		return nil;
-	}
+    return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
+
+//	if ([ROIRuns count] > 0) {
+//		return [[[OSIROIMask alloc] initWithMaskRuns:ROIRuns] autorelease];
+//	} else {
+//		return nil;
+//	}
 }
 
-- (NSArray *)osiriXROIs
+- (NSSet *)osiriXROIs
 {
-	return [NSArray arrayWithObject:_osiriXROI];
-}
-
-- (OSIFloatVolumeData *)homeFloatVolumeData // the volume data on which the ROI was drawn
-{
-	return _homeFloatVolumeData;
+	return [NSSet setWithObject:_osiriXROI];
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)cgl_ctx pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform
@@ -267,8 +333,8 @@
     for (maskRunValue in maskRuns) {
         maskRun = [maskRunValue OSIROIMaskRunValue];
         
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex, maskRun.depthIndex);
+        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
+        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
         
         lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
         lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
@@ -280,7 +346,6 @@
     
     glPopMatrix();
 }
-
 
 @end
 

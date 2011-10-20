@@ -225,7 +225,7 @@
 	{
 		[pathCameras removeLastObject]; // otherwise this frame appears 2 times (it is the first AND last frame)
 	}
-	NSLog(@"pathCameras: %d", [pathCameras count]);
+	NSLog(@"pathCameras: %d", (int) [pathCameras count]);
 	self.numberOfFrames =  [pathCameras count];
 
 }

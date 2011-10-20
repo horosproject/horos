@@ -181,6 +181,9 @@ NSInteger sortROIByName(id roi1, id roi2, void *context)
 -(NSMenu*)contextualMenu;
 -(NSMenu*)contextualMenuForROI:(ROI*)roi;
 
+- (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)volumeData movieIndex:(NSInteger)movieIndex;
+- (void)sendDidAllocateVolumeDataNotificationWithVolumeData:(NSData *)volumeData movieIndex:(NSInteger)movieIndex;
+
 @end
 
 enum
@@ -2072,6 +2075,39 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	return [menu autorelease];
 }
+
+- (void)sendWillFreeVolumeDataNotificationWithVolumeData:(NSData *)freeingVolumeData movieIndex:(NSInteger)movieIndex
+{
+    if (freeingVolumeData) {
+        NSAutoreleasePool *pool;
+        pool = [[NSAutoreleasePool alloc] init];
+        // this Autorelease pool is here to deal with some sort of race condition when freeing the ViewerController, if the viewercontroler
+        // get's retain/autoreleased we get a crash in the main run loop. This is a hack...
+        
+        [[NSNotificationCenter defaultCenter] postNotification:
+         [NSNotification notificationWithName:OsirixViewerControllerWillFreeVolumeDataNotification object:self
+                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:freeingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+        
+        [pool release];
+    }
+}
+
+- (void)sendDidAllocateVolumeDataNotificationWithVolumeData:(NSData *)allocatingVolumeData movieIndex:(NSInteger)movieIndex
+{
+    if(allocatingVolumeData) {
+        NSAutoreleasePool *pool;
+        pool = [[NSAutoreleasePool alloc] init];
+        // this Autorelease pool is here to deal with some sort of race condition when freeing the ViewerController, if the viewercontroler
+        // get's retain/autoreleased we get a crash in the main run loop. This is a hack...
+        
+        [[NSNotificationCenter defaultCenter] postNotification:
+         [NSNotification notificationWithName:OsirixViewerControllerDidAllocateVolumeDataNotification object:self
+                                     userInfo:[NSDictionary dictionaryWithObjectsAndKeys:allocatingVolumeData, @"volumeData", [NSNumber numberWithInteger:movieIndex], @"movieIndex", nil]]];
+        
+        [pool release];
+    }
+}
+
 
 -(void)roiContextualMenuActionRemove:(NSMenuItem*)source
 {
@@ -4121,7 +4157,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						
 						[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 						
-						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rClick + Apple Key:\rOpen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
+						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rRight mouse button to\ropen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
 						
 						if( [curImage valueForKey:@"series"] == curSeries)
 						{
@@ -6460,11 +6496,13 @@ return YES;
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
-		[copyRoiList[ i] release];
-		[roiList[ i] release];
-		[pixList[ i] release];
-		[fileList[ i] release];
-		[volumeData[ i] release];
+		[copyRoiList[ i] release]; copyRoiList[ i] = nil;
+		[roiList[ i] release];  roiList[ i] = nil;
+		[pixList[ i] release];  pixList[ i] = nil;
+		[fileList[ i] release];  fileList[ i] = nil;
+        
+        [self sendWillFreeVolumeDataNotificationWithVolumeData:volumeData[ i] movieIndex:i];
+		[volumeData[ i] release];  volumeData[ i] = nil;
 	}
 	
 	[undoQueue removeAllObjects];
@@ -6479,6 +6517,13 @@ return YES;
 
 - (void) dealloc
 {
+    [[self window] setDelegate: nil];
+	
+    NSArray *windows = [NSApp windows];
+    
+    if([windows count] < 2)
+        [[BrowserController currentBrowser] showDatabase:self];
+    
 	[self ActivateBlending: nil];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -6489,52 +6534,52 @@ return YES;
 	ThreadLoadImageLock = nil;
 	
 	[undoQueue release];
+    undoQueue = nil;
+    
 	[redoQueue release];
-	
+	redoQueue = nil;
+    
 	[curOpacityMenu release];
-
+    curOpacityMenu = nil;
+    
 	[imageView release];
+    imageView = nil;
+    
 	[seriesView release];
-	
+	seriesView = nil;
+    
 	[exportDCM release];
+    exportDCM = nil;
+    
 	[blendedWindow release];
-	
+	blendedWindow = nil;
+    
 	if( [AppController USETOOLBARPANEL])
 	{
 		for( int i = 0 ; i < [[NSScreen screens] count]; i++)
 			[toolbarPanel[ i] toolbarWillClose : toolbar];
 	}
 	
-    [[self window] setDelegate:nil];
-	
-    NSArray *windows = [NSApp windows];
-    
-    if([windows count] < 2)
-    {
-        [[BrowserController currentBrowser] showDatabase:self];
-    }
-	
 	[ROINamesArray release];
-	
-//	[curvedController release];
-	
+	ROINamesArray = nil;
+    
 	[roiLock release];
-	
-//	[keyObjectPopupController release];
-	
+	roiLock = nil;
+    
 	[contextualDictionaryPath release];
-	
-	[backCurCLUTMenu release];
-	[curCLUTMenu release];
-	[curConvMenu release];
-	[curWLWWMenu release];
-	[processorsLock release];
-	[retainedToolbarItems release];
-	[editedRadiopharmaceuticalStartTime release];
-	[editedAcquisitionTime release];
-	[subLoadingThread release];
-	[toolbar release];
-	[injectionDateTime release];
+	contextualDictionaryPath = nil;
+    
+	[backCurCLUTMenu release]; backCurCLUTMenu = nil;
+	[curCLUTMenu release]; curCLUTMenu = nil;
+	[curConvMenu release]; curConvMenu = nil;
+	[curWLWWMenu release]; curWLWWMenu = nil;
+	[processorsLock release]; processorsLock = nil;
+	[retainedToolbarItems release]; retainedToolbarItems = nil;
+	[editedRadiopharmaceuticalStartTime release]; editedRadiopharmaceuticalStartTime = nil;
+	[editedAcquisitionTime release]; editedAcquisitionTime = nil;
+	[subLoadingThread release]; subLoadingThread = nil;
+	[toolbar release]; toolbar = nil;
+	[injectionDateTime release]; injectionDateTime = nil;
 	
 //	[[AppController sharedAppController] tileWindows: nil];	<- We cannot do this, because:
 //	This is very important, or if we have a queue of closing windows, it will crash....
@@ -6701,6 +6746,7 @@ return YES;
 					
 					volumeData[ 0] = v;
 					[volumeData[ 0] retain];
+                    [self sendDidAllocateVolumeDataNotificationWithVolumeData:volumeData[0] movieIndex:0];
 					
 					direction = 1;
 					
@@ -7444,6 +7490,9 @@ return YES;
 		
 		originalOrientation = -1;
 		[self performSelectorOnMainThread:@selector( computeIntervalAsync) withObject: nil waitUntilDone: NO];
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
+            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];}];
 	}
 	
 	ThreadLoadImage = NO;
@@ -15264,6 +15313,7 @@ int i,j,l;
 	
 	volumeData[ maxMovieIndex] = v;
 	[volumeData[ maxMovieIndex] retain];
+    [self sendDidAllocateVolumeDataNotificationWithVolumeData:volumeData[ maxMovieIndex] movieIndex:maxMovieIndex];
 	
     [f retain];
     pixList[ maxMovieIndex] = f;
@@ -18369,7 +18419,7 @@ int i,j,l;
 	
 	if( pts)
 	{
-		NSLog( @"number of points: %d", [*pts count]);
+		NSLog( @"number of points: %d", (int) [*pts count]);
 		
 		#define MAXPOINTS 7000
 		
@@ -18386,7 +18436,7 @@ int i,j,l;
 					[newpts addObject: [*pts objectAtIndex: i]];
 				}
 				
-				NSLog( @"too much points, reducing from: %d, to: %d", [*pts count], [newpts count]);
+				NSLog( @"too much points, reducing from: %d, to: %d", (int) [*pts count], (int) [newpts count]);
 				
 				[*pts removeAllObjects];
 				[*pts addObjectsFromArray: newpts];
@@ -18979,7 +19029,7 @@ int i,j,l;
 	SRController *viewer;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
-	if (viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]])
+	if ((viewer = [[AppController sharedAppController] FindViewer :@"SR" :pixList[0]]))
 		return viewer;
 	viewer = [[SRController alloc] initWithPix:pixList[curMovieIndex] :fileList[0] :volumeData[curMovieIndex] :blendingController :self];
 	return viewer;
@@ -19031,187 +19081,6 @@ int i,j,l;
 }
 #endif
 
-//-(CurvedMPR*) curvedController
-//{
-//	return curvedController;
-//}
-//
-//- (void) setCurvedController: (CurvedMPR*) cmpr
-//{
-//	if( cmpr != curvedController)
-//	{
-//		[curvedController release];
-//		curvedController = [cmpr retain];
-//	}
-//}
-//
-//-(IBAction) setCurvedMPRslider:(id) sender
-//{
-//	long i;
-//	
-//	i = [sender intValue];
-//	
-//	switch( [sender tag])
-//	{
-//		case 0:		
-//			i /= 2;
-//			i *= 2;
-//			i++;
-//			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-//		break;
-//		
-//		case 1:		
-//			i /= 2;
-//			i *= 2;
-//			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-//		break;
-//		
-//		case 2:		
-//			i /= 4;
-//			i *= 4;
-//			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), i, i * [[imageView curDCM] pixelSpacingX]]];
-//		break;
-//	}
-//}
-//
-//-(IBAction) endCurvedMPR:(id) sender
-//{
-//	[curvedMPRWindow orderOut:sender];
-//    
-//    [NSApp endSheet:curvedMPRWindow returnCode:[sender tag]];
-//	
-//	if( [sender tag] == 1)
-//	{
-//		long	i;
-//		ROI		*selectedRoi = nil;
-//	
-//		// Find the first selected
-//		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-//		{
-//			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-//			
-//			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-//			{
-//				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-//				
-//				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
-//				{
-//				
-//				}
-//				else selectedRoi = nil;
-//			}
-//		}
-//		
-//		if( selectedRoi)
-//		{
-//			if( [curvedMPRper state] == NSOnState)
-//				[[[CurvedMPR alloc] initWithObjectsPer:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRinterval intValue] :[curvedMPRsize intValue]] autorelease];
-//			
-//			[[[CurvedMPR alloc] initWithObjects:pixList[0] :fileList[0] :volumeData[0] :selectedRoi :self :[curvedMPRslid intValue] forAxial:[[curvedMPRaxis cellWithTag: 0] state] forCoronal:[[curvedMPRaxis cellWithTag: 1] state] forSagittal:[[curvedMPRaxis cellWithTag: 2] state]] autorelease];
-//		}
-//	}
-//}
-//
-//-(IBAction) CurvedMPR:(id) sender
-//{
-//	[self checkEverythingLoaded];
-//	[self clear8bitRepresentations];
-//	
-//	if( [self isDataVolumicIn4D: YES] == NO)
-//	{
-//		NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data.", nil), nil, nil, nil);
-//		return;
-//	}
-//	
-//	[self squareDataSet: self];			// CurvedMPR works better if pixel are squares !
-//	
-//	if( [self computeInterval] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingX] == 0 ||
-//		[[pixList[0] objectAtIndex:0] pixelSpacingY] == 0 ||
-//		([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask))
-//	{
-//		[self SetThicknessInterval:sender];
-//	}
-//	else
-//	{
-//		[self displayAWarningIfNonTrueVolumicData];
-//		[self displayWarningIfGantryTitled];
-//		
-//		long	i;
-//		ROI		*selectedRoi = nil;
-//	
-//		// Find the first selected
-//		for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
-//		{
-//			long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
-//			
-//			if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
-//			{
-//				selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-//				
-//				[selectedRoi setROIMode: ROI_selected];
-//				
-//				if( [selectedRoi type] == tOPolygon || [selectedRoi type] == tCPolygon || [selectedRoi type] == tPencil || [selectedRoi type] == tMesure)
-//				{
-//				
-//				}
-//				else selectedRoi = nil;
-//			}
-//		}
-//
-//		// if no ROI is selected and there is only one -> we know that is the one the user wants to use
-//		if( selectedRoi == nil && [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]==1)
-//		{
-//			selectedRoi = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: 0];
-//			[selectedRoi setROIMode: ROI_selected];
-//		}
-//		
-//		if( selectedRoi == nil)
-//		{
-//			NSRunCriticalAlertPanel(NSLocalizedString(@"Curved-MPR Error", nil), NSLocalizedString(@"Select a Polygon ROI to compute a Curved MPR.", nil) , NSLocalizedString(@"OK", nil), nil, nil);
-//		}
-//		else
-//		{
-//			[curvedMPRslid setIntValue:1];
-//			[curvedMPRtext setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d images, %2.2f mm", nil), [curvedMPRslid intValue], [[imageView curDCM] pixelSpacingX]]];
-//			
-//			[curvedMPRinterval setIntValue:4];
-//			[curvedMPRintervalText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRinterval intValue], [curvedMPRinterval intValue]*[[imageView curDCM] pixelSpacingX]]];
-//			
-//			[curvedMPRsize setIntValue:48];
-//			[curvedMPRsizeText setStringValue: [NSString stringWithFormat: NSLocalizedString(@"%d pixels, %2.2f mm", nil), [curvedMPRsize intValue], [curvedMPRsize intValue]*[[imageView curDCM] pixelSpacingX]]];
-//
-//			int oldStateForCellWithTag[3];
-//			oldStateForCellWithTag[1] = [[curvedMPRaxis cellWithTag:1] state];
-//			oldStateForCellWithTag[2] = [[curvedMPRaxis cellWithTag:2] state];
-//			[[curvedMPRaxis cellWithTag:1] setState:NSOffState];
-//			[[curvedMPRaxis cellWithTag:2] setState:NSOffState];
-//			[[curvedMPRaxis cellWithTag:1] setEnabled:NO];
-//			[[curvedMPRaxis cellWithTag:2] setEnabled:NO];
-//			
-//			NSArray *zPosArray = [selectedRoi zPositions];
-//			
-//			if( [zPosArray count])
-//			{
-//				int zPos = [[zPosArray objectAtIndex:0] intValue];
-//				for(i=1; i < [zPosArray count]; i++)
-//				{
-//					if(zPos != [[zPosArray objectAtIndex:i] intValue])
-//					{
-//						[[curvedMPRaxis cellWithTag:1] setEnabled:YES];
-//						[[curvedMPRaxis cellWithTag:2] setEnabled:YES];
-//						[[curvedMPRaxis cellWithTag:1] setState:oldStateForCellWithTag[1]];
-//						[[curvedMPRaxis cellWithTag:2] setState:oldStateForCellWithTag[2]];
-//						i = [zPosArray count];
-//					}
-//				}
-//			}
-//			
-//			[NSApp beginSheet: curvedMPRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-//		}
-//	}
-//}
-
 - (OrthogonalMPRViewer *)openOrthogonalMPRViewer
 {
 	OrthogonalMPRViewer *viewer;
@@ -19261,7 +19130,7 @@ int i,j,l;
 	[self checkEverythingLoaded];
 	[self clear8bitRepresentations];
 	
-	if (viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]])
+	if ((viewer = [[AppController sharedAppController] FindViewer :@"PETCT" :pixList[0]]))
 		return viewer;
 		
 	if (blendingController)

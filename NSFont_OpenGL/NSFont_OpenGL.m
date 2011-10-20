@@ -319,23 +319,29 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 		{
 			NSBitmapImageRep *bitmap = [curArray objectAtIndex: currentUnichar - first];
 			
-			glNewList( dListNum, GL_COMPILE );
-			
-			switch( fontType)
-			{
-				case 0:
-					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
-				break;
-				
-				case 1:
-					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
-				break;
-				
-				case 2:
-					glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
-				break;
-			}
-			glEndList();
+            if( bitmap)
+            {
+                glNewList( dListNum, GL_COMPILE );
+                
+                switch( fontType)
+                {
+                    case 0:
+                        if( charPtrArray[ currentUnichar])
+                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+                    break;
+                    
+                    case 1:
+                        if( charPtrArrayPreview[ currentUnichar])
+                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
+                    break;
+                    
+                    case 2:
+                        if( charPtrArrayROI[ currentUnichar])
+                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
+                    break;
+                }
+                glEndList();
+            }
 		}
    }
 

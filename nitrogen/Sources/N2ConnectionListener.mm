@@ -86,7 +86,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 }
 
 -(id)initWithPort:(NSInteger)port connectionClass:(Class)classs {
-	_clients = [[NSArrayController alloc] init];
+	_clients = [[NSMutableArray alloc] init];
 	_class = classs;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:N2ConnectionStatusDidChangeNotification object:NULL];
 	
@@ -159,7 +159,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 }
 
 -(id)initWithPath:(NSString*)path connectionClass:(Class)classs {
-	_clients = [[NSArrayController alloc] init];
+	_clients = [[NSMutableArray alloc] init];
 	_class = classs;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:N2ConnectionStatusDidChangeNotification object:NULL];
 	
@@ -202,11 +202,15 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 
 -(void)connectionStatusDidChange:(NSNotification*)notification {
 	N2Connection* connection = [notification object];
-	switch ([connection status]) {
+	switch ([connection status])
+    {
 		case N2ConnectionStatusClosed:
 			[connection close];
 			[_clients removeObject:connection];
 			break;
+            
+        default:
+        break;
 	}
 }
 

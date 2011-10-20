@@ -1234,7 +1234,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 //		}
 		
 		// Create a NSData object to control the new pointer
-		*volumeData = [[NSData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES]; 
+		*volumeData = [[NSMutableData alloc] initWithBytesNoCopy:fVolumePtr length:mem freeWhenDone:YES]; 
 	}
 	
 	if([*volumeData length]< mem || [pix count]==0)

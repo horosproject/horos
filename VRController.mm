@@ -33,6 +33,9 @@
 #import "Notifications.h"
 #import "OSIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -197,7 +200,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 
 - (void) windowDidLoad
 {
-    [self setupToolbar];
+//    [self setupToolbar];
 }
 
 -(ViewerController*) blendingController
@@ -399,18 +402,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	return style;
 }
 
--(void) awakeFromNib
-{
-	if( [style isEqualToString:@"panel"])
-	{
-		[self setShouldCascadeWindows: NO];
-		[[self window] setFrameAutosaveName:@"3D Panel"];
-		[[self window] setFrameUsingName:@"3D Panel"];
-	}
-	
-	[shadingsPresetsController setWindowController: self];
-}
-
 -(id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC
 {
 	return [self initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:@"standard" mode:@"VR"];
@@ -605,6 +596,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 		self = [super initWithWindowNibName:@"VRPanel"];
 	}
     [[self window] setDelegate:self];
+    
+    
     
     err = [view setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
     if( err != 0)
@@ -814,6 +807,17 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
 	
+    if( [style isEqualToString:@"panel"])
+	{
+		[self setShouldCascadeWindows: NO];
+		[[self window] setFrameAutosaveName:@"3D Panel"];
+		[[self window] setFrameUsingName:@"3D Panel"];
+	}
+	
+	[shadingsPresetsController setWindowController: self];
+    
+    [self setupToolbar];
+    
     return self;
 }
 
@@ -2706,26 +2710,32 @@ return YES;
 	if( [style isEqualToString:@"panel"] == NO) [view squareView: self];
 }
 
-- (NSManagedObject *)currentStudy{
+- (DicomStudy *)currentStudy
+{
 	return [viewer2D currentStudy];
 }
-- (NSManagedObject *)currentSeries{
+- (DicomSeries *)currentSeries
+{
 	return [viewer2D currentSeries];
 }
 
-- (NSManagedObject *)currentImage{
+- (DicomImage *)currentImage
+{
 	return [viewer2D currentImage];
 }
 
--(float)curWW{
+-(float)curWW
+{
 	return [viewer2D curWW];
 }
 
--(float)curWL{
+-(float)curWL
+{
 	return [viewer2D curWL];
 }
 
-- (NSString *)curCLUTMenu{
+- (NSString *)curCLUTMenu
+{
 	return curCLUTMenu;
 }
 

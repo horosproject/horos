@@ -31,8 +31,7 @@ struct OSISlab {
     CGFloat thickness;
 };
 typedef struct OSISlab OSISlab;
-
-
+ 
 OSISlab OSISlabMake(N3Plane plane, CGFloat thickness);
 bool OSISlabEqualTo(OSISlab slab1, OSISlab slab2);
 bool OSISlabIsCoincidentToSlab(OSISlab slab1, OSISlab slab2);

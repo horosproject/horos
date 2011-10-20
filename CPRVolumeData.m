@@ -19,19 +19,21 @@
 
 @interface CPRVolumeData ()
 
+- (BOOL)_testOrientationMatrix:(double[9])orientation; // returns YES if the orientation matrix's determinant is non-zero
 
 @end
 
 
 @implementation CPRVolumeData
 
+@synthesize outOfBoundsValue = _outOfBoundsValue;
 @synthesize pixelsWide = _pixelsWide;
 @synthesize pixelsHigh = _pixelsHigh;
 @synthesize pixelsDeep = _pixelsDeep;
 @synthesize volumeTransform = _volumeTransform;
 
 - (id)initWithFloatBytesNoCopy:(const float *)floatBytes pixelsWide:(NSUInteger)pixelsWide pixelsHigh:(NSUInteger)pixelsHigh pixelsDeep:(NSUInteger)pixelsDeep
-               volumeTransform:(N3AffineTransform)volumeTransform freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
+               volumeTransform:(N3AffineTransform)volumeTransform outOfBoundsValue:(float)outOfBoundsValue freeWhenDone:(BOOL)freeWhenDone; // volumeTransform is the transform from Dicom (patient) space to pixel data
 {
     if ( (self = [super init]) ) {
         if (floatBytes == NULL) {
@@ -39,6 +41,7 @@
         } else {
             _floatBytes = floatBytes;
         }
+        _outOfBoundsValue = outOfBoundsValue;
         _isValid = YES;
         _pixelsWide = pixelsWide;
         _pixelsHigh = pixelsHigh;
@@ -153,21 +156,31 @@
     return;
 }
 
-- (BOOL)getFloatData:(float *)buffer range:(NSRange)range
+// will copy fill length*sizeof(float) bytes
+- (BOOL)getFloatRun:(float *)buffer atPixelCoordinateX:(NSUInteger)x y:(NSUInteger)y z:(NSUInteger)z length:(NSUInteger)length
 {
+    NSUInteger clippedX;
+    NSUInteger runStartIndex;
+    NSUInteger runLength;
+    
     if (_isValid == NO) {
-        memset(buffer, 0, sizeof(float) * range.length);
+        memset(buffer, 0, sizeof(float) * length);
         return NO;
     }
     
+    assert(x < _pixelsWide);
+    assert(y < _pixelsHigh);
+    assert(z < _pixelsDeep);
+    assert(x + length < _pixelsWide);
+    
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
-        memcpy(buffer, _floatBytes + range.location, range.length * sizeof(float));
+        memcpy(buffer, &(_floatBytes[x + y*_pixelsWide + z*_pixelsWide*_pixelsHigh]), length * sizeof(float));
         OSAtomicDecrement32Barrier(&_readerCount);
         return YES;
     } else {
         OSAtomicDecrement32Barrier(&_readerCount);
-        memset(buffer, 0, sizeof(float) * range.length);
+        memset(buffer, 0, sizeof(float) * length);
         return NO;
     }
 }
@@ -223,7 +236,7 @@
     
     childVolumeTransform = N3AffineTransformConcat(_volumeTransform, N3AffineTransformMakeTranslation(0, 0, -z));
     childVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes + (_pixelsWide*_pixelsHigh*z) pixelsWide:_pixelsWide pixelsHigh:_pixelsHigh pixelsDeep:1
-                                                  volumeTransform:childVolumeTransform freeWhenDone:NO];
+                                                  volumeTransform:childVolumeTransform outOfBoundsValue:_outOfBoundsValue freeWhenDone:NO];
     
     OSAtomicIncrement32Barrier(&_readerCount);
     if ([self isDataValid] == NO) {
@@ -420,6 +433,7 @@
     OSAtomicIncrement32Barrier(&_readerCount);
     if (_isValid) {
         inlineBuffer->floatBytes = _floatBytes;
+        inlineBuffer->outOfBoundsValue = _outOfBoundsValue;
         inlineBuffer->pixelsWide = _pixelsWide;
         inlineBuffer->pixelsHigh = _pixelsHigh;
         inlineBuffer->pixelsDeep = _pixelsDeep;
@@ -440,6 +454,23 @@
     memset(inlineBuffer, 0, sizeof(CPRVolumeDataInlineBuffer));
 }
 
+- (BOOL)_testOrientationMatrix:(double[9])orientation // returns YES if the orientation matrix's determinant is non-zero
+{
+    N3AffineTransform transform;
+    
+    transform = N3AffineTransformIdentity;
+    transform.m11 = orientation[0];
+    transform.m12 = orientation[1];
+    transform.m13 = orientation[2];
+    transform.m21 = orientation[3];
+    transform.m22 = orientation[4];
+    transform.m23 = orientation[5];
+    transform.m31 = orientation[6];
+    transform.m32 = orientation[7];
+    transform.m33 = orientation[8];
+    
+    return N3AffineTransformDeterminant(transform) != 0.0;
+}
 
 @end
 
@@ -458,17 +489,28 @@
     firstPix = [pixList objectAtIndex:0];
     
     sliceThickness = [firstPix sliceInterval];
-	if( sliceThickness == 0)
+	if(sliceThickness == 0)
 	{
 		NSLog(@"slice interval = slice thickness!");
 		sliceThickness = [firstPix sliceThickness];
 	}
-    
+        
     memset(orientation, 0, sizeof(double) * 9);
     [firstPix orientationDouble:orientation];
     spacingX = firstPix.pixelSpacingX;
     spacingY = firstPix.pixelSpacingY;
+    if(sliceThickness == 0) { // if the slice thickness is still 0, make it the same as the average of the spacingX and spacingY
+        sliceThickness = (spacingX + spacingY)/2.0;
+    }
     spacingZ = sliceThickness;
+    
+    // test to make sure that orientation is initialized, when the volume is curved or something, it doesn't make sense to talk about orientation, and
+    // so the orientation is really bogus
+    // the test we will do is to make sure that orientation is 3 non-degenerate vectors
+    if ([self _testOrientationMatrix:orientation] == NO) {
+        memset(orientation, 0, sizeof(double)*9);
+        orientation[0] = orientation[4] = orientation[8] = 1;
+    }
     
     pixToDicomTransform = N3AffineTransformIdentity;
     pixToDicomTransform.m41 = firstPix.originX;
@@ -485,7 +527,7 @@
     pixToDicomTransform.m33 = orientation[8]*spacingZ;
     
     self = [self initWithFloatBytesNoCopy:(const float *)[volume bytes] pixelsWide:[firstPix pwidth] pixelsHigh:[firstPix pheight] pixelsDeep:[pixList count]
-                            volumeTransform:N3AffineTransformInvert(pixToDicomTransform) freeWhenDone:NO];
+                          volumeTransform:N3AffineTransformInvert(pixToDicomTransform) outOfBoundsValue:-1000 freeWhenDone:NO];
     return self;
 }
 
@@ -542,6 +584,7 @@
     
     return pixelToDicomTransform.m43;
 }
+
 
 @end
 

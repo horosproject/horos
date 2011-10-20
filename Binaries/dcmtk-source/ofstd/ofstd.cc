@@ -1373,7 +1373,7 @@ eformat:
        * conversion is less than -4 or greater than the precision.''
        *      -- ANSI X3J11
        */
-      if (expcnt > prec || !expcnt && fract && fract < .0001)
+      if (expcnt > prec || (!expcnt && fract && fract < .0001))
       {
         /*
          * g/G format counts "significant digits, not digits of
@@ -1502,7 +1502,7 @@ void OFStandard::ftoa(
   // so buffer size stays rational.
   if (prec > FTOA_MAXFRACT)
   {
-    if (fmtch != 'g' && fmtch != 'G' || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
+    if ((fmtch != 'g' && fmtch != 'G') || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
     prec = FTOA_MAXFRACT;
   }
   else if (prec == -1) prec = FTOA_DEFPREC;

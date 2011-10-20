@@ -21,6 +21,7 @@
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
+#import "N3Geometry.h"
 
 #define STAT_UPDATE					0.6f
 #define IMAGE_COUNT					1
@@ -370,6 +371,9 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (BOOL) roiTool:(long) tool;
 - (void) prepareToRelease;
 - (void) orientationCorrectedToView:(float*) correctedOrientation;
+#ifndef OSIRIX_LIGHT
+- (N3AffineTransform)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+#endif
 - (NSPoint) ConvertFromNSView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromView2GL:(NSPoint) a;
 - (NSPoint) ConvertFromUpLeftView2GL:(NSPoint) a;

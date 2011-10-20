@@ -38,6 +38,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 @class CPRController;
 @class CPRDisplayInfo;
 @class CPRTransverseView;
+@class OSIROIManager;
 
 @protocol CPRViewDelegate;
 
@@ -55,6 +56,7 @@ typedef NSInteger CPRMPRDCMViewCPRType;
     CPRCurvedPathControlToken draggedToken;
 	float angleMPR;
     CPRMPRDCMViewCPRType _CPRType;
+    OSIROIManager *_ROIManager;
 	BOOL dontUseAutoLOD;
 	
 	float crossLinesA[2][3];
@@ -132,8 +134,6 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 @interface DCMView (CPRAdditions) 
 
 - (N3AffineTransform)viewToPixTransform; // converts coordinates in the NSView's space to coordinates on a DCMPix object in "Slice Coordinates"
-- (N3AffineTransform)pixToSubDrawRectTransform; // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
-
 
 @end
 

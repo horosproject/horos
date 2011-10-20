@@ -166,14 +166,17 @@
 	if( dataset == nil)
 		return;
 	
-	[_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
-			callingAET:_callingAET  
-			calledAET:_calledAET
-			hostname:_hostname 
-			port:_port 
-			transferSyntax:_transferSyntax
-			compression: _compression
-			extraParameters:_extraParameters]];
+    @synchronized( _children)
+	{
+        [_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
+                callingAET:_callingAET  
+                calledAET:_calledAET
+                hostname:_hostname 
+                port:_port 
+                transferSyntax:_transferSyntax
+                compression: _compression
+                extraParameters:_extraParameters]];
+    }
 }
 
 

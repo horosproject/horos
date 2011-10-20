@@ -1730,7 +1730,7 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
         }
         long ba;
         dataset->findAndGetLongInt(DCM_BitsAllocated, ba);
-        if (((bs == 8) && (ba != 8)) || (bs != 8) && (ba != 16))
+        if (((bs == 8) && (ba != 8)) || ((bs != 8) && (ba != 16)))
         {
             /* report an error or a warning */
             printUnexpectedValueMessage(DCM_BitsAllocated, filename, EncodingCheck);

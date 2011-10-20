@@ -477,7 +477,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	{
 		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
 		_resampledData = resampleData;
-		NSLog(@"slice ID: %d", slice);
+		NSLog(@"slice ID: %d", (int) slice);
 		itkImage = [[ITK alloc] initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData];
 		//itkImage = [[ITK alloc] initWith: pix :volumeData :slice];
     }

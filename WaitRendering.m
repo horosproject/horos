@@ -17,8 +17,6 @@
 
 @implementation WaitRendering
 
-@synthesize sheetForWindow;
-
 - (void) showWindow: (id) sender
 {
 	NSMutableArray *winList = [NSMutableArray array];
@@ -82,6 +80,12 @@
 	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
 		[NSThread sleepForTimeInterval: 0.5];
 	
+    if( session != nil)
+	{
+		[NSApp endModalSession:session];
+		session = nil;
+	}
+    
 	[super close];
 }
 
@@ -89,14 +93,10 @@
 {
 	if( startTime == nil) return;	// NOT STARTED
 	
-	if( sheetForWindow)
-		[NSApp endSheet: [self window]];
-	
 	[[self window] orderOut:self];
 	
-	if( session != nil && sheetForWindow == nil)
+	if( session != nil)
 	{
-		[NSApp abortModal];
 		[NSApp endModalSession:session];
 		session = nil;
 	}
@@ -163,20 +163,9 @@
 		NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 		
 		if( session == nil) 
-		{
-			if( sheetForWindow)
-			{
-				session = (NSModalSession) 1;
-				[NSApp beginSheet: [self window] modalForWindow: sheetForWindow modalDelegate: self didEndSelector: nil contextInfo: nil];
-			}
-			else
-			{
-				session = [NSApp beginModalSessionForWindow:[self window]];
-			}
-		}
+            session = [NSApp beginModalSessionForWindow:[self window]];
 		
-		if( sheetForWindow == nil)
-			[NSApp runModalSession:session];
+        [NSApp runModalSession:session];
 		
 		if( thisTime - lastTimeFrame > 1.0)
 		{
@@ -209,16 +198,18 @@
 
 - (void) dealloc
 {
-	[sheetForWindow release];
 	[string release];
 	[super dealloc];
 }
 
 - (void) setString:(NSString*) str
 {
-	[string release];
-	string = [str retain];
-	
+    if( string != str)
+    {
+        [string release];
+        string = [str retain];
+	}
+    
 	[message setStringValue:string];
 	[message display];
 }

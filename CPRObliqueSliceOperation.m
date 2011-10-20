@@ -254,7 +254,7 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                 if (oustandingFillOperationCount == 0) { // done with the fill operations, now do the projection
                     volumeTransform = [self _generatedVolumeTransform];
                     generatedVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:_floatBytes pixelsWide:self.request.pixelsWide pixelsHigh:self.request.pixelsHigh pixelsDeep:[self _pixelsDeep]
-                                                                      volumeTransform:volumeTransform freeWhenDone:YES];
+                                                                      volumeTransform:volumeTransform outOfBoundsValue:_volumeData.outOfBoundsValue freeWhenDone:YES];
                     _floatBytes = NULL;
                     projectionOperation = [[CPRProjectionOperation alloc] init];
 					[projectionOperation setQueuePriority:[self queuePriority]];

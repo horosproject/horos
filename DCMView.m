@@ -958,7 +958,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo]; 
 		
-		NSLog(@"Orientation %d", [printInfo orientation]);
+		NSLog(@"Orientation %d", (int) [printInfo orientation]);
 		
 		NSImage *im = [self nsimage: NO];
 		
@@ -2154,9 +2154,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self deleteMouseDownTimer];
 	
 	[matrix release];
-	
+	matrix = nil;
+    
 	[cursorTracking release];
-	
+	cursorTracking = nil;
+    
 	[drawLock lock];
 	[drawLock unlock];
 	
@@ -2189,12 +2191,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
     if( fontListGL) glDeleteLists (fontListGL, 150);
+    fontListGL = 0;
+    
 	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
+    labelFontListGL = 0;
+    
 	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
-	
+	iChatFontListGL = 0;
+    
 	if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
+    loupeTextureID = 0;
+    
 	if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
-	
+	loupeMaskTextureID = 0;
+    
 	if( pTextureName)
 	{
 		glDeleteTextures (textureX * textureY, pTextureName);
@@ -2208,30 +2218,39 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		blendingTextureName = nil;
 	}
 	if( colorBuf) free( colorBuf);
+    colorBuf = nil;
+    
 	if( blendingColorBuf) free( blendingColorBuf);
+	blendingColorBuf = nil;
+    
+	[fontColor release]; fontColor = nil;
+	[fontGL release]; fontGL = nil;
+	[labelFont release]; labelFont = nil;
+	[iChatFontGL release]; iChatFontGL = nil;
+	[yearOld release]; yearOld = nil;
 	
-	[fontColor release];
-	[fontGL release];
-	[labelFont release];
-	[iChatFontGL release];
-	[yearOld release];
-	
-	[cursor release];
+	[cursor release]; cursor = nil;
 	
 	@synchronized( globalStringTextureCache)
 	{
 		[globalStringTextureCache removeObject: stringTextureCache];
 	}
 	[stringTextureCache release];
+    stringTextureCache = 0L;
+    
 	[iChatStringTextureCache release];
-	
+	iChatStringTextureCache = nil;
+    
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
-	
+	_mouseDownTimer = nil;
+    
 	[destinationImage release];
-	
+	destinationImage = nil;
+    
 	[_alternateContext release];
-	
+	_alternateContext = nil;
+    
 	if(repulsorColorTimer)
 	{
 		[repulsorColorTimer invalidate];
@@ -2240,24 +2259,35 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if( resampledBaseAddr) free( resampledBaseAddr);
+    resampledBaseAddr = nil;
+    
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
-
+    blendingResampledBaseAddr = nil;
+    
 //	[self clearGLContext];
 
 	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
+    iChatCursorTextureBuffer = nil;
+    
 	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
-	
+	iChatCursorTextureName = 0;
+    
 	[showDescriptionInLargeText release];
-	
+	showDescriptionInLargeText = nil;
+    
 	[blendingView release];
-	
+	blendingView = nil;
+    
 	[self deleteLens];
 	
 //	[LoupeController release];
 	
 	[loupeImage release];
+    loupeImage = nil;
+    
 	[loupeMaskImage release];
-	
+	loupeMaskImage = nil;
+    
     [super dealloc];
 }
 
@@ -10674,6 +10704,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	memcpy( correctedOrientation, o, sizeof o );
 }
+
+#ifndef OSIRIX_LIGHT
+- (N3AffineTransform)pixToSubDrawRectTransform // converst points in DCMPix "Slice Coordinates" to coordinates that need to be passed to GL in subDrawRect
+{
+    N3AffineTransform pixToSubDrawRectTransform;
+    
+#ifndef NDEBUG
+	if( isnan( curDCM.pixelSpacingX) || isnan( curDCM.pixelSpacingY) || curDCM.pixelSpacingX <= 0 || curDCM.pixelSpacingY <= 0 || curDCM.pixelSpacingX > 1000 || curDCM.pixelSpacingY > 1000)
+		NSLog( @"******* CPR pixel spacing incorrect for pixToSubDrawRectTransform");
+#endif
+	
+    pixToSubDrawRectTransform = N3AffineTransformIdentity;
+    //    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(1.0/curDCM.pixelSpacingX, 1.0/curDCM.pixelSpacingY, 1));
+    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeTranslation(curDCM.pwidth * -0.5, curDCM.pheight * -0.5, 0));
+    pixToSubDrawRectTransform = N3AffineTransformConcat(pixToSubDrawRectTransform, N3AffineTransformMakeScale(scaleValue, scaleValue, 1));
+    
+    pixToSubDrawRectTransform.m14 = 0.0;
+    pixToSubDrawRectTransform.m24 = 0.0;
+    pixToSubDrawRectTransform.m34 = 0.0;
+    pixToSubDrawRectTransform.m44 = 1.0;
+    
+    return pixToSubDrawRectTransform;
+}
+#endif
 
 -(void) setOrigin:(NSPoint) x
 {

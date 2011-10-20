@@ -1287,6 +1287,29 @@ static NSRecursiveLock *dbModifyLock = nil;
 		return NO;
 }
 
+- (NSSet *)images
+{
+    [[self managedObjectContext] lock];
+	
+	NSMutableSet *images = [NSMutableSet set];
+	
+	@try 
+	{
+		NSSet *sets = [self valueForKeyPath: @"series.images"];
+        
+		for (id subset in sets)
+			[images unionSet: subset];
+	}
+	@catch (NSException * e) 
+	{
+		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return images;
+}
+
 - (NSArray *)imageSeries
 {
 	[[self managedObjectContext] lock];
@@ -1643,7 +1666,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		{
 			NSSortDescriptor *sort = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease];
 			found = [[[found sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]] mutableCopy] autorelease];
-			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", [found count]);
+			NSLog( @"--- multiple rois array for same sopInstanceUID (roiForImage) : %d", (int) [found count]);
 			
 			// Merge the other ROIs with this ROI, and empty the old ones
 			NSMutableArray *r = [NSMutableArray array];

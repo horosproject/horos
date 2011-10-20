@@ -19,15 +19,15 @@
 
 @implementation DCMLimitedObject
 + (id)objectWithData:(NSData *)data lastGroup:(unsigned short)lastGroup{
-	return [[[DCMObject alloc] initWithData:data lastGroup:(unsigned short)lastGroup] autorelease];
+	return [[[DCMLimitedObject alloc] initWithData:data lastGroup:(unsigned short)lastGroup] autorelease];
 }
 
 + (id)objectWithContentsOfFile:(NSString *)file lastGroup:(unsigned short)lastGroup{
-	return [[[DCMObject alloc] initWithContentsOfFile:file lastGroup:(unsigned short)lastGroup] autorelease];
+	return [[[DCMLimitedObject alloc] initWithContentsOfFile:file lastGroup:(unsigned short)lastGroup] autorelease];
 }
 
 + (id)objectWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup{
-	return [[[DCMObject alloc] initWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup] autorelease];
+	return [[[DCMLimitedObject alloc] initWithContentsOfURL:(NSURL *)aURL lastGroup:(unsigned short)lastGroup] autorelease];
 }
 
 

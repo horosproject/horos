@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "N2Debug.h"
+#import "DicomDirParser.h"
 
 extern int maindcmdump(int argc, char *argv[]);
 
@@ -34,7 +35,6 @@ extern int maindcmdump(int argc, char *argv[]);
 }
 @end
 
-#import "DicomDirParser.h"
 
 
 //————————————————————————————————————————————————————————————————————————————————————————————————————————————————————

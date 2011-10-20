@@ -293,7 +293,7 @@ unsigned char scanJpegDataForBitDepth(
 //	return 0;
 //}
 
-#include "openjpeg.h"
+//#include "openjpeg.h"
 /**
 sample error callback expecting a FILE* client object
 */
@@ -317,297 +317,297 @@ static inline int int_ceildivpow2(int a, int b) {
 	return (a + (1 << b) - 1) >> b;
 }
 
-void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength, int *width, int *height, int *samplePerPixel)
-{
-  opj_dparameters_t parameters;  /* decompression parameters */
-  opj_event_mgr_t event_mgr;    /* event manager */
-  opj_image_t *image = nil;
-  opj_dinfo_t* dinfo;  /* handle to a decompressor */
-  opj_cio_t *cio;
-  unsigned char *src = (unsigned char*)inputdata; 
-  int file_length = inputlength;
+//void* dcm_read_JPEG2000_file (char *inputdata, size_t inputlength, size_t *outputLength, int *width, int *height, int *samplePerPixel)
+//{
+//  opj_dparameters_t parameters;  /* decompression parameters */
+//  opj_event_mgr_t event_mgr;    /* event manager */
+//  opj_image_t *image = nil;
+//  opj_dinfo_t* dinfo;  /* handle to a decompressor */
+//  opj_cio_t *cio;
+//  unsigned char *src = (unsigned char*)inputdata; 
+//  int file_length = inputlength;
+//
+//  /* configure the event callbacks (not required) */
+//  memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+//  event_mgr.error_handler = error_callback;
+//  event_mgr.warning_handler = warning_callback;
+//  event_mgr.info_handler = info_callback;
+//
+//  /* set decoding parameters to default values */
+//  opj_set_default_decoder_parameters(&parameters);
+// 
+//   // default blindly copied
+//   parameters.cp_layer=0;
+//   parameters.cp_reduce=0;
+////   parameters.decod_format=-1;
+////   parameters.cod_format=-1;
+//
+//      /* JPEG-2000 codestream */
+//    parameters.decod_format = 0;
+//  parameters.cod_format = 1;
+//
+//      /* get a decoder handle */
+//      dinfo = opj_create_decompress(CODEC_J2K);
+//
+//      /* catch events using our callbacks and give a local context */
+//      opj_set_event_mgr((opj_common_ptr)dinfo, &event_mgr, NULL);
+//
+//      /* setup the decoder decoding parameters using user parameters */
+//      opj_setup_decoder(dinfo, &parameters);
+//
+//      /* open a byte stream */
+//      cio = opj_cio_open((opj_common_ptr)dinfo, src, file_length);
+//
+//      /* decode the stream and fill the image structure */
+//      image = opj_decode(dinfo, cio);
+//      if(!image) {
+//        opj_destroy_decompress(dinfo);
+//        opj_cio_close(cio);
+//        return nil;
+//      }
+//      
+//      /* close the byte stream */
+//      opj_cio_close(cio);
+//
+//  /* free the memory containing the code-stream */
+//  if( width)
+//	*width = image->comps[ 0].w;
+//  if( height)
+//	*height = image->comps[ 0].h;
+//  if( samplePerPixel)
+//	*samplePerPixel = image->numcomps;
+//
+//  int bbp;
+//  if (image->comps[ 0].prec <= 8)
+//	bbp = 8;
+//  else if (image->comps[ 0].prec <= 16)
+//	bbp = 16;
+//  else
+//	bbp = 32;
+//	
+//  *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * bbp / 8;
+//  void* raw = malloc( *outputLength);
+//  
+//   // Copy buffer
+//   for (int compno = 0; compno < image->numcomps; compno++)
+//   {
+//      opj_image_comp_t *comp = &image->comps[compno];
+//
+//      int w = image->comps[compno].w;
+//      int wr = int_ceildivpow2(image->comps[compno].w, image->comps[compno].factor);
+//	  int numcomps = image->numcomps;
+//      int hr = int_ceildivpow2(image->comps[compno].h, image->comps[compno].factor);
+//	   
+//	   if( wr == w && numcomps == 1)
+//	   {
+//		   if (comp->prec <= 8)
+//		   {
+//			   uint8_t *data8 = (uint8_t*)raw + compno;
+//			   int *data = image->comps[compno].data;
+//			   int i = wr * hr;
+//			   while( i -- > 0)
+//				   *data8++ = (uint8_t) *data++;
+//		   }
+//		   else if (comp->prec <= 16)
+//		   {
+//			   uint16_t *data16 = (uint16_t*)raw + compno;
+//			   int *data = image->comps[compno].data;
+//			   int i = wr * hr;
+//			   while( i -- > 0)
+//				   *data16++ = (uint16_t) *data++;
+//		   }
+//		   else
+//		   {
+//			   uint32_t *data32 = (uint32_t*)raw + compno;
+//			   int *data = image->comps[compno].data;
+//			   int i = wr * hr;
+//			   while( i -- > 0)
+//				   *data32++ = (uint32_t) *data++;
+//		   }
+//	   }
+//	   else
+//	   {
+//		  if (comp->prec <= 8)
+//		  {
+//			 uint8_t *data8 = (uint8_t*)raw + compno;
+//			 for (int i = 0; i < wr * hr; i++)
+//			 {
+//				int v = image->comps[compno].data[i / wr * w + i % wr];
+//				*data8 = (uint8_t)v;
+//				data8 += image->numcomps;
+//			 }
+//		  }
+//		  else if (comp->prec <= 16)
+//		  {
+//			 uint16_t *data16 = (uint16_t*)raw + compno;
+//			 for (int i = 0; i < wr * hr; i++)
+//			 {
+//				int v = image->comps[compno].data[i / wr * w + i % wr];
+//				*data16 = (uint16_t)v;
+//				data16 += image->numcomps;
+//			 }
+//		  }
+//		  else
+//		  {
+//			 uint32_t *data32 = (uint32_t*)raw + compno;
+//			 for (int i = 0; i < wr * hr; i++)
+//			 {
+//				int v = image->comps[compno].data[i / wr * w + i % wr];
+//				*data32 = (uint32_t)v;
+//				data32 += image->numcomps;
+//			 }
+//		  }
+//	   }
+//      //free(image.comps[compno].data);
+//   }
+//
+//  /* free remaining structures */
+//  if(dinfo) {
+//    opj_destroy_decompress(dinfo);
+//  }
+//
+//  /* free image data structure */
+//  if( image)
+//	opj_image_destroy(image);
+//
+//  return raw;
+//}
 
-  /* configure the event callbacks (not required) */
-  memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
-  event_mgr.error_handler = error_callback;
-  event_mgr.warning_handler = warning_callback;
-  event_mgr.info_handler = info_callback;
-
-  /* set decoding parameters to default values */
-  opj_set_default_decoder_parameters(&parameters);
- 
-   // default blindly copied
-   parameters.cp_layer=0;
-   parameters.cp_reduce=0;
-//   parameters.decod_format=-1;
-//   parameters.cod_format=-1;
-
-      /* JPEG-2000 codestream */
-    parameters.decod_format = 0;
-  parameters.cod_format = 1;
-
-      /* get a decoder handle */
-      dinfo = opj_create_decompress(CODEC_J2K);
-
-      /* catch events using our callbacks and give a local context */
-      opj_set_event_mgr((opj_common_ptr)dinfo, &event_mgr, NULL);
-
-      /* setup the decoder decoding parameters using user parameters */
-      opj_setup_decoder(dinfo, &parameters);
-
-      /* open a byte stream */
-      cio = opj_cio_open((opj_common_ptr)dinfo, src, file_length);
-
-      /* decode the stream and fill the image structure */
-      image = opj_decode(dinfo, cio);
-      if(!image) {
-        opj_destroy_decompress(dinfo);
-        opj_cio_close(cio);
-        return nil;
-      }
-      
-      /* close the byte stream */
-      opj_cio_close(cio);
-
-  /* free the memory containing the code-stream */
-  if( width)
-	*width = image->comps[ 0].w;
-  if( height)
-	*height = image->comps[ 0].h;
-  if( samplePerPixel)
-	*samplePerPixel = image->numcomps;
-
-  int bbp;
-  if (image->comps[ 0].prec <= 8)
-	bbp = 8;
-  else if (image->comps[ 0].prec <= 16)
-	bbp = 16;
-  else
-	bbp = 32;
-	
-  *outputLength = image->numcomps * image->comps[ 0].w * image->comps[ 0].h * bbp / 8;
-  void* raw = malloc( *outputLength);
-  
-   // Copy buffer
-   for (int compno = 0; compno < image->numcomps; compno++)
-   {
-      opj_image_comp_t *comp = &image->comps[compno];
-
-      int w = image->comps[compno].w;
-      int wr = int_ceildivpow2(image->comps[compno].w, image->comps[compno].factor);
-	  int numcomps = image->numcomps;
-      int hr = int_ceildivpow2(image->comps[compno].h, image->comps[compno].factor);
-	   
-	   if( wr == w && numcomps == 1)
-	   {
-		   if (comp->prec <= 8)
-		   {
-			   uint8_t *data8 = (uint8_t*)raw + compno;
-			   int *data = image->comps[compno].data;
-			   int i = wr * hr;
-			   while( i -- > 0)
-				   *data8++ = (uint8_t) *data++;
-		   }
-		   else if (comp->prec <= 16)
-		   {
-			   uint16_t *data16 = (uint16_t*)raw + compno;
-			   int *data = image->comps[compno].data;
-			   int i = wr * hr;
-			   while( i -- > 0)
-				   *data16++ = (uint16_t) *data++;
-		   }
-		   else
-		   {
-			   uint32_t *data32 = (uint32_t*)raw + compno;
-			   int *data = image->comps[compno].data;
-			   int i = wr * hr;
-			   while( i -- > 0)
-				   *data32++ = (uint32_t) *data++;
-		   }
-	   }
-	   else
-	   {
-		  if (comp->prec <= 8)
-		  {
-			 uint8_t *data8 = (uint8_t*)raw + compno;
-			 for (int i = 0; i < wr * hr; i++)
-			 {
-				int v = image->comps[compno].data[i / wr * w + i % wr];
-				*data8 = (uint8_t)v;
-				data8 += image->numcomps;
-			 }
-		  }
-		  else if (comp->prec <= 16)
-		  {
-			 uint16_t *data16 = (uint16_t*)raw + compno;
-			 for (int i = 0; i < wr * hr; i++)
-			 {
-				int v = image->comps[compno].data[i / wr * w + i % wr];
-				*data16 = (uint16_t)v;
-				data16 += image->numcomps;
-			 }
-		  }
-		  else
-		  {
-			 uint32_t *data32 = (uint32_t*)raw + compno;
-			 for (int i = 0; i < wr * hr; i++)
-			 {
-				int v = image->comps[compno].data[i / wr * w + i % wr];
-				*data32 = (uint32_t)v;
-				data32 += image->numcomps;
-			 }
-		  }
-	   }
-      //free(image.comps[compno].data);
-   }
-
-  /* free remaining structures */
-  if(dinfo) {
-    opj_destroy_decompress(dinfo);
-  }
-
-  /* free image data structure */
-  if( image)
-	opj_image_destroy(image);
-
-  return raw;
-}
-
-template<typename T>
-void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *image, int pc)
-{
-  T *p = inputbuffer;
-  if( pc )
-    {
-    for(int compno = 0; compno < numcomps; compno++)
-      {
-      for (int i = 0; i < w * h; i++)
-        {
-        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
-        image->comps[compno].data[i] = *p;
-        ++p;
-        }
-      }
-    }
-  else
-    {
-    for (int i = 0; i < w * h; i++)
-      {
-      for(int compno = 0; compno < numcomps; compno++)
-        {
-        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
-        image->comps[compno].data[i] = *p;
-        ++p;
-        }
-      }
-    }
-}
-
-
-opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
-  int fragment_size, int image_width, int image_height, int sample_pixel,
-  int bitsallocated, int bitsstored, int sign, int quality, int pc)
-{
-  (void)quality;
-  int w, h;
-  int numcomps;
-  OPJ_COLOR_SPACE color_space;
-  opj_image_cmptparm_t cmptparm[3]; /* maximum of 3 components */
-  opj_image_t * image = NULL;
-
-  assert( sample_pixel == 1 || sample_pixel == 3 );
-  if( sample_pixel == 1 )
-    {
-    numcomps = 1;
-    color_space = CLRSPC_GRAY;
-    }
-  else // sample_pixel == 3
-    {
-    numcomps = 3;
-    color_space = CLRSPC_SRGB;
-    /* Does OpenJPEg support: CLRSPC_SYCC ?? */
-    }
-  if( bitsallocated % 8 != 0 )
-    {
-    return 0;
-    }
-  assert( bitsallocated % 8 == 0 );
-  // eg. fragment_size == 63532 and 181 * 117 * 3 * 8 == 63531 ...
-  assert( ((fragment_size + 1)/2 ) * 2 == ((image_height * image_width * numcomps * (bitsallocated/8) + 1)/ 2 )* 2 );
-  int subsampling_dx = parameters->subsampling_dx;
-  int subsampling_dy = parameters->subsampling_dy;
-
-  // FIXME
-  w = image_width;
-  h = image_height;
-
-  /* initialize image components */
-  memset(&cmptparm[0], 0, 3 * sizeof(opj_image_cmptparm_t));
-  //assert( bitsallocated == 8 );
-  for(int i = 0; i < numcomps; i++) {
-    cmptparm[i].prec = bitsstored;
-    cmptparm[i].bpp = bitsallocated;
-    cmptparm[i].sgnd = sign;
-    cmptparm[i].dx = subsampling_dx;
-    cmptparm[i].dy = subsampling_dy;
-    cmptparm[i].w = w;
-    cmptparm[i].h = h;
-  }
-
-  /* create the image */
-  image = opj_image_create(numcomps, &cmptparm[0], color_space);
-  if(!image) {
-    return NULL;
-  }
-  /* set image offset and reference grid */
-  image->x0 = parameters->image_offset_x0;
-  image->y0 = parameters->image_offset_y0;
-  image->x1 = parameters->image_offset_x0 + (w - 1) * subsampling_dx + 1;
-  image->y1 = parameters->image_offset_y0 + (h - 1) * subsampling_dy + 1;
-
-  /* set image data */
-
-  //assert( fragment_size == numcomps*w*h*(bitsallocated/8) );
-  if (bitsallocated <= 8)
-    {
-    if( sign )
-      {
-      rawtoimage_fill<int8_t>((int8_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    else
-      {
-      rawtoimage_fill<uint8_t>((uint8_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    }
-  else if (bitsallocated <= 16)
-    {
-    if( sign )
-      {
-      rawtoimage_fill<int16_t>((int16_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    else
-      {
-      rawtoimage_fill<uint16_t>((uint16_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    }
-  else if (bitsallocated <= 32)
-    {
-    if( sign )
-      {
-      rawtoimage_fill<int32_t>((int32_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    else
-      {
-      rawtoimage_fill<uint32_t>((uint32_t*)inputbuffer,w,h,numcomps,image,pc);
-      }
-    }
-  else
-    {
-    return NULL;
-    }
-
-  return image;
-}
+//template<typename T>
+//void rawtoimage_fill(T *inputbuffer, int w, int h, int numcomps, opj_image_t *image, int pc)
+//{
+//  T *p = inputbuffer;
+//  if( pc )
+//    {
+//    for(int compno = 0; compno < numcomps; compno++)
+//      {
+//      for (int i = 0; i < w * h; i++)
+//        {
+//        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+//        image->comps[compno].data[i] = *p;
+//        ++p;
+//        }
+//      }
+//    }
+//  else
+//    {
+//    for (int i = 0; i < w * h; i++)
+//      {
+//      for(int compno = 0; compno < numcomps; compno++)
+//        {
+//        /* compno : 0 = GREY, (0, 1, 2) = (R, G, B) */
+//        image->comps[compno].data[i] = *p;
+//        ++p;
+//        }
+//      }
+//    }
+//}
+//
+//
+//opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
+//  int fragment_size, int image_width, int image_height, int sample_pixel,
+//  int bitsallocated, int bitsstored, int sign, int quality, int pc)
+//{
+//  (void)quality;
+//  int w, h;
+//  int numcomps;
+//  OPJ_COLOR_SPACE color_space;
+//  opj_image_cmptparm_t cmptparm[3]; /* maximum of 3 components */
+//  opj_image_t * image = NULL;
+//
+//  assert( sample_pixel == 1 || sample_pixel == 3 );
+//  if( sample_pixel == 1 )
+//    {
+//    numcomps = 1;
+//    color_space = CLRSPC_GRAY;
+//    }
+//  else // sample_pixel == 3
+//    {
+//    numcomps = 3;
+//    color_space = CLRSPC_SRGB;
+//    /* Does OpenJPEg support: CLRSPC_SYCC ?? */
+//    }
+//  if( bitsallocated % 8 != 0 )
+//    {
+//    return 0;
+//    }
+//  assert( bitsallocated % 8 == 0 );
+//  // eg. fragment_size == 63532 and 181 * 117 * 3 * 8 == 63531 ...
+//  assert( ((fragment_size + 1)/2 ) * 2 == ((image_height * image_width * numcomps * (bitsallocated/8) + 1)/ 2 )* 2 );
+//  int subsampling_dx = parameters->subsampling_dx;
+//  int subsampling_dy = parameters->subsampling_dy;
+//
+//  // FIXME
+//  w = image_width;
+//  h = image_height;
+//
+//  /* initialize image components */
+//  memset(&cmptparm[0], 0, 3 * sizeof(opj_image_cmptparm_t));
+//  //assert( bitsallocated == 8 );
+//  for(int i = 0; i < numcomps; i++) {
+//    cmptparm[i].prec = bitsstored;
+//    cmptparm[i].bpp = bitsallocated;
+//    cmptparm[i].sgnd = sign;
+//    cmptparm[i].dx = subsampling_dx;
+//    cmptparm[i].dy = subsampling_dy;
+//    cmptparm[i].w = w;
+//    cmptparm[i].h = h;
+//  }
+//
+//  /* create the image */
+//  image = opj_image_create(numcomps, &cmptparm[0], color_space);
+//  if(!image) {
+//    return NULL;
+//  }
+//  /* set image offset and reference grid */
+//  image->x0 = parameters->image_offset_x0;
+//  image->y0 = parameters->image_offset_y0;
+//  image->x1 = parameters->image_offset_x0 + (w - 1) * subsampling_dx + 1;
+//  image->y1 = parameters->image_offset_y0 + (h - 1) * subsampling_dy + 1;
+//
+//  /* set image data */
+//
+//  //assert( fragment_size == numcomps*w*h*(bitsallocated/8) );
+//  if (bitsallocated <= 8)
+//    {
+//    if( sign )
+//      {
+//      rawtoimage_fill<int8_t>((int8_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    else
+//      {
+//      rawtoimage_fill<uint8_t>((uint8_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    }
+//  else if (bitsallocated <= 16)
+//    {
+//    if( sign )
+//      {
+//      rawtoimage_fill<int16_t>((int16_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    else
+//      {
+//      rawtoimage_fill<uint16_t>((uint16_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    }
+//  else if (bitsallocated <= 32)
+//    {
+//    if( sign )
+//      {
+//      rawtoimage_fill<int32_t>((int32_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    else
+//      {
+//      rawtoimage_fill<uint32_t>((uint32_t*)inputbuffer,w,h,numcomps,image,pc);
+//      }
+//    }
+//  else
+//    {
+//    return NULL;
+//    }
+//
+//  return image;
+//}
 /////////
 //extern "C" NSData* compressJPEG2000(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int samplesPerPixel);
 //extern "C" NSImage* decompressJPEG2000( unsigned char* inImageBuffP, long theLength);
@@ -791,7 +791,7 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		_framesDecoded = nil;
 		
 		if (dicomData) 
-			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] retain];
+			_values = [[self valuesForVR:_vr length:_valueLength data:dicomData] mutableCopy];
 		else
 			_values = [[NSMutableArray array] retain];
 		
@@ -1266,21 +1266,21 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		}
 	}
 	
-	if( succeed == NO)
-	{
-		unsigned char *newPixelData;
-		
-//		[[NSData dataWithBytesNoCopy: (void*) [jpegData bytes] length: [jpegData length] freeWhenDone: NO] writeToFile: @"/tmp/test.jp2" atomically: YES];
-		
-		size_t decompressedLength = 0;
-		newPixelData = (unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
-		
-		if( newPixelData)
-		{
-			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
-			succeed = YES;
-		}
-	}
+//	if( succeed == NO)
+//	{
+//		unsigned char *newPixelData;
+//		
+////		[[NSData dataWithBytesNoCopy: (void*) [jpegData bytes] length: [jpegData length] freeWhenDone: NO] writeToFile: @"/tmp/test.jp2" atomically: YES];
+//		
+//		size_t decompressedLength = 0;
+//		newPixelData = (unsigned char*) dcm_read_JPEG2000_file( (char*) [jpegData bytes], [jpegData length], &decompressedLength, nil, nil, nil);
+//		
+//		if( newPixelData)
+//		{
+//			pixelData = [NSMutableData dataWithBytesNoCopy:newPixelData length:decompressedLength freeWhenDone: YES];
+//			succeed = YES;
+//		}
+//	}
 	
 //	if( succeed == NO)
 //	{
@@ -1572,167 +1572,167 @@ opj_image_t* rawtoimage(char *inputbuffer, opj_cparameters_t *parameters,
 		
 		return jpeg2000Data;
 	}
-	else
-	{
-		opj_cparameters_t parameters;
-		opj_event_mgr_t event_mgr;
-		opj_image_t *image = NULL;
-		
-		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
-		event_mgr.error_handler = error_callback;
-		event_mgr.warning_handler = warning_callback;
-		event_mgr.info_handler = info_callback;
-
-		memset(&parameters, 0, sizeof(parameters));
-		opj_set_default_encoder_parameters(&parameters);
-		
-		parameters.tcp_numlayers = 1;
-		parameters.cp_disto_alloc = 1;
-		
-		switch( quality)
-		{
-			case DCMLosslessQuality:
-				parameters.tcp_rates[0] = 0;
-				
-			break;
-			
-			case DCMHighQuality:
-				parameters.tcp_rates[0] = 4;
-			break;
-			
-			case DCMMediumQuality:
-				if( _columns <= 600 || _rows <= 600)
-					parameters.tcp_rates[0] = 6;
-				else
-					parameters.tcp_rates[0] = 8;
-			break;
-			
-			case DCMLowQuality:
-				parameters.tcp_rates[0] = 16;
-			break;
-			
-			default:
-				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
-				parameters.tcp_rates[0] = 0;
-			break;
-		}
-		
-		int image_width = _columns;
-		int image_height = _rows;
-		int sample_pixel = _samplesPerPixel;
-		
-		DCMAttributeTag *tag = [DCMAttributeTag tagWithName: @"PhotometricInterpretation"];
-		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
-		NSString *photometricInterpretation = [attr value];
-		
-		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
-		{
-		
-		}
-		else
-		{
-			if( sample_pixel != 3)
-				NSLog( @"*** RGB Photometric?, but... SamplesPerPixel != 3 ?");
-			sample_pixel = 3;
-		}
-		
-		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
-		int bitsstored = bitsallocated;
-		
-		if( bitsallocated >= 16)
-		{
-			[self findMinAndMax: data];
-			
-			int amplitude = _max;
-			
-			if( _min < 0)
-				amplitude -= _min;
-			
-			int bits = 1, value = 2;
-			
-			while( value < amplitude)
-			{
-				value *= 2;
-				bits++;
-			}
-			
-			if( _min < 0)
-			{
-				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: YES]] forName:@"PixelRepresentation"];
-				bits++;  // For the sign
-			}
-			else
-				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: NO]] forName:@"PixelRepresentation"];
-			
-			if( bits < 9) bits = 9;
-			
-			// avoid the artifacts... switch to lossless
-			if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
-			{
-				parameters.tcp_rates[0] = 0;
-				parameters.tcp_numlayers = 1;
-				parameters.cp_disto_alloc = 1;
-			}
-			
-			if( bits > 16) bits = 16;
-			
-			bitsstored = bits;
-		}
-		
-		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[[DCMAttributeTag tagWithName:@"PixelRepresentation"] stringValue]];
-		BOOL sign = [[signedAttr value] boolValue];
-		
-		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, 0);
-		
-		parameters.cod_format = 0; /* J2K format output */
-		int codestream_length;
-		opj_cio_t *cio = NULL;
-		
-		opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
-
-		/* catch events using our callbacks and give a local context */
-		opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
-
-		/* setup the encoder parameters using the current image and using user parameters */
-		opj_setup_encoder(cinfo, &parameters, image);
-
-		/* open a byte stream for writing */
-		/* allocate memory for all tiles */
-		cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
-
-		/* encode the image */
-		BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
-		if (!bSuccess) {
-		  opj_cio_close(cio);
-		  fprintf(stderr, "failed to encode image\n");
-		  return nil;
-		}
-		codestream_length = cio_tell(cio);
-		
-		NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
-		
-		 /* close and free the byte stream */
-		opj_cio_close(cio);
-		
-		/* free remaining compression structures */
-		opj_destroy_compress(cinfo);
-		
-		opj_image_destroy(image);
-		
-		char zero = 0;
-		if ([jpeg2000Data length] % 2) 
-			[jpeg2000Data appendBytes:&zero length:1];
-		
-//		NSLog( @"%d", [data length] / [jpeg2000Data length]);
-		
-//		if( [data length] / [jpeg2000Data length] > 30 && quality != DCMLosslessQuality)
+//	else
+//	{
+//		opj_cparameters_t parameters;
+//		opj_event_mgr_t event_mgr;
+//		opj_image_t *image = NULL;
+//		
+//		memset(&event_mgr, 0, sizeof(opj_event_mgr_t));
+//		event_mgr.error_handler = error_callback;
+//		event_mgr.warning_handler = warning_callback;
+//		event_mgr.info_handler = info_callback;
+//
+//		memset(&parameters, 0, sizeof(parameters));
+//		opj_set_default_encoder_parameters(&parameters);
+//		
+//		parameters.tcp_numlayers = 1;
+//		parameters.cp_disto_alloc = 1;
+//		
+//		switch( quality)
 //		{
-//			NSLog( @"****** warning compress ratio is very high : %d?? Problem during compression? -> will use jp2k lossless", [data length] / [jpeg2000Data length]);
-//			return [self encodeJPEG2000: data quality: DCMLosslessQuality];
+//			case DCMLosslessQuality:
+//				parameters.tcp_rates[0] = 0;
+//				
+//			break;
+//			
+//			case DCMHighQuality:
+//				parameters.tcp_rates[0] = 4;
+//			break;
+//			
+//			case DCMMediumQuality:
+//				if( _columns <= 600 || _rows <= 600)
+//					parameters.tcp_rates[0] = 6;
+//				else
+//					parameters.tcp_rates[0] = 8;
+//			break;
+//			
+//			case DCMLowQuality:
+//				parameters.tcp_rates[0] = 16;
+//			break;
+//			
+//			default:
+//				NSLog( @"****** warning unknown compression rate -> lossless : %d", quality);
+//				parameters.tcp_rates[0] = 0;
+//			break;
 //		}
-		
-		return jpeg2000Data;
-	}
+//		
+//		int image_width = _columns;
+//		int image_height = _rows;
+//		int sample_pixel = _samplesPerPixel;
+//		
+//		DCMAttributeTag *tag = [DCMAttributeTag tagWithName: @"PhotometricInterpretation"];
+//		DCMAttribute *attr = [[_dcmObject attributes] objectForKey:[tag stringValue]];
+//		NSString *photometricInterpretation = [attr value];
+//		
+//		if ([photometricInterpretation isEqualToString:@"MONOCHROME1"] || [photometricInterpretation isEqualToString:@"MONOCHROME2"])
+//		{
+//		
+//		}
+//		else
+//		{
+//			if( sample_pixel != 3)
+//				NSLog( @"*** RGB Photometric?, but... SamplesPerPixel != 3 ?");
+//			sample_pixel = 3;
+//		}
+//		
+//		int bitsallocated = [[_dcmObject attributeValueWithName:@"BitsAllocated"] intValue];
+//		int bitsstored = bitsallocated;
+//		
+//		if( bitsallocated >= 16)
+//		{
+//			[self findMinAndMax: data];
+//			
+//			int amplitude = _max;
+//			
+//			if( _min < 0)
+//				amplitude -= _min;
+//			
+//			int bits = 1, value = 2;
+//			
+//			while( value < amplitude)
+//			{
+//				value *= 2;
+//				bits++;
+//			}
+//			
+//			if( _min < 0)
+//			{
+//				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: YES]] forName:@"PixelRepresentation"];
+//				bits++;  // For the sign
+//			}
+//			else
+//				[_dcmObject setAttributeValues: [NSMutableArray arrayWithObject: [NSNumber numberWithBool: NO]] forName:@"PixelRepresentation"];
+//			
+//			if( bits < 9) bits = 9;
+//			
+//			// avoid the artifacts... switch to lossless
+//			if( (_max >= 32000 && _min <= -32000) || _max >= 65000 || bits > 16)
+//			{
+//				parameters.tcp_rates[0] = 0;
+//				parameters.tcp_numlayers = 1;
+//				parameters.cp_disto_alloc = 1;
+//			}
+//			
+//			if( bits > 16) bits = 16;
+//			
+//			bitsstored = bits;
+//		}
+//		
+//		DCMAttribute *signedAttr = [[_dcmObject attributes] objectForKey:[[DCMAttributeTag tagWithName:@"PixelRepresentation"] stringValue]];
+//		BOOL sign = [[signedAttr value] boolValue];
+//		
+//		image = rawtoimage( (char*) [data bytes], &parameters,  static_cast<int>( [data length]),  image_width, image_height, sample_pixel, bitsallocated, bitsstored, sign, quality, 0);
+//		
+//		parameters.cod_format = 0; /* J2K format output */
+//		int codestream_length;
+//		opj_cio_t *cio = NULL;
+//		
+//		opj_cinfo_t* cinfo = opj_create_compress(CODEC_J2K);
+//
+//		/* catch events using our callbacks and give a local context */
+//		opj_set_event_mgr((opj_common_ptr)cinfo, &event_mgr, stderr);
+//
+//		/* setup the encoder parameters using the current image and using user parameters */
+//		opj_setup_encoder(cinfo, &parameters, image);
+//
+//		/* open a byte stream for writing */
+//		/* allocate memory for all tiles */
+//		cio = opj_cio_open((opj_common_ptr)cinfo, NULL, 0);
+//
+//		/* encode the image */
+//		BOOL bSuccess = opj_encode(cinfo, cio, image, NULL);
+//		if (!bSuccess) {
+//		  opj_cio_close(cio);
+//		  fprintf(stderr, "failed to encode image\n");
+//		  return nil;
+//		}
+//		codestream_length = cio_tell(cio);
+//		
+//		NSMutableData *jpeg2000Data = [NSMutableData dataWithBytes: cio->buffer length: codestream_length];
+//		
+//		 /* close and free the byte stream */
+//		opj_cio_close(cio);
+//		
+//		/* free remaining compression structures */
+//		opj_destroy_compress(cinfo);
+//		
+//		opj_image_destroy(image);
+//		
+//		char zero = 0;
+//		if ([jpeg2000Data length] % 2) 
+//			[jpeg2000Data appendBytes:&zero length:1];
+//		
+////		NSLog( @"%d", [data length] / [jpeg2000Data length]);
+//		
+////		if( [data length] / [jpeg2000Data length] > 30 && quality != DCMLosslessQuality)
+////		{
+////			NSLog( @"****** warning compress ratio is very high : %d?? Problem during compression? -> will use jp2k lossless", [data length] / [jpeg2000Data length]);
+////			return [self encodeJPEG2000: data quality: DCMLosslessQuality];
+////		}
+//		
+//		return jpeg2000Data;
+//	}
 //	else
 //	{
 //		NSMutableData *jpeg2000Data;

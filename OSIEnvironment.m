@@ -30,7 +30,7 @@ static OSIEnvironment *sharedEnvironment = nil;
 		return NO;
 	}
 	
-	return YES;
+	return [super automaticallyNotifiesObserversForKey:key];
 }
 
 + (OSIEnvironment*)sharedEnvironment
@@ -38,8 +38,10 @@ static OSIEnvironment *sharedEnvironment = nil;
     return nil; // because this is too slow on remote DBs, sorry... you're forcing us to load the complete series' DCMPix before showing the window :(
     
 	@synchronized (self) {
-		if (sharedEnvironment == nil) {
-			sharedEnvironment = [[super allocWithZone:NULL] init];
+		if (sharedEnvironment == nil)
+        {
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"OSIEnvironmentActivated"])
+                sharedEnvironment = [[super allocWithZone:NULL] init];
 		}
 	}
     return sharedEnvironment;
@@ -65,7 +67,7 @@ static OSIEnvironment *sharedEnvironment = nil;
     return NSUIntegerMax;  //denotes an object that cannot be released
 }
 
-- (void)release
+- (oneway void)release
 {
     //do nothing
 }
