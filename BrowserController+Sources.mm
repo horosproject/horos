@@ -81,13 +81,21 @@
 	NSString* _devicePath;
 	DicomDatabase* _database;
     BOOL _available;
+    NSInteger _mtype;
     NSThread* _scanThread;
     NSButton* _unmountButton;
 }
 
-@property(retain) NSString* devicePath;
+enum {
+    MountedBrowserSourceTypeUndefined = 0,
+    MountedBrowserSourceIPODType = 1
+};
 
-+(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+@property(retain) NSString* devicePath;
+@property BOOL available;
+@property NSInteger mtype;
+
++(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type;
 
 -(void)willUnmount;
 
@@ -638,15 +646,19 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	NSDictionary* result = [NSPropertyListSerialization propertyListFromData:output mutabilityOption:NSPropertyListImmutable format:0 errorDescription:NULL];
 
-	if ([[result objectForKey:@"OpticalMediaType"] length])
-		@try
-    {
-			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil]];
-    } @catch (NSException* e)
-    {
-			N2LogExceptionWithStackTrace(e);
-		}
+	if ([[result objectForKey:@"OpticalMediaType"] length]) // is CD/DVD or other optical media
+		@try {
+			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceTypeUndefined]];
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
 	
+    if ([[result objectForKey:@"MediaType"] isEqualToString:@"iPod"])
+        @try {
+			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceIPODType]];
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        }
 	
 	
 /*	OSStatus err;
@@ -898,7 +910,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @implementation MountedBrowserSource
 
-@synthesize devicePath = _devicePath;
+@synthesize devicePath = _devicePath, available = _available, mtype = _mtype;
 
 -(id)init
 {
@@ -986,29 +998,36 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     return _database;
 }
 
-+(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary
++(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type
 {
 	BOOL scan = YES;
 	NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
 	
 	// does it contain an OsiriX Data folder?
 	BOOL isDir;
-	if ([NSFileManager.defaultManager fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir)
-    {
+	if ([NSFileManager.defaultManager fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
 		path = devicePath;
 		scan = NO;
 	}
+    
+    if (type == MountedBrowserSourceIPODType) {
+		path = devicePath;
+		scan = NO;
+    }
 	
 	MountedBrowserSource* bs = [self browserSourceForLocalPath:path description:description dictionary:dictionary];
 	bs.devicePath = devicePath;
+    bs.mtype = type;
 	[NSFileManager.defaultManager createDirectoryAtPath:path attributes:nil];
 	
-	if (scan)
-    {
-		// is there a DICOMDIR file?
+	if (scan) {
 		[bs initiateVolumeScan];
 	}
 	
+    if (type == MountedBrowserSourceIPODType) {
+        bs.available = YES;
+    }
+    
 	return bs;
 }
 
@@ -1053,11 +1072,15 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(BOOL)isVolatile
 {
-	return YES;
+	if (self.mtype == MountedBrowserSourceIPODType)
+        return NO;
+    return YES;
 }
 
 -(BOOL)isReadOnly
 {
+	if (self.mtype == MountedBrowserSourceIPODType)
+        return NO;
 	return YES;
 }
 

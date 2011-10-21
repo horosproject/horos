@@ -302,6 +302,34 @@
 		59BDF8571181DDD6007F1F2C /* N2Operators.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FAA211293378009EB238 /* N2Operators.mm */; };
 		59C2B8EB0FF0EB6A00B50385 /* Notifications.m in Sources */ = {isa = PBXBuildFile; fileRef = 59E088A80FF0AB9400452F19 /* Notifications.m */; };
 		59C2B8EC0FF0EB7700B50385 /* Notifications.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E088A70FF0AB9400452F19 /* Notifications.h */; };
+		59C447C214516F1000D71580 /* BrowserSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447C114516F1000D71580 /* BrowserSource.mm */; };
+		59C447C314516F1000D71580 /* BrowserSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447C114516F1000D71580 /* BrowserSource.mm */; };
+		59C447C614516F1700D71580 /* BrowserSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447C514516F1700D71580 /* BrowserSource.h */; };
+		59C447C714516F1700D71580 /* BrowserSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447C514516F1700D71580 /* BrowserSource.h */; };
+		59C447D014516FF500D71580 /* DicomDatabase+Clean.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447C814516FF500D71580 /* DicomDatabase+Clean.h */; };
+		59C447D114516FF500D71580 /* DicomDatabase+Clean.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447C814516FF500D71580 /* DicomDatabase+Clean.h */; };
+		59C447D214516FF500D71580 /* DicomDatabase+Clean.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447C914516FF500D71580 /* DicomDatabase+Clean.mm */; };
+		59C447D314516FF500D71580 /* DicomDatabase+Clean.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447C914516FF500D71580 /* DicomDatabase+Clean.mm */; };
+		59C447D414516FF500D71580 /* DicomDatabase+DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CA14516FF500D71580 /* DicomDatabase+DCMTK.h */; };
+		59C447D514516FF500D71580 /* DicomDatabase+DCMTK.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CA14516FF500D71580 /* DicomDatabase+DCMTK.h */; };
+		59C447D614516FF500D71580 /* DicomDatabase+DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CB14516FF500D71580 /* DicomDatabase+DCMTK.mm */; };
+		59C447D714516FF500D71580 /* DicomDatabase+DCMTK.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CB14516FF500D71580 /* DicomDatabase+DCMTK.mm */; };
+		59C447D814516FF500D71580 /* DicomDatabase+Routing.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CC14516FF500D71580 /* DicomDatabase+Routing.h */; };
+		59C447D914516FF500D71580 /* DicomDatabase+Routing.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CC14516FF500D71580 /* DicomDatabase+Routing.h */; };
+		59C447DA14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CD14516FF500D71580 /* DicomDatabase+Routing.mm */; };
+		59C447DB14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CD14516FF500D71580 /* DicomDatabase+Routing.mm */; };
+		59C447DC14516FF500D71580 /* DicomDatabase+Scan.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CE14516FF500D71580 /* DicomDatabase+Scan.h */; };
+		59C447DD14516FF500D71580 /* DicomDatabase+Scan.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447CE14516FF500D71580 /* DicomDatabase+Scan.h */; };
+		59C447DE14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CF14516FF500D71580 /* DicomDatabase+Scan.mm */; };
+		59C447DF14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447CF14516FF500D71580 /* DicomDatabase+Scan.mm */; };
+		59C447E21451705900D71580 /* Eject_gray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 59C447E01451705800D71580 /* Eject_gray.pdf */; };
+		59C447E31451705900D71580 /* Eject_gray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 59C447E01451705800D71580 /* Eject_gray.pdf */; };
+		59C447E41451705900D71580 /* Eject_lightgray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 59C447E11451705900D71580 /* Eject_lightgray.pdf */; };
+		59C447E51451705900D71580 /* Eject_lightgray.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 59C447E11451705900D71580 /* Eject_lightgray.pdf */; };
+		59C447E81451710F00D71580 /* NSArray+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447E61451710F00D71580 /* NSArray+N2.h */; };
+		59C447E91451710F00D71580 /* NSArray+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C447E61451710F00D71580 /* NSArray+N2.h */; };
+		59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447E71451710F00D71580 /* NSArray+N2.mm */; };
+		59C447EB1451710F00D71580 /* NSArray+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C447E71451710F00D71580 /* NSArray+N2.mm */; };
 		59C512C01189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
 		59C512C11189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */; };
 		59C512C21189C0E40074ECBC /* SFAuthorizationView+OsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = 59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */; };
@@ -320,6 +348,14 @@
 		59DB270B14507B1400E78E03 /* RemoteDicomDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB270814507B1300E78E03 /* RemoteDicomDatabase.h */; };
 		59DB270C14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270914507B1300E78E03 /* RemoteDicomDatabase.mm */; };
 		59DB270D14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB270914507B1300E78E03 /* RemoteDicomDatabase.mm */; };
+		59DB271814515B5900E78E03 /* BrowserController+Sources.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB271014515B5800E78E03 /* BrowserController+Sources.h */; };
+		59DB271914515B5900E78E03 /* BrowserController+Sources.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB271014515B5800E78E03 /* BrowserController+Sources.h */; };
+		59DB271A14515B5900E78E03 /* BrowserController+Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB271114515B5800E78E03 /* BrowserController+Sources.mm */; };
+		59DB271B14515B5900E78E03 /* BrowserController+Sources.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB271114515B5800E78E03 /* BrowserController+Sources.mm */; };
+		59DB271C14515B5900E78E03 /* BrowserController+Sources+Copy.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB271214515B5800E78E03 /* BrowserController+Sources+Copy.h */; };
+		59DB271D14515B5900E78E03 /* BrowserController+Sources+Copy.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DB271214515B5800E78E03 /* BrowserController+Sources+Copy.h */; };
+		59DB271E14515B5900E78E03 /* BrowserController+Sources+Copy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB271314515B5800E78E03 /* BrowserController+Sources+Copy.mm */; };
+		59DB271F14515B5900E78E03 /* BrowserController+Sources+Copy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DB271314515B5800E78E03 /* BrowserController+Sources+Copy.mm */; };
 		59DC285C11C60E3C00DAD5B4 /* NSView+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB10FB191129338A009EB238 /* NSView+N2.mm */; };
 		59DC28B211C611F100DAD5B4 /* NSThread+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59DC28B011C611F100DAD5B4 /* NSThread+N2.h */; };
 		59DC28B311C611F100DAD5B4 /* NSThread+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */; };
@@ -8220,6 +8256,20 @@
 		59BDF11D117EE72C007F1F2C /* PreferencesWindowController+DCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "PreferencesWindowController+DCMTK.mm"; sourceTree = "<group>"; };
 		59BDF125117EFA41007F1F2C /* PreferencesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesView.h; sourceTree = "<group>"; };
 		59BDF126117EFA41007F1F2C /* PreferencesView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PreferencesView.mm; sourceTree = "<group>"; };
+		59C447C114516F1000D71580 /* BrowserSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BrowserSource.mm; sourceTree = "<group>"; };
+		59C447C514516F1700D71580 /* BrowserSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserSource.h; sourceTree = "<group>"; };
+		59C447C814516FF500D71580 /* DicomDatabase+Clean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+Clean.h"; sourceTree = "<group>"; };
+		59C447C914516FF500D71580 /* DicomDatabase+Clean.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+Clean.mm"; sourceTree = "<group>"; };
+		59C447CA14516FF500D71580 /* DicomDatabase+DCMTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+DCMTK.h"; sourceTree = "<group>"; };
+		59C447CB14516FF500D71580 /* DicomDatabase+DCMTK.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+DCMTK.mm"; sourceTree = "<group>"; };
+		59C447CC14516FF500D71580 /* DicomDatabase+Routing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+Routing.h"; sourceTree = "<group>"; };
+		59C447CD14516FF500D71580 /* DicomDatabase+Routing.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+Routing.mm"; sourceTree = "<group>"; };
+		59C447CE14516FF500D71580 /* DicomDatabase+Scan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DicomDatabase+Scan.h"; sourceTree = "<group>"; };
+		59C447CF14516FF500D71580 /* DicomDatabase+Scan.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "DicomDatabase+Scan.mm"; sourceTree = "<group>"; };
+		59C447E01451705800D71580 /* Eject_gray.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Eject_gray.pdf; sourceTree = "<group>"; };
+		59C447E11451705900D71580 /* Eject_lightgray.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Eject_lightgray.pdf; sourceTree = "<group>"; };
+		59C447E61451710F00D71580 /* NSArray+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray+N2.h"; path = "nitrogen/Sources/NSArray+N2.h"; sourceTree = "<group>"; };
+		59C447E71451710F00D71580 /* NSArray+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSArray+N2.mm"; path = "nitrogen/Sources/NSArray+N2.mm"; sourceTree = "<group>"; };
 		59C512BE1189C0E40074ECBC /* SFAuthorizationView+OsiriX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SFAuthorizationView+OsiriX.h"; sourceTree = "<group>"; };
 		59C512BF1189C0E40074ECBC /* SFAuthorizationView+OsiriX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SFAuthorizationView+OsiriX.mm"; sourceTree = "<group>"; };
 		59D9471C125333640095680D /* SWFInit.as */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SWFInit.as; path = Binaries/SWFInit.as; sourceTree = "<group>"; };
@@ -8229,6 +8279,10 @@
 		59DB270314507ADF00E78E03 /* N2MutableUInteger.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2MutableUInteger.mm; path = nitrogen/Sources/N2MutableUInteger.mm; sourceTree = "<group>"; };
 		59DB270814507B1300E78E03 /* RemoteDicomDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteDicomDatabase.h; sourceTree = "<group>"; };
 		59DB270914507B1300E78E03 /* RemoteDicomDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RemoteDicomDatabase.mm; sourceTree = "<group>"; };
+		59DB271014515B5800E78E03 /* BrowserController+Sources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Sources.h"; sourceTree = "<group>"; };
+		59DB271114515B5800E78E03 /* BrowserController+Sources.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Sources.mm"; sourceTree = "<group>"; };
+		59DB271214515B5800E78E03 /* BrowserController+Sources+Copy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BrowserController+Sources+Copy.h"; sourceTree = "<group>"; };
+		59DB271314515B5800E78E03 /* BrowserController+Sources+Copy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "BrowserController+Sources+Copy.mm"; sourceTree = "<group>"; };
 		59DC28B011C611F100DAD5B4 /* NSThread+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSThread+N2.h"; path = "nitrogen/Sources/NSThread+N2.h"; sourceTree = "<group>"; };
 		59DC28B111C611F100DAD5B4 /* NSThread+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSThread+N2.mm"; path = "nitrogen/Sources/NSThread+N2.mm"; sourceTree = "<group>"; };
 		59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSAppleEventDescriptor+N2.h"; path = "nitrogen/Sources/NSAppleEventDescriptor+N2.h"; sourceTree = "<group>"; };
@@ -13181,6 +13235,8 @@
 			children = (
 				59E83A1112FC6556006B930A /* NSManagedObject+N2.h */,
 				59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */,
+				59C447E61451710F00D71580 /* NSArray+N2.h */,
+				59C447E71451710F00D71580 /* NSArray+N2.mm */,
 				59DC28B411C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
 				59DC28B511C6126B00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
 				592D333512F2C71A00C7C002 /* NSException+N2.h */,
@@ -13632,6 +13688,8 @@
 				ABBB6482063587B200D9531F /* Capture.icns */,
 				7E2BE3D90715DBC50017898A /* cd.icns */,
 				7E2BE4180715E5040017898A /* CD.tif */,
+				59C447E01451705800D71580 /* Eject_gray.pdf */,
+				59C447E11451705900D71580 /* Eject_lightgray.pdf */,
 				CEEB5CCA0CCDD161008803E2 /* Centerline.tif */,
 				A917F37B10F4F20C00344C5D /* CertSmallRoot.tif */,
 				A917F37C10F4F20C00344C5D /* CertSmallStd.tif */,
@@ -13842,8 +13900,14 @@
 				BF18A85809E0BF00005DEFB6 /* AppControllerDCMTKCategory.mm */,
 				59EBFEA212BB500C00809C61 /* browserController.h */,
 				599115EF12D7224A00924B5C /* browserController.m */,
+				59DB271014515B5800E78E03 /* BrowserController+Sources.h */,
+				59DB271114515B5800E78E03 /* BrowserController+Sources.mm */,
+				59DB271214515B5800E78E03 /* BrowserController+Sources+Copy.h */,
+				59DB271314515B5800E78E03 /* BrowserController+Sources+Copy.mm */,
 				BFA7D2160A51D1460013F76E /* BrowserControllerDCMTKCategory.h */,
 				BFA7D2170A51D1460013F76E /* BrowserControllerDCMTKCategory.mm */,
+				59C447C514516F1700D71580 /* BrowserSource.h */,
+				59C447C114516F1000D71580 /* BrowserSource.mm */,
 				ABC47B570C031397001CEA21 /* BrowserMatrix.h */,
 				ABC47B580C031397001CEA21 /* BrowserMatrix.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
@@ -16819,6 +16883,14 @@
 			children = (
 				59E52B3512C109B80094E668 /* DicomDatabase.h */,
 				59E52B3612C109B80094E668 /* DicomDatabase.mm */,
+				59C447C814516FF500D71580 /* DicomDatabase+Clean.h */,
+				59C447C914516FF500D71580 /* DicomDatabase+Clean.mm */,
+				59C447CA14516FF500D71580 /* DicomDatabase+DCMTK.h */,
+				59C447CB14516FF500D71580 /* DicomDatabase+DCMTK.mm */,
+				59C447CC14516FF500D71580 /* DicomDatabase+Routing.h */,
+				59C447CD14516FF500D71580 /* DicomDatabase+Routing.mm */,
+				59C447CE14516FF500D71580 /* DicomDatabase+Scan.h */,
+				59C447CF14516FF500D71580 /* DicomDatabase+Scan.mm */,
 				59526F3F1281AE0B0016F6C0 /* Dicom */,
 				590A3DCB12A92920004581C2 /* WebPortalDatabase.h */,
 				590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */,
@@ -19548,6 +19620,14 @@
 				59DB26FE14507ACA00E78E03 /* PrettyCell.h in Headers */,
 				59DB270414507ADF00E78E03 /* N2MutableUInteger.h in Headers */,
 				59DB270A14507B1400E78E03 /* RemoteDicomDatabase.h in Headers */,
+				59DB271814515B5900E78E03 /* BrowserController+Sources.h in Headers */,
+				59DB271C14515B5900E78E03 /* BrowserController+Sources+Copy.h in Headers */,
+				59C447C614516F1700D71580 /* BrowserSource.h in Headers */,
+				59C447D014516FF500D71580 /* DicomDatabase+Clean.h in Headers */,
+				59C447D414516FF500D71580 /* DicomDatabase+DCMTK.h in Headers */,
+				59C447D814516FF500D71580 /* DicomDatabase+Routing.h in Headers */,
+				59C447DC14516FF500D71580 /* DicomDatabase+Scan.h in Headers */,
+				59C447E81451710F00D71580 /* NSArray+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21721,6 +21801,14 @@
 				59DB26FF14507ACA00E78E03 /* PrettyCell.h in Headers */,
 				59DB270514507ADF00E78E03 /* N2MutableUInteger.h in Headers */,
 				59DB270B14507B1400E78E03 /* RemoteDicomDatabase.h in Headers */,
+				59DB271914515B5900E78E03 /* BrowserController+Sources.h in Headers */,
+				59DB271D14515B5900E78E03 /* BrowserController+Sources+Copy.h in Headers */,
+				59C447C714516F1700D71580 /* BrowserSource.h in Headers */,
+				59C447D114516FF500D71580 /* DicomDatabase+Clean.h in Headers */,
+				59C447D514516FF500D71580 /* DicomDatabase+DCMTK.h in Headers */,
+				59C447D914516FF500D71580 /* DicomDatabase+Routing.h in Headers */,
+				59C447DD14516FF500D71580 /* DicomDatabase+Scan.h in Headers */,
+				59C447E91451710F00D71580 /* NSArray+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22392,6 +22480,8 @@
 				84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */,
 				84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
+				59C447E21451705900D71580 /* Eject_gray.pdf in Resources */,
+				59C447E41451705900D71580 /* Eject_lightgray.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22752,6 +22842,8 @@
 				84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */,
 				84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
+				59C447E31451705900D71580 /* Eject_gray.pdf in Resources */,
+				59C447E51451705900D71580 /* Eject_lightgray.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24079,6 +24171,14 @@
 				59DB270014507ACA00E78E03 /* PrettyCell.mm in Sources */,
 				59DB270614507ADF00E78E03 /* N2MutableUInteger.mm in Sources */,
 				59DB270C14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */,
+				59DB271A14515B5900E78E03 /* BrowserController+Sources.mm in Sources */,
+				59DB271E14515B5900E78E03 /* BrowserController+Sources+Copy.mm in Sources */,
+				59C447C214516F1000D71580 /* BrowserSource.mm in Sources */,
+				59C447D214516FF500D71580 /* DicomDatabase+Clean.mm in Sources */,
+				59C447D614516FF500D71580 /* DicomDatabase+DCMTK.mm in Sources */,
+				59C447DA14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */,
+				59C447DE14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */,
+				59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25304,6 +25404,14 @@
 				59DB270114507ACA00E78E03 /* PrettyCell.mm in Sources */,
 				59DB270714507ADF00E78E03 /* N2MutableUInteger.mm in Sources */,
 				59DB270D14507B1400E78E03 /* RemoteDicomDatabase.mm in Sources */,
+				59DB271B14515B5900E78E03 /* BrowserController+Sources.mm in Sources */,
+				59DB271F14515B5900E78E03 /* BrowserController+Sources+Copy.mm in Sources */,
+				59C447C314516F1000D71580 /* BrowserSource.mm in Sources */,
+				59C447D314516FF500D71580 /* DicomDatabase+Clean.mm in Sources */,
+				59C447D714516FF500D71580 /* DicomDatabase+DCMTK.mm in Sources */,
+				59C447DB14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */,
+				59C447DF14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */,
+				59C447EB1451710F00D71580 /* NSArray+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
