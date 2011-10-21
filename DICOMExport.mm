@@ -874,6 +874,8 @@ static float deg2rad = M_PI / 180.0f;
 					delete dataset->remove( DCM_MediaStorageSOPClassUID);
 					delete dataset->remove( DCM_MediaStorageSOPInstanceUID);
 					
+                    delete dataset->remove(DCM_PerFrameFunctionalGroupsSequence);
+                    
 					char buf[ 128];
 					dcmGenerateUniqueIdentifier( buf);
 					dataset->putAndInsertString( DCM_SOPInstanceUID, buf);

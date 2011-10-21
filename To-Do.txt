@@ -13,8 +13,8 @@ A:
 		viewer toolbar: delete, (report: readonly...))
 		contextual menu nsoutline et nsmatrix
 		keystrokes: delete key, ...
-	iPod doesn't appear automatically
-	iPod eject button…
+	(OK) iPod doesn't appear automatically
+	(OK) iPod eject button…
 
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
