@@ -1537,7 +1537,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			break;
 				
 			case DCMHighQuality:
-				rate = 4;
+				rate = 5;
 			break;
 				
 			case DCMMediumQuality:
