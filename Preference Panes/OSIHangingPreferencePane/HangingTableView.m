@@ -18,7 +18,10 @@
 
 @implementation HangingTableView
 
-- (void)keyDown:(NSEvent *)event{
+- (void)keyDown:(NSEvent *)event
+{
+    if( [[event characters] length] == 0) return;
+    
 	unichar c = [[event characters] characterAtIndex:0];
 	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] > 0) {
 			[(OSIHangingPreferencePanePref*)[self delegate] deleteSelectedRow:self];

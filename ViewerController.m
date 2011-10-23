@@ -4581,6 +4581,8 @@ static ViewerController *draggedController = nil;
 
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
     if( c == 3 || c == 13 || c == ' ')

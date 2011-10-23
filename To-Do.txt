@@ -1,5 +1,6 @@
 New Features:
 - DICOM Q&R: realtime C-Find updates
+- DICOM Q&R: custom DICOM field for query
 - OsiriX SDK (see plugin)
 
 A:
@@ -19,6 +20,7 @@ A:
 - Add Albums submenu to File menu
 - Add Reslice submenu (Orientation item)
 
+- Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
@@ -38,7 +40,6 @@ A:
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
 - SUV on PET 3D Panel (3D MIP)
-- Q&R: custom field (Performing Physician)
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
@@ -55,7 +56,6 @@ A:
 - Custom DB time interval: floating panel
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
-- CD partial import
 - Save default order for albums
 - VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust

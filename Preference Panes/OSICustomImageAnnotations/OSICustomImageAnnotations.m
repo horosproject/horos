@@ -102,7 +102,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 			
 			if( cur)
 			{
-				if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn)
+				if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString( @"Are you really sure you want to replace current settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 				{
 					NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 				
@@ -117,7 +117,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 - (IBAction) reset: (id) sender
 {
-	if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Settings", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to reset the current default settings? It will delete the current settings.", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn)
+	if( NSRunInformationalAlertPanel( NSLocalizedString(@"Settings", nil), NSLocalizedString( @"Are you really sure you want to reset the current default settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn)
 	{
 		NSMutableDictionary *annotationsLayoutDictionary = [layoutController annotationsLayoutDictionary];
 		
@@ -152,7 +152,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	
 	if( [modalitiesPopUpButton numberOfItems] < 5)
 	{
-		NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedStringFromTableInBundle(@"Default", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
+		NSArray *modalities = [NSArray arrayWithObjects:NSLocalizedString(@"Default", nil), @"CR", @"CT", @"DX", @"ES", @"MG", @"MR", @"NM", @"OT",@"PT",@"RF",@"SC",@"US",@"XA", nil];
 		
 		[modalitiesPopUpButton removeAllItems];
 
@@ -293,7 +293,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 
 	if(state)
 	{
-		if( NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Default", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle( @"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil) , NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil), 0L) == NSAlertDefaultReturn) 
+		if( NSRunInformationalAlertPanel( NSLocalizedString(@"Default", nil), NSLocalizedString( @"Are you really sure you want to replace current settings with the default settings? It will delete the current settings.", nil) , NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), 0L) == NSAlertDefaultReturn) 
 			[layoutController loadAnnotationLayoutForModality:@"Default"];
 		else
 		{

@@ -17,11 +17,14 @@
 
 @implementation RoutesTableView
 
-- (void)keyDown:(NSEvent *)event{
+- (void)keyDown:(NSEvent *)event
+{
+    if( [[event characters] length] == 0) return;
+    
 	unichar c = [[event characters] characterAtIndex:0];
 	if ((c == NSDeleteCharacter || c == NSBackspaceCharacter) && [self selectedRow] >= 0 && [self numberOfRows] > 0)
 	{
-		if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle( @"Delete Route", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle( @"Are you sure you want to delete the selected route?", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], 0L), NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSIAutoroutingPreferencePanePref class]], nil), nil) == NSAlertDefaultReturn)
+		if( NSRunInformationalAlertPanel(NSLocalizedString( @"Delete Route", 0L), NSLocalizedString( @"Are you sure you want to delete the selected route?", 0L), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 			[(OSIAutoroutingPreferencePanePref*) [self delegate] deleteSelectedRow:self];
 	}
 	else

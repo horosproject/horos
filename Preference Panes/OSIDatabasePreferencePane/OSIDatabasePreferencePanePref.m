@@ -160,7 +160,7 @@
 	
 	NSMenuItem *item;
 	item = [[[NSMenuItem alloc] init] autorelease];
-	[item setTitle:NSLocalizedStringFromTableInBundle( @"DICOM Fields", nil, [NSBundle bundleForClass: [OSIDatabasePreferencePanePref class]], nil)];
+	[item setTitle:NSLocalizedString( @"DICOM Fields", nil)];
 	[item setEnabled:NO];
 	[DICOMFieldsMenu addItem:item];
 	int i;

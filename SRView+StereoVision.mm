@@ -1231,6 +1231,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 #pragma mark User Commands
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
 	if( c == ' ')

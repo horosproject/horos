@@ -63,7 +63,7 @@
 
 	[sPanel setRequiredFileType:@"plist"];
 		
-	if ([sPanel runModalForDirectory:0L file: NSLocalizedStringFromTableInBundle(@"DICOMPrinters.plist",nil, [NSBundle bundleForClass: [AYDicomPrintPref class]], nil)] == NSFileHandlingPanelOKButton)
+	if ([sPanel runModalForDirectory:0L file: NSLocalizedString(@"DICOMPrinters.plist", nil)] == NSFileHandlingPanelOKButton)
 	{
 		[[m_PrinterController arrangedObjects] writeToFile:[sPanel filename] atomically: YES];
 	}
@@ -81,7 +81,7 @@
 		
 		if( r)
 		{
-			if( NSRunInformationalAlertPanel(NSLocalizedStringFromTableInBundle(@"Load printers", nil, [NSBundle bundleForClass: [AYDicomPrintPref class]], 0L), NSLocalizedStringFromTableInBundle(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", nil, [NSBundle bundleForClass: [AYDicomPrintPref class]], 0L), NSLocalizedStringFromTableInBundle(@"Add",nil, [NSBundle bundleForClass: [AYDicomPrintPref class]], nil), NSLocalizedStringFromTableInBundle(@"Replace",nil, [NSBundle bundleForClass: [AYDicomPrintPref class]], nil), nil) == NSAlertDefaultReturn)
+			if( NSRunInformationalAlertPanel(NSLocalizedString(@"Load printers", nil), NSLocalizedString(@"Should I add or replace the printer list? If you choose 'replace', the current list will be deleted.", nil), NSLocalizedString(@"Add", nil), NSLocalizedString(@"Replace", nil), nil) == NSAlertDefaultReturn)
 			{
 				
 			}

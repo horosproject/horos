@@ -1085,9 +1085,9 @@ extern int delayedTileWindows;
 
 - (void)keyDown:(NSEvent *)event
 {
-	NSLog( @"keyDown");
-	
-	unichar				c = [[event characters] characterAtIndex:0];
+	if( [[event characters] length] == 0) return;
+    
+	unichar c = [[event characters] characterAtIndex:0];
 	
 	if( editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
 	{

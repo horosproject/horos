@@ -2543,12 +2543,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) keyDown:(NSEvent *)event
 {
 	if ([self eventToPlugins:event]) return;
-	
+	if( [[event characters] length] == 0) return;
+    
 	unichar		c = [[event characters] characterAtIndex:0];
 	long		xMove = 0, yMove = 0, val;
 	BOOL		Jog = NO;
 	
-	if( [self windowController]  == [BrowserController currentBrowser]) { [super keyDown:event]; return;}
+	if( [self windowController]  == [BrowserController currentBrowser])
+    {
+        [super keyDown:event];
+        return;
+    }
 	
     if( dcmPixList)
     {

@@ -88,7 +88,7 @@
     i = [[oPopup menu] numberOfItems];
     while(i-- > 0) [[oPopup menu] removeItemAtIndex:0];
 	
-	[[oPopup menu] addItemWithTitle: NSLocalizedStringFromTableInBundle( @"Linear Table", nil, [NSBundle bundleForClass: [OSIPETPreferencePane class]], 0L) action:0L keyEquivalent:@""];
+	[[oPopup menu] addItemWithTitle: NSLocalizedString( @"Linear Table", 0L) action:0L keyEquivalent:@""];
 	
     for( i = 0; i < [sortedKeys count]; i++)
     {

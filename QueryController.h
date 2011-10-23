@@ -25,8 +25,11 @@
 {
     IBOutlet    QueryOutlineView			*outlineView;
 	IBOutlet	NSProgressIndicator			*progressIndicator;
-	IBOutlet	NSSearchField				*searchFieldName, *searchFieldRefPhysician, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription, *searchFieldComments, *searchInstitutionName;
+	IBOutlet	NSSearchField				*searchFieldName, *searchFieldRefPhysician, *searchFieldID, *searchFieldAN, *searchFieldStudyDescription, *searchFieldComments, *searchInstitutionName, *searchCustomField;
 	
+    IBOutlet    NSPopUpButton               *dicomFieldsMenu;
+                NSArray                     *DICOMFieldsArray;
+    
 				NSMutableArray				*sourcesArray;
 	IBOutlet	sourcesTableView			*sourcesTable;
 	IBOutlet	NSTextField					*selectedResultSource;
@@ -77,6 +80,8 @@
     NSMutableArray                          *temporaryCFindResultArray;
     
     NSMutableArray                          *downloadedStudies;
+    
+    NSString                                *customDICOMField;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;

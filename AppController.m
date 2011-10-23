@@ -3590,6 +3590,7 @@ static BOOL initialized = NO;
 	
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseKDUForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
 	if( [AppController hasMacOSXSnowLeopard] == NO)
 	{
