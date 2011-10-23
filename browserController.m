@@ -7786,8 +7786,10 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[tableColumn identifier] isEqualToString:@"stateText"])
 	{
-		if( [[item valueForKey:@"stateText"] intValue] == 0) return nil;
-		else return [item valueForKey:@"stateText"];
+		if( [[item valueForKey:@"stateText"] intValue] == 0)
+            return nil;
+		else
+            return [item valueForKey:@"stateText"];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
