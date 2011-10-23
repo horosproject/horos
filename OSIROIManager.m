@@ -87,6 +87,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (void)dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [_volumeWindow removeObserver:self forKeyPath:@"OSIROIs"];
     [_volumeWindow removeObserver:self forKeyPath:@"dataLoaded"];

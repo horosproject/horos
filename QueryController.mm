@@ -783,7 +783,7 @@ extern "C"
 			
 			NSLog(@"%@", pressedKeys);
 			
-			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
+			NSArray *resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];

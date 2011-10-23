@@ -73,6 +73,8 @@
 
 - (void)dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];

@@ -612,6 +612,8 @@ extern int delayedTileWindows;
 
 - (void) dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 
 	[viewer release];

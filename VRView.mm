@@ -2057,6 +2057,8 @@ public:
 	
     NSLog(@"Dealloc VRView");
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
+    
 	[[IMService notificationCenter] removeObserver: self];
 	
 	[dcmSeriesString release];

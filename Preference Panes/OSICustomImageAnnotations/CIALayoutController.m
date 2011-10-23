@@ -199,6 +199,8 @@
 
 - (void)dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[selectedAnnotation release];
 	[currentModality release];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

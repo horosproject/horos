@@ -6562,6 +6562,7 @@ return YES;
 		if( v != self) [v buildMatrixPreview: NO];
 	}
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
 	[super dealloc];
 	
 	NSLog(@"ViewController dealloc");

@@ -878,6 +878,8 @@ typedef struct _xyzArray
 	
     NSLog(@"Dealloc SRView");
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
+    
 	[splash close];
 	[splash release];
 	[exportDCM release];

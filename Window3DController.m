@@ -243,6 +243,8 @@
 
 - (void) dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	windowWillClose = YES;
 	
 	NSLog(@"Window3DController dealloc");

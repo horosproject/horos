@@ -2147,7 +2147,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
-	
+    
+	[NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[self deleteMouseDownTimer];
