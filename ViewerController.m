@@ -14400,7 +14400,7 @@ int i,j,l;
 	while ( superMenu != nil)
 	{
 		tail = [[composedMenuTitle copy] autorelease];
-		[composedMenuTitle release];
+        
 		composedMenuTitle = [NSString stringWithFormat:@"%@ %@",currentMenuTitle, tail];
 		currentMenu = superMenu;
 		currentMenuTitle = [currentMenu title];

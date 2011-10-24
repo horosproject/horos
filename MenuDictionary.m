@@ -21,7 +21,7 @@
 - (NSMenu*)initWithTitle:(NSString *)aTitle withDictionary:(NSDictionary *)aDictionary forWindowController:(NSWindowController *)aWindowController
 {
 	//NSMenu
-	[self initWithTitle:aTitle];
+	self = [self initWithTitle:aTitle];
 			
 	//NSDictionary -> array
 	long dictionaryCount =[aDictionary count];

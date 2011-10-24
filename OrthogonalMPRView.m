@@ -178,7 +178,7 @@ extern int ANNOTATIONS;
 
 - (id)initWithFrame:(NSRect)frameRect
 {
-	[super initWithFrame:frameRect];
+	self = [super initWithFrame:frameRect];
 	
 	displayResliceAxes = 1;
 	controller = nil;

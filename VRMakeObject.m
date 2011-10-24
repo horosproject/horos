@@ -542,7 +542,7 @@ OSErr VRObject_CreateQTVRMovieVers2x0 (FSSpec *theObjMovSpec, FSSpec *theSrcMovS
 {
 	SampleDescriptionHandle			mySampleDesc = NULL;
 	QTVRSampleDescriptionHandle		myQTVRDesc = NULL;
-	QTAtomContainer					myVRWorld;
+	QTAtomContainer					myVRWorld = NULL;
 	QTAtomContainer					myNodeInfo;
 	Movie							myObjMovie = NULL;
 	Movie							mySrcMovie = NULL;

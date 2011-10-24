@@ -45,7 +45,7 @@
 
 - (id) initWithSelector:(id) o :(SEL) s :(long) f
 {
-	[super init];
+	self = [super init];
 	
 	[NSBundle loadNibNamed:@"QuicktimeExport" owner:self];
 	

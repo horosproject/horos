@@ -60,7 +60,7 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 
 -(NSData*)initWithBase64:(NSString*)base64 {
 	if ([base64 length] == 0)
-		return [NSData data];
+		return [[NSData data] retain];
 	
 	static char *decodingTable = NULL;
 	if (decodingTable == NULL)

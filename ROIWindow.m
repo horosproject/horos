@@ -377,7 +377,7 @@
 				{
 					if ( [[roi name] isEqualToString: [curROI name]] )
 					{
-						NSMutableDictionary *roiData = [[NSMutableDictionary alloc] init];
+						NSMutableDictionary *roiData = [NSMutableDictionary dictionary];
 						
 						[roiData setObject:[NSNumber numberWithInt: i + 1] forKey: @"Slice"];
 						[roiData setObject:[roi name] forKey:@"Name"];

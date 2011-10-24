@@ -61,8 +61,10 @@
 	CFHTTPMessageAppendBytes(request, (uint8*)[data bytes], [data length]);
 
 	if (!CFHTTPMessageIsHeaderComplete(request))
+    {
+        CFRelease(request);
 		return;
-	
+	}
 //	DLog(@"XMLRPC request received: %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
 	
 	NSString* contentLength = (NSString*)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Content-Length");
@@ -86,6 +88,7 @@
 	
 	if (![method isEqualToString:@"POST"]) {
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef)version)];
+        CFRelease(request);
 		return;
 	}
 	

@@ -158,7 +158,7 @@
 
 - (id)init
 {
-	if (![super init]) return nil;
+	self = [super init];
 
 	document = new DSRDocument();
 	document->createNewDocument(DSRTypes::DT_ComprehensiveSR);
