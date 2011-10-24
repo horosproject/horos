@@ -55,7 +55,7 @@
 // designated initializer
 - (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
-	[super init];
+	self = [super init];
 	antialiasing = NO;
 	texSize.width = 0.0f;
 	texSize.height = 0.0f;

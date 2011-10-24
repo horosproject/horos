@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "NSData+N2.h"
+#include <CommonCrypto/CommonDigest.h>
 
 char hexchar2dec(char hex) {
 	if (hex >= '0' && hex <= '9')
@@ -59,7 +60,7 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 
 -(NSData*)initWithBase64:(NSString*)base64 {
 	if ([base64 length] == 0)
-		return [NSData data];
+		return [[NSData data] retain];
 	
 	static char *decodingTable = NULL;
 	if (decodingTable == NULL)
@@ -158,6 +159,12 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 		[stringBuffer appendFormat:@"%02X", (unsigned long)dataBuffer[i]];
 	return [[stringBuffer copy] autorelease];
 }
+
+-(NSData*)md5 {
+    NSMutableData* hash = [NSMutableData dataWithLength:16];
+    CC_MD5(self.bytes, self.length, (unsigned char*)hash.mutableBytes);
+    return hash;
+} 
 
 
 @end

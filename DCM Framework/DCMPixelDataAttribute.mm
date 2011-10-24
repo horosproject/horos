@@ -752,8 +752,10 @@ static inline int int_ceildivpow2(int a, int b) {
 			specificCharacterSet:(DCMCharacterSet *)specificCharacterSet
 			transferSyntax:(DCMTransferSyntax *)ts
 			dcmObject:(DCMObject *)dcmObject
-			decodeData:(BOOL)decodeData{
-
+			decodeData:(BOOL)decodeData
+{
+    self = [super init];
+    
 	singleThread = [[NSRecursiveLock alloc] init];
 
 	NSString *theVR = @"OW";
@@ -1248,7 +1250,7 @@ static inline int int_ceildivpow2(int a, int b) {
 
 - (NSData *)convertJPEG2000ToHost:(NSData *)jpegData
 {
-	NSMutableData *pixelData;
+	NSMutableData *pixelData = nil;
 	
 	BOOL succeed = NO;
 	

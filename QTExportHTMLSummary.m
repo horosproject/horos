@@ -32,8 +32,7 @@
 
 - (id)init;
 {
-	if (![super init])
-		return nil;
+	self = [super init];
 	
 	[self readTemplates];
 	

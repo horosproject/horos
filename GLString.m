@@ -128,7 +128,7 @@
 // designated initializer
 - (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
-	[super init];
+	self = [super init];
 	cgl_ctx = NULL;
 	texName = 0;
 	texSize.width = 0.0f;
