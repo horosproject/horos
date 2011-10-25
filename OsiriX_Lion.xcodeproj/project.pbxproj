@@ -27,7 +27,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7E76BECF085757B70073649A /* Build configuration list for PBXAggregateTarget "Unzip Binaries" */;
 			buildPhases = (
-				4A2F5930078D148300C514A2 /* ShellScript */,
+				4A2F5930078D148300C514A2 /* Run Script */,
 			);
 			dependencies = (
 			);
@@ -22743,18 +22743,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4A2F5930078D148300C514A2 /* ShellScript */ = {
+		4A2F5930078D148300C514A2 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip -d weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\ncd \"$SRCROOT/Binaries/Jasper\"\nunzip -uo libjasper.a.zip\n\ncd \"$SRCROOT/Binaries/KDU SDK\"\nunzip -uo libkdu_v64R.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\n#cd \"$SRCROOT\"\n#cd VolumePRO\n#unzip -uo vli3.framework.zip\n\nexit 0\n";
+			shellScript = "cd \"$SRCROOT/Binaries\"\nunzip -uo DCMTK.zip\nunzip -uo LibTiff.zip\nunzip -uo VTKLibs.zip\nunzip -uo DB_Previous_Models.zip\nunzip -uo PAGES.zip\nunzip -uo OsiriXReport.template.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo Growl.framework.zip\nunzip -uo 3DconnexionClient.framework.zip\nunzip -uo openjpeg.zip\nunzip -uo dciodvfy.zip\nunzip -uo ILCrashReporter.framework.zip\nunzip -uo libPapyrusToolkit.a.zip\nunzip -uo Ming.zip\nunzip -uo weasis-portable.zip -d weasis\ncd \"$SRCROOT/Binaries/weasis\"\nif [ -d \"weasis-portable\" ]; then\n    cd \"weasis-portable\"\n    for f in *; do\n        rm -Rf \"../$f\"\n        mv \"$f\" ..\n    done\n    cd ..\n    rm -Rf weasis-portable\nfi\n\ncd \"$SRCROOT/Binaries/ReportsToPDF/odt2pdf/build\"\nunzip -uo odt2pdf.zip\n\ncd \"$SRCROOT/Binaries/PAGES\"\nrm ._*\n\ncd \"$SRCROOT/AYDicomPrint\"\nunzip -uo libdcmprintscu.dylib.zip\nunzip -uo libxerces-c.27.dylib.zip\nunzip -uo xercesc.zip\n\n#cd \"$SRCROOT/Binaries/Jasper\"\n#unzip -uo libjasper.a.zip\n\ncd \"$SRCROOT/Binaries/KDU SDK\"\nunzip -uo libkdu_v64R.a.zip\n\ncd \"$SRCROOT\"\nunzip -uo DotMacKit.framework.zip\nunzip -uo VTKHeaders.zip\nunzip -uo ITK180.zip\n\n#cd \"$SRCROOT\"\n#cd VolumePRO\n#unzip -uo vli3.framework.zip\n\nexit 0\n";
 		};
 		595717A0131E342900367A22 /* SVN Revision Number */ = {
 			isa = PBXShellScriptBuildPhase;

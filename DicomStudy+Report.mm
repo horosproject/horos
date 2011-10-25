@@ -195,7 +195,6 @@
     [output writeToFile:outDicomPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 }
 
-
 -(void)transformPdfAtPath:(NSString*)pdfPath toDicomAtPath:(NSString*)outDicomPath
 {
     NSString* sourcePath = nil;
