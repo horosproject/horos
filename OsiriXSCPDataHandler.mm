@@ -193,8 +193,18 @@ extern NSManagedObjectContext *staticContext;
 		{
 			NSPredicate *predicate = nil;
 			DcmElement* dcelem = dataset->getElement(elemIndex);
+            DcmTag tag = dcelem->getTag();
 			DcmTagKey key = dcelem->getTag().getXTag();
 			
+            if( key == DCM_SpecificCharacterSet)
+                continue;
+            
+            if( key == DCM_QueryRetrieveLevel)
+                continue;
+            
+            if( key == DCM_NumberOfStudyRelatedInstances)
+                continue;
+            
 			if (strcmp(sType, "STUDY") == 0)
 			{
 				if (key == DCM_PatientsName)
@@ -434,7 +444,11 @@ extern NSManagedObjectContext *staticContext;
 					}
 				}
 				else
-					predicate = nil;
+                {
+					printf( "***** DICOM SCP - STUDY LEVEL: unknown key: %s\r", tag.getTagName());
+                    
+                    predicate = nil;
+                }
 			}
 			else if (strcmp(sType, "SERIES") == 0)
 			{
@@ -571,10 +585,12 @@ extern NSManagedObjectContext *staticContext;
 						predicate = [NSPredicate predicateWithFormat:@"dicomTime == %@", [value dateAsNumber]];
 					}
 				}
-				else
-				{
-					predicate = nil;
-				}
+                else
+                {
+                    printf( "***** DICOM SCP - SERIES LEVEL: unknown key: %s\r", tag.getTagName());
+                    
+                    predicate = nil;
+                }
 			}
 			else if (strcmp(sType, "IMAGE") == 0)
 			{
@@ -643,10 +659,16 @@ extern NSManagedObjectContext *staticContext;
 					if (dcelem->getString(string).good() && string != NULL)
 						predicate = [NSPredicate predicateWithFormat:@"numberOfFrames == %d", [[NSString stringWithCString:string  DICOMEncoding:nil] intValue]];
 				}
+                else
+                {
+                    printf( "***** DICOM SCP - IMAGE LEVEL: unknown key: %s\r", tag.getTagName());
+                    
+                    predicate = nil;
+                }
 			}
 			else
 			{
-				NSLog( @"OsiriX supports ONLY STUDY, SERIES, IMAGE levels ! Current level: %s", sType);
+				printf( "***** DICOM SCP supports ONLY STUDY, SERIES, IMAGE levels ! Current level: %s\r", sType);
 			}
 			
 			if (predicate)

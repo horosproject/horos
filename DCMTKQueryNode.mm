@@ -35,6 +35,7 @@
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
+#include "dctag.h"
 #include "ofstring.h"
 #include "dimse.h"
 #include "diutil.h"
@@ -649,6 +650,19 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 					string = [(NSString*)value cStringUsingEncoding:encoding];
 					dataset->putAndInsertString(DCM_Modality, string);
 				}
+                else
+                {
+                    DcmTag tag;
+                    OFCondition result = DcmTag::findTagFromName( [key UTF8String], tag);
+                    
+                    if( result.good())
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString( tag.getXTag(), string);
+                    }
+                    else
+                        NSLog( @"**** DICOM C-FIND with unknown value: %@ : %@", key, value);
+                }
 			}
 		}
 		
