@@ -412,6 +412,8 @@ extern "C"
 	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
 	[presets setValue: [searchFieldComments stringValue] forKey: @"searchFieldComments"];
+    [presets setValue: [searchCustomField stringValue] forKey: @"searchCustomField"];
+    [presets setValue: [[dicomFieldsMenu selectedItem] title] forKey: @"searchCustomFieldDICOM"];
 	
 	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
 	[presets setValue: [NSNumber numberWithInt: [birthdateFilterMatrix selectedTag]] forKey: @"birthdateFilterMatrix"];
@@ -577,6 +579,12 @@ extern "C"
 	if( [presets valueForKey: @"searchFieldComments"])
 		[searchFieldComments setStringValue: [presets valueForKey: @"searchFieldComments"]];
 	
+    if( [presets valueForKey: @"searchCustomField"])
+		[searchCustomField setStringValue: [presets valueForKey: @"searchCustomField"]];
+	
+    if( [presets valueForKey: @"searchCustomFieldDICOM"])
+        [dicomFieldsMenu selectItemWithTitle: [presets valueForKey: @"searchCustomFieldDICOM"]];
+    
 	[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
 	[birthdateFilterMatrix selectCellWithTag: [[presets valueForKey: @"birthdateFilterMatrix"] intValue]];
 	
@@ -620,6 +628,8 @@ extern "C"
 		case 4:		[searchFieldStudyDescription selectText: self];	break;
 		case 5:		[searchFieldRefPhysician selectText: self];		break;
 		case 6:		[searchFieldComments selectText: self];			break;
+        case 7:     [searchInstitutionName selectText: self];       break;
+        case 8:     [searchCustomField selectText: self];           break;
 	}
 }
 
@@ -1608,6 +1618,14 @@ extern "C"
 					
                     if( currentQueryKey == customDICOMField)
 					{
+                        CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
+                        
+                        DcmTag tag( [dicomField group], [dicomField element]);
+                        
+                        currentQueryKey = [NSString stringWithCString: tag.getTagName()];
+                        
+                        NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, [searchCustomField stringValue]);
+                        
 						if( showError && [[searchCustomField stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
 						{
 							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
@@ -1621,7 +1639,10 @@ extern "C"
 						
 						if ([filterValue length] > 0)
 						{
-							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription: currentQueryKey];
+                            if( tag.getVR().isaString())
+                                filterValue = [filterValue stringByAppendingString:@"*"];
+                            
+							[queryManager addFilter: filterValue forDescription: currentQueryKey];
 							queryItem = YES;
 						}
 					}
@@ -3512,9 +3533,6 @@ extern "C"
         
         NSMenuItem *item;
         item = [[[NSMenuItem alloc] init] autorelease];
-        [item setTitle: NSLocalizedString( @"DICOM Fields", nil)];
-        [item setEnabled:NO];
-        [DICOMFieldsMenu addItem:item];
         int i;
         for (i=0; i<[DICOMFieldsArray count]; i++)
         {
@@ -3522,9 +3540,11 @@ extern "C"
             [item setTitle:[[DICOMFieldsArray objectAtIndex:i] title]];
             [item setRepresentedObject:[DICOMFieldsArray objectAtIndex:i]];
             [DICOMFieldsMenu addItem:item];
+            
+            if( [[DICOMFieldsArray objectAtIndex:i] element] == 0x0080 && [[DICOMFieldsArray objectAtIndex:i] group] == 0x0008)
+                [dicomFieldsMenu selectItemWithTitle: [[DICOMFieldsArray objectAtIndex:i] title]];
         }
-        [dicomFieldsMenu setMenu:DICOMFieldsMenu];
-
+        [dicomFieldsMenu setMenu: DICOMFieldsMenu];
 	}
     
     return self;
