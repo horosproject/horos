@@ -119,9 +119,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	NSString* ignore = nil;
     NSArray* result = nil;
     int fetchLimitPerPage = [[NSUserDefaults standardUserDefaults] integerForKey: @"FetchLimitForWebPortal"];
-    
-    fetchLimitPerPage = 10;
-    
     int numberOfStudies;
     int page = [[parameters objectForKey:@"page"] intValue];
     
