@@ -17,6 +17,15 @@
 
 #import <OpenGL/CGLMacro.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+extern int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt, double scale);
+#ifdef __cplusplus
+}
+#endif
+
 enum
 {
 	ROI_sleep = 0,

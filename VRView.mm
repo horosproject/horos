@@ -87,11 +87,6 @@ extern "C"
 }
 #endif
 
-extern "C" 
-{
-	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
-}
-
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
@@ -2716,7 +2711,7 @@ public:
 
 		NSPoint *splinePts;
 		
-		long newNb = spline(nspts, nb, &splinePts, 0.1);
+		long newNb = spline(nspts, nb, &splinePts, nil, 0.1);
 		
 		for( long i=0; i<newNb; i++)
 			pts->InsertPoint( pts->GetNumberOfPoints(), splinePts[i].x, splinePts[i].y, 0);
