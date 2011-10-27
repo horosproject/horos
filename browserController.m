@@ -2570,7 +2570,7 @@ static NSConditionLock *threadLock = nil;
     return managedObjectModel;
 }
 
-- (void) defaultAlbums: (id) sender
+- (IBAction) defaultAlbums: (id) sender
 {
 	// Add default albums
 	DicomAlbum *album = nil;
@@ -10799,7 +10799,7 @@ static BOOL withReset = NO;
 	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
 }
 
-- (void) saveAlbums:(id) sender
+- (IBAction) saveAlbums:(id) sender
 {
 	NSMutableArray *albums = [NSMutableArray array];
 	
@@ -10888,7 +10888,7 @@ static BOOL withReset = NO;
 		[self outlineViewRefresh];
 }
 
-- (void) addAlbums:(id) sender
+- (IBAction) addAlbums:(id) sender
 {
 	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 	
@@ -11081,111 +11081,117 @@ static BOOL withReset = NO;
 	[smartWindowController release];
 }
 
+- (IBAction) addAlbum:(id)sender
+{ // Add album
+    
+    [NSApp beginSheet: newAlbum
+       modalForWindow: self.window
+        modalDelegate: nil
+       didEndSelector: nil
+          contextInfo: nil];
+    
+    int result = [NSApp runModalForWindow: newAlbum];
+    [newAlbum makeFirstResponder: nil];
+    
+    [NSApp endSheet: newAlbum];
+    [newAlbum orderOut: self];
+    
+    if( result == NSRunStoppedResponse)
+    {
+        NSString			*name;
+        long				i = 2;
+        
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+        [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+        
+        NSManagedObjectContext *context = self.managedObjectContext;
+        
+        [context lock];
+        
+        @try 
+        {
+            NSError *error = nil;
+            NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
+            
+            name = [newAlbumName stringValue];
+            while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+            {
+                name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
+            }
+            
+            NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+            [album setValue:name forKey:@"name"];
+            
+            [self saveDatabase: currentDatabasePath];
+            
+            [self refreshAlbums];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            [AppController printStackTrace: e];
+        }
+        
+        [context unlock];
+        
+        [self outlineViewRefresh];
+    }
+}
+
+- (IBAction) deleteAlbum: (id)sender
+{
+    if( albumTable.selectedRow > 0)
+    {
+        if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", nil),
+                                         NSLocalizedString(@"Are you sure you want to delete this album?", nil),
+                                         NSLocalizedString(@"OK",nil),
+                                         NSLocalizedString(@"Cancel",nil),
+                                         nil) == NSAlertDefaultReturn)
+        {
+            NSManagedObjectContext	*context = self.managedObjectContext;
+            
+            [context lock];
+            
+            @try 
+            {
+                if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+                {
+                    [context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+                }
+                
+                [self saveDatabase: currentDatabasePath];
+                
+                [self refreshAlbums];
+            }
+            @catch (NSException * e) 
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                [AppController printStackTrace: e];
+            }
+            
+            [context unlock];
+            
+            [self outlineViewRefresh];
+        }
+    }
+}
+
 - (IBAction) albumButtons: (id)sender
 {
 	switch( [sender selectedSegment])
 	{
 		case 0:
-		{ // Add album
-			
-			[NSApp beginSheet: newAlbum
-			   modalForWindow: self.window
-				modalDelegate: nil
-			   didEndSelector: nil
-				  contextInfo: nil];
-			
-			int result = [NSApp runModalForWindow: newAlbum];
-			[newAlbum makeFirstResponder: nil];
-			
-			[NSApp endSheet: newAlbum];
-			[newAlbum orderOut: self];
-			
-			if( result == NSRunStoppedResponse)
-			{
-				NSString			*name;
-				long				i = 2;
-				
-				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-				
-				NSManagedObjectContext *context = self.managedObjectContext;
-				
-				[context lock];
-				
-				@try 
-				{
-					NSError *error = nil;
-					NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
-					
-					name = [newAlbumName stringValue];
-					while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
-					{
-						name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
-					}
-					
-					NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
-					[album setValue:name forKey:@"name"];
-					
-					[self saveDatabase: currentDatabasePath];
-					
-					[self refreshAlbums];
-				}
-				@catch (NSException * e) 
-				{
-					NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-					[AppController printStackTrace: e];
-				}
-				
-				[context unlock];
-				
-				[self outlineViewRefresh];
-			}
-		}
+            [self addAlbum: sender];
 		break;
 			
 		case 1:
-		{ // Add smart album
-			
+            // Add smart album
 			[self addSmartAlbum: self];
-		}
 		break;
 			
 		case 2:	// Remove
-			if( albumTable.selectedRow > 0)
-			{
-				if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", nil),
-												 NSLocalizedString(@"Are you sure you want to delete this album?", nil),
-												 NSLocalizedString(@"OK",nil),
-												 NSLocalizedString(@"Cancel",nil),
-												 nil) == NSAlertDefaultReturn)
-				{
-					NSManagedObjectContext	*context = self.managedObjectContext;
-					
-					[context lock];
-					
-					@try 
-					{
-						if( albumTable.selectedRow > 0)	// We cannot delete the first item !
-						{
-							[context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
-						}
-						
-						[self saveDatabase: currentDatabasePath];
-						
-						[self refreshAlbums];
-					}
-					@catch (NSException * e) 
-					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-						[AppController printStackTrace: e];
-					}
-					
-					[context unlock];
-					
-					[self outlineViewRefresh];
-				}
-			}
+			[self deleteAlbum: self];
 		break;
 	}
 }
