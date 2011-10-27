@@ -455,6 +455,8 @@ static float deg2rad = M_PI / 180.0;
 		[mprView1.curvedPath removeNodeAtIndex: 0];
 	[self CPRViewDidUpdateCurvedPath: mprView1];
 	[self CPRViewDidEditCurvedPath: mprView1];
+    
+    [self loadBezierPath];
 }
 
 -(void) awakeFromNib
@@ -3060,6 +3062,54 @@ static float deg2rad = M_PI / 180.0;
 //    return 0;
 //}
 
+#pragma mark Path Loading And Saving
+
+-(void) saveBezierPath
+{
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
+	
+    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	
+	if( path)
+	{
+        NSData *curvedPathData = [NSKeyedArchiver archivedDataWithRootObject:curvedPath];
+        
+        [curvedPathData writeToFile: path atomically: YES];
+	}
+}
+
+-(void) loadBezierPath
+{
+	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+	
+    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	
+    NSData *data = [NSData dataWithContentsOfFile: path];
+    if( data)
+    {
+        CPRCurvedPath *newCurvedPath = [NSKeyedUnarchiver unarchiveObjectWithData: data];
+        
+        if( newCurvedPath)
+        {
+            self.curvedPath = newCurvedPath;
+            
+            mprView1.curvedPath = curvedPath;
+			mprView2.curvedPath = curvedPath;
+			mprView3.curvedPath = curvedPath;
+			cprView.curvedPath = curvedPath;
+			topTransverseView.curvedPath = curvedPath;
+			middleTransverseView.curvedPath = curvedPath;
+			bottomTransverseView.curvedPath = curvedPath;
+        }
+    }
+}
+
 #pragma mark NSWindow Notifications action
 
 - (ViewerController*) viewer
@@ -3071,6 +3121,8 @@ static float deg2rad = M_PI / 180.0;
 {
 	if( [notification object] == [self window])
 	{
+        [self saveBezierPath];
+        
         cprView.rotation = 0;
         
 		[[self window] setAcceptsMouseMovedEvents: NO];

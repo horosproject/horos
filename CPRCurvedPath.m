@@ -188,7 +188,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 		[nodeVectorsAsDictionaries addObject:[(NSDictionary *)N3VectorCreateDictionaryRepresentation([value N3VectorValue]) autorelease]];
 	}
 	
-	[encoder encodeObject:_bezierPath forKey:@"bezierPath"];
+	[encoder encodeObject: [N3BezierPath bezierPathWithBezierPath: _bezierPath] forKey:@"bezierPath"];
 	[encoder encodeObject:nodeVectorsAsDictionaries forKey:@"nodesAsDictionaries"];
 	[encoder encodeObject:_nodeRelativePositions forKey:@"nodeRelativePositions"];
 	
