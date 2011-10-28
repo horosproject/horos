@@ -28,6 +28,10 @@
 -(NSUInteger)sizeAtFSRef:(FSRef*)theFileRef;
 -(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err;
 
+-(NSString*)destinationOfAliasAtPath:(NSString*)path;
+-(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path;
+-(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r;
+
 -(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path limitTo:(NSInteger)maxNumberOfFiles;
 
 @end

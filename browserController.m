@@ -19975,7 +19975,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if (reportsMode != 3)
 						{
 							Reports	*report = [[Reports alloc] init];
-							if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
+							if ([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])
+                                [report setTemplateName:[[sender selectedItem] title]];
 							
 							if (isCurrentDatabaseBonjour)
 								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
@@ -20007,7 +20008,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
 }
 #endif
@@ -20079,19 +20080,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 	@try
 	{
 		#ifndef OSIRIX_LIGHT
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-		
-		NSIndexSet *index = [databaseOutline selectedRowIndexes];
+		NSMutableArray* templatesArray = nil;
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                templatesArray = [Reports pagesTemplatesList];
+                break;
+            case 0:
+                templatesArray = [Reports wordTemplatesList];
+                break;
+        }
+        
+		NSIndexSet* index = [databaseOutline selectedRowIndexes];
 		NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
-		NSManagedObject *studySelected;
+		DicomStudy* studySelected;
 		if ([[[selectedItem entity] name] isEqual:@"Study"])
-			studySelected = selectedItem;
+			studySelected = (DicomStudy*)selectedItem;
 		else
 			studySelected = [selectedItem valueForKey:@"study"];
 		
-		if([pagesTemplatesArray count] > 1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 2 && [studySelected valueForKey:@"reportURL"] == nil)
+		if (!studySelected.reportURL && templatesArray.count > 1)
 		{
-			[item setView: reportTemplatesView];
+            switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+                case 2:
+                    [reportTemplatesImageView setImage:[NSImage imageNamed:@"ReportPages"]];
+                    break;
+                case 0:
+                    [reportTemplatesImageView setImage:[NSImage imageNamed:@"ReportWord"]];
+                    break;
+            }
+            
+            [item setView: reportTemplatesView];
+            
 			[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 			[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 			
@@ -20099,33 +20118,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			NSImage *icon = nil;
+			NSImage* icon = nil;
 			
-			if( [studySelected valueForKey: @"reportURL"])
+			if (studySelected.reportURL)
 			{
-				if( [[studySelected valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[studySelected valueForKey: @"reportURL"] hasPrefix: @"https://"])
-				{
-					icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"]; // Safari document
-				
-					if( icon)
-						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-				}
-				else if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
-				{
-					icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
-					
-					if( icon)
-						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-				}
+				if ([studySelected.reportURL hasPrefix: @"http://"] || [studySelected.reportURL hasPrefix: @"https://"])
+					icon = [[NSWorkspace sharedWorkspace] iconForFileType:@"download"]; // Safari document
+				else if ([[NSFileManager defaultManager] fileExistsAtPath:studySelected.reportURL])
+					icon = [[NSWorkspace sharedWorkspace] iconForFile:studySelected.reportURL];
+                if (icon)
+                    reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate]; // To force the update
 			}
 			
-			if( icon == nil)
-				icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
-			
-			[item setImage: icon];
+            if (!icon)
+                icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
+
+			[item setImage:icon];
 		}
 		#else
-		[item setImage: [NSImage imageNamed: @"Report.icns"]];
+		[item setImage:[NSImage imageNamed:@"Report.icns"]];
 		#endif
 	}
 	@catch (NSException * e)
@@ -20138,13 +20149,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
 	#ifndef OSIRIX_LIGHT
-	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
+	if ([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
 		[reportTemplatesListPopUpButton removeAllItems];
 		[reportTemplatesListPopUpButton addItemWithTitle:@""];
-		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
-		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+		
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports pagesTemplatesList]];
+                break;
+            case 0:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports wordTemplatesList]];
+                break;
+        }
+		
+        [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
 	#endif
 }

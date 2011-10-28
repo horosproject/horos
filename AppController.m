@@ -46,6 +46,7 @@
 #import "NSFileManager+N2.h"
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
+#import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>
 #endif
 #endif
@@ -788,6 +789,13 @@ void exceptionHandler(NSException *exception)
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 static NSDate *lastWarningDate = nil;
+
+
+@interface AppController ()
+
++(void)checkForWordTemplates;
+
+@end
 
 
 @implementation AppController
@@ -2997,9 +3005,7 @@ static BOOL initialized = NO;
 				
 				NSString *reportFile;
 				
-				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.doc"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.doc"] handler:nil];
+                [self checkForWordTemplates];
 
 				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
@@ -4963,11 +4969,44 @@ static BOOL initialized = NO;
 	
 	// Pages templates in the OsiriX Data folder
 	// creation of the alias to the iWork template folder if needed
-	NSArray *templateDirectoryInOsiriXDataPathArray = [NSArray arrayWithObjects:documentsDirectory(), @"PAGES TEMPLATES", nil];
-	NSString *templateDirectoryInOsiriXData = [NSString pathWithComponents:templateDirectoryInOsiriXDataPathArray];
+	NSString* templateDirectoryInOsiriXData = [documentsDirectory() stringByAppendingPathComponent:@"PAGES TEMPLATES"];
 	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectoryInOsiriXData])
 		[[NSFileManager defaultManager] createSymbolicLinkAtPath:templateDirectoryInOsiriXData pathContent:templateDirectory];
 	#endif
+}
+
++(void)checkForWordTemplates {
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
+    // previously, we had a single word template in the OsiriX Data folder
+    NSString* oldReportFilePath = [documentsDirectory() stringByAppendingPathComponent:@"ReportTemplate.doc"];
+    
+    // today, we use a dir in the database folder, which contains the templates
+    NSString* templatesDirPath = [documentsDirectory() stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath]) { // dir doesn't exist, or is not a dir
+//        //[[NSFileManager defaultManager] removeItemAtPath:templatesDirPath error:NULL]; // remove file if there is one, so we can put 
+        NSLog(@"hic");
+        NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
+        [[NSFileManager defaultManager] confirmDirectoryAtPath:wordTemplatesOsirixDirPath];
+        [[NSFileManager defaultManager] createSymbolicLinkAtPath:templatesDirPath pathContent:wordTemplatesOsirixDirPath];
+        templatesDirPath = wordTemplatesOsirixDirPath;
+    } else { // file/dir exists
+        templatesDirPath = [[NSFileManager defaultManager] destinationOfAliasOrSymlinkAtPath:templatesDirPath];
+    }
+    
+    NSUInteger templatesCount = 0;
+    for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+        if ([filename hasPrefix:@"OsiriX "])
+            ++templatesCount;
+    
+    if (!templatesCount) { // no word templates for OsiriX
+        if ([[NSFileManager defaultManager] fileExistsAtPath:oldReportFilePath])
+            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
+        else [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
+    }
+#endif
+#endif
 }
 
 #pragma mark-

@@ -25,16 +25,18 @@
 + (NSString*) getUniqueFilename:(id) study;
 + (NSString*) getOldUniqueFilename:(NSManagedObject*) study;
 
-- (NSString*) generateReportSourceData:(NSManagedObject*) study;
-- (void) runScript:(NSString *)txt;
-- (NSString *) reportScriptBody:(NSManagedObject*) study path:(NSString*) path;
-- (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type;
+- (BOOL)createNewReport:(NSManagedObject*)study destination:(NSString*)path type:(int)type;
+
++(NSString*)wordTemplatesOsirixDirPath;
++(NSString*)databaseWordTemplatesDirPath;
++(NSString*)resolvedDatabaseWordTemplatesDirPath;
 
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
 - (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
 - (BOOL) createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 - (BOOL) createNewOpenDocumentReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 + (NSMutableArray*)pagesTemplatesList;
++ (NSMutableArray*)wordTemplatesList;
 - (NSMutableString *)templateName;
 - (void)setTemplateName:(NSString *)aName;
 
