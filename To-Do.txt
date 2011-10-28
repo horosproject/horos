@@ -3,6 +3,7 @@ New Features:
 - DICOM Q&R: custom DICOM field for query
 - OsiriX SDK (see plugin)
 - Curved-MPR path is automatically saved and reloaded
+- Curved-MPR paths can be saved and loaded from file ('.curvedPath')
 
 A:
 - DB remote: black image (multi-load)

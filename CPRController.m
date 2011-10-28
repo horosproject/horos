@@ -3442,6 +3442,15 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportDICOMFile:)];
     }
+    else if ([itemIdent isEqualToString: @"curvedPath.icns"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Curved Path",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Curved Path",nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Export this curved path in a file",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"curvedPath.icns"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( saveBezierPath:)];
+    }
 //	else if ([itemIdent isEqualToString: @"Capture.icns"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
@@ -3571,7 +3580,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3580,7 +3589,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3591,6 +3600,12 @@ static float deg2rad = M_PI / 180.0;
 			return NO;
 	}
 	
+    if( [item action] == @selector( saveBezierPath:))
+	{
+		if( [curvedPath.nodes count] < 3)
+			return NO;
+	}
+    
 	return YES;
 }
 
@@ -3607,7 +3622,13 @@ static float deg2rad = M_PI / 180.0;
 		if( [curvedPath.nodes count] < 3)
 			return NO;
 	}
-	
+    
+    if ([[toolbarItem itemIdentifier] isEqualToString: @"curvedPath.icns"])
+	{
+		if( [curvedPath.nodes count] < 3)
+			return NO;
+	}
+    
 	return YES;
 }
 
