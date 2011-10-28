@@ -4,18 +4,45 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>OsiriX Lite</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>curvedPath</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>curvedPath.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/curvedPath</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>3D Curved Path</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>curvedPath</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>osirixzip</string>
 				<string>dcm</string>
+				<string>dcmURLs</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>dcm.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/dicom</string>
+				<string>application/zip</string>
+				<string>application/osirixzip</string>
+				<string>application/dcmURLs</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>DICOM Image</string>
@@ -25,6 +52,9 @@
 				<string>****</string>
 				<string>fold</string>
 				<string>disk</string>
+				<string>zip</string>
+				<string>osirixzip</string>
+				<string>dcmURLs</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
@@ -146,8 +176,6 @@
 			<true/>
 		</dict>
 	</array>
-	<key>CFBundleExecutable</key>
-	<string>OsiriX Lite</string>
 	<key>CFBundleGetInfoString</key>
 	<string>OsiriX Lite v.3.9.5</string>
 	<key>CFBundleIconFile</key>

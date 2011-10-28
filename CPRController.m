@@ -339,6 +339,8 @@ static float deg2rad = M_PI / 180.0;
 		[self setToolIndex: tWL];
         
         self.cprType = [[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
+        
+        [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
 	}
 	
 	@catch (NSException *e)
@@ -456,7 +458,17 @@ static float deg2rad = M_PI / 180.0;
 	[self CPRViewDidUpdateCurvedPath: mprView1];
 	[self CPRViewDidEditCurvedPath: mprView1];
     
-    [self loadBezierPath];
+    // Restore previous path, if it exists
+    
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+	
+    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	
+    if( path)
+        [self loadBezierPathFromFile: path];
 }
 
 -(void) awakeFromNib
@@ -3064,32 +3076,100 @@ static float deg2rad = M_PI / 180.0;
 
 #pragma mark Path Loading And Saving
 
--(void) saveBezierPath
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
-	
-	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
-	
-    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
-	
-	if( path)
-	{
-        NSData *curvedPathData = [NSKeyedArchiver archivedDataWithRootObject:curvedPath];
-        
-        [curvedPathData writeToFile: path atomically: YES];
-	}
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
+    {
+        //this means that the sender is offering the type of operation we want
+        //return that we want the NSDragOperationGeneric operation that they 
+        //are offering
+        return NSDragOperationGeneric;
+    }
+    else
+    {
+        //since they aren't offering the type of operation we want, we have 
+        //to tell them we aren't interested
+        return NSDragOperationNone;
+    }
 }
 
--(void) loadBezierPath
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender
 {
-	NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
+    {
+        //this means that the sender is offering the type of operation we want
+        //return that we want the NSDragOperationGeneric operation that they 
+        //are offering
+        return NSDragOperationGeneric;
+    }
+    else
+    {
+        //since they aren't offering the type of operation we want, we have 
+        //to tell them we aren't interested
+        return NSDragOperationNone;
+    }
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
+{
+    return YES;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    NSPasteboard *paste = [sender draggingPasteboard];
+    NSArray	*types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
+    NSString *desiredType = [paste availableTypeFromArray: types];
+
+    if( [desiredType isEqualToString: NSFilenamesPboardType])
+    {
+        NSArray *fileArray = [paste propertyListForType: @"NSFilenamesPboardType"];
+        
+        for( NSString *file in fileArray)
+        {
+            if( [[file pathExtension] isEqualToString: @"curvedPath"])
+            {
+                [self loadBezierPathFromFile: file];
+                
+                return YES;
+            }
+        }
+    }
+    
+    return NO;
+}
+
+- (IBAction) saveBezierPath: (id) sender
+{
+    NSSavePanel *sPanel	= [NSSavePanel savePanel];
+    
+    [sPanel setRequiredFileType: @"curvedPath"];
+    
+    if( [sPanel runModalForDirectory: nil file: [[[viewer2D currentStudy] valueForKey: @"name"] stringByAppendingPathExtension: @"curvedPath"]] == NSFileHandlingPanelOKButton)
+    {
+        [self saveBezierPathToFile: [sPanel filename]];
+    }
+}
+
+- (IBAction) loadBezierPath: (id) sender;
+{
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
 	
-	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
-		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
-	
-    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
-	
+	if ([oPanel runModalForDirectory: nil file:nil types:[NSArray arrayWithObject: @"curvedPath"]] == NSFileHandlingPanelOKButton)
+	{
+        [self loadBezierPathFromFile: [oPanel filename]];
+    }
+}
+
+-(void) saveBezierPathToFile: (NSString*) path
+{
+    NSData *curvedPathData = [NSKeyedArchiver archivedDataWithRootObject:curvedPath];
+
+    [curvedPathData writeToFile: path atomically: YES];
+}
+
+-(void) loadBezierPathFromFile: (NSString*) path
+{
     NSData *data = [NSData dataWithContentsOfFile: path];
     if( data)
     {
@@ -3121,7 +3201,18 @@ static float deg2rad = M_PI / 180.0;
 {
 	if( [notification object] == [self window])
 	{
-        [self saveBezierPath];
+        // Save current path for next time
+        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+            [[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
+        
+        path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+        
+        if( path)
+            [self saveBezierPathToFile: path];
+        
+        // *******
         
         cprView.rotation = 0;
         

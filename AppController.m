@@ -3215,7 +3215,14 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"] == NO)
 	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
+        
+        NSLog( @"********");
+        NSLog( @"********");
+        NSLog( @"********");
 		NSLog( @"******** %@", NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil));
+        NSLog( @"********");
+        NSLog( @"********");
+        NSLog( @"********");
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"])

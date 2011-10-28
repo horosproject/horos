@@ -233,8 +233,10 @@ typedef NSInteger CPRExportRotationSpan;
 - (void) setROIToolTag:(int) roitype;
 - (IBAction) roiGetInfo:(id) sender;
 - (void) delayedFullLODRendering: (id) sender;
-- (void) saveBezierPath;
-- (void) loadBezierPath;
+- (IBAction) saveBezierPath: (id) sender;
+- (IBAction) loadBezierPath: (id) sender;
+- (void) saveBezierPathToFile:(NSString*) f;
+- (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
 
 @end

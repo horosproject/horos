@@ -11,6 +11,26 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>curvedPath</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>curvedPath.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/curvedPath</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>3D Curved Path</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>curvedPath</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>osirixzip</string>
 				<string>dcm</string>
 				<string>dcmURLs</string>
