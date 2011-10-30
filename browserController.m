@@ -18711,9 +18711,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self checkResponder];
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
+		filesToAnonymize = [self filesForDatabaseMatrixSelection: dicomFiles2Anonymize];
 	else
-		filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
+		filesToAnonymize = [self filesForDatabaseOutlineSelection: dicomFiles2Anonymize];
 	
 	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
 	
@@ -18737,25 +18737,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
 		[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
 	}
-	/*
-	AnonymizerWindowController	*anonymizerController = [[AnonymizerWindowController alloc] init];
-	
-	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
-	[anonymizerController showWindow:self];
-	[anonymizerController anonymize:self];
-	
-	if( [anonymizerController cancelled] == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"replaceAnonymize"] == YES && !isCurrentDatabaseBonjour)
-	{
-		// Delete the non-anonymized
-		[self delItem: sender];
-		
-		// Add the anonymized files
-		[self addFilesAndFolderToDatabase: [anonymizerController producedFiles]];
-	}
-	
-	[anonymizerController release];*/
-	
-	[filesToAnonymize release];
 }
 
 -(void)anonymizationSavePanelDidEnd:(AnonymizationSavePanelController*)aspc

@@ -4455,21 +4455,28 @@ static BOOL initialized = NO;
 	NSMutableArray *hiddenWindows = [NSMutableArray array];
 	
 	// Add the hidden windows
+    keyWindow = -1;
 	for( ViewerController *v in viewersList)
 	{
 		if( [[v window] isVisible] == NO)
 		{
 			[hiddenWindows addObject: v];
 			[cResult addObject: v];
+            
+            keyWindow = [viewersList indexOfObject: v];
 		}
 	}
 	
 	viewersList = cResult;
 	
-	for( i = 0; i < [viewersList count]; i++)
-	{
-		if( [[[viewersList objectAtIndex: i] window] isKeyWindow]) keyWindow = i;
-	}
+    if( keyWindow == -1)
+    {
+        for( i = 0; i < [viewersList count]; i++)
+        {
+            if( [[[viewersList objectAtIndex: i] window] isKeyWindow])
+                keyWindow = i;
+        }
+    }
 	
 	BOOL identical = YES;
 	
