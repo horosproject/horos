@@ -19,8 +19,6 @@ A:
 	(OK) iPod doesn't appear automatically
 	(OK) iPod eject button…
 
-- Add Albums submenu to File menu
-
 - Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
 - PDF Open in Viewer -> Preview

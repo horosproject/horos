@@ -983,7 +983,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"240" forKey:@"WADOTimeout"];
 	[defaultValues setObject:@"50" forKey:@"WADOMaximumConcurrentDownloads"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
-    [defaultValues setObject:@"30*60" forKey:@"WebServerTimeOut"];
+    [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
