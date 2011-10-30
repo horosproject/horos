@@ -8882,8 +8882,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			glGenTextures(1, &textID);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(TEXTRECTMODE, textID);
-			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            
+            if( NOINTERPOLATION)
+            {
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            }
+            else
+            {
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+            }
 				
 			glColor4f( 1, 1, 1, 1);
 			#if __BIG_ENDIAN__
