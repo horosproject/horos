@@ -3356,21 +3356,37 @@ static BOOL initialized = NO;
 	NSLog( @"Testing localization for menus");
 	NSMenu *mainMenu = [NSApp mainMenu];
 	
-	if( [[[mainMenu itemAtIndex: 5] title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[mainMenu itemAtIndex: 1] title] isEqualToString: NSLocalizedString(@"File", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[mainMenu itemAtIndex: 5] title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[mainMenu itemAtIndex: 1] title] isEqualToString: NSLocalizedString(@"File", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
 	
 	NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 	
-	if( [[[viewerMenu itemAtIndex: 35] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 42] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 8] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 38] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 39] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 36] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 36] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 43] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 9] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 39] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 37] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
 	
 	NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
 	
-	if( [[[fileMenu itemAtIndex: 8] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[fileMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
 	#endif
 }
 
