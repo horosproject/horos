@@ -21,7 +21,6 @@ A:
 
 - Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
-- PDF Open in Viewer -> Preview
 - SUV on PET 3D Panel (3D MIP)
 
 - Storage Commitment Service

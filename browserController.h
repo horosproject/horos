@@ -315,6 +315,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;
 - (void) emptyDeleteQueue:(id) sender;
+- (BOOL)isUsingExternalViewer: (NSManagedObject*) item;
 - (void) addFileToDeleteQueue:(NSString*) file;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder;

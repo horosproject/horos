@@ -9224,7 +9224,7 @@ static NSConditionLock *threadLock = nil;
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
+    return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected

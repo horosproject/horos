@@ -3614,25 +3614,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
-		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
-		[newViewer setHighLighted: 1.0];
-		lastHighLightedRow = [sender selectedRow];
-		
-		[self matrixPreviewSelectCurrentSeries];
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-			[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
-		else
-		{
-			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
-		}
-		
-		for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
-		[[self window] makeKeyAndOrderFront: self];
-		[self refreshToolbar];
-		[self updateNavigator];
-		
-		[newViewer showCurrentThumbnail: self];
+        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+        {
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
+            [newViewer setHighLighted: 1.0];
+            lastHighLightedRow = [sender selectedRow];
+            
+            [self matrixPreviewSelectCurrentSeries];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+                [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
+            else
+            {
+                [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+            }
+            
+            for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+            [[self window] makeKeyAndOrderFront: self];
+            [self refreshToolbar];
+            [self updateNavigator];
+            
+            [newViewer showCurrentThumbnail: self];
+        }
 	}
 	else
 	{
@@ -3667,11 +3670,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
 				
-				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
-				
-				[self matrixPreviewSelectCurrentSeries];
-				[self updateNavigator];
-				
+                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+                {
+                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+                    
+                    [self matrixPreviewSelectCurrentSeries];
+                    [self updateNavigator];
+				}
+                
 				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
