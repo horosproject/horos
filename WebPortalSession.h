@@ -16,6 +16,7 @@
 
 extern NSString* const SessionUsernameKey; // NSString
 extern NSString* const SessionCookieName;
+extern NSString* const SessionLastActivityDateKey; // NSDate
 
 @interface WebPortalSession : NSObject {
 @private

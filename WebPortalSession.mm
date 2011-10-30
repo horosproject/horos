@@ -41,6 +41,7 @@ NSString* const SessionCookieName = @"OSID";
 NSString* const SessionUsernameKey = @"Username"; // NSString
 NSString* const SessionTokensDictKey = @"Tokens"; // NSMutableDictionary
 NSString* const SessionChallengeKey = @"Challenge"; // NSString
+NSString* const SessionLastActivityDateKey = @"LastActivityDate"; // NSDate
 
 -(void)setObject:(id)o forKey:(NSString*)k {
 	[dictLock lock];
