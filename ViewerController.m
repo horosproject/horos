@@ -451,6 +451,18 @@ return YES;
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
 	
+	if( [item action] == @selector( showHideMatrix:))
+	{
+		if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		{
+			[item setState: NSOnState];
+		}
+		else
+		{
+			[item setState: NSOffState];
+		}
+	}
+	
 	if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
@@ -3762,6 +3774,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 }
 
+- (IBAction) showHideMatrix: (id) sender
+{
+	BOOL isCurrentlyVisible = NO;
+	
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
+	
+	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		isCurrentlyVisible = YES;
+	
+	[self setMatrixVisible: !isCurrentlyVisible];
+}
+
 - (void) autoHideMatrix
 {
 	BOOL hide = NO;
@@ -3905,7 +3929,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			// Apply show / hide matrix to all viewers
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
 			{
-				NSArray				*winList = [NSApp windows];
+				NSArray *winList = [NSApp windows];
 				
 				for( id loopItem in winList)
 				{

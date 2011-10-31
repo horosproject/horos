@@ -13807,6 +13807,14 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else
 	{
+		static BOOL firstTimeNotEnoughMemory = YES;
+		
+		if( firstTimeNotEnoughMemory)
+		{
+			firstTimeNotEnoughMemory = NO;
+			[[AppController sharedAppController] osirix64bit: nil];
+		}
+		
 		[leftIcon setImage: [NSImage imageNamed: @"error"]];
 		[rightIcon setImage: [NSImage imageNamed: @"error"]];
 		

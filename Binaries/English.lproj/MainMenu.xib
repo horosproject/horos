@@ -11,7 +11,7 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
-			<integer value="12367"/>
+			<integer value="13065"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -1058,6 +1058,16 @@
 									<string key="NSKeyEquiv"></string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<int key="NSTag">-1</int>
+								</object>
+								<object class="NSMenuItem" id="665250785">
+									<reference key="NSMenu" ref="986057026"/>
+									<string key="NSTitle">Series List</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<int key="NSState">1</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
 									<int key="NSTag">-1</int>
@@ -8314,7 +8324,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 				</object>
 				<string key="NSWindowContentMaxSize">{1.79769e+308, 1.79769e+308}</string>
 				<object class="NSView" key="NSWindowView" id="600825701">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">288</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="706317537">
@@ -8870,7 +8880,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{537, 273}</string>
-					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMaxSize">{1.79769e+308, 1.79769e+308}</string>
@@ -15216,6 +15225,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">14323</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">showHideMatrix:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="665250785"/>
+					</object>
+					<int key="connectionID">14326</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -16420,6 +16437,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="81062038"/>
 							<reference ref="993782279"/>
 							<reference ref="235954749"/>
+							<reference ref="665250785"/>
 						</array>
 						<reference key="parent" ref="204329503"/>
 					</object>
@@ -21514,6 +21532,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="570056454"/>
 						<reference key="parent" ref="791307794"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14324</int>
+						<reference key="object" ref="665250785"/>
+						<reference key="parent" ref="986057026"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -21941,6 +21964,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="13047.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13049.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13064.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="13065.IBEditorWindowLastContentRect">{{302, 572}, {428, 953}}</string>
 				<string key="13065.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13066.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13067.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22531,6 +22555,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="14310.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14312.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="14313.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14324.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1438.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1439.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1440.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22586,6 +22611,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="29.IBEditorWindowLastContentRect">{{0, 1525}, {671, 20}}</string>
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="56.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22619,7 +22645,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14323</int>
+			<int key="maxID">14326</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -27503,6 +27529,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="setStructuringElementRadius:">id</string>
 						<string key="setWindowTitle:">id</string>
 						<string key="showCurrentThumbnail:">id</string>
+						<string key="showHideMatrix:">id</string>
 						<string key="shutterOnOff:">id</string>
 						<string key="sliderFusionAction:">id</string>
 						<string key="speedSliderAction:">id</string>
@@ -27978,6 +28005,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="showCurrentThumbnail:">
 							<string key="name">showCurrentThumbnail:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showHideMatrix:">
+							<string key="name">showHideMatrix:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="shutterOnOff:">

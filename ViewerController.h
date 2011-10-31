@@ -772,6 +772,7 @@ enum
 - (void) buildMatrixPreview: (BOOL) showSelected;
 - (void) matrixPreviewSelectCurrentSeries;
 - (void) autoHideMatrix;
+- (IBAction) showHideMatrix: (id) sender;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers;
 - (void) exportQuicktimeIn:(long) dimension :(long) from :(long) to :(long) interval :(BOOL) allViewers mode:(NSString*) mode;

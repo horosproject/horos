@@ -1189,9 +1189,16 @@ static NSDate *lastWarningDate = nil;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
--(IBAction)osirix64bit:(id)sender
+-(IBAction) osirix64bit:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+	if( sender)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+	else
+	{
+		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+
+		BOOL opened = [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
+	}
 }
 
 -(IBAction)sendEmail:(id)sender
@@ -3370,22 +3377,22 @@ static BOOL initialized = NO;
 	
 	NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 	
-	if( [[[viewerMenu itemAtIndex: 36] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 37] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
-	if( [[[viewerMenu itemAtIndex: 43] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 44] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
-	if( [[[viewerMenu itemAtIndex: 9] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
-	if( [[[viewerMenu itemAtIndex: 39] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
-	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 41] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
-	if( [[[viewerMenu itemAtIndex: 37] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
+	if( [[[viewerMenu itemAtIndex: 38] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
 	
 	NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
