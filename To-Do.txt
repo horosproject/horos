@@ -5,6 +5,8 @@ New Features:
 - Curved-MPR path is automatically saved and reloaded
 - Curved-MPR paths can be saved and loaded from file ('.curvedPath')
 
+- SUV on PET 3D Panel (3D MIP) (Point->Drag Timer)
+
 A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
@@ -21,7 +23,7 @@ A:
 
 - Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
-- SUV on PET 3D Panel (3D MIP)
+
 
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
