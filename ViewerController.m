@@ -20195,7 +20195,7 @@ int i,j,l;
 - (IBAction)generateReport:(id)sender;
 {
 	[[BrowserController currentBrowser] generateReport:sender];
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 #endif
 
@@ -20243,12 +20243,21 @@ int i,j,l;
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
 	#ifndef OSIRIX_LIGHT
-	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+    NSMutableArray* templatesArray = nil;
+    switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+        case 2:
+            templatesArray = [Reports pagesTemplatesList];
+            break;
+        case 0:
+            templatesArray = [Reports wordTemplatesList];
+            break;
+    }
 
-	NSManagedObject *studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
+	DicomStudy* studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
 	
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
+    if (!studySelected.reportURL && templatesArray.count > 1)
 	{
+        [reportTemplatesImageView setImage:[self reportIcon]];
 		[item setView:reportTemplatesView];
 		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
@@ -20268,11 +20277,19 @@ int i,j,l;
 	#ifndef OSIRIX_LIGHT
 	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-		[reportTemplatesListPopUpButton removeAllItems];
+        [reportTemplatesListPopUpButton removeAllItems];
 		[reportTemplatesListPopUpButton addItemWithTitle:@""];
-		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
-		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+		
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports pagesTemplatesList]];
+                break;
+            case 0:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports wordTemplatesList]];
+                break;
+        }
+		
+        [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
 	#endif
 }
