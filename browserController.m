@@ -8131,12 +8131,6 @@ static NSConditionLock *threadLock = nil;
 {
 	[managedObjectContext lock];
 	
-	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-	{
-		for( id item in [self databaseSelection])
-			[databaseOutline collapseItem: item]; 
-	}
-	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	
 	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
@@ -8155,12 +8149,6 @@ static NSConditionLock *threadLock = nil;
 - (void)outlineViewItemWillExpand:(NSNotification *)notification
 {
 	[managedObjectContext lock];
-	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-	{
-		for( id item in [self databaseSelection])
-			[databaseOutline expandItem: item];
-	}
 	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
@@ -12505,7 +12493,7 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", nil),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			result = NSRunInformationalAlertPanel( NSLocalizedString(@"32-bit", nil),  [NSString stringWithFormat: NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 		
 		// NS_DURING (3) Load Images (memory allocation)
@@ -12557,7 +12545,7 @@ static BOOL needToRezoom;
 				
 				if( notEnoughMemory)
 				{
-					if( NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+					if( NSRunCriticalAlertPanel( NSLocalizedString(@"32-bit", nil),  NSLocalizedString(@"Cannot load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 					[[AppController sharedAppController] osirix64bit: self];
 				}
 				
@@ -13810,19 +13798,21 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem])
 	{
-		[notEnoughMem setHidden: YES];
-		[enoughMem setHidden: NO];
+		[leftIcon setImage: [NSImage imageNamed: @"smile"]];
+		[rightIcon setImage: [NSImage imageNamed: @"smile"]];
+		
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Enough Memory ! (%d MB needed)", nil),  mem * sizeof(float)]];
+		[memoryMessage setStringValue: NSLocalizedString( @"OK !", nil)];
 	}
 	else
 	{
-		[notEnoughMem setHidden: NO];
-		[enoughMem setHidden: YES];
+		[leftIcon setImage: [NSImage imageNamed: @"error"]];
+		[rightIcon setImage: [NSImage imageNamed: @"error"]];
+		
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Not Enough Memory ! (%d MB needed)", nil), mem* sizeof(float)]];
+		[memoryMessage setStringValue: NSLocalizedString( @"Cannot load !", nil)];
 	}
 }
 
@@ -14701,6 +14691,14 @@ static NSArray*	openSubSeriesArray = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
 		[self ReadDicomCDRom: nil];
 	
+	#ifdef __LP64__
+	NSRect frame = [subSeriesWindow frame];
+	
+	frame.size.height -= [warningBox frame].size.height;
+	[subSeriesWindow setFrame: frame display: NO];
+	#endif
+	
+
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
 //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];

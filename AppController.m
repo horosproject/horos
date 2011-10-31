@@ -2868,6 +2868,12 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
 				#endif
 				
+				#ifdef __LP64__
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"LP64bit"];
+				#else
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"LP64bit"];
+				#endif
+				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];

@@ -392,7 +392,7 @@ extern const char *GetPrivateIP();
 			if( currentDataPtr == nil)
 			{
 				NSLog( @"******** BonjourBrowser incomingConnectionProcess - not enough memory");
-				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Not enough memory to open this database. Upgrade to OsiriX 64-bit to resolve this issue.", nil), nil, nil, nil);
+				NSRunAlertPanel( NSLocalizedString( @"Bonjour Database", nil), NSLocalizedString( @"Cannot open this database. Upgrade to OsiriX 64-bit to resolve this issue.", nil), nil, nil, nil);
 				[currentConnection closeFile];
 				[currentConnection release];
 				currentConnection = nil;

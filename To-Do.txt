@@ -1,9 +1,10 @@
 New Features:
 - DICOM Q&R: realtime C-Find updates
 - DICOM Q&R: custom DICOM field for query
-- OsiriX SDK (see plugin)
+- OsiriX new SDK buit-in
 - Curved-MPR path is automatically saved and reloaded
 - Curved-MPR paths can be saved and loaded from file ('.curvedPath')
+- Compiled with Xcode 4.2 (LLVM 3.0)
 
 - SUV on PET 3D Panel (3D MIP) (Point->Drag Timer)
 
@@ -19,11 +20,10 @@ A:
 		contextual menu nsoutline et nsmatrix
 		keystrokes: delete key, ...
 	(OK) iPod doesn't appear automatically
-	(OK) iPod eject button…
+	(OK) iPod eject button
 
 - Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
-
 
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)

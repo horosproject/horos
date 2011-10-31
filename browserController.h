@@ -122,7 +122,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSWindow				*subSeriesWindow;
 	IBOutlet NSButton				*subSeriesOKButton;
 	IBOutlet NSTextField			*memoryMessage;
-	IBOutlet NSBox					*enoughMem, *notEnoughMem;
+	IBOutlet NSImageView			*leftIcon, *rightIcon;
+	IBOutlet NSBox					*warningBox;
 	
 	IBOutlet NSWindow				*bonjourPasswordWindow;
 	IBOutlet NSTextField			*password;
