@@ -2464,7 +2464,7 @@ public:
 		else Line2DText->GetPositionCoordinate()->SetValue( point2[0], point2[ 1]);
 		
 		if (length/(10.*factor) < .1)
-			sprintf( text, "Length: %2.2f %cm ", (length/(10.*factor)) * 10000.0, 0xB5);
+			sprintf( text, "Length: %2.2f mm ", (length/(10.*factor)) * 10.0);
 		else
 			sprintf( text, "Length: %2.2f cm ", length/(10.*factor));
 		
@@ -2641,7 +2641,7 @@ public:
 	if( measureLength)
 	{
 		if( measureLength < .1)
-			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f %cm ", nil), measureLength * 10000.0, 0xB5];
+			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f mm ", nil), measureLength * 10.0];
 		else
 			[s appendFormat: NSLocalizedString( @"   Measurement: %2.2f cm ", nil), measureLength];
 	}
@@ -3444,13 +3444,25 @@ public:
 			
 			NSLog(@"New pt: %2.2f %2.2f", tempPoint[0] , tempPoint[ 1]);
 			
+            vtkCellArray *rect;
+            
 			pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
 			
-			vtkCellArray *rect = vtkCellArray::New();
+            rect = vtkCellArray::New();
 			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
 			for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
 			rect->InsertCellPoint( 0);
-			
+            
+            Line2DData->SetVerts( rect);
+			Line2DData->SetLines( rect);		rect->Delete();
+            
+            pts->InsertPoint( pts->GetNumberOfPoints(), tempPoint[0], tempPoint[ 1], 0);
+            
+            rect = vtkCellArray::New();
+			rect->InsertNextCell( pts->GetNumberOfPoints()+1);
+			for( i = 0; i < pts->GetNumberOfPoints(); i++) rect->InsertCellPoint( i);
+			rect->InsertCellPoint( 0);
+            
 			Line2DData->SetVerts( rect);
 			Line2DData->SetLines( rect);		rect->Delete();
 			
