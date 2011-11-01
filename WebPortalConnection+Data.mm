@@ -484,7 +484,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						{
 							DCMPixLoadingThreads++;
 						}
-						[NSThread detachNewThreadSelector: @selector( movieDCMPixLoad:)
+						[NSThread detachNewThreadSelector: @selector(movieDCMPixLoad:)
 												 toTarget: self
 											   withObject: [NSDictionary dictionaryWithObjectsAndKeys:
 															[NSNumber numberWithUnsignedInt: range.location], @"location",

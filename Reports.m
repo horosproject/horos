@@ -480,8 +480,32 @@ CHECK;
 #pragma mark -
 #pragma mark Word
 
++(NSString*)msofficeApplicationSupportDirPath {
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Microsoft/Office"];
+}
+
++(NSArray*)msofficeApplicationSupportTemplateSubpaths {
+    return [NSArray arrayWithObjects:
+            @"User Templates/My Templates/OsiriX", // English
+            // @"//OsiriX" // Chinese (Simplified)
+            // @"//OsiriX" // Chinese (Traditional)
+            // @"//OsiriX" // Danish
+            // @"//OsiriX" // Dutch
+            // @"//OsiriX" // Finnish
+            @"Modèles utilisateur/Mes modèles/OsiriX", // French
+            @"Benutzervorlagen/Meine Vorlagen/OsiriX", // German
+            // @"Modelli utente//OsiriX", // Italian
+            // @"//OsiriX" // Japanese
+            // @"/Mine maler/OsiriX" // Norwegian (Bokmål)
+            // @"//OsiriX" // Polish
+            // @"//OsiriX" // Russian
+            // @"//OsiriX" // Spanish
+            // @"//OsiriX" // Swedish 
+            nil];
+}
+
 +(NSString*)wordTemplatesOsirixDirPath {
-    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Microsoft/Office/User Templates/My Templates/OsiriX"];
+    return [[self msofficeApplicationSupportDirPath] stringByAppendingPathComponent:[[self msofficeApplicationSupportTemplateSubpaths] objectAtIndex:0]];
 }
 
 +(NSString*)databaseWordTemplatesDirPath {
@@ -595,29 +619,29 @@ CHECK;
     if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
         return NO;
     
-    
-	[[NSWorkspace sharedWorkspace] openFile:templatePath withApplication:@"Microsoft Word" andDeactivate:NO];
-	
 	NSMutableString* source = [NSMutableString stringWithCapacity:1000];
     [source appendString:@"on run argv\n"];
-    [source appendString:@"set dataSourceFileUnix to (item 1 of argv)\n"];
-	[source appendString:@"set outFilePathUnix to (item 2 of argv)\n"];
-	[source appendString:@"set dataSourceFile to POSIX file dataSourceFileUnix\n"];
-    [source appendString:@"set outFilePath to POSIX file outFilePathUnix\n"];
-	[source appendString:@"tell application \"Microsoft Word\"\n"];
-	[source appendString:@"open data source data merge of active document name dataSourceFile\n"];
-	[source appendString:@"set myMerge to data merge of active document\n"];
-	[source appendString:@"set destination of myMerge to send to new document\n"];
-	[source appendString:@"execute data merge myMerge\n"];
-	[source appendString:@"save as active document file name (outFilePath as string)\n"];
-	[source appendString:@"close document 2 saving no\n"]; // close the non-merged file
-	[source appendString:@"end tell\n"];
+    [source appendString:@"  set dataSourceFileUnix to (item 1 of argv)\n"];
+	[source appendString:@"  set outFilePathUnix to (item 2 of argv)\n"];
+	[source appendString:@"  set templatePathUnix to (item 3 of argv)\n"];
+	[source appendString:@"  set dataSourceFile to POSIX file dataSourceFileUnix\n"];
+    [source appendString:@"  set outFilePath to POSIX file outFilePathUnix\n"];
+    [source appendString:@"  set templatePath to POSIX file templatePathUnix\n"];
+    [source appendString:@"  tell application \"Microsoft Word\"\n"];
+	[source appendString:@"    open templatePath\n"];
+	[source appendString:@"    open data source data merge of document 1 name dataSourceFile\n"];
+	[source appendString:@"    set myMerge to data merge of document 1\n"];
+	[source appendString:@"    set destination of myMerge to send to new document\n"];
+	[source appendString:@"    execute data merge myMerge\n"];
+	[source appendString:@"    save as document 1 file name (outFilePath as string)\n"];
+	[source appendString:@"    close document 2 saving no\n"]; // close the non-merged file
+	[source appendString:@"  end tell\n"];
     [source appendString:@"end run\n"];
 	
 //	NSLog(@"%@", source);
     
     @try {
-        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, nil]];
+        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, templatePath, nil]];
     } @catch (NSException* e) {
         NSLog(@"Exception: %@", e.reason);
         return NO;
@@ -625,8 +649,8 @@ CHECK;
     
     [study setValue:destinationFile forKey: @"reportURL"];
     
-    [[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate:YES];
-    [NSThread sleepForTimeInterval:1];
+    [[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate:YES]; // it's already open, but we're making it come to foreground
+    [NSThread sleepForTimeInterval:1]; // why?
     
     return YES;
 }

@@ -2810,9 +2810,9 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXLeopard] == NO)
+				if ([AppController hasMacOSXSnowLeopard] == NO)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires MacOS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 					exit(0);
 				}
 				
