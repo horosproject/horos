@@ -37,6 +37,19 @@
 #import "N2Debug.h"
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
+#import "CIADICOMField.h"
+
+#include "osconfig.h"
+#include "mdfconen.h"
+
+#include "dcvrsl.h"
+#include "ofcast.h"
+#include "ofstd.h"
+#include "dctk.h"
+#include "dcuid.h"
+
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
@@ -402,6 +415,8 @@ extern "C"
 	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
 	[presets setValue: [searchFieldComments stringValue] forKey: @"searchFieldComments"];
+    [presets setValue: [searchCustomField stringValue] forKey: @"searchCustomField"];
+    [presets setValue: [[dicomFieldsMenu selectedItem] title] forKey: @"searchCustomFieldDICOM"];
 	
 	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
 	[presets setValue: [NSNumber numberWithInt: [birthdateFilterMatrix selectedTag]] forKey: @"birthdateFilterMatrix"];
@@ -567,6 +582,12 @@ extern "C"
 	if( [presets valueForKey: @"searchFieldComments"])
 		[searchFieldComments setStringValue: [presets valueForKey: @"searchFieldComments"]];
 	
+    if( [presets valueForKey: @"searchCustomField"])
+		[searchCustomField setStringValue: [presets valueForKey: @"searchCustomField"]];
+	
+    if( [presets valueForKey: @"searchCustomFieldDICOM"])
+        [dicomFieldsMenu selectItemWithTitle: [presets valueForKey: @"searchCustomFieldDICOM"]];
+    
 	[dateFilterMatrix selectCellWithTag: [[presets valueForKey: @"dateFilterMatrix"] intValue]];
 	[birthdateFilterMatrix selectCellWithTag: [[presets valueForKey: @"birthdateFilterMatrix"] intValue]];
 	
@@ -610,6 +631,8 @@ extern "C"
 		case 4:		[searchFieldStudyDescription selectText: self];	break;
 		case 5:		[searchFieldRefPhysician selectText: self];		break;
 		case 6:		[searchFieldComments selectText: self];			break;
+        case 7:     [searchInstitutionName selectText: self];       break;
+        case 8:     [searchCustomField selectText: self];           break;
 	}
 }
 
@@ -750,6 +773,8 @@ extern "C"
 
 - (void)keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
 	if( [[self window] firstResponder] == outlineView)
@@ -777,7 +802,7 @@ extern "C"
 			
 			NSLog(@"%@", pressedKeys);
 			
-			NSArray		*resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
+			NSArray *resultFilter = [resultArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"name BEGINSWITH[cd] %@", pressedKeys]];
 			
 			[NSObject cancelPreviousPerformRequestsWithTarget: pressedKeys selector:@selector(setString:) object:@""];
 			[pressedKeys performSelector:@selector(setString:) withObject:@"" afterDelay:0.5];
@@ -1596,11 +1621,42 @@ extern "C"
 						case 5:		currentQueryKey = ReferringPhysician;	break;
 						case 6:		currentQueryKey = Comments;	break;
 						case 7:		currentQueryKey = InstitutionName; break;
+                        case 8:     currentQueryKey = customDICOMField; break;
 					}
 					
 					BOOL queryItem = NO;
 					
-					if( currentQueryKey == PatientName)
+                    if( currentQueryKey == customDICOMField)
+					{
+                        CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
+                        
+                        DcmTag tag( [dicomField group], [dicomField element]);
+                        
+                        currentQueryKey = [NSString stringWithCString: tag.getTagName()];
+                        
+                        NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, [searchCustomField stringValue]);
+                        
+						if( showError && [[searchCustomField stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+						{
+							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+							{
+								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+							}
+						}
+						
+						NSString *filterValue = [[searchCustomField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+						
+						if ([filterValue length] > 0)
+						{
+                            if( tag.getVR().isaString())
+                                filterValue = [filterValue stringByAppendingString:@"*"];
+                            
+							[queryManager addFilter: filterValue forDescription: currentQueryKey];
+							queryItem = YES;
+						}
+					}
+					else if( currentQueryKey == PatientName)
 					{
 						if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
 						{
@@ -3383,6 +3439,45 @@ extern "C"
 	[previousItem release];
 }
 
+- (NSArray*) prepareDICOMFieldsArrays
+{
+	DcmDictEntry* e = NULL;
+	DcmDataDictionary& globalDataDict = dcmDataDict.wrlock();
+	
+	DcmDictEntryList list;
+    DcmHashDictIterator iter(globalDataDict.normalBegin());
+    DcmHashDictIterator end(globalDataDict.normalEnd());
+    for (; iter != end; ++iter)
+    {
+        if ((*iter)->getPrivateCreator() == NULL) // exclude private tags
+        {
+            e = new DcmDictEntry(*(*iter));
+            list.insertAndReplace(e);
+        }
+    }
+	
+	NSMutableArray *array = [NSMutableArray array];
+	
+    /* output the list contents */
+    DcmDictEntryListIterator listIter(list.begin());
+    DcmDictEntryListIterator listLast(list.end());
+    for (; listIter != listLast; ++listIter)
+    {
+		e = *listIter;
+		
+		if( e->getGroup() > 0)
+		{
+			CIADICOMField *dicomField = [[CIADICOMField alloc] initWithGroup:e->getGroup() element:e->getElement() name:[NSString stringWithFormat:@"%s",e->getTagName()]];
+			[array addObject:dicomField];
+			[dicomField release];
+		}
+    }
+	
+	dcmDataDict.unlock();
+	
+	return array;
+}
+
 - (id) initAutoQuery: (BOOL) autoQR
 {
     if ( self = [super initWithWindowNibName:@"Query"])
@@ -3442,6 +3537,27 @@ extern "C"
 			NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
 			[self applyPresetDictionary: d];
 		}
+        
+        DICOMFieldsArray = [[self prepareDICOMFieldsArrays] retain];
+        
+        NSMenu *DICOMFieldsMenu = [dicomFieldsMenu menu];
+        [DICOMFieldsMenu setAutoenablesItems:NO];
+        [dicomFieldsMenu removeAllItems];
+        
+        NSMenuItem *item;
+        item = [[[NSMenuItem alloc] init] autorelease];
+        int i;
+        for (i=0; i<[DICOMFieldsArray count]; i++)
+        {
+            item = [[[NSMenuItem alloc] init] autorelease];
+            [item setTitle:[[DICOMFieldsArray objectAtIndex:i] title]];
+            [item setRepresentedObject:[DICOMFieldsArray objectAtIndex:i]];
+            [DICOMFieldsMenu addItem:item];
+            
+            if( [[DICOMFieldsArray objectAtIndex:i] element] == 0x0080 && [[DICOMFieldsArray objectAtIndex:i] group] == 0x0008)
+                [dicomFieldsMenu selectItemWithTitle: [[DICOMFieldsArray objectAtIndex:i] title]];
+        }
+        [dicomFieldsMenu setMenu: DICOMFieldsMenu];
 	}
     
     return self;
@@ -3483,6 +3599,8 @@ extern "C"
 	[queryArrayPrefs release];
 	
 	[autoQueryLock release];
+    
+    [DICOMFieldsArray release];
 	
 	avoidQueryControllerDeallocReentry = NO;
 	

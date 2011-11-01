@@ -4407,8 +4407,10 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[tableColumn identifier] isEqualToString:@"stateText"])
 	{
-		if( [[item valueForKey:@"stateText"] intValue] == 0) return nil;
-		else return [item valueForKey:@"stateText"];
+		if( [[item valueForKey:@"stateText"] intValue] == 0)
+            return nil;
+		else
+            return [item valueForKey:@"stateText"];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"lockedStudy"])
@@ -4828,12 +4830,6 @@ static NSConditionLock *threadLock = nil;
 {
 	[_database lock];
 	
-	if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
-	{
-		for( id item in [self databaseSelection])
-			[databaseOutline collapseItem: item]; 
-	}
-	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
 	
 	[object setValue:[NSNumber numberWithBool: NO] forKey:@"expanded"];
@@ -4853,17 +4849,8 @@ static NSConditionLock *threadLock = nil;
 {
 	[_database lock];
 	
-    static BOOL dontrecurse = NO;
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask && !dontrecurse)
-	{
-        dontrecurse = YES;
-		for( id item in [self databaseSelection])
-			[databaseOutline expandItem: item];
-        dontrecurse = NO;
-	}
-	
 	NSManagedObject	*object = [[notification userInfo] objectForKey:@"NSObject"];
-	[object setValue:[NSNumber numberWithBool: YES] forKey:@"expanded"];
+	[object setValue:[NSNumber numberWithBool:YES] forKey:@"expanded"];
 	
 	[_database unlock];
 }
@@ -5914,7 +5901,7 @@ static NSConditionLock *threadLock = nil;
 
 - (ViewerController*) loadSeries:(NSManagedObject *) series :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
+    return [self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages tryToFlipData: YES];
 }
 
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
@@ -7515,7 +7502,7 @@ static BOOL withReset = NO;
 	return [self filesForDatabaseMatrixSelection: correspondingManagedObjects onlyImages: YES];
 }
 
-- (void) saveAlbums:(id) sender
+- (IBAction) saveAlbums:(id) sender
 {
 	NSMutableArray *albums = [NSMutableArray array];
 	
@@ -7602,7 +7589,7 @@ static BOOL withReset = NO;
 		[self outlineViewRefresh];
 }
 
-- (void) addAlbums:(id) sender
+- (IBAction) addAlbums:(id) sender
 {
 	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
 	
@@ -7823,8 +7810,9 @@ static BOOL withReset = NO;
 	[smartWindowController release];
 }
 
-- (void) addAlbum:(id)sender
-{
+- (IBAction) addAlbum:(id)sender
+{ // Add album
+    
     [NSApp beginSheet: newAlbum
        modalForWindow: self.window
         modalDelegate: nil
@@ -7842,35 +7830,79 @@ static BOOL withReset = NO;
         NSString			*name;
         long				i = 2;
         
-        [_database lock];
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+        [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+        
+        NSManagedObjectContext *context = self.managedObjectContext;
+        
+        [context lock];
         
         @try 
         {
-            NSArray *albumsArray = [_database objectsForEntity:_database.albumEntity];
+            NSError *error = nil;
+            NSArray *albumsArray = [context executeFetchRequest:dbRequest error:&error];
             
-            NSString* name = [newAlbumName stringValue];
-            while ( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
+            name = [newAlbumName stringValue];
+            while( [[albumsArray valueForKey:@"name"] indexOfObject: name] != NSNotFound)
             {
                 name = [NSString stringWithFormat:@"%@ #%d", [newAlbumName stringValue], i++];
             }
             
-            DicomAlbum* album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext:_database.managedObjectContext];
-            album.name = name;
+            NSManagedObject	*album = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: context];
+            [album setValue:name forKey:@"name"];
             
-            [_database save:NULL];
+            [_database save];
             
             [self refreshAlbums];
         }
         @catch (NSException * e) 
         {
-            N2LogExceptionWithStackTrace(e);
-        }
-        @finally
-        {
-            [_database unlock];
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            [AppController printStackTrace: e];
         }
         
+        [context unlock];
+        
         [self outlineViewRefresh];
+    }
+}
+
+- (IBAction) deleteAlbum: (id)sender
+{
+    if( albumTable.selectedRow > 0)
+    {
+        if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", nil),
+                                         NSLocalizedString(@"Are you sure you want to delete this album?", nil),
+                                         NSLocalizedString(@"OK",nil),
+                                         NSLocalizedString(@"Cancel",nil),
+                                         nil) == NSAlertDefaultReturn)
+        {
+            NSManagedObjectContext	*context = self.managedObjectContext;
+            
+            [context lock];
+            
+            @try 
+            {
+                if( albumTable.selectedRow > 0)	// We cannot delete the first item !
+                {
+                    [context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+                }
+                
+                [_database save];
+                
+                [self refreshAlbums];
+            }
+            @catch (NSException * e) 
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                [AppController printStackTrace: e];
+            }
+            
+            [context unlock];
+            
+            [self outlineViewRefresh];
+        }
     }
 }
 
@@ -8629,7 +8661,7 @@ static BOOL needToRezoom;
 				}
 			}
 			
-			result = NSRunInformationalAlertPanel( NSLocalizedString(@"Not enough memory", nil),  [NSString stringWithFormat: NSLocalizedString(@"Your computer doesn't have enough RAM to load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+			result = NSRunInformationalAlertPanel( NSLocalizedString(@"32-bit", nil),  [NSString stringWithFormat: NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 		
 		// NS_DURING (3) Load Images (memory allocation)
@@ -8681,7 +8713,7 @@ static BOOL needToRezoom;
 				
 				if( notEnoughMemory)
 				{
-					if( NSRunCriticalAlertPanel( NSLocalizedString(@"Not enough memory",@"Not enough memory"),  NSLocalizedString(@"Your computer doesn't have enough RAM to load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+					if( NSRunCriticalAlertPanel( NSLocalizedString(@"32-bit", nil),  NSLocalizedString(@"Cannot load this series.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 					[[AppController sharedAppController] osirix64bit: self];
 				}
 				
@@ -9928,19 +9960,29 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	if( [self computeEnoughMemory: [self produceNewArray: openSubSeriesArray] :&mem])
 	{
-		[notEnoughMem setHidden: YES];
-		[enoughMem setHidden: NO];
+		[leftIcon setImage: [NSImage imageNamed: @"smile"]];
+		[rightIcon setImage: [NSImage imageNamed: @"smile"]];
+		
 		[subSeriesOKButton setEnabled: YES];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Enough Memory ! (%d MB needed)", nil),  mem * sizeof(float)]];
+		[memoryMessage setStringValue: NSLocalizedString( @"OK !", nil)];
 	}
 	else
 	{
-		[notEnoughMem setHidden: NO];
-		[enoughMem setHidden: YES];
+		static BOOL firstTimeNotEnoughMemory = YES;
+		
+		if( firstTimeNotEnoughMemory)
+		{
+			firstTimeNotEnoughMemory = NO;
+			[[AppController sharedAppController] osirix64bit: nil];
+		}
+		
+		[leftIcon setImage: [NSImage imageNamed: @"error"]];
+		[rightIcon setImage: [NSImage imageNamed: @"error"]];
+		
 		[subSeriesOKButton setEnabled: NO];
 		
-		[memoryMessage setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Not Enough Memory ! (%d MB needed)", nil), mem* sizeof(float)]];
+		[memoryMessage setStringValue: NSLocalizedString( @"Cannot load !", nil)];
 	}
 }
 
@@ -10742,6 +10784,14 @@ static NSArray*	openSubSeriesArray = nil;
 //	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
 //		[self ReadDicomCDRom: nil];
 	
+	#ifdef __LP64__
+	NSRect frame = [subSeriesWindow frame];
+	
+	frame.size.height -= [warningBox frame].size.height;
+	[subSeriesWindow setFrame: frame display: NO];
+	#endif
+	
+
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
 //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
@@ -10968,6 +11018,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
     if (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
@@ -14054,9 +14106,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[self checkResponder];
 	
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
-		filesToAnonymize = [[self filesForDatabaseMatrixSelection: dicomFiles2Anonymize] retain];
+		filesToAnonymize = [self filesForDatabaseMatrixSelection: dicomFiles2Anonymize];
 	else
-		filesToAnonymize = [[self filesForDatabaseOutlineSelection: dicomFiles2Anonymize] retain];
+		filesToAnonymize = [self filesForDatabaseOutlineSelection: dicomFiles2Anonymize];
 	
 	[filesToAnonymize removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Anonymize];
 	
@@ -14080,25 +14132,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSArray* ref = [NSArray arrayWithObjects: filesToAnonymize, dicomFiles2Anonymize, NULL];
 		[Anonymization showSavePanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:self didEndSelector:@selector(anonymizationSavePanelDidEnd:) representedObject:ref];
 	}
-	
-//	AnonymizerWindowController	*anonymizerController = [[AnonymizerWindowController alloc] init];
-//	
-//	[anonymizerController setFilesToAnonymize:paths :dicomFiles2Anonymize];
-//	[anonymizerController showWindow:self];
-//	[anonymizerController anonymize:self];
-//	
-//	if( [anonymizerController cancelled] == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"replaceAnonymize"] == YES && !![_database isLocal])
-//	{
-//		// Delete the non-anonymized
-//		[self delItem: sender];
-//		
-//		// Add the anonymized files
-//		[self addFilesAndFolderToDatabase: [anonymizerController producedFiles]];
-//	}
-//	
-//	[anonymizerController release];*/
-	
-	[filesToAnonymize release];
 }
 
 -(void)anonymizationSavePanelDidEnd:(AnonymizationSavePanelController*)aspc
@@ -15076,7 +15109,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if (reportsMode != 3)
 						{
 							Reports	*report = [[Reports alloc] init];
-							if([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])[report setTemplateName:[[sender selectedItem] title]];
+							if ([[sender class] isEqualTo:[reportTemplatesListPopUpButton class]])
+                                [report setTemplateName:[[sender selectedItem] title]];
 							
 							if (![_database isLocal])
 								[report createNewReport: studySelected destination: [NSString stringWithFormat: @"%@/TEMP.noindex/", [self documentsDirectory]] type:reportsMode];
@@ -15107,7 +15141,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 	}
 	
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixReportModeChangedNotification object: nil userInfo: nil];
 }
 #endif
@@ -15179,19 +15213,37 @@ static volatile int numberOfThreadsForJPEG = 0;
 	@try
 	{
 		#ifndef OSIRIX_LIGHT
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-		
-		NSIndexSet *index = [databaseOutline selectedRowIndexes];
+		NSMutableArray* templatesArray = nil;
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                templatesArray = [Reports pagesTemplatesList];
+                break;
+            case 0:
+                templatesArray = [Reports wordTemplatesList];
+                break;
+        }
+        
+		NSIndexSet* index = [databaseOutline selectedRowIndexes];
 		NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
-		NSManagedObject *studySelected;
+		DicomStudy* studySelected;
 		if ([[[selectedItem entity] name] isEqual:@"Study"])
-			studySelected = selectedItem;
+			studySelected = (DicomStudy*)selectedItem;
 		else
 			studySelected = [selectedItem valueForKey:@"study"];
 		
-		if([pagesTemplatesArray count] > 1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue] == 2 && [studySelected valueForKey:@"reportURL"] == nil)
+		if (!studySelected.reportURL && templatesArray.count > 1)
 		{
-			[item setView: reportTemplatesView];
+            switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+                case 2:
+                    [reportTemplatesImageView setImage:[NSImage imageNamed:@"ReportPages"]];
+                    break;
+                case 0:
+                    [reportTemplatesImageView setImage:[NSImage imageNamed:@"ReportWord"]];
+                    break;
+            }
+            
+            [item setView: reportTemplatesView];
+            
 			[item setMinSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 			[item setMaxSize: NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 			
@@ -15199,33 +15251,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			NSImage *icon = nil;
+			NSImage* icon = nil;
 			
-			if( [studySelected valueForKey: @"reportURL"])
+			if (studySelected.reportURL)
 			{
-				if( [[studySelected valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[studySelected valueForKey: @"reportURL"] hasPrefix: @"https://"])
-				{
-					icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"download"]; // Safari document
-				
-					if( icon)
-						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-				}
-				else if( [[NSFileManager defaultManager] fileExistsAtPath: [studySelected valueForKey: @"reportURL"]])
-				{
-					icon = [[NSWorkspace sharedWorkspace] iconForFile: [studySelected valueForKey: @"reportURL"]];
-					
-					if( icon)
-						reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate];	// To force the update
-				}
+				if ([studySelected.reportURL hasPrefix: @"http://"] || [studySelected.reportURL hasPrefix: @"https://"])
+					icon = [[NSWorkspace sharedWorkspace] iconForFileType:@"download"]; // Safari document
+				else if ([[NSFileManager defaultManager] fileExistsAtPath:studySelected.reportURL])
+					icon = [[NSWorkspace sharedWorkspace] iconForFile:studySelected.reportURL];
+                if (icon)
+                    reportToolbarItemType = [NSDate timeIntervalSinceReferenceDate]; // To force the update
 			}
 			
-			if( icon == nil)
-				icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
-			
-			[item setImage: icon];
+            if (!icon)
+                icon = [self reportIcon];	// Keep this line! Because item can be nil! see updateReportToolbarIcon function
+
+			[item setImage:icon];
 		}
 		#else
-		[item setImage: [NSImage imageNamed: @"Report.icns"]];
+		[item setImage:[NSImage imageNamed:@"Report.icns"]];
 		#endif
 	}
 	@catch (NSException * e)
@@ -15238,13 +15282,21 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (void)reportToolbarItemWillPopUp: (NSNotification *)notif
 {
 	#ifndef OSIRIX_LIGHT
-	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
+	if ([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
 		[reportTemplatesListPopUpButton removeAllItems];
 		[reportTemplatesListPopUpButton addItemWithTitle:@""];
-		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
-		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+		
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports pagesTemplatesList]];
+                break;
+            case 0:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports wordTemplatesList]];
+                break;
+        }
+		
+        [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
 	#endif
 }

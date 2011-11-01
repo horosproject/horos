@@ -174,7 +174,7 @@
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode;
 - (void) setupToolbar;
-- (void) setDefaultTool:(id) sender;
+- (IBAction) setDefaultTool:(id) sender;
 - (void) setCurrentTool:(short) newTool;
 - (NSMatrix*) toolsMatrix;
 - (void) setWLWW:(float) iwl :(float) iww;

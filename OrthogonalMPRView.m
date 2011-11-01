@@ -530,6 +530,8 @@ extern int ANNOTATIONS;
 
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
 	unichar	c = [[event characters] characterAtIndex:0];	
 	if( c == ' ')
 	{

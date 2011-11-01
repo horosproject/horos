@@ -17,6 +17,8 @@
 #import "OsiriX/DCM.h"
 #import "BrowserController.h"
 #import "NSString+N2.h"
+#import "NSFileManager+N2.h"
+#import "NSAppleScript+N2.h"
 
 // if you want check point log info, define CHECK to the next line, uncommented:
 #define CHECK NSLog(@"Applescript result code = %d", ok);
@@ -53,6 +55,13 @@ static id aedesc_to_id(AEDesc *desc)
 	return [NSString stringWithFormat:@"[unconverted AEDesc, type=\"%c%c%c%c\"]", ((char *)&(desc->descriptorType))[0], ((char *)&(desc->descriptorType))[1], ((char *)&(desc->descriptorType))[2], ((char *)&(desc->descriptorType))[3]];
 }
 
+@interface Reports ()
+
+- (void)runScript:(NSString*)txt;
+- (BOOL)createNewWordReportForStudy:(NSManagedObject*)study toDestinationPath:(NSString*)destinationFile;
+
+@end
+
 @implementation Reports
 
 + (NSString*) getUniqueFilename:(id) study
@@ -70,57 +79,7 @@ static id aedesc_to_id(AEDesc *desc)
 	return [DicomFile NSreplaceBadCharacter: [[study valueForKey:@"patientUID"] stringByAppendingFormat:@"-%@", [study valueForKey:@"id"]]];
 }
 
-- (NSString*) generateReportSourceData:(NSManagedObject*) study
-{
-	long x;
-	
-	NSManagedObjectModel	*model = [[[study managedObjectContext] persistentStoreCoordinator] managedObjectModel];
 
-	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
-	
-	NSMutableString	*file = [NSMutableString stringWithString:@""];
-	
-	for( x = 0; x < [properties count]; x++)
-	{
-		NSString	*name = [properties objectAtIndex: x];
-		[file appendString:name];
-		[file appendFormat: @"%c", NSTabCharacter];
-	}
-	
-	[file appendString:@"\r"];
-	
-	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
-	[date setDateStyle: NSDateFormatterShortStyle];
-	
-	for( x = 0; x < [properties count]; x++)
-	{
-		NSString	*name = [properties objectAtIndex: x];
-		NSString	*string;
-		
-		if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
-		{
-			string = [date stringFromDate: [study valueForKey: name]];
-		}
-		else string = [[study valueForKey: name] description];
-		
-		if( string)
-			[file appendString: [DicomFile NSreplaceBadCharacter:string]];
-		else
-			[file appendString: @""];
-		
-		[file appendFormat: @"%c", NSTabCharacter];
-	}
-	
-	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
-	
-	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-	
-	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
-	
-	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
-	
-	return path;
-}
 
 - (NSString *) HFSStyle: (NSString*) string
 {
@@ -159,30 +118,6 @@ static id aedesc_to_id(AEDesc *desc)
     return (NSString *) hfsPath;
 }
 
-- (NSString *) reportScriptBody:(NSManagedObject*) study path:(NSString*) path
-{
-	NSString	*sourceData = [self generateReportSourceData: study];
-	
-	[[NSWorkspace sharedWorkspace] openFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/ReportTemplate.doc"] withApplication:@"Microsoft Word" andDeactivate:NO];
-	
-	NSMutableString *s = [NSMutableString stringWithCapacity:1000];
-
-	[s appendString:@"tell application \"Microsoft Word\"\n"];
-	[s appendString:[NSString stringWithFormat:@"set dataSourceFile to (POSIX file \"%@\")\n", sourceData]];
-	[s appendString:[NSString stringWithFormat:@"open data source data merge of active document name dataSourceFile\n"]];
-	[s appendString:@"set myMerge to data merge of active document\n"];
-	[s appendString:@"set destination of myMerge to send to new document\n"];
-	[s appendString:@"execute data merge myMerge\n"];
-	[s appendString:[NSString stringWithFormat:@"save as active document file name \"%@\"\n", [self HFSPathFromPOSIXPath: path]]];
-	[s appendString:@"close active document saving no\n"];
-	[s appendString:@"close active document saving no\n"];
-	[s appendString:@"end tell\n"];
-	
-	NSLog( @"%@", s);
-	
-	return s;
-}
-
 - (BOOL) createNewReport:(NSManagedObject*) study destination:(NSString*) path type:(int) type
 {	
 	NSString *uniqueFilename = [Reports getUniqueFilename: study];
@@ -194,23 +129,8 @@ static id aedesc_to_id(AEDesc *desc)
 			NSString *destinationFile = [NSString stringWithFormat:@"%@%@.%@", path, uniqueFilename, @"doc"];
 			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
 			
-			// Applescript doesnt support UTF-8 encoding
-
-			NSString *tempPath = [destinationFile stringByDeletingLastPathComponent];
-			tempPath = [tempPath stringByAppendingPathComponent: @"MSTempReport"];
-			tempPath = [tempPath stringByAppendingPathExtension: [destinationFile pathExtension]];
-			
-			[[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
-			
-			[self runScript: [self reportScriptBody: study path: tempPath]];
-			
-			[[NSFileManager defaultManager] removeItemAtPath: destinationFile error: nil];
-			[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: destinationFile error: nil];
-			[study setValue: destinationFile forKey: @"reportURL"];
-			
-			[[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate: YES];
-			[NSThread sleepForTimeInterval: 1];
-		}
+            [self createNewWordReportForStudy:study toDestinationPath:destinationFile];
+        }
 		break;
 		
 		case 1:
@@ -446,6 +366,22 @@ CHECK;
 #endif
 }
 
++(id)_runAppleScript:(NSString*)source withArguments:(NSArray*)args
+{
+    NSError* err = nil;
+    NSDictionary* errs = nil;
+    
+    if (!source) [NSException raise:NSGenericException format:@"Couldn't read script source"];
+    
+    NSAppleScript* script = [[[NSAppleScript alloc] initWithSource:source] autorelease];
+    if (!script) [NSException raise:NSGenericException format:@"Invalid script source"];
+    
+    id r = [script runWithArguments:args error:&errs];
+    if (errs) [NSException raise:NSGenericException format:@"%@", errs];
+    
+    return r;
+}
+
 #pragma mark -
 
 - (void)searchAndReplaceFieldsFromStudy:(NSManagedObject*)aStudy inString:(NSMutableString*)aString;
@@ -539,6 +475,160 @@ CHECK;
 		else moreFields = NO;
 	}
 	while( moreFields);
+}
+
+#pragma mark -
+#pragma mark Word
+
++(NSString*)wordTemplatesOsirixDirPath {
+    return [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Application Support/Microsoft/Office/User Templates/My Templates/OsiriX"];
+}
+
++(NSString*)databaseWordTemplatesDirPath {
+    return [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"WORD TEMPLATES"];
+}
+
++(NSString*)resolvedDatabaseWordTemplatesDirPath {
+    return [[NSFileManager defaultManager] destinationOfAliasOrSymlinkAtPath:[self databaseWordTemplatesDirPath]];
+}
+
++ (NSMutableArray*)wordTemplatesList
+{
+	NSMutableArray* templatesArray = [NSMutableArray array];
+    
+	NSDirectoryEnumerator* directoryEnumerator = [[NSFileManager defaultManager] enumeratorAtPath:[self resolvedDatabaseWordTemplatesDirPath]];
+	NSString* filename;
+	while ((filename = [directoryEnumerator nextObject]))
+	{
+		[directoryEnumerator skipDescendents];
+		if ([filename hasPrefix:@"OsiriX "]) // this is a template for us (we should maybe verify that it is a valid Word template... but what ever...)
+			[templatesArray addObject:[filename substringFromIndex:7]];
+	}
+	
+	return templatesArray;
+}
+
+- (NSString*) generateWordReportMergeDataForStudy:(NSManagedObject*) study
+{
+	long x;
+	
+	NSManagedObjectModel	*model = [[[study managedObjectContext] persistentStoreCoordinator] managedObjectModel];
+    
+	NSArray *properties = [[[[model entitiesByName] objectForKey:@"Study"] attributesByName] allKeys];
+	
+	NSMutableString	*file = [NSMutableString stringWithString:@""];
+	
+	for( x = 0; x < [properties count]; x++)
+	{
+		NSString	*name = [properties objectAtIndex: x];
+		[file appendString:name];
+		[file appendFormat: @"%c", NSTabCharacter];
+	}
+	
+	[file appendString:@"\r"];
+	
+	NSDateFormatter		*date = [[[NSDateFormatter alloc] init] autorelease];
+	[date setDateStyle: NSDateFormatterShortStyle];
+	
+	for( x = 0; x < [properties count]; x++)
+	{
+		NSString	*name = [properties objectAtIndex: x];
+		NSString	*string;
+		
+		if( [[study valueForKey: name] isKindOfClass: [NSDate class]])
+		{
+			string = [date stringFromDate: [study valueForKey: name]];
+		}
+		else string = [[study valueForKey: name] description];
+		
+		if( string)
+			[file appendString: [DicomFile NSreplaceBadCharacter:string]];
+		else
+			[file appendString: @""];
+		
+		[file appendFormat: @"%c", NSTabCharacter];
+	}
+	
+	NSString	*path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/Report.rtf"];
+	
+	[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+	
+	NSMutableAttributedString	*rtf = [[[NSMutableAttributedString alloc] initWithString: file] autorelease];
+	
+	[[rtf RTFFromRange:rtf.range documentAttributes: nil] writeToFile: path atomically:YES]; // To support full encoding in MicroSoft Word
+	
+	return path;
+}
+
+- (BOOL)createNewWordReportForStudy:(NSManagedObject*)study toDestinationPath:(NSString*)destinationFile
+{
+    // Applescript doesnt support UTF-8 encoding
+    
+//    NSString* tempPath = [[[destinationFile stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"MSTempReport"] stringByAppendingPathExtension:[destinationFile pathExtension]];
+  //  [[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
+    
+    [[NSFileManager defaultManager] removeItemAtPath:destinationFile error: nil];
+    
+    NSString* inTemplateName = templateName;
+    
+    
+    
+    NSString* sourceData = [self generateWordReportMergeDataForStudy:study];
+	
+    NSString* templatePath = nil;
+    
+    NSString* templatesDirPath = [[self class] resolvedDatabaseWordTemplatesDirPath];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath]) {
+        NSMutableArray* templatesDirPathContents = [[[[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL] mutableCopy] autorelease];
+        for (NSInteger i = templatesDirPathContents.count-1; i >= 0; --i)
+            if (![[templatesDirPathContents objectAtIndex:i] hasPrefix:@"OsiriX "])
+                [templatesDirPathContents removeObjectAtIndex:i];
+        if ([templatesDirPathContents count] == 1)
+            inTemplateName = [templatesDirPathContents objectAtIndex:0];
+        
+        templatePath = [templatesDirPath stringByAppendingPathComponent:inTemplateName];
+    }
+    else {
+        templatePath = [[templatesDirPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"ReportTemplate.doc"];
+    }
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
+        return NO;
+    
+    
+	[[NSWorkspace sharedWorkspace] openFile:templatePath withApplication:@"Microsoft Word" andDeactivate:NO];
+	
+	NSMutableString* source = [NSMutableString stringWithCapacity:1000];
+    [source appendString:@"on run argv\n"];
+    [source appendString:@"set dataSourceFileUnix to (item 1 of argv)\n"];
+	[source appendString:@"set outFilePathUnix to (item 2 of argv)\n"];
+	[source appendString:@"set dataSourceFile to POSIX file dataSourceFileUnix\n"];
+    [source appendString:@"set outFilePath to POSIX file outFilePathUnix\n"];
+	[source appendString:@"tell application \"Microsoft Word\"\n"];
+	[source appendString:@"open data source data merge of active document name dataSourceFile\n"];
+	[source appendString:@"set myMerge to data merge of active document\n"];
+	[source appendString:@"set destination of myMerge to send to new document\n"];
+	[source appendString:@"execute data merge myMerge\n"];
+	[source appendString:@"save as active document file name (outFilePath as string)\n"];
+	[source appendString:@"close document 2 saving no\n"]; // close the non-merged file
+	[source appendString:@"end tell\n"];
+    [source appendString:@"end run\n"];
+	
+//	NSLog(@"%@", source);
+    
+    @try {
+        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: sourceData, destinationFile, nil]];
+    } @catch (NSException* e) {
+        NSLog(@"Exception: %@", e.reason);
+        return NO;
+    }
+    
+    [study setValue:destinationFile forKey: @"reportURL"];
+    
+    [[NSWorkspace sharedWorkspace] openFile:destinationFile withApplication:@"Microsoft Word" andDeactivate:YES];
+    [NSThread sleepForTimeInterval:1];
+    
+    return YES;
 }
 
 #pragma mark -

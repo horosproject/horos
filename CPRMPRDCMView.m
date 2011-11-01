@@ -973,6 +973,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
+    if( [[theEvent characters] length] == 0) return;
+    
     unichar c = [[theEvent characters] characterAtIndex:0];
     
 	long tool = [self getTool: theEvent];

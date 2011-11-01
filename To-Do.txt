@@ -1,6 +1,12 @@
 New Features:
 - DICOM Q&R: realtime C-Find updates
-- OsiriX SDK (see plugin)
+- DICOM Q&R: custom DICOM field for query
+- OsiriX new SDK buit-in
+- Curved-MPR path is automatically saved and reloaded
+- Curved-MPR paths can be saved and loaded from file ('.curvedPath')
+- Compiled with Xcode 4.2 (LLVM 3.0)
+
+- SUV on PET 3D Panel (3D MIP) (Point->Drag Timer)
 
 A:
 - DB remote: black image (multi-load)
@@ -13,23 +19,19 @@ A:
 		viewer toolbar: delete, (report: readonly...))
 		contextual menu nsoutline et nsmatrix
 		keystrokes: delete key, ...
-	iPod doesn't appear automatically
-	iPod eject button…
+	(OK) iPod doesn't appear automatically
+	(OK) iPod eject button
 
-- Add Albums submenu to File menu
-- Add Reslice submenu (Orientation item)
-
+- Reports to PDF
 - DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
+
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 - When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
-- storescu (autorouting): No presentation context for: (MRe) 1.2.840.10008.5.1.4.1.1.4.1
 - Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
-- PDF Open in Viewer -> Preview
-- CPR save last curved points
 - CPR : adapt coloscopy path algo to CPR vessels
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
@@ -37,8 +39,6 @@ A:
 - Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
-- SUV on PET 3D Panel (3D MIP)
-- Q&R: custom field (Performing Physician)
 - Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
@@ -55,7 +55,6 @@ A:
 - Custom DB time interval: floating panel
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
-- CD partial import
 - Save default order for albums
 - VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust

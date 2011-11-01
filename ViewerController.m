@@ -453,6 +453,18 @@ return YES;
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
 	
+	if( [item action] == @selector( showHideMatrix:))
+	{
+		if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		{
+			[item setState: NSOnState];
+		}
+		else
+		{
+			[item setState: NSOffState];
+		}
+	}
+	
 	if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
@@ -1973,7 +1985,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		if( succeed == NO)
 		{
-			if( NSRunCriticalAlertPanel(NSLocalizedString(@"Not Enough Memory", nil), NSLocalizedString(@"Not enough memory to execute this reslicing.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+			if( NSRunCriticalAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Cannot execute this reslicing.\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 				[[AppController sharedAppController] osirix64bit: self];
 		}
 		else
@@ -3620,25 +3632,28 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
 	{
-		ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
-		[newViewer setHighLighted: 1.0];
-		lastHighLightedRow = [sender selectedRow];
-		
-		[self matrixPreviewSelectCurrentSeries];
-		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
-			[NSApp sendAction: @selector(tileWindows:) to:nil from: self];
-		else
-		{
-			[[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
-		}
-		
-		for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
-		[[self window] makeKeyAndOrderFront: self];
-		[self refreshToolbar];
-		[self updateNavigator];
-		
-		[newViewer showCurrentThumbnail: self];
+        if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+        {
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :nil :YES keyImagesOnly: displayOnlyKeyImages];
+            [newViewer setHighLighted: 1.0];
+            lastHighLightedRow = [sender selectedRow];
+            
+            [self matrixPreviewSelectCurrentSeries];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"])
+                [NSApp sendAction: @selector(tileWindows:) to:nil from: self];
+            else
+            {
+                [[AppController sharedAppController] checkAllWindowsAreVisible: self makeKey: YES];
+            }
+            
+            for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+            [[self window] makeKeyAndOrderFront: self];
+            [self refreshToolbar];
+            [self updateNavigator];
+            
+            [newViewer showCurrentThumbnail: self];
+        }
 	}
 	else
 	{
@@ -3673,11 +3688,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 				
 				[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
 				
-				ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
-				
-				[self matrixPreviewSelectCurrentSeries];
-				[self updateNavigator];
-				
+                if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask) || [[BrowserController currentBrowser] isUsingExternalViewer: [[sender selectedCell] representedObject]] == NO)
+                {
+                    ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries :[[sender selectedCell] representedObject] :self :YES keyImagesOnly: displayOnlyKeyImages];
+                    
+                    [self matrixPreviewSelectCurrentSeries];
+                    [self updateNavigator];
+				}
+                
 				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
@@ -3760,6 +3778,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 			imageView.dontEnterReshape = NO;
 		}
 	}
+}
+
+- (IBAction) showHideMatrix: (id) sender
+{
+	BOOL isCurrentlyVisible = NO;
+	
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
+	
+	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+		isCurrentlyVisible = YES;
+	
+	[self setMatrixVisible: !isCurrentlyVisible];
 }
 
 - (void) autoHideMatrix
@@ -3905,7 +3935,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			// Apply show / hide matrix to all viewers
 			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) == NO)
 			{
-				NSArray				*winList = [NSApp windows];
+				NSArray *winList = [NSApp windows];
 				
 				for( id loopItem in winList)
 				{
@@ -4584,6 +4614,8 @@ static ViewerController *draggedController = nil;
 
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
     if( c == 3 || c == 13 || c == ' ')
@@ -6589,6 +6621,7 @@ return YES;
 		if( v != self) [v buildMatrixPreview: NO];
 	}
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
 	[super dealloc];
 	
 	NSLog(@"ViewController dealloc");
@@ -7659,7 +7692,7 @@ return YES;
 	[self endWaitWindow: waitWindow];
 	if(!isResampled)
 	{
-		if( NSRunAlertPanel(NSLocalizedString(@"Not Enough Memory", nil), NSLocalizedString(@"Your computer doesn't have enough RAM to complete the resampling\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+		if( NSRunAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Cannot complete the resampling\r\rUpgrade to OsiriX 64-bit to solve this issue.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 			[[AppController sharedAppController] osirix64bit: self];
 	}
 }
@@ -20244,7 +20277,7 @@ int i,j,l;
 - (IBAction)generateReport:(id)sender;
 {
 	[[BrowserController currentBrowser] generateReport:sender];
-	[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	[self performSelector: @selector(updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 #endif
 
@@ -20292,12 +20325,21 @@ int i,j,l;
 - (void)setToolbarReportIconForItem:(NSToolbarItem *)item;
 {
 	#ifndef OSIRIX_LIGHT
-	NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
+    NSMutableArray* templatesArray = nil;
+    switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+        case 2:
+            templatesArray = [Reports pagesTemplatesList];
+            break;
+        case 0:
+            templatesArray = [Reports wordTemplatesList];
+            break;
+    }
 
-	NSManagedObject *studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
+	DicomStudy* studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
 	
-	if([pagesTemplatesArray count]>1 && [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]==2 && ![[NSFileManager defaultManager] fileExistsAtPath:[studySelected valueForKey:@"reportURL"]])
+    if (!studySelected.reportURL && templatesArray.count > 1)
 	{
+        [reportTemplatesImageView setImage:[self reportIcon]];
 		[item setView:reportTemplatesView];
 		[item setMinSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
 		[item setMaxSize:NSMakeSize(NSWidth([reportTemplatesView frame]), NSHeight([reportTemplatesView frame]))];
@@ -20317,11 +20359,19 @@ int i,j,l;
 	#ifndef OSIRIX_LIGHT
 	if([[notif object] isEqualTo:reportTemplatesListPopUpButton])
 	{
-		NSMutableArray *pagesTemplatesArray = [Reports pagesTemplatesList];
-		[reportTemplatesListPopUpButton removeAllItems];
+        [reportTemplatesListPopUpButton removeAllItems];
 		[reportTemplatesListPopUpButton addItemWithTitle:@""];
-		[reportTemplatesListPopUpButton addItemsWithTitles:pagesTemplatesArray];
-		[reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
+		
+        switch ([[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue]) {
+            case 2:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports pagesTemplatesList]];
+                break;
+            case 0:
+                [reportTemplatesListPopUpButton addItemsWithTitles:[Reports wordTemplatesList]];
+                break;
+        }
+		
+        [reportTemplatesListPopUpButton setAction:@selector(generateReport:)];
 	}
 	#endif
 }

@@ -1030,8 +1030,23 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	
 	if (session && [session objectForKey:SessionUsernameKey])
+    {
 		self.user = [self.portal.database userWithName:[session objectForKey:SessionUsernameKey]];
-	else self.user = nil;
+        
+        if( [session objectForKey: SessionLastActivityDateKey])
+        {
+            if( [[NSDate date] timeIntervalSinceDate: [session objectForKey: SessionLastActivityDateKey]] > [[NSUserDefaults standardUserDefaults] integerForKey: @"WebServerTimeOut"])
+            {
+                [self.session setObject:NULL forKey:SessionUsernameKey]; // logout
+                self.user = nil;
+                
+                [self resetPOST];
+            }
+        }
+        
+        [self.session setObject: [NSDate date] forKey: SessionLastActivityDateKey];
+	}
+    else self.user = nil;
 }
 
 -(void)replyToHTTPRequest {

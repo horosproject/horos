@@ -71,15 +71,15 @@
 	
 	if(!name)
 	{
-		name = NSLocalizedStringFromTableInBundle(@"No certificate selected.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"No certificate selected.");	
+		name = NSLocalizedString(@"No certificate selected.", @"No certificate selected.");	
 		[TLSCertificateButton setHidden:YES];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Choose", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Choose")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Choose", @"Choose")];
 	}
 	else
 	{
 		[TLSCertificateButton setHidden:NO];
 		[TLSCertificateButton setImage:icon];
-		[TLSChooseCertificateButton setTitle:NSLocalizedStringFromTableInBundle(@"Change", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Change")];
+		[TLSChooseCertificateButton setTitle:NSLocalizedString(@"Change", @"Change")];
 	}
 
 	self.TLSAuthenticationCertificate = name;
@@ -91,8 +91,8 @@
 	
 	if([certificates count])
 	{
-		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Cancel")];
-		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedStringFromTableInBundle(@"Choose a certificate from the following list.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], @"Choose a certificate from the following list.")];
+		[[SFChooseIdentityPanel sharedChooseIdentityPanel] setAlternateButtonTitle:NSLocalizedString(@"Cancel", @"Cancel")];
+		NSInteger clickedButton = [[SFChooseIdentityPanel sharedChooseIdentityPanel] runModalForIdentities:certificates message:NSLocalizedString(@"Choose a certificate from the following list.", @"Choose a certificate from the following list.")];
 		
 		if(clickedButton==NSOKButton)
 		{
@@ -108,7 +108,7 @@
 	}
 	else
 	{
-		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedStringFromTableInBundle(@"No Valid Certificate", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Your Keychain does not contain any valid certificate.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Help", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"Cancel", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil);
+		NSInteger clickedButton = NSRunCriticalAlertPanel(NSLocalizedString(@"No Valid Certificate", nil), NSLocalizedString(@"Your Keychain does not contain any valid certificate.", nil), NSLocalizedString(@"Help", nil), NSLocalizedString(@"Cancel", nil), nil);
 
 		if(clickedButton==NSOKButton)
 		{
@@ -151,7 +151,7 @@
 	
 	
 	if( [AppController hasMacOSXSnowLeopard] == NO)
-		NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle( @"Unsupported", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle( @"OK", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil) , nil, nil);
+		NSRunCriticalAlertPanel( NSLocalizedString( @"Unsupported", nil), NSLocalizedString( @"It is highly recommend to upgrade to MacOS 10.6 or higher to use the OsiriX Web Server.", nil), NSLocalizedString( @"OK", nil) , nil, nil);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -191,11 +191,11 @@
 			[BrowserController currentBrowser].testPredicate = [DicomDatabase predicateForSmartAlbumFilter: [[[userArrayController selectedObjects] lastObject] valueForKey: @"studyPredicate"]];
 			[[BrowserController currentBrowser] outlineViewRefresh];
 			[BrowserController currentBrowser].testPredicate = nil;
-			NSRunInformationalAlertPanel( NSLocalizedStringFromTableInBundle(@"Study Filter", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"The result is now displayed in the Database Window.", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil, nil);
+			NSRunInformationalAlertPanel( NSLocalizedString(@"Study Filter", nil), NSLocalizedString(@"The result is now displayed in the Database Window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		@catch (NSException * e)
 		{
-			NSRunCriticalAlertPanel( NSLocalizedStringFromTableInBundle(@"Error", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), [NSString stringWithFormat: NSLocalizedStringFromTableInBundle(@"This filter is NOT working: %@", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), e], NSLocalizedStringFromTableInBundle(@"OK", nil, [NSBundle bundleForClass: [OSIWebSharingPreferencePanePref class]], nil), nil, nil);
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil), [NSString stringWithFormat: NSLocalizedString(@"This filter is NOT working: %@", nil), e], NSLocalizedString(@"OK", nil), nil, nil);
 		}
 	}
 }

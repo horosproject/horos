@@ -2148,7 +2148,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) dealloc
 {
 	NSLog(@"DCMView released");
-	
+    
+	[NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
 	[self deleteMouseDownTimer];
@@ -2544,12 +2546,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (void) keyDown:(NSEvent *)event
 {
 	if ([self eventToPlugins:event]) return;
-	
+	if( [[event characters] length] == 0) return;
+    
 	unichar		c = [[event characters] characterAtIndex:0];
 	long		xMove = 0, yMove = 0, val;
 	BOOL		Jog = NO;
 	
-	if( [self windowController]  == [BrowserController currentBrowser]) { [super keyDown:event]; return;}
+	if( [self windowController]  == [BrowserController currentBrowser])
+    {
+        [super keyDown:event];
+        return;
+    }
 	
     if( dcmPixList)
     {
@@ -8882,8 +8889,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			glGenTextures(1, &textID);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(TEXTRECTMODE, textID);
-			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            
+            if( NOINTERPOLATION)
+            {
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            }
+            else
+            {
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                glTexParameteri (TEXTRECTMODE, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+            }
 				
 			glColor4f( 1, 1, 1, 1);
 			#if __BIG_ENDIAN__

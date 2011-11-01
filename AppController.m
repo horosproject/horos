@@ -47,6 +47,7 @@
 #import <objc/runtime.h>
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
+#import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>
 #endif
 #endif
@@ -708,6 +709,13 @@ void exceptionHandler(NSException *exception)
 static NSDate *lastWarningDate = nil;
 
 
+@interface AppController ()
+
++(void)checkForWordTemplates;
+
+@end
+
+
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
@@ -1074,9 +1082,16 @@ static NSDate *lastWarningDate = nil;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 #pragma mark-
 
--(IBAction)osirix64bit:(id)sender
+-(IBAction) osirix64bit:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+	if( sender)
+		[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+	else
+	{
+		NSArray* urls = [NSArray arrayWithObject: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriX-64bit.html"]];
+
+		BOOL opened = [[NSWorkspace sharedWorkspace] openURLs:urls withAppBundleIdentifier: nil options: NSWorkspaceLaunchWithoutActivation additionalEventParamDescriptor: nil launchIdentifiers: nil];
+	}
 }
 
 -(IBAction)sendEmail:(id)sender
@@ -2749,6 +2764,12 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
 				#endif
 				
+				#ifdef __LP64__
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"LP64bit"];
+				#else
+				[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"LP64bit"];
+				#endif
+				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
@@ -2872,6 +2893,7 @@ static BOOL initialized = NO;
 				
 				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
+                [self checkForWordTemplates];
 				[AppController checkForPagesTemplate];
 				
 				Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
@@ -3076,7 +3098,14 @@ static BOOL initialized = NO;
 	if( [[NSUserDefaults standardUserDefaults] integerForKey: @"TOOLKITPARSER4"] == 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"] == NO)
 	{
 		[self growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil)  name:@"result"];
+        
+        NSLog( @"********");
+        NSLog( @"********");
+        NSLog( @"********");
 		NSLog( @"******** %@", NSLocalizedString( @"DCM Framework is selected as the DICOM reader/parser. The performances of this toolkit are slower.", nil));
+        NSLog( @"********");
+        NSLog( @"********");
+        NSLog( @"********");
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"])
@@ -3203,21 +3232,37 @@ static BOOL initialized = NO;
 	NSLog( @"Testing localization for menus");
 	NSMenu *mainMenu = [NSApp mainMenu];
 	
-	if( [[[mainMenu itemAtIndex: 5] title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[mainMenu itemAtIndex: 1] title] isEqualToString: NSLocalizedString(@"File", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[mainMenu itemAtIndex: 5] title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[mainMenu itemAtIndex: 1] title] isEqualToString: NSLocalizedString(@"File", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
 	
 	NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 	
-	if( [[[viewerMenu itemAtIndex: 35] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 42] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 8] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 38] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 39] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
-	if( [[[viewerMenu itemAtIndex: 36] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 37] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 44] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 41] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
+	if( [[[viewerMenu itemAtIndex: 38] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
 	
 	NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
 	
-	if( [[[fileMenu itemAtIndex: 8] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO) NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[fileMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+    
 	#endif
 }
 
@@ -3455,6 +3500,7 @@ static BOOL initialized = NO;
 	
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"UseKDUForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
+    [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
 	if( [AppController hasMacOSXSnowLeopard] == NO)
 	{
@@ -4307,21 +4353,28 @@ static BOOL initialized = NO;
 	NSMutableArray *hiddenWindows = [NSMutableArray array];
 	
 	// Add the hidden windows
+    keyWindow = -1;
 	for( ViewerController *v in viewersList)
 	{
 		if( [[v window] isVisible] == NO)
 		{
 			[hiddenWindows addObject: v];
 			[cResult addObject: v];
+            
+            keyWindow = [viewersList indexOfObject: v];
 		}
 	}
 	
 	viewersList = cResult;
 	
-	for( i = 0; i < [viewersList count]; i++)
-	{
-		if( [[[viewersList objectAtIndex: i] window] isKeyWindow]) keyWindow = i;
-	}
+    if( keyWindow == -1)
+    {
+        for( i = 0; i < [viewersList count]; i++)
+        {
+            if( [[[viewersList objectAtIndex: i] window] isKeyWindow])
+                keyWindow = i;
+        }
+    }
 	
 	BOOL identical = YES;
 	
@@ -4755,8 +4808,10 @@ static BOOL initialized = NO;
 
 + (NSString*)checkForPagesTemplate;
 {
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
 	NSString *templateDirectory = nil;
-	#ifndef MACAPPSTORE
+
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
@@ -4787,7 +4842,44 @@ static BOOL initialized = NO;
 	}
 	
 #endif
-	return templateDirectory;
+#endif
+    
+    return nil;
+}
+
++(void)checkForWordTemplates
+{
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
+    // previously, we had a single word template in the OsiriX Data folder
+    NSString* oldReportFilePath = [documentsDirectory() stringByAppendingPathComponent:@"ReportTemplate.doc"];
+    
+    // today, we use a dir in the database folder, which contains the templates
+    NSString* templatesDirPath = [documentsDirectory() stringByAppendingPathComponent:@"WORD TEMPLATES"];
+    
+    // by default, the templates are stored in the Office Application Support folder
+    NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
+    [[NSFileManager defaultManager] confirmDirectoryAtPath:wordTemplatesOsirixDirPath];
+    
+    // TODO: aliases for other Office languages
+    
+    NSUInteger templatesCount = 0;
+    for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:wordTemplatesOsirixDirPath error:NULL]) 
+        if ([filename hasPrefix:@"OsiriX "])
+            ++templatesCount;
+    
+    if (!templatesCount && [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+        for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+            if ([filename hasPrefix:@"OsiriX "]) {
+                [[NSFileManager defaultManager] copyItemAtPath:[templatesDirPath stringByAppendingPathComponent:filename] toPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:filename] error:NULL];
+                ++templatesCount;
+            }
+    if (!templatesCount)
+        if ([[NSFileManager defaultManager] fileExistsAtPath:oldReportFilePath])
+            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
+        else [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
+#endif
+#endif
 }
 
 #pragma mark-

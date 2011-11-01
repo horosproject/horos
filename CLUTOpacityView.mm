@@ -73,6 +73,8 @@
 
 - (void)dealloc
 {
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( setCLUTtoVRViewHighRes:) object: nil];
@@ -1390,6 +1392,8 @@ NSRect rect = drawingRect;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
+    if( [[theEvent characters] length] == 0) return;
+    
 	unichar c = [[theEvent characters] characterAtIndex:0];
 	if( c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{

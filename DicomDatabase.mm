@@ -362,8 +362,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 		[NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
 	
 	// report templates
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
 	
-	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.doc", @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
 		NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
 		if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp])
 			[NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
@@ -373,8 +375,15 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
 		[NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
 	
-	[self checkForHtmlTemplates];
-	
+    NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
+	if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
+        [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
+
+#endif
+#endif
+
+    [self checkForHtmlTemplates];
+
 	// ...
 	
 	if (isNewFile)
@@ -574,7 +583,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 -(NSUInteger)computeDataFileIndex {
-	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
+	DLog(@"In -[DicomDatabase computeDataFileIndex] for %@ initially %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
 	
 	BOOL hereBecauseZero = (_dataFileIndex.unsignedIntegerValue == 0);
 	@synchronized(_dataFileIndex) {
@@ -647,7 +656,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			if (!_dataFileIndex.unsignedIntegerValue)
 				_dataFileIndex.unsignedIntegerValue = 1;
 			
-			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %ld", self.sqlFilePath, _dataFileIndex.unsignedIntegerValue);
+			DLog(@"   -[DicomDatabase computeDataFileIndex] for %@ computed %d", self.sqlFilePath, (int)_dataFileIndex.unsignedIntegerValue);
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		}

@@ -1088,6 +1088,9 @@ static inline int int_ceildivpow2(int a, int b) {
 		[data replaceBytesInRange:NSMakeRange(0, [data length]) withBytes: ptr];
 		free( ptr);
 	}
+    else
+        NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+    
 	return data;
 }
 
@@ -1119,7 +1122,9 @@ static inline int int_ceildivpow2(int a, int b) {
 		[data replaceBytesInRange:NSMakeRange(0, [data length]) withBytes: ptr];
 		free( ptr);
 	}
-	
+	else
+        NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+    
 	return data;
 }
 - (void)convertBigEndianToHost{
@@ -1539,7 +1544,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			break;
 				
 			case DCMHighQuality:
-				rate = 4;
+				rate = 5;
 			break;
 				
 			case DCMMediumQuality:
@@ -2559,6 +2564,8 @@ static inline int int_ceildivpow2(int a, int b) {
 		
 		free(fBuffer);
 	}
+    else
+        NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
 }
 
 - (NSData *)convertPaletteToRGB:(NSData *)data
@@ -3497,8 +3504,17 @@ NS_ENDHANDLER
 				depth = 4;
 			int frameLength = _rows * _columns * _samplesPerPixel * depth;
 			NSRange range = NSMakeRange(index * frameLength, frameLength);
-			NSData *subdata = [[_values objectAtIndex:0]  subdataWithRange:range];
-			subData = [[subdata mutableCopy] autorelease];
+            
+            void *ptr = malloc( frameLength);
+            if( ptr)
+            {
+                memcpy( ptr, (unsigned char*) [[_values objectAtIndex:0] bytes] + range.location,  range.length);
+                subData = [NSMutableData dataWithBytesNoCopy: ptr length: frameLength freeWhenDone: YES];
+                if( subData == nil)
+                    free( ptr);
+            }
+            else
+                NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
 		}
 		//only one fame
 		else {
@@ -3628,10 +3644,19 @@ NS_ENDHANDLER
 				for ( unsigned int i = 0; i < _numberOfFrames; i++ )
 				{
 					NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
+                    
 					NSRange range = NSMakeRange(i * frameLength, frameLength);
-					NSMutableData *data = [NSMutableData dataWithData:[rawData subdataWithRange:range]];
-					[self addFrame:data];
-					[subPool release];
+                    
+                    void *ptr = malloc( range.length);
+                    if( ptr)
+                    {
+                        memcpy( ptr, (unsigned char*) [rawData bytes] + range.location, range.length);
+                        [self addFrame: [NSMutableData dataWithBytesNoCopy: ptr length: range.length freeWhenDone: YES]];
+					}
+                    else
+                        NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+                    
+                    [subPool release];
 				}
 			}
 		}

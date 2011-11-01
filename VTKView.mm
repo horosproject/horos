@@ -86,6 +86,8 @@
 
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 
 	if (c != 'q' && c!= 'e')						// Don't forward to super if Q or E key pressed: DDP (051112,051128)

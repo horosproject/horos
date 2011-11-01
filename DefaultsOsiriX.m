@@ -988,6 +988,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"autoSelectSourceCDDVD"];
 	[defaultValues setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
+    [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

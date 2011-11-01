@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1050</int>
-		<string key="IBDocument.SystemVersion">11B26</string>
+		<string key="IBDocument.SystemVersion">11C74</string>
 		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.AppKitVersion">1138.23</string>
+		<string key="IBDocument.HIToolboxVersion">567.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">1617</string>
@@ -2894,7 +2894,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrame">{{228, 7}, {282, 26}}</string>
 											<reference key="NSSuperview" ref="561937603"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPopUpButtonCell" key="NSCell" id="113921394">
 												<int key="NSCellFlags">-2076049856</int>
@@ -2910,9 +2909,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												</object>
 												<int key="NSPeriodicDelay">400</int>
 												<int key="NSPeriodicInterval">75</int>
-												<object class="NSMenuItem" key="NSMenuItem" id="457289058">
+												<object class="NSMenuItem" key="NSMenuItem" id="189932336">
 													<reference key="NSMenu" ref="567863087"/>
-													<string key="NSTitle">OpenOffice OpenFormat (.odt)</string>
+													<string key="NSTitle">Pages (.pages)</string>
 													<string key="NSKeyEquiv"/>
 													<int key="NSKeyEquivModMask">1048576</int>
 													<int key="NSMnemonicLoc">2147483647</int>
@@ -2920,7 +2919,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<reference key="NSOnImage" ref="411007757"/>
 													<reference key="NSMixedImage" ref="22084558"/>
 													<string key="NSAction">_popUpItemAction:</string>
-													<int key="NSTag">5</int>
+													<int key="NSTag">2</int>
 													<reference key="NSTarget" ref="113921394"/>
 												</object>
 												<bool key="NSMenuItemRespectAlignment">YES</bool>
@@ -2930,19 +2929,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													</object>
 													<object class="NSMutableArray" key="NSMenuItems">
 														<bool key="EncodedWithXMLCoder">YES</bool>
-														<object class="NSMenuItem" id="189932336">
+														<reference ref="189932336"/>
+														<object class="NSMenuItem" id="457289058">
 															<reference key="NSMenu" ref="567863087"/>
-															<string key="NSTitle">Pages (.pages)</string>
+															<string key="NSTitle">LibreOffice (.odt)</string>
 															<string key="NSKeyEquiv"/>
 															<int key="NSKeyEquivModMask">1048576</int>
 															<int key="NSMnemonicLoc">2147483647</int>
 															<reference key="NSOnImage" ref="411007757"/>
 															<reference key="NSMixedImage" ref="22084558"/>
 															<string key="NSAction">_popUpItemAction:</string>
-															<int key="NSTag">2</int>
+															<int key="NSTag">5</int>
 															<reference key="NSTarget" ref="113921394"/>
 														</object>
-														<reference ref="457289058"/>
 														<object class="NSMenuItem" id="180169154">
 															<reference key="NSMenu" ref="567863087"/>
 															<string key="NSTitle">TextEdit (.rtf)</string>
@@ -2993,7 +2992,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 														</object>
 													</object>
 												</object>
-												<int key="NSSelectedIndex">1</int>
 												<int key="NSPreferredEdge">3</int>
 												<bool key="NSUsesItemFromMenu">YES</bool>
 												<bool key="NSAltersState">YES</bool>

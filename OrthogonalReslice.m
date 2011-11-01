@@ -41,7 +41,7 @@
 - (id) initWithOriginalDCMPixList: (NSMutableArray*) pixList
 {
 	self = [self init];
-    
+
 	[self setOriginalDCMPixList:pixList];
 	
 	float sliceInterval;

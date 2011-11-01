@@ -339,6 +339,8 @@ static float deg2rad = M_PI / 180.0;
 		[self setToolIndex: tWL];
         
         self.cprType = [[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
+        
+        [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
 	}
 	
 	@catch (NSException *e)
@@ -455,6 +457,18 @@ static float deg2rad = M_PI / 180.0;
 		[mprView1.curvedPath removeNodeAtIndex: 0];
 	[self CPRViewDidUpdateCurvedPath: mprView1];
 	[self CPRViewDidEditCurvedPath: mprView1];
+    
+    // Restore previous path, if it exists
+    
+    NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+	
+	if (![[NSFileManager defaultManager] fileExistsAtPath: path])
+		[[NSFileManager defaultManager] createDirectoryAtPath: path attributes: nil];
+	
+    path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+	
+    if( path)
+        [self loadBezierPathFromFile: path];
 }
 
 -(void) awakeFromNib
@@ -850,6 +864,8 @@ static float deg2rad = M_PI / 180.0;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
+    if( [[theEvent characters] length] == 0) return;
+    
     unichar c = [[theEvent characters] characterAtIndex:0];
     
 	if( c ==  ' ')
@@ -3058,6 +3074,122 @@ static float deg2rad = M_PI / 180.0;
 //    return 0;
 //}
 
+#pragma mark Path Loading And Saving
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
+{
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
+    {
+        //this means that the sender is offering the type of operation we want
+        //return that we want the NSDragOperationGeneric operation that they 
+        //are offering
+        return NSDragOperationGeneric;
+    }
+    else
+    {
+        //since they aren't offering the type of operation we want, we have 
+        //to tell them we aren't interested
+        return NSDragOperationNone;
+    }
+}
+
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender
+{
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) == NSDragOperationGeneric)
+    {
+        //this means that the sender is offering the type of operation we want
+        //return that we want the NSDragOperationGeneric operation that they 
+        //are offering
+        return NSDragOperationGeneric;
+    }
+    else
+    {
+        //since they aren't offering the type of operation we want, we have 
+        //to tell them we aren't interested
+        return NSDragOperationNone;
+    }
+}
+
+- (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender
+{
+    return YES;
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender
+{
+    NSPasteboard *paste = [sender draggingPasteboard];
+    NSArray	*types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
+    NSString *desiredType = [paste availableTypeFromArray: types];
+
+    if( [desiredType isEqualToString: NSFilenamesPboardType])
+    {
+        NSArray *fileArray = [paste propertyListForType: @"NSFilenamesPboardType"];
+        
+        for( NSString *file in fileArray)
+        {
+            if( [[file pathExtension] isEqualToString: @"curvedPath"])
+            {
+                [self loadBezierPathFromFile: file];
+                
+                return YES;
+            }
+        }
+    }
+    
+    return NO;
+}
+
+- (IBAction) saveBezierPath: (id) sender
+{
+    NSSavePanel *sPanel	= [NSSavePanel savePanel];
+    
+    [sPanel setRequiredFileType: @"curvedPath"];
+    
+    if( [sPanel runModalForDirectory: nil file: [[[viewer2D currentStudy] valueForKey: @"name"] stringByAppendingPathExtension: @"curvedPath"]] == NSFileHandlingPanelOKButton)
+    {
+        [self saveBezierPathToFile: [sPanel filename]];
+    }
+}
+
+- (IBAction) loadBezierPath: (id) sender;
+{
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+	
+	if ([oPanel runModalForDirectory: nil file:nil types:[NSArray arrayWithObject: @"curvedPath"]] == NSFileHandlingPanelOKButton)
+	{
+        [self loadBezierPathFromFile: [oPanel filename]];
+    }
+}
+
+-(void) saveBezierPathToFile: (NSString*) path
+{
+    NSData *curvedPathData = [NSKeyedArchiver archivedDataWithRootObject:curvedPath];
+
+    [curvedPathData writeToFile: path atomically: YES];
+}
+
+-(void) loadBezierPathFromFile: (NSString*) path
+{
+    NSData *data = [NSData dataWithContentsOfFile: path];
+    if( data)
+    {
+        CPRCurvedPath *newCurvedPath = [NSKeyedUnarchiver unarchiveObjectWithData: data];
+        
+        if( newCurvedPath)
+        {
+            self.curvedPath = newCurvedPath;
+            
+            mprView1.curvedPath = curvedPath;
+			mprView2.curvedPath = curvedPath;
+			mprView3.curvedPath = curvedPath;
+			cprView.curvedPath = curvedPath;
+			topTransverseView.curvedPath = curvedPath;
+			middleTransverseView.curvedPath = curvedPath;
+			bottomTransverseView.curvedPath = curvedPath;
+        }
+    }
+}
+
 #pragma mark NSWindow Notifications action
 
 - (ViewerController*) viewer
@@ -3069,6 +3201,19 @@ static float deg2rad = M_PI / 180.0;
 {
 	if( [notification object] == [self window])
 	{
+        // Save current path for next time
+        NSString *path = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:STATEDATABASE];
+        
+        if (![[NSFileManager defaultManager] fileExistsAtPath:path])
+            [[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
+        
+        path = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"CPR-%@", [[[viewer2D fileList: 0] objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+        
+        if( path)
+            [self saveBezierPathToFile: path];
+        
+        // *******
+        
         cprView.rotation = 0;
         
 		[[self window] setAcceptsMouseMovedEvents: NO];
@@ -3297,6 +3442,15 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportDICOMFile:)];
     }
+    else if ([itemIdent isEqualToString: @"curvedPath.icns"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Curved Path",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Curved Path",nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Export this curved path in a file",nil)];
+		[toolbarItem setImage: [NSImage imageNamed: @"curvedPath.icns"]];
+		[toolbarItem setTarget: self];
+		[toolbarItem setAction: @selector( saveBezierPath:)];
+    }
 //	else if ([itemIdent isEqualToString: @"Capture.icns"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
@@ -3426,7 +3580,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3435,7 +3589,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3446,6 +3600,12 @@ static float deg2rad = M_PI / 180.0;
 			return NO;
 	}
 	
+    if( [item action] == @selector( saveBezierPath:))
+	{
+		if( [curvedPath.nodes count] < 3)
+			return NO;
+	}
+    
 	return YES;
 }
 
@@ -3462,7 +3622,13 @@ static float deg2rad = M_PI / 180.0;
 		if( [curvedPath.nodes count] < 3)
 			return NO;
 	}
-	
+    
+    if ([[toolbarItem itemIdentifier] isEqualToString: @"curvedPath.icns"])
+	{
+		if( [curvedPath.nodes count] < 3)
+			return NO;
+	}
+    
 	return YES;
 }
 

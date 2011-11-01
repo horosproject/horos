@@ -133,7 +133,8 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSWindow				*subSeriesWindow;
 	IBOutlet NSButton				*subSeriesOKButton;
 	IBOutlet NSTextField			*memoryMessage;
-	IBOutlet NSBox					*enoughMem, *notEnoughMem;
+	IBOutlet NSImageView			*leftIcon, *rightIcon;
+	IBOutlet NSBox					*warningBox;
 	
 	IBOutlet NSWindow				*bonjourPasswordWindow;
 	IBOutlet NSTextField			*password;
@@ -250,7 +251,7 @@ extern NSString* O2AlbumDragType;
     
 }
 
-@property(retain) DicomDatabase* database;
+@property(retain,nonatomic) DicomDatabase* database;
 @property(readonly) NSArrayController* sources;
 
 @property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
@@ -301,6 +302,11 @@ extern NSString* O2AlbumDragType;
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password deleteSource: (BOOL) deleteSource showGUI: (BOOL) showGUI;
 + (void) encryptFiles: (NSArray*) srcFiles inZIPFile: (NSString*) destFile password: (NSString*) password;
 - (IBAction) createDatabaseFolder:(id) sender;
+- (IBAction) addAlbum:(id)sender;
+- (IBAction) deleteAlbum: (id)sender;
+- (IBAction) saveAlbums:(id) sender;
+- (IBAction) addAlbums:(id) sender;
+- (IBAction) defaultAlbums: (id) sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
 - (BOOL) shouldTerminate: (id) sender;
@@ -317,6 +323,7 @@ extern NSString* O2AlbumDragType;
 - (NSPredicate*) smartAlbumPredicateString:(NSString*) string;
 - (void) emptyDeleteQueueThread;
 - (void) emptyDeleteQueue:(id) sender;
+- (BOOL)isUsingExternalViewer: (NSManagedObject*) item;
 - (void) addFileToDeleteQueue:(NSString*) file;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension __deprecated;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder __deprecated;

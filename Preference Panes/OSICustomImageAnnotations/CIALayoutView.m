@@ -198,14 +198,14 @@
 - (void)setDefaultEnabledText;
 {
 	[enabledText release];
-	enabledText = NSLocalizedStringFromTableInBundle( @"Drag Annotations in the place holders", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil);
+	enabledText = NSLocalizedString( @"Drag Annotations in the place holders", nil);
 	[enabledText retain];
 }
 
 - (void)setDefaultDisabledText;
 {
 	[disabledText release];
-	disabledText = NSLocalizedStringFromTableInBundle(@"Same as Default Settings...", nil, [NSBundle bundleForClass: [OSICustomImageAnnotations class]], nil);
+	disabledText = NSLocalizedString(@"Same as Default Settings...", nil);
 	[disabledText retain];
 }
 

@@ -90,8 +90,6 @@ static BonjourBrowser *currentBrowser = nil;
 	return services;
 }
 
-
-
 - (void)showErrorMessage: (NSString*) s
 {	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)

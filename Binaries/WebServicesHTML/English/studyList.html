@@ -22,7 +22,7 @@
 	            if( %Session.Page% == 0) document.write("<<  ");
 	            else document.write("<b><a href='?%Info.getParameters(page=)%&page="+previous+"'><<  </a></b>");
             
-   	         	for (i=1;i<=%Session.NumberOfPages%+1;i++)
+   	         	for (i=1;i<%Session.NumberOfPages%+1;i++)
     	        {
         	    	var page = i-1;
             		if( i == %Session.Page%+1) document.write("<b><u>"+i+"</u></b>  ");
@@ -100,7 +100,7 @@
 	            if( %Session.Page% == 0) document.write("<<  ");
 	            else document.write("<b><a href='?%Info.getParameters(page=)%&page="+previous+"'><<  </a></b>");
             
-   	         	for (i=1;i<=%Session.NumberOfPages%+1;i++)
+   	         	for (i=1;i<%Session.NumberOfPages%+1;i++)
     	        {
         	    	var page = i-1;
             		if( i == %Session.Page%+1) document.write("<b><u>"+i+"</u></b>  ");

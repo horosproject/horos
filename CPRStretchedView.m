@@ -1309,6 +1309,8 @@ extern int splitPosition[ 3];
 
 - (void)keyDown:(NSEvent *)theEvent
 {
+    if( [[theEvent characters] length] == 0) return;
+    
     unichar c = [[theEvent characters] characterAtIndex:0];
     
     if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode)

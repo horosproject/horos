@@ -300,7 +300,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 	}
 	catch (...)
 	{
-		if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+		if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 			[[AppController sharedAppController] osirix64bit: self];
 	}
 }
@@ -1231,6 +1231,8 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 #pragma mark User Commands
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
 	
 	if( c == ' ')

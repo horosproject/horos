@@ -88,11 +88,6 @@ extern "C"
 }
 #endif
 
-extern "C" 
-{
-	extern int spline(NSPoint *Pt, int tot, NSPoint **newPt, double scale);
-}
-
 #define D2R 0.01745329251994329576923690768    // degrees to radians
 #define R2D 57.2957795130823208767981548141    // radians to degrees
 
@@ -2013,7 +2008,7 @@ public:
 		{
 			NSLog( @"C++ Exception during drawRect... not enough memory?");
 			
-			if( NSRunAlertPanel( NSLocalizedString(@"Not Enough Memory",nil), NSLocalizedString( @"Not enough memory (RAM) to use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+			if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot use the 3D engine.\r\rUpgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
 				[[AppController sharedAppController] osirix64bit: self];
 				
 			[[self window] performSelector:@selector(performClose:) withObject:self afterDelay: 1.0];
@@ -2058,6 +2053,8 @@ public:
 	
     NSLog(@"Dealloc VRView");
 	
+    [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
+    
 	[[IMService notificationCenter] removeObserver: self];
 	
 	[dcmSeriesString release];
@@ -2715,7 +2712,7 @@ public:
 
 		NSPoint *splinePts;
 		
-		long newNb = spline(nspts, nb, &splinePts, 0.1);
+		long newNb = spline(nspts, nb, &splinePts, nil, 0.1);
 		
 		for( long i=0; i<newNb; i++)
 			pts->InsertPoint( pts->GetNumberOfPoints(), splinePts[i].x, splinePts[i].y, 0);
@@ -4439,6 +4436,8 @@ public:
 
 - (void) keyUp:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
 	unichar c = [[event characters] characterAtIndex:0];
 	
 	if( c ==  'f')
@@ -4450,6 +4449,8 @@ public:
 
 - (void) keyDown:(NSEvent *)event
 {
+    if( [[event characters] length] == 0) return;
+    
     unichar c = [[event characters] characterAtIndex:0];
     
 	if( c ==  'f')

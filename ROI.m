@@ -4049,6 +4049,17 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
+                if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
+                {
+                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+                }
+                else
+                {
+                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+                }
+                
 				glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_INTENSITY8, textureWidth, textureHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, textureBuffer);
 				
 				glBegin (GL_QUAD_STRIP); // draw either tri strips of line strips (so this will drw either two tris or 3 lines)
@@ -6026,9 +6037,18 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 
-	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-	glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
-	
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NOINTERPOLATION"])
+    {
+        glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+        glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	//GL_LINEAR_MIPMAP_LINEAR
+    }
+    else
+    {
+        glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+        glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	//GL_LINEAR_MIPMAP_LINEAR
+	}
+    
 	#if __BIG_ENDIAN__
 	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
 	#else

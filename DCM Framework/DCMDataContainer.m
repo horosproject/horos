@@ -568,12 +568,23 @@
 
 }
 
-- (NSMutableData *)nextDataWithLength:(int)length{
-	NSException *exception = [self testForLength:length];
-	if (!exception) {
-		NSRange range = {position, length};
-		NSData *data = [dicomData subdataWithRange:range];
-		NSMutableData *aData = [[[NSMutableData alloc] initWithData:data] autorelease];
+- (NSMutableData *)nextDataWithLength:(int)length
+{
+	NSException *exception = [self testForLength: length];
+	if (!exception)
+    {
+        NSMutableData *aData = nil;
+        void *ptr = malloc( length);
+        if( ptr)
+        {
+            memcpy( ptr, [dicomData bytes] + position, length);
+            aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
+            
+            if( aData == nil)
+                free( ptr);
+        }
+        else
+            NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
 		position += length;
 		return aData;
 	}
@@ -971,17 +982,33 @@
 	return NO;			
 }
 
-- (NSException *)testForLength: (int)elementLength{
-		
-	if (position + elementLength > [dicomData length] || elementLength < 0 || position < 0) {
+- (NSException *)testForLength: (int)elementLength
+{
+	if (position + elementLength > [dicomData length] || elementLength < 0 || position < 0)
+    {
 		NSArray *keys = [NSArray arrayWithObjects:@"position", @"elementLength", @"dataLength", nil];
 		NSArray *objects = [NSArray arrayWithObjects:[NSNumber numberWithInt:position], [NSNumber numberWithInt:elementLength], [NSNumber numberWithInt:[dicomData length]], nil];
 	
 		NSDictionary *userInfo =  [NSDictionary dictionaryWithObjects:objects forKeys:keys];
 		if (DCMDEBUG)
 			NSLog(@"error Info: %@", [userInfo description]);
+        
+        
+        
 		return [NSException exceptionWithName:@"DCMInvalidLengthException" reason:@"Length of element exceeds length remaining in data." userInfo:userInfo];
 	}
+    
+    if( elementLength > 100)
+    {
+        void *ptr = malloc( elementLength + 1024);
+        if( ptr == nil)
+        {
+            NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+            return [NSException exceptionWithName: @"Not Enough Memory" reason: @"Not Enough Memory - Upgrade to OsiriX 64-bit." userInfo: nil];
+        }
+        else free( ptr);
+    }
+    
 	return nil;
 }
 

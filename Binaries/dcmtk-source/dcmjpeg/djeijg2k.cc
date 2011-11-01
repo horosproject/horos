@@ -430,7 +430,7 @@ OFCondition DJCompressJP2K::encode(
 				break;
 				
 			case 1: //DCMHighQuality:
-				rate = 4;
+				rate = 5;
 				break;
 				
 			case 2: //DCMMediumQuality:
