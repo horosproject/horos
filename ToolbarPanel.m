@@ -302,6 +302,8 @@ static int increment = 0, previousNumberOfScreens = 0;
 	
 	if( tb == toolbar)
 	{
+        NSDisableScreenUpdates();
+        
 		if( viewer != nil)
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	
@@ -320,6 +322,9 @@ static int increment = 0, previousNumberOfScreens = 0;
 			}
 		}
 		else [[self window] orderOut: self];
+        
+        NSEnableScreenUpdates();
+        
 		return;
 	}
 	
@@ -332,7 +337,9 @@ static int increment = 0, previousNumberOfScreens = 0;
 		toolbar = [tb retain];
 		[toolbar setShowsBaselineSeparator: NO];
 	}
-	
+    
+    NSDisableScreenUpdates();
+    
 	if( toolbar)
 	{
 		if( [associatedScreen objectForKey: [NSValue valueWithPointer: toolbar]] != [[self window] screen])
@@ -367,6 +374,8 @@ static int increment = 0, previousNumberOfScreens = 0;
 		if( [[viewer window] isKeyWindow])
 			[[self window] orderWindow: NSWindowBelow relativeTo: [[viewer window] windowNumber]];
 	}
+    
+    NSEnableScreenUpdates();
 }
 
 @end
