@@ -2111,11 +2111,16 @@ public:
     aCamera->Delete();
 //	aRenderer->Delete();
 	
-	Line2DData->Delete();
-	ROI3DData->Delete();
-	ROI3D->Delete();
+	Oval2DData->Delete();
+	Oval2D->Delete();
+	Oval2DActor->Delete();
+	Oval2DText->Delete();
+	
+    ROI3DData->Delete();
+    ROI3D->Delete();
 	ROI3DActor->Delete();
 	
+    Line2DData->Delete();
 	Line2D->Delete();
 	Line2DActor->Delete();
 	Line2DText->Delete();
@@ -4713,6 +4718,33 @@ public:
 			if( croppingBox->GetEnabled()) croppingBox->Off();
 	}
 	
+    if( currentTool == tOval || previousTool == tOval)
+	{
+		if( bestRenderingWasGenerated)
+		{
+			bestRenderingWasGenerated = NO;
+			[self display];
+		}
+		dontRenderVolumeRenderingOsiriX = 1;
+		
+//		vtkPoints *pts = Oval2DData->GetPoints();
+//		
+//		if( pts->GetNumberOfPoints() != 0)
+//		{
+//			// Delete current ROI
+//			vtkPoints *pts = vtkPoints::New();
+//			vtkCellArray *rect = vtkCellArray::New();
+//			Oval2DData-> SetPoints( pts);		pts->Delete();
+//			Oval2DData-> SetLines( rect);		rect->Delete();
+//			aRenderer->RemoveActor( Oval2DText);
+//			measureLength = 0;
+//			
+//			[self display];
+//		}
+		
+		dontRenderVolumeRenderingOsiriX = 0;
+	}
+    
 	if( currentTool == tMesure || previousTool == tMesure)
 	{
 		if( bestRenderingWasGenerated)
@@ -4722,7 +4754,7 @@ public:
 		}
 		dontRenderVolumeRenderingOsiriX = 1;
 		
-		vtkPoints		*pts = Line2DData->GetPoints();
+		vtkPoints *pts = Line2DData->GetPoints();
 		
 		if( pts->GetNumberOfPoints() != 0)
 		{
@@ -6050,7 +6082,36 @@ public:
 		
 		aRenderer->AddActor2D( ROI3DActor);
 		
-		//	2D Line
+        // 2D Oval
+		Oval2DData = vtkRegularPolygonSource::New();
+		Oval2DData->SetNumberOfSides( 50);
+        Oval2DData->SetRadius( 200);
+        Oval2DData->SetCenter( 200, 200,0);
+        Oval2DData->SetGeneratePolygon( 0);
+        
+        Oval2D = vtkPolyDataMapper2D::New();
+        Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
+        
+        Oval2DActor = vtkActor2D::New();
+		Oval2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
+		Oval2DActor->SetMapper( Oval2D);
+		Oval2DActor->GetProperty()->SetPointSize( 6);	//vtkProperty2D
+		Oval2DActor->GetProperty()->SetLineWidth( 2.5);
+		Oval2DActor->GetProperty()->SetColor(1,1,0);
+        
+		Oval2DText = vtkTextActor::New();
+		Oval2DText->SetInput( " ");
+		Oval2DText->SetScaledText( false);
+		Oval2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+		Oval2DText->GetPositionCoordinate()->SetValue( 2., 2.);
+		Oval2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
+		Oval2DText->GetTextProperty()->SetBold( true);
+		Oval2DText->GetTextProperty()->SetShadow(true);
+		Oval2DText->GetTextProperty()->SetShadowOffset(1, 1);
+		
+		aRenderer->AddActor2D( Oval2DActor);
+        
+		// 2D Line
 		pts = vtkPoints::New();
 		rect = vtkCellArray::New();
 		

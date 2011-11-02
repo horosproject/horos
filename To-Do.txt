@@ -8,7 +8,6 @@ New Features:
 
 - SUV on PET 3D Panel (3D MIP)
 - Reports to PDF
-- DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
 - Database Banner + KSA
 ---------------------------------------------------------------------------------------------------------
 

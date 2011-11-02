@@ -87,6 +87,7 @@
 
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"
+#include "vtkRegularPolygonSource.h"
 
 #ifdef _STEREO_VISION_
 // Added SilvanWidmer 10-08-09
@@ -142,6 +143,7 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 typedef char* vtkRenderer;
 typedef char* vtkVolumeTextureMapper3D;
 typedef char* vtkOrientationMarkerWidget;
+typedef char* vtkRegularPolygonSource;
 
 typedef char* vtkMyCallbackVR;
 
@@ -311,6 +313,11 @@ typedef char* VTKStereoVRView;
 	vtkActor2D					*Line2DActor;
 	vtkTextActor				*Line2DText;
 	
+    vtkRegularPolygonSource		*Oval2DData;
+	vtkPolyDataMapper2D			*Oval2D;
+	vtkActor2D					*Oval2DActor;
+	vtkTextActor				*Oval2DText;
+    
 	BOOL						clamping;
 	
 	DICOMExport					*exportDCM;

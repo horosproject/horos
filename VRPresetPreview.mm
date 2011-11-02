@@ -533,6 +533,13 @@
 //	
 //	aRenderer->AddActor2D( ROI3DActor);
 	
+    // Oval
+    
+    Oval2DData = vtkRegularPolygonSource::New();
+    Oval2D = vtkPolyDataMapper2D::New();
+    Oval2DActor = vtkActor2D::New();
+    Oval2DText = vtkTextActor::New();
+    
 	//	2D Line
 //	pts = vtkPoints::New();
 //	rect = vtkCellArray::New();
