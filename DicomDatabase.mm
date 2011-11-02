@@ -711,18 +711,24 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
 	req.predicate = [NSPredicate predicateWithValue:YES];
     
-    [context lock];
+//    [context lock];
+    NSArray* albums = [context executeFetchRequest:req error:NULL]; // this call locks the db
     @try {
-        NSArray* albums = [context executeFetchRequest:req error:NULL];
-        NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-        return [albums sortedArrayUsingDescriptors:[NSArray arrayWithObject: sd]];
+//        NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+        albums = [albums sortedArrayUsingComparator: ^(id a, id b) { // the risk here is that an album is deleted while the list is being sorted
+            @try {
+                return [[a name] caseInsensitiveCompare:[b name]];
+            } @catch (...) {
+            }
+            return 0;
+        }];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-        [context unlock];
+//        [context unlock];
     }
     
-    return nil;
+    return albums;
 }
 
 -(NSArray*)albums {
@@ -834,11 +840,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	if (currentTime-_timeOfLastIsFileSystemFreeSizeLimitReachedVerification > 20) {
 		// refresh _isFileSystemFreeSizeLimitReached
 		NSDictionary* dataBasePathAttrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+		NSNumber* dataBasePathSize = [dataBasePathAttrs objectForKey:NSFileSystemSize];
 		NSNumber* dataBasePathFreeSize = [dataBasePathAttrs objectForKey:NSFileSystemFreeSize];
-		if (dataBasePathFreeSize) {
+		if (dataBasePathFreeSize && dataBasePathSize) {
+			unsigned long long sizeBytes = [dataBasePathSize unsignedLongLongValue], sizeMegaBytes = sizeBytes/1024/1024;
 			unsigned long long freeBytes = [dataBasePathFreeSize unsignedLongLongValue], freeMegaBytes = freeBytes/1024/1024;
 			
-			_isFileSystemFreeSizeLimitReached = freeMegaBytes < 300; // 300 MB is the lower limit
+            unsigned long long thresholdMegaBytes = MIN(300, sizeMegaBytes/100); // 300 MB is the lower limit, but if the disk is small, the threshold is put at 1/100 the disk's size
+            
+			_isFileSystemFreeSizeLimitReached = freeMegaBytes < thresholdMegaBytes;
 			_timeOfLastIsFileSystemFreeSizeLimitReachedVerification = currentTime;
 			
 			if (_isFileSystemFreeSizeLimitReached)
@@ -2462,7 +2472,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	//	return;
 	
 	if ([_importFilesFromIncomingDirLock tryLock]) {
-		if ([BrowserController isHardDiskFull]) {
+		if ([self isFileSystemFreeSizeLimitReached]) {
 			[NSFileManager.defaultManager removeItemAtPath:[self incomingDirPath] error:nil]; // Kill the incoming directory
 			[[AppController sharedAppController] growlTitle:NSLocalizedString(@"Warning", nil) description: NSLocalizedString(@"The database volume is full! Incoming files are ignored.", nil) name:@"newfiles"];
 		}

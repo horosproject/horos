@@ -46,6 +46,9 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 @property(retain) NSNumber* numberOfFrames;
 
 @property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
 @property(nonatomic, retain) NSData* compressedSopInstanceUID;
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSNumber* frameID;

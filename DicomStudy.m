@@ -163,7 +163,7 @@ NSString* soundex4( NSString *inString)
 @implementation DicomStudy
 
 @dynamic accessionNumber;
-@dynamic comment;
+@dynamic comment, comment2, comment3, comment4;
 @dynamic date;
 @dynamic dateAdded;
 @dynamic dateOfBirth;
@@ -1312,24 +1312,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSArray *)imageSeries
 {
-	[[self managedObjectContext] lock];
+//	[[self managedObjectContext] lock];
 	
 	NSMutableArray *newArray = [NSMutableArray array];
 	
-	@try
-	{
-		for (id series in [self primitiveValueForKey: @"series"])
-		{
-			if( [DicomStudy displaySeriesWithSOPClassUID: [series valueForKey:@"seriesSOPClassUID"] andSeriesDescription: [series valueForKey: @"name"]])
-				[newArray addObject:series];
+	@try {
+		for (DicomSeries* series in [self primitiveValueForKey:@"series"]) {
+			@try {
+                if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name])
+                    [newArray addObject:series];
+            } @catch (NSException* e) {
+            }
 		}
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"imageSeries exception: %@", e);
+	} @catch (NSException *e)	{
 	}
 	
-	[[self managedObjectContext] unlock];
+//	[[self managedObjectContext] unlock];
 	
 	return newArray;
 }

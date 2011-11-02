@@ -16,6 +16,7 @@
 #import "N2Debug.h"
 #import "AppController.h"
 #import "ThreadsManager.h"
+#import "DicomImage.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "BrowserController.h"
@@ -315,32 +316,44 @@
 	
 }
 
+static BOOL _showingCleanForFreeSpaceWarning = NO;
+
+-(void)_cleanForFreeSpaceWarning {
+    if (!_showingCleanForFreeSpaceWarning) {
+        _showingCleanForFreeSpaceWarning = YES;
+        NSBeginAlertSheet(NSLocalizedString(@"Warning", nil), nil, nil, nil, nil, self, @selector(_cleanForFreeSpaceWarningDidEnd:returnCode:contextInfo:), nil, nil, NSLocalizedString(@"Your hard disk is FULL! Major risks of failure! Clean your database!!", nil));
+    }
+}
+
+-(void)_cleanForFreeSpaceWarningDidEnd:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo {
+    _showingCleanForFreeSpaceWarning = NO;
+}
+
 -(void)cleanForFreeSpace {
 	[_cleanLock lock];
 	@try {
-		if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
+        
+        if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
 		{
+            NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+            if (![fsattrs objectForKey:NSFileSystemSize]) {
+                NSLog(@"Error: database cleaning mechanism couldn't obtain filesystem size information for %@", self.dataBaseDirPath);
+                return;
+            }
+            
+			float acss = [[NSUserDefaults.standardUserDefaults stringForKey:@"AUTOCLEANINGSPACESIZE"] floatValue];
 			unsigned long long freeMemoryRequested = 0;
-			NSString* acss = [NSUserDefaults.standardUserDefaults stringForKey:@"AUTOCLEANINGSPACESIZE"];
-			
-			if( [acss floatValue] < 0) // Percentages !
-			{
-				NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
-				unsigned long long diskSize = [[fsattrs objectForKey:NSFileSystemSize] unsignedLongLongValue]/1024/1024;
-
-				double percentage = - (float) [acss floatValue] / 100.;
-				freeMemoryRequested = diskSize * percentage;
-			}
-			else freeMemoryRequested = [acss longLongValue];
+			if (acss < 0) { // Percentages !
+                unsigned long long diskSizeMB = [[fsattrs objectForKey:NSFileSystemSize] unsignedLongLongValue]/1024/1024;
+				freeMemoryRequested = -acss/100*diskSizeMB;
+			} else freeMemoryRequested = acss;
 			
 			[self cleanForFreeSpaceMB:freeMemoryRequested];
 		}
 		
-		// warn user if less than 300 MB available
-		NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
-		if( [fsattrs objectForKey:NSFileSystemFreeSize])
-			if ([[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024 < 300)
-				[self performSelectorOnMainThread:@selector(_cleanForFreeSpaceWarning) withObject:nil waitUntilDone:NO];
+		// warn user if less than 1% / 300MB available
+		if ([self isFileSystemFreeSizeLimitReached])
+            [self performSelectorOnMainThread:@selector(_cleanForFreeSpaceWarning) withObject:nil waitUntilDone:NO];
 		
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
@@ -352,184 +365,117 @@
 -(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {
 	[_cleanLock lock];
 	@try {
-		NSDictionary *fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
-		
-		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
-		
+		NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
 		if ([fsattrs objectForKey:NSFileSystemFreeSize] == nil) {
-			NSLog( @"*** autoCleanDatabaseFreeSpace [fsattrs objectForKey:NSFileSystemFreeSize] == nil ?? : %@", self.dataBaseDirPath);
+			NSLog(@"Error: database cleaning mechanism couldn't obtain filesystem space information for %@", self.dataBaseDirPath);
 			return;
 		}
 		
-		if( _lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) {
+		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024; // megabytes
+
+		if (_lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) { // not more often than every ten minutes, log about the disk's free space
 			_lastFreeSpace = free;
 			_lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
-			NSLog(@"HD Free Space: %ld MB", (long)free);
+			NSLog(@"Info: database free space is %ld MB", (long)free);
 		}
 		
 		if (free >= freeMemoryRequested)
 			return;
 		
-		NSLog(@"------------------- Limit Reached - Starting autoCleanDatabaseFreeSpace");
+		NSLog(@"Info: cleaning for space (%lld MB available, %lld MB requested)", free, (unsigned long long)freeMemoryRequested);
 		
-		if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"] == NO && [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACEOPENED"] == NO)
-		{
-			NSLog( @"***** WARNING - AUTOCLEANINGSPACE : no options specified !");
-		}
-		else {
-			NSMutableArray* unlockedStudies = nil;
-			BOOL dontDeleteStudiesWithComments = [NSUserDefaults.standardUserDefaults boolForKey: @"dontDeleteStudiesWithComments"];
-			
-			@try
-			{
-				do
-				{
-					NSTimeInterval producedInterval = 0;
-					NSTimeInterval openedInterval = 0;
-					NSManagedObject *oldestStudy = nil, *oldestOpenedStudy = nil;
-					
-					[self lock];
-					@try {
-						NSArray* studiesArray = [self objectsForEntity:self.studyEntity];
-						
-						NSSortDescriptor * sort = [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease];
-						studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: sort]];
-						
-						unlockedStudies = [NSMutableArray arrayWithArray: studiesArray];
-						
-						for( int i = 0; i < [unlockedStudies count]; i++)
-						{
-							if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"lockedStudy"] boolValue] == YES)
-							{
-								[unlockedStudies removeObjectAtIndex: i];
-								i--;
-							}
-							else if( dontDeleteStudiesWithComments)
-							{
-								DicomStudy *dy = [unlockedStudies objectAtIndex: i];
-								
-								NSString *str = @"";
-								
-								if( [dy valueForKey: @"comment"])
-									str = [str stringByAppendingString: [dy valueForKey: @"comment"]];
-								if( [dy valueForKey: @"comment2"])
-									str = [str stringByAppendingString: [dy valueForKey: @"comment2"]];
-								if( [dy valueForKey: @"comment3"])
-									str = [str stringByAppendingString: [dy valueForKey: @"comment3"]];
-								if( [dy valueForKey: @"comment4"])
-									str = [str stringByAppendingString: [dy valueForKey: @"comment4"]];
-								
-								if( str != nil && [str isEqualToString:@""] == NO)
-								{
-									[unlockedStudies removeObjectAtIndex: i];
-									i--;
-								}
-							}
-						}
-						
-						if( [unlockedStudies count] > 2)
-						{
-							for( long i = 0; i < [unlockedStudies count]; i++)
-							{
-								NSString	*patientID = [[unlockedStudies objectAtIndex: i] valueForKey:@"patientID"];
-								long		to;
-								
-								if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
-								{
-									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
-									{
-										oldestStudy = [unlockedStudies objectAtIndex: i];
-										producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-									}
-								}
-								
-								NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-								if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-								
-								if( [openedDate timeIntervalSinceNow] < openedInterval)
-								{
-									oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-									openedInterval = [openedDate timeIntervalSinceNow];
-								}
-								
-								while( i < [unlockedStudies count]-1 && [patientID isEqualToString:[[unlockedStudies objectAtIndex: i+1] valueForKey:@"patientID"]] == YES)
-								{
-									i++;
-									if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"date"] timeIntervalSinceNow] < producedInterval)
-									{
-										if( [[[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"] timeIntervalSinceNow] < -60*60*24)	// 24 hours
-										{
-											oldestStudy = [unlockedStudies objectAtIndex: i];
-											producedInterval = [[oldestStudy valueForKey:@"date"] timeIntervalSinceNow];
-										}
-									}
-									
-									openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-									if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
-									
-									if( [openedDate timeIntervalSinceNow] < openedInterval)
-									{
-										oldestOpenedStudy = [unlockedStudies objectAtIndex: i];
-										openedInterval = [openedDate timeIntervalSinceNow];
-									}
-								}
-								to = i;
-							}
-						}
-						
-						if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"])
-						{
-							if( oldestStudy)
-							{
-								NSLog( @"delete oldestStudy: %@", [oldestStudy valueForKey:@"patientUID"]);
-								[self.managedObjectContext deleteObject: oldestStudy];
-							}
-						}
-						
-						if ( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACEOPENED"])
-						{
-							if( oldestOpenedStudy)
-							{
-								NSLog( @"delete oldestOpenedStudy: %@", [oldestOpenedStudy valueForKey:@"patientUID"]);
-								[self.managedObjectContext deleteObject: oldestOpenedStudy];
-							}
-						}
-						
-						[self save:NULL];
-						
-					} @catch (NSException* e) {
-						N2LogExceptionWithStackTrace(e);
-					} @finally {
-						[self unlock];
-					}
-					
-					[[BrowserController currentBrowser] emptyDeleteQueueNow: self];
-					
-					fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
-					
-					free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
-				} while (free < freeMemoryRequested && [unlockedStudies count] > 2);
-			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-			}
-			
-			NSLog(@"------------------- Finishing autoCleanDatabaseFreeSpace");
-			
-			// refresh database
-			[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:nil];
-			[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:nil];
-			[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:nil];
-			[NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:nil];
-		}
-	} @catch (NSException* e) {
-		N2LogExceptionWithStackTrace(e);
-	} @finally {
-		[_cleanLock unlock];
-	}
-}
-
--(void)_cleanForFreeSpaceWarning {
-	NSRunCriticalAlertPanel(NSLocalizedString(@"Warning", nil), NSLocalizedString(@"Your hard disk is FULL! Major risks of failure! Clean your database!!", nil), NSLocalizedString(@"OK",nil), nil, nil);
+        NSMutableArray* studies = [NSMutableArray array];
+        NSMutableArray* studiesDates = [NSMutableArray array];
+        
+        BOOL flagDoNotDeleteIfComments = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesWithComments"];
+        NSInteger autocleanSpaceMode = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] intValue];
+        
+        for (DicomStudy* study in [self objectsForEntity:self.studyEntity]) {   
+            // if study is locked, do not delete it
+            if ([study.lockedStudy boolValue])
+                continue;
+            // if the user told us not to delete studies with comments and there are comments, do not delete it
+            if (flagDoNotDeleteIfComments)
+                if (study.comment.length || study.comment2.length || study.comment3.length || study.comment4.length)
+                    continue;
+            
+            // study can be deleted
+            NSDate* d = nil; // determine the delete priority date
+            switch (autocleanSpaceMode) {
+                case 0: { // oldest Studies
+                    d = study.date;
+                } break;
+                case 1: { // oldest unopened
+                    if (study.dateOpened)
+                        d = study.dateOpened;
+                    else
+                        if (study.dateAdded)
+                            d = study.dateAdded;
+                        else d = study.date;
+                } break;
+                case 2: { // least recently added
+                    if (study.dateAdded)
+                        d = study.dateAdded;
+                    else d = study.date;
+                } break;
+            }
+            
+            [studiesDates addObject:[NSArray arrayWithObjects: study, d, nil]];   
+        }
+        
+        // sort studiesDates by date
+        [studiesDates sortUsingComparator: ^(id a, id b) {
+            return [[a objectAtIndex:1] compare:[b objectAtIndex:1]];
+        }];
+        
+        NSString* dataBaseDirPathSlashed = self.dataBaseDirPath;
+        if (![dataBaseDirPathSlashed hasSuffix:@"/"])
+            dataBaseDirPathSlashed = [dataBaseDirPathSlashed stringByAppendingString:@"/"];
+        
+        BOOL flagDeleteLinkedImages = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOCLEANINGDELETEORIGINAL"];
+        
+        for (NSArray* sd in studiesDates) {
+            DicomStudy* study = [sd objectAtIndex:0];
+            NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.name, study.studyName, study.date, study.dateAdded, study.dateOpened);
+            
+            // list images to be deleted
+            NSMutableArray* imagesToDelete = [NSMutableArray array];
+            for (DicomSeries* series in [[study series] allObjects])
+                for (DicomImage* image in series.images.allObjects)
+                    if (flagDeleteLinkedImages || [image.completePath hasPrefix:dataBaseDirPathSlashed])
+                        [imagesToDelete addObject:image];
+            
+            // delete image files
+            for (DicomImage* image in imagesToDelete) {
+                NSString* path = image.completePath;
+                [NSFileManager.defaultManager removeItemAtPath:path error:NULL];
+                if ([path.pathExtension isEqualToString:@"hdr"]) // ANALYZE -> DELETE IMG
+                    [NSFileManager.defaultManager removeItemAtPath:[path.stringByDeletingPathExtension stringByAppendingPathExtension:@"img"] error:NULL];
+            }
+            
+            // delete managed objects: images, series, studies
+            
+            for (DicomSeries* series in [[study series] allObjects]) {
+                for (DicomImage* image in series.images.allObjects)
+                    [self.managedObjectContext deleteObject:image];
+                [self.managedObjectContext deleteObject:series];
+            }
+            [self.managedObjectContext deleteObject:study];
+            
+            // did we free up enough space?
+            
+            NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
+            free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
+            if (free >= freeMemoryRequested) // if so, stop deleting studies
+                break;
+        }
+        
+		NSLog(@"Info: done cleaning for space, %lld MB are free", free);
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [_cleanLock unlock];
+    }
 }
 
 @end

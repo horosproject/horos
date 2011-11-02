@@ -2697,9 +2697,9 @@ static BOOL initialized = NO;
 				//		exit(0);
 				//	}
 				
-				if ([AppController hasMacOSXLeopard] == NO)
+				if ([AppController hasMacOSXSnowLeopard] == NO)
 				{
-					NSRunCriticalAlertPanel(NSLocalizedString(@"MacOS X", nil), NSLocalizedString(@"This application requires MacOS X 10.5 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+					NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
 				
@@ -2741,6 +2741,19 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setInteger:200 forKey:@"NSInitialToolTipDelay"];
 
 				
+                // AutoClean evolution: old defaults AUTOCLEANINGSPACEPRODUCED and AUTOCLEANINGSPACEOPENED are merged into AutocleanSpaceMode
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] == nil) {
+                    BOOL cleanOldest = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEPRODUCED"] boolValue];
+                    BOOL cleanOldestUnopened = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEOPENED"] boolValue];
+                    if (!cleanOldest && !cleanOldestUnopened) {
+                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTOCLEANINGSPACE"];
+                        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"AutocleanSpaceMode"];
+                    } else if (cleanOldestUnopened) {
+                        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"AutocleanSpaceMode"];
+                    } else 
+                        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"AutocleanSpaceMode"];
+                }
+                
 				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 				

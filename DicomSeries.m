@@ -35,7 +35,7 @@
 
 @synthesize dicomTime;
 
-@dynamic comment;
+@dynamic comment, comment2, comment3, comment4;
 @dynamic date;
 @dynamic dateAdded;
 @dynamic dateOpened;

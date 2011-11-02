@@ -2581,7 +2581,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObjectContext *context = self.managedObjectContext;
 	
 	[context retain];
-	[context lock];
+//	[context lock];
 	error = nil;
 	[outlineViewArray release];
 	
@@ -2652,16 +2652,19 @@ static NSConditionLock *threadLock = nil;
 				
 				for( id obj in outlineViewArray)
 				{
-					[request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
-					
-					for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
-					{
-						if( [copyOutlineViewArray containsObject: patientStudy] == NO && patientStudy != nil)
-						{
-							studyIndex++;
-							[copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
-						}
-					}
+					@try {
+                        [request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
+                        
+                        for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
+                        {
+                            if( [copyOutlineViewArray containsObject: patientStudy] == NO && patientStudy != nil)
+                            {
+                                studyIndex++;
+                                [copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
+                            }
+                        }
+                    } @catch (NSException* e) { // object has become unavailable, who cares, we just won't be showing it anymore
+                    }
 					
 					studyIndex++;
 				}
@@ -2709,7 +2712,7 @@ static NSConditionLock *threadLock = nil;
 	
 	outlineViewArray = [outlineViewArray retain];
 	
-	[context unlock];
+//	[context unlock];
 	[context release];
 	
 	[databaseOutline reloadData];
@@ -4302,7 +4305,7 @@ static NSConditionLock *threadLock = nil;
 		
 	id returnVal = nil;
 	
-	[_database lock];
+//	[_database lock];
 	
 	@try
 	{
@@ -4320,7 +4323,7 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(e);
 	}
 
-	[_database unlock];
+//	[_database unlock];
 	
 	return returnVal;
 }
@@ -4329,12 +4332,15 @@ static NSConditionLock *threadLock = nil;
 {
 	BOOL returnVal = NO;
 	
-	[_database lock];
+//	[_database lock];
 	
-	if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = NO;
+    if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
+        returnVal = NO;
+	else if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+        returnVal = NO;
 	else returnVal = YES;
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	return returnVal;
 }
@@ -4345,7 +4351,7 @@ static NSConditionLock *threadLock = nil;
 	
 	int returnVal = 0;
 	
-	[_database lock];
+//	[_database lock];
 	
 	if (!item)
 	{
@@ -4353,13 +4359,15 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
-		if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
-		if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
-		//if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
-		if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"imageSeries"] count];
+		if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
+            returnVal = 0;
+        else if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
+		else if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
+		//else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"series"] count];
+		else if ([[item valueForKey:@"type"] isEqualToString:@"Study"]) returnVal = [[item valueForKey:@"imageSeries"] count];
 	}
 	
-	[_database unlock];
+//	[_database unlock];
 	
 	return returnVal;
 }
@@ -4476,7 +4484,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if( _database == nil) return nil;
 	
-	[_database lock];
+//	[_database lock];
 	
 	id returnVal = nil;
 	
@@ -4491,7 +4499,7 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"%@", [e description]);
 	}
 
-	[_database unlock];
+//	[_database unlock];
 	
 	return returnVal;
 }
@@ -4553,24 +4561,27 @@ static NSConditionLock *threadLock = nil;
 	if ([item isFault])
 		return nil;
 	
-	if ([[tableColumn identifier] isEqualToString:@"name"])
-    {
-        NSRect imageFrame = NSMakeRect(rect->origin.x, rect->origin.y, rect->size.height, rect->size.height);
-        if (NSPointInRect(mouseLocation, imageFrame))
+    @try {
+        if ([[tableColumn identifier] isEqualToString:@"name"])
         {
-            NSDate* now = [NSDate date];
-            NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
-            NSDate* acqDate = [item valueForKey:@"date"];
-            NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
-            NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
-            
-            if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
-            else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
-            else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
-            else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
-            else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+            NSRect imageFrame = NSMakeRect(rect->origin.x, rect->origin.y, rect->size.height, rect->size.height);
+            if (NSPointInRect(mouseLocation, imageFrame))
+            {
+                NSDate* now = [NSDate date];
+                NSDate* today0 = [NSDate dateWithTimeIntervalSinceReferenceDate:floor([now timeIntervalSinceReferenceDate]/(60*60*24))*(60*60*24)];
+                NSDate* acqDate = [item valueForKey:@"date"];
+                NSTimeInterval acqInterval = [now timeIntervalSinceDate:acqDate];
+                NSTimeInterval addInterval = [now timeIntervalSinceDate:[item valueForKey:@"dateAdded"]];
+                
+                if (acqInterval <= 60*10) return NSLocalizedString(@"Acquired within the last 10 minutes", nil);
+                else if (acqInterval <= 60*60) return NSLocalizedString(@"Acquired within the last hour", nil);
+                else if (acqInterval <= 4*60*60) return NSLocalizedString(@"Acquired within the last 4 hours", nil); 
+                else if ([acqDate timeIntervalSinceDate:today0] >= 0) return NSLocalizedString(@"Acquired today", nil); // today
+                else if (addInterval <= 60) return NSLocalizedString(@"Added within the last 60 seconds", nil);
+            }
         }
-	}
+    } @catch (NSException* e) {
+    }
 	
 	return nil;
 }
@@ -4580,6 +4591,7 @@ static NSConditionLock *threadLock = nil;
 	if( [item isFault])
 		return;
 	
+    
 	[cell setHighlighted: NO];
 	
 	if( [cell isKindOfClass: [ImageAndTextCell class]])
@@ -4590,7 +4602,7 @@ static NSConditionLock *threadLock = nil;
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-	[context lock];
+//	[context lock];
 	
 	@try 
 	{
@@ -4716,7 +4728,7 @@ static NSConditionLock *threadLock = nil;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	[context unlock];
+//	[context unlock];
 	
 	// doesn't work with NSPopupButtonCell	
 	//	if ([outlineView isEqual:databaseOutline])
@@ -6566,7 +6578,7 @@ static BOOL withReset = NO;
 		img = [previewPixThumbnails objectAtIndex: i];
 		if( img == nil) NSLog( @"Error: [previewPixThumbnails objectAtIndex: i] == nil");
 		
-		[_database lock];
+	//	[_database lock];
 		
 		@try
 		{
@@ -6733,10 +6745,11 @@ static BOOL withReset = NO;
 		
 		@catch( NSException *ne)
 		{
-            N2LogExceptionWithStackTrace(ne);
+            if (![[ne name] isEqualToString:NSObjectInaccessibleException])
+                N2LogExceptionWithStackTrace(ne);
 		}
 		
-		[_database unlock];
+	//	[_database unlock];
 	}
 	[oMatrix setNeedsDisplay:YES];
 }
@@ -7792,7 +7805,9 @@ static BOOL withReset = NO;
 			
 			[self refreshAlbums];
 			
-			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject: album]] byExtendingSelection: NO];
+            NSInteger index = [self.albumArray indexOfObject:album];
+            if (index != NSNotFound)
+                [albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex:index] byExtendingSelection: NO];
 		}
 		@catch (NSException * e) 
 		{

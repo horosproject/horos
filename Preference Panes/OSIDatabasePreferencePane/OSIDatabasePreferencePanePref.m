@@ -108,7 +108,7 @@
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
 ////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
-	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]];
+//	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]]; 
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];
 	
@@ -143,11 +143,10 @@
 	[olderThanProduced selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]];
 	[olderThanOpened selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]];
 	
-	[freeSpace setState:[defaults boolForKey:@"AUTOCLEANINGSPACE"]];
-	[[freeSpaceType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"]];
-	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
-	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
-	
+//	[freeSpace setState:[defaults boolForKey:@"AUTOCLEANINGSPACE"]];
+//	[[freeSpaceType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"]];
+//	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
+//	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
 }
 
 - (void)didSelect
@@ -268,10 +267,10 @@
 	[defaults setInteger:[[olderThanOpened selectedItem] tag] forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
 
 
-	[defaults setBool:[freeSpace state] forKey:@"AUTOCLEANINGSPACE"];
-	[defaults setBool:[[freeSpaceType cellWithTag:0] state] forKey:@"AUTOCLEANINGSPACEPRODUCED"];
-	[defaults setBool:[[freeSpaceType cellWithTag:1] state] forKey:@"AUTOCLEANINGSPACEOPENED"];
-	[defaults setInteger:[[freeSpaceSize selectedItem] tag] forKey:@"AUTOCLEANINGSPACESIZE"];
+//	[defaults setBool:[freeSpace state] forKey:@"AUTOCLEANINGSPACE"];
+//	[defaults setBool:[[freeSpaceType cellWithTag:0] state] forKey:@"AUTOCLEANINGSPACEPRODUCED"];
+//	[defaults setBool:[[freeSpaceType cellWithTag:1] state] forKey:@"AUTOCLEANINGSPACEOPENED"];
+//	[defaults setInteger:[[freeSpaceSize selectedItem] tag] forKey:@"AUTOCLEANINGSPACESIZE"];
 }
 
 //- (IBAction)setMultipleScreens:(id)sender{
@@ -369,11 +368,6 @@
 	[[[[self mainView] window] windowController] reopenDatabase];
 	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
-}
-
-- (IBAction)setLocalizerOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NOLOCALIZER"];
-
 }
 
 - (BOOL)useSeriesDescription{

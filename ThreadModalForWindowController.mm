@@ -53,7 +53,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 -(void)awakeFromNib {
 	[self.progressIndicator setMinValue:0];
 	[self.progressIndicator setMaxValue:1];
-	[self.progressIndicator setUsesThreadedAnimation:YES];
+	[self.progressIndicator setUsesThreadedAnimation:NO];
 	[self.progressIndicator startAnimation:self];
 	
     [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];

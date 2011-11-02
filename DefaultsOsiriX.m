@@ -752,8 +752,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
 	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
-	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
-	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
+//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
+//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
+    [defaultValues setObject:@"2" forKey:@"AutocleanSpaceMode"];
 	[defaultValues setObject:@"10000" forKey:@"AUTOCLEANINGSPACESIZE"];
 	[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
 	[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];

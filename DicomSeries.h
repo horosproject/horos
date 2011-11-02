@@ -27,6 +27,9 @@
 @property(nonatomic, retain, readonly) NSNumber* dicomTime;
 
 @property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSDate* dateAdded;
 @property(nonatomic, retain) NSDate* dateOpened;

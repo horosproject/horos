@@ -158,7 +158,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 @implementation DicomImage
 
-@dynamic comment;
+@dynamic comment, comment2, comment3, comment4;
 @dynamic compressedSopInstanceUID;
 @dynamic date;
 @dynamic frameID;
