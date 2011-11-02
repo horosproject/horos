@@ -6,13 +6,18 @@ New Features:
 - Curved-MPR paths can be saved and loaded from file ('.curvedPath')
 - Compiled with Xcode 4.2 (LLVM 3.0)
 
-- SUV on PET 3D Panel (3D MIP) (Point->Drag Timer)
+- SUV on PET 3D Panel (3D MIP)
+- Reports to PDF
+- DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
+- Database Banner + KSA
+---------------------------------------------------------------------------------------------------------
 
 A:
 - DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 - Compress/Decompress: no thread info?
+- MainMenu.xib : menus, subSampling
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
@@ -22,8 +27,7 @@ A:
 	(OK) iPod doesn't appear automatically
 	(OK) iPod eject button
 
-- Reports to PDF
-- DICOM Q&R: Auto-retrieve previous studies for empty studies (pre-fetching)
+---------------------------------------------------------------------------------------------------------
 
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
@@ -229,22 +233,22 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 ------------------------------------------------------------------------------------------------------------------------
 
 // Release
-- X Bundle Version
-- X Localizations strings:
+- Bundle Version
+- Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
-- X Check if OsiriX Lite works...
-- X Check up-to-date zip packages in Binaries folder
-- X Check non-debug lib for KDU & Papyrus in 64-bit
-- X Check weasis permissions: everyone: read only
-- X Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
-- X Test DB migration from previous version
+- Check if OsiriX Lite works...
+- Check up-to-date zip packages in Binaries folder
+- Check non-debug lib for KDU & Papyrus in 64-bit
+- Check weasis permissions: everyone: read only
+- Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
+- Test DB migration from previous version
 - OsiriX Lite Upload
-- X QuickLook
-- X Update plugins
-- X For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
-- X For international version, manually resign
-- X codesign -vvv /Applications/OsiriX.app
-- X 64bitExtension : upload osirix-viewer.com
-- X 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
-- X Update Downloads.html
-- X Update versionLeopard.xml
+- QuickLook
+- Update plugins
+- For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
+- For international version, manually resign
+- codesign -vvv /Applications/OsiriX.app
+- 64bitExtension : upload osirix-viewer.com
+- 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
+- Update Downloads.html
+- Update versionLeopard.xml

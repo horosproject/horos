@@ -1692,6 +1692,8 @@ public:
 {
     if ( self = [super initWithFrame:frame] )
     {
+//      [self setWantsLayer: YES]; LayerBackedOpenGLView Example
+        
 		NSTrackingArea *cursorTracking = [[[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil] autorelease];
 		
 		[self addTrackingArea: cursorTracking];

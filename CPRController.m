@@ -2213,6 +2213,19 @@ static float deg2rad = M_PI / 180.0;
 	return v;
 }
 
+- (BOOL) isPlaneMeasurable
+{
+    if( cprType == CPRStretchedType)
+        return YES;
+    
+    if( cprType == CPRStraightenedType)
+    {
+        return [cprView.curvedPath isPlaneMeasurable];
+    }
+    
+    return NO;
+}
+
 -(IBAction) endDCMExportSettings:(id) sender
 {
     NSUInteger exportWidth;
@@ -2386,7 +2399,7 @@ static float deg2rad = M_PI / 180.0;
 					
                     [dicomExport setDefaultWWWL:windowWidth :windowLevel];
 					
-					if( [cprView.curvedPath isPlaneMeasurable])
+					if( [self isPlaneMeasurable])
 						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
                     
 					f = [dicomExport writeDCMFile: nil];
@@ -2399,7 +2412,7 @@ static float deg2rad = M_PI / 180.0;
 			}
 			else // CPR8BitRGBExportImageFormat
 			{
-				BOOL exportSpacingAndOrigin = [cprView.curvedPath isPlaneMeasurable];
+				BOOL exportSpacingAndOrigin = [self isPlaneMeasurable];
 				
 				[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 			}
@@ -2608,7 +2621,7 @@ static float deg2rad = M_PI / 180.0;
                             
                             [dicomExport setDefaultWWWL:windowWidth :windowLevel];
 							
-							if([cprView.curvedPath isPlaneMeasurable])
+							if( [self isPlaneMeasurable])
 								[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
 							
                             f = [dicomExport writeDCMFile: nil];

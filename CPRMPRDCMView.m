@@ -1453,7 +1453,9 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				CPRCurvedPathControlToken token = [curvedPath controlTokenNearPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
 				if ([CPRCurvedPath controlTokenIsNode:token])
 				{
-					[windowController CPRView:self setCrossCenter:[[curvedPath.nodes objectAtIndex: [CPRCurvedPath nodeIndexForToken: token]] N3VectorValue]];
+                    windowController.curvedPathCreationMode = YES; // Switch back to Creation Mode
+//                    draggedToken = token;
+//					[windowController CPRView:self setCrossCenter:[[curvedPath.nodes objectAtIndex: [CPRCurvedPath nodeIndexForToken: token]] N3VectorValue]];
 				}
 			}
 		}

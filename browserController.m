@@ -11186,14 +11186,17 @@ static BOOL withReset = NO;
 
 static BOOL needToRezoom;
 
--(void)drawerWillClose:(NSNotification*)notification {
+-(void)drawerWillClose:(NSNotification*)notification
+{
 	needToRezoom = self.window.isZoomed;
 }
 
--(void)drawerDidClose:(NSNotification*)notification {
+-(void)drawerDidClose:(NSNotification*)notification
+{
 	if (needToRezoom)
 		[self.window zoom:self];
-	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"BrowserDidResizeForDrawer"]) {
+	else if ([[NSUserDefaultsController sharedUserDefaultsController] boolForKey:@"BrowserDidResizeForDrawer"])
+    {
 		NSRect windowFrame = self.window.frame;
 		windowFrame.origin.x -= albumDrawer.contentSize.width;
 		windowFrame.size.width += albumDrawer.contentSize.width;
@@ -11201,14 +11204,17 @@ static BOOL needToRezoom;
 	}
 }
 
--(void)drawerWillOpen:(NSNotification*)notification {
+-(void)drawerWillOpen:(NSNotification*)notification
+{
 	needToRezoom = self.window.isZoomed;
 }
 
--(void)drawerDidOpen:(NSNotification*)notification {
+-(void)drawerDidOpen:(NSNotification*)notification
+{
 	if (needToRezoom)
 		[self.window zoom:self];
-	else {
+	else
+    {
 		NSRect screenBounds = NSZeroRect;
 		for (NSScreen* screen in [NSScreen screens])
 			screenBounds = NSUnionRect(screenBounds, [screen frame]);
@@ -11218,7 +11224,8 @@ static BOOL needToRezoom;
 		#define DrawerMinVisibleRatio .5
 		BOOL adapt = (intersectedFrame.size.width*intersectedFrame.size.height)/(drawerFrame.size.width*drawerFrame.size.height) < DrawerMinVisibleRatio;
 		[[NSUserDefaultsController sharedUserDefaultsController] setBool:adapt forKey:@"BrowserDidResizeForDrawer"];
-		if (adapt) {
+		if (adapt)
+        {
 			NSRect windowFrame = self.window.frame;
 			windowFrame.origin.x += albumDrawer.contentSize.width;
 			windowFrame.size.width -= albumDrawer.contentSize.width;
@@ -14660,6 +14667,12 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self setDBWindowTitle];
 	
+	loadingIsOver = YES;
+	
+	[self outlineViewRefresh];
+	
+	[self awakeActivity];
+	[self.window makeKeyAndOrderFront: self];
 	NSSize size = NSSizeFromString( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerSize"]);
 	if( size.width > 0)
 		[albumDrawer setContentSize: size];
@@ -14668,13 +14681,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[albumDrawer openOnEdge:NSMinXEdge];
 	else
 		[albumDrawer close];
-	
-	loadingIsOver = YES;
-	
-	[self outlineViewRefresh];
-	
-	[self awakeActivity];
-	[self.window makeKeyAndOrderFront: self];
 	
 	[self refreshMatrix: self];
 	
