@@ -2505,6 +2505,9 @@ static float deg2rad = M_PI / 180.0;
 							
 							[dicomExport setDefaultWWWL:windowWidth :windowLevel];
 							
+                            if( [self isPlaneMeasurable])
+                                [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+                            
 							f = [dicomExport writeDCMFile: nil];
 							if( f == nil)
 							{
@@ -2526,7 +2529,9 @@ static float deg2rad = M_PI / 180.0;
                         //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
                         //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
 						
-						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: NO]];
+                        BOOL exportSpacingAndOrigin = [self isPlaneMeasurable];
+                        
+						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
 					}
 					
 					[pool release];

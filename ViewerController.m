@@ -3035,16 +3035,24 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( recursiveCloseWindowsProtected) return;
 	
+    NSDisableScreenUpdates();
+    
 	[self refreshToolbar];
 	[self updateNavigator];
+    
+    NSEnableScreenUpdates();
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)aNotification
 {
 	if( recursiveCloseWindowsProtected) return;
 	
+    NSDisableScreenUpdates();
+    
 	[self refreshToolbar];
 	[self updateNavigator];
+    
+    NSEnableScreenUpdates();
 }
 
 //- (void)windowWillMove:(NSNotification *)notification
