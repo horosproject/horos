@@ -3656,6 +3656,8 @@ public:
 		}
 		else if( tool == t3Dpoint)
 		{
+            [self deleteMouseDownTimer];
+            
 			NSEvent *artificialPKeyDown = [NSEvent keyEventWithType:NSKeyDown
   												location:[theEvent locationInWindow]
   												modifierFlags:nil
