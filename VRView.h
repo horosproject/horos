@@ -317,6 +317,8 @@ typedef char* VTKStereoVRView;
 	vtkPolyDataMapper2D			*Oval2D;
 	vtkActor2D					*Oval2DActor;
 	vtkTextActor				*Oval2DText;
+    NSPoint                     Oval2DCenter;
+    double                      Oval2DRadius;
     
 	BOOL						clamping;
 	

@@ -1295,7 +1295,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">18</int>
-								<int key="NSButtonFlags">-1232322305</int>
+								<int key="NSButtonFlags">-1228652289</int>
 								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -1313,7 +1313,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">5</int>
-								<int key="NSButtonFlags">-1232322305</int>
+								<int key="NSButtonFlags">-1228652289</int>
 								<int key="NSButtonFlags2">130</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -1331,7 +1331,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">16</int>
-								<int key="NSButtonFlags">-1232322305</int>
+								<int key="NSButtonFlags">-1228652289</int>
 								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -1349,7 +1349,7 @@
 								<reference key="NSSupport" ref="140508487"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">9</int>
-								<int key="NSButtonFlags">-1228652289</int>
+								<int key="NSButtonFlags">-1226555137</int>
 								<int key="NSButtonFlags2">130</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -1367,7 +1367,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">17</int>
-								<int key="NSButtonFlags">-1232322305</int>
+								<int key="NSButtonFlags">-1228652289</int>
 								<int key="NSButtonFlags2">2</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="1002400346">
 									<string key="NSClassName">NSImage</string>
@@ -1385,7 +1385,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">21</int>
-								<int key="NSButtonFlags">-1232322305</int>
+								<int key="NSButtonFlags">-1228652289</int>
 								<int key="NSButtonFlags2">2</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="469029702">
 									<string key="NSClassName">NSImage</string>
@@ -15274,13 +15274,21 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 				</object>
 				<string key="858.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<object class="NSMutableDictionary" key="859.IBAttributePlaceholdersKey">
+					<string key="NS.key.0">ToolTip</string>
+					<object class="IBToolTipAttribute" key="NS.object.0">
+						<string key="name">ToolTip</string>
+						<reference key="object" ref="333913229"/>
+						<string key="toolTip">3D Point</string>
+					</object>
+				</object>
 				<string key="859.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<object class="NSMutableDictionary" key="860.IBAttributePlaceholdersKey">
 					<string key="NS.key.0">ToolTip</string>
 					<object class="IBToolTipAttribute" key="NS.object.0">
 						<string key="name">ToolTip</string>
 						<reference key="object" ref="134542061"/>
-						<string key="toolTip">Delete Key: erase, Return Key: keep, Tab key: restore</string>
+						<string key="toolTip">Oval ROI</string>
 					</object>
 				</object>
 				<string key="860.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15289,7 +15297,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBToolTipAttribute" key="NS.object.0">
 						<string key="name">ToolTip</string>
 						<reference key="object" ref="546566960"/>
-						<string key="toolTip">Click on a bone to remove it</string>
+						<string key="toolTip">Sculpt: Delete, Return or Tab key</string>
 					</object>
 				</object>
 				<string key="861.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -15758,7 +15766,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="editSmartAlbum">NSWindow</string>
 						<string key="editSmartAlbumName">NSTextField</string>
 						<string key="editSmartAlbumQuery">NSTextField</string>
-						<string key="enoughMem">NSBox</string>
 						<string key="estimatedTime">NSTextField</string>
 						<string key="exportAccessoryView">NSView</string>
 						<string key="exportHTMLButton">NSButton</string>
@@ -15766,12 +15773,12 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="folderTree">NSMatrix</string>
 						<string key="imageTileMenu">NSMenu</string>
 						<string key="imageView">PreviewView</string>
+						<string key="leftIcon">NSImageView</string>
 						<string key="mainWindow">NSWindow</string>
 						<string key="memoryMessage">NSTextField</string>
 						<string key="newAlbum">NSWindow</string>
 						<string key="newAlbumName">NSTextField</string>
 						<string key="noOfFilesToRebuild">NSTextField</string>
-						<string key="notEnoughMem">NSBox</string>
 						<string key="notificationEmailArrayController">NSArrayController</string>
 						<string key="notificationEmailWindow">NSWindow</string>
 						<string key="oMatrix">BrowserMatrix</string>
@@ -15788,6 +15795,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="reportTemplatesImageView">NSImageView</string>
 						<string key="reportTemplatesListPopUpButton">NSPopUpButton</string>
 						<string key="reportTemplatesView">NSView</string>
+						<string key="rightIcon">NSImageView</string>
 						<string key="searchField">NSSearchField</string>
 						<string key="searchView">NSView</string>
 						<string key="segmentedAlbumButton">NSSegmentedControl</string>
@@ -15806,6 +15814,7 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="urlString">NSTextField</string>
 						<string key="urlWindow">NSWindow</string>
 						<string key="warning">NSTextField</string>
+						<string key="warningBox">NSBox</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="AtableView">
@@ -15896,10 +15905,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string key="name">editSmartAlbumQuery</string>
 							<string key="candidateClassName">NSTextField</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="enoughMem">
-							<string key="name">enoughMem</string>
-							<string key="candidateClassName">NSBox</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="estimatedTime">
 							<string key="name">estimatedTime</string>
 							<string key="candidateClassName">NSTextField</string>
@@ -15928,6 +15933,10 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string key="name">imageView</string>
 							<string key="candidateClassName">PreviewView</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="leftIcon">
+							<string key="name">leftIcon</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="mainWindow">
 							<string key="name">mainWindow</string>
 							<string key="candidateClassName">NSWindow</string>
@@ -15947,10 +15956,6 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="IBToOneOutletInfo" key="noOfFilesToRebuild">
 							<string key="name">noOfFilesToRebuild</string>
 							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="notEnoughMem">
-							<string key="name">notEnoughMem</string>
-							<string key="candidateClassName">NSBox</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="notificationEmailArrayController">
 							<string key="name">notificationEmailArrayController</string>
@@ -16015,6 +16020,10 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="IBToOneOutletInfo" key="reportTemplatesView">
 							<string key="name">reportTemplatesView</string>
 							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rightIcon">
+							<string key="name">rightIcon</string>
+							<string key="candidateClassName">NSImageView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="searchField">
 							<string key="name">searchField</string>
@@ -16087,6 +16096,10 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<object class="IBToOneOutletInfo" key="warning">
 							<string key="name">warning</string>
 							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="warningBox">
+							<string key="name">warningBox</string>
+							<string key="candidateClassName">NSBox</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">

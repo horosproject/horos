@@ -2819,6 +2819,46 @@ public:
 		int controlDown;
 		switch (_tool)
 		{
+            case tOval:
+            {
+                if( bestRenderingWasGenerated)
+				{
+					bestRenderingWasGenerated = NO;
+					[self display];
+				}
+				dontRenderVolumeRenderingOsiriX = 1;
+                
+				double	*pp;
+				long	i;
+				
+                // Click point 3D to 2D
+                
+                aRenderer->SetDisplayPoint( mouseLoc.x, mouseLoc.y, 0);
+                aRenderer->DisplayToWorld();
+                pp = aRenderer->GetWorldPoint();
+                
+                // Create the 2D Actor
+                
+                aRenderer->SetWorldPoint(pp[0], pp[1], pp[2], 1.0);
+                aRenderer->WorldToDisplay();
+                
+                double *tempPoint = aRenderer->GetDisplayPoint();
+                
+                float dx = Oval2DCenter.x - tempPoint[ 0];
+                float dy = Oval2DCenter.y - tempPoint[ 1];
+                Oval2DRadius = sqrt(dx*dx+dy*dy);
+                
+                Oval2DData->SetRadius( Oval2DRadius);
+                Oval2DData->SetCenter( Oval2DCenter.x, Oval2DCenter.y, 0);
+                
+                Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
+                
+                [self computeLength];
+                
+                [self setNeedsDisplay: YES];
+            }
+            break;
+                
 			case tMesure:
 			{
 				if( bestRenderingWasGenerated)
@@ -3475,6 +3515,35 @@ public:
 			
 			Line2DData->SetPoints( pts);
 			
+			[self computeLength];
+			
+			[self setNeedsDisplay: YES];
+		}
+        else if( tool == tOval)
+        {
+			if( bestRenderingWasGenerated)
+			{
+				bestRenderingWasGenerated = NO;
+				[self display];
+			}
+			dontRenderVolumeRenderingOsiriX = 1;
+			
+			// Click point 3D to 2D
+			_mouseLocStart = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+			
+			aRenderer->SetDisplayPoint( _mouseLocStart.x, _mouseLocStart.y, 0);
+			aRenderer->DisplayToWorld();
+			double *pp = aRenderer->GetWorldPoint();
+			
+			// Create the 2D Actor
+			aRenderer->SetWorldPoint( pp[0], pp[1], pp[2], 1.0);
+			aRenderer->WorldToDisplay();
+			
+			double *tempPoint = aRenderer->GetDisplayPoint();
+			
+            Oval2DCenter.x = tempPoint[ 0];
+            Oval2DCenter.y = tempPoint[ 1];
+            
 			[self computeLength];
 			
 			[self setNeedsDisplay: YES];
@@ -4537,31 +4606,50 @@ public:
 		
 		dontRenderVolumeRenderingOsiriX = 0;
 	}
-	else if((c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == tMesure)
+	else if(c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
 	{
-		vtkPoints *pts = Line2DData->GetPoints();
-		
-		if( bestRenderingWasGenerated)
-		{
-			bestRenderingWasGenerated = NO;
-			[self display];
-		}
-		dontRenderVolumeRenderingOsiriX = 1;
+        if(currentTool == tMesure)
+        {
+            vtkPoints *pts = Line2DData->GetPoints();
+            
+            if( bestRenderingWasGenerated)
+            {
+                bestRenderingWasGenerated = NO;
+                [self display];
+            }
+            dontRenderVolumeRenderingOsiriX = 1;
 
-		if( pts->GetNumberOfPoints() != 0)
-		{
-			// Delete current ROI
-			vtkPoints *pts = vtkPoints::New();
-			vtkCellArray *rect = vtkCellArray::New();
-			Line2DData-> SetPoints( pts); pts->Delete();
-			Line2DData-> SetLines( rect); rect->Delete();
-			
-			[self computeLength];
-			
-			[self display];
-		}
-		
-		dontRenderVolumeRenderingOsiriX = 0;
+            if( pts->GetNumberOfPoints() != 0)
+            {
+                // Delete current ROI
+                vtkPoints *pts = vtkPoints::New();
+                vtkCellArray *rect = vtkCellArray::New();
+                Line2DData-> SetPoints( pts); pts->Delete();
+                Line2DData-> SetLines( rect); rect->Delete();
+                
+                [self computeLength];
+                
+                [self display];
+            }
+            
+            dontRenderVolumeRenderingOsiriX = 0;
+        }
+        else if( currentTool == tOval)
+        {
+            if( bestRenderingWasGenerated)
+            {
+                bestRenderingWasGenerated = NO;
+                [self display];
+            }
+            dontRenderVolumeRenderingOsiriX = 1;
+            
+            // Delete current ROI
+            Oval2D->SetInputConnection( nil);
+            [self computeLength];
+            [self display];
+            
+            dontRenderVolumeRenderingOsiriX = 0;
+        }
 	}
 	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSTabCharacter || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3DCut)
 	{
@@ -6092,7 +6180,7 @@ public:
         Oval2DData->SetGeneratePolygon( 0);
         
         Oval2D = vtkPolyDataMapper2D::New();
-        Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
+        Oval2D->SetInputConnection( nil);
         
         Oval2DActor = vtkActor2D::New();
 		Oval2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
