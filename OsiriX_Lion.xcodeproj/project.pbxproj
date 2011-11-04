@@ -534,6 +534,8 @@
 		84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
+		A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A9044D390BBAA29200F36689 /* ROISelector.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tif */; };
@@ -8407,6 +8409,8 @@
 		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
 		84EBD98313F41800005A5D02 /* normalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = normalPosition.tif; sourceTree = "<group>"; };
 		84EBD98413F41800005A5D02 /* verticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = verticalPosition.tif; sourceTree = "<group>"; };
+		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
+		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tif; sourceTree = "<group>"; };
@@ -15050,6 +15054,8 @@
 				AB695A1D063D8261002BDF78 /* Analyze.h */,
 				CE0CB170084A623C00C6385F /* DCMPix.h */,
 				CE0CB16F084A623C00C6385F /* DCMPix.m */,
+				A085E103141E53210072BF0D /* DCMUSRegion.h */,
+				A085E104141E53210072BF0D /* DCMUSRegion.m */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
@@ -24058,6 +24064,7 @@
 				ABE471150A76412700327466 /* jquant2.c in Sources */,
 				ABE471160A76412700327466 /* jutils.c in Sources */,
 				841722B110D90595001A833F /* DDKeychain.m in Sources */,
+				A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25279,6 +25286,7 @@
 				84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */,
 				8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */,
 				596D30BD1439BABD004EE9EC /* NSAppleScript+N2.mm in Sources */,
+				A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
