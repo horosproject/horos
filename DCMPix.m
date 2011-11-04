@@ -5313,7 +5313,7 @@ END_CREATE_ROIS:
 	{
 // US Regions		BOOL spacingFound = NO;
 		[usRegions release];
-        [usRegions = [NSMutableArray array] retain];
+        usRegions = [[NSMutableArray array] retain];
         
 		for ( DCMObject *sequenceItem in seq.sequence)
 		{
