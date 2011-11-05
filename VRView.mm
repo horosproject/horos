@@ -2485,7 +2485,61 @@ public:
 		aRenderer->RemoveActor(Line2DText);
 		measureLength = 0;
 	}
-	
+    
+    if( Oval2DRadius > 0.001)
+    {
+//        dontRenderVolumeRenderingOsiriX = 1;
+        
+        aRenderer->SetDraw( 0);
+        
+        [self prepareFullDepthCapture];
+        
+        [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
+        
+        long width, height, spp, bpp;
+        BOOL rgb;
+        
+        float *pixels = [self imageInFullDepthWidth: &width height:&height isRGB: &rgb];
+        
+        if( rgb == NO)
+        {
+            DCMPix *temporaryPix = [[DCMPix alloc] initWithData:pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
+            ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
+            
+            [circle setROIRect: NSMakeRect( Oval2DCenter.x - Oval2DRadius/2.,
+                                            Oval2DCenter.y - Oval2DRadius/2.,
+                                            Oval2DCenter.x + Oval2DRadius/2.,
+                                           Oval2DCenter.y + Oval2DRadius/2.)];
+            
+            float rmean, rtotal, rdev, rmin, rmax; 
+             
+            [temporaryPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
+            
+            NSLog( @"-------------");
+            NSLog( @"Mean: %2.2f: rmean");
+            NSLog( @"Min: %2.2f: rmin");
+            NSLog( @"Max: %2.2f: rmax");
+            NSLog( @"-------------");
+            
+            [circle release];
+            [temporaryPix release];
+        }
+        
+        free( pixels);
+                                
+        [self endRenderImageWithBestQuality];
+        
+        [self restoreFullDepthCapture];
+        
+        aRenderer->SetDraw( 1);
+        
+//        dontRenderVolumeRenderingOsiriX = 0;
+    }
+	else
+	{
+		aRenderer->RemoveActor( Oval2DText);
+	}
+    
 	[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 }
 
