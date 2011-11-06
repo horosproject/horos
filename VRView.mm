@@ -2522,9 +2522,9 @@ public:
         NSString *localizedText = nil;
         
 		if (length/(10.*factor) < .1)
-            localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f mm ", nil), (length/(10.*factor)) * 10.0];
+            localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f mm ", @"ONLY ASCII CHARACTERS ! NO ACCENTS OR HIEROGLYPHS"), (length/(10.*factor)) * 10.0];
 		else
-			localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f cm ", nil), length/(10.*factor)];
+			localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f cm ", @"ONLY ASCII CHARACTERS ! NO ACCENTS OR HIEROGLYPHS"), length/(10.*factor)];
 		
 		Line2DText->SetInput( [localizedText UTF8String]);
 		aRenderer->AddActor(Line2DText);
@@ -2544,31 +2544,36 @@ public:
         
         if( Oval2DPix == nil)
         {
-            dontRenderVolumeRenderingOsiriX = 1;
-            
-            aRenderer->SetDraw( 0);
-            
-            [self prepareFullDepthCapture];
-            
-            [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
-            
-            long width, height, spp, bpp;
-            BOOL rgb;
-            
-            float *pixels = [self imageInFullDepthWidth: &width height: &height isRGB: &rgb];
-            
-            if( rgb == NO)
-                 Oval2DPix = [[DCMPix alloc] initWithData: pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
-            
-            [self endRenderImageWithBestQuality];
-            
-            [self restoreFullDepthCapture];
-            
-            aRenderer->SetDraw( 1);
-            
-            dontRenderVolumeRenderingOsiriX = 0;
-            
-            free( pixels);
+            if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2) // MIP modes - full depth
+            {
+                dontRenderVolumeRenderingOsiriX = 1;
+                
+                aRenderer->SetDraw( 0);
+                
+                [self prepareFullDepthCapture];
+                
+                [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
+                
+                long width, height, spp, bpp;
+                BOOL rgb;
+                
+                float *pixels = [self imageInFullDepthWidth: &width height: &height isRGB: &rgb];
+                
+                if( rgb == NO)
+                {
+                    [Oval2DPix release];
+                     Oval2DPix = [[DCMPix alloc] initWithData: pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
+                }
+                [self endRenderImageWithBestQuality];
+                
+                [self restoreFullDepthCapture];
+                
+                aRenderer->SetDraw( 1);
+                
+                dontRenderVolumeRenderingOsiriX = 0;
+                
+                free( pixels);
+            }
         }
         
         if( Oval2DPix)
@@ -2598,9 +2603,15 @@ public:
             [Oval2DPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
             
             Oval2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
-            Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x+Oval2DRadius, Oval2DCenter.y-Oval2DRadius);
             
-            NSString *localizedText = [NSString stringWithFormat: NSLocalizedString( @"Mean: %2.2f SDev: %2.2f\nMin: %2.2f Max: %2.2f", nil), rmean, rdev, rmin, rmax];
+#define OVAL2DTEXTHEIGHT 35
+            
+            if( Oval2DCenter.y/sampleDistance > Oval2DPix.pheight/2)
+                Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x-Oval2DRadius, Oval2DCenter.y-Oval2DRadius - OVAL2DTEXTHEIGHT);
+            else
+                Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x-Oval2DRadius, Oval2DCenter.y+Oval2DRadius + 5);
+            
+            NSString *localizedText = [NSString stringWithFormat: NSLocalizedString( @"Mean: %2.2f SDev: %2.2f\nMin: %2.2f Max: %2.2f", @"ONLY ASCII CHARACTERS ! NO ACCENTS OR HIEROGLYPHS"), rmean, rdev, rmin, rmax];
             
             Oval2DText->SetInput( [localizedText UTF8String]);
             
