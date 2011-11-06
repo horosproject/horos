@@ -910,13 +910,23 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						
 						[u generatePassword];
 						
+                        NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
+                        if( webPortalDefaultTitle.length == 0)
+                            webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
+                        [emailMessage appendString: webPortalDefaultTitle];
+                        [emailMessage appendString: @"\r\r"];
+                        [emailMessage appendString: @"\r\r"];
+                        
 						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
 						[emailMessage appendString: u.name];
 						[emailMessage appendString: @"\r\r"];
 						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
 						[emailMessage appendString: u.password];
 						[emailMessage appendString: @"\r\r"];
-						
+                        [emailMessage appendString: @"\r\r"];
+                        [emailMessage appendString: NSLocalizedString( @"Login here:\r", nil)];
+                        [emailMessage appendString: self.portal.URL];
+                        
 						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
 						
 						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
