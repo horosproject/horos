@@ -1136,8 +1136,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 			break;
 	}
-
-
+    
 #ifdef WITH_ZLIB
 
 #endif

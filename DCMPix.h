@@ -456,7 +456,7 @@ Note setter is different to not break existing usage. :-( */
 * @param cww = window width to use
 */
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
-
+- (void) setPixelX: (int) x Y:(int) y value:(float) v;
 - (float) cineRate;  /**< Returns the Cine rate */
 
 // drag-drop subtraction-multiplication between series

@@ -3038,6 +3038,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (double) pixelSpacingY { [self CheckLoad]; return pixelSpacingY; }
 - (double) pixelSpacingX { [self CheckLoad]; return pixelSpacingX; }
 
+- (void) setPixelX: (int) x Y:(int) y value:(float) v
+{
+    [self CheckLoad];
+    
+    *(fImage + x + (y*width)) = v;
+}
+
 - (void) setPixelSpacingX :(double) s
 {
 	if( isnan( s) || s < 0 || s > 1000)

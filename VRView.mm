@@ -446,6 +446,46 @@ public:
 	}
 }
 
+- (void) checkForMovedVolume: (NSNotification*) notification
+{
+    if( Oval2DRadius > 0.001)
+    {
+        float cos[ 9];
+        [self getCosMatrix: cos];
+        
+        float position[ 3];
+        [self getOrigin: position];
+        
+        BOOL moved = NO;
+        
+        for( int i = 0 ; i < 9 ; i++)
+            if( Oval2DCos[ i] != cos[ i])
+                moved = YES;
+        
+        for( int i = 0 ; i < 3 ; i++)
+            if( Oval2DPosition[ i] != position[ i])
+                moved = YES;
+        
+        if( moved)
+        {
+            [Oval2DPix release];
+            Oval2DPix = nil;
+            
+            aRenderer->RemoveActor( Oval2DText);
+            aRenderer->RemoveActor2D( Oval2DActor);
+            Oval2DRadius = 0;
+            [self setNeedsDisplay: YES];
+        }
+    }
+}
+
+- (void) setNeedsDisplay: (BOOL) display
+{
+    [self checkForMovedVolume: nil];
+    
+    [super setNeedsDisplay: display];
+}
+
 - (void) adaptLine2DToResize:(NSRect) newFrame before: (NSRect) beforeFrame rescale:(BOOL) rescale
 {
 	if( Line2DData)
@@ -1777,7 +1817,12 @@ public:
 			   selector: @selector(ViewFrameDidChangeNotification:)
 				   name: NSViewFrameDidChangeNotification
 				 object: nil];
-				 
+        
+        [nc addObserver: self
+			   selector: @selector(checkForMovedVolume:)
+				   name: OsirixVRCameraDidChangeNotification
+				 object: nil];
+        
 		point3DActorArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DPositionsArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DRadiusArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -1959,6 +2004,8 @@ public:
 		volumeMapper->Render( aRenderer, volume);
 		
 		dontRenderVolumeRenderingOsiriX = 1;
+        
+        [self checkForMovedVolume: nil];
 	}
 }
 
@@ -2015,6 +2062,8 @@ public:
 			[[self window] performSelector:@selector(performClose:) withObject:self afterDelay: 1.0];
 		}
 		
+        [self checkForMovedVolume: nil];
+        
 		if( www)
 		{
 			[www end];
@@ -2115,6 +2164,7 @@ public:
 	Oval2D->Delete();
 	Oval2DActor->Delete();
 	Oval2DText->Delete();
+    [Oval2DPix release];
 	
     ROI3DData->Delete();
     ROI3D->Delete();
@@ -2443,8 +2493,7 @@ public:
 	
 	if( pts->GetNumberOfPoints() == 2)
 	{
-		double			point1[ 4], point2[ 4];
-		char			text[ 256];
+		double point1[ 4], point2[ 4];
 		
 		pts->GetPoint( 0, point1);
 		pts->GetPoint( 1, point2);
@@ -2470,12 +2519,14 @@ public:
 		if( point1[ 0] > point2[ 0]) Line2DText->GetPositionCoordinate()->SetValue( point1[0] + 3, point1[ 1]);
 		else Line2DText->GetPositionCoordinate()->SetValue( point2[0], point2[ 1]);
 		
+        NSString *localizedText = nil;
+        
 		if (length/(10.*factor) < .1)
-			sprintf( text, "Length: %2.2f mm ", (length/(10.*factor)) * 10.0);
+            localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f mm ", nil), (length/(10.*factor)) * 10.0];
 		else
-			sprintf( text, "Length: %2.2f cm ", length/(10.*factor));
+			localizedText = [NSString stringWithFormat: NSLocalizedString( @"Length: %2.2f cm ", nil), length/(10.*factor)];
 		
-		Line2DText->SetInput( text);
+		Line2DText->SetInput( [localizedText UTF8String]);
 		aRenderer->AddActor(Line2DText);
 		
 		measureLength = length/(10.*factor);
@@ -2488,57 +2539,78 @@ public:
     
     if( Oval2DRadius > 0.001)
     {
-//        dontRenderVolumeRenderingOsiriX = 1;
+        [self getCosMatrix: Oval2DCos];
+        [self getOrigin: Oval2DPosition];
         
-        aRenderer->SetDraw( 0);
-        
-        [self prepareFullDepthCapture];
-        
-        [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
-        
-        long width, height, spp, bpp;
-        BOOL rgb;
-        
-        float *pixels = [self imageInFullDepthWidth: &width height:&height isRGB: &rgb];
-        
-        if( rgb == NO)
+        if( Oval2DPix == nil)
         {
-            DCMPix *temporaryPix = [[DCMPix alloc] initWithData:pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
-            ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
+            dontRenderVolumeRenderingOsiriX = 1;
             
-            [circle setROIRect: NSMakeRect( Oval2DCenter.x - Oval2DRadius/2.,
-                                            Oval2DCenter.y - Oval2DRadius/2.,
-                                            Oval2DCenter.x + Oval2DRadius/2.,
-                                           Oval2DCenter.y + Oval2DRadius/2.)];
+            aRenderer->SetDraw( 0);
             
-            float rmean, rtotal, rdev, rmin, rmax; 
-             
-            [temporaryPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
+            [self prepareFullDepthCapture];
             
-            NSLog( @"-------------");
-            NSLog( @"Mean: %2.2f: rmean");
-            NSLog( @"Min: %2.2f: rmin");
-            NSLog( @"Max: %2.2f: rmax");
-            NSLog( @"-------------");
+            [self renderImageWithBestQuality: NO waitDialog: NO display: YES];
             
-            [circle release];
-            [temporaryPix release];
+            long width, height, spp, bpp;
+            BOOL rgb;
+            
+            float *pixels = [self imageInFullDepthWidth: &width height: &height isRGB: &rgb];
+            
+            if( rgb == NO)
+                 Oval2DPix = [[DCMPix alloc] initWithData: pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
+            
+            [self endRenderImageWithBestQuality];
+            
+            [self restoreFullDepthCapture];
+            
+            aRenderer->SetDraw( 1);
+            
+            dontRenderVolumeRenderingOsiriX = 0;
+            
+            free( pixels);
         }
         
-        free( pixels);
-                                
-        [self endRenderImageWithBestQuality];
-        
-        [self restoreFullDepthCapture];
-        
-        aRenderer->SetDraw( 1);
-        
-//        dontRenderVolumeRenderingOsiriX = 0;
+        if( Oval2DPix)
+        {
+            ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
+            
+            double sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+            
+            int zbufferOrigin[2];
+            volumeMapper->GetRayCastImage()->GetZBufferOrigin( zbufferOrigin);
+            
+            NSPoint center = Oval2DCenter;
+            float radius = Oval2DRadius;
+            
+            center.x -= zbufferOrigin[0];   center.y -= zbufferOrigin[1];
+            center.x /= sampleDistance; center.y /= sampleDistance;
+            
+            radius /= sampleDistance;
+            
+            [circle setROIRect: NSMakeRect( center.x ,
+                                           Oval2DPix.pheight - center.y,
+                                           radius,
+                                           radius)];
+            
+            float rmean, rtotal, rdev, rmin, rmax; 
+            
+            [Oval2DPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
+            
+            Oval2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
+            Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x+Oval2DRadius, Oval2DCenter.y-Oval2DRadius);
+            
+            NSString *localizedText = [NSString stringWithFormat: NSLocalizedString( @"Mean: %2.2f SDev: %2.2f\nMin: %2.2f Max: %2.2f", nil), rmean, rdev, rmin, rmax];
+            
+            Oval2DText->SetInput( [localizedText UTF8String]);
+            
+            aRenderer->AddActor( Oval2DText);
+            
+            [circle release];
+        }
+        else
+            aRenderer->RemoveActor( Oval2DText);
     }
-	else
-	{
-		aRenderer->RemoveActor( Oval2DText);
-	}
     
 	[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
 }
@@ -2667,7 +2739,9 @@ public:
 	
 	if( [controller windowWillClose])
 		return;
-
+    
+    [self checkForMovedVolume: nil];
+    
 	[drawLock lock];
 	
 	long	pix[ 3];
@@ -2807,6 +2881,8 @@ public:
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
+    [self checkForMovedVolume: nil];
+    
 	_hasChanged = YES;
 
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
@@ -2875,12 +2951,14 @@ public:
 		{
             case tOval:
             {
+                [self deleteMouseDownTimer];
+                
                 if( bestRenderingWasGenerated)
 				{
 					bestRenderingWasGenerated = NO;
 					[self display];
 				}
-				dontRenderVolumeRenderingOsiriX = 1;
+                dontRenderVolumeRenderingOsiriX = 1;
                 
 				double	*pp;
 				long	i;
@@ -2905,7 +2983,7 @@ public:
                 Oval2DData->SetRadius( Oval2DRadius);
                 Oval2DData->SetCenter( Oval2DCenter.x, Oval2DCenter.y, 0);
                 
-                Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
+                aRenderer->AddActor2D( Oval2DActor);
                 
                 [self computeLength];
                 
@@ -2915,6 +2993,8 @@ public:
                 
 			case tMesure:
 			{
+                [self deleteMouseDownTimer];
+                
 				if( bestRenderingWasGenerated)
 				{
 					bestRenderingWasGenerated = NO;
@@ -3313,6 +3393,7 @@ public:
 				[self zoomMouseUp:(NSEvent *)theEvent];
 				break;
 			case tMesure:
+            case tOval:
 			case t3DCut:
 				[self displayIfNeeded];
 				dontRenderVolumeRenderingOsiriX = 0;
@@ -3505,6 +3586,8 @@ public:
 		
 		if( tool == tMesure)
 		{
+            [self deleteMouseDownTimer];
+            
 			if( bestRenderingWasGenerated)
 			{
 				bestRenderingWasGenerated = NO;
@@ -3575,6 +3658,12 @@ public:
 		}
         else if( tool == tOval)
         {
+            [self deleteMouseDownTimer];
+            
+            aRenderer->RemoveActor( Oval2DText);
+            aRenderer->RemoveActor2D( Oval2DActor);
+            Oval2DRadius = 0;
+            
 			if( bestRenderingWasGenerated)
 			{
 				bestRenderingWasGenerated = NO;
@@ -3589,6 +3678,9 @@ public:
 			aRenderer->DisplayToWorld();
 			double *pp = aRenderer->GetWorldPoint();
 			
+            WorldOval2DCenter.x = pp[0];
+            WorldOval2DCenter.y = pp[ 1];
+            
 			// Create the 2D Actor
 			aRenderer->SetWorldPoint( pp[0], pp[1], pp[2], 1.0);
 			aRenderer->WorldToDisplay();
@@ -4617,23 +4709,23 @@ public:
 		if( [[[self window] windowController] isKindOfClass:[VRController class]])
 			rotate = !rotate;
 	}
-	else if( c == 't')
-	{
-		NSDate	*now = [NSDate date];
-		
-		NSLog( @"360 degree rotation - 100 images - START");
-		int i;
-		
-		for( i = 0 ; i < 100; i++)
-		{
-			[self Azimuth: 360. / 100.];
-			[self display];
-		}
-		NSLog( @"360 degree rotation - 100 images - END");
-		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
-		
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", nil) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]] name:@"result"];
-	}
+//	else if( c == 't')
+//	{
+//		NSDate	*now = [NSDate date];
+//		
+//		NSLog( @"360 degree rotation - 100 images - START");
+//		int i;
+//		
+//		for( i = 0 ; i < 100; i++)
+//		{
+//			[self Azimuth: 360. / 100.];
+//			[self display];
+//		}
+//		NSLog( @"360 degree rotation - 100 images - END");
+//		NSLog( @"360 degree rotation - Result in [s]: %f", -[now timeIntervalSinceNow]);
+//		
+//		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Performance Test", nil) description: [NSString stringWithFormat: NSLocalizedString(@"360 degree rotation - 100 images\rResult in [s] : %f", nil), -[now timeIntervalSinceNow]] name:@"result"];
+//	}
 	else if( c == 27 && currentTool == t3DCut)
 	{
 		vtkPoints *pts = ROI3DData->GetPoints();
@@ -4698,7 +4790,10 @@ public:
             dontRenderVolumeRenderingOsiriX = 1;
             
             // Delete current ROI
-            Oval2D->SetInputConnection( nil);
+            aRenderer->RemoveActor( Oval2DText);
+            aRenderer->RemoveActor2D( Oval2DActor);
+            Oval2DRadius = 0;
+            
             [self computeLength];
             [self display];
             
@@ -6234,7 +6329,7 @@ public:
         Oval2DData->SetGeneratePolygon( 0);
         
         Oval2D = vtkPolyDataMapper2D::New();
-        Oval2D->SetInputConnection( nil);
+        Oval2D->SetInputConnection( Oval2DData->GetOutputPort());
         
         Oval2DActor = vtkActor2D::New();
 		Oval2DActor->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
@@ -6253,7 +6348,7 @@ public:
 		Oval2DText->GetTextProperty()->SetShadow(true);
 		Oval2DText->GetTextProperty()->SetShadowOffset(1, 1);
 		
-		aRenderer->AddActor2D( Oval2DActor);
+//		aRenderer->AddActor2D( Oval2DActor);
         
 		// 2D Line
 		pts = vtkPoints::New();
@@ -8192,9 +8287,9 @@ public:
 				case Preset9WWWLHotKeyAction:
 					if([wwwlValues count] > key-Preset1WWWLHotKeyAction)
 					{
-								wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
-								[windowController applyWLWWForString:wwwlMenuString];
-								[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
+                        wwwlMenuString = [wwwlValues objectAtIndex:key-Preset1WWWLHotKeyAction];
+                        [windowController applyWLWWForString:wwwlMenuString];
+                        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: wwwlMenuString userInfo: nil];
 					}	
 					break;
 				
@@ -8207,6 +8302,7 @@ public:
 				case RotateHotKeyAction:
 				case ScrollHotKeyAction:
 				case LengthHotKeyAction:
+                case OvalHotKeyAction:
 				case Rotate3DHotKeyAction:
 				case Camera3DotKeyAction:
 				case scissors3DHotKeyAction:

@@ -5,6 +5,7 @@ New Features:
 - Curved-MPR path is automatically saved and reloaded
 - Curved-MPR paths can be saved and loaded from file ('.curvedPath')
 - Compiled with Xcode 4.2 (LLVM 3.0)
+- Support multiple Ultrasound regions 
 
 - SUV on PET 3D Panel (3D MIP)
 - Reports to PDF

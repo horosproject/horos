@@ -317,7 +317,10 @@ typedef char* VTKStereoVRView;
 	vtkPolyDataMapper2D			*Oval2D;
 	vtkActor2D					*Oval2DActor;
 	vtkTextActor				*Oval2DText;
-    NSPoint                     Oval2DCenter;
+    float                       Oval2DCos[ 9], Oval2DPosition[ 3];
+    DCMPix                      *Oval2DPix;
+    
+    NSPoint                     Oval2DCenter, WorldOval2DCenter;
     double                      Oval2DRadius;
     
 	BOOL						clamping;
