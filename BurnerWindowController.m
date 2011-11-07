@@ -26,6 +26,7 @@
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
 #import "ThreadsManager.h"
+#import "DicomDir.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -678,7 +679,9 @@
 	}
 	else
 	{
-		NSString *burnFolder = [self folderToBurn];
+        [DicomDir createDicomDirAtDir:[self folderToBurn]];
+        
+/*		NSString *burnFolder = [self folderToBurn];
 		
 		NSTask              *theTask;
 		//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
@@ -692,7 +695,7 @@
 		
 		[theTask launch];
 		[theTask waitUntilExit];
-		[theTask release];
+		[theTask release];*/
 	}
 }
 
