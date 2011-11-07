@@ -2739,6 +2739,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			return NO;
 		}
 	}
+	else
+	{
+		if( mode == ROI_selectedModify) 
+			mode = ROI_selected;
+	}
 	
 	if( clickPoint.x == pt.x && clickPoint.y == pt.y && previousMode == mode && (mode == ROI_selected || mode == ROI_selectedModify))
 	{
@@ -4297,9 +4302,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         }
                         // <--- US Regions (Point)
 
-                        sprintf (line2, "Val: %0.3f", rmean);
+                        sprintf (line2, "Value: %0.3f", rmean);
                         
-						if( Brtotal != -1) sprintf (line3, "Fused Image Val: %0.3f", Brmean);
+						if( Brtotal != -1) sprintf (line3, "Fused Image Value: %0.3f", Brmean);
 						
                         // US Regions (Point) --->
                         if (roiInsideMModeOrSpectralUSRegion) {
@@ -5203,7 +5208,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
 						
 						if (length < .1)
-							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 						else
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
@@ -5478,7 +5483,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							}
 							
 							if (length < .1)
-								sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+								sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 							else
 								sprintf (line5, "Length: %0.3f cm", length);
 						}
@@ -5517,6 +5522,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			case tAngle:
 			case tPencil:
 			{
+				#define RATIO_FOROPOLYGONAREA 3.
+			
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
 				if( mode == ROI_drawing) glLineWidth(thickness * 2);
@@ -5534,6 +5541,24 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
 					}
 					glEnd();
+					
+					if( type == tOPolygon)
+					{
+						float length = 0;
+						for( int i = 0; i < [splinePoints count]-1; i++)
+							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+								
+						// The first and the last point are too far away : probably not a good idea to display the Area
+						if( [self Length: [[splinePoints objectAtIndex: 0] point] :[[splinePoints lastObject] point]] < length / RATIO_FOROPOLYGONAREA)
+						{
+							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity/4.);
+							glBegin(GL_LINE_STRIP);
+							glVertex2d( ((double) [[splinePoints objectAtIndex: 0] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex: 0] y]-(double) offsety)*(double) scaleValue);
+							glVertex2d( ((double) [[splinePoints lastObject] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints lastObject] y]-(double) offsety)*(double) scaleValue);
+							glEnd();
+							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+						}
+					}
 					
 					if( mode == ROI_drawing) glPointSize( thickness * 2);
 					else glPointSize( thickness);
@@ -5658,7 +5683,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
 										
 										if (length < .1)
-											sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+											sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 										else
 											sprintf (line5, "Length: %0.3f cm", length);
 									}
@@ -5730,20 +5755,35 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         }
                                     }
                                 }
-                                //if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-                                if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions]))
-                                // <--- US Regions (Opened Polygon)
-                                {
-                                    if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-                                        sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
-                                    else
-                                        sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
-                                }
-                                else
-                                    sprintf (line2, "Area: %0.3f pix2", [self Area]);
                                 
-								sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-								sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+								BOOL areaAvailable = YES;
+								
+								length = 0;
+								
+								for( int i = 0; i < [splinePoints count]-1; i++)
+									length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+								
+								// The first and the last point are too far away : probably not a good idea to display the Area
+								if( [self Length: [[splinePoints objectAtIndex: 0] point] :[[splinePoints lastObject] point]] > length / RATIO_FOROPOLYGONAREA)
+								{
+									areaAvailable = NO;
+								}
+								else
+								{
+									if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions]))
+									// <--- US Regions (Opened Polygon)
+									{
+										if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+											sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+										else
+											sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+									}
+									else
+										sprintf (line2, "Area: %0.3f pix2", [self Area]);
+                                
+									sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
+									sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+								}
 								
 								if( [curView blendingView])
 								{
@@ -5762,62 +5802,53 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 									sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 								}
+								
+								if( length > 0.0 && length < .1)
+									sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 								else
+									sprintf (line5, "Length: %0.3f cm", length);
+								
+								// 3D Length
+								if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
 								{
-									length = 0;
-									for( long i = 0; i < [splinePoints count]-1; i++ )
+									NSArray *zPosArray = [self zPositions];
+						
+									if( [zPosArray count])
 									{
-										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
-									}
-									
-									if( length > 0.0 && length < .1)
-										sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
-									else
-										sprintf (line5, "Length: %0.3f cm", length);
-									
-									
-									// 3D Length
-									if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
-									{
-										NSArray *zPosArray = [self zPositions];
-							
-										if( [zPosArray count])
+										int zPos = [[zPosArray objectAtIndex:0] intValue];
+										for( int i = 1; i < [zPosArray count]; i++)
 										{
-											int zPos = [[zPosArray objectAtIndex:0] intValue];
-											for( int i = 1; i < [zPosArray count]; i++)
+											if( zPos != [[zPosArray objectAtIndex:i] intValue])
 											{
-												if( zPos != [[zPosArray objectAtIndex:i] intValue])
+												if( [zPosArray count] != [points count])
+													NSLog( @"***** [zPosArray count] != [points count]");
+												
+												double sliceInterval = [[self pix] sliceInterval];
+												
+												// Compute 3D distance between each points
+												double distance3d = 0;
+												for( i = 1; i < [points count]-1; i++)
 												{
-													if( [zPosArray count] != [points count])
-														NSLog( @"***** [zPosArray count] != [points count]");
+													double x[ 3];
+													double y[ 3];
 													
-													double sliceInterval = [[self pix] sliceInterval];
 													
-													// Compute 3D distance between each points
-													double distance3d = 0;
-													for( i = 1; i < [points count]-1; i++)
-													{
-														double x[ 3];
-														double y[ 3];
-														
-														
-														x[ 0] = [[points objectAtIndex:i] point].x * pixelSpacingX;
-														x[ 1] = [[points objectAtIndex:i] point].y * pixelSpacingY;
-														x[ 2] = [[zPosArray objectAtIndex:i] intValue] * sliceInterval;
-														
-														y[ 0] = [[points objectAtIndex:i-1] point].x * pixelSpacingX;
-														y[ 1] = [[points objectAtIndex:i-1] point].y * pixelSpacingY;
-														y[ 2] = [[zPosArray objectAtIndex:i-1] intValue] * sliceInterval;
-														
-														distance3d += sqrt((x[0]-y[0])*(x[0]-y[0]) + (x[1]-y[1])*(x[1]-y[1]) +  (x[2]-y[2])*(x[2]-y[2]));
-													}
+													x[ 0] = [[points objectAtIndex:i] point].x * pixelSpacingX;
+													x[ 1] = [[points objectAtIndex:i] point].y * pixelSpacingY;
+													x[ 2] = [[zPosArray objectAtIndex:i] intValue] * sliceInterval;
 													
-													if (length < .1)
-														sprintf (line6, "3D L: %0.1f %cm", distance3d * 10000.0, 0xB5);
-													else
-														sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
-													break;
+													y[ 0] = [[points objectAtIndex:i-1] point].x * pixelSpacingX;
+													y[ 1] = [[points objectAtIndex:i-1] point].y * pixelSpacingY;
+													y[ 2] = [[zPosArray objectAtIndex:i-1] intValue] * sliceInterval;
+													
+													distance3d += sqrt((x[0]-y[0])*(x[0]-y[0]) + (x[1]-y[1])*(x[1]-y[1]) +  (x[2]-y[2])*(x[2]-y[2]));
 												}
+												
+												if (length < .1)
+													sprintf (line6, "3D Length: %0.1f %cm", distance3d * 10000.0, 0xB5);
+												else
+													sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
+												break;
 											}
 										}
 									}
