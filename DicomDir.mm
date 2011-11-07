@@ -26,7 +26,7 @@
     ddir.enableInventMode(OFTrue); // +I
     
     ddir.enableIconImageMode(); // +X
-    ddir.setIconSize(128);
+    ddir.setIconSize(96);
     
     OFList<OFString> fileNames;
     OFStandard::searchDirectoryRecursively("", fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
