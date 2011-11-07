@@ -448,43 +448,40 @@ public:
 
 - (void) checkForMovedVolume: (NSNotification*) notification
 {
-    if( Oval2DRadius > 0.001)
+    float cos[ 9];
+    BOOL valid = [self getCosMatrix: cos];
+    
+    if( valid)
     {
-        float cos[ 9];
-        [self getCosMatrix: cos];
-        
-        float position[ 3];
-        [self getOrigin: position];
-        
-        BOOL moved = NO;
-        
-        for( int i = 0 ; i < 9 ; i++)
-            if( Oval2DCos[ i] != cos[ i])
-                moved = YES;
-        
-        for( int i = 0 ; i < 3 ; i++)
-            if( Oval2DPosition[ i] != position[ i])
-                moved = YES;
-        
-        if( moved)
+        if( Oval2DRadius > 0.001)
         {
-            [Oval2DPix release];
-            Oval2DPix = nil;
+            float position[ 3];
+            [self getOrigin: position];
             
-            aRenderer->RemoveActor( Oval2DText);
-            aRenderer->RemoveActor2D( Oval2DActor);
-            Oval2DRadius = 0;
-            [self setNeedsDisplay: YES];
+            BOOL moved = NO;
+            
+            for( int i = 0 ; i < 9 ; i++)
+                if( Oval2DCos[ i] != cos[ i])
+                    moved = YES;
+            
+            for( int i = 0 ; i < 3 ; i++)
+                if( Oval2DPosition[ i] != position[ i])
+                    moved = YES;
+            
+            if( moved)
+            {
+                [Oval2DPix release];
+                Oval2DPix = nil;
+                
+                aRenderer->RemoveActor( Oval2DText);
+                aRenderer->RemoveActor2D( Oval2DActor);
+                Oval2DRadius = 0;
+                [self setNeedsDisplay: YES];
+            }
         }
     }
 }
 
-- (void) setNeedsDisplay: (BOOL) display
-{
-    [self checkForMovedVolume: nil];
-    
-    [super setNeedsDisplay: display];
-}
 
 - (void) adaptLine2DToResize:(NSRect) newFrame before: (NSRect) beforeFrame rescale:(BOOL) rescale
 {
@@ -1818,11 +1815,6 @@ public:
 				   name: NSViewFrameDidChangeNotification
 				 object: nil];
         
-        [nc addObserver: self
-			   selector: @selector(checkForMovedVolume:)
-				   name: OsirixVRCameraDidChangeNotification
-				 object: nil];
-        
 		point3DActorArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DPositionsArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DRadiusArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2004,8 +1996,6 @@ public:
 		volumeMapper->Render( aRenderer, volume);
 		
 		dontRenderVolumeRenderingOsiriX = 1;
-        
-        [self checkForMovedVolume: nil];
 	}
 }
 
@@ -2048,7 +2038,8 @@ public:
 		try
 		{
 			[self computeOrientationText];
-			
+			[self checkForMovedVolume: nil];
+            
 			[super drawRect:aRect];
 		}
 		
@@ -2061,8 +2052,6 @@ public:
 				
 			[[self window] performSelector:@selector(performClose:) withObject:self afterDelay: 1.0];
 		}
-		
-        [self checkForMovedVolume: nil];
         
 		if( www)
 		{
@@ -2154,7 +2143,7 @@ public:
 	textWLWW->Delete();
 	if( textX)
 		textX->Delete();
-	for( i = 0; i < 4; i++) oText[ i]->Delete();
+	for( i = 0; i < 5; i++) oText[ i]->Delete();
 	colorTransferFunction->Delete();
 	reader->Delete();
     aCamera->Delete();
@@ -2411,11 +2400,18 @@ public:
 	}
 }
 
-- (void) getCosMatrix: (float *) cos
+- (BOOL) getCosMatrix: (float *) cos
 {
 	double viewUp[ 3];
 	double length;
 	
+    if( aCamera == nil)
+    {
+        for( int i = 0; i < 9; i++)
+            cos[ i] = 0;
+        return NO;
+    }
+    
 	aCamera->GetViewUp( viewUp);
 	
 	cos[3] = viewUp[ 0] * -1.0;
@@ -2429,6 +2425,7 @@ public:
 		cos[4] = cos[ 4] / length;
 		cos[5] = cos[ 5] / length;
 	}
+    else return NO;
 
 	double cos6[ 3];
 	
@@ -2461,6 +2458,9 @@ public:
 		cos[1] = cos[ 1] / length;
 		cos[2] = cos[ 2] / length;
 	}
+    else return NO;
+    
+    return YES;
 }
 
 - (double) getResolution
@@ -2643,11 +2643,32 @@ public:
 }
 
 - (void) computeOrientationText
-{
-	char			string[ 10];
-	float			vectors[ 9];
-	
-	[self getOrientation: vectors];
+{	
+    float cos[ 9];
+    float vectors[ 9];
+    char string[ 256];
+    
+    [self getCosMatrix: cos];
+    [self getOrientation: vectors];
+    
+    float theta = acos( cos[8]);
+    float psi = -atan2( cos[ 6], cos[ 7]);
+    float phi = atan2( cos[ 2], cos[ 5]);
+//    NSLog( @"--------------------");
+//    NSLog( @"Up-Down Angle: %2.2f", theta*R2D - 90.);
+//    NSLog( @"Right-Left Angle: %2.2f", psi*R2D);
+    
+    phi *= R2D;
+    theta *= R2D;
+    psi *= R2D;
+    
+    if( phi < 0)
+        phi += 180;
+    else
+        phi -= 180;
+    
+    sprintf( string, "S-I: %2.1f\nL-R: %2.1f\nRoll: %2.1f", theta - 90., psi, phi);
+    oText[ 4]->SetInput( string);
 	
 	[self getOrientationText:string vector:vectors inversion:YES];
 	oText[ 0]->SetInput( string);
@@ -2750,8 +2771,6 @@ public:
 	
 	if( [controller windowWillClose])
 		return;
-    
-    [self checkForMovedVolume: nil];
     
 	[drawLock lock];
 	
@@ -2892,8 +2911,6 @@ public:
 
 - (void)mouseDragged:(NSEvent *)theEvent
 {
-    [self checkForMovedVolume: nil];
-    
 	_hasChanged = YES;
 
 	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
@@ -6276,9 +6293,9 @@ public:
 			aRenderer->AddActor2D(textX);
 		}
 		
-		for( i = 0; i < 4; i++)
+		for( i = 0; i < 5; i++)
 		{
-			oText[ i]= vtkTextActor::New();
+			oText[ i] = vtkTextActor::New();
 			oText[ i]->SetInput( "X ");
 			oText[ i]->SetScaledText( false);
 			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -6295,7 +6312,11 @@ public:
 		oText[ 2]->GetPositionCoordinate()->SetValue( 0.5, 0.03);
 		oText[ 2]->GetTextProperty()->SetVerticalJustificationToTop();
 		oText[ 3]->GetPositionCoordinate()->SetValue( 0.5, 0.97);
-			
+        
+        oText[ 4]->GetPositionCoordinate()->SetValue( 0.99, 0.01);
+        oText[ 4]->GetTextProperty()->SetBold( false);
+        oText[ 4]->GetTextProperty()->SetJustificationToRight();
+        
 		aCamera = vtkCamera::New();
 		aCamera->SetViewUp (0, 1, 0);
 		aCamera->SetFocalPoint (0, 0, 0);
@@ -6935,12 +6956,12 @@ public:
 		if( orientationWidget->GetEnabled())
 		{
 			orientationWidget->Off();
-			for( i = 0; i < 4; i++) aRenderer->RemoveActor2D( oText[ i]);
+			for( i = 0; i < 5; i++) aRenderer->RemoveActor2D( oText[ i]);
 		}
 		else
 		{
 			orientationWidget->On();
-			for( i = 0; i < 4; i++) aRenderer->AddActor2D( oText[ i]);
+			for( i = 0; i < 5; i++) aRenderer->AddActor2D( oText[ i]);
 		}
 	}
 	
@@ -7326,14 +7347,14 @@ public:
 		if( [color redComponent]+[color greenComponent]+[ color blueComponent] < 1.5)
 		{
 			textWLWW->GetTextProperty()->SetColor(1,1,1);
-			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(1,1,1);
+			for( int i = 0 ; i < 5 ; i++) oText[ i]->GetTextProperty()->SetColor(1,1,1);
 			if( textX)
 				textX->GetTextProperty()->SetColor(1,1,1);
 		}
 		else
 		{
 			textWLWW->GetTextProperty()->SetColor(0,0,0);
-			for( int i = 0 ; i < 4 ; i++) oText[ i]->GetTextProperty()->SetColor(0,0,0);
+			for( int i = 0 ; i < 5 ; i++) oText[ i]->GetTextProperty()->SetColor(0,0,0);
 			if( textX)
 				textX->GetTextProperty()->SetColor(0,0,0);
 		}

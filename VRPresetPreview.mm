@@ -465,7 +465,7 @@
 //	textX->GetPositionCoordinate()->SetValue( 2., 2.);
 //	aRenderer->AddActor2D(textX);
 	
-	for( i = 0; i < 4; i++)
+	for( i = 0; i < 5; i++)
 	{
 		oText[ i]= vtkTextActor::New();
 		oText[ i]->SetInput( "X");

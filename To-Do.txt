@@ -10,6 +10,7 @@ New Features:
 - Web Server: display unlimited number of studies
 - Web Server: DICOM Upload: display username in DB comments
 
+- Angle for 3D VR
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Copy all Viewers (copy&paste)
 - Reports to PDF
