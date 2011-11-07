@@ -728,29 +728,28 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 				[filesAccumulator removeAllObjects];
 				
-				if (user.uploadDICOMAddToSpecificStudies.boolValue)
+				previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
+				previousPatientUID = [[patientUID copy] autorelease];
+				
+				if (studyInstanceUID && patientUID)
 				{
-					previousStudyInstanceUID = [[studyInstanceUID copy] autorelease];
-					previousPatientUID = [[patientUID copy] autorelease];
+					[[[BrowserController currentBrowser] managedObjectContext] lock];
 					
-					if (studyInstanceUID && patientUID)
+					@try
 					{
-						[[[BrowserController currentBrowser] managedObjectContext] lock];
+						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+						[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 						
-						@try
+						NSError *error = nil;
+						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
+						
+						if ([studies count] == 0)
+							NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
+						
+						// Add study to specific study list for this user
+						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
-							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
-							
-							NSError *error = nil;
-							NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
-							
-							if ([studies count] == 0)
-								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
-							
-							// Add study to specific study list for this user
-							
 							NSArray *studiesArrayStudyInstanceUID = [user.studies.allObjects valueForKey:@"studyInstanceUID"];
 							NSArray *studiesArrayPatientUID = [user.studies.allObjects valueForKey: @"patientUID"];
 							
@@ -785,16 +784,33 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 								}
 							}
 						}
-						@catch( NSException *e)
-						{
-							NSLog( @"********* WebPortalConnection closeFileHandleAndClean exception : %@", e);
-						}
-						///
 						
-						[[[BrowserController currentBrowser] managedObjectContext] unlock];
+						if( user.name && [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerTagUploadedStudiesWithUsername"])
+						{
+							for ( NSManagedObject *study in studies)
+							{
+								NSString *comment = [study valueForKey: @"comment"];
+								
+								if( comment == nil)
+									comment = [NSString string];
+									
+								comment = [comment stringByAppendingString: NSLocalizedString( @"Uploaded by ", nil)];
+								comment = [comment stringByAppendingString: user.name];
+								
+								[study setValue: comment forKey:@"comment"];
+							}
+						}
 					}
-					else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
+					@catch( NSException *e)
+					{
+						NSLog( @"********* WebPortalConnection closeFileHandleAndClean exception : %@", e);
+					}
+					///
+					
+					[[[BrowserController currentBrowser] managedObjectContext] unlock];
 				}
+				else NSLog( @"****** studyInstanceUID && patientUID == nil upload POST");
+				
 			}
 		}
 	}

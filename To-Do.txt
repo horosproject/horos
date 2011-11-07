@@ -7,6 +7,8 @@ New Features:
 - Compiled with Xcode 4.2 (LLVM 3.0)
 - Support multiple Ultrasound regions 
 - Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
+- Web Server: display unlimited number of studies
+- Web Server: DICOM Upload: display username in DB comments
 
 - Reports to PDF
 - Database Banner + KSA
@@ -33,17 +35,14 @@ A:
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 - When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
-- Web Server: fetch limit: pages with setFetchOffset, setFetchLimit
 - Copy all Viewers (copy&paste)
 - Delete Alias ROI?
 - CPR : adapt coloscopy path algo to CPR vessels
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
-- Web Server: when user X uploads files, put "Uploaded by X" in comments
 - Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
-- Activate 8-bit TIFF, JPEG, export (10.6) // Add PNG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)

@@ -982,6 +982,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"exportOrientationIn3DExport"];
 	[defaultValues setObject:@"240" forKey:@"WADOTimeout"];
 	[defaultValues setObject:@"50" forKey:@"WADOMaximumConcurrentDownloads"];
+	[defaultValues setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
     [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
     
