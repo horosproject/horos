@@ -41,7 +41,6 @@ A:
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
-- Web Server: add Bonjour Service, add Locations parameter, display in Sources
 - DICOM ECG
 - Auto-retrieve through Web Portal: JSON + ZIP (just provide the base URL)
 - Every web portal user's specific studies list in Albums
