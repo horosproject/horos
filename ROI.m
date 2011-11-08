@@ -24,6 +24,8 @@
 #import "ITKSegmentation3D.h"
 #import "Notifications.h"
 
+#import "DCMUSRegion.h"   // mapping ultrason
+
 #define CIRCLERESOLUTION 200
 #define ROIVERSION 11
 
@@ -2737,6 +2739,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			return NO;
 		}
 	}
+	else
+	{
+		if( mode == ROI_selectedModify) 
+			mode = ROI_selected;
+	}
 	
 	if( clickPoint.x == pt.x && clickPoint.y == pt.y && previousMode == mode && (mode == ROI_selected || mode == ROI_selectedModify))
 	{
@@ -4121,15 +4128,48 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 						if (!_displayCalciumScoring)
 						{
-							if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-							{
-								if( area*pixelSpacingX*pixelSpacingY < 1.)
-									sprintf (line2, "Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
-								else
-									sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
-							}
-							else
-								sprintf (line2, "Area: %0.3f pix2", area);
+                            
+                            // US Regions (Brush) --->
+                            BOOL roiInside2DUSRegion = FALSE;
+                            if ([[self pix] hasUSRegions]) {
+                                
+                                NSPoint roiPoint1 = NSMakePoint(textureUpLeftCornerX, textureUpLeftCornerY);
+                                NSPoint roiPoint2 = NSMakePoint(textureDownRightCornerX, textureDownRightCornerY);
+                                
+                                //NSLog(@"roi [%i,%i] [%i,%i]", (int)roiPoint1.x, (int)roiPoint1.y, (int)roiPoint2.x, (int)roiPoint2.y);
+                                
+                                NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                                DCMUSRegion *anUsRegion;
+                                
+                                while(anUsRegion = [usRegionsEnum nextObject]) {
+                                    if (!roiInside2DUSRegion && [anUsRegion regionSpatialFormat] == 1) {
+                                        // 2D spatial format
+                                        int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                        int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                        int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                        int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                        
+                                        //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                        
+                                        roiInside2DUSRegion = (((int)roiPoint1.x >= usRegionMinX) && ((int)roiPoint1.x <= usRegionMaxX) &&
+                                                               ((int)roiPoint1.y >= usRegionMinY) && ((int)roiPoint1.y <= usRegionMaxY) &&
+                                                               ((int)roiPoint2.x >= usRegionMinX) && ((int)roiPoint2.x <= usRegionMaxX) &&
+                                                               ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
+                                    }
+                                }
+                                
+                            }
+                            //if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+                            if (roiInside2DUSRegion || ((pixelSpacingX != 0 && pixelSpacingY != 0) && (![[self pix] hasUSRegions])))
+                            // <--- US Regions (Brush)
+                            {
+                                if( area*pixelSpacingX*pixelSpacingY < 1.)
+                                    sprintf (line2, "Area: %0.1f %cm2", area*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+                                else
+                                    sprintf (line2, "Area: %0.3f cm2", area*pixelSpacingX*pixelSpacingY/100.);
+                            }
+                            else
+                                sprintf (line2, "Area: %0.3f pix2", area);
 							
 							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
@@ -4215,11 +4255,86 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 						}
+                        
+                        // US Regions (Point) --->
+                        double roiPosXValue, roiPosYValue;
+                        int physicalUnitsXDirection, physicalUnitsYDirection;
+                        BOOL roiInsideMModeOrSpectralUSRegion = FALSE;
+                        BOOL isReferencePixelX0Present, isReferencePixelY0Present = FALSE;
+                        if ([[self pix] hasUSRegions]) {
+                            
+                            NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                            DCMUSRegion *anUsRegion;
+                            
+                            while(anUsRegion = [usRegionsEnum nextObject]) {
+                                if (!roiInsideMModeOrSpectralUSRegion && ([anUsRegion regionSpatialFormat] == 2 || [anUsRegion regionSpatialFormat] == 3)) {
+                                    // M-Mode or Spectral spatial format
+                                    int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                    int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                    int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                    int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                    
+                                    //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                    
+                                    roiInsideMModeOrSpectralUSRegion = (((int)rect.origin.x >= usRegionMinX) && ((int)rect.origin.x <= usRegionMaxX) &&
+                                                                        ((int)rect.origin.y >= usRegionMinY) && ((int)rect.origin.y <= usRegionMaxY));
+                                    
+                                    if (roiInsideMModeOrSpectralUSRegion) {
+                                        // X axis
+                                        physicalUnitsXDirection = [anUsRegion physicalUnitsXDirection];
+                                        isReferencePixelX0Present = [anUsRegion isReferencePixelX0Present];
+                                        if (isReferencePixelX0Present)
+                                            roiPosXValue = (rect.origin.x - (usRegionMinX + [anUsRegion referencePixelX0]) + [anUsRegion refPixelPhysicalValueX]) * [anUsRegion physicalDeltaX];
+                                        
+                                        // Y axis
+                                        physicalUnitsYDirection = [anUsRegion physicalUnitsYDirection];
+                                        isReferencePixelY0Present = [anUsRegion isReferencePixelY0Present];
+                                        if (isReferencePixelY0Present)
+                                            if ([anUsRegion regionSpatialFormat] == 2)
+                                                // M-Mode
+                                                roiPosYValue = -((usRegionMinY + [anUsRegion referencePixelY0]) - rect.origin.y + [anUsRegion refPixelPhysicalValueY]) * fabs([anUsRegion    physicalDeltaY]);
+                                            else
+                                                // Spectral
+                                                roiPosYValue = ((usRegionMinY + [anUsRegion referencePixelY0]) - rect.origin.y + [anUsRegion refPixelPhysicalValueY]) * fabs([anUsRegion    physicalDeltaY]);
+                                    }
+                                }
+                            }
+                        }
+                        // <--- US Regions (Point)
+
+                        sprintf (line2, "Value: %0.3f", rmean);
+                        
+						if( Brtotal != -1) sprintf (line3, "Fused Image Value: %0.3f", Brmean);
 						
-						sprintf (line2, "Val: %0.3f", rmean);
-						if( Brtotal != -1) sprintf (line3, "Fused Image Val: %0.3f", Brmean);
-						
-						sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
+                        // US Regions (Point) --->
+                        if (roiInsideMModeOrSpectralUSRegion) {
+                            NSArray * physicalUnitsXYDirection = [NSArray arrayWithObjects:
+                                                                  @"none", @"%", @"dB", @"cm", @"sec", @"hertz", @"dB/sec", @"cm/sec", @"cm2", @"cm2/sec", @"cm3", @"cm3/sec", @"deg", nil];
+                            
+                            NSString * unitsX;
+                            NSString * unitsY;
+                            if ((physicalUnitsXDirection < 0) || (physicalUnitsXDirection > 12)) {
+                                unitsX = @"unknown";
+                            } else if ((physicalUnitsYDirection < 0) || (physicalUnitsYDirection > 12)) {
+                                unitsY = @"unknown";
+                            } else {
+                                unitsX = [physicalUnitsXYDirection objectAtIndex:physicalUnitsXDirection];
+                                unitsY = [physicalUnitsXYDirection objectAtIndex:physicalUnitsYDirection];
+                            }
+                            
+                            if ((!isReferencePixelX0Present) && (isReferencePixelY0Present)) {
+                                sprintf (line4, "2D Pos: X:n/a %s Y:%0.3f %s", [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]);
+                            } else if ((isReferencePixelX0Present) && (!isReferencePixelY0Present)) {
+                                sprintf (line4, "2D Pos: X:%0.3f %s Y:n/a %s", roiPosXValue, [unitsX UTF8String], [unitsY UTF8String]);
+                            } else if ((!isReferencePixelX0Present) && (!isReferencePixelY0Present)) {
+                                sprintf (line4, "2D Pos: X:n/a %s Y:n/a %s", [unitsX UTF8String], [unitsY UTF8String]);
+                            } else
+                                sprintf (line4, "2D Pos: X:%0.3f %s Y:%0.3f %s", roiPosXValue, [unitsX UTF8String], roiPosYValue, [unitsY UTF8String]);
+                            
+                        } else {
+                        // <--- US Regions (Point)
+                            sprintf (line4, "2D Pos: X:%0.3f px Y:%0.3f px", rect.origin.x, rect.origin.y);
+                        } // US Regions (Point)
 						
 						float location[ 3 ];
 						[[curView curDCM] convertPixX: rect.origin.x pixY: rect.origin.y toDICOMCoords: location pixelCenter: YES];
@@ -4587,11 +4702,15 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					if( [name isEqualToString:@"Unnamed"] == NO) strcpy(line1, [name UTF8String]);
 					if( type == tMesure && ROITEXTNAMEONLY == NO)
 					{
-						if( pixelSpacingX != 0 && pixelSpacingY != 0)
+                        // US Regions (Length) --->
+                        //if( pixelSpacingX != 0 && pixelSpacingY != 0)
+                        if ((pixelSpacingX != 0 && pixelSpacingY != 0) || 
+                            ([[self pix] hasUSRegions] && [[[self pix] usRegions] count] == 1)) // traitement des US contenant une seule région dont le format spatial n'est pas 2D
+                        // <--- US Regions (Length)
 						{
 							float lPix, lMm = [self MesureLength: &lPix];
 							
-							if( displayCMOrPixels)
+							if( displayCMOrPixels)   // CPR
 							{
 								if ( lMm < .1)
 									sprintf (line2, "%0.1f %cm", lMm * 10000.0, 0xb5);
@@ -4600,10 +4719,90 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							}
 							else
 							{
-								if ( lMm < .1)
-									sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
-								else
-									sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
+                                // US Regions (Length) --->
+                                if ([[self pix] hasUSRegions]) {
+                                    
+                                    //NSLog(@"L'image courante contient une ou plusieurs régions US");
+
+                                    NSPoint roiPoint1 = [[points objectAtIndex:0] point];
+                                    NSPoint roiPoint2 = [[points objectAtIndex:1] point];
+
+                                    //NSLog(@"ROI [point1 (%i,%i) point2 (%i,%i)]", roiPoint1X, roiPoint1Y, roiPoint2X, roiPoint2Y);
+
+                                    NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                                    DCMUSRegion *anUsRegion;
+                                    BOOL roiInsideAnUsRegion = FALSE;
+                                    int regionSpatialFormat = 0;
+                                    int physicalUnitsXDirection = 0;
+                                    int physicalUnitsYDirection = 0;
+                                    double physicalDeltaX = 0.0;
+                                    double physicalDeltaY = 0.0;
+                                    
+                                    while (anUsRegion = [usRegionsEnum nextObject]) {
+
+                                        //NSLog(@"US Region [upperLeft (%i,%i) lowerRight(%i,%i)]", [anUsRegion regionLocationMinX0], [anUsRegion regionLocationMinY0], [anUsRegion regionLocationMaxX1], [anUsRegion regionLocationMaxY1]);
+
+                                        if (!roiInsideAnUsRegion) {
+                                            roiInsideAnUsRegion = (((int)roiPoint1.x <= [anUsRegion regionLocationMaxX1] && (int)roiPoint1.x >= [anUsRegion regionLocationMinX0]) &&
+                                                                   ((int)roiPoint1.y <= [anUsRegion regionLocationMaxY1] && (int)roiPoint1.y >= [anUsRegion regionLocationMinY0]) &&
+                                                                   ((int)roiPoint2.x <= [anUsRegion regionLocationMaxX1] && (int)roiPoint2.x >= [anUsRegion regionLocationMinX0]) &&
+                                                                   ((int)roiPoint2.y <= [anUsRegion regionLocationMaxY1] && (int)roiPoint2.y >= [anUsRegion regionLocationMinY0]));
+                                            
+                                            if (roiInsideAnUsRegion) {
+                                                regionSpatialFormat = [anUsRegion regionSpatialFormat];
+                                                physicalUnitsXDirection = [anUsRegion physicalUnitsXDirection];
+                                                physicalUnitsYDirection = [anUsRegion physicalUnitsYDirection];
+                                                physicalDeltaX = [anUsRegion physicalDeltaX];
+                                                physicalDeltaY = [anUsRegion physicalDeltaY];
+                                                
+                                                if ((regionSpatialFormat == 0) && (physicalUnitsXDirection == 0) && (physicalUnitsYDirection == 0)) {
+                                                    // RSF=none, PUXD=none, PUYD=none
+                                                    roiInsideAnUsRegion = FALSE;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    if (roiInsideAnUsRegion) {
+                                        if ((regionSpatialFormat == 1) && (physicalUnitsXDirection == 3) && (physicalUnitsYDirection == 3)) {
+                                            // RSF=2D, PUXD=cm, PUYD=cm
+                                            if (lMm < .1)
+                                                sprintf (line2, "Length: %0.1f %cm", lMm * 10000.0, 0xb5);
+                                            else
+                                                sprintf (line2, "Length: %0.3f cm", lMm);
+                                        } else {
+                                            // Other formats
+                                            double lengthX = fabs(roiPoint2.x - roiPoint1.x) * fabs(physicalDeltaX);
+                                            double lengthY = fabs(roiPoint2.y - roiPoint1.y) * fabs(physicalDeltaY);
+                                            
+                                            NSArray * physicalUnitsXYDirection = [NSArray arrayWithObjects:
+                                            @"none", @"%", @"dB", @"cm", @"sec", @"hertz", @"dB/sec", @"cm/sec", @"cm2", @"cm2/sec", @"cm3", @"cm3/sec", @"deg", nil];
+                                            
+                                            NSString * unitsX;
+                                            NSString * unitsY;
+                                            if ((physicalUnitsXDirection < 0) || (physicalUnitsXDirection > 12)) {
+                                                unitsX = @"unknown";
+                                            } else if ((physicalUnitsYDirection < 0) || (physicalUnitsYDirection > 12)) {
+                                                unitsY = @"unknown";
+                                            } else {
+                                                unitsX = [physicalUnitsXYDirection objectAtIndex:physicalUnitsXDirection];
+                                                unitsY = [physicalUnitsXYDirection objectAtIndex:physicalUnitsYDirection];
+                                            }
+                                            
+                                            if ((unitsY == @"cm/sec") && (lengthY >= 100.0)) {
+                                                unitsY = @"m/sec";
+                                                lengthY = lengthY / 100.0;
+                                            }
+                                            
+                                            sprintf(line2, "Length: X=%0.3f %s, Y=%0.3f %s", lengthX, [unitsX UTF8String], lengthY, [unitsY UTF8String]);
+                                        }
+                                    } else
+                                        sprintf(line2, "Length: %0.3f pix", lPix);
+                                } else   // <--- US Regions (Length)
+                                    if (lMm < .1)
+                                        sprintf (line2, "Length: %0.1f %cm (%0.3f pix)", lMm * 10000.0, 0xb5, lPix);
+                                    else
+                                        sprintf (line2, "Length: %0.3f cm (%0.3f pix)", lMm, lPix);
 							}
 						}
 						else
@@ -4741,14 +4940,48 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						{
 							if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 							
-							if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
-								if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
-									sprintf (line2, "Area: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
-								else
-									sprintf (line2, "Area: %0.3f cm2 (W:%0.1fmm H:%0.1fmm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX), fabs(NSHeight(rect)*pixelSpacingY));
-							}
-							else
-								sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
+							
+                            // US Regions (Rectangle) --->
+                            BOOL roiInside2DUSRegion = FALSE;
+                            if ([[self pix] hasUSRegions]) {
+
+                                NSPoint roiPoint1 = NSMakePoint(rect.origin.x, rect.origin.y);
+                                NSPoint roiPoint2 = NSMakePoint(rect.origin.x+rect.size.width, rect.origin.y+rect.size.height);
+                                
+                                //NSLog(@"roi [%i,%i] [%i,%i]", (int)roiPoint1.x, (int)roiPoint1.y, (int)roiPoint2.x, (int)roiPoint2.y);
+                                
+                                NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                                DCMUSRegion *anUsRegion;
+                                
+                                while(anUsRegion = [usRegionsEnum nextObject]) {
+                                    if (!roiInside2DUSRegion && [anUsRegion regionSpatialFormat] == 1) {
+                                        // 2D spatial format
+                                        int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                        int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                        int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                        int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                        
+                                        //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                        
+                                        roiInside2DUSRegion = (((int)roiPoint1.x >= usRegionMinX) && ((int)roiPoint1.x <= usRegionMaxX) &&
+                                                               ((int)roiPoint1.y >= usRegionMinY) && ((int)roiPoint1.y <= usRegionMaxY) &&
+                                                               ((int)roiPoint2.x >= usRegionMinX) && ((int)roiPoint2.x <= usRegionMaxX) &&
+                                                               ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
+                                    }
+                                }
+                                
+                            }
+                            //if( pixelSpacingX != 0 && pixelSpacingY != 0 ) {
+                            if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions])) {
+                            // <--- US Regions (Rectangle)
+                                if ( fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY) < 1.)
+                                    sprintf (line2, "Area: %0.1f %cm2", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY * 1000000.0), 0xB5);
+                                else
+                                    sprintf (line2, "Area: %0.3f cm2 (W:%0.1fmm H:%0.1fmm)", fabs( NSWidth(rect)*pixelSpacingX*NSHeight(rect)*pixelSpacingY/100.), fabs(NSWidth(rect)*pixelSpacingX), fabs(NSHeight(rect)*pixelSpacingY));
+                            }
+                            else
+                                sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
+
 							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 							
@@ -4850,16 +5083,47 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 					{
 						if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
 						
-						if( pixelSpacingX != 0 && pixelSpacingY != 0)
-						{
-							if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
-								sprintf (line2, "Area: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
-							else
-								sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
-						}
-						else
-							sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
-						
+                        // US Regions (Oval) --->
+                        BOOL roiInside2DUSRegion = FALSE;
+                        if ([[self pix] hasUSRegions]) {
+                            
+                            NSPoint roiPoint1 = NSMakePoint(rrect.origin.x-rrect.size.width, rrect.origin.y-rrect.size.height);
+                            NSPoint roiPoint2 = NSMakePoint(rrect.origin.x+rrect.size.width, rrect.origin.y+rrect.size.height);
+                            
+                            //NSLog(@"roi [%i,%i] [%i,%i]", (int)roiPoint1.x, (int)roiPoint1.y, (int)roiPoint2.x, (int)roiPoint2.y);
+                            
+                            NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                            DCMUSRegion *anUsRegion;
+                            
+                            while(anUsRegion = [usRegionsEnum nextObject]) {
+                                if (!roiInside2DUSRegion && [anUsRegion regionSpatialFormat] == 1) {
+                                    // 2D spatial format
+                                    int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                    int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                    int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                    int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                    
+                                    //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                    
+                                    roiInside2DUSRegion = (((int)roiPoint1.x >= usRegionMinX) && ((int)roiPoint1.x <= usRegionMaxX) &&
+                                                           ((int)roiPoint1.y >= usRegionMinY) && ((int)roiPoint1.y <= usRegionMaxY) &&
+                                                           ((int)roiPoint2.x >= usRegionMinX) && ((int)roiPoint2.x <= usRegionMaxX) &&
+                                                           ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
+                                }
+                            }
+                        }
+                        //if( pixelSpacingX != 0 && pixelSpacingY != 0)
+                        if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions]))
+                        // <--- US Regions (Oval)
+                        {
+                            if( [self EllipseArea]*pixelSpacingX*pixelSpacingY < 1.)
+                                sprintf (line2, "Area: %0.1f %cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY* 1000000.0, 0xB5);
+                            else
+                                sprintf (line2, "Area: %0.3f cm2", [self EllipseArea]*pixelSpacingX*pixelSpacingY/100.);
+                        }
+                        else
+                            sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
+                        
 						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 						
@@ -4944,7 +5208,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						length += [self Length:[[points objectAtIndex:i] point] :[[points objectAtIndex:0] point]];
 						
 						if (length < .1)
-							sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+							sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 						else
 							sprintf (line5, "Length: %0.3f cm", length);
 					}
@@ -5219,7 +5483,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							}
 							
 							if (length < .1)
-								sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+								sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 							else
 								sprintf (line5, "Length: %0.3f cm", length);
 						}
@@ -5258,6 +5522,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			case tAngle:
 			case tPencil:
 			{
+				#define RATIO_FOROPOLYGONAREA 3.
+			
 				glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
 				
 				if( mode == ROI_drawing) glLineWidth(thickness * 2);
@@ -5275,6 +5541,24 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 						glVertex2d( ((double) [[splinePoints objectAtIndex:i] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex:i] y]-(double) offsety)*(double) scaleValue);
 					}
 					glEnd();
+					
+					if( type == tOPolygon)
+					{
+						float length = 0;
+						for( int i = 0; i < [splinePoints count]-1; i++)
+							length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+								
+						// The first and the last point are too far away : probably not a good idea to display the Area
+						if( [self Length: [[splinePoints objectAtIndex: 0] point] :[[splinePoints lastObject] point]] < length / RATIO_FOROPOLYGONAREA)
+						{
+							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity/4.);
+							glBegin(GL_LINE_STRIP);
+							glVertex2d( ((double) [[splinePoints objectAtIndex: 0] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints objectAtIndex: 0] y]-(double) offsety)*(double) scaleValue);
+							glVertex2d( ((double) [[splinePoints lastObject] x]- (double) offsetx)*(double) scaleValue , ((double) [[splinePoints lastObject] y]-(double) offsety)*(double) scaleValue);
+							glEnd();
+							glColor4f (color.red / 65535., color.green / 65535., color.blue / 65535., opacity);
+						}
+					}
 					
 					if( mode == ROI_drawing) glPointSize( thickness * 2);
 					else glPointSize( thickness);
@@ -5300,17 +5584,68 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							if( ROITEXTNAMEONLY == NO )
 							{
 								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
-								
-								if( pixelSpacingX != 0 && pixelSpacingY != 0 )
-								{
-									if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-										sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
-									else
-										sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
-								}
-								else
-									sprintf (line2, "Area: %0.3f pix2", [self Area]);
-								sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
+                                
+                                // US Regions (Pencil or Closed Polygon) --->
+                                BOOL roiInside2DUSRegion = FALSE;
+                                if ([[self pix] hasUSRegions]) {
+                                
+                                    MyPoint *firstPoint = [splinePoints objectAtIndex:0];
+                                
+                                    float xMin = [firstPoint x];
+                                    float xMax = [firstPoint x];
+                                    float yMin = [firstPoint y];
+                                    float yMax = [firstPoint y];
+                                    
+                                    float x, y;
+                                    
+                                    for (MyPoint *aPoint in splinePoints) {
+                                        x = [aPoint x];
+                                        y = [aPoint y];
+                                        
+                                        if (x < xMin) xMin = x;
+                                        if (x > xMax) xMax = x;
+                                        if (y < yMin) yMin = y;
+                                        if (y > yMax) yMax = y;
+                                    }
+                                    
+                                    NSPoint roiPoint1 = NSMakePoint(xMin, yMin);
+                                    NSPoint roiPoint2 = NSMakePoint(xMax, yMax);
+                                    
+                                    //NSLog(@"roi [%i,%i] [%i,%i]", (int)roiPoint1.x, (int)roiPoint1.y, (int)roiPoint2.x, (int)roiPoint2.y);
+                                    
+                                    NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                                    DCMUSRegion *anUsRegion;
+                                    
+                                    while(anUsRegion = [usRegionsEnum nextObject]) {
+                                        if (!roiInside2DUSRegion && [anUsRegion regionSpatialFormat] == 1) {
+                                            // 2D spatial format
+                                            int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                            int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                            int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                            int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                            
+                                            //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                            
+                                            roiInside2DUSRegion = (((int)roiPoint1.x >= usRegionMinX) && ((int)roiPoint1.x <= usRegionMaxX) &&
+                                                                   ((int)roiPoint1.y >= usRegionMinY) && ((int)roiPoint1.y <= usRegionMaxY) &&
+                                                                   ((int)roiPoint2.x >= usRegionMinX) && ((int)roiPoint2.x <= usRegionMaxX) &&
+                                                                   ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
+                                        }
+                                    }
+                                }
+                                //if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+                                if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions]))
+                                // <--- US Regions (Pencil or Closed Polygon)
+                                {
+                                    if([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+                                        sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+                                    else
+                                        sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+                                }
+                                else
+                                    sprintf (line2, "Area: %0.3f pix2", [self Area]);								
+
+                                sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
 								sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
 								
 								length = 0;
@@ -5348,7 +5683,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:0] point]];
 										
 										if (length < .1)
-											sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
+											sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 										else
 											sprintf (line5, "Length: %0.3f cm", length);
 									}
@@ -5371,19 +5706,84 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							if( ROITEXTNAMEONLY == NO )
 							{
 								if( rtotal == -1) [[curView curDCM] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
+                                
+                                // US Regions (Opened Polygon) --->
+                                BOOL roiInside2DUSRegion = FALSE;
+                                if ([[self pix] hasUSRegions]) {
+                                    
+                                    MyPoint *firstPoint = [splinePoints objectAtIndex:0];
+                                    
+                                    float xMin = [firstPoint x];
+                                    float xMax = [firstPoint x];
+                                    float yMin = [firstPoint y];
+                                    float yMax = [firstPoint y];
+                                    
+                                    float x, y;
+                                    
+                                    for (MyPoint *aPoint in splinePoints) {
+                                        x = [aPoint x];
+                                        y = [aPoint y];
+                                        
+                                        if (x < xMin) xMin = x;
+                                        if (x > xMax) xMax = x;
+                                        if (y < yMin) yMin = y;
+                                        if (y > yMax) yMax = y;
+                                    }
+                                    
+                                    NSPoint roiPoint1 = NSMakePoint(xMin, yMin);
+                                    NSPoint roiPoint2 = NSMakePoint(xMax, yMax);
+                                    
+                                    //NSLog(@"roi [%i,%i] [%i,%i]", (int)roiPoint1.x, (int)roiPoint1.y, (int)roiPoint2.x, (int)roiPoint2.y);
+                                    
+                                    NSEnumerator *usRegionsEnum = [[[self pix] usRegions] objectEnumerator];
+                                    DCMUSRegion *anUsRegion;
+                                    
+                                    while(anUsRegion = [usRegionsEnum nextObject]) {
+                                        if (!roiInside2DUSRegion && [anUsRegion regionSpatialFormat] == 1) {
+                                            // 2D spatial format
+                                            int usRegionMinX = [anUsRegion regionLocationMinX0];
+                                            int usRegionMinY = [anUsRegion regionLocationMinY0];
+                                            int usRegionMaxX = [anUsRegion regionLocationMaxX1];
+                                            int usRegionMaxY = [anUsRegion regionLocationMaxY1];
+                                            
+                                            //NSLog(@"usRegion [%i,%i] [%i,%i]", usRegionMinX, usRegionMinY, usRegionMaxX, usRegionMaxY);
+                                            
+                                            roiInside2DUSRegion = (((int)roiPoint1.x >= usRegionMinX) && ((int)roiPoint1.x <= usRegionMaxX) &&
+                                                                   ((int)roiPoint1.y >= usRegionMinY) && ((int)roiPoint1.y <= usRegionMaxY) &&
+                                                                   ((int)roiPoint2.x >= usRegionMinX) && ((int)roiPoint2.x <= usRegionMaxX) &&
+                                                                   ((int)roiPoint2.y >= usRegionMinY) && ((int)roiPoint2.y <= usRegionMaxY));
+                                        }
+                                    }
+                                }
+                                
+								BOOL areaAvailable = YES;
 								
-								if( pixelSpacingX != 0 && pixelSpacingY != 0 )
+								length = 0;
+								
+								for( int i = 0; i < [splinePoints count]-1; i++)
+									length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
+								
+								// The first and the last point are too far away : probably not a good idea to display the Area
+								if( [self Length: [[splinePoints objectAtIndex: 0] point] :[[splinePoints lastObject] point]] > length / RATIO_FOROPOLYGONAREA)
 								{
-									if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
-										sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
-									else
-										sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+									areaAvailable = NO;
 								}
 								else
-									sprintf (line2, "Area: %0.3f pix2", [self Area]);
-								
-								sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-								sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+								{
+									if (roiInside2DUSRegion || (pixelSpacingX != 0 && pixelSpacingY != 0 && ![[self pix] hasUSRegions]))
+									// <--- US Regions (Opened Polygon)
+									{
+										if ([self Area] *pixelSpacingX*pixelSpacingY < 1.)
+											sprintf (line2, "Area: %0.1f %cm2", [self Area] *pixelSpacingX*pixelSpacingY * 1000000.0, 0xB5);
+										else
+											sprintf (line2, "Area: %0.3f cm2", [self Area] *pixelSpacingX*pixelSpacingY / 100.);
+									}
+									else
+										sprintf (line2, "Area: %0.3f pix2", [self Area]);
+                                
+									sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
+									sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+								}
 								
 								if( [curView blendingView])
 								{
@@ -5402,62 +5802,53 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
 									sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
 								}
+								
+								if( length > 0.0 && length < .1)
+									sprintf (line5, "Length: %0.1f %cm", length * 10000.0, 0xB5);
 								else
+									sprintf (line5, "Length: %0.3f cm", length);
+								
+								// 3D Length
+								if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
 								{
-									length = 0;
-									for( long i = 0; i < [splinePoints count]-1; i++ )
+									NSArray *zPosArray = [self zPositions];
+						
+									if( [zPosArray count])
 									{
-										length += [self Length:[[splinePoints objectAtIndex:i] point] :[[splinePoints objectAtIndex:i+1] point]];
-									}
-									
-									if( length > 0.0 && length < .1)
-										sprintf (line5, "L: %0.1f %cm", length * 10000.0, 0xB5);
-									else
-										sprintf (line5, "Length: %0.3f cm", length);
-									
-									
-									// 3D Length
-									if( curView && pixelSpacingX != 0 && pixelSpacingY != 0)
-									{
-										NSArray *zPosArray = [self zPositions];
-							
-										if( [zPosArray count])
+										int zPos = [[zPosArray objectAtIndex:0] intValue];
+										for( int i = 1; i < [zPosArray count]; i++)
 										{
-											int zPos = [[zPosArray objectAtIndex:0] intValue];
-											for( int i = 1; i < [zPosArray count]; i++)
+											if( zPos != [[zPosArray objectAtIndex:i] intValue])
 											{
-												if( zPos != [[zPosArray objectAtIndex:i] intValue])
+												if( [zPosArray count] != [points count])
+													NSLog( @"***** [zPosArray count] != [points count]");
+												
+												double sliceInterval = [[self pix] sliceInterval];
+												
+												// Compute 3D distance between each points
+												double distance3d = 0;
+												for( i = 1; i < [points count]-1; i++)
 												{
-													if( [zPosArray count] != [points count])
-														NSLog( @"***** [zPosArray count] != [points count]");
+													double x[ 3];
+													double y[ 3];
 													
-													double sliceInterval = [[self pix] sliceInterval];
 													
-													// Compute 3D distance between each points
-													double distance3d = 0;
-													for( i = 1; i < [points count]-1; i++)
-													{
-														double x[ 3];
-														double y[ 3];
-														
-														
-														x[ 0] = [[points objectAtIndex:i] point].x * pixelSpacingX;
-														x[ 1] = [[points objectAtIndex:i] point].y * pixelSpacingY;
-														x[ 2] = [[zPosArray objectAtIndex:i] intValue] * sliceInterval;
-														
-														y[ 0] = [[points objectAtIndex:i-1] point].x * pixelSpacingX;
-														y[ 1] = [[points objectAtIndex:i-1] point].y * pixelSpacingY;
-														y[ 2] = [[zPosArray objectAtIndex:i-1] intValue] * sliceInterval;
-														
-														distance3d += sqrt((x[0]-y[0])*(x[0]-y[0]) + (x[1]-y[1])*(x[1]-y[1]) +  (x[2]-y[2])*(x[2]-y[2]));
-													}
+													x[ 0] = [[points objectAtIndex:i] point].x * pixelSpacingX;
+													x[ 1] = [[points objectAtIndex:i] point].y * pixelSpacingY;
+													x[ 2] = [[zPosArray objectAtIndex:i] intValue] * sliceInterval;
 													
-													if (length < .1)
-														sprintf (line6, "3D L: %0.1f %cm", distance3d * 10000.0, 0xB5);
-													else
-														sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
-													break;
+													y[ 0] = [[points objectAtIndex:i-1] point].x * pixelSpacingX;
+													y[ 1] = [[points objectAtIndex:i-1] point].y * pixelSpacingY;
+													y[ 2] = [[zPosArray objectAtIndex:i-1] intValue] * sliceInterval;
+													
+													distance3d += sqrt((x[0]-y[0])*(x[0]-y[0]) + (x[1]-y[1])*(x[1]-y[1]) +  (x[2]-y[2])*(x[2]-y[2]));
 												}
+												
+												if (length < .1)
+													sprintf (line6, "3D Length: %0.1f %cm", distance3d * 10000.0, 0xB5);
+												else
+													sprintf (line6, "3D Length: %0.3f cm", distance3d / 10.);
+												break;
 											}
 										}
 									}

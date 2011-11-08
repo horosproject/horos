@@ -78,6 +78,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	BOOL				isRGB;
 	BOOL				inverseVal;
 
+//  US Regions
+    NSMutableArray      *usRegions;
+    
 //--------------------------------------
 
 // DICOM params needed for SUV calculations
@@ -308,6 +311,10 @@ Note setter is different to not break existing usage. :-( */
 
 @property BOOL isLUT12Bit;
 
+// US Regions
+@property(readonly) NSMutableArray *usRegions;
+-(BOOL) hasUSRegions;
+
 - (float) appliedFactorPET2SUV;
 - (void) copySUVfrom: (DCMPix*) from;  /**< Copy the SUV from another DCMPic */
 - (float) getPixelValueX: (long) x Y:(long) y;  /**< Get the pixel for a point with x,y coordinates */
@@ -449,7 +456,7 @@ Note setter is different to not break existing usage. :-( */
 * @param cww = window width to use
 */
 - (void) ConvertToRGB:(long) mode :(long) cwl :(long) cww;
-
+- (void) setPixelX: (int) x Y:(int) y value:(float) v;
 - (float) cineRate;  /**< Returns the Cine rate */
 
 // drag-drop subtraction-multiplication between series

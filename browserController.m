@@ -10768,7 +10768,7 @@ static NSArray*	openSubSeriesArray = nil;
 //	
 //	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
 //		;//[albumDrawer openOnEdge:NSMinXEdge];
-	
+
 	loadingIsOver = YES;
 	
 	[self outlineViewRefresh];

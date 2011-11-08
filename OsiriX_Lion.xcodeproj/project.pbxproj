@@ -414,6 +414,12 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		71353C511469260B00359CAB /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71353C4F1469260B00359CAB /* NSDate+N2.h */; };
+		71353C521469260B00359CAB /* NSDate+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71353C4F1469260B00359CAB /* NSDate+N2.h */; };
+		71353C531469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
+		71353C541469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
+		713A00391467E2DC00194120 /* DicomDir.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A00371467E2DC00194120 /* DicomDir.h */; };
+		713A003A1467E2DC00194120 /* DicomDir.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A00381467E2DC00194120 /* DicomDir.mm */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
 		7E0B3A4D0675273500908593 /* DCM.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A13067526A600908593 /* DCM.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E0B3A530675273600908593 /* DCMAttribute.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E0B3A14067526A600908593 /* DCMAttribute.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -583,6 +589,8 @@
 		84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
+		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
+		A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A90202BE0B980CD60001A00B /* PluginManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A90202BA0B980CD60001A00B /* PluginManagerController.h */; };
 		A90202BF0B980CD60001A00B /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		A9044D390BBAA29200F36689 /* ROISelector.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9044D370BBAA29200F36689 /* ROISelector.tif */; };
@@ -8330,6 +8338,10 @@
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
+		71353C4F1469260B00359CAB /* NSDate+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+N2.h"; path = "nitrogen/Sources/NSDate+N2.h"; sourceTree = "<group>"; };
+		71353C501469260B00359CAB /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
+		713A00371467E2DC00194120 /* DicomDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDir.h; sourceTree = "<group>"; };
+		713A00381467E2DC00194120 /* DicomDir.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDir.mm; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
 		7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "DCM Framework_Prefix.pch"; sourceTree = "<group>"; };
@@ -8478,6 +8490,8 @@
 		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
 		84EBD98313F41800005A5D02 /* normalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = normalPosition.tif; sourceTree = "<group>"; };
 		84EBD98413F41800005A5D02 /* verticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = verticalPosition.tif; sourceTree = "<group>"; };
+		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
+		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
 		A90202BB0B980CD60001A00B /* PluginManagerController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = PluginManagerController.m; sourceTree = "<group>"; };
 		A9044D370BBAA29200F36689 /* ROISelector.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROISelector.tif; sourceTree = "<group>"; };
@@ -12813,6 +12827,8 @@
 				59DC290911C6178500DAD5B4 /* DiscBurningOptions.mm */,
 				7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */,
 				7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */,
+				713A00371467E2DC00194120 /* DicomDir.h */,
+				713A00381467E2DC00194120 /* DicomDir.mm */,
 			);
 			name = Burning;
 			sourceTree = "<group>";
@@ -13260,6 +13276,8 @@
 				59526E9D1281896F0016F6C0 /* NSMutableString+N2.mm */,
 				AB10FB021129338A009EB238 /* NSImage+N2.h */,
 				AB10FB031129338A009EB238 /* NSImage+N2.mm */,
+				71353C4F1469260B00359CAB /* NSDate+N2.h */,
+				71353C501469260B00359CAB /* NSDate+N2.mm */,
 				AB10FB041129338A009EB238 /* NSBitmapImageRep+N2.h */,
 				AB10FB051129338A009EB238 /* NSBitmapImageRep+N2.mm */,
 				AB10FB061129338A009EB238 /* NSData+N2.h */,
@@ -15135,6 +15153,8 @@
 				AB695A1D063D8261002BDF78 /* Analyze.h */,
 				CE0CB170084A623C00C6385F /* DCMPix.h */,
 				CE0CB16F084A623C00C6385F /* DCMPix.m */,
+				A085E103141E53210072BF0D /* DCMUSRegion.h */,
+				A085E104141E53210072BF0D /* DCMUSRegion.m */,
 				AB4E3CAE05ADDE13001411D1 /* DicomDirParser.h */,
 				AB4E3CAF05ADDE13001411D1 /* DicomDirParser.m */,
 				AB06EDF005635642006AFFB9 /* dicomFile.h */,
@@ -19632,6 +19652,8 @@
 				59C447D814516FF500D71580 /* DicomDatabase+Routing.h in Headers */,
 				59C447DC14516FF500D71580 /* DicomDatabase+Scan.h in Headers */,
 				59C447E81451710F00D71580 /* NSArray+N2.h in Headers */,
+				713A00391467E2DC00194120 /* DicomDir.h in Headers */,
+				71353C511469260B00359CAB /* NSDate+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21813,6 +21835,7 @@
 				59C447D914516FF500D71580 /* DicomDatabase+Routing.h in Headers */,
 				59C447DD14516FF500D71580 /* DicomDatabase+Scan.h in Headers */,
 				59C447E91451710F00D71580 /* NSArray+N2.h in Headers */,
+				71353C521469260B00359CAB /* NSDate+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24186,6 +24209,9 @@
 				59C447DA14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */,
 				59C447DE14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */,
 				59C447EA1451710F00D71580 /* NSArray+N2.mm in Sources */,
+				713A003A1467E2DC00194120 /* DicomDir.mm in Sources */,
+				A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */,
+				71353C531469260B00359CAB /* NSDate+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25419,6 +25445,8 @@
 				59C447DB14516FF500D71580 /* DicomDatabase+Routing.mm in Sources */,
 				59C447DF14516FF500D71580 /* DicomDatabase+Scan.mm in Sources */,
 				59C447EB1451710F00D71580 /* NSArray+N2.mm in Sources */,
+				A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */,
+				71353C541469260B00359CAB /* NSDate+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

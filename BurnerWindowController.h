@@ -66,7 +66,7 @@
 - (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
-- (void)addDICOMDIRUsingDCMTK;
+//- (void)addDICOMDIRUsingDCMTK;
 - (void)addDicomdir;
 - (void)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;

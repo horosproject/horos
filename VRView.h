@@ -87,6 +87,7 @@
 
 #include "vtkCellArray.h"
 #include "vtkProperty2D.h"
+#include "vtkRegularPolygonSource.h"
 
 #ifdef _STEREO_VISION_
 // Added SilvanWidmer 10-08-09
@@ -142,6 +143,7 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 typedef char* vtkRenderer;
 typedef char* vtkVolumeTextureMapper3D;
 typedef char* vtkOrientationMarkerWidget;
+typedef char* vtkRegularPolygonSource;
 
 typedef char* vtkMyCallbackVR;
 
@@ -288,7 +290,7 @@ typedef char* VTKStereoVRView;
 	vtkColorTransferFunction	*colorTransferFunction;
 	vtkTextActor				*textWLWW, *textX;
 	BOOL						isViewportResizable;
-	vtkTextActor				*oText[ 4], *oTextS[ 4];
+	vtkTextActor				*oText[ 5];
 	char						WLWWString[ 200];
 	vtkImageImport				*reader;
 	vtkVolumeRayCastCompositeFunction  *compositeFunction;
@@ -311,6 +313,16 @@ typedef char* VTKStereoVRView;
 	vtkActor2D					*Line2DActor;
 	vtkTextActor				*Line2DText;
 	
+    vtkRegularPolygonSource		*Oval2DData;
+	vtkPolyDataMapper2D			*Oval2D;
+	vtkActor2D					*Oval2DActor;
+	vtkTextActor				*Oval2DText;
+    float                       Oval2DCos[ 9], Oval2DPosition[ 3];
+    DCMPix                      *Oval2DPix;
+    
+    NSPoint                     Oval2DCenter, WorldOval2DCenter;
+    double                      Oval2DRadius;
+    
 	BOOL						clamping;
 	
 	DICOMExport					*exportDCM;
@@ -503,7 +515,7 @@ typedef char* VTKStereoVRView;
 - (long) mode;
 - (float) scaleFactor;
 - (double) getResolution;
-- (void) getCosMatrix: (float *) cos;
+- (BOOL) getCosMatrix: (float *) cos;
 - (void) getOrigin: (float *) origin;
 - (void) getOrigin: (float *) origin windowCentered:(BOOL) wc;
 - (void) getOrigin: (float *) origin windowCentered:(BOOL) wc sliceMiddle:(BOOL) sliceMiddle;

@@ -465,7 +465,7 @@
 //	textX->GetPositionCoordinate()->SetValue( 2., 2.);
 //	aRenderer->AddActor2D(textX);
 	
-	for( i = 0; i < 4; i++)
+	for( i = 0; i < 5; i++)
 	{
 		oText[ i]= vtkTextActor::New();
 		oText[ i]->SetInput( "X");
@@ -533,6 +533,13 @@
 //	
 //	aRenderer->AddActor2D( ROI3DActor);
 	
+    // Oval
+    
+    Oval2DData = vtkRegularPolygonSource::New();
+    Oval2D = vtkPolyDataMapper2D::New();
+    Oval2DActor = vtkActor2D::New();
+    Oval2DText = vtkTextActor::New();
+    
 	//	2D Line
 //	pts = vtkPoints::New();
 //	rect = vtkCellArray::New();

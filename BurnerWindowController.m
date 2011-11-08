@@ -22,11 +22,16 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import "BrowserController.h"
 #import "DicomStudy.h"
+#import "DicomImage.h"
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "NSFileManager+N2.h"
+#import "N2Debug.h"
+#import "NSImage+N2.h"
+#import "DicomDir.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -671,7 +676,35 @@
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (void)addDICOMDIRUsingDCMTK
+/*+(void)image:(NSImage*)image writePGMToPath:(NSString*)ppmpath {
+    NSSize scaledDownSize = [image sizeByScalingDownProportionallyToSize:NSMakeSize(128,128)];
+    NSInteger width = scaledDownSize.width, height = scaledDownSize.height;
+    
+    static CGColorSpaceRef grayColorSpace = nil;
+    if (!grayColorSpace) grayColorSpace = CGColorSpaceCreateDeviceGray();
+    
+    CGContextRef cgContext = CGBitmapContextCreate(NULL, width, height, 8, width, grayColorSpace, 0);
+    uint8* data = CGBitmapContextGetData(cgContext);
+    
+    NSGraphicsContext* nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+    
+    NSGraphicsContext* savedContext = [NSGraphicsContext currentContext];
+    [NSGraphicsContext setCurrentContext:nsContext];
+    [image drawInRect:NSMakeRect(0,0,width,height) fromRect:NSMakeRect(0,0,image.size.width,image.size.height) operation:NSCompositeCopy fraction:1];
+    [NSGraphicsContext setCurrentContext:savedContext];
+    
+    NSMutableData* out = [NSMutableData data];
+    
+    [out appendData:[[NSString stringWithFormat:@"P5\n%d %d\n255\n", width, height] dataUsingEncoding:NSUTF8StringEncoding]];
+    [out appendBytes:data length:width*height];
+    
+    [[NSFileManager defaultManager] confirmDirectoryAtPath:[ppmpath stringByDeletingLastPathComponent]];
+    [out writeToFile:ppmpath atomically:YES];
+    
+    CGContextRelease(cgContext);
+}*/
+
+- (void)addDICOMDIRUsingDCMTK_forFilesAtPaths:(NSArray*/*NSString*/)paths dicomImages:(NSArray*/*DicomImage*/)dimages
 {
 	if( [AppController hasMacOSXSnowLeopard] == NO)
 	{
@@ -679,21 +712,7 @@
 	}
 	else
 	{
-		NSString *burnFolder = [self folderToBurn];
-		
-		NSTask              *theTask;
-		//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-		NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", burnFolder,  nil];
-		
-		theTask = [[NSTask alloc] init];
-		[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-		[theTask setCurrentDirectoryPath:[self folderToBurn]];
-		[theTask setArguments:theArguments];		
-		
-		[theTask launch];
-		[theTask waitUntilExit];
-		[theTask release];
+        [DicomDir createDicomDirAtDir:[self folderToBurn]];
 	}
 }
 
@@ -870,7 +889,7 @@
 		
         thread.name = NSLocalizedString( @"Burning...", nil);
         thread.status = NSLocalizedString( @"Writing DICOMDIR...", nil);
-		[self addDICOMDIRUsingDCMTK];
+		[self addDICOMDIRUsingDCMTK_forFilesAtPaths:newFiles dicomImages:dbObjects];
 		
 		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
 		

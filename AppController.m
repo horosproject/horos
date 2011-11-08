@@ -45,6 +45,7 @@
 #import <N2Debug.h>
 #import "NSFileManager+N2.h"
 #import <objc/runtime.h>
+#import "NSPanel+N2.h"
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
 #import "Reports.h"
@@ -2702,8 +2703,40 @@ static BOOL initialized = NO;
 					NSRunCriticalAlertPanel(NSLocalizedString(@"Mac OS X", nil), NSLocalizedString(@"This application requires Mac OS X 10.6 or higher. Please upgrade your operating system.", nil), NSLocalizedString(@"Quit", nil), nil, nil);
 					exit(0);
 				}
+                
+                // if we are loading a database that isn't on the root volume, then we must wait for it to load - if it doesn't become available after a few minutes, then we'll just let osirix switch to the db at ~/Documents as it would do anyway
+                NSString* dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+                if ([dataBasePath hasPrefix:@"/Volumes/"]) {
+                    NSString* volumePath = [[[dataBasePath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
+                    if (![[NSFileManager defaultManager] fileExistsAtPath:volumePath]) {
+                        NSPanel* dialog = [NSPanel alertWithTitle:@"OsiriX Data"
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off. OsiriX will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil), dataBasePath]
+                                                    defaultButton:@"Quit"
+                                                  alternateButton:@"Continue"
+                                                             icon:nil];
+                        NSModalSession session = [NSApp beginModalSessionForWindow:dialog];
+                        
+                        NSTimeInterval endTime = [NSDate timeIntervalSinceReferenceDate]+10*60; // if ignored, the dialog stays up for 10 minutes
+                        for (;;) {
+                            NSInteger r = [NSApp runModalSession:session];
+                            if (r == NSAlertDefaultReturn) // default button says Quit
+                                exit(0);
+                            else if (r == NSAlertAlternateReturn) // alternate button says Continue
+                                break;
+                            if ([[NSFileManager defaultManager] fileExistsAtPath:volumePath]) // the volume has become available, we can close the dialog
+                                break;
+                            if ([NSDate timeIntervalSinceReferenceDate] > endTime) { // time's out, we close the dialog
+                                NSLog(@"Warning: after waiting for 10 minutes, OsiriX is switching to the default database location because %@ is still not available", volumePath);
+                                break;
+                            }
+                        }
+                        
+                        [NSApp endModalSession:session];
+                        [dialog orderOut:self];
+                    }
+                }
 				
-				NSLog(@"Number of processors: %lu", MPProcessors ());
+				NSLog(@"Number of processors: %lu", MPProcessors());
 				
 				#ifdef NDEBUG
 				#else

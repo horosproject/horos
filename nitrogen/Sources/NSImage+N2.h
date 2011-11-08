@@ -25,6 +25,7 @@
 -(NSImage*)imageWithHue:(CGFloat)hue;
 
 -(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize;
+-(NSSize)sizeByScalingDownProportionallyToSize:(NSSize)targetSize;
 -(NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize;
 
 @end

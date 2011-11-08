@@ -359,11 +359,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
   [event setParamDescriptor:params forKeyword:keyDirectObject];
   
-  NSDictionary* UserHeaders = [[[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] objectForKey: @"UserHeaders"] mutableCopy] autorelease];
+  NSDictionary* UserHeaders = [[[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] objectForKey: @"UserHeaders"] mutableCopy] autorelease];
   
   if( [replyto length])
   {
-	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] mutableCopy] autorelease];
+	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] mutableCopy] autorelease];
 	NSMutableDictionary* MutableUserHeaders = [[[defaults objectForKey: @"UserHeaders"] mutableCopy] autorelease];
 	
 	if( MutableUserHeaders == nil)
@@ -373,7 +373,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 	
 	[defaults setObject: MutableUserHeaders forKey: @"UserHeaders"];
 	
-	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.Mail"];
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.mail"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	QuitAndSleep( @"com.apple.mail", 0.5);
@@ -388,14 +388,14 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
  if( [replyto length])
  {
-	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.Mail"] mutableCopy] autorelease];
+	NSMutableDictionary* defaults = [[[[NSUserDefaults standardUserDefaults] persistentDomainForName: @"com.apple.mail"] mutableCopy] autorelease];
 	
 	if( UserHeaders)
 		[defaults setObject: UserHeaders forKey: @"UserHeaders"];
 	else
 		[defaults removeObjectForKey: @"UserHeaders"];
 		
-	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.Mail"];
+	[[NSUserDefaults standardUserDefaults] setPersistentDomain: defaults forName: @"com.apple.mail"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
  }
  

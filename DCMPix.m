@@ -12,7 +12,6 @@
  PURPOSE.
  =========================================================================*/
 
-
 #import <DCMPix.h>
 #import "DicomImage.h"
 #import "Papyrus3/Papyrus3.h"
@@ -26,6 +25,10 @@
 #import "SRAnnotation.h"
 #import "Notifications.h"
 #import "N2Debug.h"
+
+#ifdef OSIRIX_VIEWER
+#import "DCMUSRegion.h"   // US Regions
+#endif
 
 #import <DCMView.h>
 
@@ -1197,6 +1200,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize stackMode, generated, generatedName, imageObj;
 @synthesize srcFile, annotationsDictionary;
 
+// US Regions
+@synthesize usRegions;
+
 // SUV properties
 @synthesize philipsFactor, patientsWeight;
 @synthesize halflife, radionuclideTotalDose;
@@ -1395,6 +1401,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	
 	return currentImage;
+}
+
+// US Regions
+-(BOOL) hasUSRegions {
+    return (usRegions && [usRegions count] > 0);
 }
 
 - (float) maxValueOfSeries
@@ -3026,6 +3037,13 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (double) pixelSpacingY { [self CheckLoad]; return pixelSpacingY; }
 - (double) pixelSpacingX { [self CheckLoad]; return pixelSpacingX; }
 
+- (void) setPixelX: (int) x Y:(int) y value:(float) v
+{
+    [self CheckLoad];
+    
+    *(fImage + x + (y*width)) = v;
+}
+
 - (void) setPixelSpacingX :(double) s
 {
 	if( isnan( s) || s < 0 || s > 1000)
@@ -3426,6 +3444,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->viewPosition = [self->viewPosition retain];
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
+    copy->usRegions = [self->usRegions retain];
 	
 	copy->patientsWeight = self->patientsWeight;
 	copy->SUVConverted = self->SUVConverted;
@@ -5306,10 +5325,13 @@ END_CREATE_ROIS:
 	
 	if (seq)
 	{
-		BOOL spacingFound = NO;
-		
+// US Regions		BOOL spacingFound = NO;
+		[usRegions release];
+        usRegions = [[NSMutableArray array] retain];
+        
 		for ( DCMObject *sequenceItem in seq.sequence)
 		{
+/* US Regions --->
 			if( spacingFound == NO)
 			{
 				int physicalUnitsX = 0;
@@ -5337,7 +5359,49 @@ END_CREATE_ROIS:
 					}
 				}
 			}
-		}
+<--- US Regions */
+// US Regions --->
+#ifdef OSIRIX_VIEWER
+
+            // Read US Region Calibration Attributes
+            DCMUSRegion *usRegion = [[[DCMUSRegion alloc] init] autorelease];
+            
+            [usRegion setRegionSpatialFormat:[[sequenceItem attributeValueWithName:@"RegionSpatialFormat"] intValue]];
+            [usRegion setRegionDataType: [[sequenceItem attributeValueWithName:@"RegionDataType"] intValue]];
+            [usRegion setRegionFlags: [[sequenceItem attributeValueWithName:@"RegionFlags"] intValue]];
+            [usRegion setRegionLocationMinX0: [[sequenceItem attributeValueWithName:@"RegionLocationMinX0"] intValue]];
+            [usRegion setRegionLocationMinY0: [[sequenceItem attributeValueWithName:@"RegionLocationMinY0"] intValue]];
+            [usRegion setRegionLocationMaxX1: [[sequenceItem attributeValueWithName:@"RegionLocationMaxX1"] intValue]];
+            [usRegion setRegionLocationMaxY1: [[sequenceItem attributeValueWithName:@"RegionLocationMaxY1"] intValue]];
+            [usRegion setReferencePixelX0: [[sequenceItem attributeValueWithName:@"ReferencePixelX0"] intValue]];
+            [usRegion setIsReferencePixelX0Present:([sequenceItem attributeValueWithName:@"ReferencePixelX0"] != nil)];
+            [usRegion setReferencePixelY0: [[sequenceItem attributeValueWithName:@"ReferencePixelY0"] intValue]];
+            [usRegion setIsReferencePixelY0Present:([sequenceItem attributeValueWithName:@"ReferencePixelY0"] != nil)];
+            [usRegion setPhysicalUnitsXDirection: [[sequenceItem attributeValueWithName:@"PhysicalUnitsXDirection"] intValue]];
+            [usRegion setPhysicalUnitsYDirection: [[sequenceItem attributeValueWithName:@"PhysicalUnitsYDirection"] intValue]];
+            [usRegion setRefPixelPhysicalValueX: [[sequenceItem attributeValueWithName:@"ReferencePixelPhysicalValueX"] doubleValue]];
+            [usRegion setRefPixelPhysicalValueY: [[sequenceItem attributeValueWithName:@"ReferencePixelPhysicalValueY"] doubleValue]];
+            [usRegion setPhysicalDeltaX: [[sequenceItem attributeValueWithName:@"PhysicalDeltaX"] doubleValue]];
+            [usRegion setPhysicalDeltaY: [[sequenceItem attributeValueWithName:@"PhysicalDeltaY"] doubleValue]];
+            [usRegion setDopplerCorrectionAngle: [[sequenceItem attributeValueWithName:@"DopplerCorrectionAngle"] doubleValue]];
+            
+            if ([usRegion physicalUnitsXDirection] == 3 && [usRegion physicalUnitsYDirection] == 3 && [usRegion regionSpatialFormat] == 1) {
+                // We want only cm, for 2D images
+                if ([usRegion physicalDeltaX] && [usRegion physicalDeltaY])
+                {
+                    pixelSpacingX = fabs([usRegion physicalDeltaX]) * 10.;	// These are in cm !
+                    pixelSpacingY = fabs([usRegion physicalDeltaY]) * 10.;
+                    pixelSpacingFromUltrasoundRegions = YES;
+                }
+            }
+            
+            // Adds current US Region Calibration Attributes to usRegions collection
+            [usRegions addObject:usRegion];
+            
+            //NSLog (@"dcmFrameworkLoad0x0028 - US REGION is [%@]", [usRegion toString]);
+#endif
+// <--- US Regions
+        }
 	}
 	
 	//PixelAspectRatio
@@ -6604,16 +6668,22 @@ END_CREATE_ROIS:
 		{
 			if( val->sq != NULL)
 			{
-				BOOL spacingFound = NO;
-				
+                // US Regions --->
+                // BOOL spacingFound = NO;
+				[usRegions release];
+                usRegions = [[NSMutableArray array] retain];
+                // <--- US Regions
+                
 				Papy_List	*dcmList = val->sq;
 				while (dcmList != NULL)
 				{
 					if( dcmList->object->item)
 					{
 						SElement *gr = (SElement *)dcmList->object->item->object->group;
-						if ( gr->group == 0x0018 && spacingFound == NO)
+//						if ( gr->group == 0x0018 && spacingFound == NO)
+                        if ( gr->group == 0x0018 )
 						{
+/* US Regions --->
 							int physicalUnitsX = 0;
 							int physicalUnitsY = 0;
 							int spatialFormat = 0;
@@ -6643,6 +6713,70 @@ END_CREATE_ROIS:
 									pixelSpacingFromUltrasoundRegions = YES;
 								}
 							}
+<--- US Regions */
+// US Regions --->
+#ifdef OSIRIX_VIEWER
+                            // Read US Region Calibration Attributes
+                            DCMUSRegion *usRegion = [[[DCMUSRegion alloc] init] autorelease];
+                            
+                            val = Papy3GetElement (gr, papRegionSpatialFormatGr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionSpatialFormat: val->us];
+                            val = Papy3GetElement (gr, papRegionDataTypeGr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionDataType: val->us];
+                            val = Papy3GetElement (gr, papRegionFlagsGr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionFlags: val->us];
+
+                            val = Papy3GetElement (gr, papRegionLocationMinX0Gr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionLocationMinX0: val->us];
+                            val = Papy3GetElement (gr, papRegionLocationMinY0Gr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionLocationMinY0: val->us];
+                            val = Papy3GetElement (gr, papRegionLocationMaxX1Gr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionLocationMaxX1: val->us];
+                            val = Papy3GetElement (gr, papRegionLocationMaxY1Gr, &nbVal, &elemType);
+                            if (val) [usRegion setRegionLocationMaxY1: val->us];
+                            
+                            val = Papy3GetElement (gr, papReferencePixelX0Gr, &nbVal, &elemType);
+                            if (val) [usRegion setReferencePixelX0: val->ss];
+                            [usRegion setIsReferencePixelX0Present:(val != nil)];
+                            val = Papy3GetElement (gr, papReferencePixelY0Gr, &nbVal, &elemType);
+                            if (val) [usRegion setReferencePixelY0: val->ss];
+                            [usRegion setIsReferencePixelY0Present:(val != nil)];
+                            
+                            val = Papy3GetElement (gr, papPhysicalUnitsXDirectionGr, &nbVal, &elemType);
+                            if (val) [usRegion setPhysicalUnitsXDirection: val->us];
+                            val = Papy3GetElement (gr, papPhysicalUnitsYDirectionGr, &nbVal, &elemType);
+                            if (val) [usRegion setPhysicalUnitsYDirection: val->us];
+
+                            val = Papy3GetElement (gr, papReferencePixelPhysicalValueXGr, &nbVal, &elemType);
+                            if (val) [usRegion setRefPixelPhysicalValueX: val->fd];
+                            val = Papy3GetElement (gr, papReferencePixelPhysicalValueYGr, &nbVal, &elemType);
+                            if (val) [usRegion setRefPixelPhysicalValueY: val->fd];
+
+                            val = Papy3GetElement (gr, papPhysicalDeltaXGr, &nbVal, &elemType);
+                            if (val) [usRegion setPhysicalDeltaX: val->fd];
+                            val = Papy3GetElement (gr, papPhysicalDeltaYGr, &nbVal, &elemType);
+                            if (val) [usRegion setPhysicalDeltaY: val->fd];
+                            
+                            val = Papy3GetElement (gr, papDopplerCorrectionAngleGr, &nbVal, &elemType);
+                            if (val) [usRegion setDopplerCorrectionAngle: val->fd];
+                            
+							if ([usRegion physicalUnitsXDirection] == 3 && [usRegion physicalUnitsYDirection] == 3 && [usRegion regionSpatialFormat] == 1) {
+								// We want only cm, for 2D images
+                                if ([usRegion physicalDeltaX] && [usRegion physicalDeltaY])
+								{
+									pixelSpacingX = fabs([usRegion physicalDeltaX]) * 10.;	// These are in cm !
+									pixelSpacingY = fabs([usRegion physicalDeltaY]) * 10.;
+									pixelSpacingFromUltrasoundRegions = YES;
+								}
+							}
+                            
+                            // Adds current US Region Calibration Attributes to usRegions collection
+                            [usRegions addObject:usRegion];
+
+                            //NSLog (@"papyLoadGroup0x0018 - US REGION is [%@]", [usRegion toString]);
+                            
+#endif
+// <--- US Regions
 						}
 					}
 					dcmList = dcmList->next;
@@ -12167,6 +12301,7 @@ END_CREATE_ROIS:
 	if( subGammaFunction) vImageDestroyGammaFunction( subGammaFunction);
 	
 	[annotationsDictionary release];
+    [usRegions release];
 	
 	if(LUT12baseAddr) free(LUT12baseAddr);
 	
