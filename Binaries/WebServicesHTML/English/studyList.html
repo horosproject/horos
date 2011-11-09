@@ -12,28 +12,7 @@
         
         %Session.NumberOfStudies% Studies Found<br>
         <script type="text/javascript">
-        	if( %Session.NumberOfPages% > 1)
-        	{
-        		document.write("Pages:  ");
-        		
-				var i=0;
-	            var previous=0;
-	            previous = %Session.Page%-1;
-	            if( %Session.Page% == 0) document.write("<<  ");
-	            else document.write("<b><a href='?%Info.getParameters(page=)%&page="+previous+"'><<  </a></b>");
-            
-   	         	for (i=1;i<%Session.NumberOfPages%+1;i++)
-    	        {
-        	    	var page = i-1;
-            		if( i == %Session.Page%+1) document.write("<b><u>"+i+"</u></b>  ");
-                	else document.write("<a href='?%Info.getParameters(page=)%&page="+page+"'>"+i+"</a>  ");
-            	}
-            
-           	 	var next=0;
-           	 	next = %Session.Page%+1;
-           		if( next > %Session.NumberOfPages%) document.write("  >>");
-            	else document.write("<b><a href='?%Info.getParameters(page=)%&page="+next+"'>  >></a></b>");
-            }
+            printPagesHTML( %Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
         </script>
         <br>
         
@@ -90,28 +69,7 @@
 			</table>
 		</div>
 		<script type="text/javascript">
-        	if( %Session.NumberOfPages% > 1)
-        	{
-        		document.write("Pages:  ");
-        		
-				var i=0;
-	            var previous=0;
-	            previous = %Session.Page%-1;
-	            if( %Session.Page% == 0) document.write("<<  ");
-	            else document.write("<b><a href='?%Info.getParameters(page=)%&page="+previous+"'><<  </a></b>");
-            
-   	         	for (i=1;i<%Session.NumberOfPages%+1;i++)
-    	        {
-        	    	var page = i-1;
-            		if( i == %Session.Page%+1) document.write("<b><u>"+i+"</u></b>  ");
-                	else document.write("<a href='?%Info.getParameters(page=)%&page="+page+"'>"+i+"</a>  ");
-            	}
-            
-           	 	var next=0;
-           	 	next = %Session.Page%+1;
-           		if( next > %Session.NumberOfPages%) document.write("  >>");
-            	else document.write("<b><a href='?%Info.getParameters(page=)%&page="+next+"'>  >></a></b>");
-            }
+            printPagesHTML( %Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
         </script>
 		%ELSE:Studies.count%
 		This list is empty.
