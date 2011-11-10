@@ -462,8 +462,7 @@ return YES;
 			[item setState: NSOffState];
 		}
 	}
-	
-	if( [item action] == @selector( resetWindowsState:))
+	else if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
 		for( id loopItem in studiesArray)

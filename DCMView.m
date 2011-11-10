@@ -1264,6 +1264,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [loopItem ROImode] == ROI_selected) valid = YES;
 		}
     }
+    else if( [item action] == @selector( copy:) && [item tag] == 1) // copy all viewers
+    {
+		if( [ViewerController numberOf2DViewer] > 1)
+            valid = YES;
+	}
 	else if( [item action] == @selector( switchCopySettingsInSeries:))
 	{
 		valid = YES;
@@ -1524,13 +1529,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 
-	if( roiSelected == NO)
+	if( roiSelected == NO || [sender tag])
 	{
 		NSImage *im;
 		
 		[pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
 		
-		im = [self nsimage: NO];
+		im = [self nsimage: NO allViewers: [sender tag]];
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 	}
@@ -1539,7 +1544,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
 		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
 		
-		NSMutableString		*r = [NSMutableString string];
+		NSMutableString *r = [NSMutableString string];
 		
 		for( long i = 0 ; i < [roiSelectedArray count] ; i++ )
 		{
@@ -7185,7 +7190,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //    Point and Vector with
 //        coordinates {float x, y, z;}
 //        operators for:
-//            Point  = Point ± Vector
+//            Point  = Point Â± Vector
 //            Vector = Point - Point
 //            Vector = Scalar * Vector    (scalar product)
 //    Plane with a point and a normal {Point V0; Vector n;}
@@ -10290,7 +10295,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer] == NO) allViewers = NO;
 	
-	if( allViewers)
+	if( allViewers && [ViewerController numberOf2DViewer] > 1)
 	{
 		NSArray	*viewers = [ViewerController getDisplayed2DViewers];
 		
@@ -10362,7 +10367,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						removeGraphical: NO
 						   squarePixels: YES
 							   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey: @"includeAllTiledViews"]
-					 allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
+					 allowSmartCropping: NO //[[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
 								 origin: nil
 								spacing: nil
 	 							 offset: nil
