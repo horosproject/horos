@@ -11,9 +11,9 @@ New Features:
 - Web Server: DICOM Upload: display username in DB comments
 - Angle for 3D VR
 - Copy all Viewers (Edit menu)
+- Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)
 
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
-- Reports to PDF
 - Database Banner + KSA
 ---------------------------------------------------------------------------------------------------------
 
