@@ -143,7 +143,11 @@
 -(NSString*)saveReportAsPdfInTmp
 {
     NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
+    
+    path = [path stringByAppendingPathExtension: @"pdf"];
+    
     [self saveReportAsPdfAtPath:path];
+    
     return path;
 }
 
@@ -154,7 +158,10 @@
     if (!thevalue && altvalue)
         thevalue = [altvalue isKindOfClass:[NSArray class]] ? altvalue : [NSArray arrayWithObject:altvalue];
     if (thevalue)
+    {
+        thevalue = [thevalue isKindOfClass:[NSArray class]] ? thevalue : [NSArray arrayWithObject: thevalue];
         [to setAttributeValues:thevalue forName:name];
+    }
     return attribute != nil;
 }
 

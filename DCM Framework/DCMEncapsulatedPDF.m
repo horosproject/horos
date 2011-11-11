@@ -26,6 +26,9 @@
 
 + (DCMObject*) encapsulatedPDF:(NSData *)pdf
 {
+    if( pdf == nil)
+        return nil;
+    
 	DCMObject *dcmObject = [DCMObject dcmObject];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMAbstractSyntaxUID pdfStorageClassUID]] forName:@"SOPClassUID"];
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:[DCMAbstractSyntaxUID pdfStorageClassUID]] forName:@"MediaStorageSOPClassUID"];

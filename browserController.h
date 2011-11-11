@@ -532,7 +532,8 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 
 
 - (IBAction) deleteReport: (id) sender;
-//- (IBAction)srReports: (id)sender;
+- (IBAction) convertReportToPDF: (id)sender;
+- (IBAction) convertReportToDICOMSR: (id)sender;
 
 - (IBAction) rebuildThumbnails:(id) sender;
 

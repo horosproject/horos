@@ -21,6 +21,7 @@
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "AppController.h"
@@ -62,7 +63,6 @@
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
-#import "DicomStudy.h"
 #import "DicomAlbum.h"
 #import "PluginManager.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
@@ -14404,8 +14404,11 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM SR", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
+	
+    [menu addItem: [NSMenuItem separatorItem]];
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""] autorelease]];
@@ -15064,6 +15067,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( decompressSelectedFiles:) || 
 			[menuItem action] == @selector( generateReport:) || 
 			[menuItem action] == @selector( deleteReport:) || 
+            [menuItem action] == @selector( convertReportToPDF:) ||
+            [menuItem action] == @selector( convertReportToDICOMSR:) ||
 			[menuItem action] == @selector( delItem:) || 
 			[menuItem action] == @selector( querySelectedStudy:) || 
 			[menuItem action] == @selector( burnDICOM:) || 
@@ -15073,8 +15078,25 @@ static NSArray*	openSubSeriesArray = nil;
 			)
 		return NO;
 	}
-
-	if( menuItem.menu == imageTileMenu)
+    
+    if( [menuItem action] == @selector( convertReportToPDF:) || [menuItem action] == @selector( convertReportToDICOMSR:))
+    {
+        NSManagedObject *item = [databaseOutline itemAtRow:[[databaseOutline selectedRowIndexes] firstIndex]];
+        
+        if( item)
+        {
+            DicomStudy *studySelected;
+            	
+            if ([[[item entity] name] isEqual:@"Study"])
+                studySelected = (DicomStudy*) item;
+            else
+                studySelected = [item valueForKey:@"study"];
+            
+            if( [studySelected valueForKey:@"reportURL"] == nil)
+                return NO;
+        }
+    }
+	else if( menuItem.menu == imageTileMenu)
 	{
 		return [mainWindow.windowController isKindOfClass:[ViewerController class]];
 	}
@@ -19758,6 +19780,81 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 }
 
+- (IBAction) convertReportToDICOMSR: (id)sender
+{
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
+	
+	if( item)
+	{
+		DicomStudy *studySelected;
+		
+		[checkBonjourUpToDateThreadLock lock];
+		
+		@try 
+		{			
+			if ([[[item entity] name] isEqual:@"Study"])
+				studySelected = (DicomStudy*) item;
+			else
+				studySelected = [item valueForKey:@"study"];
+			
+            [studySelected saveReportAsDicomAtPath: [[[self INCOMINGPATH] stringByAppendingPathComponent: studySelected.name] stringByAppendingPathExtension: @"dcm"]];
+            
+            [self checkIncoming: self];
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+		[checkBonjourUpToDateThreadLock unlock];
+		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	}
+}
+
+
+- (IBAction) convertReportToPDF: (id)sender
+{
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
+	
+	if( item)
+	{
+		DicomStudy *studySelected;
+		
+		[checkBonjourUpToDateThreadLock lock];
+		
+		@try 
+		{			
+			if ([[[item entity] name] isEqual:@"Study"])
+				studySelected = (DicomStudy*) item;
+			else
+				studySelected = [item valueForKey:@"study"];
+			
+            NSSavePanel *panel = [NSSavePanel savePanel];
+            
+            [panel setCanSelectHiddenExtension:YES];
+            [panel setRequiredFileType: @"pdf"];
+            
+            NSString *filename = [NSString stringWithFormat: NSLocalizedString( @"%@-Report.pdf", nil), studySelected.name];
+            
+            if( [panel runModalForDirectory: nil file: filename] == NSFileHandlingPanelOKButton)
+            {
+                [studySelected saveReportAsPdfAtPath: [panel filename]];
+            }
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+		[checkBonjourUpToDateThreadLock unlock];
+		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+	}
+}
+
 - (IBAction)deleteReport: (id)sender
 {
 	NSIndexSet			*index = [databaseOutline selectedRowIndexes];
@@ -20988,6 +21085,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( decompressSelectedFiles:) || 
 			[toolbarItem action] == @selector( generateReport:) || 
 			[toolbarItem action] == @selector( deleteReport:) || 
+            [toolbarItem action] == @selector( convertReportToPDF:) ||
+            [toolbarItem action] == @selector( convertReportToDICOMSR:) ||
 			[toolbarItem action] == @selector( delItem:) || 
 			[toolbarItem action] == @selector( querySelectedStudy:) || 
 			[toolbarItem action] == @selector( burnDICOM:) || 
