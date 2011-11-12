@@ -51,7 +51,7 @@
 	}
 	
     NSURL* url = [NSURL fileURLWithPath:sqlFilePath];
-	NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, NULL]; // [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
+	NSDictionary* options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, NULL];
 	NSError* err = NULL;
     
     if( [[NSFileManager defaultManager] fileExistsAtPath: [sqlFilePath stringByDeletingLastPathComponent]] == NO)

@@ -512,6 +512,8 @@
 		return wpc.dicomCStorePortString;
 	if ([key isEqual:@"newChallenge"])
 		return [wpc.session newChallenge];
+    if ([key isEqual:@"proposeReport"])
+        return [NSNumber numberWithBool: !wpc.user || wpc.user.downloadReport.boolValue];
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS];
 	if ([key isEqual:@"proposeDicomSend"])

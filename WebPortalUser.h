@@ -40,6 +40,7 @@
 @property (nonatomic, retain) NSNumber * shareStudyWithUser;
 @property (nonatomic, retain) NSString * studyPredicate;
 @property (nonatomic, retain) NSNumber * uploadDICOM;
+@property (nonatomic, retain) NSNumber * downloadReport;
 @property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
 @property (nonatomic, retain) NSSet* studies;
 

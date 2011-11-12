@@ -44,6 +44,7 @@ static PSGenerator *generator = nil;
 @dynamic shareStudyWithUser;
 @dynamic studyPredicate;
 @dynamic uploadDICOM;
+@dynamic downloadReport;
 @dynamic uploadDICOMAddToSpecificStudies;
 @dynamic studies;
 

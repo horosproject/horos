@@ -30,6 +30,7 @@
 #import "NSImage+N2.h"
 #import "DicomSeries.h"
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "WebPortalStudy.h"
 #import "DicomImage.h"
 #import "DCM.h"
@@ -1106,7 +1107,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				webUser.emailNotification = [NSNumber numberWithBool:[[parameters objectForKey:@"emailNotification"] isEqual:@"on"]];
 				webUser.encryptedZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"encryptedZIP"] isEqual:@"on"]];
 				webUser.uploadDICOM = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOM"] isEqual:@"on"]];
-				webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
+				webUser.downloadReport = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadReport"] isEqual:@"on"]];
+                webUser.sendDICOMtoSelfIP = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoSelfIP"] isEqual:@"on"]];
 				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
 				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
 				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
@@ -1805,39 +1807,45 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	if (!study)
 		return;
 	
-	[self.portal updateLogEntryForStudy:study withMessage: @"Download Report" forUser:user.name ip:asyncSocket.connectedHost];
+	[self.portal updateLogEntryForStudy:study withMessage: @"View Report" forUser:user.name ip:asyncSocket.connectedHost];
 	
 	NSString *reportFilePath = study.reportURL;
 	
-	NSString *reportType = [reportFilePath pathExtension];
-	
-	if ([reportType isEqualToString: @"pages"])
-	{
-		NSString* zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
-		// zip the directory into a single archive file
-		NSTask *zipTask   = [[NSTask alloc] init];
-		[zipTask setLaunchPath:@"/usr/bin/zip"];
-		[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
-		if ([reportType isEqualToString:@"pages"])
-			[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
-		else
-			[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
-		[zipTask launch];
-		while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-		int result = [zipTask terminationStatus];
-		[zipTask release];
-		
-		if (result==0)
-			reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:zipFileName];
-		
-		response.data = [NSData dataWithContentsOfFile: reportFilePath];
-		
-		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
-	}
-	else
-	{
-		response.data = [NSData dataWithContentsOfFile: reportFilePath];
-	}
+    NSString *tmpFile = [study saveReportAsPdfInTmp];
+    
+    response.data = [NSData dataWithContentsOfFile: tmpFile];
+    
+    [[NSFileManager defaultManager] removeFileAtPath: tmpFile handler:nil];
+    
+//	NSString *reportType = [reportFilePath pathExtension];
+//	
+//	if ([reportType isEqualToString: @"pages"])
+//	{
+//		NSString* zipFileName = [NSString stringWithFormat:@"%@.zip", [reportFilePath lastPathComponent]];
+//		// zip the directory into a single archive file
+//		NSTask *zipTask   = [[NSTask alloc] init];
+//		[zipTask setLaunchPath:@"/usr/bin/zip"];
+//		[zipTask setCurrentDirectoryPath:[[reportFilePath stringByDeletingLastPathComponent] stringByAppendingString:@"/"]];
+//		if ([reportType isEqualToString:@"pages"])
+//			[zipTask setArguments:[NSArray arrayWithObjects: @"-q", @"-r" , zipFileName, [reportFilePath lastPathComponent], nil]];
+//		else
+//			[zipTask setArguments:[NSArray arrayWithObjects: zipFileName, [reportFilePath lastPathComponent], nil]];
+//		[zipTask launch];
+//		while( [zipTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//		int result = [zipTask terminationStatus];
+//		[zipTask release];
+//		
+//		if (result==0)
+//			reportFilePath = [[reportFilePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:zipFileName];
+//		
+//		response.data = [NSData dataWithContentsOfFile: reportFilePath];
+//		
+//		[[NSFileManager defaultManager] removeFileAtPath:reportFilePath handler:nil];
+//	}
+//	else
+//	{
+//		response.data = [NSData dataWithContentsOfFile: reportFilePath];
+//	}
 }
 
 #define ThumbnailsCacheSize 20
