@@ -839,6 +839,12 @@ static NSTimeInterval lastConnection = 0;
                                        [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue2"], @"value", [paramDict objectForKey: @"filterKey2"], @"name", nil]];
                     }
                     
+                    if( [paramDict objectForKey: @"filterValue3"] && [paramDict objectForKey: @"filterKey3"])
+                    {
+                        filterArray = [filterArray arrayByAddingObject:
+                                       [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue3"], @"value", [paramDict objectForKey: @"filterKey3"], @"name", nil]];
+                    }
+                    
                     [rootNode queryWithValues: filterArray];
                     
                     int retrieveMode = CMOVERetrieveMode;

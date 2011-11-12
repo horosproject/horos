@@ -9,7 +9,7 @@ New Features:
 - Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
 - Web Server: display unlimited number of studies
 - Web Server: DICOM Upload: display username in DB comments
-- Angle for 3D VR
+- Angles Displayed for 3D VR (Up-Down, Left-Right, Roll)
 - Copy all Viewers (Edit menu)
 - Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)
 
