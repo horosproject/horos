@@ -17,11 +17,7 @@ New Features:
 - Copy all Viewers (Edit menu)
 - Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)
 
-
-
-
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
-- Database Banner + KSA
 ---------------------------------------------------------------------------------------------------------
 
 A:

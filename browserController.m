@@ -10460,7 +10460,7 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
 {
-    if( [sender isVertical] == YES)
+if( [sender isVertical] == YES)
 	{
         NSSize size = oMatrix.cellSize;
         NSSize space = oMatrix.intercellSpacing;
@@ -10630,17 +10630,30 @@ static BOOL withReset = NO;
 		
 		[oMatrix selectCellWithTag: selectedCellTag];
     }
+    
+    {
+    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
+    frame.origin.y -= banner.image.size.height - frame.size.height;
+    frame.size.height = banner.image.size.height;
+    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
+    [bannerSplit adjustSubviews];
+    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
 {
-	if ([sender isEqual:splitViewVert]) return NO;
+    if ([sender isEqual: bannerSplit]) return NO;
+	else if ([sender isEqual: splitViewVert]) return NO;
 	else return YES;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
-{	
-	if ([sender isEqual: splitViewHorz])
+{
+    if ([sender isEqual: bannerSplit])
+    {
+        return [sender frame].size.height - (banner.image.size.height+3);
+    }
+	else if ([sender isEqual: splitViewHorz])
 	{
 		return oMatrix.cellSize.height;
 	}
@@ -10648,11 +10661,17 @@ static BOOL withReset = NO;
 	{
 		return oMatrix.cellSize.width;
 	}
+    
+    return proposedMin;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate: (CGFloat)proposedMax ofSubviewAt: (NSInteger)offset
 {
-	if ([sender isEqual:splitViewVert])
+    if ([sender isEqual: bannerSplit])
+    {
+        return [sender frame].size.height - (banner.image.size.height+3);
+    }
+	else if ([sender isEqual:splitViewVert])
 	{
 		return [sender bounds].size.width-200;
 	}
@@ -10664,6 +10683,8 @@ static BOOL withReset = NO;
 	{
 		return oMatrix.cellSize.width;
 	}
+    
+    return proposedMax;
 }
 
 - (NSManagedObject *)firstObjectForDatabaseMatrixSelection
@@ -14708,6 +14729,18 @@ static NSArray*	openSubSeriesArray = nil;
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
 		[self ReadDicomCDRom: nil];
 	
+    #ifdef __LP64__
+    [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
+    #else
+    [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
+    #endif
+    
+    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
+    frame.origin.y -= banner.image.size.height - frame.size.height;
+    frame.size.height = banner.image.size.height;
+    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
+    [bannerSplit adjustSubviews];
+
 	#ifdef __LP64__
 	NSRect frame = [subSeriesWindow frame];
 	
@@ -14735,7 +14768,33 @@ static NSArray*	openSubSeriesArray = nil;
 //	for( id log in logArray) [self.managedObjectContext deleteObject: log];
 }
 
--(void)dealloc {
+- (IBAction) clickBanner:(id) sender
+{
+    if( [[self window] isKeyWindow])
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Banner.html"]];
+}
+
+- (void) checkForBanner: (id) sender
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    NSImage *bannerImage = [[[NSImage alloc] initWithContentsOfURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"]] autorelease];
+    
+    if( bannerImage)
+        [banner setImage: bannerImage];
+    
+    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
+    frame.origin.y -= banner.image.size.height - frame.size.height;
+    frame.size.height = banner.image.size.height;
+    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
+    [bannerSplit adjustSubviews];
+    
+    [pool release];
+    
+}
+
+-(void)dealloc
+{
 	[self deallocActivity];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey];
 	[super dealloc];

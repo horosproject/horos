@@ -7791,6 +7791,8 @@
 		CEE73FCA08F44724002A395F /* FVTiff.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FC808F44724002A395F /* FVTiff.m */; };
 		CEE73FD308F44749002A395F /* stringNumericCompare.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE73FD108F44749002A395F /* stringNumericCompare.m */; };
 		CEE73FD408F44749002A395F /* stringNumericCompare.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE73FD208F44749002A395F /* stringNumericCompare.h */; };
+		CEE75F701470698F00A83306 /* DefaultBanner.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE75F6F1470698F00A83306 /* DefaultBanner.png */; };
+		CEE75F711470698F00A83306 /* DefaultBanner.png in Resources */ = {isa = PBXBuildFile; fileRef = CEE75F6F1470698F00A83306 /* DefaultBanner.png */; };
 		CEE8CED00D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */; };
 		CEE8CED10D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h in Headers */ = {isa = PBXBuildFile; fileRef = CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */; };
 		CEEA2D8513DB576600F4CE1C /* libvtktiff.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE24490E0DA42A7600B8D506 /* libvtktiff.a */; };
@@ -11889,6 +11891,7 @@
 		CEE73FC808F44724002A395F /* FVTiff.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = FVTiff.m; sourceTree = "<group>"; };
 		CEE73FD108F44749002A395F /* stringNumericCompare.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = stringNumericCompare.m; sourceTree = "<group>"; };
 		CEE73FD208F44749002A395F /* stringNumericCompare.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = stringNumericCompare.h; sourceTree = "<group>"; };
+		CEE75F6F1470698F00A83306 /* DefaultBanner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DefaultBanner.png; sourceTree = "<group>"; };
 		CEE8CECE0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSAppleScript+HandlerCalls.m"; sourceTree = "<group>"; };
 		CEE8CECF0D00AA71009FA5F9 /* NSAppleScript+HandlerCalls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+HandlerCalls.h"; sourceTree = "<group>"; };
 		CEEA2D8313DB558600F4CE1C /* libtiffOsiriX.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtiffOsiriX.a; sourceTree = "<group>"; };
@@ -13644,6 +13647,7 @@
 				CE1E7F5A07E2DD0D00A85908 /* DatabaseWindow.icns */,
 				CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */,
 				ABBB6489063587B200D9531F /* dcm.icns */,
+				CEE75F6F1470698F00A83306 /* DefaultBanner.png */,
 				CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */,
 				A9897D970D4A142200BAC447 /* displayRGB.tif */,
 				A9897D980D4A142200BAC447 /* displayTotoku.tif */,
@@ -22385,6 +22389,7 @@
 				84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
 				848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */,
+				CEE75F701470698F00A83306 /* DefaultBanner.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22747,6 +22752,7 @@
 				84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */,
 				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
 				848CE290145AC9AE00BEB249 /* curvedPath.icns in Resources */,
+				CEE75F711470698F00A83306 /* DefaultBanner.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

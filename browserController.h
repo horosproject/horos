@@ -243,6 +243,9 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	NSMutableArray* _activityCells;
 	NSThread* AupdateStatsThread;
 	NSObject* activityObserver;
+    
+    IBOutlet NSSplitView *bannerSplit;
+    IBOutlet NSButton *banner;
 }
 
 @property(readonly) NSManagedObjectContext *bonjourManagedObjectContext;
@@ -298,6 +301,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) saveAlbums:(id) sender;
 - (IBAction) addAlbums:(id) sender;
 - (IBAction) defaultAlbums: (id) sender;
+- (IBAction) clickBanner:(id) sender;
 - (void) openDatabasePath: (NSString*) path;
 - (NSArray*) albums;
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context;
