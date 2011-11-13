@@ -2696,7 +2696,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setNeedsDisplay:YES];
 			}
         }
-        else if(c ==  NSDownArrowFunctionKey)
+        else if(c == NSDownArrowFunctionKey)
         {
             if( [[self windowController] maxMovieIndex] > 1 && [[self windowController] maxMovieIndex] > 1) [super keyDown:event];
 			else

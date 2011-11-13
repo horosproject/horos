@@ -4,6 +4,8 @@ New Features:
 - OsiriX new SDK buit-in
 - Curved-MPR path is automatically saved and reloaded
 - Curved-MPR paths can be saved and loaded from file ('.curvedPath')
+- Curved-MPR switch from/to creating/editing mode by double-clicking on a point
+- Curved-MPR and 3D-MPR: move along the axis with the arrows keys
 - Compiled with Xcode 4.2 (LLVM 3.0)
 - Support multiple Ultrasound regions 
 - Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
