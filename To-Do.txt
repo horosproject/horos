@@ -13,6 +13,7 @@ New Features:
 - WebPortal: DICOM Upload: display username in DB comments
 - WebPortal: user preference to show/hide reports
 - WebPortal: reports (Word, Pages, OpenOffice) are on-the-fly converted to PDF, for universal web access
+- CD Burning: reports (Word, Pages, OpenOffice) are on-the-fly converted to PDF, for universal web access
 - Angles Displayed for 3D VR (Up-Down, Left-Right, Roll)
 - Copy all Viewers (Edit menu)
 - Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)

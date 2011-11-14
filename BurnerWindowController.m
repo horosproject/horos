@@ -22,6 +22,7 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import "BrowserController.h"
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
@@ -978,7 +979,7 @@
 				}
 			}
 			
-			for( NSManagedObject *study in studies)
+			for( DicomStudy *study in studies)
 			{
 				if( [[study valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[study valueForKey: @"reportURL"] hasPrefix: @"https://"])
 				{
@@ -987,7 +988,16 @@
 					[urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES];
 				}
 				else
-					[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+				{
+					// Convert to PDF
+					
+					NSString *pdfPath = [study saveReportAsPdfInTmp];
+					
+					if( [manager fileExistsAtPath: pdfPath] == NO)
+						[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+					else
+						[manager copyPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] handler: nil];
+				}
 			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
