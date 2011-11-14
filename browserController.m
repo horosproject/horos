@@ -5404,7 +5404,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( index != NSNotFound)
 	{
-		if( expand || [databaseOutline isItemExpanded: study])
+		if( expand)// || [databaseOutline isItemExpanded: study])
 		{
 			[databaseOutline expandItem: study];
 			
