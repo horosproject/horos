@@ -63,7 +63,7 @@
 		NSArray *multipleEncoding = [characterSet componentsSeparatedByString:@"\\"];
 		if( [multipleEncoding count] > 1)
 		{
-			NSLog( @"**** error: multiple encoding in %@ : %@", __PRETTY_FUNCTION__, characterSet);
+			NSLog( @"**** error: multiple encoding in %s : %@", __PRETTY_FUNCTION__, characterSet);
 			return [NSString encodingForDICOMCharacterSet: [multipleEncoding objectAtIndex: 0]];
 		}
 	}
