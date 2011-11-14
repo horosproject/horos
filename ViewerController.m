@@ -461,6 +461,7 @@ return YES;
 		{
 			[item setState: NSOffState];
 		}
+		valid = YES;
 	}
 	else if( [item action] == @selector( resetWindowsState:))
 	{

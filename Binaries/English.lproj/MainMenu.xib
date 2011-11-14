@@ -11,6 +11,7 @@
 			<string key="NS.object.0">823</string>
 		</object>
 		<array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+			<integer value="13065"/>
 			<integer value="896"/>
 		</array>
 		<array key="IBDocument.PluginDependencies">
@@ -1093,6 +1094,26 @@
 									<string key="NSTitle">Previous Series</string>
 									<string key="NSKeyEquiv"></string>
 									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<int key="NSTag">-1</int>
+								</object>
+								<object class="NSMenuItem" id="495955195">
+									<reference key="NSMenu" ref="986057026"/>
+									<string key="NSTitle">Next Patient</string>
+									<string key="NSKeyEquiv"></string>
+									<int key="NSKeyEquivModMask">1179648</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="125626618"/>
+									<reference key="NSMixedImage" ref="973943092"/>
+									<int key="NSTag">1</int>
+								</object>
+								<object class="NSMenuItem" id="965951789">
+									<reference key="NSMenu" ref="986057026"/>
+									<string key="NSTitle">Previous Patient</string>
+									<string key="NSKeyEquiv"></string>
+									<int key="NSKeyEquivModMask">1179648</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="125626618"/>
 									<reference key="NSMixedImage" ref="973943092"/>
@@ -15362,6 +15383,22 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 					<int key="connectionID">14361</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">loadPatient:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="495955195"/>
+					</object>
+					<int key="connectionID">14699</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">loadPatient:</string>
+						<reference key="source" ref="298258082"/>
+						<reference key="destination" ref="965951789"/>
+					</object>
+					<int key="connectionID">14700</int>
+				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<array key="orderedObjects">
@@ -16570,6 +16607,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<reference ref="993782279"/>
 							<reference ref="235954749"/>
 							<reference ref="665250785"/>
+							<reference ref="495955195"/>
+							<reference ref="965951789"/>
 						</array>
 						<reference key="parent" ref="204329503"/>
 					</object>
@@ -21712,6 +21751,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="object" ref="637871640"/>
 						<reference key="parent" ref="861184766"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14695</int>
+						<reference key="object" ref="495955195"/>
+						<reference key="parent" ref="986057026"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">14696</int>
+						<reference key="object" ref="965951789"/>
+						<reference key="parent" ref="986057026"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -22087,6 +22136,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="13047.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13049.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13064.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="13065.IBEditorWindowLastContentRect">{{302, 532}, {428, 993}}</string>
 				<string key="13065.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13066.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="13067.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22682,6 +22732,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="1463.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1465.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1466.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14695.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="14696.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1470.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1472.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="1474.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22727,6 +22779,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<string key="19.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="23.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="24.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="29.IBEditorWindowLastContentRect">{{0, 1525}, {671, 20}}</string>
 				<string key="29.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="56.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -22760,7 +22813,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14694</int>
+			<int key="maxID">14700</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">

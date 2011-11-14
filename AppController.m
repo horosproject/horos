@@ -2252,6 +2252,7 @@ static NSDate *lastWarningDate = nil;
 			if( result == NSAlertAlternateReturn)
 			{
 				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"httpXMLRPCServer"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
 				[[NSApplication sharedApplication] terminate: self];
 			}
 		}
