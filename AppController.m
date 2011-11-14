@@ -2245,6 +2245,17 @@ static NSDate *lastWarningDate = nil;
 		
 	if( [[url scheme] isEqualToString: @"osirix"])
 	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpXMLRPCServer"] == NO)
+		{
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"OsiriX URL scheme (osirix://) is currently not activated!\r\rShould I run activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
+			
+			if( result == NSAlertAlternateReturn)
+			{
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"httpXMLRPCServer"];
+				[[NSApplication sharedApplication] terminate: self];
+			}
+		}
+		
 		NSString *content = [url resourceSpecifier];
 		
 		BOOL betweenQuotation = NO;
