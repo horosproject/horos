@@ -21,9 +21,7 @@ New Features:
 
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - QR: combine
-- Protocol : next patient -> apply
-- Drag&Drop series level
----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 
 A:
 - DB remote: black image (multi-load)
@@ -40,7 +38,7 @@ A:
 	(OK) iPod doesn't appear automatically
 	(OK) iPod eject button
 
----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - Storage Commitment Service
