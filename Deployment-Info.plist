@@ -181,7 +181,7 @@
 	<key>CFBundleName</key>
 	<string>OsiriX</string>
 	<key>CFBundleGetInfoString</key>
-	<string>OsiriX v.4.0</string>
+	<string>OsiriX v.4.0fc1</string>
 	<key>CFBundleIconFile</key>
 	<string>Osirix.icns</string>
 	<key>CFBundleIdentifier</key>
