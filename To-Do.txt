@@ -1,5 +1,5 @@
 New Features:
-- Many enhancements in memory management and DICOM engines to improve greatly stability & performances
+- Many enhancements in memory management and DICOM engines to greatly improve stability & performances
 - Compiled with Xcode 4.2 (LLVM 3.0)
 - DICOM Q&R: realtime C-Find updates
 - DICOM Q&R: custom DICOM field for query
@@ -20,6 +20,9 @@ New Features:
 - Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)
 
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
+- QR: combine
+- Protocol : next patient -> apply
+- Drag&Drop series level
 ---------------------------------------------------------------------------------------------------------
 
 A:

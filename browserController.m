@@ -8698,7 +8698,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( index != NSNotFound)
 	{
-		if( expand || [databaseOutline isItemExpanded: study])
+		if( expand) // || [databaseOutline isItemExpanded: study])
 		{
 			[databaseOutline expandItem: study];
 			
@@ -9014,42 +9014,30 @@ static NSConditionLock *threadLock = nil;
 
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	NSArray					*winList = [NSApp windows];
-	NSMutableArray			*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
-	BOOL					copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
+	BOOL applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
+	BOOL copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
 	
+    NSDisableScreenUpdates();
+    
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"onlyDisplayImagesOfSamePatient"];
-	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-		applyToAllViewers = !applyToAllViewers;
 	
 	if(  applyToAllViewers)
 	{
 		// If multiple viewer are opened, apply it to the entire list
-		for( NSWindow *win in winList)
-		{
-			if( [[win windowController] isKindOfClass:[ViewerController class]] && [[win windowController] windowWillClose] == NO)
-			{
-				[viewersList addObject: [win windowController]];
-			}
-		}
-		viewer = [viewersList objectAtIndex: 0];
-		curImage = [[viewer fileList] objectAtIndex: 0];
+		for( ViewerController *v in [ViewerController get2DViewers])
+            [v close];
 	}
 	else
-	{
-		[viewersList addObject: viewer];
-	}
+		[viewer close];
 	
-	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
+	NSManagedObject *study = [curImage valueForKeyPath:@"series.study"];
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
 		BOOL				found = NO;
-		NSManagedObject		*nextStudy;
+		NSManagedObject		*nextStudy = nil;
 		do
 		{
 			index += direction;
@@ -9065,17 +9053,26 @@ static NSConditionLock *threadLock = nil;
 			else
 			{
 				NSBeep();
-				return;
+                break;
 			}
 			
 		}while( found == NO);
 		
-		NSManagedObject	*series =  [[self childrenArray:nextStudy] objectAtIndex:0];
-		
-		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
-		
-		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
+        if( found)
+        {
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: nextStudy]] byExtendingSelection: NO];
+            [self databaseOpenStudy: nextStudy];
+        }
+        
+//		NSManagedObject	*series =  [[self childrenArray:nextStudy] objectAtIndex:0];
+//		
+//		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
+//		
+//		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
 	}
+    
+    NSEnableScreenUpdates();
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:study userInfo:nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: copyPatientsSettings forKey: @"onlyDisplayImagesOfSamePatient"];
