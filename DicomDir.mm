@@ -25,7 +25,8 @@
     ddir.disableTransferSyntaxCheck(); // -Nxc
     ddir.enableInventMode(OFTrue); // +I
     
-    ddir.enableIconImageMode(); // +X
+//  ddir.enableIconImageMode(); // +X
+    ddir.enableOneIconPerSeriesMode(); // OsiriX addition
 //  ddir.setIconSize(96); // we let DicomDirInterface pick the icon size.. which, depending on the modality, will be either 128 or 64
     
     OFList<OFString> fileNames;

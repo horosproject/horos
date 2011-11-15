@@ -13,12 +13,12 @@
 
 -(id)runWithArguments:(NSArray*)args error:(NSDictionary**)errs {
     NSAppleEventDescriptor* event = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass eventID:kAEOpenApplication targetDescriptor:nil returnID:kAutoGenerateReturnID transactionID:kAnyTransactionID];
-    [event setDescriptor:[args appleEventDescriptor] forKeyword:keyDirectObject];
+    if (args)
+		[event setDescriptor:[args appleEventDescriptor] forKeyword:keyDirectObject];
     
     NSAppleEventDescriptor* r = [self executeAppleEvent:event error:errs];
     
     return [r object];
 }
-
 
 @end

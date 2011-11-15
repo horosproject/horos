@@ -107,10 +107,58 @@
 	}
 	
 	return @"00:00:00:00:00:00";
+	
+	/*
+	 
+	 NSString* str = @"00:00:00:00:00:00";
+	 
+	 CFMutableDictionaryRef matchingDict = IOServiceMatching(kIOEthernetInterfaceClass);
+	 if (matchingDict) {
+	 CFMutableDictionaryRef propertyMatchDict = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+	 if (propertyMatchDict) {
+	 CFDictionarySetValue(propertyMatchDict, CFSTR(kIOPrimaryInterface), kCFBooleanTrue); 
+	 CFDictionarySetValue(matchingDict, CFSTR(kIOPropertyMatchKey), propertyMatchDict);
+	 NSLog(@"R1");
+	 CFRelease(propertyMatchDict);
+	 }
+	 
+	 io_iterator_t matchingServices;
+	 if (IOServiceGetMatchingServices(kIOMasterPortDefault, matchingDict, &matchingServices) == KERN_SUCCESS) {
+	 io_object_t intfService;
+	 while (intfService = IOIteratorNext(matchingServices)) {
+	 io_object_t controllerService;
+	 if (IORegistryEntryGetParentEntry(intfService, kIOServicePlane, &controllerService)) {
+	 CFTypeRef MACAddressAsCFData = IORegistryEntryCreateCFProperty(controllerService, CFSTR(kIOMACAddress), kCFAllocatorDefault, 0);
+	 if (MACAddressAsCFData) {
+	 const uint8* p = CFDataGetBytePtr((CFDataRef)MACAddressAsCFData);
+	 str = [NSString stringWithFormat:@"%02x:%02x:%02x:%02x:%02x:%02x", p[0], p[1], p[2], p[3], p[4], p[5]];
+	 NSLog(@"R2");
+	 CFRelease(MACAddressAsCFData);
+	 }
+	 
+	 NSLog(@"R3");
+	 IOObjectRelease(controllerService);
+	 }
+	 }
+	 
+	 NSLog(@"R4");
+	 IOObjectRelease(matchingServices);
+	 }
+	 
+	 NSLog(@"R5");
+	 CFRelease(matchingDict);
+	 }
+	 
+	 NSLog(@"MAC Addr is %@", str);
+	 
+	 return str;
+	 
+	 
+	 */
 }
 
 +(int)userId {
-	return [[N2Shell execute:@"/usr/bin/id" arguments:[NSArray arrayWithObject:@"-u"]] intValue];
+	return getuid();
 }
 
 @end

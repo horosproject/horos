@@ -159,6 +159,9 @@
 		59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
 		71060F6F13A5015600DEB093 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71060F6D13A5015600DEB093 /* NSException+N2.h */; };
 		71060F7013A5015600DEB093 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71060F6E13A5015600DEB093 /* NSException+N2.mm */; };
+		713A1BE5146ABEFE00AB433C /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A1BE3146ABEFE00AB433C /* NSAppleScript+N2.h */; };
+		713A1BE6146ABEFE00AB433C /* NSAppleScript+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A1BE4146ABEFE00AB433C /* NSAppleScript+N2.mm */; };
+		71854F1A146D7DC400081915 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71854F19146D7DC400081915 /* IOKit.framework */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
@@ -327,6 +330,9 @@
 		59F5F88C11F5D9A10047A90D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		71060F6D13A5015600DEB093 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+N2.h"; sourceTree = "<group>"; };
 		71060F6E13A5015600DEB093 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSException+N2.mm"; sourceTree = "<group>"; };
+		713A1BE3146ABEFE00AB433C /* NSAppleScript+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+N2.h"; sourceTree = "<group>"; };
+		713A1BE4146ABEFE00AB433C /* NSAppleScript+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleScript+N2.mm"; sourceTree = "<group>"; };
+		71854F19146D7DC400081915 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		8DC2EF5B0486A6940098B216 /* Nitrogen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Nitrogen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2F7E79907B2D74100F64583 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
@@ -352,6 +358,7 @@
 				5903B5FF1110329400F4358B /* AppKit.framework in Frameworks */,
 				5903B6831110329C00F4358B /* Foundation.framework in Frameworks */,
 				59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */,
+				71854F1A146D7DC400081915 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,6 +419,7 @@
 				59F5F88C11F5D9A10047A90D /* QuartzCore.framework */,
 				59A63F481042DC22003F4069 /* Accelerate.framework */,
 				0867D6A5FE840307C02AAC07 /* AppKit.framework */,
+				71854F19146D7DC400081915 /* IOKit.framework */,
 				D2F7E79907B2D74100F64583 /* CoreData.framework */,
 				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
 			);
@@ -593,6 +601,8 @@
 				59DC28E811C6168100DAD5B4 /* NSThread+N2.mm */,
 				59DC28E311C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.h */,
 				59DC28E411C6166E00DAD5B4 /* NSAppleEventDescriptor+N2.mm */,
+				713A1BE3146ABEFE00AB433C /* NSAppleScript+N2.h */,
+				713A1BE4146ABEFE00AB433C /* NSAppleScript+N2.mm */,
 				59DC28DB11C6164000DAD5B4 /* NSXMLNode+N2.h */,
 				59DC28DC11C6164000DAD5B4 /* NSXMLNode+N2.mm */,
 				5997857C11B67788002DB107 /* NSFileManager+N2.h */,
@@ -776,6 +786,7 @@
 				59E5235112BF5DC30094E668 /* N2Task.h in Headers */,
 				592FD7FC13390188008BADC7 /* N2DirectoryEnumerator.h in Headers */,
 				71060F6F13A5015600DEB093 /* NSException+N2.h in Headers */,
+				713A1BE5146ABEFE00AB433C /* NSAppleScript+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -997,6 +1008,7 @@
 				59E5235212BF5DC30094E668 /* N2Task.mm in Sources */,
 				592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */,
 				71060F7013A5015600DEB093 /* NSException+N2.mm in Sources */,
+				713A1BE6146ABEFE00AB433C /* NSAppleScript+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

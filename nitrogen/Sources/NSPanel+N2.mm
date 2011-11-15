@@ -18,14 +18,32 @@
 @implementation NSPanel (N2)
 
 +(NSPanel*)alertWithTitle:(NSString*)title message:(NSString*)message defaultButton:(NSString*)defaultButton alternateButton:(NSString*)alternateButton icon:(NSImage*)icon {
+	return [self alertWithTitle:title message:message defaultButton:defaultButton alternateButton:alternateButton icon:icon sheet:NO];
+}
+
++(NSPanel*)alertWithTitle:(NSString*)title message:(NSString*)message defaultButton:(NSString*)defaultButton alternateButton:(NSString*)alternateButton icon:(NSImage*)icon sheet:(BOOL)sheet {
 	NSPanel* panel = NSGetAlertPanel(title, message, defaultButton, alternateButton, NULL);
 	
-	if (icon)
+	if (icon) {
 		for (NSImageView* view in [[panel contentView] subviews])
 			if ([view isKindOfClass:[NSImageView class]])
 				[view setImage:icon];
+	}
+	
+	if (sheet) {
+		for (NSButton* button in [[panel contentView] subviews])
+			if ([button isKindOfClass:[NSButton class]]) {
+//				NSLog(@"button: %@ --- %@ %@ --- %d", button, [button target], NSStringFromSelector([button action]), [button tag]);
+				[button setTarget:self];
+				[button setAction:@selector(_sheetButtonAction:)];
+			}
+	}
 	
 	return [panel autorelease];
+}
+
++(void)_sheetButtonAction:(NSButton*)button {
+	[NSApp endSheet:[button window] returnCode:[button tag]];
 }
 
 @end
