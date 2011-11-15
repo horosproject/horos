@@ -1815,6 +1815,11 @@ public:
 				   name: NSViewFrameDidChangeNotification
 				 object: nil];
         
+        [nc addObserver: self
+			   selector: @selector(checkForMovedVolume:)
+				   name: OsirixVRCameraDidChangeNotification
+				 object: nil];
+        
 		point3DActorArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DPositionsArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DRadiusArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2640,8 +2645,6 @@ public:
 
 - (void) computeOrientationText
 {
-    [self checkForMovedVolume: nil];
-    
     float cos[ 9];
     float vectors[ 9];
     char string[ 256];
@@ -3273,11 +3276,11 @@ public:
 				}
 			break;
 			case tTranslate:
-					shiftDown = 1;
-					controlDown = 0;
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
+                shiftDown = 1;
+                controlDown = 0;
+                [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+                [self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 			break;
 			
 			case tZoom:
