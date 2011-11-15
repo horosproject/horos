@@ -352,8 +352,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
     }
 	
 	if (event == NSStreamEventErrorOccurred) {
-		NSLog(@"Stream error: %@ %@", stream.streamError, stream.streamError.userInfo);
         self.error = stream.streamError;
+		NSLog(@"Stream error: %@ %@", self.error, self.error.userInfo);
 		[self close];
 	}
 }

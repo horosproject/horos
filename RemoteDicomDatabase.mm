@@ -608,11 +608,19 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 
-	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
-
-	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
-		return localPath;
-	return nil;
+    NSInteger retries;
+    for (retries = 0; retries < 5; ++retries) {
+        [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
+        if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
+            break;
+        [NSThread sleepForTimeInterval:0.005*retries];
+    }
+    
+	if (![NSFileManager.defaultManager fileExistsAtPath:localPath])
+        NSLog(@"Error: we tried %d times and weren't able to fetch the remote image", retries);
+    else if (retries > 0) NSLog(@"Warning: we had to try %d times in order to successfully fetch a remote image", retries+1);
+    
+    return localPath;
 }
 
 -(NSInteger)_connection:(N2Connection*)connection handleData_fetchDataForImage:(NSData*)data context:(NSMutableArray*)context {
