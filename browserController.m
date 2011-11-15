@@ -13175,11 +13175,11 @@ static BOOL needToRezoom;
 					}
 					
 					[NSApp beginSheet: subOpenWindow
-					   modalForWindow:	[NSApp mainWindow]
+					   modalForWindow: [NSApp mainWindow]
 						modalDelegate: nil
 					   didEndSelector: nil
 						  contextInfo: nil];
-					
+                    
 					int result = [NSApp runModalForWindow: subOpenWindow];
 					[subOpenWindow makeFirstResponder: nil];
 					
@@ -15423,24 +15423,34 @@ static NSArray*	openSubSeriesArray = nil;
         
         [deleteQueue unlock];
         
-		int f = 0;
+		long f = 0;
 		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
 		{
 			unlink( [file UTF8String]);		// <- this is faster
 			
-			if( [lastFolder isEqualToString: [file stringByDeletingLastPathComponent]] == NO)
+            NSString *lastPathComponent = [file stringByDeletingLastPathComponent];
+			if( [lastFolder isEqualToString: lastPathComponent] == NO)
 			{
-				[folders addObject: [file stringByDeletingLastPathComponent]];
-				lastFolder = [file stringByDeletingLastPathComponent];
+				[folders addObject: lastPathComponent];
+                [lastFolder release];
+				lastFolder = [[NSString alloc] initWithString: lastPathComponent];
 			}
 			
-			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
-			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
-            
-            if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
-                break;
+            if( f%20 == 0)
+            {
+                [NSThread currentThread].progress = (float) f / (float) [copyArray count];
+                [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+                
+                if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
+                    break;
+            }
+            f++;
 		}
+        [NSThread currentThread].progress = (float) f / (float) [copyArray count];
+        [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+        
+        [lastFolder release];
 		
         if( [NSThread currentThread].isCancelled == NO)
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];

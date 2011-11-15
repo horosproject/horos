@@ -21,6 +21,7 @@ New Features:
 
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - QR: combine
+- Sheet lock?
 ------------------------------------------------------------------------------------------
 
 A:

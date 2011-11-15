@@ -2038,7 +2038,6 @@ public:
 		try
 		{
 			[self computeOrientationText];
-			[self checkForMovedVolume: nil];
             
 			[super drawRect:aRect];
 		}
@@ -2539,9 +2538,6 @@ public:
     
     if( Oval2DRadius > 0.001)
     {
-        [self getCosMatrix: Oval2DCos];
-        [self getOrigin: Oval2DPosition];
-        
         if( Oval2DPix == nil)
         {
             if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2) // MIP modes - full depth
@@ -2643,7 +2639,9 @@ public:
 }
 
 - (void) computeOrientationText
-{	
+{
+    [self checkForMovedVolume: nil];
+    
     float cos[ 9];
     float vectors[ 9];
     char string[ 256];
@@ -2654,9 +2652,6 @@ public:
     float theta = acos( cos[8]);
     float psi = -atan2( cos[ 6], cos[ 7]);
     float phi = atan2( cos[ 2], cos[ 5]);
-//    NSLog( @"--------------------");
-//    NSLog( @"Up-Down Angle: %2.2f", theta*R2D - 90.);
-//    NSLog( @"Right-Left Angle: %2.2f", psi*R2D);
     
     phi *= R2D;
     theta *= R2D;
@@ -3014,6 +3009,9 @@ public:
                 aRenderer->AddActor2D( Oval2DActor);
                 
                 [self computeLength];
+                
+                [self getCosMatrix: Oval2DCos];
+                [self getOrigin: Oval2DPosition];
                 
                 [self setNeedsDisplay: YES];
             }
