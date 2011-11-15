@@ -4780,52 +4780,55 @@ public:
 		
 		dontRenderVolumeRenderingOsiriX = 0;
 	}
-	else if(c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
+	else if( currentTool == tMesure || currentTool == tOval)
 	{
-        if(currentTool == tMesure)
+        if( c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
         {
-            vtkPoints *pts = Line2DData->GetPoints();
-            
-            if( bestRenderingWasGenerated)
+            if(currentTool == tMesure)
             {
-                bestRenderingWasGenerated = NO;
-                [self display];
-            }
-            dontRenderVolumeRenderingOsiriX = 1;
+                vtkPoints *pts = Line2DData->GetPoints();
+                
+                if( bestRenderingWasGenerated)
+                {
+                    bestRenderingWasGenerated = NO;
+                    [self display];
+                }
+                dontRenderVolumeRenderingOsiriX = 1;
 
-            if( pts->GetNumberOfPoints() != 0)
+                if( pts->GetNumberOfPoints() != 0)
+                {
+                    // Delete current ROI
+                    vtkPoints *pts = vtkPoints::New();
+                    vtkCellArray *rect = vtkCellArray::New();
+                    Line2DData-> SetPoints( pts); pts->Delete();
+                    Line2DData-> SetLines( rect); rect->Delete();
+                    
+                    [self computeLength];
+                    
+                    [self display];
+                }
+                
+                dontRenderVolumeRenderingOsiriX = 0;
+            }
+            else if( currentTool == tOval)
             {
+                if( bestRenderingWasGenerated)
+                {
+                    bestRenderingWasGenerated = NO;
+                    [self display];
+                }
+                dontRenderVolumeRenderingOsiriX = 1;
+                
                 // Delete current ROI
-                vtkPoints *pts = vtkPoints::New();
-                vtkCellArray *rect = vtkCellArray::New();
-                Line2DData-> SetPoints( pts); pts->Delete();
-                Line2DData-> SetLines( rect); rect->Delete();
+                aRenderer->RemoveActor( Oval2DText);
+                aRenderer->RemoveActor2D( Oval2DActor);
+                Oval2DRadius = 0;
                 
                 [self computeLength];
+                [self display];
                 
-                [self display];
+                dontRenderVolumeRenderingOsiriX = 0;
             }
-            
-            dontRenderVolumeRenderingOsiriX = 0;
-        }
-        else if( currentTool == tOval)
-        {
-            if( bestRenderingWasGenerated)
-            {
-                bestRenderingWasGenerated = NO;
-                [self display];
-            }
-            dontRenderVolumeRenderingOsiriX = 1;
-            
-            // Delete current ROI
-            aRenderer->RemoveActor( Oval2DText);
-            aRenderer->RemoveActor2D( Oval2DActor);
-            Oval2DRadius = 0;
-            
-            [self computeLength];
-            [self display];
-            
-            dontRenderVolumeRenderingOsiriX = 0;
         }
 	}
 	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSTabCharacter || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3DCut)

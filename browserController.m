@@ -14739,10 +14739,10 @@ static NSArray*	openSubSeriesArray = nil;
     [bannerSplit adjustSubviews];
 
 	#ifdef __LP64__
-	NSRect frame = [subSeriesWindow frame];
+	NSRect f = [subSeriesWindow frame];
 	
-	frame.size.height -= [warningBox frame].size.height;
-	[subSeriesWindow setFrame: frame display: NO];
+	f.size.height -= [warningBox frame].size.height;
+	[subSeriesWindow setFrame: f display: NO];
 	#endif
 	
 
