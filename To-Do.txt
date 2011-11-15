@@ -24,7 +24,7 @@ New Features:
 ------------------------------------------------------------------------------------------
 
 A:
-- DB remote: black image (multi-load)
+(OK) DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 - Compress/Decompress: no thread info?
