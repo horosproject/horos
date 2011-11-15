@@ -14424,7 +14424,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM SR", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
 	
     [menu addItem: [NSMenuItem separatorItem]];
 	
