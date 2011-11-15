@@ -41,6 +41,8 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 	NSString	*extension;
 	NSString	*modality;
 	NSString	*fileType;
+    
+    NSImage*    _thumbnail;
 }
 
 @property(retain) NSNumber* numberOfFrames;
@@ -89,6 +91,8 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 #endif
 - (NSImage *)image;
 - (NSImage *)thumbnail;
+- (NSImage *)thumbnailIfAlreadyAvailable;
+- (void)setThumbnail:(NSImage*)image;
 - (NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase;
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
 - (NSString*) SRFilenameForFrame: (int) frameNo;

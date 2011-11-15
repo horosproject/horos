@@ -150,7 +150,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
 		
 		temp = [[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0016)] stringValue];
-		if (!temp) temp = [[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1510)] stringValue];
+		if (!temp) temp = [[elements objectForKey:_dcmElementKey(0x0004,0x1510)] stringValue];
 		[item conditionallySetObject:temp forKey:@"SOPClassUID"];
 		[elements removeObjectForKey:_dcmElementKey(0x0004,0x1510)];
 		
@@ -188,6 +188,31 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0011)] integerValue];
 		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"width"];
         
+        // thumbnail
+        _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove:_dcmElementKey(0x0088,0x0200)]; // IconImageSequence
+        if (thumbnailElement && thumbnailElement.element->ident() == EVR_SQ && ((DcmSequenceOfItems*)thumbnailElement.element)->card() == 1) {
+            DcmItem* thumb = ((DcmSequenceOfItems*)thumbnailElement.element)->getItem(0);
+            BOOL ok = YES;
+            // DICOM 11 says we must expect MONOCHROME2 PhotometricInterpretation, 8 BitsAllocated & BitsStored (monochrome -> 1 SamplesPerPixel)
+            Uint16 uint16; OFString string;
+            if (ok && (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), string).good() || string != "MONOCHROME2")) ok = NO; // PhotometricInterpretation must be MONOCHROME2
+            if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0100), uint16).good() || uint16 != 8)) ok = NO; // BitsAllocated must be 8
+            if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0101), uint16).good() || uint16 != 8)) ok = NO; // BitsStored must be 8
+            Uint16 width, height; const Uint8* data;
+            if (ok && !thumb->findAndGetUint16(DcmTagKey(0x0028,0x0010), height).good()) ok = NO; // Rows must be defined
+            if (ok && !thumb->findAndGetUint16(DcmTagKey(0x0028,0x0011), width).good()) ok = NO; // Columns must be defined
+            if (ok && !thumb->findAndGetUint8Array(DcmTagKey(0x7fe0,0x0010), data).good()) ok = NO; // PixelRepresentation must be defined
+            if (ok) {
+                unsigned char* planes[] = {(Uint8*)data};
+                NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes pixelsWide:width pixelsHigh:height bitsPerSample:8 samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width bitsPerPixel:8] autorelease];
+                NSImage* im = [[[NSImage alloc] init] autorelease];
+                [im addRepresentation:rep];
+                [item setObject:im forKey:@"NSImageThumbnail"];
+            } else {
+                NSLog(@"Warning: non-standard DICOMDIR IconImageSequence, ignored");
+            }
+        }
+        
 /*		[item setObject:path forKey:@"date"];
 		[item setObject:path forKey:@"seriesDICOMUID"];
 		[item setObject:path forKey:@"protocolName"];
@@ -219,10 +244,6 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		if (elements.count) [item setObject:elements forKey:@"DEBUG"];
 
 		[items addObject:item];
-	}
-	
-	if (context.count == 6) {
-		NSLog(@"THUMBBBBBBBBBBBBBBBBBBBBBBBNAAAAAAAAIL!!!");
 	}
 	
 	for (unsigned long i = 0; i < record->cardSub(); ++i)

@@ -77,7 +77,7 @@ ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, n
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
-static BOOL checkForPreferencesUpdate = YES;
+static BOOL checkForPreferencesUpdate = YES, _appDidFinishLoading = NO;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
 static BOOL canDisplay12Bit = NO;
@@ -2337,7 +2337,10 @@ static NSDate *lastWarningDate = nil;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	[[BrowserController currentBrowser] syncReportsIfNecessary];
+	if (!_appDidFinishLoading)
+        return;
+    
+    [[BrowserController currentBrowser] syncReportsIfNecessary];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
 	{
@@ -3310,6 +3313,8 @@ static BOOL initialized = NO;
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
 	#endif
+    
+    _appDidFinishLoading = YES;
 }
 
 - (void) checkForOsirixMimeType

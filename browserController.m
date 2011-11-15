@@ -2812,6 +2812,12 @@ static NSConditionLock *threadLock = nil;
 		_cachedAlbumsContext = nil;
 	}
     
+    static NSNumberFormatter* decimalNumberFormatter = NULL;
+    if (!decimalNumberFormatter) {
+        decimalNumberFormatter = [[NSNumberFormatter alloc] init];
+        [decimalNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    }
+    
 	DicomDatabase* database = [self.database independentDatabase];
 	if (database)
         @try
@@ -7089,11 +7095,26 @@ static BOOL withReset = NO;
 			
 			int frame = 0;
 			if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
-			
+			/*else { // file contains only 1 image, we use the DicomImage thumbnail
+                NSImage* thumbnail = [(DicomImage*)[files objectAtIndex:i] thumbnail];
+                if (thumbnail) {
+                    [ipreviewPixThumbnails replaceObjectAtIndex:i withObject:thumbnail];
+                    [ipreviewPix addObject:thumbnail];
+                    continue;
+                }
+            }*/
+            
 			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
 			
 			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i] frameNumber: frame] retain];
 			
+           /* if (!dcmPix && [[[files objectAtIndex:i] valueForKey:@"numberOfFrames"] intValue] <= 1) {
+                thumbnail = [(DicomImage*)[files objectAtIndex:i] thumbnailIfAlreadyAvailable];
+                if (thumbnail) {
+                    dcmPix = [[DCMPix alloc] ];
+                }
+            }*/
+            
 			if( dcmPix == nil)
 				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:![_database isLocal] imageObj: [files objectAtIndex: i]];
 			
@@ -7107,7 +7128,7 @@ static BOOL withReset = NO;
 					}
 					else
 					{
-						thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
+                        thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
 						[dcmPix revert: NO];	// <- Kill the raw data
 						
 						if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
@@ -8197,8 +8218,8 @@ static BOOL needToRezoom;
         NSString *noOfStudies = nil;
 		@synchronized (_albumNoOfStudiesCache)
         {
-            if ([[aCell title] isEqualToString:@"retest"])
-                NSLog(@"oiuhsilhfsf");
+//            if ([[aCell title] isEqualToString:@"retest"])
+  //              NSLog(@"oiuhsilhfsf");
 			if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
             {
                     [self refreshAlbums];

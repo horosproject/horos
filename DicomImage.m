@@ -188,6 +188,14 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @dynamic zoom;
 @dynamic series;
 
+-(id)copy {
+    id copy = [super copy];
+    
+    [copy setThumbnail:_thumbnail];
+    
+    return copy;
+}
+
 + (NSData*) sopInstanceUIDEncodeString:(NSString*) s
 {
 	int length = [s length];
@@ -775,6 +783,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[fileType release];
 	
 	[completePathCache release];
+    
+    [_thumbnail release]; _thumbnail = nil;
 	
 	[super dealloc];
 }
@@ -1037,12 +1047,29 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (NSImage *)thumbnail
 {
 	#ifdef OSIRIX_VIEWER
+    if (_thumbnail)
+        return _thumbnail;
 	DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
 	NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
 	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 	[pix release];
 	return thumbnail;
 	#endif
+}
+
+-(NSImage*)thumbnailIfAlreadyAvailable {
+#ifdef OSIRIX_VIEWER
+    return _thumbnail;
+#endif
+}
+
+- (void)setThumbnail:(NSImage*)image {
+#ifdef OSIRIX_VIEWER
+    if (image != _thumbnail) {
+        [_thumbnail release];
+        _thumbnail = [image retain];
+    }
+#endif
 }
 
 - (NSString*) description

@@ -1596,6 +1596,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								[image setValue:[curDict objectForKey: @"numberOfFrames"] forKey:@"numberOfFrames"];
 								[image setValue:[curDict objectForKey: @"numberOfSeries"] forKey:@"numberOfSeries"];
 								
+                                [image setThumbnail:[curDict objectForKey:@"NSImageThumbnail"]];
+                                
 								if (generatedByOsiriX)
 									[image setValue: [NSNumber numberWithBool: generatedByOsiriX] forKey: @"generatedByOsiriX"];
 								else
