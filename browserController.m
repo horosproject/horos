@@ -15429,12 +15429,12 @@ static NSArray*	openSubSeriesArray = nil;
 		{
 			unlink( [file UTF8String]);		// <- this is faster
 			
-            NSString *lastPathComponent = [file stringByDeletingLastPathComponent];
-			if( [lastFolder isEqualToString: lastPathComponent] == NO)
+            NSString *parentFolder = [file stringByDeletingLastPathComponent];
+			if( [lastFolder isEqualToString: parentFolder] == NO)
 			{
-				[folders addObject: lastPathComponent];
+				[folders addObject: parentFolder];
                 [lastFolder release];
-				lastFolder = [[NSString alloc] initWithString: lastPathComponent];
+				lastFolder = [[NSString alloc] initWithString: parentFolder];
 			}
 			
             if( f%20 == 0)
