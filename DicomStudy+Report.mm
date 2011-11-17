@@ -182,6 +182,7 @@
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"InstanceNumber"];
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"StudyID"];
     [output setAttributeValues:[NSArray arrayWithObject:@"9997"] forName:@"SeriesNumber"];
+    [self _ifAvailableCopyAttributeWithName:@"StudyDescription" from:source to:output alternatively:@"OsiriX Report PDF"];
     [self _ifAvailableCopyAttributeWithName:@"PatientsName" from:source to:output alternatively:@""];
     [self _ifAvailableCopyAttributeWithName:@"PatientID" from:source to:output alternatively:@"0"];
     [self _ifAvailableCopyAttributeWithName:@"PatientsBirthDate" from:source to:output];
