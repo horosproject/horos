@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomAlbum.h"
@@ -851,6 +852,25 @@ static NSRecursiveLock *dbModifyLock = nil;
 				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
+                
+                // Save as DICOM PDF
+                if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
+                {
+                    BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+                    
+                    NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                    
+                    [self saveReportAsDicomAtPath: filePath];
+                    
+                    [BrowserController addFiles: [NSArray arrayWithObject: filePath]
+                                      toContext: [self managedObjectContext]
+                                     toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
+                                      onlyDICOM: YES 
+                               notifyAddedFiles: YES
+                            parseExistingObject: YES
+                                       dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
+                              generatedByOsiriX: YES];
+                }
 			}
 		}
 	}

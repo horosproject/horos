@@ -20,7 +20,7 @@ enum searchTypes {searchContains = 0, searchStartsWith, searchEndsWith, searchEx
 enum dateSearchTypes {SearchToday = 4, searchYesterday, searchBefore, searchAfter, searchWithin, searchExactDate};
 enum dateWithinSearch {searchWithinToday = 10, searchWithinLast2Days, searchWithinLastWeek, searchWithinLast2Weeks, searchWithinLastMonth,searchWithinLast2Months, searchWithinLast3Months, searchWithinLastYear};
 enum modalities {osiCR = 0,osiCT,osiDX,osiES,osiMG,osiMR,osiNM,osiOT,osiPT,osiRF,osiSC,osiUS,osiXA};
-enum studyState {empty = 0,unread,reviewed,dictated};
+enum studyState {empty = 0, unread, reviewed, dictated, validated};
 
 
 /** \brief Query Filter */

@@ -4922,7 +4922,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
-	if( [viewersList count] > 0)
+	if( [viewersList count] > 0 && keyWindow >= 0)
 	{
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];

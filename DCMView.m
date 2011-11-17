@@ -3972,6 +3972,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				clickCount = 1;
 			}
 			
+            if( clickCount > 1 && _mouseDownTimer)
+                [self deleteMouseDownTimer];
+            
 			if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
 			{
 				[[BrowserController currentBrowser] matrixDoublePressed:nil];

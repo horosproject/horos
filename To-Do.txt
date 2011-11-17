@@ -10,6 +10,8 @@ New Features:
 - Curved-MPR and 3D-MPR: move along the axis with the arrows keys
 - Support multiple Ultrasound regions 
 - Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
+- Convert OsiriX reports (Word, Pages, OpenOffice) to PDF or DICOM PDF
+- Automatically generate DICOM PDF if status is updated to "Validated"
 - WebPortal: display unlimited number of studies
 - WebPortal: DICOM Upload: display username in DB comments
 - WebPortal: user preference to show/hide reports
