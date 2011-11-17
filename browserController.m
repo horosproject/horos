@@ -19851,35 +19851,53 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction) convertReportToDICOMSR: (id)sender
 {
-	NSIndexSet *index = [databaseOutline selectedRowIndexes];
-	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
-	
-	if( item)
-	{
-		DicomStudy *studySelected;
-		
-		[checkBonjourUpToDateThreadLock lock];
-		
-		@try 
-		{			
-			if ([[[item entity] name] isEqual:@"Study"])
-				studySelected = (DicomStudy*) item;
-			else
-				studySelected = [item valueForKey:@"study"];
-			
-            [studySelected saveReportAsDicomAtPath: [[[self INCOMINGPATH] stringByAppendingPathComponent: studySelected.name] stringByAppendingPathExtension: @"dcm"]];
+    [checkBonjourUpToDateThreadLock lock];
+    
+    NSMutableArray *studies = [NSMutableArray array];
+    
+    for( NSManagedObject *o in [self databaseSelection])
+    {
+        DicomStudy *study = nil;
+        
+        if( [[o valueForKey:@"type"] isEqualToString:@"Series"])
+            study = [o valueForKey:@"study"];
+        else
+            study = (DicomStudy*) o;
+        
+        if( [studies containsObject: study] == NO)
+            [studies addObject: study];
+    }
+    
+    int i = 0;
+    NSMutableArray *newDICOMPDFReports = [NSMutableArray array];
+    for( DicomStudy *study in studies)
+    {
+        @try 
+        {
+            NSString *filename = [self getNewFileDatabasePath: @"dcm"];
             
-            [self checkIncoming: self];
-		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
-		}
-		
-		[checkBonjourUpToDateThreadLock unlock];
-		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
-	}
+            [study saveReportAsDicomAtPath: filename];
+            
+            [newDICOMPDFReports addObject: filename];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            [AppController printStackTrace: e];
+        }
+        
+        [BrowserController addFiles: newDICOMPDFReports
+                          toContext: [self managedObjectContext]
+                         toDatabase: self
+                          onlyDICOM: YES 
+                   notifyAddedFiles: YES
+                parseExistingObject: YES
+                           dbFolder: [self documentsDirectory]
+                  generatedByOsiriX: YES];
+    }
+    
+    [checkBonjourUpToDateThreadLock unlock];
+    [self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 }
 
 

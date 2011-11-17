@@ -178,7 +178,7 @@
     
     [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output];
     [self _ifAvailableCopyAttributeWithName:@"StudyInstanceUID" from:source to:output];
-    [output setAttributeValues:[NSArray arrayWithObject:@"OsiriX Report"] forName:@"SeriesDescription"];
+    [output setAttributeValues:[NSArray arrayWithObject:@"OsiriX Report PDF"] forName:@"SeriesDescription"];
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"InstanceNumber"];
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"StudyID"];
     [output setAttributeValues:[NSArray arrayWithObject:@"9997"] forName:@"SeriesNumber"];
