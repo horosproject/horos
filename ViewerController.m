@@ -11976,7 +11976,7 @@ int i,j,l;
 			
 			for( int x = 0; x < [pixList[y] count]; x++)
 			{
-				DCMPix	*curDCM = [pixList[ y] objectAtIndex: x];
+				DCMPix *curDCM = [pixList[ y] objectAtIndex: x];
 				
 				if( [roisSeries count] > x)
 				{
@@ -11984,7 +11984,10 @@ int i,j,l;
 					
 					for( ROI *r in roisImages)
 					{
-						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];	//NSMakePoint( curDCM.originX, curDCM.originY)];
+                        //Correct the origin only if the orientation is the same
+                        r.pix = curDCM;
+                        
+						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 						
 						[[roiList[ y] objectAtIndex: x] addObject: r];
 						[imageView roiSet: r];

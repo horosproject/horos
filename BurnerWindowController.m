@@ -674,13 +674,7 @@
 
 - (void)addDICOMDIRUsingDCMTK
 {
-	if( [AppController hasMacOSXSnowLeopard] == NO)
-	{
-		NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-	}
-	else
-	{
-        [DicomDir createDicomDirAtDir:[self folderToBurn]];
+    [DicomDir createDicomDirAtDir:[self folderToBurn]];
         
 /*		NSString *burnFolder = [self folderToBurn];
 		
@@ -697,7 +691,6 @@
 		[theTask launch];
 		[theTask waitUntilExit];
 		[theTask release];*/
-	}
 }
 
 - (void) produceHtml:(NSString*) burnFolder
