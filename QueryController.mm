@@ -1601,183 +1601,203 @@ extern "C"
 						//Specific Character Set
 						[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
 					
-					switch( [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]])
-					{
-						case 0:		currentQueryKey = PatientName;		break;
-						case 1:		currentQueryKey = PatientID;		break;
-						case 2:		currentQueryKey = AccessionNumber;	break;
-						case 3:		currentQueryKey = PatientBirthDate;	break;
-						case 4:		currentQueryKey = StudyDescription;	break;
-						case 5:		currentQueryKey = ReferringPhysician;	break;
-						case 6:		currentQueryKey = Comments;	break;
-						case 7:		currentQueryKey = InstitutionName; break;
-                        case 8:     currentQueryKey = customDICOMField; break;
-					}
-					
-					BOOL queryItem = NO;
-					
-                    if( currentQueryKey == customDICOMField)
-					{
-                        CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
+                    BOOL queryAllFields = NO;
+                    
+                    if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+                    {
+                        NSLog( @"--- Query ALL fields");
+                        queryAllFields = YES;
+                    }
+                    
+                    int fromField = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+                    int toField = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+                    
+                    if( queryAllFields)
+                    {
+                        fromField = 0;
+                        toField = [PatientModeMatrix numberOfTabViewItems];
+                    }
+                    
+                    BOOL queryItem = NO;
+                    
+                    for( int v = fromField; v <= toField; v++)
+                    {
+                        switch( v)
+                        {
+                            case 0:		currentQueryKey = PatientName;          break;
+                            case 1:		currentQueryKey = PatientID;            break;
+                            case 2:		currentQueryKey = AccessionNumber;      break;
+                            case 3:		currentQueryKey = PatientBirthDate;     break;
+                            case 4:		currentQueryKey = StudyDescription;     break;
+                            case 5:		currentQueryKey = ReferringPhysician;	break;
+                            case 6:		currentQueryKey = Comments;             break;
+                            case 7:		currentQueryKey = InstitutionName;      break;
+                            case 8:     currentQueryKey = customDICOMField;     break;
+                        }
                         
-                        DcmTag tag( [dicomField group], [dicomField element]);
-                        
-                        currentQueryKey = [NSString stringWithCString: tag.getTagName()];
-                        
-                        NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, [searchCustomField stringValue]);
-                        
-						if( showError && [[searchCustomField stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						NSString *filterValue = [[searchCustomField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-                            if( tag.getVR().isaString())
-                                filterValue = [filterValue stringByAppendingString:@"*"];
+                        if( currentQueryKey == customDICOMField)
+                        {
+                            CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
                             
-							[queryManager addFilter: filterValue forDescription: currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == PatientName)
-					{
-						if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						if( [[searchFieldName stringValue] length] >= 64)
-							[searchFieldName setStringValue: [[searchFieldName stringValue] substringToIndex: 64]];
-						
-						NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == ReferringPhysician)
-					{
-						if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == InstitutionName)
-					{
-						if( showError && [[searchInstitutionName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						NSString *filterValue = [[searchInstitutionName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == PatientBirthDate)
-					{
-						if( [birthdateFilterMatrix selectedTag] == 0)
-							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
-						
-						if( [birthdateFilterMatrix selectedTag] == -1)
-							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"-%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
-						
-						if( [birthdateFilterMatrix selectedTag] == 1)
-							[queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d-" timeZone:nil locale:nil] forDescription:currentQueryKey];
-						
-						queryItem = YES;
-					}
-					else if( currentQueryKey == PatientID)
-					{
-						NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter:filterValue forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == AccessionNumber)
-					{
-						NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter:filterValue forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == StudyDescription)
-					{
-						if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						NSString *filterValue = [searchFieldStudyDescription stringValue];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					else if( currentQueryKey == Comments)
-					{
-						if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
-						{
-							if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
-							{
-								[[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
-								[queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
-							}
-						}
-						
-						NSString *filterValue = [searchFieldComments stringValue];
-						
-						if ([filterValue length] > 0)
-						{
-							[queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
-							queryItem = YES;
-						}
-					}
-					
+                            DcmTag tag( [dicomField group], [dicomField element]);
+                            
+                            currentQueryKey = [NSString stringWithCString: tag.getTagName()];
+                            
+                            NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, [searchCustomField stringValue]);
+                            
+                            if( showError && [[searchCustomField stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            NSString *filterValue = [[searchCustomField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                if( tag.getVR().isaString())
+                                    filterValue = [filterValue stringByAppendingString:@"*"];
+                                
+                                [queryManager addFilter: filterValue forDescription: currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == PatientName)
+                        {
+                            if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            if( [[searchFieldName stringValue] length] >= 64)
+                                [searchFieldName setStringValue: [[searchFieldName stringValue] substringToIndex: 64]];
+                            
+                            NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == ReferringPhysician)
+                        {
+                            if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == InstitutionName)
+                        {
+                            if( showError && [[searchInstitutionName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            NSString *filterValue = [[searchInstitutionName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter:[filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == PatientBirthDate)
+                        {
+                            if( [birthdateFilterMatrix selectedTag] == 0)
+                                [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                            
+                            if( [birthdateFilterMatrix selectedTag] == -1)
+                                [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"-%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                            
+                            if( [birthdateFilterMatrix selectedTag] == 1)
+                                [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d-" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                            
+                            queryItem = YES;
+                        }
+                        else if( currentQueryKey == PatientID)
+                        {
+                            NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter:filterValue forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == AccessionNumber)
+                        {
+                            NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter:filterValue forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == StudyDescription)
+                        {
+                            if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            NSString *filterValue = [searchFieldStudyDescription stringValue];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                        else if( currentQueryKey == Comments)
+                        {
+                            if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                            {
+                                if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+                                {
+                                    [[NSUserDefaults standardUserDefaults] setObject: @"ISO_IR 192" forKey: @"STRINGENCODING"];
+                                    [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+                                }
+                            }
+                            
+                            NSString *filterValue = [searchFieldComments stringValue];
+                            
+                            if ([filterValue length] > 0)
+                            {
+                                [queryManager addFilter: [filterValue stringByAppendingString:@"*"] forDescription:currentQueryKey];
+                                queryItem = YES;
+                            }
+                        }
+                    }
+                    
 					if ([dateQueryFilter object])
 					{
 						[queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
