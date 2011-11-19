@@ -595,7 +595,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (BOOL) isValidForVolume
 {
-    if( type == tCPolygon || type == tOPolygon || type == tPlain || type == tPencil)
+    if( type == tCPolygon || type == tOPolygon || type == tPlain || type == tPencil || type == tOval)
         return YES;
     else
         return NO;

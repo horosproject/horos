@@ -2142,7 +2142,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //			no = newNo;
 //		}
 		
-		if( ptsInt != nil && no > 1)	{
+		if( ptsInt != nil && no > 1)
+        {
 			BOOL restore = NO, addition = NO, outside = NO;
 			
 			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);

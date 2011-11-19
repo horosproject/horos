@@ -7869,13 +7869,27 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [key isEqualToString:@"stateText"])
 	{
-		if( [object intValue] >= 0) [item setValue:object forKey:key];
+        for( id managedObject in [self databaseSelection])
+        {
+            if( [object intValue] >= 0)
+                [managedObject setValue:object forKey:key];
+        }
 	}
 	else if( [key isEqualToString:@"lockedStudy"])
 	{
-		if( [[item valueForKey:@"type"] isEqualToString:@"Study"]) [item setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
-	}
-	else [item setValue:object forKey:key];
+        for( id managedObject in [self databaseSelection])
+        {
+            if( [[managedObject valueForKey:@"type"] isEqualToString:@"Study"])
+                [managedObject setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
+        }
+    }
+	else
+    {
+        for( id managedObject in [self databaseSelection])
+        {
+            [managedObject setValue:object forKey:key];
+        }
+    }
 	
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	

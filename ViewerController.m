@@ -12361,7 +12361,7 @@ int i,j,l;
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created (this feature does not work with ROIs of types: Rectangles, Elipses and Axis).", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created : this feature does not work with ROIs that don't contain an aera.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	[splash close];
@@ -13371,6 +13371,26 @@ int i,j,l;
 
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
 {
+    if( a.type == tROI || a.type == tOval)
+    {
+        NSMutableArray *points = a.points;
+        if( a.type == tROI)
+            a.isSpline = NO;
+        
+        a.type = tCPolygon;
+        a.points = points;
+    }
+    
+    if( b.type == tROI || b.type == tOval)
+    {
+        NSMutableArray *points = b.points;
+        if( b.type == tROI)
+            b.isSpline = NO;
+        
+        b.type = tCPolygon;
+        b.points = points;
+    }
+    
 	// Convert both ROIs into polygons, after a marching square isocontour
 	
 	NSMutableArray	*aPts = [a points];
@@ -13873,34 +13893,48 @@ int i,j,l;
 
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI
 {
-	NSSize s;
-	NSPoint o;
-	unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
-	ROI *theNewROI = nil;
-	
-	if( texture)
-	{
-		theNewROI = [[ROI alloc]		initWithTexture: texture
-										textWidth: s.width
-										textHeight: s.height
-										textName: @""
-										positionX: o.x
-										positionY: o.y
-										spacingX: [[imageView curDCM] pixelSpacingX]
-										spacingY: [[imageView curDCM] pixelSpacingY]
-										imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
-		if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
-		{
-		}
-		else
-		{
-			[theNewROI release];
-			theNewROI = nil;
-		}
-		
-		free( texture);
+    ROI *theNewROI = nil;
+    
+    if( selectedROI.type == tOval)
+    {
+        NSMutableArray *points = selectedROI.points;
+        if( selectedROI.type == tROI)
+            selectedROI.isSpline = NO;
+        
+        selectedROI.type = tCPolygon;
+        selectedROI.points = points;
+    }
+    
+    if( selectedROI.type == tCPolygon || selectedROI.type == tOPolygon || selectedROI.type == tPencil)
+    {
+        NSSize s;
+        NSPoint o;
+        unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
+        
+        if( texture)
+        {
+            theNewROI = [[ROI alloc]		initWithTexture: texture
+                                            textWidth: s.width
+                                            textHeight: s.height
+                                            textName: @""
+                                            positionX: o.x
+                                            positionY: o.y
+                                            spacingX: [[imageView curDCM] pixelSpacingX]
+                                            spacingY: [[imageView curDCM] pixelSpacingY]
+                                            imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
+            if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+            {
+            }
+            else
+            {
+                [theNewROI release];
+                theNewROI = nil;
+            }
+            
+            free( texture);
+        }
 	}
-	
+    
 	return [theNewROI autorelease];
 }
 
@@ -14020,6 +14054,8 @@ int i,j,l;
 		
 		if( index >= 0)
 		{
+            ROI	*newROI = nil;
+            
 			if( [selectedROI type] == tPlain) tag = 1;
 			else tag = 0;
 			
@@ -14027,7 +14063,7 @@ int i,j,l;
 			{
 				case 1:
 				{
-					ROI	*newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+					newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
 					
 					if( newROI)
 					{
@@ -14043,24 +14079,27 @@ int i,j,l;
 				
 				case 0:
 				{
-					ROI	*newROI = [self convertPolygonROItoBrush: selectedROI];
-					
-					if( newROI)
-					{
-						// Add the new ROI
-						[[selectedROI curView] roiSet: newROI];
-						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-						[newROI setROIMode: ROI_selected];
-						[newROI setName: [selectedROI name]];
-						[newROI setComments: [selectedROI comments]];
-					}
+                    newROI = [self convertPolygonROItoBrush: selectedROI];
+                    
+                    if( newROI)
+                    {
+                        // Add the new ROI
+                        [[selectedROI curView] roiSet: newROI];
+                        [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+                        [newROI setROIMode: ROI_selected];
+                        [newROI setName: [selectedROI name]];
+                        [newROI setComments: [selectedROI comments]];
+                    }
 				}
 				break;
 			}
 			
 			// Remove the old ROI
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedROI userInfo: nil];
-			[[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
+            if( newROI)
+            {
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedROI userInfo: nil];
+                [[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
+            }
 		}
 	}
 	
