@@ -9133,19 +9133,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						ViewerController *v = [self windowController];
 						
-						for( int i = 0 ; i < [v  maxMovieIndex]; i++)
-						{
-							for( DCMPix *pix in [v pixList: i])
-							{
-								if( pix != curDCM)
-								{
-									float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
-									
-									if( s)
-										[pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
-								}
-							}
-						}
+                        if( [[v imageViews] objectAtIndex: 0] == self)
+                        {
+                            for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+                            {
+                                for( DCMPix *pix in [v pixList: i])
+                                {
+                                    if( pix !=  curDCM)
+                                    {
+                                        float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
+                                        
+                                        if( s)
+                                            [pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
+                                    }
+                                }
+                            }
+                        }
 					}
 				}
 				
