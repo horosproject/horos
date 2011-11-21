@@ -1225,7 +1225,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     delete dataset->remove(DCM_ModalityLUTSequence);
     delete dataset->remove(DCM_RescaleIntercept);
     delete dataset->remove(DCM_RescaleSlope);
-    delete dataset->remove(DCM_RescaleType);
+//    delete dataset->remove(DCM_RescaleType);
 
     // update Modality LUT Module and Pixel Intensity Relationship
     if (windowType == 0)
@@ -1244,8 +1244,8 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleSlope, buf);
         if (result.good())
         {
-          if (mode_CT) result = dataset->putAndInsertString(DCM_RescaleType, "HU"); // Hounsfield units
-          else result =         dataset->putAndInsertString(DCM_RescaleType, "US"); // unspecified
+//          if (mode_CT) result = dataset->putAndInsertString(DCM_RescaleType, "HU"); // Hounsfield units
+//          else result =         dataset->putAndInsertString(DCM_RescaleType, "US"); // unspecified
         }
       }
     }
