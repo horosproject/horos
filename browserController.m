@@ -18965,7 +18965,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     
 	for( NSString *path in pathsList)
 	{
-        if( [path isEqualToString: @"/home"] == NO && [path isEqualToString: @"/net"] == NO)
+        if( [path hasPrefix: @"/Volumes/"])
         {
             NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
             BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
