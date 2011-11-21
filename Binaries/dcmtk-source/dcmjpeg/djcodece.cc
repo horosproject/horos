@@ -1256,7 +1256,11 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       {
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleIntercept, "0");
         if (result.good()) result = dataset->putAndInsertString(DCM_RescaleSlope, "1");
-        if (result.good()) result = dataset->putAndInsertString(DCM_RescaleType, "US"); // unspecified
+        if (result.good())
+		{
+			delete dataset->remove(DCM_RescaleType);
+			result = dataset->putAndInsertString(DCM_RescaleType, "US"); // unspecified
+		}
       }
 
       // Adjust Pixel Intensity Relationship (needed for XA). If present, set value to "DISP".
