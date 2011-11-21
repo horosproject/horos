@@ -1113,56 +1113,68 @@ void DicomDirInterface::addOneImagePerSeries() {
     DcmDirectoryRecord* rootRecord = &(DicomDir->getRootRecord());
     
 //  printf("root record card is %d\n", rootRecord->cardSub());
-    for (unsigned int i = 0; i < rootRecord->cardSub(); ++i) {
+    if( rootRecord)
+    {
+        for (unsigned int i = 0; i < rootRecord->cardSub(); ++i) {
         DcmDirectoryRecord* patientRecord = rootRecord->getSub(i);
-//      printf("\trecord sub %d type is %d (10 is patient), with card %d\n", i, patientRecord->getRecordType(), patientRecord->cardSub());
-        for (unsigned int i = 0; i < patientRecord->cardSub(); ++i) {
-            DcmDirectoryRecord* studyRecord = patientRecord->getSub(i);
-//          printf("\t\trecord sub %d type is %d (15 is study), with card %d\n", i, studyRecord->getRecordType(), studyRecord->cardSub());
-            for (unsigned int i = 0; i < studyRecord->cardSub(); ++i) {
-                DcmDirectoryRecord* seriesRecord = studyRecord->getSub(i);
-//              printf("\t\t\trecord sub %d type is %d (14 is series), with card %d\n", i, seriesRecord->getRecordType(), seriesRecord->cardSub());
-//              for (unsigned int i = 0; i < seriesRecord->cardSub(); ++i) {
-//                  DcmDirectoryRecord* imageRecord = seriesRecord->getSub(i);
-//                  printf("\t\t\t\trecord sub %d type is %d (4 is image), with card %d\n", i, imageRecord->getRecordType(), imageRecord->cardSub());
-//              }
-                
-                DcmDirectoryRecord* imageRecord = seriesRecord->getSub(rootRecord->cardSub()/2);
-                
-                if (imageRecord->getRecordType() != ERT_Image)
-                    continue;
-                
-//              printf("\t\t\t\tusing image at index %d, %s\n", seriesRecord->cardSub()/2, imageRecord->getRecordsOriginFile());
-//              imageRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
-//              printf("\t\t\t\troot:");
-//              rootRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
-                
-                unsigned int iconSize = (IconSize == 0) ? 64 : IconSize;
-                switch (ApplicationProfile) {
-                    case AP_BasicCardiac:
-                        iconSize = 128;
-                        break;
-                    case AP_CTandMR:
-                        iconSize = 64;
-                        break;
-                    default:
-                        break;
-                }
-                
-                DcmFileFormat fileformat;
-                if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())
-                    continue;
+        if( patientRecord)
+            {
+        //      printf("\trecord sub %d type is %d (10 is patient), with card %d\n", i, patientRecord->getRecordType(), patientRecord->cardSub());
+                for (unsigned int x = 0; x < patientRecord->cardSub(); ++x) {
+                    DcmDirectoryRecord* studyRecord = patientRecord->getSub(x);
+                    if( studyRecord)
+                    {
+            //          printf("\t\trecord sub %d type is %d (15 is study), with card %d\n", i, studyRecord->getRecordType(), studyRecord->cardSub());
+                        for (unsigned int y = 0; y < studyRecord->cardSub(); ++y) {
+                            DcmDirectoryRecord* seriesRecord = studyRecord->getSub(y);
+                            if( seriesRecord)
+                            {
+                //              printf("\t\t\trecord sub %d type is %d (14 is series), with card %d\n", i, seriesRecord->getRecordType(), seriesRecord->cardSub());
+                //              for (unsigned int i = 0; i < seriesRecord->cardSub(); ++i) {
+                //                  DcmDirectoryRecord* imageRecord = seriesRecord->getSub(i);
+                //                  printf("\t\t\t\trecord sub %d type is %d (4 is image), with card %d\n", i, imageRecord->getRecordType(), imageRecord->cardSub());
+                //              }
+                                
+                                DcmDirectoryRecord* imageRecord = seriesRecord->getSub(rootRecord->cardSub()/2);
+                                if( imageRecord)
+                                {
+                                    if (imageRecord->getRecordType() != ERT_Image)
+                                        continue;
+                                    
+                    //              printf("\t\t\t\tusing image at index %d, %s\n", seriesRecord->cardSub()/2, imageRecord->getRecordsOriginFile());
+                    //              imageRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
+                    //              printf("\t\t\t\troot:");
+                    //              rootRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
+                                    
+                                    unsigned int iconSize = (IconSize == 0) ? 64 : IconSize;
+                                    switch (ApplicationProfile) {
+                                        case AP_BasicCardiac:
+                                            iconSize = 128;
+                                            break;
+                                        case AP_CTandMR:
+                                            iconSize = 64;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    
+                                    DcmFileFormat fileformat;
+                                    if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())
+                                        continue;
 
-                OFCondition status = addIconImage(imageRecord, fileformat.getDataset(), iconSize, OFString(imageRecord->getRecordsOriginFile()));
-                if (status.bad())
-                {
-                    printWarningMessage("cannot create IconImageSequence");
+                                    OFCondition status = addIconImage(imageRecord, fileformat.getDataset(), iconSize, OFString(imageRecord->getRecordsOriginFile()));
+                                    if (status.bad())
+                                    {
+                                        printWarningMessage("cannot create IconImageSequence");
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
-    
-    
 }
 
 // write the current DICOMDIR object to file
