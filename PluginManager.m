@@ -453,6 +453,13 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         
         for (id path in paths)
 		{
+            NSArray* donotloadnames = nil;
+            if (![path isKindOfClass:[NSNull class]]) {
+                donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+                if ([donotloadnames containsObject:@"*"])
+                    break;
+            }
+
             NSEnumerator* e = nil;
             if ([path isKindOfClass:[NSString class]])
                 e = [[[NSFileManager defaultManager] directoryContentsAtPath:path] objectEnumerator];
@@ -469,7 +476,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 			NSString* name;
 			while (name = [e nextObject])
 			{
-				if ( [[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"])
+				if (([[name pathExtension] isEqualToString:@"plugin"] || [[name pathExtension] isEqualToString:@"osirixplugin"]) && ![donotloadnames containsObject:[name stringByDeletingPathExtension]])
 				{
 					if( [pluginsNames valueForKey: [[name lastPathComponent] stringByDeletingPathExtension]])
 					{
