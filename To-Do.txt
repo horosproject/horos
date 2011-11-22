@@ -37,6 +37,7 @@ A:
 		keystrokes: delete key, ...
 	(OK) iPod doesn't appear automatically
 	(OK) iPod eject button
+	Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 
 ------------------------------------------------------------------------------------------
 
