@@ -2627,7 +2627,7 @@ void *compute_2d_power_vv(simplex *s, void *p) {
       
         }
         else { /* if cond=0, s is SLIVER */
-            fprintf(DFILE,"sliver!\n");
+            if(DFILE) fprintf(DFILE,"sliver!\n");
             s->vv = NULL;
             s->status = SLV;
         }
@@ -2827,7 +2827,7 @@ void *compute_3d_power_edges(simplex *s, void *p) {
                     while (nexts != s) {
                         if (nexts->status == CNV) {
 							if(DFILE)
-                            fprintf(DFILE,"inf reg face\n");
+                                fprintf(DFILE,"inf reg face\n");
                             break;
                         }
                         else {
@@ -3138,7 +3138,7 @@ void construct_face(simplex *s, short k)
     while (nexts != s) {
         if (nexts->status == CNV) {
 			if(DFILE)
-            fprintf(DFILE,"inf reg face\n");
+                fprintf(DFILE,"inf reg face\n");
             break;
         }
         else {
@@ -3525,8 +3525,8 @@ double sc(basis_s *v,simplex *s, int k, int j) {
     if (ldetbound - v->lscale + logb(v->sqb)/2 + 1 < 0) {
         DEBS(-2)
             DEBTR(-2) DEBEXP(-2, ldetbound)
-            print_simplex_f(s, DFILE, &print_neighbor_full);
-        print_basis(DFILE,v);
+            print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
+        print_basis(DFILE/* function has empty body */,v);
         EDEBS           
             return 0;                   
     } else {
@@ -3547,7 +3547,7 @@ double lower_terms(basis_s* v) {
     int facs[6] = {2,3,5,7,11,13};
     double out = 1;
 
-    DEBTR(-10) print_basis(DFILE, v); printf("\n");
+    DEBTR(-10) print_basis(DFILE/* function has empty body */, v); printf("\n");
     DEBTR(0)
 
         for (j=0;j<6;j++) do {
@@ -3631,8 +3631,8 @@ int reduce_inner(basis_s *v, simplex *s, int k) {
     }
     if (failcount++<10) {
         DEB(-8, reduce_inner failed on:)
-            DEBTR(-8) print_basis(DFILE, v); 
-        print_simplex_f(s, DFILE, &print_neighbor_full);
+            DEBTR(-8) print_basis(DFILE/* function has empty body */, v); 
+        print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
     }
     return 0;
 }
@@ -3747,7 +3747,7 @@ int check_perps(simplex *s) {
         else {trans(z,y,tt); lift(z,s);}
         if (s->normal && cosangle_sq(b,s->normal)>b_err_min_sq) {DEBS(0)
                                                                      DEB(0,bad normal) DEBEXP(0,i) DEBEXP(0,dd)
-                                                                     print_simplex_f(s, DFILE, &print_neighbor_full);
+                                                                     print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
         EDEBS
             return 0;
         }
@@ -3755,8 +3755,8 @@ int check_perps(simplex *s) {
             if (cosangle_sq(b,s->neigh[j].basis)>b_err_min_sq) {
                 DEBS(0)
                     DEB(0,bad basis)DEBEXP(0,i) DEBEXP(0,j) DEBEXP(0,dd)
-                    DEBTR(-8) print_basis(DFILE, b);
-                print_simplex_f(s, DFILE, &print_neighbor_full);
+                    DEBTR(-8) print_basis(DFILE/* function has empty body */, b);
+                print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
                 EDEBS
                     return 0;
             }
@@ -3837,7 +3837,7 @@ int sees(site p, simplex *s) {
         dd = Vec_dot(zz,s->normal->vecs);   
         if (dd == 0.0) {
             DEBS(-7) DEB(-6,degeneracy:); DEBEXP(-6,site_num(p));
-            print_site(p, DFILE); print_simplex_f(s, DFILE, &print_neighbor_full); EDEBS
+            if (DFILE) { print_site(p, DFILE); print_simplex_f(s, DFILE, &print_neighbor_full); } EDEBS
                                                                                        return 0;
         } 
         dds = dd*dd/s->normal->sqb/Norm2(zz);
@@ -3848,7 +3848,7 @@ int sees(site p, simplex *s) {
     DEBS(-7) if (i==3) {
         DEB(-6, looped too much in sees);
         DEBEXP(-6,dd) DEBEXP(-6,dds) DEBEXP(-6,site_num(p));
-        print_simplex_f(s, DFILE, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));}
+        print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full); /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));}
     EDEBS
         return 0;
 }
@@ -5361,11 +5361,12 @@ void *visit_hull(simplex *root, visit_func *visit)
         if(DFILE)\
             fprintf(DFILE,"adjacency failure,op_" #what ":\n"); \
         DEBTR(-10)                      \
-        print_simplex_f(a, DFILE, &print_neighbor_full);    \
-        print_##whatt(b, DFILE);                \
-        if(DFILE)\
+        if(DFILE){\
+            print_simplex_f(a, DFILE, &print_neighbor_full);    \
+            print_##whatt(b, DFILE);                \
             fprintf(DFILE,"---------------------\n");       \
-        print_triang(a,DFILE, &print_neighbor_full);        \
+            print_triang(a,DFILE, &print_neighbor_full);        \
+        }\
         /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!"));                        \
         return 0;                       \
     }                               \
@@ -5801,8 +5802,8 @@ void *check_simplex(simplex *s, void *dum){
             if(DFILE)
                 fprintf(DFILE, "adjacency failure:\n");
             DEBEXP(-1,site_num(p))
-            print_simplex_f(sns, DFILE, &print_neighbor_full);
-            print_simplex_f(s, DFILE, &print_neighbor_full);
+            print_simplex_f(sns, DFILE/* function has empty body */, &print_neighbor_full);
+            print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
             /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
         }
         for (k=-1,snn=sns->neigh-1; k<cdim; k++,snn++){
@@ -5818,8 +5819,8 @@ void *check_simplex(simplex *s, void *dum){
                         fprintf(DFILE, "cdim=%d\n",cdim);
                         fprintf(DFILE, "error: neighboring simplices with incompatible vertices:\n");
                     }
-                    print_simplex_f(sns, DFILE, &print_neighbor_full);
-                    print_simplex_f(s, DFILE, &print_neighbor_full);
+                    print_simplex_f(sns, DFILE/* function has empty body */, &print_neighbor_full);
+                    print_simplex_f(s, DFILE/* function has empty body */, &print_neighbor_full);
                     /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
                 }   
             }
@@ -6102,9 +6103,9 @@ void *afacets_print(simplex *s, void *p) {
         if (alph_test(s,j,0)!=alph_test(s->neigh[j].simp,k,0)) {
             DEB(-10,alpha-shape not consistent)
                 DEBTR(-10)
-                print_simplex_f(s,DFILE,&print_neighbor_full);
-            print_simplex_f(s->neigh[j].simp,DFILE,&print_neighbor_full);
-            fflush(DFILE);
+                print_simplex_f(s,DFILE/* function has empty body */,&print_neighbor_full);
+            print_simplex_f(s->neigh[j].simp,DFILE/* function has empty body */,&print_neighbor_full);
+            if(DFILE) fflush(DFILE);
             /* TJH exit(1);*/ OSIRIX_ASSERT((long) (pcFALSE));
         }
     }
@@ -6257,7 +6258,7 @@ void sym_update(int pi)
                 }
             }
             else { /* in the heap */
-                if (heap_A[adjlist[npi].hid].pid != npi) fprintf(DFILE,"ERROR\n");
+                if (heap_A[adjlist[npi].hid].pid != npi) if(DFILE) fprintf(DFILE,"ERROR\n");
                 nhi = adjlist[npi].hid;
                 if (adjlist[pi].in > adjlist[pi].out) {
                     /* propagate in*cos to in */
@@ -6288,7 +6289,7 @@ void update_pri(int hi, int pi)
 
     if ((heap_A[hi].pid != pi)||(adjlist[pi].hid != hi)) {
         if(DFILE)
-		fprintf(DFILE,"Error update_pri!\n");
+            fprintf(DFILE,"Error update_pri!\n");
         return;
     }
     if (adjlist[pi].in==0.0) {
@@ -6323,8 +6324,8 @@ void label_unlabeled(int num)
             opplabel = INIT;
             pindex = opplist[i];
             if ((pindex == NULL)&&(adjlist[i].eptr==NULL)) {
-				if ( DFILE)	//EPRO - if statement added 
-                fprintf(DFILE,"no opp pole, no adjacent pole!\n");
+				if (DFILE)	//EPRO - if statement added 
+                    fprintf(DFILE,"no opp pole, no adjacent pole!\n");
                 continue;
             }
             /* check whether there is opp pole */
@@ -6332,12 +6333,12 @@ void label_unlabeled(int num)
                 npi = pindex->pid;
                 if (adjlist[npi].label != INIT) {
 					if (DFILE) //EPRO - if statement added
-                    fprintf(DFILE,"opp is labeled\n");
+                        fprintf(DFILE,"opp is labeled\n");
                     if (opplabel == INIT) opplabel = adjlist[npi].label;
                     else if (opplabel != adjlist[npi].label) {
                         /* opp poles have different labels ... inconsistency! */
 						if (DFILE) //EPRO - if statement added
-                        fprintf(DFILE,"opp poles have inconsistent labels\n");
+                            fprintf(DFILE,"opp poles have inconsistent labels\n");
                         opplabel = INIT; /* ignore the label of opposite poles */
                     } 
                 }
