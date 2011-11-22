@@ -1,25 +1,3 @@
-New Features:
-- Many enhancements in memory management and DICOM engines to greatly improve stability & performances
-- Compiled with Xcode 4.2 (LLVM 3.0)
-- DICOM Q&R: realtime C-Find updates
-- DICOM Q&R: custom DICOM field for query
-- OsiriX new SDK buit-in
-- Curved-MPR path is automatically saved and reloaded
-- Curved-MPR paths can be saved and loaded from file ('.curvedPath')
-- Curved-MPR switch from/to creating/editing mode by double-clicking on a point
-- Curved-MPR and 3D-MPR: move along the axis with the arrows keys
-- Support multiple Ultrasound regions 
-- Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
-- Convert OsiriX reports (Word, Pages, OpenOffice) to PDF or DICOM PDF
-- Automatically generate DICOM PDF if status is updated to "Validated"
-- WebPortal: display unlimited number of studies
-- WebPortal: DICOM Upload: display username in DB comments
-- WebPortal: user preference to show/hide reports
-- WebPortal: reports (Word, Pages, OpenOffice) are on-the-fly converted to PDF, for universal web access
-- CD Burning: reports (Word, Pages, OpenOffice) are on-the-fly converted to PDF, for universal web access
-- Angles Displayed for 3D VR (Up-Down, Left-Right, Roll)
-- Copy all Viewers (Edit menu)
-- Menu items to convert OsiriX reports to DICOM SR file or PDF file (Word, Pages, OpenOffice, TextEdit)
 
 ------------------------------------------------------------------------------------------
 
