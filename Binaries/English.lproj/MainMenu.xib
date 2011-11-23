@@ -3905,6 +3905,7 @@
 							<object class="NSPSMatrix" key="NSDrawMatrix"/>
 							<string key="NSFrame">{{1017, 822}, {84, 20}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1014523718"/>
 							<int key="NSpiFlags">24586</int>
 							<double key="NSMaxValue">100</double>
@@ -3914,6 +3915,7 @@
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{3, 797}, {891, 17}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="763602735"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="13142568">
@@ -3959,6 +3961,7 @@
 							</set>
 							<string key="NSFrame">{{985, 793}, {12, 12}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="187560837"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="3035396">
@@ -3988,6 +3991,7 @@
 							</set>
 							<string key="NSFrame">{{1037, 793}, {12, 12}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="405438363"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="152629012">
@@ -4017,6 +4021,7 @@
 							</set>
 							<string key="NSFrame">{{1083, 793}, {12, 12}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="117221761"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="813562672">
@@ -4046,6 +4051,7 @@
 							</set>
 							<string key="NSFrame">{{985, 804}, {12, 12}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="107125377"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="731205982">
@@ -4067,6 +4073,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{996, 805}, {119, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="162590293"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="133972734">
@@ -4088,6 +4095,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{996, 794}, {48, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="368662497"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="972496311">
@@ -4105,6 +4113,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{1048, 794}, {39, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="785242956"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="21605549">
@@ -4122,6 +4131,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{1094, 794}, {36, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="243872855">
 								<int key="NSCellFlags">67239424</int>
@@ -4138,6 +4148,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{924, 794}, {61, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="102221209"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="207245740">
@@ -4155,6 +4166,7 @@
 							<int key="NSvFlags">265</int>
 							<string key="NSFrame">{{924, 805}, {61, 11}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1006204984"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="113098804">
@@ -4184,6 +4196,7 @@
 													<int key="NSvFlags">8448</int>
 													<string key="NSFrameSize">{2534, 314}</string>
 													<reference key="NSSuperview" ref="613998968"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="8580273"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSTableHeaderView" key="NSHeaderView" id="867542001">
@@ -4191,6 +4204,7 @@
 														<int key="NSvFlags">256</int>
 														<string key="NSFrameSize">{2534, 17}</string>
 														<reference key="NSSuperview" ref="970041696"/>
+														<reference key="NSWindow"/>
 														<reference key="NSTableView" ref="300364488"/>
 													</object>
 													<object class="_NSCornerView" key="NSCornerView">
@@ -5012,6 +5026,7 @@
 											</array>
 											<string key="NSFrame">{{1, 17}, {1123, 314}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="300364488"/>
 											<reference key="NSDocView" ref="300364488"/>
 											<reference key="NSBGColor" ref="629680496"/>
@@ -5022,6 +5037,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{1109, 17}, {15, 308}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="435897027"/>
 											<reference key="NSTarget" ref="832526649"/>
 											<string key="NSAction">_doScroller:</string>
@@ -5032,6 +5048,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{1, 316}, {1117, 15}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="817547013"/>
 											<bool key="NSEnabled">YES</bool>
 											<int key="NSsFlags">1</int>
@@ -5047,6 +5064,7 @@
 											</array>
 											<string key="NSFrame">{{1, 0}, {1123, 17}}</string>
 											<reference key="NSSuperview" ref="832526649"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="867542001"/>
 											<reference key="NSDocView" ref="867542001"/>
 											<reference key="NSBGColor" ref="629680496"/>
@@ -5055,6 +5073,7 @@
 									</array>
 									<string key="NSFrameSize">{1125, 332}</string>
 									<reference key="NSSuperview" ref="1017737147"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="613998968"/>
 									<int key="NSsFlags">133298</int>
 									<reference key="NSVScroller" ref="8580273"/>
@@ -5084,6 +5103,7 @@
 																	<int key="NSvFlags">258</int>
 																	<string key="NSFrameSize">{477, 452}</string>
 																	<reference key="NSSuperview" ref="150457028"/>
+																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="828164548"/>
 																	<bool key="NSEnabled">YES</bool>
 																	<int key="NSNumRows">4</int>
@@ -5358,6 +5378,7 @@
 															</array>
 															<string key="NSFrame">{{1, 1}, {437, 371}}</string>
 															<reference key="NSSuperview" ref="84064525"/>
+															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="691984007"/>
 															<reference key="NSDocView" ref="691984007"/>
 															<reference key="NSBGColor" ref="999148946"/>
@@ -5368,6 +5389,7 @@
 															<int key="NSvFlags">256</int>
 															<string key="NSFrame">{{423, 1}, {15, 371}}</string>
 															<reference key="NSSuperview" ref="84064525"/>
+															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="357867354"/>
 															<bool key="NSEnabled">YES</bool>
 															<reference key="NSTarget" ref="84064525"/>
@@ -5379,6 +5401,7 @@
 															<int key="NSvFlags">-2147483392</int>
 															<string key="NSFrame">{{-100, -100}, {470, 15}}</string>
 															<reference key="NSSuperview" ref="84064525"/>
+															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="150457028"/>
 															<bool key="NSEnabled">YES</bool>
 															<int key="NSsFlags">1</int>
@@ -5389,6 +5412,7 @@
 													</array>
 													<string key="NSFrameSize">{439, 373}</string>
 													<reference key="NSSuperview" ref="938048138"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="150457028"/>
 													<int key="NSsFlags">133842</int>
 													<reference key="NSVScroller" ref="361142642"/>
@@ -5400,6 +5424,7 @@
 													<int key="NSvFlags">268</int>
 													<string key="NSFrame">{{0, 374}, {439, 70}}</string>
 													<reference key="NSSuperview" ref="938048138"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="414637043"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSButtonCell" key="NSCell" id="631393964">
@@ -5423,6 +5448,7 @@
 											</array>
 											<string key="NSFrameSize">{439, 444}</string>
 											<reference key="NSSuperview" ref="817547013"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="84064525"/>
 											<int key="NSDividerStyle">2</int>
 										</object>
@@ -5435,6 +5461,7 @@
 													<int key="NSvFlags">290</int>
 													<string key="NSFrame">{{5, 5}, {581, 16}}</string>
 													<reference key="NSSuperview" ref="414637043"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="861184766"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSSliderCell" key="NSCell" id="840724912">
@@ -5464,6 +5491,7 @@
 													<int key="NSvFlags">289</int>
 													<string key="NSFrame">{{590, 1}, {88, 22}}</string>
 													<reference key="NSSuperview" ref="414637043"/>
+													<reference key="NSWindow"/>
 													<bool key="NSEnabled">YES</bool>
 													<object class="NSButtonCell" key="NSCell" id="637871640">
 														<int key="NSCellFlags">-2080244224</int>
@@ -5487,6 +5515,7 @@
 													<int key="NSvFlags">274</int>
 													<string key="NSFrame">{{0, 29}, {677, 415}}</string>
 													<reference key="NSSuperview" ref="414637043"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="854454709"/>
 													<string key="NSClassName">PreviewView</string>
 													<string key="NSExtension">NSOpenGLView</string>
@@ -5494,22 +5523,26 @@
 											</array>
 											<string key="NSFrame">{{448, 0}, {677, 444}}</string>
 											<reference key="NSSuperview" ref="817547013"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="674899835"/>
 											<string key="NSClassName">NSView</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{0, 341}, {1125, 444}}</string>
 									<reference key="NSSuperview" ref="1017737147"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="938048138"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
 							</array>
 							<string key="NSFrame">{{4, 5}, {1125, 785}}</string>
 							<reference key="NSSuperview" ref="1039447468"/>
+							<reference key="NSWindow"/>
 						</object>
 					</array>
 					<string key="NSFrameSize">{1133, 816}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="24598103"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -8457,7 +8490,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="600825701">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">288</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="706317537">
@@ -9033,7 +9066,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{537, 273}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="247091263"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -14133,6 +14165,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">splitViewHorz</string>
+						<reference key="source" ref="772029037"/>
+						<reference key="destination" ref="1017737147"/>
+					</object>
+					<int key="connectionID">14701</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="300364488"/>
 						<reference key="destination" ref="772029037"/>
@@ -15453,6 +15493,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<reference key="destination" ref="772029037"/>
 					</object>
 					<int key="connectionID">14353</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="1017737147"/>
+						<reference key="destination" ref="772029037"/>
+					</object>
+					<int key="connectionID">14702</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -22839,7 +22887,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">14700</int>
+			<int key="maxID">14702</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -22850,7 +22898,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="about:">id</string>
 						<string key="autoQueryRefresh:">id</string>
 						<string key="cancelModal:">id</string>
-						<string key="checkAllWindowsAreVisible:">id</string>
 						<string key="checkForUpdates:">id</string>
 						<string key="closeAllViewers:">id</string>
 						<string key="help:">id</string>
@@ -22859,15 +22906,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="openOsirixDiscussion:">id</string>
 						<string key="openOsirixWebPage:">id</string>
 						<string key="osirix64bit:">id</string>
-						<string key="scaleToFit:">id</string>
 						<string key="sendEmail:">id</string>
 						<string key="setFixedTilingColumns:">id</string>
 						<string key="setFixedTilingRows:">id</string>
 						<string key="showPreferencePanel:">id</string>
-						<string key="startSTORESCP:">id</string>
-						<string key="startSTORESCPTLS:">id</string>
-						<string key="terminate:">id</string>
-						<string key="tileWindows:">id</string>
 						<string key="updateViews:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -22881,10 +22923,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="cancelModal:">
 							<string key="name">cancelModal:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="checkAllWindowsAreVisible:">
-							<string key="name">checkAllWindowsAreVisible:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="checkForUpdates:">
@@ -22919,10 +22957,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">osirix64bit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="scaleToFit:">
-							<string key="name">scaleToFit:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="sendEmail:">
 							<string key="name">sendEmail:</string>
 							<string key="candidateClassName">id</string>
@@ -22937,22 +22971,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="showPreferencePanel:">
 							<string key="name">showPreferencePanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="startSTORESCP:">
-							<string key="name">startSTORESCP:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="startSTORESCPTLS:">
-							<string key="name">startSTORESCPTLS:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="terminate:">
-							<string key="name">terminate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="tileWindows:">
-							<string key="name">tileWindows:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updateViews:">
@@ -23015,22 +23033,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="ReBuildDatabase:">id</string>
 						<string key="ReBuildDatabaseSheet:">id</string>
-						<string key="ReadDicomCDRom:">id</string>
 						<string key="addAlbum:">id</string>
 						<string key="addAlbums:">id</string>
 						<string key="addSmartAlbum:">id</string>
-						<string key="addURLToDatabase:">id</string>
-						<string key="addURLToDatabaseEnd:">id</string>
 						<string key="albumButtons:">id</string>
 						<string key="albumTableDoublePressed:">id</string>
 						<string key="anonymizeDICOM:">id</string>
-						<string key="autoCleanDatabaseDate:">id</string>
-						<string key="autoCleanDatabaseFreeSpace:">id</string>
 						<string key="bonjourServiceClicked:">id</string>
 						<string key="buildAllThumbnails:">id</string>
-						<string key="burnDICOM:">id</string>
-						<string key="checkIncoming:">id</string>
-						<string key="checkIncomingThread:">id</string>
 						<string key="checkMemory:">id</string>
 						<string key="clickBanner:">id</string>
 						<string key="compressSelectedFiles:">id</string>
@@ -23047,33 +23057,18 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="delItem:">id</string>
 						<string key="deleteAlbum:">id</string>
 						<string key="deleteReport:">id</string>
-						<string key="drawerToggle:">id</string>
-						<string key="emptyDeleteQueue:">id</string>
-						<string key="emptyDeleteQueueNow:">id</string>
 						<string key="endCustomInterval:">id</string>
 						<string key="endReBuildDatabase:">id</string>
-						<string key="executeFilterDB:">id</string>
-						<string key="export2PACS:">id</string>
-						<string key="exportDICOMFile:">id</string>
 						<string key="generateReport:">id</string>
 						<string key="importRawData:">id</string>
-						<string key="matrixDisplayIcons:">id</string>
 						<string key="matrixDoublePressed:">id</string>
 						<string key="matrixPressed:">id</string>
 						<string key="mergeStudies:">id</string>
-						<string key="newFilesGUIUpdate:">id</string>
-						<string key="newViewerDICOM:">id</string>
 						<string key="openDatabase:">id</string>
 						<string key="paste:">id</string>
 						<string key="pasteImageForSourceFile:">NSString</string>
-						<string key="pdfPreview:">id</string>
-						<string key="previewPerformAnimation:">id</string>
-						<string key="previewSliderAction:">id</string>
-						<string key="queryDICOM:">id</string>
 						<string key="querySelectedStudy:">id</string>
 						<string key="rebuildThumbnails:">id</string>
-						<string key="refreshDatabase:">id</string>
-						<string key="refreshMatrix:">id</string>
 						<string key="regenerateAutoComments:">id</string>
 						<string key="reparseIn3D:">id</string>
 						<string key="reparseIn4D:">id</string>
@@ -23086,15 +23081,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="sendiDisk:">id</string>
 						<string key="setSearchType:">id</string>
 						<string key="setTimeIntervalType:">id</string>
-						<string key="showDatabase:">id</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
-						<string key="storeSCPComplete:">id</string>
 						<string key="switchSoundex:">id</string>
-						<string key="viewerDICOM:">id</string>
-						<string key="viewerDICOMKeyImages:">id</string>
-						<string key="viewerDICOMMergeSelection:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="ReBuildDatabase:">
@@ -23103,10 +23093,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
 							<string key="name">ReBuildDatabaseSheet:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ReadDicomCDRom:">
-							<string key="name">ReadDicomCDRom:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="addAlbum:">
@@ -23121,14 +23107,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">addSmartAlbum:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="addURLToDatabase:">
-							<string key="name">addURLToDatabase:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="addURLToDatabaseEnd:">
-							<string key="name">addURLToDatabaseEnd:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="albumButtons:">
 							<string key="name">albumButtons:</string>
 							<string key="candidateClassName">id</string>
@@ -23141,32 +23119,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">anonymizeDICOM:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="autoCleanDatabaseDate:">
-							<string key="name">autoCleanDatabaseDate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="autoCleanDatabaseFreeSpace:">
-							<string key="name">autoCleanDatabaseFreeSpace:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="bonjourServiceClicked:">
 							<string key="name">bonjourServiceClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="buildAllThumbnails:">
 							<string key="name">buildAllThumbnails:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="burnDICOM:">
-							<string key="name">burnDICOM:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="checkIncoming:">
-							<string key="name">checkIncoming:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="checkIncomingThread:">
-							<string key="name">checkIncomingThread:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="checkMemory:">
@@ -23233,18 +23191,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">deleteReport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="drawerToggle:">
-							<string key="name">drawerToggle:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="emptyDeleteQueue:">
-							<string key="name">emptyDeleteQueue:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="emptyDeleteQueueNow:">
-							<string key="name">emptyDeleteQueueNow:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="endCustomInterval:">
 							<string key="name">endCustomInterval:</string>
 							<string key="candidateClassName">id</string>
@@ -23253,28 +23199,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">endReBuildDatabase:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="executeFilterDB:">
-							<string key="name">executeFilterDB:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="export2PACS:">
-							<string key="name">export2PACS:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="generateReport:">
 							<string key="name">generateReport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="importRawData:">
 							<string key="name">importRawData:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="matrixDisplayIcons:">
-							<string key="name">matrixDisplayIcons:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="matrixDoublePressed:">
@@ -23289,14 +23219,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">mergeStudies:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="newFilesGUIUpdate:">
-							<string key="name">newFilesGUIUpdate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="newViewerDICOM:">
-							<string key="name">newViewerDICOM:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="openDatabase:">
 							<string key="name">openDatabase:</string>
 							<string key="candidateClassName">id</string>
@@ -23309,36 +23231,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">pasteImageForSourceFile:</string>
 							<string key="candidateClassName">NSString</string>
 						</object>
-						<object class="IBActionInfo" key="pdfPreview:">
-							<string key="name">pdfPreview:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="previewPerformAnimation:">
-							<string key="name">previewPerformAnimation:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="previewSliderAction:">
-							<string key="name">previewSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="queryDICOM:">
-							<string key="name">queryDICOM:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="querySelectedStudy:">
 							<string key="name">querySelectedStudy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="rebuildThumbnails:">
 							<string key="name">rebuildThumbnails:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="refreshDatabase:">
-							<string key="name">refreshDatabase:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="refreshMatrix:">
-							<string key="name">refreshMatrix:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="regenerateAutoComments:">
@@ -23389,10 +23287,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">setTimeIntervalType:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="showDatabase:">
-							<string key="name">showDatabase:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="showLogWindow:">
 							<string key="name">showLogWindow:</string>
 							<string key="candidateClassName">id</string>
@@ -23405,24 +23299,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">smartAlbumHelpButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="storeSCPComplete:">
-							<string key="name">storeSCPComplete:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="switchSoundex:">
 							<string key="name">switchSoundex:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerDICOM:">
-							<string key="name">viewerDICOM:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerDICOMKeyImages:">
-							<string key="name">viewerDICOMKeyImages:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerDICOMMergeSelection:">
-							<string key="name">viewerDICOMMergeSelection:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -23812,7 +23690,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">CLUTOpacityView</string>
 					<string key="superclassName">NSView</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="chooseNameAndSave:">id</string>
 						<string key="computeHistogram:">id</string>
 						<string key="copy:">id</string>
 						<string key="cut:">id</string>
@@ -23832,10 +23709,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="undo:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="chooseNameAndSave:">
-							<string key="name">chooseNameAndSave:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="computeHistogram:">
 							<string key="name">computeHistogram:</string>
 							<string key="candidateClassName">id</string>
@@ -23933,35 +23806,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">CPRController</string>
 					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="ApplyWLWW:">id</string>
-						<string key="computeCrossReferenceLines:">CPRMPRDCMView</string>
-						<string key="delayedFullLODRendering:">id</string>
 						<string key="editShadingValues:">id</string>
 						<string key="endDCMExportSettings:">id</string>
-						<string key="findShadingPreset:">id</string>
 						<string key="loadBezierPath:">id</string>
-						<string key="moviePlayStop:">id</string>
-						<string key="propagateOriginRotationAndZoomToTransverseViews:">CPRTransverseView</string>
-						<string key="propagateWLWW:">DCMView</string>
 						<string key="roiGetInfo:">id</string>
 						<string key="saveBezierPath:">id</string>
 						<string key="setTool:">id</string>
-						<string key="toogleAxisVisibility:">id</string>
-						<string key="updateViewsAccordingToFrame:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="computeCrossReferenceLines:">
-							<string key="name">computeCrossReferenceLines:</string>
-							<string key="candidateClassName">CPRMPRDCMView</string>
-						</object>
-						<object class="IBActionInfo" key="delayedFullLODRendering:">
-							<string key="name">delayedFullLODRendering:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="editShadingValues:">
 							<string key="name">editShadingValues:</string>
 							<string key="candidateClassName">id</string>
@@ -23970,25 +23822,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">endDCMExportSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="findShadingPreset:">
-							<string key="name">findShadingPreset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="loadBezierPath:">
 							<string key="name">loadBezierPath:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePlayStop:">
-							<string key="name">moviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="propagateOriginRotationAndZoomToTransverseViews:">
-							<string key="name">propagateOriginRotationAndZoomToTransverseViews:</string>
-							<string key="candidateClassName">CPRTransverseView</string>
-						</object>
-						<object class="IBActionInfo" key="propagateWLWW:">
-							<string key="name">propagateWLWW:</string>
-							<string key="candidateClassName">DCMView</string>
 						</object>
 						<object class="IBActionInfo" key="roiGetInfo:">
 							<string key="name">roiGetInfo:</string>
@@ -24000,14 +23836,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="setTool:">
 							<string key="name">setTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toogleAxisVisibility:">
-							<string key="name">toogleAxisVisibility:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateViewsAccordingToFrame:">
-							<string key="name">updateViewsAccordingToFrame:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -24188,17 +24016,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">CPRMPRDCMView</string>
 					<string key="superclassName">DCMView</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">delegate</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">delegate</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">delegate</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/CPRMPRDCMView.h</string>
@@ -24221,65 +24038,19 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">CalciumScoringWindowController</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="compute:">id</string>
-						<string key="preview:">id</string>
-						<string key="print:">id</string>
-						<string key="saveDocument:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="compute:">
-							<string key="name">compute:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="preview:">
-							<string key="name">preview:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saveDocument:">
-							<string key="name">saveDocument:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">_printView</string>
-						<string key="NS.object.0">NSView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">_printView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">_printView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CalciumScoringWindowController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">ColorTransferView</string>
 					<string key="superclassName">NSView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="renderButton:">id</string>
-						<string key="selectPicker:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="renderButton:">
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">renderButton:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">renderButton:</string>
+						<object class="IBActionInfo" key="NS.object.0">
 							<string key="name">renderButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="selectPicker:">
-							<string key="name">selectPicker:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="pick">NSColorWell</string>
 						<string key="position">NSTextField</string>
@@ -24313,13 +24084,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="actualSize:">id</string>
 						<string key="alwaysSyncMenu:">id</string>
-						<string key="annotMenu:">id</string>
-						<string key="changeFont:">id</string>
-						<string key="flipHorizontal:">id</string>
-						<string key="flipVertical:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
 						<string key="scaleToFit:">id</string>
-						<string key="sliderAction:">id</string>
 						<string key="sliderRGBFactor:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -24331,32 +24097,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">alwaysSyncMenu:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="annotMenu:">
-							<string key="name">annotMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeFont:">
-							<string key="name">changeFont:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipHorizontal:">
-							<string key="name">flipHorizontal:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipVertical:">
-							<string key="name">flipVertical:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">
 							<string key="name">roiLoadFromXMLFiles:</string>
 							<string key="candidateClassName">NSArray</string>
 						</object>
 						<object class="IBActionInfo" key="scaleToFit:">
 							<string key="name">scaleToFit:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sliderAction:">
-							<string key="name">sliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="sliderRGBFactor:">
@@ -24367,280 +24113,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/DCMView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">EndoscopyVRController</string>
-					<string key="superclassName">VRController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/EndoscopyVRController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">EndoscopyViewer</string>
-					<string key="superclassName">OSIWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="Apply2DCLUT:">id</string>
-						<string key="ApplyWLWW:">id</string>
-						<string key="applyNewSettingForFlyAssistant:">id</string>
-						<string key="change2DTool:">id</string>
-						<string key="change3DTool:">id</string>
-						<string key="endDCMExportSettings:">id</string>
-						<string key="exportDICOMFile:">id</string>
-						<string key="lockCameraOrFocusOnPath:">id</string>
-						<string key="lookBackwards:">id</string>
-						<string key="pathAssistantBasicModeButtonAction:">id</string>
-						<string key="pathAssistantChangeMode:">id</string>
-						<string key="pathAssistantExportToFlyThru:">id</string>
-						<string key="pathAssistantSetPointA:">id</string>
-						<string key="pathAssistantSetPointB:">id</string>
-						<string key="setExportAllViews:">id</string>
-						<string key="showOrHideCenterlines:">id</string>
-						<string key="showPathAssistantPanel:">id</string>
-						<string key="showingAssistantSettings:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="Apply2DCLUT:">
-							<string key="name">Apply2DCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="applyNewSettingForFlyAssistant:">
-							<string key="name">applyNewSettingForFlyAssistant:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="change2DTool:">
-							<string key="name">change2DTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="change3DTool:">
-							<string key="name">change3DTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endDCMExportSettings:">
-							<string key="name">endDCMExportSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="lockCameraOrFocusOnPath:">
-							<string key="name">lockCameraOrFocusOnPath:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="lookBackwards:">
-							<string key="name">lookBackwards:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pathAssistantBasicModeButtonAction:">
-							<string key="name">pathAssistantBasicModeButtonAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pathAssistantChangeMode:">
-							<string key="name">pathAssistantChangeMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pathAssistantExportToFlyThru:">
-							<string key="name">pathAssistantExportToFlyThru:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pathAssistantSetPointA:">
-							<string key="name">pathAssistantSetPointA:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pathAssistantSetPointB:">
-							<string key="name">pathAssistantSetPointB:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setExportAllViews:">
-							<string key="name">setExportAllViews:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showOrHideCenterlines:">
-							<string key="name">showOrHideCenterlines:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showPathAssistantPanel:">
-							<string key="name">showPathAssistantPanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showingAssistantSettings:">
-							<string key="name">showingAssistantSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="LODView">NSView</string>
-						<string key="WLWW2DView">NSView</string>
-						<string key="WLWW3DView">NSView</string>
-						<string key="assistantPanelSliderResampleSize">NSSlider</string>
-						<string key="assistantPanelSliderStepLength">NSSlider</string>
-						<string key="assistantPanelSliderThreshold">NSSlider</string>
-						<string key="assistantPanelTextResampleSize">NSTextField</string>
-						<string key="assistantPanelTextStepLength">NSTextField</string>
-						<string key="assistantPanelTextThreshold">NSTextField</string>
-						<string key="assistantSettingPanel">NSPanel</string>
-						<string key="bottomSplitView">NSSplitView</string>
-						<string key="clut2DPopup">NSPopUpButton</string>
-						<string key="engineView">NSView</string>
-						<string key="exportDCMSeriesName">NSTextField</string>
-						<string key="exportDCMViewsChoice">NSMatrix</string>
-						<string key="exportDCMWindow">NSWindow</string>
-						<string key="mprController">OrthogonalMPRController</string>
-						<string key="pathAssistantBasicModeButton">NSButton</string>
-						<string key="pathAssistantCameraOrFocalOnPathMatrix">NSMatrix</string>
-						<string key="pathAssistantExportToFlyThruButton">NSButton</string>
-						<string key="pathAssistantLookBackButton">NSButton</string>
-						<string key="pathAssistantPanel">NSPanel</string>
-						<string key="pathAssistantSetPointAButton">NSButton</string>
-						<string key="pathAssistantSetPointBButton">NSButton</string>
-						<string key="shadingView">NSView</string>
-						<string key="tools2DMatrix">NSMatrix</string>
-						<string key="tools2DView">NSView</string>
-						<string key="tools3DMatrix">NSMatrix</string>
-						<string key="tools3DView">NSView</string>
-						<string key="topSplitView">NSSplitView</string>
-						<string key="vrController">EndoscopyVRController</string>
-						<string key="wlww2DPopup">NSPopUpButton</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="LODView">
-							<string key="name">LODView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="WLWW2DView">
-							<string key="name">WLWW2DView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="WLWW3DView">
-							<string key="name">WLWW3DView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelSliderResampleSize">
-							<string key="name">assistantPanelSliderResampleSize</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelSliderStepLength">
-							<string key="name">assistantPanelSliderStepLength</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelSliderThreshold">
-							<string key="name">assistantPanelSliderThreshold</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelTextResampleSize">
-							<string key="name">assistantPanelTextResampleSize</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelTextStepLength">
-							<string key="name">assistantPanelTextStepLength</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantPanelTextThreshold">
-							<string key="name">assistantPanelTextThreshold</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="assistantSettingPanel">
-							<string key="name">assistantSettingPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="bottomSplitView">
-							<string key="name">bottomSplitView</string>
-							<string key="candidateClassName">NSSplitView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clut2DPopup">
-							<string key="name">clut2DPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="engineView">
-							<string key="name">engineView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="exportDCMSeriesName">
-							<string key="name">exportDCMSeriesName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="exportDCMViewsChoice">
-							<string key="name">exportDCMViewsChoice</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="exportDCMWindow">
-							<string key="name">exportDCMWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="mprController">
-							<string key="name">mprController</string>
-							<string key="candidateClassName">OrthogonalMPRController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantBasicModeButton">
-							<string key="name">pathAssistantBasicModeButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantCameraOrFocalOnPathMatrix">
-							<string key="name">pathAssistantCameraOrFocalOnPathMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantExportToFlyThruButton">
-							<string key="name">pathAssistantExportToFlyThruButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantLookBackButton">
-							<string key="name">pathAssistantLookBackButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantPanel">
-							<string key="name">pathAssistantPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantSetPointAButton">
-							<string key="name">pathAssistantSetPointAButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pathAssistantSetPointBButton">
-							<string key="name">pathAssistantSetPointBButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingView">
-							<string key="name">shadingView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tools2DMatrix">
-							<string key="name">tools2DMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tools2DView">
-							<string key="name">tools2DView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tools3DMatrix">
-							<string key="name">tools3DMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tools3DView">
-							<string key="name">tools3DView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="topSplitView">
-							<string key="name">topSplitView</string>
-							<string key="candidateClassName">NSSplitView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="vrController">
-							<string key="name">vrController</string>
-							<string key="candidateClassName">EndoscopyVRController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wlww2DPopup">
-							<string key="name">wlww2DPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/EndoscopyViewer.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -24664,17 +24136,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">KFSplitView</string>
 					<string key="superclassName">NSSplitView</string>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">kfDelegate</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">kfDelegate</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">kfDelegate</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/KFSplitView.h</string>
@@ -24684,27 +24145,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">MPRController</string>
 					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="ApplyWLWW:">id</string>
-						<string key="computeCrossReferenceLines:">MPRDCMView</string>
 						<string key="editShadingValues:">id</string>
 						<string key="endDCMExportSettings:">id</string>
-						<string key="findShadingPreset:">id</string>
-						<string key="moviePlayStop:">id</string>
-						<string key="propagateWLWW:">MPRDCMView</string>
 						<string key="roiGetInfo:">id</string>
 						<string key="setTool:">id</string>
-						<string key="toogleAxisVisibility:">id</string>
-						<string key="updateViewsAccordingToFrame:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="computeCrossReferenceLines:">
-							<string key="name">computeCrossReferenceLines:</string>
-							<string key="candidateClassName">MPRDCMView</string>
-						</object>
 						<object class="IBActionInfo" key="editShadingValues:">
 							<string key="name">editShadingValues:</string>
 							<string key="candidateClassName">id</string>
@@ -24713,32 +24159,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">endDCMExportSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="findShadingPreset:">
-							<string key="name">findShadingPreset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePlayStop:">
-							<string key="name">moviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="propagateWLWW:">
-							<string key="name">propagateWLWW:</string>
-							<string key="candidateClassName">MPRDCMView</string>
-						</object>
 						<object class="IBActionInfo" key="roiGetInfo:">
 							<string key="name">roiGetInfo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setTool:">
 							<string key="name">setTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toogleAxisVisibility:">
-							<string key="name">toogleAxisVisibility:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateViewsAccordingToFrame:">
-							<string key="name">updateViewsAccordingToFrame:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -24945,26 +24371,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">OSIWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="applyShading:">id</string>
 						<string key="redo:">id</string>
 						<string key="undo:">id</string>
-						<string key="updateAutoAdjustPrinting:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="applyShading:">
-							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="redo:">
 							<string key="name">redo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="undo:">
 							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateAutoAdjustPrinting:">
-							<string key="name">updateAutoAdjustPrinting:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -25007,33 +24423,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">OrthogonalMPRController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="blendingPropagate:">OrthogonalMPRView</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRView</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
-						<string key="fullWindowView:">id</string>
-						<string key="showViews:">id</string>
-						<string key="toggleDisplayResliceAxes:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="blendingPropagate:">
-							<string key="name">blendingPropagate:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
 							<string key="name">flipHorizontal:</string>
 							<string key="candidateClassName">id</string>
@@ -25042,22 +24435,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="fullWindowView:">
-							<string key="name">fullWindowView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showViews:">
-							<string key="name">showViews:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toggleDisplayResliceAxes:">
-							<string key="name">toggleDisplayResliceAxes:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="originalView">OrthogonalMPRView</string>
-						<string key="viewer">id</string>
 						<string key="xReslicedView">OrthogonalMPRView</string>
 						<string key="yReslicedView">OrthogonalMPRView</string>
 					</dictionary>
@@ -25065,10 +24445,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="originalView">
 							<string key="name">originalView</string>
 							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="viewer">
-							<string key="name">viewer</string>
-							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="xReslicedView">
 							<string key="name">xReslicedView</string>
@@ -25087,93 +24463,28 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				<object class="IBPartialClassDescription">
 					<string key="className">OrthogonalMPRPETCTController</string>
 					<string key="superclassName">OrthogonalMPRController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="fullWindowModality:">id</string>
-						<string key="fullWindowPlan:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="fullWindowModality:">
-							<string key="name">fullWindowModality:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="fullWindowPlan:">
-							<string key="name">fullWindowPlan:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/OrthogonalMPRPETCTController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">OrthogonalMPRPETCTView</string>
-					<string key="superclassName">OrthogonalMPRView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="superFlipHorizontal:">id</string>
-						<string key="superFlipVertical:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="superFlipHorizontal:">
-							<string key="name">superFlipHorizontal:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="superFlipVertical:">
-							<string key="name">superFlipVertical:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/OrthogonalMPRPETCTView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">OrthogonalMPRPETCTViewer</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="MoviePlayStop:">id</string>
 						<string key="blendingMode:">id</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRPETCTView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRPETCTView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRPETCTView</string>
 						<string key="changeBlendingFactor:">id</string>
 						<string key="changeFromAndToBounds:">id</string>
 						<string key="changeTool:">id</string>
 						<string key="customizeViewerToolBar:">id</string>
 						<string key="endExportDICOMFileSettings:">id</string>
-						<string key="flipHorizontalOriginal:">id</string>
-						<string key="flipHorizontalX:">id</string>
-						<string key="flipHorizontalY:">id</string>
-						<string key="flipVerticalOriginal:">id</string>
-						<string key="flipVerticalX:">id</string>
-						<string key="flipVerticalY:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
-						<string key="realignDataSet:">id</string>
 						<string key="setCurrentPosition:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="blendingMode:">
 							<string key="name">blendingMode:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRPETCTView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRPETCTView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRPETCTView</string>
 						</object>
 						<object class="IBActionInfo" key="changeBlendingFactor:">
 							<string key="name">changeBlendingFactor:</string>
@@ -25193,42 +24504,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="endExportDICOMFileSettings:">
 							<string key="name">endExportDICOMFileSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipHorizontalOriginal:">
-							<string key="name">flipHorizontalOriginal:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipHorizontalX:">
-							<string key="name">flipHorizontalX:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipHorizontalY:">
-							<string key="name">flipHorizontalY:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipVerticalOriginal:">
-							<string key="name">flipVerticalOriginal:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipVerticalX:">
-							<string key="name">flipVerticalX:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flipVerticalY:">
-							<string key="name">flipVerticalY:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="realignDataSet:">
-							<string key="name">realignDataSet:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setCurrentPosition:">
@@ -25431,18 +24706,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="className">OrthogonalMPRViewer</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="MoviePlayStop:">id</string>
 						<string key="activateThickSlab:">id</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRView</string>
 						<string key="changeFromAndToBounds:">id</string>
 						<string key="changeTool:">id</string>
 						<string key="customizeViewerToolBar:">id</string>
 						<string key="endExportDICOMFileSettings:">id</string>
-						<string key="exportDICOMFile:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
 						<string key="resetImage:">id</string>
 						<string key="roiDeleteAll:">id</string>
 						<string key="setCurrentPosition:">id</string>
@@ -25451,25 +24719,9 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="setThickSlabMode:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="activateThickSlab:">
 							<string key="name">activateThickSlab:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
 						</object>
 						<object class="IBActionInfo" key="changeFromAndToBounds:">
 							<string key="name">changeFromAndToBounds:</string>
@@ -25485,18 +24737,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="endExportDICOMFileSettings:">
 							<string key="name">endExportDICOMFileSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="resetImage:">
@@ -25841,14 +25081,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="ApplyGeometrieSettings:">id</string>
 						<string key="ApplySettings:">id</string>
 						<string key="BApplySettings:">id</string>
-						<string key="BChangeSettings:">id</string>
 						<string key="BSettingsPopup:">id</string>
-						<string key="ChangeSettings:">id</string>
 						<string key="SettingsPopup:">id</string>
 						<string key="flyThruButtonMenu:">id</string>
 						<string key="flyThruControllerInit:">id</string>
 						<string key="roiGetManager:">id</string>
-						<string key="setDefaultTool:">id</string>
 						<string key="setOrientation:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -25864,16 +25101,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">BApplySettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="BChangeSettings:">
-							<string key="name">BChangeSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="BSettingsPopup:">
 							<string key="name">BSettingsPopup:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ChangeSettings:">
-							<string key="name">ChangeSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="SettingsPopup:">
@@ -25890,10 +25119,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="roiGetManager:">
 							<string key="name">roiGetManager:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setDefaultTool:">
-							<string key="name">setDefaultTool:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setOrientation:">
@@ -26151,22 +25376,15 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="IBSetSelected3DPointColor:">id</string>
 						<string key="IBSetSelected3DPointRadius:">id</string>
 						<string key="SwitchStereoMode:">id</string>
-						<string key="axView:">id</string>
 						<string key="changeColor:">id</string>
-						<string key="coView:">id</string>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="endQuicktimeSettings:">id</string>
 						<string key="endQuicktimeVRSettings:">id</string>
 						<string key="export3DFileFormat:">id</string>
-						<string key="exportDICOMFile:">id</string>
 						<string key="exportQuicktime:">id</string>
 						<string key="invertedSides:">id</string>
-						<string key="saView:">id</string>
-						<string key="saViewOpposite:">id</string>
 						<string key="save3DPointsDefaultProperties:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
-						<string key="squareView:">id</string>
-						<string key="switchOrientationWidget:">id</string>
 						<string key="switchProjection:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -26198,16 +25416,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">SwitchStereoMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="axView:">
-							<string key="name">axView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="changeColor:">
 							<string key="name">changeColor:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="coView:">
-							<string key="name">coView:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
@@ -26226,10 +25436,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">export3DFileFormat:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exportQuicktime:">
 							<string key="name">exportQuicktime:</string>
 							<string key="candidateClassName">id</string>
@@ -26238,28 +25444,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">invertedSides:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="saView:">
-							<string key="name">saView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saViewOpposite:">
-							<string key="name">saViewOpposite:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="save3DPointsDefaultProperties:">
 							<string key="name">save3DPointsDefaultProperties:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setCurrentdcmExport:">
 							<string key="name">setCurrentdcmExport:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="squareView:">
-							<string key="name">squareView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchOrientationWidget:">
-							<string key="name">switchOrientationWidget:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchProjection:">
@@ -26436,32 +25626,20 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="ApplyGeometrieSettings:">id</string>
-						<string key="ApplyWLWW:">id</string>
-						<string key="LODsliderAction:">id</string>
-						<string key="MoviePlayStop:">id</string>
 						<string key="applyConvolution:">id</string>
 						<string key="applyShading:">id</string>
-						<string key="blendingSlider:">id</string>
 						<string key="close3DSettingsSavePanel:">id</string>
 						<string key="displayPresetsForSelectedGroup:">id</string>
 						<string key="editGrowingRegion:">id</string>
 						<string key="editShadingValues:">id</string>
 						<string key="enable3DSettingsSaveButton:">id</string>
 						<string key="endEditGrowingRegion:">id</string>
-						<string key="export2iPhoto:">id</string>
-						<string key="exportJPEG:">id</string>
-						<string key="exportTIFF:">id</string>
-						<string key="findShadingPreset:">id</string>
 						<string key="flyThruControllerInit:">id</string>
 						<string key="load3DSettings:">id</string>
-						<string key="loadAdvancedCLUTOpacity:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
 						<string key="nextPresetPage:">id</string>
 						<string key="previousPresetPage:">id</string>
 						<string key="roiGetManager:">id</string>
 						<string key="save3DSettings:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setDefaultTool:">id</string>
 						<string key="setEngine:">id</string>
 						<string key="setMode:">id</string>
@@ -26476,28 +25654,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">ApplyGeometrieSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="LODsliderAction:">
-							<string key="name">LODsliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="applyConvolution:">
 							<string key="name">applyConvolution:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="applyShading:">
 							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingSlider:">
-							<string key="name">blendingSlider:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="close3DSettingsSavePanel:">
@@ -26524,40 +25686,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">endEditGrowingRegion:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="export2iPhoto:">
-							<string key="name">export2iPhoto:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportJPEG:">
-							<string key="name">exportJPEG:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportTIFF:">
-							<string key="name">exportTIFF:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="findShadingPreset:">
-							<string key="name">findShadingPreset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="flyThruControllerInit:">
 							<string key="name">flyThruControllerInit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="load3DSettings:">
 							<string key="name">load3DSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="loadAdvancedCLUTOpacity:">
-							<string key="name">loadAdvancedCLUTOpacity:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="nextPresetPage:">
@@ -26574,10 +25708,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="save3DSettings:">
 							<string key="name">save3DSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setDefaultTool:">
@@ -27092,32 +26222,18 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="IBSetSelected3DPointColor:">id</string>
 						<string key="IBSetSelected3DPointRadius:">id</string>
 						<string key="SwitchStereoMode:">id</string>
-						<string key="axView:">id</string>
-						<string key="bestRendering:">id</string>
 						<string key="changeColor:">id</string>
 						<string key="changeColorWith:">NSColor</string>
-						<string key="coView:">id</string>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="endQuicktimeSettings:">id</string>
 						<string key="endQuicktimeVRSettings:">id</string>
-						<string key="export2iPhoto:">id</string>
-						<string key="exportDICOMFile:">id</string>
-						<string key="exportJPEG:">id</string>
 						<string key="exportQuicktime:">id</string>
-						<string key="exportTIFF:">id</string>
 						<string key="invertedSides:">id</string>
-						<string key="resetAutorotate:">id</string>
 						<string key="resetImage:">id</string>
-						<string key="saView:">id</string>
-						<string key="saViewOpposite:">id</string>
 						<string key="save3DPointsDefaultProperties:">id</string>
 						<string key="scissorStateButtons:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
 						<string key="setRenderMode:">id</string>
-						<string key="showCropCube:">id</string>
-						<string key="squareView:">id</string>
-						<string key="switchOrientationWidget:">id</string>
 						<string key="switchShading:">id</string>
 						<string key="switchToSeriesRadio:">id</string>
 					</dictionary>
@@ -27138,14 +26254,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">SwitchStereoMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="axView:">
-							<string key="name">axView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="bestRendering:">
-							<string key="name">bestRendering:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="changeColor:">
 							<string key="name">changeColor:</string>
 							<string key="candidateClassName">id</string>
@@ -27153,10 +26261,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBActionInfo" key="changeColorWith:">
 							<string key="name">changeColorWith:</string>
 							<string key="candidateClassName">NSColor</string>
-						</object>
-						<object class="IBActionInfo" key="coView:">
-							<string key="name">coView:</string>
-							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
 							<string key="name">endDCMExportSettings:</string>
@@ -27170,44 +26274,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">endQuicktimeVRSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="export2iPhoto:">
-							<string key="name">export2iPhoto:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportJPEG:">
-							<string key="name">exportJPEG:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exportQuicktime:">
 							<string key="name">exportQuicktime:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportTIFF:">
-							<string key="name">exportTIFF:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="invertedSides:">
 							<string key="name">invertedSides:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetAutorotate:">
-							<string key="name">resetAutorotate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="resetImage:">
 							<string key="name">resetImage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saView:">
-							<string key="name">saView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saViewOpposite:">
-							<string key="name">saViewOpposite:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="save3DPointsDefaultProperties:">
@@ -27218,28 +26294,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">scissorStateButtons:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setCurrentdcmExport:">
 							<string key="name">setCurrentdcmExport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setRenderMode:">
 							<string key="name">setRenderMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showCropCube:">
-							<string key="name">showCropCube:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="squareView:">
-							<string key="name">squareView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchOrientationWidget:">
-							<string key="name">switchOrientationWidget:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchShading:">
@@ -27415,33 +26475,21 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="AddOpacity:">id</string>
 						<string key="ConvertToBWMenu:">id</string>
 						<string key="ConvertToRGBMenu:">id</string>
-						<string key="MoviePlayStop:">id</string>
-						<string key="MovieStop:">id</string>
 						<string key="PagePadCreate:">id</string>
 						<string key="Panel3D:">id</string>
-						<string key="PlayStop:">id</string>
 						<string key="SRViewer:">id</string>
-						<string key="SetSyncButtonBehavior:">id</string>
-						<string key="SyncSeries:">id</string>
 						<string key="VRViewer:">id</string>
-						<string key="activateFusion:">id</string>
 						<string key="applyConvolutionOnSource:">id</string>
 						<string key="blendWindows:">id</string>
-						<string key="blendingMode:">id</string>
-						<string key="blendingSlider:">id</string>
-						<string key="brushTool:">id</string>
 						<string key="calciumScoring:">id</string>
 						<string key="cancel:">id</string>
 						<string key="changeMatrixSize:">id</string>
 						<string key="closeModal:">id</string>
 						<string key="clutAction:">id</string>
 						<string key="computeSum:">id</string>
-						<string key="contextualMenuEvent:">id</string>
 						<string key="convMatrixAction:">id</string>
-						<string key="copySettingsToOthers:">id</string>
 						<string key="cprViewer:">id</string>
 						<string key="createLayerROIFromSelectedROI:">id</string>
-						<string key="displayDICOMOverlays:">id</string>
 						<string key="editSUVinjectionTime:">id</string>
 						<string key="enable12Bit:">id</string>
 						<string key="endBlendingType:">id</string>
@@ -27464,8 +26512,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="exportAllImages:">NSString</string>
 						<string key="exportDICOMAllViewers:">id</string>
 						<string key="exportDICOMSlider:">id</string>
-						<string key="exportJPEG:">id</string>
-						<string key="exportQuicktime:">id</string>
 						<string key="exportQuicktimeSlider:">id</string>
 						<string key="flipDataSeries:">id</string>
 						<string key="fullScreenMenu:">id</string>
@@ -27482,21 +26528,16 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="mergeBrushROI:">id</string>
 						<string key="morphoSelectedBrushROI:">id</string>
 						<string key="morphoSelectedBrushROIWithRadius:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
 						<string key="mprViewer:">id</string>
 						<string key="navigator:">id</string>
 						<string key="ok:">id</string>
 						<string key="orthogonalMPRViewer:">id</string>
-						<string key="popFusionAction:">id</string>
-						<string key="print:">id</string>
 						<string key="printSlider:">id</string>
 						<string key="reSyncOrigin:">id</string>
 						<string key="redo:">id</string>
 						<string key="resampleDataBy2:">id</string>
 						<string key="resetImage:">id</string>
 						<string key="resetWindowsState:">id</string>
-						<string key="revertSeries:">id</string>
 						<string key="roiDeleteAll:">id</string>
 						<string key="roiDeleteAllROIsWithSameName:">id</string>
 						<string key="roiDeleteGeneratedROIs:">id</string>
@@ -27516,20 +26557,14 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="setComments:">id</string>
 						<string key="setCurrentPosition:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
-						<string key="setDefaultTool:">id</string>
 						<string key="setImageTiling:">id</string>
 						<string key="setKeyImage:">id</string>
 						<string key="setOrientationTool:">id</string>
 						<string key="setPagesToPrint:">id</string>
-						<string key="setROITool:">id</string>
 						<string key="setStatus:">id</string>
 						<string key="setStructuringElementRadius:">id</string>
-						<string key="setWindowTitle:">id</string>
-						<string key="showCurrentThumbnail:">id</string>
 						<string key="showHideMatrix:">id</string>
 						<string key="shutterOnOff:">id</string>
-						<string key="sliderFusionAction:">id</string>
-						<string key="speedSliderAction:">id</string>
 						<string key="subCtrlNewMask:">id</string>
 						<string key="subCtrlOffset:">id</string>
 						<string key="subCtrlOnOff:">id</string>
@@ -27537,7 +26572,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="subSharpen:">id</string>
 						<string key="subSumSlider:">id</string>
 						<string key="threeDPanel:">id</string>
-						<string key="turnOffSyncSeriesBetweenStudies:">id</string>
 						<string key="undo:">id</string>
 						<string key="ungroupSelectedROIs:">id</string>
 						<string key="unlockSelectedROIs:">id</string>
@@ -27560,14 +26594,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">ConvertToRGBMenu:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="MovieStop:">
-							<string key="name">MovieStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="PagePadCreate:">
 							<string key="name">PagePadCreate:</string>
 							<string key="candidateClassName">id</string>
@@ -27576,28 +26602,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">Panel3D:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="PlayStop:">
-							<string key="name">PlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="SRViewer:">
 							<string key="name">SRViewer:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="SetSyncButtonBehavior:">
-							<string key="name">SetSyncButtonBehavior:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="SyncSeries:">
-							<string key="name">SyncSeries:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="VRViewer:">
 							<string key="name">VRViewer:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="activateFusion:">
-							<string key="name">activateFusion:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="applyConvolutionOnSource:">
@@ -27606,18 +26616,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="blendWindows:">
 							<string key="name">blendWindows:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingMode:">
-							<string key="name">blendingMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingSlider:">
-							<string key="name">blendingSlider:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="brushTool:">
-							<string key="name">brushTool:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="calciumScoring:">
@@ -27644,16 +26642,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">computeSum:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="contextualMenuEvent:">
-							<string key="name">contextualMenuEvent:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="convMatrixAction:">
 							<string key="name">convMatrixAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="copySettingsToOthers:">
-							<string key="name">copySettingsToOthers:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="cprViewer:">
@@ -27662,10 +26652,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="createLayerROIFromSelectedROI:">
 							<string key="name">createLayerROIFromSelectedROI:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="displayDICOMOverlays:">
-							<string key="name">displayDICOMOverlays:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="editSUVinjectionTime:">
@@ -27756,14 +26742,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">exportDICOMSlider:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="exportJPEG:">
-							<string key="name">exportJPEG:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportQuicktime:">
-							<string key="name">exportQuicktime:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exportQuicktimeSlider:">
 							<string key="name">exportQuicktimeSlider:</string>
 							<string key="candidateClassName">id</string>
@@ -27828,14 +26806,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">morphoSelectedBrushROIWithRadius:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="mprViewer:">
 							<string key="name">mprViewer:</string>
 							<string key="candidateClassName">id</string>
@@ -27850,14 +26820,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="orthogonalMPRViewer:">
 							<string key="name">orthogonalMPRViewer:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="popFusionAction:">
-							<string key="name">popFusionAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="printSlider:">
@@ -27882,10 +26844,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="resetWindowsState:">
 							<string key="name">resetWindowsState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="revertSeries:">
-							<string key="name">revertSeries:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="roiDeleteAll:">
@@ -27964,10 +26922,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">setCurrentdcmExport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="setDefaultTool:">
-							<string key="name">setDefaultTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setImageTiling:">
 							<string key="name">setImageTiling:</string>
 							<string key="candidateClassName">id</string>
@@ -27984,10 +26938,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">setPagesToPrint:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="setROITool:">
-							<string key="name">setROITool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setStatus:">
 							<string key="name">setStatus:</string>
 							<string key="candidateClassName">id</string>
@@ -27996,28 +26946,12 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">setStructuringElementRadius:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="setWindowTitle:">
-							<string key="name">setWindowTitle:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showCurrentThumbnail:">
-							<string key="name">showCurrentThumbnail:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="showHideMatrix:">
 							<string key="name">showHideMatrix:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="shutterOnOff:">
 							<string key="name">shutterOnOff:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sliderFusionAction:">
-							<string key="name">sliderFusionAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="speedSliderAction:">
-							<string key="name">speedSliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="subCtrlNewMask:">
@@ -28046,10 +26980,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="threeDPanel:">
 							<string key="name">threeDPanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="turnOffSyncSeriesBetweenStudies:">
-							<string key="name">turnOffSyncSeriesBetweenStudies:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="undo:">
@@ -29002,8 +27932,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="AddCLUT:">id</string>
-						<string key="ApplyCLUT:">id</string>
-						<string key="ApplyOpacity:">id</string>
 						<string key="SetWLWW:">id</string>
 						<string key="clutAction:">id</string>
 						<string key="endCLUT:">id</string>
@@ -29011,20 +27939,11 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="endOpacity:">id</string>
 						<string key="endSetWLWW:">id</string>
 						<string key="fullScreenMenu:">id</string>
-						<string key="print:">id</string>
 						<string key="updateSetWLWW:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="AddCLUT:">
 							<string key="name">AddCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyCLUT:">
-							<string key="name">ApplyCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyOpacity:">
-							<string key="name">ApplyOpacity:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="SetWLWW:">
@@ -29053,10 +27972,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="fullScreenMenu:">
 							<string key="name">fullScreenMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updateSetWLWW:">
@@ -29186,7 +28101,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="DefaultBanner">{256, 29}</string>
+			<string key="DefaultBanner">{300, 30}</string>
 			<string key="Endoscopy">{32, 32}</string>
 			<string key="MIP">{32, 32}</string>
 			<string key="MPR">{32, 32}</string>
