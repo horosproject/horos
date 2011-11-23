@@ -204,11 +204,14 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 {
   if (dataset == NULL) return EC_IllegalCall;
 
+  return EC_Normal; // added in OsiriX, because image compression/decompression resulted in DERIVED ImageType
+  
+  /*
   DcmStack stack;
   OFString imageType("DERIVED");
   OFString a;
 
-  /* find existing Image Type element */
+  / * find existing Image Type element * /
   OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
   if (status.good())
   {
@@ -225,6 +228,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 
   // insert new Image Type, replace old value
   return dataset->putAndInsertString(DCM_ImageType, imageType.c_str(), OFTrue);
+  */
 }
 
 /* --------------------------------------------------------------- */
