@@ -178,6 +178,12 @@
 
 - (void)dealloc
 {
+    [irisAnimationTimer invalidate];
+    [irisAnimationTimer release];
+    
+    [burnAnimationTimer invalidate];
+    [burnAnimationTimer release];
+    
 	windowWillClose = YES;
 	
 	runBurnAnimation = NO;
@@ -307,13 +313,10 @@
 		if (cdName != nil && [cdName length] > 0)
 		{
 			runBurnAnimation = YES;
-			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
-			
+            
 			NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
 			t.name = NSLocalizedString( @"Burning...", nil);
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
-			
-//			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
 		}
 		else
 			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
@@ -524,9 +527,7 @@
 {
 
 	burning = YES;	// Keep the app from being quit from underneath the burn.
-	isThrobbing = NO;
 	burnAnimationIndex = 0;
-
 }
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
@@ -574,7 +575,6 @@
 	[[self window] setDelegate: nil];
 	
 	isIrisAnimation = NO;
-	isThrobbing = NO;
 	isExtracting = NO;
 	isSettingUpBurn = NO;
 	burning = NO;
@@ -645,14 +645,17 @@
 {
 	//NSLog(@"Set up burn");
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	isThrobbing = NO;
 	runBurnAnimation = NO;
 	[burnButton setEnabled:NO];
 	isExtracting = YES;
 	
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
-	[NSThread detachNewThreadSelector:@selector(irisAnimation:) toTarget:self withObject:nil];
+    
+    isIrisAnimation = YES;
+    irisAnimationTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1  target: self selector: @selector( irisAnimation:) userInfo: NO repeats: YES] retain];
+    burnAnimationTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1  target: self selector: @selector( burnAnimation:) userInfo: NO repeats: YES] retain];
+    
 	[burnButton setEnabled:YES];
 	
 	NSString *title = nil;
@@ -1099,78 +1102,30 @@
 	if( windowWillClose)
 		return;
 	
-	isThrobbing = NO;
-	while (runBurnAnimation)
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSString *animation = [NSString stringWithFormat:@"burn_anim%02d", burnAnimationIndex++];
-		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
-		[burnButton setImage:image];
-		if (burnAnimationIndex > 11)
-			burnAnimationIndex = 0;
-		
-		[NSThread  sleepForTimeInterval:0.05];
-		[pool release];
-		
-		if( windowWillClose)
-			return;
-	}
+    if( runBurnAnimation == NO)
+        return;
+    
+    if( burnAnimationIndex > 11)
+        burnAnimationIndex = 0;
+    
+    NSString *animation = [NSString stringWithFormat:@"burn_anim%02d.tif", burnAnimationIndex++];
+    NSImage *image = [NSImage imageNamed: animation];
+    [burnButton setImage:image];
 }
 
--(void)irisAnimation:(id)object
+-(void)irisAnimation:(NSTimer*) timer
 {
-	if( windowWillClose)
-		return;
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	int index = 0;
-	isIrisAnimation = YES;
-	while (index <= 13 && isIrisAnimation)
-	{
-		NSString *animation = [NSString stringWithFormat:@"burn_iris%02d", index++];
-		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
-		[burnButton setImage:image];
-		[NSThread  sleepForTimeInterval:0.075];
-		
-		if( windowWillClose)
-			return;
-	}
-	
-	if( isIrisAnimation)
-		[NSThread detachNewThreadSelector:@selector(throbAnimation:) toTarget:self withObject:nil];
-		
-	isIrisAnimation = NO;
-	[pool release];
-}
-
-- (void)throbAnimation:(id)object
-{
-	if( windowWillClose)
-		return;
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	isThrobbing = YES;
-	while (isThrobbing)
-	{
-		NSString *path1 = [[NSBundle mainBundle] pathForResource:@"burn_anim00" ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path1] autorelease];
-		
-		[burnButton setImage:image];
-		[NSThread  sleepForTimeInterval:0.6];
-		if( windowWillClose)
-			return;
-		
-		NSString *path2 = [[NSBundle mainBundle] pathForResource:@"burn_throb" ofType:@"tif"];
-		NSImage *image2 = [[[NSImage alloc]  initWithContentsOfFile:path2] autorelease];
-		
-		[burnButton setImage:image2];
-		[NSThread  sleepForTimeInterval:0.4];
-		
-		if( windowWillClose)
-			return;
-	}
-	[pool release];
+    if( isIrisAnimation == NO)
+        return;
+    
+    if( runBurnAnimation)
+        return;
+    
+	if( irisAnimationIndex > 13)
+        irisAnimationIndex = 0;
+    
+    NSString *animation = [NSString stringWithFormat:@"burn_iris%02d.tif", irisAnimationIndex++];
+    NSImage *image = [NSImage imageNamed: animation];
+    [burnButton setImage:image];
 }
 @end

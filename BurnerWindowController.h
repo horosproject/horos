@@ -33,7 +33,6 @@
 	NSString *cdName;
 	NSString *folderSize;
 	NSTimer *burnAnimationTimer;
-	int burnAnimationIndex;
 	volatile BOOL runBurnAnimation, isExtracting, isSettingUpBurn, isThrobbing, windowWillClose;
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
@@ -44,6 +43,10 @@
 	
 	BOOL buttonsDisabled;
 	BOOL burnSuppFolder, burnOsiriX, burnHtml, burnWeasis;
+    
+	int burnAnimationIndex;
+    int irisAnimationIndex;
+    NSTimer *irisAnimationTimer;
 }
 
 @property BOOL buttonsDisabled;
@@ -71,8 +74,7 @@
 - (void)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;
 //- (void)reloadData:(id)object;
-- (void)irisAnimation:(id)object;
-- (void)throbAnimation:(id)object;
+- (void)irisAnimation:(NSTimer*)object;
 - (NSNumber*)getSizeOfDirectory:(NSString*)path;
 - (NSString*) defaultTitle;
 - (IBAction) estimateFolderSize: (id) sender;
