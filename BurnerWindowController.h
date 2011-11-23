@@ -21,7 +21,7 @@
 /** \brief Window Controller for DICOM disk burning */
 @interface BurnerWindowController : NSWindowController <NSWindowDelegate>
 {
-	volatile BOOL burning, isIrisAnimation;
+	volatile BOOL burning;
 	NSMutableArray *nodeArray;
 	NSMutableArray *files, *anonymizedFiles, *dbObjects, *originalDbObjects;
 	float burnSize;

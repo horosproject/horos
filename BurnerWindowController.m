@@ -177,13 +177,7 @@
 }
 
 - (void)dealloc
-{
-    [irisAnimationTimer invalidate];
-    [irisAnimationTimer release];
-    
-    [burnAnimationTimer invalidate];
-    [burnAnimationTimer release];
-    
+{    
 	windowWillClose = YES;
 	
 	runBurnAnimation = NO;
@@ -341,17 +335,25 @@
 	{
 		if( no)
 		{
-			if( writeDMG) [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
-			else [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+			if( writeDMG)
+            {
+                [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
+                runBurnAnimation = NO;
+            }
+			else
+            {
+                [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+            }
 		}
 	}
 	else
 	{
 		self.buttonsDisabled = NO;
+        runBurnAnimation = NO;
 	}
 	
 	burning = NO;
-	runBurnAnimation = NO;
+	
 	
 	[pool release];
 }
@@ -525,9 +527,9 @@
 	
 - (void) burnProgressPanelWillBegin:(NSNotification*)aNotification
 {
-
 	burning = YES;	// Keep the app from being quit from underneath the burn.
 	burnAnimationIndex = 0;
+    runBurnAnimation = YES;
 }
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
@@ -559,11 +561,21 @@
 		[NSApp endSheet:self.window];
 	[[self window] performClose:nil];
 	
+    runBurnAnimation = NO;
+    
 	return YES;
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    [irisAnimationTimer invalidate];
+    [irisAnimationTimer release];
+    irisAnimationTimer = nil;
+    
+    [burnAnimationTimer invalidate];
+    [burnAnimationTimer release];
+    burnAnimationTimer = nil;
+    
 	windowWillClose = YES;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
@@ -574,7 +586,6 @@
 	
 	[[self window] setDelegate: nil];
 	
-	isIrisAnimation = NO;
 	isExtracting = NO;
 	isSettingUpBurn = NO;
 	burning = NO;
@@ -652,9 +663,15 @@
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
     
-    isIrisAnimation = YES;
-    irisAnimationTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1  target: self selector: @selector( irisAnimation:) userInfo: NO repeats: YES] retain];
-    burnAnimationTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1  target: self selector: @selector( burnAnimation:) userInfo: NO repeats: YES] retain];
+    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.1  target: self selector: @selector( irisAnimation:) userInfo: NO repeats: YES] retain];
+    [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSModalPanelRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSDefaultRunLoopMode];
+    
+    
+    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.1  target: self selector: @selector( burnAnimation:) userInfo: NO repeats: YES] retain];
+    
+    [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSModalPanelRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSDefaultRunLoopMode];
     
 	[burnButton setEnabled:YES];
 	
@@ -1115,9 +1132,6 @@
 
 -(void)irisAnimation:(NSTimer*) timer
 {
-    if( isIrisAnimation == NO)
-        return;
-    
     if( runBurnAnimation)
         return;
     
