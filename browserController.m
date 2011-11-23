@@ -18197,14 +18197,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSString *tempPath;
 				// if creating DICOMDIR. Limit length to 8 char
-				if (!addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
-				else
+				if (!addDICOMDIR)
+                {
+                    NSString *name = [curImage valueForKeyPath: @"series.study.name"];
+                    
+                    if( name == nil)
+                        name = @"unnamed";
+                    
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]]];
+				}
+                else
 				{
 					NSMutableString *name;
 					
 					if( [curImage valueForKeyPath: @"series.study.name"] == nil)
 						name = [NSMutableString stringWithString: @"unnamed"];
+                    
 					else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
 						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 					else
@@ -18263,8 +18271,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [folderTree selectedTag] == 0)
 				{
-					NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.id"]]];
-					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.studyName"]]];
+                    NSString *name = [curImage valueForKeyPath: @"series.study.studyName"];
+                    NSString *idstring = [curImage valueForKeyPath: @"series.study.id"];
+                    
+                    if( name == nil)
+                        name = @"unnamed";
+                    
+                    if( idstring == nil)
+                        idstring = @"0";
+                    
+					NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: idstring]];
+					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]];
 					
 					if( studyId == nil || [studyId length] == 0)
 						studyId = [NSString stringWithString: @"0"];
@@ -18295,9 +18312,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					studyPath = tempPath;
 					
-					NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
-					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
+                    NSString *sname = [curImage valueForKeyPath: @"series.name"];
+                    if( sname == nil)
+                        sname = @"unnamed";
+                    
+					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: sname]];
 					
+                    NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
+                    
 					if( seriesId == nil)
 						seriesId = [NSNumber numberWithInt: 0];
 					
@@ -18456,12 +18478,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
-				
-				if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+                
+				if ([studyName length] > 8)
+					name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+					name = [NSMutableString stringWithString:[studyName uppercaseString]];
 				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
@@ -18504,17 +18531,23 @@ static volatile int numberOfThreadsForJPEG = 0;
             for( int i = 0; i < [filesToExport count]; i++)
             {
                 NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
 				NSString *tempPath;
 				
 				if( !addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: studyName]]];
 				else
 				{
-					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					if ([studyName length] > 8)
+						name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 					else
-						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+						name = [NSMutableString stringWithString:[studyName uppercaseString]];
                     
 					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
@@ -18530,17 +18563,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
 				NSString *tempPath;
 				
 				if( !addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: studyName]]];
 				else
 				{
-					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					if ([studyName length] > 8)
+						name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 					else
-						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+						name = [NSMutableString stringWithString:[studyName uppercaseString]];
 				
 					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
