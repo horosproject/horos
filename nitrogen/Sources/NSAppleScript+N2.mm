@@ -12,9 +12,11 @@
 @implementation NSAppleScript (N2)
 
 -(id)runWithArguments:(NSArray*)args error:(NSDictionary**)errs {
+    if (!args)
+        args = [NSArray array];
+    
     NSAppleEventDescriptor* event = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass eventID:kAEOpenApplication targetDescriptor:nil returnID:kAutoGenerateReturnID transactionID:kAnyTransactionID];
-    if (args)
-		[event setDescriptor:[args appleEventDescriptor] forKeyword:keyDirectObject];
+    [event setDescriptor:[args appleEventDescriptor] forKeyword:keyDirectObject];
     
     NSAppleEventDescriptor* r = [self executeAppleEvent:event error:errs];
     

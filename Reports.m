@@ -294,76 +294,11 @@ static id aedesc_to_id(AEDesc *desc)
 
 - (void)runScript:(NSString *)txt
 {
-#if __LP64__
-	NSTask *theTask = [[NSTask alloc] init];
-	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/osascript" handler:nil];
-	[txt writeToFile:@"/tmp/osascript" atomically:YES];
-	[theTask setArguments: [NSArray arrayWithObjects: @"OSAScript", @"/tmp/osascript", nil]];
-	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
-	[theTask launch];
-	[theTask waitUntilExit];
-	[theTask release];
-	return;
-#else
-NSData *scriptChars = [txt dataUsingEncoding: NSUTF8StringEncoding];
-AEDesc source, resultText;
-OSAID scriptId, resultId;
-OSErr ok;
-
-// Convert the source string into an AEDesc of string type.
-ok = AECreateDesc(typeChar, [scriptChars bytes], [scriptChars length], &source);
-CHECK;
-
-// Compile the source into a script.
-scriptId = kOSANullScript;
-ok = OSACompile(myComponent, &source, kOSAModeNull, &scriptId);
-AEDisposeDesc(&source);
-CHECK;
-
-
-// Execute the script, using defaults for everything.
-resultId = 0;
-ok = OSAExecute(myComponent, scriptId, kOSANullScript, kOSAModeNull, &resultId);
-CHECK;
-
-if (ok == errOSAScriptError) {
-AEDesc ernum, erstr;
-id ernumobj, erstrobj;
-
-// Extract the error number and error message from our scripting component.
-ok = OSAScriptError(myComponent, kOSAErrorNumber, typeSInt16, &ernum);
-CHECK;
-ok = OSAScriptError(myComponent, kOSAErrorMessage, typeChar, &erstr);
-CHECK;
-
-// Convert them to ObjC types.
-ernumobj = aedesc_to_id(&ernum);
-AEDisposeDesc(&ernum);
-erstrobj = aedesc_to_id(&erstr);
-AEDisposeDesc(&erstr);
-
-txt = [NSString stringWithFormat:@"Error, number=%@, message=%@", ernumobj, erstrobj];
-} else {
-// If no error, extract the result, and convert it to a string for display
-
-if (resultId != 0) { // apple doesn't mention that this can be 0?
-ok = OSADisplay(myComponent, resultId, typeChar, kOSAModeNull, &resultText);
-CHECK;
-
-//NSLog(@"result thingy type = \"%c%c%c%c\"", ((char *)&(resultText.descriptorType))[0], ((char *)&(resultText.descriptorType))[1], ((char *)&(resultText.descriptorType))[2], ((char *)&(resultText.descriptorType))[3]);
-
-txt = aedesc_to_id(&resultText);
-AEDisposeDesc(&resultText);
-} else {
-txt = @"[no value returned]";
-}
-OSADispose(myComponent, resultId);
-}
-
-ok = OSADispose(myComponent, scriptId);
-CHECK;
-#endif
+    NSAppleScript* as = [[[NSAppleScript alloc] initWithSource:txt] autorelease];
+    NSDictionary* errs = nil;
+    [as runWithArguments:nil error:&errs];
+    if ([errs count])
+        NSLog(@"Error: AppleScript execution failed: %@", errs);
 }
 
 +(id)_runAppleScript:(NSString*)source withArguments:(NSArray*)args
