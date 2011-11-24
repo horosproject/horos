@@ -2544,6 +2544,9 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[splash incrementBy:1];
+            
+            if( [splash aborted])
+                break;
 		}
 		[context unlock];
 		

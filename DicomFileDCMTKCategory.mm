@@ -302,14 +302,42 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			if( [self autoFillComments])
 			{
-				NSString	*commentsField;
+				NSString *commentsField = nil;
 				DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
 				if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
 				{
 					commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
-					[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
-
+					
 				}
+                
+                if( [self commentsGroup2] && [self commentsElement2])
+                {
+                    DcmTagKey key = DcmTagKey([self commentsGroup2], [self commentsElement2]);
+                    if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    {
+                        if( commentsField)
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                        else
+                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                        [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
+                    }
+                }
+                
+                if( [self commentsGroup3] && [self commentsElement3])
+                {
+                    DcmTagKey key = DcmTagKey([self commentsGroup3], [self commentsElement3]);
+                    if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    {
+                        if( commentsField)
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                        else
+                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                        [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
+                    }
+                }
+                
+                if( commentsField)
+                    [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 			}
 			
 			if([self checkForLAVIM] == YES)
