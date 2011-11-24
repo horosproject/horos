@@ -345,6 +345,8 @@
                 [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
             }
 		}
+        else
+            runBurnAnimation = NO;
 	}
 	else
 	{
@@ -396,35 +398,32 @@
 
 - (void)burnCD:(id)object
 {
-	BOOL continueToBurn = YES;
-	
 	sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
 	
-	if( continueToBurn)
-	{
-		DRTrack*	track = [self createTrack];
+    DRTrack*	track = [self createTrack];
 
-		if (track)
-		{
-			DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
+    if (track)
+    {
+        DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
 
-			// We'll be the delegate for the setup panel. This allows us to show off some 
-			// of the customization you can do.
-			[bsp setDelegate:self];
-			
-			if ([bsp runSetupPanel] == NSOKButton)
-			{
-				DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
+        // We'll be the delegate for the setup panel. This allows us to show off some 
+        // of the customization you can do.
+        [bsp setDelegate:self];
+        
+        if ([bsp runSetupPanel] == NSOKButton)
+        {
+            DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
 
-				[bpp setDelegate:self];
-				
-				// If you wanted to run this as a sheet you would have sent
-				[bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
-			}
-			else
-				runBurnAnimation = NO;
-		}
-	}
+            [bpp setDelegate:self];
+            
+            // If you wanted to run this as a sheet you would have sent
+            [bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
+        }
+        else
+            runBurnAnimation = NO;
+    }
+    else
+        runBurnAnimation = NO;
 	
 	self.buttonsDisabled = NO;
 }

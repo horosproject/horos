@@ -548,6 +548,4 @@
 	return [[self valueForKey: @"study"] valueForKey: @"albumsNames"];
 }
 
-
-
 @end

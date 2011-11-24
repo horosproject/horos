@@ -1024,7 +1024,7 @@ static NSConditionLock *threadLock = nil;
 							[study setValue:[curDict objectForKey: @"patientUID"] forKey:@"patientUID"];
 							[study setValue:[curDict objectForKey: @"studyNumber"] forKey:@"id"];
 							
-							if( [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] && inParseExistingObject)
+							if( ([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
 							{
 								if( [(NSString*)[curDict objectForKey: @"studyDescription"] length])
 									[study setValue:[curDict objectForKey: @"studyDescription"] forKey:@"studyName"];
@@ -7251,6 +7251,7 @@ static NSConditionLock *threadLock = nil;
 				else if( [study isDeleted] == NO && [study isFault] == NO)
 				{
 					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                    [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
 				}
 			}
 			@catch( NSException *e)
