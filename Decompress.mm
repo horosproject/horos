@@ -10,6 +10,7 @@
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
 #include <mingpp.h>
+#import <Quartz/Quartz.h>
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -776,6 +777,22 @@ int main(int argc, const char *argv[])
 					[printOp setShowsPrintPanel: NO];
 					[printOp setShowsProgressPanel: NO];
 					[printOp runOperation];
+                    
+                    //jf remove empty last PDF page
+                    NSURL *pdfURL = [theURL URLByAppendingPathExtension:@"pdf"];
+                    PDFDocument *pdf = [[[PDFDocument alloc]initWithURL:pdfURL]autorelease];
+                    NSUInteger pdfPageCount = [pdf pageCount];
+                    if (pdfPageCount > 1)
+                    {
+                        NSUInteger pdfLastPageIndex = pdfPageCount - 1;
+                        PDFPage *pdfLastPage = [pdf pageAtIndex:pdfLastPageIndex];
+                        NSUInteger pdfLastPageCharCount = [pdfLastPage numberOfCharacters];
+                        if (pdfLastPageCharCount < 2)
+                        {
+                            [pdf removePageAtIndex:pdfLastPageIndex];
+                            [pdf writeToURL:pdfURL];
+                        }
+                    }
 				}
 			}
 			@catch (NSException * e)
