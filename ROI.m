@@ -370,6 +370,8 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	ROITextThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROITextThickness"];
 	ROIThickness = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIThickness"];
+    if( ROIThickness < 0.3) ROIThickness = 0.3;
+    
 	ROIOpacity = [[NSUserDefaults standardUserDefaults] floatForKey: @"ROIOpacity"];
 	if( ROIOpacity < 0.3) ROIOpacity = 0.3;
 	
@@ -1361,6 +1363,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 		
+        opacity = 1.0;
 		selectable = YES;
 		locked = NO;
         type = itype;

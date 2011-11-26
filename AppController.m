@@ -3446,6 +3446,8 @@ static BOOL initialized = NO;
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
     
 	#endif
+    
+    [ROI loadDefaultSettings];
 }
 
 - (void) checkForOsirixMimeType
