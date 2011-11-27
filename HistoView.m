@@ -38,7 +38,7 @@
 	curMousePosition *= bin;
 	
 	if( curMousePosition < 0) curMousePosition = 0;
-	if( curMousePosition >= dataSize) curMousePosition = dataSize-1;
+	if( curMousePosition >= dataSize-1) curMousePosition = dataSize-1;
 	
 	[self setNeedsDisplay:YES];
 }
@@ -105,7 +105,7 @@
 - (void)drawRect:(NSRect)aRect
 {
 	NSRect					boundsRect=[self bounds];
-	int						index, i, noAtMouse;
+	int						index, i, noAtMouse = 0;
 	float					maxX = (boundsRect.origin.x+boundsRect.size.width)/HISTOSIZE;
 	NSString				*trace;
 	NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
@@ -120,7 +120,7 @@
 //	[[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.2 alpha:1.0] set];
 	[backgroundColor set];
 	NSRectFill(boundsRect);
-
+    
 	for(index = 0 ; index < dataSize;index++)  
 	{
 		float value = 0;
@@ -178,7 +178,10 @@
 		
 		ss = minV + ((curMousePosition) * (maxV-minV)) / dataSize;
 		ee = minV + ((curMousePosition+bin) * (maxV-minV)) / dataSize;
-		
+        
+        if( curMousePosition > 0)
+            ss++;
+        
 		trace = [NSString stringWithFormat:NSLocalizedString(@"Total Pixels: %d\n\nRange:%d/%d\n\nPixels for\nthis range:%d", nil), pixels, ss, ee, noAtMouse];
 	}
 	else
