@@ -85,6 +85,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 extern char currentDestinationMoveAET[ 60];
+extern int gForce1024RescaleInterceptForCT;
 
 OFCondition decompressFileFormat(DcmFileFormat fileformat, const char *fname)
 {
@@ -1109,15 +1110,26 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 	transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
 	transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
 	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-	transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;
-	transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;
-	transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;
-	transferSyntaxes[6] = UID_JPEG2000TransferSyntax;
-	transferSyntaxes[7] = UID_JPEG2000LosslessOnlyTransferSyntax;
-//	transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-	transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
 	
-	numTransferSyntaxes = 9;
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DontSupportJPEGForCSMove"])
+	{
+		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		numTransferSyntaxes = 5;
+		
+		gForce1024RescaleInterceptForCT = 1;
+	}
+	else
+	{
+		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[6] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[7] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;
+		numTransferSyntaxes = 9;
+	}
+	
 
 //#ifdef DISABLE_COMPRESSION_EXTENSION
 //    /* gLocalByteOrder is defined in dcxfer.h */
