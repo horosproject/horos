@@ -31,7 +31,7 @@
  *
  */
  
-int gForce1024RescaleInterceptForCT = 1;
+int gForce1024RescaleInterceptForCT = 0;
 
 #include "osconfig.h"
 #include "djcodecd.h"
@@ -263,12 +263,11 @@ OFCondition DJCodecDecoder::decode(
 							imageSamplesPerPixel = 1;
 							result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
 							
-							if( gForce1024RescaleInterceptForCT && imageSamplesPerPixel == 1 && precision > 8)
+							if( gForce1024RescaleInterceptForCT && precision > 8)
 							{
 								if (0 == strcmp(sopClassUID, UID_CTImageStorage))
 								{
 									const char *string = NULL;
-									
 									
 									if (((DcmItem *)dataset)->findAndGetString(DCM_RescaleIntercept, string, OFFalse).good() && string != NULL)
 									{
