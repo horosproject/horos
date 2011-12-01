@@ -7,6 +7,7 @@ A:
 - DB Remote: HD Free Space: delete entire DB?
 - Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling
+- Make sure autoclean works (also with delayed files removal)
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 

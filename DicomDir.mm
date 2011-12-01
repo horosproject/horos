@@ -32,7 +32,8 @@
     OFList<OFString> fileNames;
     OFStandard::searchDirectoryRecursively("", fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
     
-    OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlash, [[path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]] fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl
+    NSString* dicomdirPath = [path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]];
+    OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlash, [dicomdirPath fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl
     if (!result.good())
         [NSException raise:NSGenericException format:@"Couldn't create new DICOMDIR file: %s", result.text()];
         
@@ -47,6 +48,8 @@
     result = ddir.writeDicomDir(EET_ExplicitLength, EGL_withoutGL);
     if (!result.good())
         [NSException raise:NSGenericException format:@"Couldn't write DICOMDIR file: %s", result.text()];
+    
+    chmod([dicomdirPath fileSystemRepresentation], 0755);
 }
 
 @end
