@@ -503,6 +503,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		response.mimeType = @"application/java-archive";
 	if ([ext compare:@"swf" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
 		response.mimeType = @"application/x-shockwave-flash";
+    if( [ext compare:@"css" options:NSCaseInsensitiveSearch|NSLiteralSearch] == NSOrderedSame)
+        response.mimeType = @"text/css";
 	
 	if ([requestedPath hasPrefix:@"/weasis/"])
 	{
