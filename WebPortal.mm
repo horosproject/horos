@@ -502,7 +502,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 			// do nothing, just try next
 		}
 	}
-	
+    
 	//	NSLog( @"****** File not found: %@", file);
 	
 	return NULL;
