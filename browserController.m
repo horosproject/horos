@@ -14793,7 +14793,9 @@ static NSArray*	openSubSeriesArray = nil;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    NSImage *bannerImage = [[[NSImage alloc] initWithContentsOfURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"]] autorelease];
+    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
+    NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: nil error: nil];
+    NSImage *bannerImage = [[[NSImage alloc] initWithData:imageData] autorelease];
     
     if( bannerImage)
         [banner setImage: bannerImage];
