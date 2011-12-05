@@ -94,7 +94,7 @@
 	BOOL shadingEditable;
 	IBOutlet NSButton *shadingCheck;
 	IBOutlet NSTextField *shadingValues;
-	
+	IBOutlet NSView *tbViewsPosition;
 	IBOutlet NSView *tbAxisColors;
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 }

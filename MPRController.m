@@ -360,16 +360,93 @@ static float deg2rad = M_PI/180.0;
 	[self setLOD: 1];
 }
 
+-(void) applyViewsPosition
+{
+    NSRect r;
+    NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
+	
+    switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
+    {
+        case 0:
+            if( [s frame].size.height > [s frame].size.width)
+            {
+                [horizontalSplit setVertical: YES];
+                [verticalSplit setVertical: NO];
+            }
+            else
+            {
+                [horizontalSplit setVertical: NO];
+                [verticalSplit setVertical: YES];
+            }
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
+            r.size.width = [[self window] frame].size.width/2;
+            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
+            r.size.width = [[self window] frame].size.width/2;
+            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
+            
+            [verticalSplit adjustSubviews];
+            [horizontalSplit adjustSubviews];
+        break;
+            
+        case 2:
+            [horizontalSplit setVertical: YES];
+            [verticalSplit setVertical: YES];
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
+            r.size.width = 2*[[self window] frame].size.width/3;
+            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
+            r.size.width = [[self window] frame].size.width/3;
+            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
+            [verticalSplit adjustSubviews];
+            
+            //
+            
+            r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
+            r.size.width = [[self window] frame].size.width/3;
+            [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
+            
+            r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
+            r.size.width = [[self window] frame].size.width/3;
+            [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+            [horizontalSplit adjustSubviews];
+        break;
+            
+        case 1:
+            [horizontalSplit setVertical: NO];
+            [verticalSplit setVertical: NO];
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 0] frame];
+            r.size.height = 2*[[self window] frame].size.height/3;
+            [[[verticalSplit subviews] objectAtIndex: 0] setFrame: r];
+            
+            r = [[[verticalSplit subviews] objectAtIndex: 1] frame];
+            r.size.height = [[self window] frame].size.height/3;
+            [[[verticalSplit subviews] objectAtIndex: 1] setFrame: r];
+            [verticalSplit adjustSubviews];
+            
+            //
+            
+            r = [[[horizontalSplit subviews] objectAtIndex: 0] frame];
+            r.size.height = [[self window] frame].size.height/3;
+            [[[horizontalSplit subviews] objectAtIndex: 0] setFrame: r];
+            
+            r = [[[horizontalSplit subviews] objectAtIndex: 1] frame];
+            r.size.height = [[self window] frame].size.height/3;
+            [[[horizontalSplit subviews] objectAtIndex: 1] setFrame: r];
+            [horizontalSplit adjustSubviews];
+        break;
+    }
+}
+
 -(void) awakeFromNib
 {
-	NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
-	
-	if( [s frame].size.height > [s frame].size.width)
-	{
-		[horizontalSplit setVertical: YES];
-		[verticalSplit setVertical: NO];
-	}
-	
+	[self applyViewsPosition];
+    
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
@@ -378,11 +455,14 @@ static float deg2rad = M_PI/180.0;
 															  forKeyPath: @"values.exportDCMIncludeAllViews"
 																 options: NSKeyValueObservingOptionNew
 																 context: NULL];
+    
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self forKeyPath: @"values.MPR2DViewsPosition" options: NSKeyValueObservingOptionNew context: NULL];
 }
 
 - (void) dealloc
 {
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.MPR2DViewsPosition"];
 	
 	[mousePosition release];
 	[wlwwMenuItems release];
@@ -1774,6 +1854,9 @@ static float deg2rad = M_PI/180.0;
 		self.dcmFormat = 0; // Screen capture
 		[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey:@"EXPORTMATRIXFOR3D"];
 	}
+    
+    if( [keyPath isEqualToString: @"values.MPR2DViewsPosition"])
+        [self applyViewsPosition];
 }
 
 -(IBAction) endDCMExportSettings:(id) sender
@@ -2754,6 +2837,13 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setView: tbAxisColors];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbAxisColors frame]), NSHeight([tbAxisColors frame]))];
     }
+    else if ([itemIdent isEqualToString:@"ViewsPosition"] && tbViewsPosition)
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Views",nil)];
+		[toolbarItem setView: tbViewsPosition];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbViewsPosition frame]), NSHeight([tbViewsPosition frame]))];
+    }
 	else if ([itemIdent isEqualToString:@"AxisShowHide"])
 	{
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Axis",nil)];
@@ -2808,7 +2898,7 @@ static float deg2rad = M_PI/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
 }
 
 - (void)updateToolbarItems;

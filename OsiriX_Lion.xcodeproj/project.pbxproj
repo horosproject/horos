@@ -1422,6 +1422,12 @@
 		ABB230BE0C2F95DD00B38596 /* JPEGExif.m in Sources */ = {isa = PBXBuildFile; fileRef = ABB230BA0C2F95DD00B38596 /* JPEGExif.m */; };
 		ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
+		ABB7ADC7148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */; };
+		ABB7ADC8148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */; };
+		ABB7ADC9148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */; };
+		ABB7ADCA148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */; };
+		ABB7ADCB148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */; };
+		ABB7ADCC148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */; };
 		ABBA8DA0065AB90200A1F89C /* VR Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9A065AB90200A1F89C /* VR Bones.plist */; };
 		ABBA8DA1065AB90200A1F89C /* VR Red Vessels.plist in Resources */ = {isa = PBXBuildFile; fileRef = ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */; };
 		ABBB63A70635874E00D9531F /* dcmdump in Resources */ = {isa = PBXBuildFile; fileRef = ABBB639D0635874D00D9531F /* dcmdump */; };
@@ -8841,6 +8847,9 @@
 		ABB36D7F0AF2548C00DBEEA2 /* available.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = available.tif; sourceTree = "<group>"; };
 		ABB3DB0B05868E34006494CB /* VTKView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VTKView.h; sourceTree = "<group>"; };
 		ABB3DB0C05868E34006494CB /* VTKView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = VTKView.mm; sourceTree = "<group>"; };
+		ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRhorizontalPosition.tif; sourceTree = "<group>"; };
+		ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRnormalPosition.tif; sourceTree = "<group>"; };
+		ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = 2DMPRverticalPosition.tif; sourceTree = "<group>"; };
 		ABBA8D9A065AB90200A1F89C /* VR Bones.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Bones.plist"; sourceTree = "<group>"; };
 		ABBA8D9B065AB90200A1F89C /* VR Red Vessels.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "VR Red Vessels.plist"; sourceTree = "<group>"; };
 		ABBB639D0635874D00D9531F /* dcmdump */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmdump; sourceTree = "<group>"; };
@@ -13589,6 +13598,9 @@
 		ABBB647A063587B200D9531F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				ABB7ADC4148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif */,
+				ABB7ADC5148CDDF2007D3C3F /* 2DMPRnormalPosition.tif */,
+				ABB7ADC6148CDDF2007D3C3F /* 2DMPRverticalPosition.tif */,
 				84EBD98213F41800005A5D02 /* horizontalPosition.tif */,
 				84EBD98313F41800005A5D02 /* normalPosition.tif */,
 				84EBD98413F41800005A5D02 /* verticalPosition.tif */,
@@ -22394,6 +22406,9 @@
 				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
 				848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */,
 				CEE75F701470698F00A83306 /* DefaultBanner.png in Resources */,
+				ABB7ADC7148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */,
+				ABB7ADC9148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */,
+				ABB7ADCB148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22757,6 +22772,9 @@
 				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
 				848CE290145AC9AE00BEB249 /* curvedPath.icns in Resources */,
 				CEE75F711470698F00A83306 /* DefaultBanner.png in Resources */,
+				ABB7ADC8148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */,
+				ABB7ADCA148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */,
+				ABB7ADCC148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
