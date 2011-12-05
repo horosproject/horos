@@ -16,6 +16,9 @@
 #include "dcddirif.h"
 #include "ofstd.h"
 
+#include "ddpiimpl.h"     /* for class DicomDirImageImplementation */
+
+
 @implementation DicomDir
 
 +(void)createDicomDirAtDir:(NSString*)path {
@@ -27,7 +30,10 @@
     
 //  ddir.enableIconImageMode(); // +X
     ddir.enableOneIconPerSeriesMode(); // OsiriX addition
-//  ddir.setIconSize(96); // we let DicomDirInterface pick the icon size.. which, depending on the modality, will be either 128 or 64
+    ddir.setIconSize(128); // we let DicomDirInterface pick the icon size.. which, depending on the modality, will be either 128 or 64
+
+    DicomDirImageImplementation imagePlugin;
+    ddir.addImageSupport(&imagePlugin);
     
     OFList<OFString> fileNames;
     OFStandard::searchDirectoryRecursively("", fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
