@@ -4822,55 +4822,55 @@ static NSConditionLock *threadLock = nil;
 
 - (void) reduceCoreDataFootPrint
 {
-	if( [managedObjectContext tryLock])
-	{
-		@try 
-		{
-			[[AppController sharedAppController] closeAllViewers: self];
-			
-			[reportFilesToCheck removeAllObjects];
-			
-			[[LogManager currentLogManager] checkLogs: nil];
-			[self resetLogWindowController];
-			[[LogManager currentLogManager] resetLogs];
-			
-			displayEmptyDatabase = YES;
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
-			
-			NSError *error = nil;
-			[managedObjectContext save: &error];
-			
-			if( error == nil)
-				[managedObjectContext reset];
-			
-			[outlineViewArray release];
-			outlineViewArray = nil;
-
-			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
-			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
-			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
-			
-			displayEmptyDatabase = NO;
-			
-			[databaseOutline reloadData];
-			[albumTable reloadData];
-			
-			[self outlineViewRefresh];
-			[self refreshMatrix: self];
-		}
-		@catch (NSException * e) 
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
-		}
-		
-		[managedObjectContext unlock];
-	}
-	
-	NSLog( @"----- reduce memory footprint for CoreData");
+//	if( [managedObjectContext tryLock])
+//	{
+//		@try 
+//		{
+//			[[AppController sharedAppController] closeAllViewers: self];
+//			
+//			[reportFilesToCheck removeAllObjects];
+//			
+//			[[LogManager currentLogManager] checkLogs: nil];
+//			[self resetLogWindowController];
+//			[[LogManager currentLogManager] resetLogs];
+//			
+//			displayEmptyDatabase = YES;
+//			[self outlineViewRefresh];
+//			[self refreshMatrix: self];
+//			
+//			NSError *error = nil;
+//			[managedObjectContext save: &error];
+//			
+//			if( error == nil)
+//				[managedObjectContext reset];
+//			
+//			[outlineViewArray release];
+//			outlineViewArray = nil;
+//
+//			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+//			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+//			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
+//			
+//			displayEmptyDatabase = NO;
+//			
+//			[databaseOutline reloadData];
+//			[albumTable reloadData];
+//			
+//			[self outlineViewRefresh];
+//			[self refreshMatrix: self];
+//		}
+//		@catch (NSException * e) 
+//		{
+//			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//			#ifdef OSIRIX_VIEWER
+//			[AppController printStackTrace: e];
+//			#endif
+//		}
+//		
+//		[managedObjectContext unlock];
+//	}
+//	
+//	NSLog( @"----- reduce memory footprint for CoreData");
 }
 
 - (void) autoCleanDatabaseDate: (id)sender
