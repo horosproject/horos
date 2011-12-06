@@ -1,4 +1,3 @@
-
 ------------------------------------------------------------------------------------------
 
 A:
@@ -20,6 +19,7 @@ A:
 
 ------------------------------------------------------------------------------------------
 
+- http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Storage Commitment Service

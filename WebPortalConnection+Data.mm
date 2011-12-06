@@ -95,21 +95,24 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	if (user)
 	{
+        DicomStudy *s = nil;
+        
 		if ([o isKindOfClass: [DicomStudy class]])
-		{
-			DicomStudy *s = (DicomStudy*) o;
-			
-			if( [[self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", s.patientUID, s.studyInstanceUID]] count] == 0)
-				return nil;
-		}
-		
-		if ([o isKindOfClass: [DicomSeries class]])
-		{
-			DicomSeries *s = (DicomSeries*) o;
-			
-			if( [[self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", s.study.patientUID, s.study.studyInstanceUID]] count] == 0)
-				return nil;
-		}
+            s = (DicomStudy*) o;
+        
+        if ([o isKindOfClass: [DicomSeries class]])
+        {
+            DicomSeries *series = (DicomSeries*) o;
+            s = series.study;
+        }
+        
+        NSArray *studies = [self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
+            
+        if( [[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
+        {
+            NSLog( @"**** study not found for this user (%@) : %@", user, s);
+            return nil;
+        }
 	}
 	
 	return o;
