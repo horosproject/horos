@@ -342,7 +342,7 @@ static float deg2rad = M_PI/180.0;
 	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
 	mprView3.camera.rollAngle = 0;
 	mprView3.angleMPR = 0;
-	mprView3.camera.parallelScale /= 2.;
+	mprView3.camera.parallelScale /= 1.5;
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
@@ -2889,7 +2889,7 @@ static float deg2rad = M_PI/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar

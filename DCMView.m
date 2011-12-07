@@ -7341,6 +7341,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
+- (float) displayedScaleValue
+{
+    return scaleValue;
+}
+
+- (float) displayedRotation
+{
+    return rotation;
+}
+
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
@@ -7587,12 +7597,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
 						{
-							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
+							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) [self displayedScaleValue]*100.0];
 							useStringTexture = NO;
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
 						{
-							[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
+							[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) [self displayedRotation] % 360)];
 							useStringTexture = NO;
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)

@@ -107,7 +107,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         }
         
         NSArray *studies = [self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
-            
+        
         if( [[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
         {
             NSLog( @"**** study not found for this user (%@) : %@", user, s);

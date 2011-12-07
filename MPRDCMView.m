@@ -198,6 +198,20 @@ static	BOOL frameZoomed = NO;
 //
 //}
 
+- (float) displayedScaleValue
+{
+    DCMPix *o = [windowController originalPix];
+    
+    float percentage =  100. / (camera.parallelScale * [o pixelSpacingX]);
+    
+    return percentage / [o pixelSpacingX];
+}
+
+- (float) displayedRotation
+{
+    return camera.rollAngle;
+}
+
 - (BOOL) hasCameraChanged: (Camera*) currentCamera
 {
 	if( camera.forceUpdate)

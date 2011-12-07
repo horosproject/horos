@@ -19173,15 +19173,31 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 	{
-		[self reduceCoreDataFootPrint];
-		
-		[managedObjectContext release];
-		managedObjectContext = nil;
-		
-		[self managedObjectContext];
-		
-		[self outlineViewRefresh];
-		[self refreshMatrix: self];
+//        NSDictionary *server = nil;
+//        
+//        for ( NSDictionary *aServer in [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"])
+//        {
+//            if ([[aServer objectForKey:@"Description"] isEqualToString: @"GEPACS"]) 
+//            {
+//                server = aServer;
+//                break;
+//            }
+//        }
+//        
+//        if( server)
+//            [QueryController queryTest: server];
+        
+//      *******************************
+        
+//		[self reduceCoreDataFootPrint];
+//		
+//		[managedObjectContext release];
+//		managedObjectContext = nil;
+//		
+//		[self managedObjectContext];
+//		
+//		[self outlineViewRefresh];
+//		[self refreshMatrix: self];
 		
 		return;
 	}
