@@ -663,6 +663,8 @@ int main(int argc, const char *argv[])
 				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex++]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
 				createSwfMovie(inputFiles, path);
+                
+                [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
 		}
 		

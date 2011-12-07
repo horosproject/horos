@@ -601,9 +601,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 -(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL {
 	NSString* path = @"/tmp/osirixwebservices";
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
-	
+    
+	NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
+    
 	NSString* name = [NSString stringWithFormat:@"%@", [parameters objectForKey:@"xid"]];
-	name = [name stringByAppendingFormat:@"-NBIM-%ld", series.dateAdded];
+	name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
 	
 	NSMutableString* fileName = [NSMutableString stringWithString:name];
 	[BrowserController replaceNotAdmitted:fileName];
@@ -621,8 +623,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	if (!data)
 	{
-		NSArray *dicomImageArray = [[series valueForKey:@"images"] allObjects];
-		
 		if ([dicomImageArray count] > 1)
 		{
 			@try
@@ -1544,7 +1544,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 					
 					NSString *name = [NSString stringWithFormat:@"%@",[parameters objectForKey:@"xid"]];
-					name = [name stringByAppendingFormat:@"-NBIM-%d", [dicomImageArray count]];
+					name = [name stringByAppendingFormat:@"-WADOMpeg-%d", [dicomImageArray count]];
 					
 					NSMutableString *fileName = [NSMutableString stringWithString: [path stringByAppendingPathComponent:name]];
 					
@@ -1565,7 +1565,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					[self.portal.dicomDatabase.managedObjectContext lock];
 					
 					self.response.data = [NSData dataWithContentsOfFile:outFile];
-					
 				}
 			}
 			else // image/jpeg
