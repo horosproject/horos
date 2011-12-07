@@ -93,7 +93,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	// ensure that the user is allowed to access this object
 	
-	if (user)
+	if (user && [o isKindOfClass: [DicomImage class]] == NO) // Too slow to check for DicomImage
 	{
         DicomStudy *s = nil;
         
@@ -104,6 +104,12 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         {
             DicomSeries *series = (DicomSeries*) o;
             s = series.study;
+        }
+        
+        if ([o isKindOfClass: [DicomImage class]])
+        {
+            DicomImage *image = (DicomImage*) o;
+            s = image.series.study;
         }
         
         NSArray *studies = [self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
