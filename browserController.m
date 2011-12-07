@@ -486,7 +486,7 @@ static NSConditionLock *threadLock = nil;
 	// Reload series if needed
 	for( ViewerController *vc in vl)
 	{
-		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		if( [vc windowWillClose] == NO && [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO tryToFlipData: YES];
 		}
@@ -505,7 +505,7 @@ static NSConditionLock *threadLock = nil;
 	// Refresh preview matrix if needed
 	for( ViewerController *vc in vlToRebuild)
 	{
-		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		if( [vc windowWillClose] == NO && [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
 			[vc buildMatrixPreview: NO];
 		}
@@ -1731,7 +1731,7 @@ static NSConditionLock *threadLock = nil;
 		
 		for( ViewerController *v in cReload)
 		{
-			if( [[v imageView] mouseDragging] == NO && [v postprocessed] == NO)
+			if( [v windowWillClose] == NO && [[v imageView] mouseDragging] == NO && [v postprocessed] == NO)
 			{
 				[viewersListToReload removeObject: v];
 				[vReload addObject: v];
@@ -1742,7 +1742,7 @@ static NSConditionLock *threadLock = nil;
 		
 		for( ViewerController *v in cRebuild)
 		{
-			if( [[v imageView] mouseDragging] == NO)
+			if( [v windowWillClose] == NO && [[v imageView] mouseDragging] == NO)
 			{
 				[viewersListToRebuild removeObject: v];
 				[vRebuild addObject: v];

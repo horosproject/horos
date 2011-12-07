@@ -2153,9 +2153,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSLog(@"DCMView released");
     
-	[NSObject cancelPreviousPerformRequestsWithTarget: self];
-    
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[self prepareToRelease];
 	
 	[self deleteMouseDownTimer];
 	
@@ -6228,7 +6226,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (void) prepareToRelease
-{	
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 

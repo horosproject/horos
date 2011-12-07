@@ -3982,7 +3982,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
-	
+	if( windowWillClose) return;
+    
 	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
 	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
 	NSPredicate				*predicate;
@@ -7156,6 +7157,8 @@ return YES;
 
 - (void) startLoadImageThread
 {
+    if( windowWillClose) return;
+    
 	originalOrientation = -1;
 	
 	stopThreadLoadImage = NO;
@@ -8586,6 +8589,8 @@ return YES;
 
 - (IBAction) flipDataSeries: (id) sender
 {
+    if( windowWillClose) return;
+    
 	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
 	int previousCurImage = [imageView curImage];
