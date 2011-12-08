@@ -287,8 +287,9 @@
 	[messageHeaders setObject:user.email forKey:@"To"];
 	[messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
 	[messageHeaders setObject:emailSubject forKey:@"Subject"];
-	NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease];
-	[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+    
+    // NSAttributedString initWithHTML is NOT thread-safe
+    [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
 	
 	return user;
 }
