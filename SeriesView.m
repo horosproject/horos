@@ -167,13 +167,27 @@
 	BOOL imageLevel = NO;
 	for( id imageObj in dcmFilesList)
 	{
+        float factor = (float) imageRows / (float) rows;
+        
 		float scale = [[imageObj valueForKey: @"scale"] floatValue];
 		
 		if( scale)
 		{
-			[imageObj setValue: [NSNumber numberWithFloat: (scale * (float) imageRows) / (float) rows] forKey: @"scale"];
+			[imageObj setValue: [NSNumber numberWithFloat: scale * factor] forKey: @"scale"];
 			imageLevel = YES;
 		}
+        
+        float xOffset = [[imageObj valueForKey:@"xOffset"] floatValue];
+        if( xOffset)
+        {
+            [imageObj setValue: [NSNumber numberWithFloat: xOffset * factor] forKey: @"xOffset"];
+        }
+        
+        float yOffset = [[imageObj valueForKey:@"yOffset"] floatValue];
+        if( yOffset)
+        {
+            [imageObj setValue: [NSNumber numberWithFloat: yOffset * factor] forKey: @"yOffset"];
+        }
 	}
 	
 	// remove views
@@ -215,7 +229,11 @@
 	
 	if( imageLevel == NO)
 	{
-		[[imageViews objectAtIndex: 0] setScaleValueCentered: ([[imageViews objectAtIndex: 0] scaleValue] * (float) imageRows) / (float) rows];
+        float factor = (float) imageRows / (float) rows;
+        
+        NSPoint origin = [[imageViews objectAtIndex: 0] origin];
+        [[imageViews objectAtIndex: 0] setOriginX:origin.x*factor Y: origin.y*factor];
+        [[imageViews objectAtIndex: 0] setScaleValue: [[imageViews objectAtIndex: 0] scaleValue] * factor];
 	}
 	else
 	{
