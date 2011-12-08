@@ -680,7 +680,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m
 {
-	if( IndependentCRWLWW && ([m isEqualToString: @"CR"] || [m isEqualToString: @"DR"] || [m isEqualToString: @"DX"]))
+	if( IndependentCRWLWW && ([m isEqualToString: @"CR"] || [m isEqualToString: @"DR"] || [m isEqualToString: @"DX"] || [m isEqualToString: @"RF"] || [m isEqualToString: @"XA"]))
 		return YES;
 	else
 		return NO;

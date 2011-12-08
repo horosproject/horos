@@ -16227,7 +16227,7 @@ int i,j,l;
 		[splash showWindow:self];
 		[[splash progress] setMaxValue: (to - from) / interval];
 		
-		int currentImageIndex = [imageView curImage];
+		int currentImageIndex = [self imageIndex];
 		
 		/////// ****************
 		
@@ -16362,6 +16362,8 @@ int i,j,l;
 		[[self window] setFrame: rf display: YES];
 		[self setMatrixVisible: v];
 		
+        [self setImageIndex: currentImageIndex];
+        
 		if( previousRows != 1 || previousColumns != 1)
 			[self setImageRows: previousRows columns: previousColumns];
 		
@@ -16370,8 +16372,10 @@ int i,j,l;
 		/////// ****************
 		
 		// Go back to initial frame
-		[imageView setIndex: currentImageIndex];
+        [self setImageIndex: currentImageIndex];
+        [[self window] update];
 		[imageView sendSyncMessage: 0];
+        
 		[self adjustSlider];
 		
 		[splash close];
