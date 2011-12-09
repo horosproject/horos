@@ -2326,11 +2326,22 @@ static NSDate *lastWarningDate = nil;
 				
 				if( [urlParameters objectForKey: @"methodName"]) // XML-RPC message
 				{
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
+                    // Send the XML-RPC as a notification : give a chance to plugin to answer
+                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixXMLRPCMessageNotification object: urlParameters];
+                    
+                    // Did someone processed the message?
+                    if( [[urlParameters valueForKey: @"Processed"] boolValue])
+                    {
+                        NSLog( @"--- %@ processed by a plugin", [url resourceSpecifier]);
+                    }
+                    else // Built-in messages
+                    {
+                        NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
 					
-					[paramDict removeObjectForKey: @"methodName"];
+                        [paramDict removeObjectForKey: @"methodName"];
 					
-					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
+                        [XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
+                    }
 				}
 				
 				if( [urlParameters objectForKey: @"image"])
