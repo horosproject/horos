@@ -201,7 +201,7 @@
 												<int key="NSCellFlags2">-1874721792</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="26"/>
-												<object class="NSNumberFormatter" key="NSFormatter" id="419660591">
+												<object class="NSNumberFormatter" key="NSFormatter" id="447351988">
 													<dictionary class="NSMutableDictionary" key="NS.attributes">
 														<boolean value="YES" key="allowsFloats"/>
 														<integer value="1040" key="formatterBehavior"/>
@@ -226,7 +226,7 @@
 													</object>
 													<object class="NSAttributedString" key="NS.nan">
 														<string key="NSString">NaN</string>
-														<dictionary key="NSAttributes" id="108667555"/>
+														<dictionary key="NSAttributes" id="924616015"/>
 													</object>
 													<real value="1" key="NS.min"/>
 													<real value="131072" key="NS.max"/>
@@ -644,7 +644,7 @@
 												<int key="NSCellFlags2">-2008939520</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="26"/>
-												<object class="NSNumberFormatter" key="NSFormatter" id="1023548247">
+												<object class="NSNumberFormatter" key="NSFormatter" id="602203980">
 													<dictionary class="NSMutableDictionary" key="NS.attributes">
 														<boolean value="YES" key="allowsFloats"/>
 														<integer value="1040" key="formatterBehavior"/>
@@ -667,7 +667,7 @@
 													</object>
 													<object class="NSAttributedString" key="NS.nan">
 														<string key="NSString">NaN</string>
-														<reference key="NSAttributes" ref="108667555"/>
+														<reference key="NSAttributes" ref="924616015"/>
 													</object>
 													<real value="1" key="NS.min"/>
 													<real value="600" key="NS.max"/>
@@ -911,7 +911,7 @@
 												<int key="NSCellFlags2">-2008939520</int>
 												<string key="NSContents">600</string>
 												<reference key="NSSupport" ref="26"/>
-												<object class="NSNumberFormatter" key="NSFormatter" id="393448739">
+												<object class="NSNumberFormatter" key="NSFormatter" id="158582328">
 													<dictionary class="NSMutableDictionary" key="NS.attributes">
 														<boolean value="YES" key="allowsFloats"/>
 														<integer value="1040" key="formatterBehavior"/>
@@ -934,7 +934,7 @@
 													</object>
 													<object class="NSAttributedString" key="NS.nan">
 														<string key="NSString">NaN</string>
-														<reference key="NSAttributes" ref="108667555"/>
+														<reference key="NSAttributes" ref="924616015"/>
 													</object>
 													<real value="1" key="NS.min"/>
 													<real value="600" key="NS.max"/>
@@ -1576,10 +1576,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="731871404">
 												<int key="NSCellFlags">-1804468671</int>
-												<int key="NSCellFlags2">-2008939520</int>
+												<int key="NSCellFlags2">-2143157248</int>
 												<string key="NSContents"/>
 												<reference key="NSSupport" ref="26"/>
-												<object class="NSNumberFormatter" key="NSFormatter" id="154852992">
+												<object class="NSNumberFormatter" key="NSFormatter" id="6871333">
 													<dictionary class="NSMutableDictionary" key="NS.attributes">
 														<boolean value="YES" key="allowsFloats"/>
 														<integer value="1040" key="formatterBehavior"/>
@@ -1602,7 +1602,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													</object>
 													<object class="NSAttributedString" key="NS.nan">
 														<string key="NSString">NaN</string>
-														<reference key="NSAttributes" ref="108667555"/>
+														<reference key="NSAttributes" ref="924616015"/>
 													</object>
 													<real value="1" key="NS.min"/>
 													<real value="131072" key="NS.max"/>
@@ -2123,7 +2123,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													</object>
 													<object class="NSAttributedString" key="NS.nan">
 														<string key="NSString">NaN</string>
-														<reference key="NSAttributes" ref="108667555"/>
+														<reference key="NSAttributes" ref="924616015"/>
 													</object>
 													<real value="1" key="NS.min"/>
 													<real value="131072" key="NS.max"/>
@@ -4406,7 +4406,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">874</int>
 						<reference key="object" ref="946954769"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="419660591"/>
+							<reference ref="447351988"/>
 						</array>
 						<reference key="parent" ref="769297720"/>
 					</object>
@@ -4705,7 +4705,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">321</int>
 						<reference key="object" ref="79004394"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="393448739"/>
+							<reference ref="158582328"/>
 						</array>
 						<reference key="parent" ref="1045303967"/>
 					</object>
@@ -4879,7 +4879,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">337</int>
 						<reference key="object" ref="731871404"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="154852992"/>
+							<reference ref="6871333"/>
 						</array>
 						<reference key="parent" ref="183894054"/>
 					</object>
@@ -4934,7 +4934,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">327</int>
 						<reference key="object" ref="861924684"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="1023548247"/>
+							<reference ref="602203980"/>
 						</array>
 						<reference key="parent" ref="235191331"/>
 					</object>
@@ -5205,22 +5205,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1029</int>
-						<reference key="object" ref="154852992"/>
+						<reference key="object" ref="6871333"/>
 						<reference key="parent" ref="731871404"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1030</int>
-						<reference key="object" ref="419660591"/>
+						<reference key="object" ref="447351988"/>
 						<reference key="parent" ref="946954769"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1031</int>
-						<reference key="object" ref="393448739"/>
+						<reference key="object" ref="158582328"/>
 						<reference key="parent" ref="79004394"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">1032</int>
-						<reference key="object" ref="1023548247"/>
+						<reference key="object" ref="602203980"/>
 						<reference key="parent" ref="861924684"/>
 					</object>
 				</array>
