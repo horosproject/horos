@@ -89,19 +89,18 @@ static NSTimeInterval lastConnection = 0;
 
 - (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try
+	@synchronized( self)
 	{
-		[self HTTPConnectionProtected:conn didReceiveRequest:mess];
-	}
-	
-	@catch (NSException * e)
-	{
-		NSLog( @"HTTPConnection WebServices : %@", e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+        @try
+        {
+            [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+        }
+        
+        @catch (NSException * e)
+        {
+            NSLog( @"HTTPConnection WebServices : %@", e);
+        }
+    }
 }
 
 - (NSDictionary*) getParameters: (NSXMLDocument *) doc encoding: (NSString *) encoding
