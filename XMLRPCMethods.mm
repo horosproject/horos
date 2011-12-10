@@ -46,15 +46,29 @@ static NSTimeInterval lastConnection = 0;
 
 @implementation XMLRPCMethods
 
+- (void) displayError: (NSError*) error
+{
+    NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
+}
+
 - (void) separateThread
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     NSError *error = nil;
-    [httpServ start: &error];
-    
-    NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-    while( [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    if( ![httpServ start: &error])
+    {
+        httpServ = nil;
+        
+        [self performSelectorOnMainThread:@selector( displayError:) withObject: error waitUntilDone: YES];
+    }
+    else
+    {
+        NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
+        
+        NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+        while( [theRL runMode: NSDefaultRunLoopMode beforeDate: [NSDate distantFuture]]);
+    }
     
     [pool release];
 }
