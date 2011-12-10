@@ -819,8 +819,6 @@ static NSDate *lastWarningDate = nil;
 	NSString *replacing = NSLocalizedString(@" will be replaced by ", @"");
 	NSString *strVersion = NSLocalizedString(@" version ", @"");
 	
-	NSMutableDictionary *active = [NSMutableDictionary dictionary];
-	NSMutableDictionary *availabilities = [NSMutableDictionary dictionary];
 	
 	for(NSString *path in pluginsArray)
 	{
@@ -828,7 +826,7 @@ static NSDate *lastWarningDate = nil;
 		
 		NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
 		
-		NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:path]];
+		NSURL *bundleURL = [NSURL fileURLWithPath: [PluginManager pathResolved:path]];
 		CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 		
 		CFStringRef versionString = nil;
@@ -841,22 +839,18 @@ static NSDate *lastWarningDate = nil;
 		else
 			pluginBundleVersion = @"";		
 		
-		NSArray *pluginsDictArray = [PluginManager pluginsList];
-		for(NSDictionary *plug in pluginsDictArray)
+		for(NSDictionary *plug in [PluginManager pluginsList])
 		{
-			if([pluginBundleName isEqualToString:[plug objectForKey:@"name"]])
+			if([pluginBundleName isEqualToString: [plug objectForKey:@"name"]])
 			{
-				[replacingPlugins appendString:[plug objectForKey:@"name"]];
-				[replacingPlugins appendString:strVersion];
-				[replacingPlugins appendString:[plug objectForKey:@"version"]];
-				[replacingPlugins appendString:replacing];
-				[replacingPlugins appendString:pluginBundleName];
-				[replacingPlugins appendString:strVersion];
-				[replacingPlugins appendString:pluginBundleVersion];
-				[replacingPlugins appendString:@"\n\n"];
-				
-				[availabilities setObject:[plug objectForKey:@"availability"] forKey:path];
-				[active setObject:[plug objectForKey:@"active"] forKey:path];
+				[replacingPlugins appendString: [plug objectForKey:@"name"]];
+				[replacingPlugins appendString: strVersion];
+				[replacingPlugins appendString: [plug objectForKey:@"version"]];
+				[replacingPlugins appendString: replacing];
+				[replacingPlugins appendString: pluginBundleName];
+				[replacingPlugins appendString: strVersion];
+				[replacingPlugins appendString: pluginBundleVersion];
+				[replacingPlugins appendString: @"\n\n"];
 			}
 		}
 		
@@ -864,117 +858,27 @@ static NSDate *lastWarningDate = nil;
 			CFRelease( bundleInfoDict);
 	}
 	
-	pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
+	pluginNames = [NSMutableString stringWithString: [pluginNames substringToIndex:[pluginNames length]-2]];
 	if([replacingPlugins length]) replacingPlugins = [NSMutableString stringWithString:[replacingPlugins substringToIndex:[replacingPlugins length]-2]];
 	
 	NSString *msg;
 	NSString *areYouSure = NSLocalizedString(@"Are you sure you want to install", @"");
 	
-	if([pluginsArray count]==1)
+	if( [pluginsArray count] == 1)
 		msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the plugin named : %@ ?", @""), areYouSure, pluginNames];
 	else
 		msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the following plugins : %@ ?", @""), areYouSure, pluginNames];
 	
-	if([replacingPlugins length])
+	if( [replacingPlugins length])
 		msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
 	
 	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), msg, NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
 	
-	if(res)
+	if( res)
 	{
-		// move the plugin package into the plugins (active) directory
-		NSString *destinationDirectory;
-		NSString *destinationPath;
+		for( NSString *path in pluginsArray)
+            [PluginManager installPluginFromPath: path];
 		
-		NSArray *pluginManagerAvailabilities = [PluginManager availabilities];
-		
-		for(NSString *path in pluginsArray)
-		{			
-			NSString *availability = [availabilities objectForKey:path];
-			BOOL isActive = [[active objectForKey:path] boolValue];
-			
-			if(!availability)
-				isActive = YES;
-			
-			if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:0]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
-			}
-#ifndef MACAPPSTORE
-			else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:1]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager systemActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager systemInactivePluginsDirectoryPath];
-			}
-			else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:2]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager appActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager appInactivePluginsDirectoryPath];
-			}
-			else
-#endif
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
-			}
-			
-			destinationPath = [destinationDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-			
-			// delete the plugin if it already exists.
-			
-			NSString *pathToDelete = nil;
-			
-			if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]) // .osirixplugin extension
-				pathToDelete = destinationPath;
-			else
-			{
-				NSString *pathWithOldExt = [[destinationPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"plugin"];
-				
-				if([[NSFileManager defaultManager] fileExistsAtPath:pathWithOldExt]) // the plugin already exists but with the old extension ".plugin"
-					pathToDelete = pathWithOldExt;
-			}
-			
-			BOOL move = YES;
-			
-			if(pathToDelete)
-			{
-				// first, try with NSFileManager
-				
-				if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil] == NO)			// Please leave this line! ANR
-				{
-                    #ifndef MACAPPSTORE
-					NSMutableArray *args = [NSMutableArray array];
-					[args addObject:@"-r"];
-					[args addObject:pathToDelete];
-					
-					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
-                    #endif
-				}
-				
-				[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil];			// Please leave this line! ANR
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: pathToDelete])
-				{
-					NSRunAlertPanel( NSLocalizedString( @"Plugins Installation", nil), NSLocalizedString( @"Failed to remove previous version of the plugin.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-					move = NO;
-				}
-			}
-			
-			// move the new plugin to the plugin folder				
-			if( move)
-				[PluginManager movePluginFromPath:path toPath:destinationPath];
-		}
-		
-		[PluginManager discoverPlugins];
 		[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 		
 #ifndef OSIRIX_LIGHT
@@ -986,8 +890,6 @@ static NSDate *lastWarningDate = nil;
 				[[window windowController] refreshPluginList];
 		}
 #endif
-		
-		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 	}
 }
 

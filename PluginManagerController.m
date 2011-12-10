@@ -142,55 +142,23 @@ static NSDate *CachedPluginsListDate = nil;
 	[self refreshPluginList]; // needed to restore the availability menu in case the user did provided a good admin password
 }
 
-- (void)loadPlugins;
-{
-	while([filtersMenu numberOfItems]>0)
-	{
-		[filtersMenu removeItemAtIndex:0];
-	}
-		
-	while([roisMenu numberOfItems]>0)
-	{
-		[roisMenu removeItemAtIndex:0];
-	}
-	
-	while([othersMenu numberOfItems]>0)
-	{
-		[othersMenu removeItemAtIndex:0];
-	}
-
-	while([dbMenu numberOfItems]>0)
-	{
-		[dbMenu removeItemAtIndex:0];
-	}
-	
-	[PluginManager discoverPlugins];
-	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
-	
-	pluginsNeedToReload = NO;
-}
-
 - (IBAction)loadPlugins:(id)sender;
 {
-	[self loadPlugins];
+	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification;
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	if( pluginsNeedToReload)
-	{
-		@try
-		{
-			[self refreshPluginList];
-			[self loadPlugins];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"windowwillClose exception pluginmanagercontroller: %@", e);
-		}
-	}
+    @try
+    {
+        [self refreshPluginList];
+    }
+    @catch (NSException * e)
+    {
+        NSLog( @"windowwillClose exception pluginmanagercontroller: %@", e);
+    }
 }
 
 - (IBAction)showWindow:(id)sender;
@@ -241,7 +209,8 @@ static NSDate *CachedPluginsListDate = nil;
 - (void)refreshPluginList;
 {
 	NSIndexSet *selectedIndexes = [pluginTable selectedRowIndexes];
-	pluginsNeedToReload = YES;
+	
+    [PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 	
 	[self willChangeValueForKey:@"plugins"];
 	[plugins removeAllObjects];

@@ -30,6 +30,11 @@
 	return self;
 }
 
+- (void) willUnload
+{
+    // Subclass this function if needed: Plugin will unload : prepare for dealloc: release memory and kill sub-process
+}
+
 - (void) dealloc
 {
 	NSLog( @"PluginFilter dealloc");
