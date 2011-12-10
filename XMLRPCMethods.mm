@@ -46,6 +46,19 @@ static NSTimeInterval lastConnection = 0;
 
 @implementation XMLRPCMethods
 
+- (void) separateThread
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    NSError *error = nil;
+    [httpServ start: &error];
+    
+    NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+    while( [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
+    
+    [pool release];
+}
+
 - (id) init
 {
 	self = [super init];
@@ -59,16 +72,19 @@ static NSTimeInterval lastConnection = 0;
 		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
 		[httpServ setDelegate:self];
 		NSError *error = nil;
-		if (![httpServ start:&error])
-		{
-			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
-			httpServ = nil;
-		}
-		else
-		{
-			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
-		}
+        
+        [NSThread detachNewThreadSelector: @selector( separateThread) toTarget: self withObject: nil];
+        
+//		if (![httpServ start: &error])
+//		{
+//			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
+//			httpServ = nil;
+//		}
+//		else
+//		{
+//			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
+//		}
 	}
 	return self;
 }
@@ -87,13 +103,27 @@ static NSTimeInterval lastConnection = 0;
 
 }
 
+- (void) processHTTPConnectionOnMainThread: (NSDictionary*) dict
+{
+    basicHTTPConnection *conn = [dict objectForKey: @"conn"];
+    HTTPServerRequest *mess = [dict objectForKey: @"mess"];
+    
+    [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+}
+
 - (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
 	@synchronized( self)
 	{
+        if( [NSDate timeIntervalSinceReferenceDate] - lastConnection < 0.3)
+            [NSThread sleepForTimeInterval: 0.3];
+        
+        lastConnection = [NSDate timeIntervalSinceReferenceDate];
+        
         @try
         {
-            [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+            [self performSelectorOnMainThread: @selector( processHTTPConnectionOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: conn, @"conn", mess, @"mess", nil] waitUntilDone: YES];
+//            [self HTTPConnectionProtected:conn didReceiveRequest:mess];
         }
         
         @catch (NSException * e)
