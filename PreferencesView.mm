@@ -17,6 +17,7 @@
 #import "NSImage+N2.h"
 #import "N2Operators.h"
 #include <algorithm>
+#import "PreferencesWindowController.h"
 
 @interface PreferencesViewGroup : NSObject {
 	NSTextField* label;
@@ -133,6 +134,24 @@ static const NSInteger labelHeight = 38, labelSeparator = 3;
 	}
 	
 	return group;
+}
+
+-(void)removeItemWithBundle: (NSBundle*) bundle
+{
+    for (PreferencesViewGroup* group in groups)
+    {
+        for( NSButton *button in group.buttons)
+        {
+            PreferencesWindowContext *context = [[button cell] representedObject];
+            
+            if( [context parentBundle] == bundle)
+            {
+                [group.buttons removeObject:button];
+                [self layout];
+                return;
+            }
+        }
+    }
 }
 
 -(void)addItemWithTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName context:(id)context {

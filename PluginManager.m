@@ -21,6 +21,7 @@
 #import "PluginManagerController.h"
 #import "Notifications.h"
 #import "NSMutableDictionary+N2.h"
+#import "PreferencesWindowController.h"
 
 static NSMutableDictionary		*plugins = nil, *pluginsDict = nil, *fileFormatPlugins = nil;
 static NSMutableDictionary		*reportPlugins = nil, *pluginsBundleDictionnary = nil;
@@ -422,6 +423,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         Class filterClass = [bundle principalClass];
                 
         [PluginManager releaseInstanciedObjectsOfClass: filterClass];
+        
+        [PreferencesWindowController removePluginPaneWithBundle: bundle];
         
         [pluginsNames removeObjectForKey: [[[bundle bundlePath] lastPathComponent] stringByDeletingPathExtension]];
         [fileFormatPlugins removeObject: bundle];

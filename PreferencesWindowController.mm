@@ -24,6 +24,7 @@
 #import "BrowserController.h"
 #import "DicomFile.h"
 #import "DCMView.h"
+#import "PluginManagerController.h"
 #import <Foundation/NSObjCRuntime.h>
 #include <algorithm>
 
@@ -31,22 +32,6 @@
 
 //#define DATAFILEPATH @"/Database.dat"
 
-
-@interface PreferencesWindowContext : NSObject {
-	NSString* _title;
-	NSBundle* _parentBundle;
-	NSString* _resourceName;
-	NSPreferencePane* _pane;
-}
-
-@property(retain) NSString* title;
-@property(retain) NSBundle* parentBundle;
-@property(retain) NSString* resourceName;
-@property(nonatomic, retain) NSPreferencePane* pane;
-
--(id)initWithTitle:(NSString*)title withResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle;
-
-@end
 @implementation PreferencesWindowContext
 
 @synthesize title = _title, parentBundle = _parentBundle, resourceName = _resourceName, pane = _pane;
@@ -140,14 +125,30 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		return;
 	}
 	
-	PreferencesWindowContext* context = [[[PreferencesWindowContext alloc] initWithTitle:title withResourceNamed:resourceName inBundle:parentBundle] autorelease];
+	PreferencesWindowContext* context = [[PreferencesWindowContext alloc] initWithTitle:title withResourceNamed:resourceName inBundle:parentBundle];
 	[panesListView addItemWithTitle:title image:image toGroupWithName:groupName context:context];
+    [context release];
 }
 
-+(void)addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image {
++(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image
+{
 	if (!image)
 		image = [NSImage imageNamed:@"osirixplugin"];
 	[pluginPanes addObject:[NSArray arrayWithObjects:resourceName, parentBundle, title, image, NULL]];
+}
+
++(void) removePluginPaneWithBundle:(NSBundle*)parentBundle
+{
+    for( NSArray *pluginPane in pluginPanes)
+    {
+        if( [pluginPane objectAtIndex: 1] == parentBundle)
+        {
+            [pluginPane retain];
+            
+            [pluginPanes removeObject: pluginPane];
+            return;
+        }
+    }
 }
 
 -(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath {
@@ -276,6 +277,14 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[panesListView setFrameSize:flippedDocumentView.frame.size];
 	
 	[self synchronizeSizeWithContent];
+    
+    
+    // If we need to remove a plugin with a custom pref pane
+    for (NSWindow* window in [NSApp windows])
+    {
+        if ([window.windowController isKindOfClass:[PluginManagerController class]])
+            [window close];
+    }
 }
 
 -(void)windowDidLoad {

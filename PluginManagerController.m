@@ -16,7 +16,7 @@
 #import <Message/NSMailDelivery.h>
 #import "WaitRendering.h"
 #import "Notifications.h"
-
+#import "PreferencesWindowController.h"
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
@@ -204,6 +204,13 @@ static NSDate *CachedPluginsListDate = nil;
 
 	[super showWindow:sender];
 	[self refreshPluginList];
+    
+    // If we need to remove a plugin with a custom pref pane
+    for (NSWindow* window in [NSApp windows])
+    {
+        if ([window.windowController isKindOfClass:[PreferencesWindowController class]])
+            [window close];
+    }
 }
 
 - (void)refreshPluginList;
