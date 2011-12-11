@@ -472,19 +472,29 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (BOOL)unZipFileAtPath:(NSString*)path;
 {
-	NSTask *aTask = [[NSTask alloc] init];
-    NSMutableArray *args = [NSMutableArray array];
+    if( path.length == 0)
+        return NO;
+    
+    @try
+    {
+        NSTask *aTask = [[NSTask alloc] init];
+        NSMutableArray *args = [NSMutableArray array];
 
-	[args addObject:@"-o"];
-    [args addObject:path];
-    [args addObject:@"-d"];
-	[args addObject:[path stringByDeletingLastPathComponent]];
-    [aTask setLaunchPath:@"/usr/bin/unzip"];
-    [aTask setArguments:args];
-    [aTask launch];
-	[aTask waitUntilExit];
-	[aTask release];
-	
+        [args addObject:@"-o"];
+        [args addObject:path];
+        [args addObject:@"-d"];
+        [args addObject:[path stringByDeletingLastPathComponent]];
+        [aTask setLaunchPath:@"/usr/bin/unzip"];
+        [aTask setArguments:args];
+        [aTask launch];
+        [aTask waitUntilExit];
+        [aTask release];
+	}
+    @catch (NSException *e)
+    {
+        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+    }
+        
 	if([[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]])
 	{
 		return YES;
