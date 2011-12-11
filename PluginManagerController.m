@@ -450,7 +450,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[PluginManager movePluginFromPath:pluginPath toPath: installDirectoryPath];	
 	
     // load the plugin
-    [PluginManager loadPluginAtPath: installDirectoryPath];
+    [PluginManager loadPluginAtPath: [installDirectoryPath stringByAppendingPathComponent: [pluginPath lastPathComponent]]];
 	
 	[statusTextField setStringValue:NSLocalizedString( @"Plugin Installed", nil)];
 	[statusProgressIndicator setHidden:YES];
