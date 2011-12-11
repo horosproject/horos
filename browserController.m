@@ -14789,22 +14789,33 @@ static NSArray*	openSubSeriesArray = nil;
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Banner.html"]];
 }
 
-- (void) checkForBanner: (id) sender
+- (void) installBanner: (NSImage*) bannerImage
 {
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
-    NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: nil error: nil];
-    NSImage *bannerImage = [[[NSImage alloc] initWithData:imageData] autorelease];
-    
-    if( bannerImage)
-        [banner setImage: bannerImage];
+    [banner setImage: bannerImage];
     
     NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
     frame.origin.y -= banner.image.size.height - frame.size.height;
     frame.size.height = banner.image.size.height;
     [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
     [bannerSplit adjustSubviews];
+}
+
+- (void) checkForBanner: (id) sender
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    NSError *error = nil;
+    NSURLResponse *urlResponse = nil;
+    
+    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
+    NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
+    
+    if( imageData && error == nil && [urlResponse.MIMEType isEqualToString: @"image/png"])
+    {
+        NSImage *bannerImage = [[[NSImage alloc] initWithData: imageData] autorelease];
+    
+        if( bannerImage)
+            [self performSelectorOnMainThread: @selector( installBanner:) withObject: bannerImage waitUntilDone: NO];
+    }
     
     [pool release];
     

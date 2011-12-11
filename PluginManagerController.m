@@ -446,19 +446,13 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	else
 		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
 	
-	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
+    // Install the plugin
+	[PluginManager movePluginFromPath:pluginPath toPath: installDirectoryPath];	
 	
-//	NSTask *aTask = [[NSTask alloc] init];
-//    NSMutableArray *args = [NSMutableArray array];
-//	
-//    [args addObject:pluginPath];
-//    [aTask setLaunchPath:@"/usr/bin/touch"];
-//    [aTask setArguments:args];
-//    [aTask launch];
-//	[aTask waitUntilExit];
-//	[aTask release];
+    // load the plugin
+    [PluginManager loadPluginAtPath: installDirectoryPath];
 	
-	[statusTextField setStringValue:NSLocalizedString(@"Plugin Installed", nil)];
+	[statusTextField setStringValue:NSLocalizedString( @"Plugin Installed", nil)];
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
 
