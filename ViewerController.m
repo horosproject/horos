@@ -7093,6 +7093,8 @@ return YES;
 				[self didChangeValueForKey: @"KeyImageCounter"];
 				
 				[imageView computeColor];
+                
+                [self redrawToolbar];
 			}
 		}
 		@catch (NSException * e) 

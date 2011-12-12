@@ -63,7 +63,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="345868235">
@@ -100,7 +100,6 @@
 									<int key="NSvFlags">274</int>
 									<string key="NSFrame">{{346, 0}, {385, 443}}</string>
 									<reference key="NSSuperview" ref="345868235"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSClassName">MPRDCMView</string>
 								</object>
 							</array>
@@ -111,7 +110,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{730, 443}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="345868235"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -129,10 +127,9 @@
 							<object class="NSSegmentedControl" id="384509075">
 								<reference key="NSNextResponder" ref="729797186"/>
 								<int key="NSvFlags">268</int>
-								<string key="NSFrame">{{9, 12}, {104, 24}}</string>
+								<string key="NSFrame">{{9, 12}, {104, 25}}</string>
 								<reference key="NSSuperview" ref="729797186"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="57224358">
