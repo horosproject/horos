@@ -15044,6 +15044,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)showDatabase: (id)sender
 {
+    [NSApp activateIgnoringOtherApps:YES];
+    
     [self.window makeKeyAndOrderFront:sender];
 	[self outlineViewRefresh];
 }
