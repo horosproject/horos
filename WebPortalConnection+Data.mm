@@ -442,9 +442,24 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSArray* dicomImageArray = [dict objectForKey:GenerateMovieDicomImagesParamKey];
 	//BOOL isiPhone = [[dict objectForKey:GenerateMovieIsIOSParamKey] boolValue];
 	
-	NSMutableArray *imagesArray = [NSMutableArray array];
-	
-	@synchronized(self.portal.locks) {
+    int MaxNumberOfFramesForWebPortalMovies = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfFramesForWebPortalMovies"];
+    
+    if( MaxNumberOfFramesForWebPortalMovies > 2)
+    {
+        do
+        {
+            NSMutableArray *newArray = [NSMutableArray arrayWithCapacity: dicomImageArray.count / 2];
+            
+            for ( int i = 0; i < dicomImageArray.count; i += 2)
+                [newArray addObject: [dicomImageArray objectAtIndex: i]];
+            
+            dicomImageArray = newArray;
+        }
+        while( dicomImageArray.count > MaxNumberOfFramesForWebPortalMovies);
+    }
+    
+	@synchronized(self.portal.locks)
+    {
 		if (![self.portal.locks objectForKey:outFile])
 			[self.portal.locks setObject:[[[NSRecursiveLock alloc] init] autorelease] forKey:outFile];
 	}
