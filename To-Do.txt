@@ -31,6 +31,7 @@ A:
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
+- Web Server: for admin, consult network logs
 - DICOM ECG
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
