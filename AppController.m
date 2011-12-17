@@ -2827,10 +2827,10 @@ static BOOL initialized = NO;
 				#ifdef MACAPPSTORE
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
-				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX App/)" forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(~/Library/Application Support/OsiriX App/)", nil) forKey:@"DefaultDatabasePath"];
 				#else
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
-				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(Current User Documents folder)", nil) forKey:@"DefaultDatabasePath"];
 				#endif
 				
 				#ifdef __LP64__
