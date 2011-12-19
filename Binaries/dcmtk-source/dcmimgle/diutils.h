@@ -76,6 +76,22 @@ const unsigned int CIF_IgnoreModalityTransformation = 0x0000040;
 
 /// ignore third value of the modality LUT descriptor, determine bit depth automatically
 const unsigned int CIF_IgnoreModalityLutBitDepth    = 0x0000080;
+
+/// check third value of the LUT descriptor, compare with with expected bit depth based on LUT data
+const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
+
+/// use absolute (possible) pixel range for determining the internal representation (monochrome only)
+const unsigned long CIF_UseAbsolutePixelRange        = 0x0000200;
+
+/// use partial access to pixel data, i.e. without decompressing or loading a complete multi-frame image
+const unsigned long CIF_UsePartialAccessToPixelData  = 0x0000400;
+
+/// always decompress complete pixel data when processing an image, i.e. even if partial access is used
+const unsigned long CIF_DecompressCompletePixelData  = 0x0000800;
+
+/// never access embedded overlays since this requires to load and uncompress the complete pixel data
+const unsigned long CIF_NeverAccessEmbeddedOverlays  = 0x0001000;
+
 //@}
 
 

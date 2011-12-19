@@ -47,7 +47,7 @@ A:
 - Save default order for albums
 - VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust
-- dcmtk 3.5.5 -> JPLS
+- dcmtk 3.5.5 -> JPLS (http://charls.codeplex.com/)
 - DICOM Network: DICOM Authentication
 - Print images, containing ROIs
 - Option to include 3D viewers in Tile Window

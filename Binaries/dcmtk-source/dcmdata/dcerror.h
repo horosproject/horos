@@ -60,6 +60,14 @@ const unsigned short OFM_dcmpps   = 15;
 const unsigned short OFM_dcmdbsup = 16;
 const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
+const unsigned short OFM_dcmjpls  = 19;
+const unsigned short OFM_dcmwave  = 20;
+const unsigned short OFM_dcmrt    = 21;
+const unsigned short OFM_dcmloco  = 22;
+const unsigned short OFM_dcmstcom = 23;
+const unsigned short OFM_dcmppscu = 24;
+const unsigned short OFM_dcmstscp = 25;
+const unsigned short OFM_dcmqrdbx = 26;
 
 
 // condition constants
