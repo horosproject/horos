@@ -75,7 +75,7 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 			
 			if( quality)
 			{
-				if( compression == compression_JPEG2000)
+				if( compression == compression_JPEG2000 || compression == compression_JPEGLS)
 					*quality = [[dict valueForKey: @"quality"] intValue];
 				else
 					*quality = 0;
@@ -328,18 +328,31 @@ int main(int argc, const char *argv[])
 										NSLog( @"failed to compress file: %@", curFile);
 								}
 							}
-							else if( compression == compression_JPEG || compression == compression_JPEG2000)
+							else if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
 							{
 								DcmRepresentationParameter *params = nil;
 								E_TransferSyntax tSyntax;
 								DJ_RPLossless losslessParams(6,0);
 								DJ_RPLossy JP2KParams( quality);
 								DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
-								
+                                
 								if( compression == compression_JPEG)
 								{
 									params = &losslessParams;
 									tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+								}
+                                else if( compression == compression_JPEGLS)
+								{
+									if( quality == DCMLosslessQuality)
+									{
+										params = &JP2KParamsLossLess;
+										tSyntax = EXS_JPEGLSLossless;
+									}
+									else
+									{
+										params = &JP2KParams;
+										tSyntax = EXS_JPEGLSLossy;
+									}
 								}
 								else if( compression == compression_JPEG2000)
 								{

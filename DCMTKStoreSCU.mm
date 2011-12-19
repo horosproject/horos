@@ -617,7 +617,11 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 			params = &JP2KParamsLossLess; 
 		else if (opt_networkTransferSyntax == EXS_JPEG2000)
 			params = &JP2KParams;
-		
+		else if (opt_networkTransferSyntax == EXS_JPEGLSLossless)
+			params = &JP2KParamsLossLess; 
+		else if (opt_networkTransferSyntax == EXS_JPEGLSLossy)
+			params = &JP2KParams;
+        
 		// this causes the lossless JPEG version of the dataset to be created
 		dataset->chooseRepresentation(opt_networkTransferSyntax, params);
 
@@ -752,6 +756,10 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 				(filexfer.getXfer() == EXS_JPEG2000 && preferredXfer.getXfer() == EXS_JPEG2000LosslessOnly))
 				{
 				}
+            else if( (filexfer.getXfer() == EXS_JPEGLSLossless && preferredXfer.getXfer() == EXS_JPEGLSLossy) ||
+                    (filexfer.getXfer() == EXS_JPEGLSLossy && preferredXfer.getXfer() == EXS_JPEGLSLossless))
+            {
+            }
 			else
 				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
 			
@@ -910,6 +918,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		case EXS_RLELossless:						return SendRLE;	break;
 		case EXS_LittleEndianImplicit:				return SendImplicitLittleEndian;	break;
 		case EXS_JPEG2000LosslessOnly:				return SendJPEG2000Lossless;	break;
+        case EXS_JPEGLSLossless:                    return SendJPEGLSLossless;	break;
+        case EXS_JPEGLSLossy:                       return SendJPEGLSLossless;	break;
 	}
 	
 	return SendExplicitLittleEndian;
@@ -1106,6 +1116,22 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			break;
 		case SendJPEG2000Lossy50:
 			opt_networkTransferSyntax = EXS_JPEG2000;
+			opt_Quality = 3;
+			break;
+        case SendJPEGLSLossless:
+			opt_networkTransferSyntax = EXS_JPEGLSLossless;
+			opt_Quality = 0;
+			break;
+		case SendJPEGLSLossy10: 
+			opt_networkTransferSyntax = EXS_JPEGLSLossy;
+			opt_Quality = 1;
+			break;
+		case SendJPEGLSLossy20:
+			opt_networkTransferSyntax = EXS_JPEGLSLossy;
+			opt_Quality = 2;
+			break;
+		case SendJPEGLSLossy50:
+			opt_networkTransferSyntax = EXS_JPEGLSLossy;
 			opt_Quality = 3;
 			break;
 		case SendJPEGLossless: 

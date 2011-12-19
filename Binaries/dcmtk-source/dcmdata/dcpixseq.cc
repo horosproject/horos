@@ -288,6 +288,12 @@ OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
 	if( newXfer == EXS_JPEG2000LosslessOnly && oldXfer == EXS_JPEG2000)
 		return OFTrue;
 	
+    if( newXfer == EXS_JPEGLSLossy && oldXfer == EXS_JPEGLSLossless)
+		return OFTrue;
+    
+	if( newXfer == EXS_JPEGLSLossless && oldXfer == EXS_JPEGLSLossy)
+		return OFTrue;
+    
 	return result;
 }
 

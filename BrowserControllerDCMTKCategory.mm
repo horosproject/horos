@@ -87,6 +87,12 @@ extern NSRecursiveLock *PapyrusLock;
 		if(  filexfer.getXfer() == EXS_JPEG2000LosslessOnly && xfer.getXfer() == EXS_JPEG2000)
 			return [NSData dataWithContentsOfFile: file];
 		
+        if(  filexfer.getXfer() == EXS_JPEGLSLossy && xfer.getXfer() == EXS_JPEGLSLossless)
+			return [NSData dataWithContentsOfFile: file];
+		
+        if(  filexfer.getXfer() == EXS_JPEGLSLossless && xfer.getXfer() == EXS_JPEGLSLossy)
+			return [NSData dataWithContentsOfFile: file];
+		
 		// ------
 		
 		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/wado-recompress.dcm"  error: nil];
@@ -109,8 +115,12 @@ extern NSRecursiveLock *PapyrusLock;
 			else if( xfer.getXfer() == EXS_RLELossless)
 				params = &rleParams;
 			else if( xfer.getXfer() == EXS_JPEG2000LosslessOnly)
-				params = &JP2KParamsLossLess; 
+				params = &JP2KParamsLossLess;
 			else if( xfer.getXfer() == EXS_JPEG2000)
+				params = &JP2KParams;
+            else if( xfer.getXfer() == EXS_JPEGLSLossless)
+				params = &JP2KParamsLossLess;
+            else if( xfer.getXfer() == EXS_JPEGLSLossy)
 				params = &JP2KParams;
 			
 			// this causes the lossless JPEG version of the dataset to be created

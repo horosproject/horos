@@ -30,7 +30,11 @@ enum TransferSyntaxCodes
 	SendImplicitLittleEndian = 9, 
 	SendRLE = 10, 
 	SendExplicitBigEndian = 11, 
-	SendBZip = 12
+	SendBZip = 12,
+    SendJPEGLSLossless = 13, 
+	SendJPEGLSLossy10 = 14,  
+	SendJPEGLSLossy20 = 15, 
+	SendJPEGLSLossy50 = 16
 };
 
 

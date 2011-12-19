@@ -16316,7 +16316,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( quality)
 			{
-				if( compression == compression_JPEG2000)
+				if( compression == compression_JPEG2000 || compression == compression_JPEGLS)
 					*quality = [[dict valueForKey: @"quality"] intValue];
 				else
 					*quality = 0;

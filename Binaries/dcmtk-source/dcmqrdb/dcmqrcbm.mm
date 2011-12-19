@@ -218,7 +218,11 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 			params = &JP2KParamsLossLess; 
 		else if (newXfer == EXS_JPEG2000)
 			params = &JP2KParams;
-		
+		else if (newXfer == EXS_JPEGLSLossless)
+			params = &JP2KParamsLossLess; 
+		else if (newXfer == EXS_JPEGLSLossy)
+			params = &JP2KParams;
+        
 		if( params)
 		{
 			// this causes the lossless JPEG version of the dataset to be created
@@ -251,6 +255,10 @@ OFBool compressFileFormat(DcmFileFormat fileformat, const char *fname, char *out
 					printf("\n--- compressFileFormat EXS_JPEG2000LosslessOnly\n");
 				else if (newXfer == EXS_JPEG2000)
 					printf("\n--- compressFileFormat EXS_JPEG2000\n");
+                else if (newXfer == EXS_JPEGLSLossless)
+					printf("\n--- compressFileFormat EXS_JPEGLSLossless\n");
+				else if (newXfer == EXS_JPEGLSLossy)
+					printf("\n--- compressFileFormat EXS_JPEGLSLossy\n");
 			}
 			else
 			{
@@ -820,6 +828,16 @@ void DcmQueryRetrieveMoveContext::moveNextImage(DcmQueryRetrieveDatabaseStatus *
 					if( status)
 						strcpy( subImgFileName, outfname);
 				}
+                else if( (filexfer.getXfer() == EXS_JPEGLSLossless && preferredXfer.getXfer() == EXS_JPEGLSLossy) ||
+                        (filexfer.getXfer() == EXS_JPEGLSLossy && preferredXfer.getXfer() == EXS_JPEGLSLossless))
+				{
+					// Switching from EXS_JPEGLSLossy <-> EXS_JPEGLSLossless : we only change the transfer syntax....
+					printf( "EXS_JPEGLSLossy <-> EXS_JPEGLSLossless switch\n");
+					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					if( status)
+						strcpy( subImgFileName, outfname);
+				}
 				else
 				{
 					printf("---- Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));
@@ -951,6 +969,12 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 					case SendJPEG2000Lossy20: 
 					case SendJPEG2000Lossy50: preferredTS = EXS_JPEG2000;
 							break;
+                    case SendJPEGLSLossless: preferredTS = EXS_JPEGLSLossless;
+						break;
+					case SendJPEGLSLossy10:  
+					case SendJPEGLSLossy20: 
+					case SendJPEGLSLossy50: preferredTS = EXS_JPEGLSLossy;
+                        break;
 					case SendJPEGLossless: preferredTS = EXS_JPEGProcess14SV1TransferSyntax;
 						break; 
 					case SendJPEGLossy9: 

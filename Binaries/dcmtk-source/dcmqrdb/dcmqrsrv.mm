@@ -1019,9 +1019,10 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
 		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;		
 		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+		transferSyntaxes[7] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[8] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+		transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
 		
         numTransferSyntaxes = 9;
         break;

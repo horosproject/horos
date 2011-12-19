@@ -106,6 +106,13 @@ OFBool DJLSEncoderBase::canChangeCoding(
 {
   // this codec only handles conversion from uncompressed to JPEG-LS.
   DcmXfer oldRep(oldRepType);
+    
+  if (newRepType == EXS_JPEGLSLossless && (oldRepType == EXS_JPEGLSLossy))
+        return OFTrue;
+
+  if (newRepType == EXS_JPEGLSLossy && (oldRepType == EXS_JPEGLSLossless))
+        return OFTrue;
+    
   return (oldRep.isNotEncapsulated() && (newRepType == supportedTransferSyntax()));
 }
 
@@ -139,14 +146,30 @@ OFCondition DJLSEncoderBase::decodeFrame(
 
 
 OFCondition DJLSEncoderBase::encode(
-    const E_TransferSyntax /* fromRepType */,
-    const DcmRepresentationParameter * /* fromRepParam */,
-    DcmPixelSequence * /* fromPixSeq */,
-    const DcmRepresentationParameter * /* toRepParam */,
-    DcmPixelSequence * & /* toPixSeq */,
-    const DcmCodecParameter * /* cp */,
+    const E_TransferSyntax fromRepType,
+    const DcmRepresentationParameter *fromRepParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmRepresentationParameter *toRepParam,
+    DcmPixelSequence * & toPixSeq,
+    const DcmCodecParameter * cp,
     DcmStack & /* objStack */) const
 {
+    if( fromRepType == EXS_JPEGLSLossless)
+    {
+        toPixSeq = new DcmPixelSequence( *fromPixSeq);
+        toPixSeq->changeXfer( EXS_JPEGLSLossy);
+        
+        return EC_Normal;
+    }
+    
+    if( fromRepType == EXS_JPEGLSLossy)
+    {
+        toPixSeq = new DcmPixelSequence( *fromPixSeq);
+        toPixSeq->changeXfer( EXS_JPEGLSLossless);
+        
+        return EC_Normal;
+    }
+    
   // we don't support re-coding for now.
   return EC_IllegalCall;
 }
