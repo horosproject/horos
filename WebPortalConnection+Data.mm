@@ -88,12 +88,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	NSManagedObject* o = [db objectWithID:[NSManagedObject UidForXid:xid]];
 	
-	if (c && ![o isKindOfClass:c])
-		return nil;
-	
 	// ensure that the user is allowed to access this object
-	
-	if (user && [o isKindOfClass: [DicomImage class]] == NO) // Too slow to check for DicomImage
+	if (user && ([o isKindOfClass: [DicomStudy class]] || [o isKindOfClass: [DicomSeries class]])) // Too slow to check for DicomImage
 	{
         DicomStudy *s = nil;
         
@@ -1118,9 +1114,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if (![webUser validateDownloadZIP:&downloadZIP error:&err])
 				[response.tokens addError:err.localizedDescription];
 			
-			if (!response.tokens.errors.count) {
-				webUser.name = name;
-				webUser.password = password;
+			if (!response.tokens.errors.count)
+            {
+				webUser.name = [name stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				webUser.password = [password stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 				webUser.email = [parameters objectForKey:@"email"];
 				webUser.phone = [parameters objectForKey:@"phone"];
 				webUser.address = [parameters objectForKey:@"address"];
