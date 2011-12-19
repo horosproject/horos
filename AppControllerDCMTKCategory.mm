@@ -22,15 +22,18 @@
 #include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 
+#include "Binaries/dcmtk-source/dcmjpls/djdecode.h" //JPEG-LS
+#include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
 @implementation AppController (AppControllerDCMTKCategory)
 
 - (void)initDCMTK
 {
 	#ifndef OSIRIX_LIGHT
-	    // register global JPEG decompression codecs
+    // register global JPEG decompression codecs
     DJDecoderRegistration::registerCodecs();
-
+    DJLSDecoderRegistration::registerCodecs();
+    
     // register global JPEG compression codecs
     DJEncoderRegistration::registerCodecs(
 	 	ECC_lossyRGB,
@@ -57,7 +60,9 @@
 		OFFalse,
 		OFFalse,
 		OFTrue);
-
+    
+    DJLSEncoderRegistration::registerCodecs();
+    
     // register RLE compression codec
     DcmRLEEncoderRegistration::registerCodecs();
 

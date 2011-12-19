@@ -30,6 +30,8 @@
 #include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
+#include "Binaries/dcmtk-source/dcmjpls/djdecode.h" //JPEG-LS
+#include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
 extern "C"
 {
@@ -112,7 +114,8 @@ int main(int argc, const char *argv[])
 	{
 		// register global JPEG decompression codecs
 		DJDecoderRegistration::registerCodecs();
-
+        DJLSDecoderRegistration::registerCodecs();
+        
 		// register global JPEG compression codecs
 		DJEncoderRegistration::registerCodecs(
 			ECC_lossyRGB,
@@ -139,7 +142,9 @@ int main(int argc, const char *argv[])
 			OFFalse,
 			OFFalse,
 			OFTrue);
-
+        
+        DJLSEncoderRegistration::registerCodecs();
+        
 		// register RLE compression codec
 		DcmRLEEncoderRegistration::registerCodecs();
 
