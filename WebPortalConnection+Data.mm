@@ -1094,8 +1094,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		} else {
 			// NSLog(@"SAVE params: %@", parameters.description);
 			
-			NSString* name = [parameters objectForKey:@"name"];
-			NSString* password = [parameters objectForKey:@"password"];
+			NSString* name = [[parameters objectForKey:@"name"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			NSString* password = [[parameters objectForKey:@"password"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 			NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
 			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
 			
@@ -1116,8 +1116,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			if (!response.tokens.errors.count)
             {
-				webUser.name = [name stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-				webUser.password = [password stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+				webUser.name = name;
+				webUser.password = password;
 				webUser.email = [parameters objectForKey:@"email"];
 				webUser.phone = [parameters objectForKey:@"phone"];
 				webUser.address = [parameters objectForKey:@"address"];
