@@ -392,23 +392,32 @@ int main(int argc, const char *argv[])
 									// store in lossless JPEG format
 									fileformat.loadAllDataIntoMemory();
 									
-									[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-									cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
-									status =  (cond.good()) ? YES : NO;
-									
+                                    {
+                                        NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                                        
+                                        [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                        
+                                        cond = fileformat.saveFile( [tempCurFileDest UTF8String], tSyntax);
+                                        status =  (cond.good()) ? YES : NO;
+                                        
+                                        [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                                    }
+                                    
 									if( status == NO)
 									{
 										[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                                        {
 											[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-										} else
-											if( destDirec)
-											{
-												[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-												NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-											}
-											else
-												NSLog( @"failed to compress file: %@", curFile);
+										}
+                                        else if( destDirec)
+                                        {
+                                            [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                            NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+                                        }
+                                        else
+                                            NSLog( @"failed to compress file: %@", curFile);
 									}
 									else
 									{
@@ -429,11 +438,12 @@ int main(int argc, const char *argv[])
 							}
 						}
 					}
-					else
-						if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
-							[[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
-							[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-						} else NSLog( @"compress : cannot read file: %@", curFile);
+					else if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                    {
+                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                        [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                    }
+                    else NSLog( @"compress : cannot read file: %@", curFile);
 				}
 			}
 		}
@@ -522,7 +532,6 @@ int main(int argc, const char *argv[])
 					OFCondition cond;
 					
 					const char *fname = (const char *)[curFile UTF8String];
-					const char *destination = (const char *)[curFileDest UTF8String];
 					
 					DcmFileFormat fileformat;
 					cond = fileformat.loadFile(fname);
@@ -572,8 +581,16 @@ int main(int argc, const char *argv[])
 							if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 							{
 								fileformat.loadAllDataIntoMemory();
-								cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+                                
+                                NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                                
+                                [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                
+								cond = fileformat.saveFile( [tempCurFileDest UTF8String], EXS_LittleEndianExplicit);
 								status =  (cond.good()) ? YES : NO;
+                                
+                                [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
 							}
 							else status = NO;
 							
