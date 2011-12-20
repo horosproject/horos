@@ -440,7 +440,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
     int MaxNumberOfFramesForWebPortalMovies = [[NSUserDefaults standardUserDefaults] integerForKey: @"MaxNumberOfFramesForWebPortalMovies"];
     
-    if( MaxNumberOfFramesForWebPortalMovies > 2)
+    if( MaxNumberOfFramesForWebPortalMovies > 2 && dicomImageArray.count >= MaxNumberOfFramesForWebPortalMovies)
     {
         do
         {
