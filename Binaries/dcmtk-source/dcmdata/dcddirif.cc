@@ -1135,7 +1135,7 @@ void DicomDirInterface::addOneImagePerSeries() {
                 //                  printf("\t\t\t\trecord sub %d type is %d (4 is image), with card %d\n", i, imageRecord->getRecordType(), imageRecord->cardSub());
                 //              }
                                 
-                                DcmDirectoryRecord* imageRecord = seriesRecord->getSub(rootRecord->cardSub()/2);
+                                DcmDirectoryRecord* imageRecord = seriesRecord->getSub(seriesRecord->cardSub()/2);
                                 if( imageRecord)
                                 {
                                     if (imageRecord->getRecordType() != ERT_Image)
@@ -1162,7 +1162,7 @@ void DicomDirInterface::addOneImagePerSeries() {
                                     if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())
                                         continue;
 
-                                    OFCondition status = addIconImage(imageRecord, fileformat.getDataset(), iconSize, OFString(imageRecord->getRecordsOriginFile()));
+                                    OFCondition status = addIconImage(seriesRecord, fileformat.getDataset(), iconSize, OFString(imageRecord->getRecordsOriginFile()));
                                     if (status.bad())
                                     {
                                         printWarningMessage("cannot create IconImageSequence");

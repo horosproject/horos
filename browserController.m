@@ -5457,7 +5457,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender
 {
-	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoCleanDatabaseFreeSpaceThread:) object: sender] autorelease];
+	NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(autoCleanDatabaseFreeSpaceThread:) object: sender] autorelease];
 	t.name = NSLocalizedString( @"Auto Cleaning Database...", nil);
 	[[ThreadsManager defaultManager] addThreadAndStart: t];
 }
