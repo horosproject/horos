@@ -21639,6 +21639,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [self folderPathResolvingAliasAndSymLink: [[self documentsDirectory] stringByAppendingPathComponent: @"/INCOMING.noindex/"]];
 }
 
+- (NSString*) TEMPPATH
+{
+	return [self folderPathResolvingAliasAndSymLink: [[self documentsDirectory] stringByAppendingPathComponent: @"/TEMP.noindex/"]];
+}
+
 + (NSString *) defaultDocumentsDirectory
 {
 	NSString *dir = documentsDirectory();

@@ -209,13 +209,18 @@ int main(int argc, const char *argv[])
 				
 				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
+                    NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
 					@try
 					{
 						[t setLaunchPath: @"/usr/bin/unzip"];
 						[t setCurrentDirectoryPath: @"/tmp/"];
-						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
 						[t waitUntilExit];
@@ -224,7 +229,9 @@ int main(int argc, const char *argv[])
 					{
 						NSLog( @"***** unzipFile exception: %@", e);
 					}
-					
+                    
+					[[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                    
 					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
 				}
 				else
@@ -497,7 +504,6 @@ int main(int argc, const char *argv[])
 			for( i = fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
-				
 				NSString *curFileDest;
 				
 				if( destDirec)
@@ -509,13 +515,18 @@ int main(int argc, const char *argv[])
 				
 				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
+                    NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
 					@try
 					{
 						[t setLaunchPath: @"/usr/bin/unzip"];
 						[t setCurrentDirectoryPath: @"/tmp/"];
-						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
 						[t waitUntilExit];
@@ -525,6 +536,8 @@ int main(int argc, const char *argv[])
 						NSLog( @"***** unzipFile exception: %@", e);
 					}
 					
+                    [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                    
 					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
 				}
 				else

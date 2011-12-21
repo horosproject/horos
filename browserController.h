@@ -349,6 +349,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (BOOL) isNetworkLogsActive;
 - (void) ReadDicomCDRom:(id) sender;
 - (NSString*) INCOMINGPATH;
+- (NSString*) TEMPPATH;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;

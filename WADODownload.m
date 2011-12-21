@@ -103,9 +103,9 @@
 	if( connection)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
+        
 		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
-		
+        
 		NSString *key = [NSString stringWithFormat:@"%ld", connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
 		
@@ -115,10 +115,15 @@
 		{
 			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
 				extension = @"osirixzip";
-		}
-		
-		[d writeToFile: [path stringByAppendingPathComponent: [[NSString stringWithFormat:@"WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension]] atomically: YES];
-		
+            
+            NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension];
+        
+            [d writeToFile: [path stringByAppendingPathComponent: filename] atomically: YES];
+            
+            // To remove the '.'
+            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
+        }
+        
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
 		
