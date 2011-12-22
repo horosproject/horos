@@ -609,6 +609,8 @@ int main(int argc, const char *argv[])
 							
 							if( status == NO) // Try DCM Framework...
 							{
+                                NSLog( @"********* Failed to open with dcmtk, try DCMFramework");
+                                
 								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
 								
 								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
@@ -618,7 +620,7 @@ int main(int argc, const char *argv[])
 								}
 								@catch (NSException *e)
 								{
-									NSLog( @"dcmObject writeToFile failed: %@", e);
+									NSLog( @"******** dcmObject writeToFile failed: %@", e);
 								}
 								[dcmObject release];
 							}

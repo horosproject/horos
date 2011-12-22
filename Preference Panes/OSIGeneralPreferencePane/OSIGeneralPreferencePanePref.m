@@ -23,7 +23,7 @@
 + (Class)transformedValueClass { return [NSNumber class]; }
 + (BOOL)allowsReverseTransformation { return NO; }
 - (id)transformedValue:(id)item {
-   if( [item intValue] == 3)
+   if( [item intValue] == 3 || [item intValue] == 4)
 		return [NSNumber numberWithBool: YES];
 	else
 		return [NSNumber numberWithBool: NO];
