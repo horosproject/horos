@@ -8368,6 +8368,8 @@ public:
 
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 {
+    if( [controller windowWillClose]) return;
+    
 	advancedCLUT = YES;
 	
 	NSArray *curves = [clut objectForKey:@"curves"];

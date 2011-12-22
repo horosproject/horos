@@ -47,13 +47,20 @@
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changePointColor:) name:NSColorPanelColorDidChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeHistogram:) name:OsirixUpdateVolumeDataNotification object:nil];
-		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
+        
 		[self createContextualMenu];
 		undoManager = [[NSUndoManager alloc] init];
 		
 		[self updateView];
     }
     return self;
+}
+
+- (void)windowWillCloseNotification:(NSNotification*)notification;
+{
+	if( [notification object] == [vrView window])
+		windowWillClose = YES;
 }
 
 - (void)cleanup;
@@ -2163,11 +2170,16 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCLUTtoVRView:(BOOL)lowRes;
 {
-	if( setCLUTtoVRView) return;	// avoid re-entry
+    if( windowWillClose)
+        return;
+    
+	if( setCLUTtoVRView)
+        return;	// avoid re-entry
+    
 	setCLUTtoVRView = YES;
 	if([curves count]>0)
 	{
-		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity:2];
+		NSMutableDictionary *clut = [NSMutableDictionary dictionaryWithCapacity: 2];
 		[clut setObject:curves forKey:@"curves"];
 		[clut setObject:pointColors forKey:@"colors"];
 		//[clut setObject:name forKey:@"name"];
