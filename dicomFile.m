@@ -466,7 +466,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	@try
 	{
-		fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
+		fileNb = Papy3FileOpen( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		if (fileNb < 0)
 			readable = NO;
 		else
@@ -483,7 +483,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				if( isImage)
 				{
-					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000 || gArrCompression [fileNb] == JPEGLSLossLess || gArrCompression [fileNb] == JPEGLSLossy) *compressed = YES;
 				}
 			}
 			Papy3FileClose (fileNb, TRUE);
