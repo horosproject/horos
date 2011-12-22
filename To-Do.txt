@@ -1,5 +1,5 @@
 - Hide/Show Columns DICOM QR
-- JPEG-LS support (CharLS library)
+- JPEG-LS support (CharLS library) : plugin test, listener, move, send, ...
 
 ------------------------------------------------------------------------------------------
 
