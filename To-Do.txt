@@ -1,3 +1,4 @@
+- Hide/Show Columns DICOM QR
 - JPEG-LS support (CharLS library)
 
 ------------------------------------------------------------------------------------------
