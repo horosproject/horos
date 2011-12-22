@@ -236,6 +236,11 @@ class DiMonoModality
      */
     void checkRescaling(const DiInputPixel *pixel);
 
+    /** determine integer representation used for the output data
+     *
+     ** @param  docu  pointer to dataset (encapsulated)
+     */
+    void determineRepresentation(const DiDocument *docu);
 
  private:
 

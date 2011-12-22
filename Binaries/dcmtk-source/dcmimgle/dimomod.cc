@@ -88,7 +88,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 ofConsole.unlockCerr();
             }
         }
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -113,7 +113,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         Rescaling = 1;
         checkRescaling(pixel);
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -139,7 +139,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         TableData = new DiLookupTable(data, descriptor, explanation, (docu->getFlags() & CIF_IgnoreModalityLutBitDepth) > 0);
         checkTable();
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -260,7 +260,18 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
     }
 }
 
-
+void DiMonoModality::determineRepresentation(const DiDocument *docu)
+{
+//    UsedBits = DicomImageClass::rangeToBits(MinValue, MaxValue);
+    if ((docu != NULL) && (docu->getFlags() & CIF_UseAbsolutePixelRange))
+        Representation = DicomImageClass::determineRepresentation(AbsMinimum, AbsMaximum);
+    else
+        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+    
+//    DCMIMGLE_TRACE("internal representation for monochrome images: "
+//                   << DicomImageClass::getRepresentationBits(Representation) << " bits ("
+//                   << (DicomImageClass::isRepresentationSigned(Representation) ? "signed" : "unsigned") << ")");
+}
 /*
  *
  * CVS/RCS Log:
