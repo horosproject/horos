@@ -456,7 +456,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSTag">4</int>
 											<reference key="NSTarget" ref="754284985"/>
 										</object>
-										<object class="NSMenuItem" id="828987948">
+										<object class="NSMenuItem" id="255510547">
 											<reference key="NSMenu" ref="769070058"/>
 											<bool key="NSIsDisabled">YES</bool>
 											<bool key="NSIsSeparator">YES</bool>
@@ -469,7 +469,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSTag">-1</int>
 											<reference key="NSTarget" ref="754284985"/>
 										</object>
-										<object class="NSMenuItem" id="510793599">
+										<object class="NSMenuItem" id="379411028">
 											<reference key="NSMenu" ref="769070058"/>
 											<string key="NSTitle">JPEG LS Lossless</string>
 											<string key="NSKeyEquiv"/>
@@ -481,7 +481,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSTag">13</int>
 											<reference key="NSTarget" ref="754284985"/>
 										</object>
-										<object class="NSMenuItem" id="46650068">
+										<object class="NSMenuItem" id="241382714">
 											<reference key="NSMenu" ref="769070058"/>
 											<string key="NSTitle">JPEG LS Lossy - Good Quality</string>
 											<string key="NSKeyEquiv"/>
@@ -493,7 +493,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSTag">14</int>
 											<reference key="NSTarget" ref="754284985"/>
 										</object>
-										<object class="NSMenuItem" id="580177941">
+										<object class="NSMenuItem" id="776114365">
 											<reference key="NSMenu" ref="769070058"/>
 											<string key="NSTitle">JPEG LS Lossy - Medium Quality</string>
 											<string key="NSKeyEquiv"/>
@@ -505,7 +505,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSTag">15</int>
 											<reference key="NSTarget" ref="754284985"/>
 										</object>
-										<object class="NSMenuItem" id="953258457">
+										<object class="NSMenuItem" id="273244457">
 											<reference key="NSMenu" ref="769070058"/>
 											<string key="NSTitle">JPEG LS Lossy - Low Quality</string>
 											<string key="NSKeyEquiv"/>
@@ -1083,12 +1083,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="732174495"/>
 							<reference ref="684305533"/>
 							<reference ref="343110019"/>
-							<reference ref="828987948"/>
-							<reference ref="510793599"/>
-							<reference ref="46650068"/>
-							<reference ref="580177941"/>
+							<reference ref="255510547"/>
+							<reference ref="379411028"/>
+							<reference ref="241382714"/>
+							<reference ref="776114365"/>
 							<reference ref="794517395"/>
-							<reference ref="953258457"/>
+							<reference ref="273244457"/>
 						</array>
 						<reference key="parent" ref="754284985"/>
 					</object>
@@ -1186,27 +1186,27 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">147</int>
-						<reference key="object" ref="828987948"/>
+						<reference key="object" ref="255510547"/>
 						<reference key="parent" ref="769070058"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">148</int>
-						<reference key="object" ref="510793599"/>
+						<reference key="object" ref="379411028"/>
 						<reference key="parent" ref="769070058"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">149</int>
-						<reference key="object" ref="46650068"/>
+						<reference key="object" ref="241382714"/>
 						<reference key="parent" ref="769070058"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">150</int>
-						<reference key="object" ref="580177941"/>
+						<reference key="object" ref="776114365"/>
 						<reference key="parent" ref="769070058"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">151</int>
-						<reference key="object" ref="953258457"/>
+						<reference key="object" ref="273244457"/>
 						<reference key="parent" ref="769070058"/>
 					</object>
 				</array>
