@@ -84,7 +84,7 @@
             if( next >= numberOfPages) document.write("  >>");
             else document.write("<b><a href='?"+parameters+"&page="+next+"'>  >></a></b>");
         }
-    }
+	}
 </script>
 
 <div id="content">
@@ -94,7 +94,8 @@
 	<div>
         %[IF:Studies.count%
         
-        %Session.NumberOfStudies% Studies Found<br>
+        %LOCNUM:Session.NumberOfStudies% Studies Found<br>
+        
         <script type="text/javascript">
             printPagesHTML( %Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
         </script>

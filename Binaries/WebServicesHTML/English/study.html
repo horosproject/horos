@@ -180,7 +180,7 @@ function shareDestinationChange(select) {
 									%[IF:Series.noFiles<2%
 										1 image
 									%ELSE:Series.noFiles<2%
-										%Series.noFiles% images
+										%LOCNUM:Series.noFiles% images
 									%]IF:Series.noFiles<2%
 								</span>
 								%[IF:Series.comment%

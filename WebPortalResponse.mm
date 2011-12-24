@@ -345,6 +345,19 @@
 		
 		return [evaldToken xmlEscapedString];
 	}
+    
+    if ([part0 isEqual:@"LOCNUM"])
+    {
+        token = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@":"];
+        NSObject* o = [self object:dict valueForKeyPath:token context:context];
+        if (o)
+        {
+            if ([o isKindOfClass:[NSNumber class]] == NO)
+                o = [NSNumber numberWithFloat: [o.description floatValue]];
+            
+            return [NSNumberFormatter localizedStringFromNumber: (NSNumber*) o numberStyle: NSNumberFormatterDecimalStyle];
+        }
+    }
 	
 	// or is it just a value?
 	NSObject* o = [self object:dict valueForKeyPath:token context:context];

@@ -2075,7 +2075,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} else if ([requestedPath.pathExtension isEqualToString:@"jpg"]) {
 		response.data = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		response.mimeType = @"image/jpeg";
-	} // else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
+	}
+    // else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 }
 
 -(void)processMovie {
