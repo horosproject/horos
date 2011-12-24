@@ -254,6 +254,12 @@ static NSMutableArray *cachedServersArray = nil;
 									
 								if( [ts isEqualToString: @"RLELossless"])
 									transferSyntax = SendRLE;
+                                
+                                if( [ts isEqualToString: @"JPEGLSLossy"])
+									transferSyntax = SendJPEGLSLossy10;
+                                
+								if( [ts isEqualToString: @"JPEGLSLossless"])
+									transferSyntax = SendJPEGLSLossless;
 							}
 							
 							BOOL retrieveMode = CMOVERetrieveMode;

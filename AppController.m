@@ -1828,6 +1828,12 @@ static NSDate *lastWarningDate = nil;
 		case 22:
 			[dict setValue: @"RLELossless" forKey: @"preferredSyntax"];
 		break;
+        case 23:
+			[dict setValue: @"JPEGLSLossless" forKey: @"preferredSyntax"];
+            break;
+        case 24:
+			[dict setValue: @"JPEGLSLossy" forKey: @"preferredSyntax"];
+            break;
 		default:
 			[dict setValue: @"LittleEndianExplicit" forKey: @"preferredSyntax"];
 		break;

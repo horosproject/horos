@@ -1042,6 +1042,37 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
 		
         numTransferSyntaxes = 10;
         break;
+        case EXS_JPEGLSLossless:
+            /* we prefer JPEG LS lossless */
+            transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;				
+            transferSyntaxes[4] = UID_JPEG2000LosslessOnlyTransferSyntax;
+            transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;		
+            transferSyntaxes[6] = UID_JPEGProcess14SV1TransferSyntax;
+            transferSyntaxes[7] = UID_JPEGProcess2_4TransferSyntax;
+            transferSyntaxes[8] = UID_JPEGProcess1TransferSyntax;
+            transferSyntaxes[9] = UID_RLELosslessTransferSyntax;					//RLE
+            transferSyntaxes[10] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+            
+            numTransferSyntaxes = 9;
+            break;
+        case EXS_JPEGLSLossy:
+            /* we prefer JPEG LS lossy or lossless */
+            transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+            transferSyntaxes[1] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;				
+            transferSyntaxes[5] = UID_JPEG2000LosslessOnlyTransferSyntax;
+            transferSyntaxes[6] = UID_JPEG2000TransferSyntax;		
+            transferSyntaxes[7] = UID_JPEGProcess14SV1TransferSyntax;
+            transferSyntaxes[8] = UID_JPEGProcess2_4TransferSyntax;					//RLE
+            transferSyntaxes[9] = UID_JPEGProcess1TransferSyntax;
+            
+            numTransferSyntaxes = 10;
+            break;
 //#ifdef WITH_ZLIB
 //      case EXS_DeflatedLittleEndianExplicit:
 //        /* we prefer deflated transmission */
