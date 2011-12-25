@@ -1253,6 +1253,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DCMTK Network release variables";
+    
 	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
 	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
 	DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];

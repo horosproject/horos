@@ -2007,6 +2007,8 @@ static NSDate *lastWarningDate = nil;
 	[STORESCP lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DICOM Store-SCP";
+    
 	@try 
 	{
 		
@@ -2111,6 +2113,8 @@ static NSDate *lastWarningDate = nil;
 #ifndef OSIRIX_LIGHT
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DICOM Store-SCP TLS";
+    
 	if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{
 		[STORESCPTLS lock];

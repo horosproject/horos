@@ -2775,6 +2775,8 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = NSLocalizedString( @"Retrieving images...", nil);
+    
 	if( [[AppController sharedAppController] isStoreSCPRunning] == NO)
 	{
 		NSLog( @"----- isStoreSCPRunning == NO, cannot retrieve");

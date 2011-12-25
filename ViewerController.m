@@ -7265,6 +7265,8 @@ return YES;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"Load Image Data Sub Thread";
+    
 	NSArray *p = [dict objectForKey: @"pixList"];
 	NSArray *f = [dict objectForKey: @"fileList"];
 	int from = [[dict objectForKey: @"from"] intValue];
@@ -7314,7 +7316,9 @@ return YES;
 		[pool release];
 		return;
 	}
-		
+    
+    [NSThread currentThread].name = @"Load Image Data";
+    
 	[ThreadLoadImageLock lock];
 	
 	@try 

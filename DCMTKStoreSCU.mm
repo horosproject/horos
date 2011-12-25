@@ -761,7 +761,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
             {
             }
 			else
-				printf("Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
+				printf("------ Warning! Recompression: presentation for syntax:\n%s -> %s\n", dcmFindNameOfUID(filexfer.getXferID()), dcmFindNameOfUID(preferredXfer.getXferID()));
 			
 			status = compressFile(dcmff, fname, outfname);
 		}

@@ -1101,6 +1101,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"Compute Pixels thread";
+    
 	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
 	
 	int p = MPProcessors ();

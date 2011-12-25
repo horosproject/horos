@@ -55,6 +55,8 @@ static NSTimeInterval lastConnection = 0;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    [NSThread currentThread].name = @"XML-RPC Listener";
+    
     NSError *error = nil;
     if( ![httpServ start: &error])
     {

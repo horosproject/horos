@@ -348,6 +348,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 {	
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"WebPortal server thread";
+    
 	// Start threads
 	uint i;
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
@@ -419,9 +421,14 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	}
 }
 
--(void)connectionsThread:(id)obj {
+-(void)connectionsThread:(id)obj
+{
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	@try {
+    
+    [NSThread currentThread].name = @"WebPortal connection thread";
+    
+	@try
+    {
 		
 		@synchronized(runLoops)
 		{
