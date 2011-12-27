@@ -159,7 +159,6 @@ static NSMenu *contextualMenu = nil;
 static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
-static NSNotification *lastMenuNotification = nil;
 volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
@@ -1011,21 +1010,25 @@ return YES;
 
 - (void) refreshMenus
 {
-	lastMenuNotification = nil;
-	if( wlwwPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
-	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+	if( wlwwPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	else
+        [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( clutPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
-	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
+	if( clutPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	else
+        [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( convolutionPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
-	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+	if( convolutionPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+	else
+        [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( opacityPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
-	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+	if( opacityPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+	else
+        [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
 	[clutPopup setTitle:curCLUTMenu];
 	[convPopup setTitle:curConvMenu];
@@ -3028,7 +3031,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	[self SetSyncButtonBehavior: self];
-	[self refreshMenus];
+//	[self refreshMenus];
 }
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
@@ -3412,7 +3415,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( convolutionPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -3445,7 +3448,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( wlwwPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -3476,9 +3479,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[contextualMenu release];
 		contextualMenu = nil;
-		[imageView setMenu: nil];	// Will force recomputing, when neaded
-		
-		lastMenuNotification = note;
+		[imageView setMenu: nil];	// Will force recomputing, when needed
 	}
 	
 	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
@@ -3525,8 +3526,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			curWLWWMenu = [[newName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: [NSDictionary dictionary]];
 		
 		[imageView setWLWW: iwl: iww];
     }
@@ -3539,7 +3539,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( opacityPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -5842,8 +5842,7 @@ return YES;
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CLUT"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[DefaultsOsiriX getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 	}
 }
 
@@ -5895,7 +5894,7 @@ return YES;
 
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( clutPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -9230,8 +9229,7 @@ return YES;
 		[presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: [NSDictionary dictionary]];
     }
 	
 	[name release];
@@ -9280,7 +9278,6 @@ return YES;
 	
 	[wlwwPopup setTitle: curWLWWMenu];
 	
-	lastMenuNotification = nil;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
@@ -9639,8 +9636,7 @@ static float oldsetww, oldsetwl;
 		[convDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: convDict forKey: @"Convolution"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -9714,7 +9710,6 @@ static float oldsetww, oldsetwl;
 				curConvMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 		}
 	}
@@ -9728,8 +9723,7 @@ static float oldsetww, oldsetwl;
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this convolution filter : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -9877,8 +9871,7 @@ long				x, y;
 			curConvMenu = [[matrixName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
     }
 
     [addConvWindow orderOut:sender];
@@ -9941,8 +9934,7 @@ short				matrix[25];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -9984,7 +9976,6 @@ short				matrix[25];
 				curCLUTMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -10054,7 +10045,6 @@ short				matrix[25];
 					curCLUTMenu = [str retain];
 				}
 				
-				lastMenuNotification = nil;
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 				
 				[self propagateSettings];
@@ -10087,8 +10077,7 @@ short				matrix[25];
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -10170,8 +10159,7 @@ short				matrix[25];
 			curCLUTMenu = [[clutName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 		
 		[self ApplyCLUTString:curCLUTMenu];
     }
@@ -10225,7 +10213,6 @@ short				matrix[25];
 			curOpacityMenu = [str retain];
 		}
 		
-		lastMenuNotification = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -10252,7 +10239,6 @@ short				matrix[25];
 				curOpacityMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -10290,8 +10276,7 @@ short				matrix[25];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"OPACITY"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -10301,8 +10286,7 @@ short				matrix[25];
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: [NSDictionary dictionary]];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -10385,8 +10369,7 @@ short				matrix[25];
 			curOpacityMenu = [[OpacityName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: [NSDictionary dictionary]];
 		
 		[self ApplyOpacityString:curOpacityMenu];
     }
@@ -18805,8 +18788,6 @@ int i,j,l;
 		[self buildMatrixPreview];
 	
 	[self matrixPreviewSelectCurrentSeries];
-	
-	[self refreshMenus];
 	
 	originalOrientation = -1;
 	[orientationMatrix setEnabled: NO];
