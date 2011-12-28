@@ -9956,10 +9956,9 @@ short				matrix[25];
 	{
 		if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 		{
-			int i, x;
-			for ( x = 0; x < maxMovieIndex; x++)
+			for( int x = 0; x < maxMovieIndex; x++)
 			{
-				for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
+                for( DCMPix *p in pixList[ x]) [p setBlackIndex: 0];
 			}
 			
 			[imageView setCLUT: nil :nil :nil];
