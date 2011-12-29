@@ -673,7 +673,6 @@
 											<int key="NSTvFlags">-337641472</int>
 											<reference key="NSDelegate"/>
 											<reference key="NSDataSource"/>
-											<string key="NSAutosaveName">QueryTable4.0</string>
 											<int key="NSGridStyleMask">1</int>
 											<int key="NSColumnAutoresizingStyle">0</int>
 											<int key="NSDraggingSourceMaskForLocal">15</int>

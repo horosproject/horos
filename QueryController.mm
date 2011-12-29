@@ -3413,6 +3413,105 @@ extern "C"
 	}
 	
 	[self setBirthDate: nil];
+    
+    // build table header context menu
+    NSArray *cols = [[NSUserDefaults standardUserDefaults] arrayForKey: @"QueryControllerTableColumns"];
+    NSMenu *tableHeaderContextMenu = [[NSMenu alloc] initWithTitle:@""];
+    [[outlineView headerView] setMenu:tableHeaderContextMenu];
+    NSArray *tableColumns = [NSArray arrayWithArray:[outlineView tableColumns]]; // clone array so compiles/runs on 10.5
+    NSEnumerator *enumerator = [tableColumns objectEnumerator];
+    NSTableColumn *column;
+    while((column = [enumerator nextObject]))
+    {
+        NSString *identifier = [column identifier];        
+        NSString *title = [[column headerCell] title];
+        NSMenuItem *item = [tableHeaderContextMenu addItemWithTitle:title action:@selector(contextMenuSelected:) keyEquivalent:@""];
+        [item setTarget: self];
+        [item setRepresentedObject: column];
+        [item setState: cols ? NSOffState: NSOnState];
+        if( cols)
+        {
+            if( [identifier isEqualToString: @"Button"] == NO && [identifier isEqualToString: @"name"] == NO)
+                [outlineView removeTableColumn:column]; // initially want to show all columns
+        }
+    }
+    // add columns in correct order with correct width, ensure menu items are in correct state
+    enumerator = [cols objectEnumerator];
+    NSDictionary *colinfo;
+    while((colinfo = [enumerator nextObject]))
+    {
+        NSMenuItem *item = [tableHeaderContextMenu itemWithTitle:[colinfo objectForKey:@"title"]];
+        if(!item) continue; // missing title
+        [item setState:NSOnState];
+        column = [item representedObject];
+        
+        NSString *identifier = [column identifier];
+        if( [identifier isEqualToString: @"Button"] == NO && [identifier isEqualToString: @"name"] == NO)
+        {
+            [column setWidth:[[colinfo objectForKey:@"width"] floatValue]];
+            [outlineView addTableColumn: column];
+        }
+        else
+            [column setWidth:[[colinfo objectForKey:@"width"] floatValue]];
+    }
+    
+    if( [[NSUserDefaults standardUserDefaults] objectForKey: @"QueryControllerTableColumnsSortDescriptor"])
+    {
+        NSDictionary *sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"QueryControllerTableColumnsSortDescriptor"];
+        {
+            if( [outlineView columnWithIdentifier: [sort objectForKey:@"key"]] != -1)
+            {
+                NSSortDescriptor *prototype = [[outlineView tableColumnWithIdentifier: [sort objectForKey:@"key"]] sortDescriptorPrototype];
+                
+                [outlineView setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector: [prototype selector]] autorelease]]];
+            }
+            else
+                [outlineView setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+        }
+    }
+    else
+        [outlineView setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+    
+    // listen for changes so know when to save
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTableColumns) name:NSOutlineViewColumnDidMoveNotification object: outlineView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveTableColumns) name:NSOutlineViewColumnDidResizeNotification object: outlineView];
+}
+
+- (void)saveTableColumns
+{
+    NSMutableArray *cols = [NSMutableArray array];
+    NSEnumerator *enumerator = [[outlineView tableColumns] objectEnumerator];
+    NSTableColumn *column;
+    while((column = [enumerator nextObject]))
+    {
+        [cols addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                         [[column headerCell] title], @"title",
+                         [NSNumber numberWithFloat:[column width]], @"width",
+                         nil]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:cols forKey: @"QueryControllerTableColumns"];
+    
+    NSDictionary *sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[outlineView sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[outlineView sortDescriptors] objectAtIndex: 0] key], @"key", nil];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"QueryControllerTableColumnsSortDescriptor"];
+}
+
+- (void)contextMenuSelected:(id)sender
+{
+    BOOL on = ([sender state] == NSOnState);
+    [sender setState: on ? NSOffState : NSOnState];
+    
+    NSTableColumn *column = [sender representedObject];
+    
+    NSString *identifier = [column identifier];
+
+    if( on)
+        [outlineView removeTableColumn:column];
+    else
+        [outlineView addTableColumn:column];
+    
+    [outlineView setNeedsDisplay:YES];
+    [self saveTableColumns];
 }
 
 //******
@@ -3788,6 +3887,8 @@ extern "C"
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    [self saveTableColumns];
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [dateFilterMatrix selectedTag] forKey: @"QRLastDateFilterValue"];
