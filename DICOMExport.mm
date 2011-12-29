@@ -25,7 +25,7 @@ static float deg2rad = M_PI / 180.0f;
 
 @implementation DICOMExport
 
-@synthesize rotateRawDataBy90degrees;
+@synthesize rotateRawDataBy90degrees, metaDataDict;
 
 - (NSString*) seriesDescription
 {
@@ -93,6 +93,13 @@ static float deg2rad = M_PI / 180.0f;
 		int i;
 		for( i = 0; i < 6; i++) orientation[ i] = 0;
 		for( i = 0; i < 3; i++) position[ i] = 0;
+        
+        metaDataDict = [[NSMutableDictionary dictionaryWithObjectsAndKeys:@"unknown", @"patientsName",
+         @"unknown ID", @"patientID",
+         [NSCalendarDate dateWithYear: 1900 month: 1 day: 1 hour: 1 minute: 1 second: 1 timeZone: nil], @"patientsBirthdate",
+         @"M", @"patientsSex",
+         [NSCalendarDate date], @"studyDate", 
+         nil] retain];
 	}
 	
 	return self;
@@ -119,6 +126,8 @@ static float deg2rad = M_PI / 180.0f;
 	if( dcmtkFileFormat)
 		delete dcmtkFileFormat;
 	
+    [metaDataDict release];
+    
 	[super dealloc];
 }
 
@@ -310,28 +319,46 @@ static float deg2rad = M_PI / 180.0f;
 	
 	// insert const value attributes
 	if (result.good()) result = dataset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
-	if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID,          UID_SecondaryCaptureImageStorage);
-	if (result.good()) result = dataset->putAndInsertString(DCM_Modality,             "OT");
+	if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 	
 	// there is no way we could determine a meaningful series number, so we just use a constant.
-	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber,         "1");
+	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesNumber, "1");
 	
 	// insert variable value attributes
-	if (result.good() && [dict objectForKey: @"patientsName"])		result = dataset->putAndInsertString(DCM_PatientsName,			[[dict objectForKey: @"patientsName"] UTF8String]);
-	if (result.good() && [dict objectForKey: @"patientID"])			result = dataset->putAndInsertString(DCM_PatientID,				[[dict objectForKey: @"patientID"] UTF8String]);
-	if (result.good() && [dict objectForKey: @"patientsBirthdate"]) result = dataset->putAndInsertString(DCM_PatientsBirthDate,		[[dict objectForKey: @"patientsBirthdate"] UTF8String]);
-	if (result.good() && [dict objectForKey: @"patientsSex"])		result = dataset->putAndInsertString(DCM_PatientsSex,			[[dict objectForKey: @"patientsSex"] UTF8String]);
-	if (result.good() && [dict objectForKey: @"studyDate"])			result = dataset->putAndInsertString(DCM_AcquisitionDate,		[[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"studyDate"]] dateString] UTF8String]);
-	if (result.good() && [dict objectForKey: @"studyDate"])			result = dataset->putAndInsertString(DCM_AcquisitionTime,		[[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"studyDate"]] timeString] UTF8String]);
+	if (result.good() && [dict objectForKey: @"patientsName"])
+        result = dataset->putAndInsertString(DCM_PatientsName, [[dict objectForKey: @"patientsName"] UTF8String]);
+    
+	if (result.good() && [dict objectForKey: @"patientID"])
+        result = dataset->putAndInsertString(DCM_PatientID, [[dict objectForKey: @"patientID"] UTF8String]);
+    
+	if (result.good() && [dict objectForKey: @"patientsBirthdate"])
+        result = dataset->putAndInsertString(DCM_PatientsBirthDate, [[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"patientsBirthdate"]] dateString] UTF8String]);
+    
+	if (result.good() && [dict objectForKey: @"patientsSex"])
+        result = dataset->putAndInsertString(DCM_PatientsSex, [[dict objectForKey: @"patientsSex"] UTF8String]);
+    
+	if (result.good() && [dict objectForKey: @"studyDate"])
+        result = dataset->putAndInsertString(DCM_AcquisitionDate, [[[DCMCalendarDate dicomDateWithDate: [dict objectForKey: @"studyDate"]] dateString] UTF8String]);
 	
+    if (result.good() && [dict objectForKey: @"studyDate"])
+        result = dataset->putAndInsertString(DCM_AcquisitionTime, [[[DCMCalendarDate dicomTimeWithDate: [dict objectForKey: @"studyDate"]] timeString] UTF8String]);
+    
+    if (result.good() && [dict objectForKey: @"studyDescription"])
+        result = dataset->putAndInsertString(DCM_StudyDescription, [[dict objectForKey: @"studyDescription"] UTF8String]);
+    
+    if (result.good() && [[dict objectForKey: @"modality"] length])
+        result = dataset->putAndInsertString(DCM_Modality, [[dict objectForKey: @"modality"] UTF8String]);
+    else
+        result = dataset->putAndInsertString(DCM_Modality, "OT");
+    
 	dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
-	if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID,     [[dict objectForKey: @"studyUID"] UTF8String]);
+	if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID, [[dict objectForKey: @"studyUID"] UTF8String]);
 	
 	dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID,    [[dict objectForKey: @"seriesUID"] UTF8String]);
+	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID, [[dict objectForKey: @"seriesUID"] UTF8String]);
 	
 	dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
-	if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID,       buf);
+	if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID, buf);
 	
 	// set instance creation date and time
 	OFString s;
@@ -712,12 +739,7 @@ static float deg2rad = M_PI / 180.0f;
 				if( succeed == NO)
 				{
 					succeed = [self createDICOMHeader: dcmtkFileFormat->getDataset()
-											 dictionary: [NSDictionary dictionaryWithObjectsAndKeys:@"unknown", @"patientsName",
-																									@"unknown ID", @"patientID",
-																									@"19000101", @"patientsBirthdate",
-																									@"M", @"patientsSex",
-																									[NSCalendarDate date], @"studyDate", 
-																									nil]];
+											 dictionary: metaDataDict];
 				}
 				
 				if( succeed)
