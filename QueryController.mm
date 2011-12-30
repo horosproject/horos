@@ -3425,13 +3425,13 @@ extern "C"
     {
         NSString *identifier = [column identifier];        
         NSString *title = [[column headerCell] title];
-        NSMenuItem *item = [tableHeaderContextMenu addItemWithTitle:title action:@selector(contextMenuSelected:) keyEquivalent:@""];
-        [item setTarget: self];
-        [item setRepresentedObject: column];
-        [item setState: cols ? NSOffState: NSOnState];
-        if( cols)
+        if( [identifier isEqualToString: @"Button"] == NO && [identifier isEqualToString: @"name"] == NO)
         {
-            if( [identifier isEqualToString: @"Button"] == NO && [identifier isEqualToString: @"name"] == NO)
+            NSMenuItem *item = [tableHeaderContextMenu addItemWithTitle:title action:@selector(contextMenuSelected:) keyEquivalent:@""];
+            [item setTarget: self];
+            [item setRepresentedObject: column];
+            [item setState: cols ? NSOffState: NSOnState];
+            if( cols)
                 [outlineView removeTableColumn:column]; // initially want to show all columns
         }
     }
