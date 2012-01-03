@@ -6928,15 +6928,20 @@ return YES;
 						float	currentOrientation[ 9];
 						BOOL	equalVector = YES;
 						BOOL	keepFusion = NO;
+                        BOOL    nonZeroVector = NO;
 						
 						[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
 						
 						for( i = 0; i < 9; i++)
 						{
-							if( previousOrientation[ i] != currentOrientation[ i]) equalVector = NO;
+							if( previousOrientation[ i] != currentOrientation[ i])
+                                equalVector = NO;
+                            
+                            if( currentOrientation[ i] != 0)
+                                nonZeroVector = YES;
 						}
 						
-						if( equalVector)
+						if( equalVector && nonZeroVector)
 						{
 							float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 							float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];

@@ -1718,7 +1718,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		return;
 	}
 	
-	// find requosted core data objects
+	// find requested core data objects
 
 	NSMutableArray* requestedStudies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* requestedSeries = [NSMutableArray arrayWithCapacity:64];
@@ -1792,7 +1792,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[patientNode addChild:studyNode];
 				
 				for (DicomSeries* serie in series)
-					if (serie.study == study) {
+					if (serie.study == study)
+                    {
 						NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
 						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue:serie.seriesDICOMUID]];
 						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue:serie.seriesDescription]];
@@ -1800,7 +1801,21 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue:serie.modality]];
 						[studyNode addChild:serieNode];
 						
-						for (DicomImage* image in serie.images) {
+                        //Only unique InstanceUID : multi-frames support
+                        NSMutableArray *imagesSOPInstanceUID = [NSMutableArray array];
+                        NSMutableArray *images = [NSMutableArray array];
+                        
+                        for( DicomImage* image in serie.images)
+                        {
+                            if( [imagesSOPInstanceUID containsObject: image.sopInstanceUID] == NO)
+                            {
+                                [images addObject: image];
+                                [imagesSOPInstanceUID addObject: image.sopInstanceUID];
+                            }
+                        }
+                        
+						for (DicomImage* image in images)
+                        {
 							NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
 							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue:image.sopInstanceUID]];
 							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[image.instanceNumber stringValue]]];

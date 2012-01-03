@@ -1,6 +1,8 @@
 - JPEG-LS support (through CharLS library)
 - Hide/Show Columns DICOM QR (Columns header contextual menu)
 
+- Auto-clean Oldest opened
+
 ------------------------------------------------------------------------------------------
 
 A:
