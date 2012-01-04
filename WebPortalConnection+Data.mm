@@ -45,7 +45,7 @@
 #import "NSManagedObject+N2.h"
 #import "N2Operators.h"
 #import "NSImage+OsiriX.h"
-
+#import "MutableArrayCategory.h"
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -1802,19 +1802,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 						[studyNode addChild:serieNode];
 						
                         //Only unique InstanceUID : multi-frames support
-                        NSMutableArray *imagesSOPInstanceUID = [NSMutableArray array];
-                        NSMutableArray *images = [NSMutableArray array];
+                        NSMutableArray *images = [NSMutableArray arrayWithArray: [serie.images allObjects]];
+                        NSMutableArray *paths = [NSMutableArray arrayWithArray: [images valueForKey: @"path"]];
                         
-                        for( DicomImage* image in serie.images)
-                        {
-                            if( [imagesSOPInstanceUID containsObject: image.sopInstanceUID] == NO)
-                            {
-                                [images addObject: image];
-                                [imagesSOPInstanceUID addObject: image.sopInstanceUID];
-                            }
-                        }
+                        [paths removeDuplicatedStringsInSyncWithThisArray: images];
                         
-						for (DicomImage* image in images)
+						for( DicomImage* image in images)
                         {
 							NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
 							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue:image.sopInstanceUID]];
