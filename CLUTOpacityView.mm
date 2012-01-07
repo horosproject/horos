@@ -1915,6 +1915,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	{
 		[undoManager undo];
 		vrViewLowResolution = NO;
+        clutChanged = YES;
 		[self updateView];
 	}
 }
@@ -1925,6 +1926,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 	{
 		[undoManager redo];
 		vrViewLowResolution = NO;
+        clutChanged = YES;
 		[self updateView];
 	}
 }
