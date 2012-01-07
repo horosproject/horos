@@ -3499,7 +3499,7 @@ extern "C"
     [[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"QueryControllerTableColumnsSortDescriptor"];
 }
 
-- (void)contextMenuSelected:(id)sender
+- (void)contextMenuSelected:(NSMenuItem*)sender
 {
     BOOL on = ([sender state] == NSOnState);
     [sender setState: on ? NSOffState : NSOnState];

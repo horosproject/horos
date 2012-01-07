@@ -346,7 +346,7 @@ static float deg2rad = M_PI / 180.0f;
     if (result.good() && [dict objectForKey: @"studyDescription"])
         result = dataset->putAndInsertString(DCM_StudyDescription, [[dict objectForKey: @"studyDescription"] UTF8String]);
     
-    if (result.good() && [[dict objectForKey: @"modality"] length])
+    if (result.good() && [(NSString*)[dict objectForKey: @"modality"] length])
         result = dataset->putAndInsertString(DCM_Modality, [[dict objectForKey: @"modality"] UTF8String]);
     else
         result = dataset->putAndInsertString(DCM_Modality, "OT");
