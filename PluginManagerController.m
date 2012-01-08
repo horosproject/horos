@@ -430,18 +430,18 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	NSString *pluginPath = path;
 	
-	if([self isZippedFileAtPath:path])
+	if([self isZippedFileAtPath:path] && [self unZipFileAtPath:path])
 	{
-		if(![self unZipFileAtPath:path])
-		{
-			[statusTextField setStringValue:NSLocalizedString(@"Error: bad zip file.", nil)];
-			[statusProgressIndicator setHidden:YES];
-			[statusProgressIndicator stopAnimation:self];
-			return;
-		}
 		pluginPath = [path stringByDeletingPathExtension];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	}
+    else
+    {
+        [statusTextField setStringValue:NSLocalizedString(@"Error: bad zip file", nil)];
+        [statusProgressIndicator setHidden:YES];
+        [statusProgressIndicator stopAnimation:self];
+        return;
+    }
 	
 	NSString *oldPath = [PluginManager deletePluginWithName: [pluginPath lastPathComponent]];
 	

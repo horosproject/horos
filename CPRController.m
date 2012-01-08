@@ -3427,6 +3427,14 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbCPRType];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRType frame]), NSHeight([tbCPRType frame]))];
     }
+    else if ([itemIdent isEqualToString: @"tbCPRPathMode"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Path Mode",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Path Mode",nil)];
+		
+		[toolbarItem setView: tbCPRPathMode];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRPathMode frame]), NSHeight([tbCPRPathMode frame]))];
+    }
     else if ([itemIdent isEqualToString: @"tbViewsPosition"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Views",nil)];
@@ -3598,7 +3606,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3607,7 +3615,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3975,6 +3983,10 @@ static float deg2rad = M_PI / 180.0;
                                                  alpha:1];
 												 
 	[curvedPathColor retain];
+    
+    [mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
 }
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath

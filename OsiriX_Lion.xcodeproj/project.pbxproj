@@ -5208,6 +5208,10 @@
 		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
 		CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAD133507F50083F3FD /* OpenNetworkSysPrefs.scpt */; };
 		CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAE133507F50083F3FD /* OpenSharingSysPrefs.scpt */; };
+		CEBD3E0E14B9EDE300FBDF08 /* French.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0C14B9EDE300FBDF08 /* French.plist */; };
+		CEBD3E0F14B9EDE300FBDF08 /* French.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0C14B9EDE300FBDF08 /* French.plist */; };
+		CEBD3E1014B9EDE300FBDF08 /* Perfusion.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */; };
+		CEBD3E1114B9EDE300FBDF08 /* Perfusion.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */; };
 		CEBD8E5F0B675A75008FD772 /* Propagate.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8E5B0B675A75008FD772 /* Propagate.tif */; };
 		CEBD8EF80B6761CC008FD772 /* PropagateOn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */; };
 		CEBEAD3110A6F27600E4C7C9 /* znzlib.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA790C06BEB200CD2976 /* znzlib.h */; };
@@ -11912,6 +11916,8 @@
 		CEB98C821335088C0083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/AYDicomPrintPreferencePane/English.lproj/AYDicomPrintPref.xib"; sourceTree = "<group>"; };
 		CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = SpectroIcon.jpg; sourceTree = "<group>"; };
 		CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GetPrimaryMACAddress.m; sourceTree = "<group>"; };
+		CEBD3E0C14B9EDE300FBDF08 /* French.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = French.plist; sourceTree = "<group>"; };
+		CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Perfusion.plist; sourceTree = "<group>"; };
 		CEBD8E5B0B675A75008FD772 /* Propagate.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Propagate.tif; sourceTree = "<group>"; };
 		CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PropagateOn.tif; sourceTree = "<group>"; };
 		CEC171F80874839C0021C3FC /* burn_anim00.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim00.tif; sourceTree = "<group>"; };
@@ -12501,6 +12507,8 @@
 				ABBFDA3F063480490011BD0A /* Deployment-Info.plist */,
 				ABFDE81610A8003100E33E0F /* Deployment-Info OsiriXLite.plist */,
 				ABD7BC4C063F00A900E24B0E /* Flow.plist */,
+				CEBD3E0C14B9EDE300FBDF08 /* French.plist */,
+				CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */,
 				ABD7BC50063F00A900E24B0E /* GEcolor.plist */,
 				ABD7BC51063F00A900E24B0E /* GrayRainbow.plist */,
 				CE5EABC40935E702006D85DD /* HotGreen.plist */,
@@ -22590,6 +22598,8 @@
 				ABB7ADC7148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */,
 				ABB7ADC9148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */,
 				ABB7ADCB148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */,
+				CEBD3E0E14B9EDE300FBDF08 /* French.plist in Resources */,
+				CEBD3E1014B9EDE300FBDF08 /* Perfusion.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22956,6 +22966,8 @@
 				ABB7ADC8148CDDF2007D3C3F /* 2DMPRhorizontalPosition.tif in Resources */,
 				ABB7ADCA148CDDF2007D3C3F /* 2DMPRnormalPosition.tif in Resources */,
 				ABB7ADCC148CDDF2007D3C3F /* 2DMPRverticalPosition.tif in Resources */,
+				CEBD3E0F14B9EDE300FBDF08 /* French.plist in Resources */,
+				CEBD3E1114B9EDE300FBDF08 /* Perfusion.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

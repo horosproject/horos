@@ -4992,7 +4992,8 @@ static NSConditionLock *threadLock = nil;
 						NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
 						NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
 						
-						if( openedStudyDate == nil) openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
+						if( openedStudyDate == nil)
+                            openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"];
 						
 						int to, from = i;
 						
@@ -5000,8 +5001,10 @@ static NSConditionLock *threadLock = nil;
 						{
 							i++;
 							studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];
-							if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]) openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
-							else openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
+							if( [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"])
+                                openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"]];
+							else
+                                openedStudyDate = [openedStudyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"dateAdded"]];
 						}
 						to = i;
 						
@@ -5275,6 +5278,8 @@ static NSConditionLock *threadLock = nil;
 					[request setPredicate: [NSPredicate predicateWithValue: YES]];
 					[request setSortDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"patientID" ascending: YES]]];
 					
+                    int avoidInfiniteLoop = 0;
+                    
 					do
 					{
 						NSTimeInterval producedInterval = 0;
@@ -5338,7 +5343,8 @@ static NSConditionLock *threadLock = nil;
 									}
 									
 									NSDate *openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-									if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
+									if( openedDate == nil)
+                                        openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 									
 									if( [openedDate timeIntervalSinceNow] < openedInterval)
 									{
@@ -5359,7 +5365,8 @@ static NSConditionLock *threadLock = nil;
 										}
 										
 										openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateOpened"];
-										if( openedDate == nil) openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
+										if( openedDate == nil)
+                                            openedDate = [[unlockedStudies objectAtIndex: i] valueForKey:@"dateAdded"];
 										
 										if( [openedDate timeIntervalSinceNow] < openedInterval)
 										{
@@ -5408,8 +5415,14 @@ static NSConditionLock *threadLock = nil;
 						free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue];
 						free /= thousand;
 						free /= thousand;
+                        
+                        avoidInfiniteLoop++;
+                        #define MAXLOOP 30
 					}
-					while( free < freeMemoryRequested && [unlockedStudies count] > 2);
+					while( free < freeMemoryRequested && [unlockedStudies count] > 2 && avoidInfiniteLoop < MAXLOOP);
+                    
+                    if( avoidInfiniteLoop >= MAXLOOP)
+                        NSLog(@"------------------- autoCleanDatabaseFreeSpace - avoidInfiniteLoop limit reached - will continue later...");
 				}
 				@catch ( NSException *e)
 				{
