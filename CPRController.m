@@ -3357,42 +3357,50 @@ static float deg2rad = M_PI / 180.0;
 	[[self window] setShowsToolbarButton: NO];
 	[[[self window] toolbar] setVisible: YES];
 	
-	
-    //	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
-    //	{
-    //		
-    //		@try
-    //		{
-    //			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-    //			
-    //			
-    //			NSImage *im = [item image];
-    //			
-    //			if( im == nil)
-    //			{
-    //				@try
-    //				{
-    //					im = [[item view] screenshotByCreatingPDF];
-    //				}
-    //				@catch (NSException * e)
-    //				{
-    //					NSLog( @"a");
-    //				}
-    //			}
-    //			
-    //			if( im)
-    //			{
-    //				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
-    //				
-    //				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
-    //				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
-    //			}
-    //		}
-    //		@catch (NSException * e)
-    //		{
-    //			NSLog( @"b");
-    //		}
-    //	}
+#ifdef EXPORTTOOLBARITEM
+	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
+	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
+	{
+		@try
+		{
+			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
+			
+			
+			NSImage *im = [item image];
+			
+			if( im == nil)
+			{
+				@try
+				{
+					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+						[item setRecursiveEnabled: YES];
+					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+						[[item view] setRecursiveEnabled: YES];
+					else if( item)
+						NSLog( @"%@", item);
+                    
+					im = [[item view] screenshotByCreatingPDF];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"a");
+				}
+			}
+			
+			if( im)
+			{
+				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
+				
+				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[[[item label] stringByReplacingOccurrencesOfString: @"&" withString:@"And"] stringByReplacingOccurrencesOfString: @" " withString:@""] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
+				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
+			}
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"b");
+		}
+	}
+#endif
 	
 }
 
