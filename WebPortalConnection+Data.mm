@@ -996,7 +996,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				NSError* err = NULL;
 				if (![user validatePassword:&password error:&err])
 					[response.tokens addError:err.localizedDescription];
-				else {
+				else
+                {
 					// We can update the user password
 					
 //					if( [previouspassword isEqualToString: @"public"] && [self.user.name isEqualToString:@"public"])
@@ -1124,12 +1125,22 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             
 			if (!response.tokens.errors.count)
             {
-				webUser.name = name;
-                
                 if( newPassword.length > 0 && [newPassword isEqualToString: newPassword2])
                 {
+                    if( [webUser.name isEqualToString: name] == NO)
+                        webUser.name = name;
+                    
                     webUser.password = newPassword;
                     [webUser convertPasswordToHashIfNeeded];
+                }
+                else
+                {
+                    if( [webUser.name isEqualToString: name] == NO)
+                    {
+                        webUser.name = name;
+                        [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User's name has changed : the password has been reset to a new password: %@", nil), webUser.password]];
+                        [webUser convertPasswordToHashIfNeeded];
+                    }
                 }
                 
                 webUser.email = [parameters objectForKey:@"email"];
@@ -1174,7 +1185,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				
 				[webUser.managedObjectContext save:NULL];
 				
-				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", @"Web Portal, admin, user edition, save ok (%@ is user.name)"), webUser.name]];
+				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", nil), webUser.name]];
 				luser = webUser;
 			} else
 				userRecycleParams = YES;
@@ -1189,10 +1200,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		originalName = [self.parameters objectForKey:@"name"];
 		luser = [self.portal.database userWithName:originalName];
 		if (!luser)
-			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name <b>%@</b>.", @"Web Portal, admin, user edition, edit error (%@ is user.name)"), originalName]];
+			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't find user with name <b>%@</b>.", nil), originalName]];
 	}
 	
-	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", @"Web Portal, admin, user edition, title (%@ is user.name)"), luser? [luser valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
+	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"User Administration: %@", nil), luser? [luser valueForKey:@"name"] : originalName] forKey:@"PageTitle"];
 	if (luser)
 		[response.tokens setObject:[WebPortalProxy createWithObject:luser transformer:[WebPortalUserTransformer create]] forKey:@"EditedUser"];
 	else if (userRecycleParams) [response.tokens setObject:self.parameters forKey:@"EditedUser"];

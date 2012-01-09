@@ -118,19 +118,22 @@ static PSGenerator *generator = nil;
 
 - (void) setName: (NSString*) newName
 {
-    if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
+    if( [newName isEqualToString: self.name] == NO)
     {
-       
+        if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
+        {
+           
+        }
+        else
+        {     
+           NSLog( @"------- WebPortalUser : name changed -> password reset");
+           [self generatePassword];
+        }
+        
+        [self willChangeValueForKey: @"name"];
+        [self setPrimitiveValue: newName forKey: @"name"];
+        [self didChangeValueForKey: @"name"];
     }
-    else
-    {     
-       NSLog( @"WebPortalUser : name changed -> password reseted");
-       [self generatePassword];
-    }
-    
-    [self willChangeValueForKey: @"name"];
-    [self setPrimitiveValue: newName forKey: @"name"];
-    [self didChangeValueForKey: @"name"];
 }
 
 - (void) setPassword: (NSString*) newPassword
@@ -158,7 +161,7 @@ static PSGenerator *generator = nil;
         [self setPrimitiveValue: HASHPASSWORD forKey: @"password"];
         [self didChangeValueForKey: @"password"];
         
-        NSLog( @"---- Convert password to hash string. Delete password for user: %@", self.name);
+        NSLog( @"---- Convert password to hash string. Delete original password for user: %@", self.name);
     }
 }
 
@@ -166,17 +169,20 @@ static PSGenerator *generator = nil;
 {
     NSString *password2validate = *value;
     
-    if( password2validate.length > 0 && [[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
+    if( [password2validate isEqualToString: HASHPASSWORD] == NO)
     {
-		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only '*' characters.", NULL)];
-		return NO;
-	}
-    
-	if( [password2validate length] < 4 && [password2validate isEqualToString: HASHPASSWORD] == NO)
-    {
-		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be at least 4 characters long.", NULL)];
-		return NO;
-	}
+        if( [[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only '*' characters.", NULL)];
+            return NO;
+        }
+	    
+        if( [password2validate length] < 4)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be at least 4 characters long.", NULL)];
+            return NO;
+        }
+    }
 	
 	return YES;
 }
