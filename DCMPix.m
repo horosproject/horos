@@ -5052,7 +5052,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil !");
 			}
 			else
 			{
@@ -5066,7 +5066,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					
 					if( retainedCacheGroup != nil)
-						NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil !");
 					
 					retainedCacheGroup = dic;
 					
@@ -5081,7 +5081,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e)
 	{
-		NSLog(@"reloadAnnotations: %@", e);
+		NSLog( @"*********** reloadAnnotations: %@", e);
 	}
 	
 	[PapyrusLock unlock];
@@ -5473,7 +5473,7 @@ END_CREATE_ROIS:
 				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 				retainedCacheGroup = dic;
 			}
-			else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+			else NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil !");
 		}
 		else
 		{
@@ -5489,7 +5489,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil !");
 				
 				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 			}
@@ -5497,7 +5497,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"loadDICOMDCMFramework exception : %@", e);
+		NSLog( @"******** loadDICOMDCMFramework exception : %@", e);
 		dcmObject = nil;
 	}
 	
@@ -6388,7 +6388,7 @@ END_CREATE_ROIS:
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 				
 				if( retainedCacheGroup != nil)
-					NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+					NSLog( @"******** DCMPix : retainedCacheGroup 5 != nil !");
 				
 				retainedCacheGroup = cachedGroupsForThisFile;
 				
@@ -6412,7 +6412,7 @@ END_CREATE_ROIS:
 					[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
 					retainedCacheGroup = cachedGroupsForThisFile;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 6 != nil !");
 			}
 		}
 		
@@ -6480,44 +6480,47 @@ END_CREATE_ROIS:
 	if( purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
-	[purgeCacheLock lockWhenCondition: 0];
-	[PapyrusLock lock];
-	
-	@try 
-	{
-		[cachedDCMFrameworkFiles removeAllObjects];
-	
-		for( NSString *file in [cachedPapyGroups allKeys])
-		{
-			NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
-			
-			if( cachedGroupsForThisFile)
-			{
-				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-				[cachedGroupsForThisFile removeObjectForKey: @"count"];
-					
-				for( NSValue *pointer in [cachedGroupsForThisFile allValues])
-				{
-					SElement *theGroupP = (SElement*) [pointer pointerValue];
-					Papy3GroupFree ( &theGroupP, TRUE);
-				}
-					
-				[cachedPapyGroups removeObjectForKey: file];
-				Papy3FileClose (fileNb, TRUE);
-			}
-		}
-		
-		[cachedPapyGroups removeAllObjects];
-	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
-	
-	
-	[PapyrusLock unlock];
-	[purgeCacheLock unlock];
+	if( [purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 60]])
+    {
+        [PapyrusLock lock];
+        
+        @try 
+        {
+            [cachedDCMFrameworkFiles removeAllObjects];
+        
+            for( NSString *file in [cachedPapyGroups allKeys])
+            {
+                NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
+                
+                if( cachedGroupsForThisFile)
+                {
+                    int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+                    [cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+                    [cachedGroupsForThisFile removeObjectForKey: @"count"];
+                        
+                    for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+                    {
+                        SElement *theGroupP = (SElement*) [pointer pointerValue];
+                        Papy3GroupFree ( &theGroupP, TRUE);
+                    }
+                        
+                    [cachedPapyGroups removeObjectForKey: file];
+                    Papy3FileClose (fileNb, TRUE);
+                }
+            }
+            
+            [cachedPapyGroups removeAllObjects];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+        
+        
+        [PapyrusLock unlock];
+        [purgeCacheLock unlock];
+    }
+    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 60 secs : purgeCacheLock condition: %d", [purgeCacheLock condition]);
 }
 
 - (void) clearCachedDCMFrameworkFiles

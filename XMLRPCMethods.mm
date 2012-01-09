@@ -245,7 +245,7 @@ static NSTimeInterval lastConnection = 0;
                 DicomStudy *study = nil;
                 DicomSeries *series = nil;
                 
-                while( found == NO && [NSDate timeIntervalSinceReferenceDate] - started < 300)
+                while( found == NO && [NSDate timeIntervalSinceReferenceDate] - started < 300 && [[NSThread currentThread] isCancelled] == NO)
                 {
                     [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0]];
                     

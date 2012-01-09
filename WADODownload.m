@@ -16,6 +16,11 @@
 #import "BrowserController.h"
 #include <libkern/OSAtomic.h>
 
+@interface NSURLRequest (DummyInterface)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
++ (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation WADODownload
 
 @synthesize _abortAssociation, showErrorMessage;
@@ -180,6 +185,16 @@
 			}
 			retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
 			
+            @try
+            {
+                if( [[url scheme] isEqualToString: @"https"])
+                    [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+            }
+            @catch (NSException *e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
 			NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
 			
             if( downloadConnection)
