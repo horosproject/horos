@@ -5052,7 +5052,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil ! %@", srcFile);
 			}
 			else
 			{
@@ -5066,7 +5066,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					
 					if( retainedCacheGroup != nil)
-						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil !");
+						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil ! %@", srcFile);
 					
 					retainedCacheGroup = dic;
 					
@@ -5473,7 +5473,7 @@ END_CREATE_ROIS:
 				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 				retainedCacheGroup = dic;
 			}
-			else NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil !");
+			else NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil ! %@", srcFile);
 		}
 		else
 		{
@@ -5489,7 +5489,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil ! %@", srcFile);
 				
 				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 			}
@@ -5505,7 +5505,7 @@ END_CREATE_ROIS:
 	
 	if(dcmObject == nil)
 	{
-		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
+		NSLog( @"******** loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
 		[purgeCacheLock lock];
 		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 		[pool release];
@@ -6350,7 +6350,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"loadDICOMDCMFramework exception 2: %@", e);
+		NSLog( @"******** loadDICOMDCMFramework exception 2: %@", e);
 		returnValue = NO;
 	}
 	
@@ -6388,7 +6388,7 @@ END_CREATE_ROIS:
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 				
 				if( retainedCacheGroup != nil)
-					NSLog( @"******** DCMPix : retainedCacheGroup 5 != nil !");
+					NSLog( @"******** DCMPix : retainedCacheGroup 5 != nil ! %@", srcFile);
 				
 				retainedCacheGroup = cachedGroupsForThisFile;
 				
@@ -6412,7 +6412,7 @@ END_CREATE_ROIS:
 					[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
 					retainedCacheGroup = cachedGroupsForThisFile;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup 6 != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 6 != nil ! %@", srcFile);
 			}
 		}
 		
