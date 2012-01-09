@@ -14,6 +14,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define HASHPASSWORD @"**********"
+
 /** \brief  Core Data Entity for a web user */
 @class WebPortalStudy;
 
@@ -33,6 +35,7 @@
 @property (nonatomic, retain) NSNumber * isAdmin;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * password;
+@property (nonatomic, retain) NSString * passwordHash;
 @property (nonatomic, retain) NSDate * passwordCreationDate;
 @property (nonatomic, retain) NSString * phone;
 @property (nonatomic, retain) NSNumber * sendDICOMtoAnyNodes;
@@ -45,6 +48,7 @@
 @property (nonatomic, retain) NSSet* studies;
 
 -(void)generatePassword;
+-(void)convertPasswordToHashIfNeeded;
 
 -(BOOL)validatePassword:(NSString**)value error:(NSError**)error;
 -(BOOL)validateDownloadZIP:(NSNumber**)value error:(NSError**)error;
@@ -61,3 +65,4 @@
 - (void)removeStudies:(NSSet *)value;
 
 @end
+

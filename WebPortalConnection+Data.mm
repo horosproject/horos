@@ -1007,6 +1007,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //					else
 					{
 						user.password = password;
+                        
+                        [user convertPasswordToHashIfNeeded];
+                        
 						[self.portal.database save:NULL];
 						[response.tokens addMessage:NSLocalizedString(@"Password updated successfully!", nil)];
 						[self.portal updateLogEntryForStudy: nil withMessage: [NSString stringWithFormat: @"User changed his password"] forUser:self.user.name ip:asyncSocket.connectedHost];
@@ -1095,8 +1098,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			// NSLog(@"SAVE params: %@", parameters.description);
 			
 			NSString* name = [[parameters objectForKey:@"name"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			NSString* password = [[parameters objectForKey:@"password"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
+			NSString* newPassword = [[parameters objectForKey:@"newPassword"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+			NSString* newPassword2 = [[parameters objectForKey:@"newPassword2"] stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSString* studyPredicate = [parameters objectForKey:@"studyPredicate"];
 			NSNumber* downloadZIP = [NSNumber numberWithBool:[[parameters objectForKey:@"downloadZIP"] isEqual:@"on"]];
 			
 			NSError* err;
@@ -1105,7 +1109,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if (![webUser validateName:&name error:&err])
 				[response.tokens addError:err.localizedDescription];
 			err = NULL;
-			if (![webUser validatePassword:&password error:&err])
+            
+			if ( newPassword.length > 0 && ![webUser validatePassword:&newPassword error:&err])
 				[response.tokens addError:err.localizedDescription];
 			err = NULL;
 			if (![webUser validateStudyPredicate:&studyPredicate error:&err])
@@ -1114,11 +1119,20 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			if (![webUser validateDownloadZIP:&downloadZIP error:&err])
 				[response.tokens addError:err.localizedDescription];
 			
+            if( newPassword.length > 0 && [newPassword isEqualToString: newPassword2] == NO)
+                [response.tokens addError: NSLocalizedString( @"Passwords are not identical.", nil)];
+            
 			if (!response.tokens.errors.count)
             {
 				webUser.name = name;
-				webUser.password = password;
-				webUser.email = [parameters objectForKey:@"email"];
+                
+                if( newPassword.length > 0 && [newPassword isEqualToString: newPassword2])
+                {
+                    webUser.password = newPassword;
+                    [webUser convertPasswordToHashIfNeeded];
+                }
+                
+                webUser.email = [parameters objectForKey:@"email"];
 				webUser.phone = [parameters objectForKey:@"phone"];
 				webUser.address = [parameters objectForKey:@"address"];
 				webUser.studyPredicate = studyPredicate;

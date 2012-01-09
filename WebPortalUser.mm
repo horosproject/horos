@@ -18,7 +18,8 @@
 #import "WebPortal.h"
 #import "AppController.h"
 #import "NSError+OsiriX.h"
-
+#import "DDData.h"
+#import "NSData+N2.h"
 
 static PSGenerator *generator = nil;
 
@@ -37,6 +38,7 @@ static PSGenerator *generator = nil;
 @dynamic isAdmin;
 @dynamic name;
 @dynamic password;
+@dynamic passwordHash;
 @dynamic passwordCreationDate;
 @dynamic phone;
 @dynamic sendDICOMtoAnyNodes;
@@ -114,20 +116,65 @@ static PSGenerator *generator = nil;
 	[self setPrimitiveValue: v forKey: @"autoDelete"];
 }
 
-- (void) setPassword: (NSString*) newPassword
+- (void) setName: (NSString*) newName
 {
-	if( [newPassword isEqualToString: [self primitiveValueForKey: @"password"]] == NO)
-	{
-		[self setValue: [NSDate date] forKey: @"passwordCreationDate"];
-	}
-	
-	[self setPrimitiveValue: newPassword forKey: @"password"];
-	[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+    if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
+    {
+       
+    }
+    else
+    {     
+       NSLog( @"WebPortalUser : name changed -> password reseted");
+       [self generatePassword];
+    }
+    
+    [self willChangeValueForKey: @"name"];
+    [self setPrimitiveValue: newName forKey: @"name"];
+    [self didChangeValueForKey: @"name"];
 }
 
--(BOOL)validatePassword:(NSString**)value error:(NSError**)error {
-	if ([*value length] < 4) {
-		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"Password needs to be at least 4 characters long.", NULL)];
+- (void) setPassword: (NSString*) newPassword
+{
+	if( [newPassword length] >= 4 && [newPassword isEqualToString: HASHPASSWORD] == NO)
+	{
+		[self setValue: [NSDate date] forKey: @"passwordCreationDate"];
+        
+        [self willChangeValueForKey: @"password"];
+        [self setPrimitiveValue: newPassword forKey: @"password"];
+        [self didChangeValueForKey: @"password"];
+        
+        [self setPrimitiveValue: @"" forKey: @"passwordHash"];
+        [self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+    }
+}
+
+- (void) convertPasswordToHashIfNeeded
+{
+    if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO) // We dont want to store password, only sha1Digest version ! 
+    {
+        self.passwordHash = [[[[self.password stringByAppendingString: self.name] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+        
+        [self willChangeValueForKey: @"password"];
+        [self setPrimitiveValue: HASHPASSWORD forKey: @"password"];
+        [self didChangeValueForKey: @"password"];
+        
+        NSLog( @"---- Convert password to hash string. Delete password for user: %@", self.name);
+    }
+}
+
+-(BOOL)validatePassword:(NSString**)value error:(NSError**)error
+{
+    NSString *password2validate = *value;
+    
+    if( password2validate.length > 0 && [[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
+    {
+		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only '*' characters.", NULL)];
+		return NO;
+	}
+    
+	if( [password2validate length] < 4 && [password2validate isEqualToString: HASHPASSWORD] == NO)
+    {
+		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be at least 4 characters long.", NULL)];
 		return NO;
 	}
 	

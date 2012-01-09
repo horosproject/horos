@@ -1036,20 +1036,27 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		NSString* paramsString = [[[NSString alloc] initWithBytes:data.bytes length:data.length encoding:NSUTF8StringEncoding] autorelease];
 		NSDictionary* params = [WebPortalConnection ExtractParams:paramsString];
 		
-		if ([params objectForKey:@"login"]) {
+		if ([params objectForKey:@"login"])
+        {
 			NSString* username = [params objectForKey:@"username"];
-			NSString* password = [params objectForKey:@"password"];
 			NSString* sha1 = [params objectForKey:@"sha1"];
-			if (username.length && password.length && [password isEqual:[self passwordForUser:username]])
-				[self.session setObject:username forKey:SessionUsernameKey];
-			else if (username.length && sha1.length) {
-				NSString* sha1internal = [[[[[self passwordForUser:username] stringByAppendingString:NotNil(self.session.challenge)] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+            
+            if (username.length && sha1.length)
+            {
+                NSString *userInternalPassword = [self passwordForUser: username];
+                
+                [self.user convertPasswordToHashIfNeeded];
+                
+				NSString* sha1internal = self.user.passwordHash;
 				
-				if (sha1internal && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame) {
+				if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+                {
 					[self.session setObject:username forKey:SessionUsernameKey];
 					[self.session deleteChallenge];
 					[self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Successful login for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
-				} else {
+				}
+                else
+                {
 					[self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid password for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
 				}
 			}

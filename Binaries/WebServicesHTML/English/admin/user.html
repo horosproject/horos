@@ -114,13 +114,21 @@
 			form.studies.remove(form.studies.selectedIndex);
 	}
 	
+	function clear_password()
+	{
+		form.newPassword.value ="";
+		form.newPassword2.value =""; 
+	}
+	
 	function willSubmit(form) {
 		form.remainingStudies.value = "";
 		
 		var i;
 		for (i = 0; i < form.studies.options.length; ++i)
 			form.remainingStudies.value += (form.remainingStudies.value.length? "," : "") + escape(form.studies.options[i].value);
-
+		
+		setTimeout('clear_password()', 200);
+		
 		return true;
 	}
 	
@@ -135,7 +143,8 @@
 		<input type="hidden" name="originalName" value="%X:EditedUser.originalName%" />
 		<table class="wide form">
 			<tr><td><label for="name">Name:</label></td><td><input type="text" name="name" id="name" value="%X:EditedUser.name%" /></td></tr>
-			<tr><td><label for="password">Password:</label></td><td><input type="password" name="password" id="password" value="%X:EditedUser.password%" /></td></tr>
+			<tr><td><label for="newPassword">New Password:</label></td><td><input type="password" name="newPassword" id="password" value="" /></td></tr>
+			<tr><td><label for="newPassword2">Repeat New Password:</label></td><td><input type="password" name="newPassword2" id="password" value="" /></td></tr>
 			<tr><td><label for="email">Email:</label></td><td><input type="text" name="email" id="email" value="%X:EditedUser.email%" /></td></tr>
 			<tr><td><label for="phone">Phone:</label></td><td><input type="text" name="phone" id="phone" value="%X:EditedUser.phone%" /></td></tr>
 			<tr><td><label for="address">Address:</label></td><td><input type="text" name="address" id="address" value="%X:EditedUser.address%" /></td></tr>

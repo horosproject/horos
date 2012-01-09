@@ -2,13 +2,11 @@
 	<script src="/sha1-min.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	function loginAction(form) {
-		form.sha1.value = hex_sha1(form.password.value+form.challenge.value);
+		form.sha1.value = hex_sha1(form.password.value+form.username.value);
 		form.password.value = '';
-		form.challenge.value = '';
 		return true;
 	}
 	</script>
-	<input type="hidden" id="challenge" name="challenge" value="%X:Info.newChallenge%" />
 	<input type="hidden" id="sha1" name="sha1" value="" />
 	<table class="centered form">
 		%[IF:Info.authenticationRequired%
