@@ -62,7 +62,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{623, 405}</string>
 				<object class="NSView" key="NSWindowView" id="738391672">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="845086746">
@@ -904,7 +904,6 @@
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{493, 16}, {47, 14}}</string>
 											<reference key="NSSuperview" ref="736342047"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="266938261">
 												<int key="NSCellFlags">68288064</int>
@@ -945,7 +944,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{623, 444}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="362111600"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -1028,7 +1026,6 @@
 							<string key="NSFrame">{{630, 15}, {96, 32}}</string>
 							<reference key="NSSuperview" ref="340339990"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="515620723">
 								<int key="NSCellFlags">67239424</int>
@@ -1062,7 +1059,7 @@
 											<string key="NSFrameSize">{138, 469}</string>
 											<reference key="NSSuperview" ref="308111666"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="877757841"/>
+											<reference key="NSNextKeyView" ref="835839488"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="898290723">
 												<reference key="NSNextResponder" ref="548879023"/>
@@ -1201,7 +1198,7 @@
 							<string key="NSFrame">{{24, 48}, {140, 487}}</string>
 							<reference key="NSSuperview" ref="340339990"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="835839488"/>
+							<reference key="NSNextKeyView" ref="308111666"/>
 							<int key="NSsFlags">133650</int>
 							<reference key="NSVScroller" ref="877757841"/>
 							<reference key="NSHScroller" ref="835839488"/>
@@ -2031,7 +2028,7 @@ ZW1wdHkgbGlzdC4</string>
 											<string key="NSFrameSize">{297, 70}</string>
 											<reference key="NSSuperview" ref="288306470"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="173006295"/>
+											<reference key="NSNextKeyView" ref="432493073"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="_NSCornerView" key="NSCornerView">
 												<nil key="NSNextResponder"/>
@@ -2147,7 +2144,7 @@ ZW1wdHkgbGlzdC4</string>
 							<string key="NSFrame">{{421, 261}, {299, 72}}</string>
 							<reference key="NSSuperview" ref="340339990"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="432493073"/>
+							<reference key="NSNextKeyView" ref="288306470"/>
 							<int key="NSsFlags">133650</int>
 							<reference key="NSVScroller" ref="432493073"/>
 							<reference key="NSHScroller" ref="329326799"/>
@@ -2335,14 +2332,6 @@ ZW1wdHkgbGlzdC4</string>
 						<reference key="destination" ref="745744074"/>
 					</object>
 					<int key="connectionID">1177</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setName:</string>
-						<reference key="source" ref="649897355"/>
-						<reference key="destination" ref="887562285"/>
-					</object>
-					<int key="connectionID">1190</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -5173,7 +5162,6 @@ ZW1wdHkgbGlzdC4</string>
 						<string key="editUsers:">id</string>
 						<string key="exitEditUsers:">id</string>
 						<string key="openKeyChainAccess:">id</string>
-						<string key="setName:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="viewTLSCertificate:">id</string>
 					</dictionary>
@@ -5196,10 +5184,6 @@ ZW1wdHkgbGlzdC4</string>
 						</object>
 						<object class="IBActionInfo" key="openKeyChainAccess:">
 							<string key="name">openKeyChainAccess:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setName:">
-							<string key="name">setName:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="smartAlbumHelpButton:">
