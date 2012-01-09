@@ -2424,6 +2424,7 @@ extern "C"
 	else
 	{
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
+        NSLog( @"****** Q&R autoQueryThread failed...");
 	}
 	
 	[pool release];
