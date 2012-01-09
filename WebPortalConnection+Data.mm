@@ -1138,7 +1138,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     if( [webUser.name isEqualToString: name] == NO)
                     {
                         webUser.name = name;
-                        [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User's name has changed : the password has been reset to a new password: %@", nil), webUser.password]];
+                        [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User's name has changed. The password has been reset to a new password: %@", nil), webUser.password]];
                         [webUser convertPasswordToHashIfNeeded];
                     }
                 }

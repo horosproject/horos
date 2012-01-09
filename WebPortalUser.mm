@@ -122,12 +122,14 @@ static PSGenerator *generator = nil;
     {
         if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
         {
-           
+            
         }
         else
-        {     
-           NSLog( @"------- WebPortalUser : name changed -> password reset");
-           [self generatePassword];
+        {
+            NSLog( @"------- WebPortalUser : name changed -> password reset");
+            [self generatePassword];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName: @"WebPortalUsernameChanged" object: self];
         }
         
         [self willChangeValueForKey: @"name"];

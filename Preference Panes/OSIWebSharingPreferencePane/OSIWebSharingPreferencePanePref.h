@@ -38,7 +38,7 @@
 - (IBAction) chooseTLSCertificate: (id) sender;
 - (IBAction) viewTLSCertificate: (id) sender;
 - (IBAction) copyMissingCustomizedFiles: (id) sender;
-
+- (IBAction) setName: (id) sender;
 - (IBAction) editUsers: (id) sender;
 - (IBAction) exitEditUsers: (id) sender;
 

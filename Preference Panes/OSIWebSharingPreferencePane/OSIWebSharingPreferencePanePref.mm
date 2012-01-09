@@ -14,7 +14,7 @@
 
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <SecurityInterface/SFCertificateView.h>
-
+#import "WebPortalUser.h"
 #import "OSIWebSharingPreferencePanePref.h"
 #import <OsiriXAPI/DefaultsOsiriX.h>
 #import <OsiriXAPI/NSUserDefaults+OsiriX.h>
@@ -36,6 +36,14 @@
 
 @synthesize TLSAuthenticationCertificate;
 
+- (void) usernameChanged: (NSNotification*) notification
+{
+    WebPortalUser *user = [notification object];
+    
+    if( user == [[userArrayController selectedObjects] lastObject])
+        NSRunInformationalAlertPanel( NSLocalizedString(@"User's name", nil), [NSString stringWithFormat: NSLocalizedString(@"User's name changed. The password has been reset to a new password: %@", nil), user.password], NSLocalizedString(@"OK", nil), nil, nil);
+}
+
 - (id) initWithBundle:(NSBundle *)bundle
 {
 	if( self = [super init])
@@ -45,6 +53,8 @@
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
+        
+        [[NSNotificationCenter defaultCenter] addObserver: self selector:@selector( usernameChanged:) name: @"WebPortalUsernameChanged" object: nil];
 	}
 	
 	return self;
@@ -137,6 +147,8 @@
 
 - (void) dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    
 	NSLog(@"dealloc OSIWebSharingPreferencePanePref");
 	
 	[super dealloc];
