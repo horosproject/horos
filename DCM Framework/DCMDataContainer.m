@@ -65,17 +65,24 @@
 
 
 
-- (id) initWithData:(NSData *)data{
-
-	if (self = [super init]) {
-		dicomData = [data mutableCopy];
-		_ptr = (unsigned char *)[dicomData bytes];
-		if (![self determineTransferSyntax])
-			return nil;
-
+- (id) initWithData:(NSData *)data
+{
+	if (self = [super init])
+    {
+		void *ptr = malloc( data.length);
+        if( ptr)
+        {
+            dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
+            _ptr = (unsigned char *)[dicomData bytes];
+            
+            if (![self determineTransferSyntax])
+            {
+                [dicomData release];
+                return nil;
+            }
+        }
 	}
 	return self;
-
 }
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
@@ -112,8 +119,10 @@
 		dicomData = [[NSMutableData dataWithContentsOfURL:aURL] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+        {
+			[dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -123,8 +132,10 @@
 		dicomData = [[NSMutableData dataWithBytes:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -134,8 +145,10 @@
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -145,8 +158,10 @@
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length freeWhenDone:flag] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
