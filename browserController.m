@@ -10488,7 +10488,7 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView: (NSSplitView *)sender constrainSplitPosition: (CGFloat)proposedPosition ofSubviewAt: (NSInteger)offset
 {
-if( [sender isVertical] == YES)
+    if( [sender isVertical] == YES)
 	{
         NSSize size = oMatrix.cellSize;
         NSSize space = oMatrix.intercellSpacing;
@@ -10515,6 +10515,10 @@ if( [sender isVertical] == YES)
 		pos += scrollbarWidth;
 		
         return pos;
+    }
+    else if ([sender isEqual: bannerSplit])
+    {
+        return [sender frame].size.height - (banner.image.size.height+3);
     }
 	
     return proposedPosition;
@@ -10659,12 +10663,12 @@ if( [sender isVertical] == YES)
 		[oMatrix selectCellWithTag: selectedCellTag];
     }
     
+    static BOOL noReentry = 1;
+    if( noReentry)
     {
-    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
-    frame.origin.y -= banner.image.size.height - frame.size.height;
-    frame.size.height = banner.image.size.height;
-    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
-    [bannerSplit adjustSubviews];
+        noReentry = 0;
+        [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
+        noReentry = 1;
     }
 }
 
@@ -14763,11 +14767,7 @@ static NSArray*	openSubSeriesArray = nil;
     [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
     #endif
     
-    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
-    frame.origin.y -= banner.image.size.height - frame.size.height;
-    frame.size.height = banner.image.size.height;
-    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
-    [bannerSplit adjustSubviews];
+    [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
 
 	#ifdef __LP64__
 	NSRect f = [subSeriesWindow frame];
@@ -14805,12 +14805,7 @@ static NSArray*	openSubSeriesArray = nil;
 - (void) installBanner: (NSImage*) bannerImage
 {
     [banner setImage: bannerImage];
-    
-    NSRect frame = [[bannerSplit.subviews objectAtIndex: 1] frame];
-    frame.origin.y -= banner.image.size.height - frame.size.height;
-    frame.size.height = banner.image.size.height;
-    [[bannerSplit.subviews objectAtIndex: 1] setFrame: frame];
-    [bannerSplit adjustSubviews];
+    [bannerSplit setPosition: bannerImage.size.height+3 ofDividerAtIndex: 0];
 }
 
 - (void) checkForBanner: (id) sender
@@ -14831,7 +14826,6 @@ static NSArray*	openSubSeriesArray = nil;
     }
     
     [pool release];
-    
 }
 
 -(void)dealloc
@@ -14841,10 +14835,13 @@ static NSArray*	openSubSeriesArray = nil;
 	[super dealloc];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
-	if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+	if (object == [NSUserDefaultsController sharedUserDefaultsController])
+    {
 		keyPath = [keyPath substringFromIndex:7];
-		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey]) {
+		if ([keyPath isEqual:OsirixBonjourSharingActiveFlagDefaultsKey])
+        {
 			[self switchToDefaultDBIfNeeded];
 			return;
 		}

@@ -50,19 +50,23 @@
 
 - (void)dealloc
 {
-	[queryLock lock];
-	[queryLock unlock];
-	[queryLock release];
-	
-	[rootNode release];
-	[filters release];
-	[calledAET release];
-	[callingAET release];
-	[hostname release];
-	[port release];
-	[queries release];
-	[distantServer release];
-	
+    @synchronized( self)
+    {
+        [queryLock lock];
+        
+        [rootNode release];
+        [filters release];
+        [calledAET release];
+        [callingAET release];
+        [hostname release];
+        [port release];
+        [queries release];
+        [distantServer release];
+        
+        [queryLock unlock];
+        [queryLock release];
+	}
+    
 	[super dealloc];
 }
 
@@ -81,85 +85,95 @@
 	return queries;
 }
 
-- (void)sortArray:(NSArray *)sortDesc{
-	NSArray *newQueries = [queries sortedArrayUsingDescriptors:sortDesc];
-	[queries release];
-	queries = [newQueries retain];
+- (void)sortArray:(NSArray *)sortDesc
+{
+    @synchronized( self)
+    {
+        NSArray *newQueries = [queries sortedArrayUsingDescriptors:sortDesc];
+        [queries release];
+        queries = [newQueries retain];
+    }
 }
 
 - (void)performQuery: (BOOL) showError
 {
 	if( queryLock == nil) queryLock = [[NSLock alloc] init];
-
+    
 	[queryLock lock];
 	
-	NS_DURING
-	
-	BOOL sameAddress = NO;
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-	{
-		if( [port intValue] == [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"])
-		{
-			for( NSString *s in [[DefaultsOsiriX currentHost] names])
-			{
-				if( [hostname isEqualToString: s])
-					sameAddress = YES;
-			}
-			
-			for( NSString *s in [[DefaultsOsiriX currentHost] addresses])
-			{
-				if( [hostname isEqualToString: s])
-					sameAddress = YES;
-			}
-		}
+	@try
+    {
+        BOOL sameAddress = NO;
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
+        {
+            if( [port intValue] == [[NSUserDefaults standardUserDefaults] integerForKey: @"AEPORT"])
+            {
+                for( NSString *s in [[DefaultsOsiriX currentHost] names])
+                {
+                    if( [hostname isEqualToString: s])
+                        sameAddress = YES;
+                }
+                
+                for( NSString *s in [[DefaultsOsiriX currentHost] addresses])
+                {
+                    if( [hostname isEqualToString: s])
+                        sameAddress = YES;
+                }
+            }
+        }
+        
+        if( sameAddress)
+        {
+            NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
+            [alert runModal];
+        }
+        else
+        {
+            @synchronized( self)
+            {
+                [rootNode release];
+                rootNode = [[DCMTKRootQueryNode queryNodeWithDataset: nil
+                                                callingAET: callingAET
+                                                calledAET: calledAET 
+                                                hostname: hostname
+                                                port: [port intValue]
+                                                transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
+                                                compression: nil
+                                                extraParameters: distantServer] retain];
+                                                
+                NSMutableArray *filterArray = [NSMutableArray array];
+                NSEnumerator *enumerator = [filters keyEnumerator];
+                NSString *key;
+                while (key = [enumerator nextObject])
+                {
+                    if ([filters objectForKey:key])
+                    {
+                        NSDictionary *filter = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[filters objectForKey:key], key, nil] forKeys:[NSArray arrayWithObjects:@"value",  @"name", nil]];
+                        [filterArray addObject:filter];
+                    }
+                }
+                [rootNode setShowErrorMessage: showError];
+                [rootNode queryWithValues:filterArray];
+                
+        //		NSLog( @"Query values: %@", filterArray);
+                
+                [queries release];
+                queries = [[rootNode children] retain];
+            }
+        }
+        
+            
+    }
+    @catch (NSException * e)
+    {	
+        if( showError)
+        {
+            NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
+            NSLog(@"****** performQuery exception: %@", [e name]);
+            [alert runModal];
+        }
 	}
-	
-	if( sameAddress)
-	{
-		NSAlert *alert = [NSAlert alertWithMessageText: NSLocalizedString( @"Query Error", nil) defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", NSLocalizedString( @"OsiriX cannot generate a DICOM query on itself.", nil)];
-		[alert runModal];
-	}
-	else
-	{
-		[rootNode release];
-		rootNode = [[DCMTKRootQueryNode queryNodeWithDataset: nil
-										callingAET: callingAET
-										calledAET: calledAET 
-										hostname: hostname
-										port: [port intValue]
-										transferSyntax: 0		//EXS_LittleEndianExplicit / EXS_JPEGProcess14SV1TransferSyntax
-										compression: nil
-										extraParameters: distantServer] retain];
-										
-		NSMutableArray *filterArray = [NSMutableArray array];
-		NSEnumerator *enumerator = [filters keyEnumerator];
-		NSString *key;
-		while (key = [enumerator nextObject])
-		{
-			if ([filters objectForKey:key])
-			{
-				NSDictionary *filter = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[filters objectForKey:key], key, nil] forKeys:[NSArray arrayWithObjects:@"value",  @"name", nil]];
-				[filterArray addObject:filter];
-			}
-		}
-		[rootNode setShowErrorMessage: showError];
-		[rootNode queryWithValues:filterArray];
-		
-//		NSLog( @"Query values: %@", filterArray);
-		
-		[queries release];
-		queries = [[rootNode children] retain];
-	}
-	
-	NS_HANDLER
-	if( showError)
-	{
-		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Query Failed"];
-		NSLog(@"performQuery exception: %@", [localException name]);
-		[alert runModal];
-	}
-	NS_ENDHANDLER
 	
 	[queryLock unlock];
 }

@@ -6480,7 +6480,7 @@ END_CREATE_ROIS:
 	if( purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
-	if( [purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 60]])
+	if( [purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
     {
         [PapyrusLock lock];
         
@@ -6520,7 +6520,7 @@ END_CREATE_ROIS:
         [PapyrusLock unlock];
         [purgeCacheLock unlock];
     }
-    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 60 secs : purgeCacheLock condition: %d", [purgeCacheLock condition]);
+    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 10 secs : purgeCacheLock condition: %d", [purgeCacheLock condition]);
 }
 
 - (void) clearCachedDCMFrameworkFiles
