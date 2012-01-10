@@ -72,6 +72,7 @@
 		void *ptr = malloc( data.length);
         if( ptr)
         {
+            memcpy( ptr, data.bytes, data.length);
             dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
             _ptr = (unsigned char *)[dicomData bytes];
             
@@ -592,7 +593,7 @@
         void *ptr = malloc( length);
         if( ptr)
         {
-            memcpy( ptr, [dicomData bytes] + position, length);
+            memcpy( ptr, dicomData.bytes + position, length);
             aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
             
             if( aData == nil)

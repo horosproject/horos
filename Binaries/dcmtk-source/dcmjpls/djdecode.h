@@ -53,7 +53,7 @@ public:
    *  @param ignoreOffsetTable flag indicating whether to ignore the offset table when decompressing multiframe images
    */
   static void registerCodecs(
-    JLS_UIDCreation uidcreation = EJLSUC_default,
+    JLS_UIDCreation uidcreation = EJLSUC_never,
     JLS_PlanarConfiguration planarconfig = EJLSPC_restore,
     OFBool ignoreOffsetTable = OFFalse);
 

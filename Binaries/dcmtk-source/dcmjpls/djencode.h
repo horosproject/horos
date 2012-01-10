@@ -71,7 +71,7 @@ public:
     OFBool preferCookedEncoding = OFTrue,
     Uint32 fragmentSize = 0,
     OFBool createOffsetTable = OFTrue,
-    JLS_UIDCreation uidCreation = EJLSUC_default,
+    JLS_UIDCreation uidCreation = EJLSUC_never,
     OFBool convertToSC = OFFalse,
     DJLSCodecParameter::interleaveMode jplsInterleaveMode = DJLSCodecParameter::interleaveDefault);
 

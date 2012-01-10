@@ -1515,6 +1515,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				if (frameNumber < [images count])
 					images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
 			}
+//            else if ([images count] == 0)
+//            {
+//                for( DicomImage *image in allImages)
+//                {
+//                    if( [[image sopInstanceUID] isEqualToString: objectUID])
+//                        NSLog( @" *** FOUND");
+//                }
+//            }
 			
 			if ([images count])
 			{

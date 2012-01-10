@@ -80,7 +80,7 @@ public:
      OFBool preferCookedEncoding = OFTrue,
      Uint32 fragmentSize = 0,
      OFBool createOffsetTable = OFTrue,
-     JLS_UIDCreation uidCreation = EJLSUC_default,
+     JLS_UIDCreation uidCreation = EJLSUC_never,
      OFBool convertToSC = OFFalse,
      JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
      OFBool ignoreOffsetTable = OFFalse,
@@ -92,7 +92,7 @@ public:
    *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
    */
   DJLSCodecParameter(
-    JLS_UIDCreation uidCreation = EJLSUC_default,
+    JLS_UIDCreation uidCreation = EJLSUC_never,
     JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
     OFBool ignoreOffsetTable = OFFalse);
 
