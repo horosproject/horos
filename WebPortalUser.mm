@@ -196,6 +196,25 @@ static PSGenerator *generator = nil;
             if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only the same character.", NULL)];
             return NO;
         }
+        
+        NSUInteger invidualCharacters = 0;
+        NSMutableArray *array = [NSMutableArray array];
+        for( int i = 0; i < [password2validate length]; i++)
+        {
+            NSString *character = [password2validate substringWithRange: NSMakeRange( i, 1)];
+            if( [array containsObject: character] == NO)
+            {
+                invidualCharacters++;
+                [array addObject: character];
+            }
+        }
+        
+        if( invidualCharacters < 3)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to have at least 3 different characters.", NULL)];
+            return NO;
+        }
+        
     }
 	
 	return YES;
