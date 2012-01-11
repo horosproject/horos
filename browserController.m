@@ -14529,9 +14529,14 @@ static NSArray*	openSubSeriesArray = nil;
 //	{
 //		printf("%u\n",i);
 //	});
-
+    
 	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
 	
+#ifdef __LP64__
+    [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
+    [bannerSplit setPosition: 0 ofDividerAtIndex: 0];
+#endif
+    
 //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
 //	[waitCompressionWindow setCancel:YES];
 		
@@ -14762,7 +14767,6 @@ static NSArray*	openSubSeriesArray = nil;
 		[self ReadDicomCDRom: nil];
 	
     #ifdef __LP64__
-    [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
     #else
     [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
     #endif
