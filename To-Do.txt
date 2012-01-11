@@ -2,6 +2,8 @@
 - Hide/Show Columns DICOM QR (Columns header contextual menu)
 - Web Server: passwords are now stored only as hash strings (better security for users passwords)
 
+- Albums & Sources File menu item
+
 ------------------------------------------------------------------------------------------
 
 A:

@@ -302,6 +302,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 - (IBAction) addAlbums:(id) sender;
 - (IBAction) defaultAlbums: (id) sender;
 - (IBAction) clickBanner:(id) sender;
+- (IBAction)drawerToggle: (id)sender;
 - (void) openDatabasePath: (NSString*) path;
 - (NSArray*) albums;
 + (NSArray*) albumsInContext:(NSManagedObjectContext*)context;

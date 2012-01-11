@@ -20579,7 +20579,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	#endif
 }
 
-- (void)drawerToggle: (id)sender
+- (IBAction)drawerToggle: (id)sender
 {
     NSDrawerState state = [albumDrawer state];
     if (NSDrawerOpeningState == state || NSDrawerOpenState == state)
