@@ -1232,9 +1232,15 @@ static NSTimeInterval lastConnection = 0;
 		
         return;
     }
-
-	NSLog( @"**** Bad Request: we accept only http POST");
-
-   [self postError: 405 version: vers message: mess];
+    else
+    {
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Bad Request
+        NSString *message = @"This is the XML-RPC server of OsiriX : use POST request according to the XML-RPC standard.\r\rDocumentation : http://www.osirix-viewer.com/XML-RPC.pdf";
+        NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
+        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+        CFHTTPMessageSetBody(response, (CFDataRef) (CFDataRef)data);
+        [mess setResponse: response];
+        CFRelease(response);
+    }
 }
 @end
