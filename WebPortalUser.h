@@ -55,6 +55,14 @@
 -(BOOL)validateName:(NSString**)value error:(NSError**)error;
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error;
 
+-(NSArray*)arrayByAddingSpecificStudiesForPredicate:(NSPredicate*)predicate toArray:(NSArray*)array;
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate;
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
+-(NSArray*)studiesForAlbum:(NSString*)albumName;
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue;
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
+
 @end
 
 @interface WebPortalUser (CoreDataGeneratedAccessors)

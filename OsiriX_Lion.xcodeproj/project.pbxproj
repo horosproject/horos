@@ -338,8 +338,6 @@
 		59E83A1412FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
 		59E83A1512FC6556006B930A /* NSManagedObject+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 59E83A1112FC6556006B930A /* NSManagedObject+N2.h */; };
 		59E83A1612FC6556006B930A /* NSManagedObject+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */; };
-		59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBF40912B8B90100809C61 /* WebPortal+Databases.h */; };
-		59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */; };
 		59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */; };
 		59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */ = {isa = PBXBuildFile; fileRef = 59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */; };
 		59EBFEA412BB500C00809C61 /* browserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 59EBFEA212BB500C00809C61 /* browserController.h */; };
@@ -8307,8 +8305,6 @@
 		59E8352612F9ABAC006B930A /* N2ManagedDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = N2ManagedDatabase.mm; path = nitrogen/Sources/N2ManagedDatabase.mm; sourceTree = "<group>"; };
 		59E83A1112FC6556006B930A /* NSManagedObject+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObject+N2.h"; path = "nitrogen/Sources/NSManagedObject+N2.h"; sourceTree = "<group>"; };
 		59E83A1212FC6556006B930A /* NSManagedObject+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSManagedObject+N2.mm"; path = "nitrogen/Sources/NSManagedObject+N2.mm"; sourceTree = "<group>"; };
-		59EBF40912B8B90100809C61 /* WebPortal+Databases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Databases.h"; sourceTree = "<group>"; };
-		59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Databases.mm"; sourceTree = "<group>"; };
 		59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebPortal+Email+Log.h"; sourceTree = "<group>"; };
 		59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "WebPortal+Email+Log.mm"; sourceTree = "<group>"; };
 		59EBFEA212BB500C00809C61 /* browserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = browserController.h; sourceTree = "<group>"; };
@@ -12630,8 +12626,6 @@
 				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
 				597BB90912A7D3C000D0A172 /* WebPortal.h */,
 				597BB90A12A7D3C000D0A172 /* WebPortal.mm */,
-				59EBF40912B8B90100809C61 /* WebPortal+Databases.h */,
-				59EBF40A12B8B90100809C61 /* WebPortal+Databases.mm */,
 				59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */,
 				59EBFDDB12BA5A1A00809C61 /* WebPortal+Email+Log.mm */,
 				59526E8312816FDC0016F6C0 /* WebPortalSession.h */,
@@ -19616,7 +19610,6 @@
 				597BB90B12A7D3C000D0A172 /* WebPortal.h in Headers */,
 				597BB93112A7E0F200D0A172 /* NSUserDefaults+OsiriX.h in Headers */,
 				590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */,
-				59EBF40B12B8B90100809C61 /* WebPortal+Databases.h in Headers */,
 				59EBFDDC12BA5A1B00809C61 /* WebPortal+Email+Log.h in Headers */,
 				59EBFEA412BB500C00809C61 /* browserController.h in Headers */,
 				59E52B3712C109B80094E668 /* DicomDatabase.h in Headers */,
@@ -23739,7 +23732,6 @@
 				597BB90C12A7D3C000D0A172 /* WebPortal.mm in Sources */,
 				597BB93212A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm in Sources */,
 				590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */,
-				59EBF40C12B8B90100809C61 /* WebPortal+Databases.mm in Sources */,
 				59EBFDDD12BA5A1B00809C61 /* WebPortal+Email+Log.mm in Sources */,
 				59E5236012BF5E440094E668 /* N2Task.mm in Sources */,
 				59E52B3812C109B80094E668 /* DicomDatabase.mm in Sources */,

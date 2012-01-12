@@ -246,6 +246,14 @@ function shareDestinationChange(select) {
 		<div>
 			<table class="basic wide form">
 				<tr>
+					<td>This study is visible by:</td>
+					<td>
+					%[FOREACH:Study.authorizedUsers:aUser%
+					%X:aUser.name% 
+					%]FOREACH:Study.authorizedUsers:aUser%
+					</td>
+				</tr>
+				<tr>
 					<td>User:</td>
 					<td>
 						<select name="shareStudyDestination" id="shareStudyDestination" onchange="shareDestinationChange(this)">

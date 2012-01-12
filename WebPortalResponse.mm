@@ -740,7 +740,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		
 		@try
 		{
-			otherStudies = [[[wpc.portal studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
+			otherStudies = [[[wpc.user studiesForPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
 			
 			// Important> keep these two separates steps !
 			for( DicomStudy *s in otherStudies)

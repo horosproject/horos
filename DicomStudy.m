@@ -35,6 +35,9 @@
 #import "NSFileManager+N2.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "WebPortalUser.h"
+#import "WebPortal.h"
+#import "WebPortalDatabase.h"
 #endif
 
 #define WBUFSIZE 512
@@ -1785,4 +1788,41 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	return s;
 }
+
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+-(NSArray*)authorizedUsers
+{
+    NSMutableArray *authorizedUsers = [NSMutableArray array];
+    NSManagedObjectContext *webContext = WebPortal.defaultWebPortal.database.managedObjectContext;
+    
+    // Find all users
+    NSError *error = nil;
+    NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+    dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
+    dbRequest.predicate = [NSPredicate predicateWithValue:YES];
+    
+    [webContext lock];
+    
+    @try
+    {
+        error = nil;
+        NSArray *users = [webContext executeFetchRequest: dbRequest error: &error];
+        
+        for (WebPortalUser* user in users)
+        {
+            NSArray *studies = [user studiesForPredicate: NULL];
+            
+            if( [studies containsObject: self])
+                [authorizedUsers addObject: user];
+        }
+    }
+    @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+    
+    [webContext unlock];
+    
+    return authorizedUsers;
+}
+#endif
+#endif
 @end

@@ -108,7 +108,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             s = image.series.study;
         }
         
-        NSArray *studies = [self.portal studiesForUser:user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
+        NSArray *studies = [user studiesForPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
         
         if( [[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
         {
@@ -134,7 +134,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	if (albumReq.length)
     {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		result = [self.portal studiesForUser:user album:albumReq sortBy:[parameters objectForKey:@"sortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+		result = [user studiesForAlbum:albumReq sortBy:[parameters objectForKey:@"sortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
 	}
 	else
     {
@@ -238,7 +238,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         if (![self.session objectForKey:@"StudiesSortKey"])
             [self.session setObject:@"name" forKey:@"StudiesSortKey"];
         
-        result = [self.portal studiesForUser:user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+        result = [user studiesForPredicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
     }
     
     if( [parameters objectForKey:@"page"])
@@ -688,7 +688,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
 			[albums addObject:album];
 	[response.tokens setObject:albums forKey:@"Albums"];
-	[response.tokens setObject:[self.portal studiesForUser:user predicate:NULL] forKey:@"Studies"];
+	[response.tokens setObject:[user studiesForPredicate:NULL] forKey:@"Studies"];
 	
 	response.templateString = [self.portal stringForPath:@"main.html"];
 	response.mimeType = @"text/html";
@@ -1801,7 +1801,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	// filter by user rights
 	if (self.user) {
-		studies = (NSMutableArray*) [self.portal studiesForUser:self.user predicate:[NSPredicate predicateWithValue:YES] sortBy:nil];// is not mutable, but we won't mutate it anymore
+		studies = (NSMutableArray*) [self.user studiesForPredicate:[NSPredicate predicateWithValue:YES] sortBy:nil];// is not mutable, but we won't mutate it anymore
 	}
 	
 	// produce XML

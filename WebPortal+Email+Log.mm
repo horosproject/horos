@@ -174,7 +174,7 @@
 							@try
 							{
 								filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
-								filteredStudies = [self arrayByAddingSpecificStudiesForUser:user predicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]] toArray:filteredStudies];
+								filteredStudies = [user arrayByAddingSpecificStudiesForPredicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]] toArray:filteredStudies];
 								
 								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
