@@ -249,7 +249,7 @@ function shareDestinationChange(select) {
 					<td>This study is visible by:</td>
 					<td>
 					%[FOREACH:Study.authorizedUsers:aUser%
-					%X:aUser.name% 
+					%X:aUser.name%<br>
 					%]FOREACH:Study.authorizedUsers:aUser%
 					</td>
 				</tr>

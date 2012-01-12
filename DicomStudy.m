@@ -1801,6 +1801,7 @@ static NSRecursiveLock *dbModifyLock = nil;
     NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
     dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
     dbRequest.predicate = [NSPredicate predicateWithValue:YES];
+    dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
     
     [webContext lock];
     
@@ -1811,7 +1812,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         for (WebPortalUser* user in users)
         {
-            NSArray *studies = [WebPortalUser studiesForUser: user predicate: NULL];
+            NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
             
             if( [studies containsObject: self])
                 [authorizedUsers addObject: user];
