@@ -13,7 +13,6 @@
  =========================================================================*/
 
 #import "WebPortal+Email+Log.h"
-#import "WebPortal+Databases.h"
 #import "WebPortalDatabase.h"
 #import "WebPortalResponse.h"
 #import "NSUserDefaults+OsiriX.h"

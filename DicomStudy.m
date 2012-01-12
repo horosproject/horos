@@ -1811,7 +1811,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         for (WebPortalUser* user in users)
         {
-            NSArray *studies = [user studiesForPredicate: NULL];
+            NSArray *studies = [WebPortalUser studiesForUser: user predicate: NULL];
             
             if( [studies containsObject: self])
                 [authorizedUsers addObject: user];

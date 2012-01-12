@@ -18,7 +18,6 @@
 #import "WebPortalSession.h"
 #import "WebPortalDatabase.h"
 #import "WebPortal.h"
-#import "WebPortal+Databases.h"
 #import "NSString+N2.h"
 #import "AppController.h"
 #import "DicomStudy.h"
@@ -740,7 +739,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		
 		@try
 		{
-			otherStudies = [[[wpc.user studiesForPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
+			otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
 			
 			// Important> keep these two separates steps !
 			for( DicomStudy *s in otherStudies)

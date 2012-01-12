@@ -14,6 +14,7 @@
 
 #import "WebPortalUser.h"
 #import "WebPortalStudy.h"
+#import "WebPortalDatabase.h"
 #import "DicomDatabase.h"
 #import "PSGenerator.h"
 #import "WebPortal.h"
@@ -355,6 +356,21 @@ static PSGenerator *generator = nil;
 
 -(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
+    return [WebPortalUser studiesForUser: self predicate: predicate sortBy: sortValue fetchLimit: fetchLimit fetchOffset: fetchOffset numberOfStudies: numberOfStudies];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate;
+{
+    return [WebPortalUser studiesForUser: user predicate: predicate sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;
+{
+    return [WebPortalUser studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
 	NSArray* studiesArray = nil;
 	
 	[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
@@ -365,25 +381,25 @@ static PSGenerator *generator = nil;
 		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
 		
 		BOOL allStudies = NO;
-		if( self.studyPredicate.length == 0)
+		if( user.studyPredicate.length == 0)
 			allStudies = YES;
 		
 		if( allStudies == NO)
 		{
 			if( predicate)
-				req.predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects:	[DicomDatabase predicateForSmartAlbumFilter: self.studyPredicate],
+				req.predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects:	[DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate],
                                                                                      predicate,
                                                                                      nil]];
 			else
-				req.predicate = [DicomDatabase predicateForSmartAlbumFilter: self.studyPredicate];
+				req.predicate = [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate];
 			
 			
 			studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
 			
-			if( self)  
-				studiesArray = [self arrayByAddingSpecificStudiesForPredicate: predicate toArray:studiesArray];
+			if( user)  
+				studiesArray = [user arrayByAddingSpecificStudiesForPredicate: predicate toArray:studiesArray];
 			
-			if( self.canAccessPatientsOtherStudies.boolValue)
+			if( user.canAccessPatientsOtherStudies.boolValue)
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
 				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
@@ -454,6 +470,21 @@ static PSGenerator *generator = nil;
 
 -(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
 {
+    return [WebPortalUser studiesForUser:  self album: albumName sortBy: sortValue fetchLimit: fetchLimit fetchOffset: fetchOffset numberOfStudies: numberOfStudies];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName;
+{
+    return [WebPortalUser studiesForUser: self album: albumName sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue;
+{
+    return [WebPortalUser studiesForUser: self album: albumName sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
 	
 	NSArray *studiesArray = nil, *albumArray = nil;
 	
@@ -477,19 +508,19 @@ static PSGenerator *generator = nil;
 	
 	if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
 	{
-		studiesArray = [self studiesForPredicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
+		studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
 	}
 	else
 	{
 		NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
 		
-		if ( self.studyPredicate.length)
+		if ( user.studyPredicate.length)
 		{
 			@try
 			{
-				studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: self.studyPredicate]];
+				studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
 				
-				NSArray *specificArray = [self arrayByAddingSpecificStudiesForPredicate:NULL toArray:NULL];
+				NSArray *specificArray = [user arrayByAddingSpecificStudiesForPredicate:NULL toArray:NULL];
 				
 				for ( NSManagedObject *specificStudy in specificArray)
 				{
