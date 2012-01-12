@@ -1043,6 +1043,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             
             if (username.length && sha1.length)
             {
+                [NSThread sleepForTimeInterval: 2]; // To avoid brute-force attacks
+                
                 NSString *userInternalPassword = [self passwordForUser: username];
                 
                 [self.user convertPasswordToHashIfNeeded];

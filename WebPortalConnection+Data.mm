@@ -982,15 +982,22 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 
--(void)processAccountHtml {
+-(void)processAccountHtml
+{
 	if (!self.user)
 		return;
 	
-	if ([[parameters valueForKey:@"action"] isEqualToString:@"changePassword"]) {
-		NSString * previouspassword = [parameters valueForKey: @"previouspassword"];
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changePassword"])
+    {
 		NSString * password = [parameters valueForKey: @"password"];
-		
-		if ([previouspassword isEqualToString:user.password]) {
+		NSString * sha1 = [parameters objectForKey:@"sha1"];
+        
+        [user convertPasswordToHashIfNeeded];
+        
+        NSString* sha1internal = user.passwordHash;
+        
+        if( [sha1internal length] > 0 && [sha1 compare:sha1internal options:NSLiteralSearch|NSCaseInsensitiveSearch] == NSOrderedSame)
+        {
 			if ([[parameters valueForKey:@"password"] isEqualToString:[parameters valueForKey:@"password2"]])
 			{
 				NSError* err = NULL;
@@ -1024,7 +1031,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError:NSLocalizedString(@"Wrong current password.", nil)];
 	}
 	
-	if ([[parameters valueForKey:@"action"] isEqualToString:@"changeSettings"]) {
+	if ([[parameters valueForKey:@"action"] isEqualToString:@"changeSettings"])
+    {
 		user.email = [parameters valueForKey:@"email"];
 		user.address = [parameters valueForKey:@"address"];
 		user.phone = [parameters valueForKey:@"phone"];
