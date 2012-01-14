@@ -2315,9 +2315,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
 		if( orientationMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... orientationMenu == nil -> orientationMenu == itemAtIndex == 8");
+			NSLog( @"***** NSLocalization bug.... orientationMenu == nil -> orientationMenu == itemAtIndex == 12");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Orientation", nil));
-			orientationMenu = [[viewerMenu itemAtIndex: 8]  submenu];
+			orientationMenu = [[viewerMenu itemAtIndex: 12]  submenu];
 			NSLog( @"***** Selected item: %@", [orientationMenu title]);
 		}
 		

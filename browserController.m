@@ -5303,6 +5303,11 @@ static NSConditionLock *threadLock = nil;
 									[unlockedStudies removeObjectAtIndex: i];
 									i--;
 								}
+                                else if( [[[[[[[unlockedStudies objectAtIndex: i] valueForKey:@"series"] anyObject] valueForKey: @"images"] anyObject] valueForKey: @"inDatabaseFolder"] boolValue] == NO) // Don't try to delete linked files...
+								{
+									[unlockedStudies removeObjectAtIndex: i];
+									i--;
+								}
 								else if( dontDeleteStudiesWithComments)
 								{
 									DicomStudy *dy = [unlockedStudies objectAtIndex: i];
@@ -5417,7 +5422,7 @@ static NSConditionLock *threadLock = nil;
 						free /= thousand;
                         
                         avoidInfiniteLoop++;
-                        #define MAXLOOP 30
+                        #define MAXLOOP 20
 					}
 					while( free < freeMemoryRequested && [unlockedStudies count] > 2 && avoidInfiniteLoop < MAXLOOP);
                     
@@ -5453,7 +5458,7 @@ static NSConditionLock *threadLock = nil;
 			
 			if( free < 300)
 			{
-				[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: nil waitUntilDone: NO];
+				[self performSelectorOnMainThread: @selector( autoCleanDatabaseFreeSpaceWarning:) withObject: NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil) waitUntilDone: NO];
 			}
 		}
 	}
@@ -5463,9 +5468,9 @@ static NSConditionLock *threadLock = nil;
 	[pool release];
 }
 
-- (void) autoCleanDatabaseFreeSpaceWarning: (id)sender
+- (void) autoCleanDatabaseFreeSpaceWarning: (NSString*) message
 {
-	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  NSLocalizedString(@"Hard disk is FULL !!!! Major risks of failure !!\r\rClean your database! ", nil), NSLocalizedString(@"OK",nil), nil, nil);
+	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  message, NSLocalizedString(@"OK",nil), nil, nil);
 }
 
 - (void) autoCleanDatabaseFreeSpace: (id)sender
