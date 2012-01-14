@@ -2647,11 +2647,6 @@ static NSDate *lastWarningDate = nil;
 	return r;
 }
 
-+ (BOOL) isFDACleared
-{
-	return NO;
-}
-
 + (BOOL) willExecutePlugin
 {
 	BOOL returnValue = YES;
@@ -3750,6 +3745,11 @@ static BOOL initialized = NO;
 
 
 #pragma mark-
+
++ (BOOL) isFDACleared
+{
+	return NO;
+}
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
