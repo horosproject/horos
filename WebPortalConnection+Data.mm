@@ -682,10 +682,24 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //		[self resetPOST];
 	
 	NSMutableArray* albums = [NSMutableArray array];
-	for (NSArray* album in self.portal.dicomDatabase.albums) // TODO: badness here
+	for (DicomAlbum* album in self.portal.dicomDatabase.albums) // TODO: badness here
+    {
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
-			[albums addObject:album];
-	[response.tokens setObject:albums forKey:@"Albums"];
+        {
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ShowAlbumOnlyIfNotEmpty"])
+            {
+                int numberOfStudies = 0;
+                
+                [WebPortalUser studiesForUser: user album: album.name sortBy: nil fetchLimit: 1 fetchOffset: 0 numberOfStudies: &numberOfStudies];
+                
+                if( numberOfStudies >= 1)
+                    [albums addObject:album];
+            }
+            else
+                [albums addObject:album];
+        }
+	}
+    [response.tokens setObject:albums forKey:@"Albums"];
     [response.tokens setObject:[WebPortalUser studiesForUser: user predicate:NULL] forKey:@"Studies"];
 	
 	response.templateString = [self.portal stringForPath:@"main.html"];

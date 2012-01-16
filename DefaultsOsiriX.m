@@ -845,6 +845,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
 	#endif
 
+    [defaultValues setObject:@"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
 	[defaultValues setObject:@"0" forKey:@"UseFrameofReferenceUID"];
 	[defaultValues setObject:@"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
 	[defaultValues setObject:@"1" forKey:@"CommentsFromDICOMFiles"];
