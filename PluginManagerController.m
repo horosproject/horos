@@ -47,6 +47,22 @@ static NSDate *CachedPluginsListDate = nil;
 
 @implementation PluginManagerController
 
+- (void) WebViewProgressStartedNotification: (NSNotification*) n
+{
+    [statusProgressIndicator setHidden: NO];
+	[statusProgressIndicator startAnimation: self];
+    
+    [[self window] display];
+}
+
+- (void) WebViewProgressFinishedNotification: (NSNotification*) n
+{
+    [statusProgressIndicator setHidden: YES];
+	[statusProgressIndicator stopAnimation: self];
+    
+    [[self window] display];
+}
+
 - (id)init
 {
 	self = [super initWithWindowNibName:@"PluginManager"];
@@ -68,11 +84,16 @@ static NSDate *CachedPluginsListDate = nil;
 	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
 	
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressStartedNotification:) name: WebViewProgressStartedNotification object: webView];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressFinishedNotification:) name: WebViewProgressFinishedNotification object: webView];
+    
 	return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver: self]; 
+     
 	[plugins release];
 	[pluginsListURLs release];
 	[downloadURL release];
@@ -304,20 +325,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)setURL:(NSString*)url;
 {
-	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Loading...", nil)] autorelease];
-	[splash showWindow:self];
-	
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
-	
-	while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
-	{
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-	}
-	
-	[splash close];
-	
-	[statusTextField setHidden:YES];
-	[statusProgressIndicator setHidden:YES];
 }
 
 - (void)setURLforPluginWithName:(NSString*)name;
