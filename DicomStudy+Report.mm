@@ -196,10 +196,6 @@
     [self _ifAvailableCopyAttributeWithName:@"StudyTime" from:source to:output alternatively:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]];
     [self _ifAvailableCopyAttributeWithName:@"SeriesDate" from:source to:output alternatively:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]];
     [self _ifAvailableCopyAttributeWithName:@"SeriesTime" from:source to:output alternatively:[DCMCalendarDate dicomTimeWithDate:[NSDate date]]];
-    [self _ifAvailableCopyAttributeWithName:@"" from:source to:output];
-    [self _ifAvailableCopyAttributeWithName:@"" from:source to:output];
-    [self _ifAvailableCopyAttributeWithName:@"" from:source to:output];
-    [self _ifAvailableCopyAttributeWithName:@"" from:source to:output];
     
     [output writeToFile:outDicomPath withTransferSyntax:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] quality:DCMLosslessQuality atomically:YES];
 }
