@@ -23,6 +23,7 @@ A:
 
 ------------------------------------------------------------------------------------------
 
+- Update DICOM dictionary (at least for DCM Framework)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - 2D Viewer: Windows Tiling popup toolbar item

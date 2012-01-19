@@ -73,17 +73,23 @@
         if( ptr)
         {
             memcpy( ptr, data.bytes, data.length);
-            dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
-            _ptr = (unsigned char *)[dicomData bytes];
             
-            if (![self determineTransferSyntax])
+            void *tempPtr = malloc( data.length);
+            if( tempPtr)
             {
-                [dicomData release];
-                return nil;
+                free( tempPtr);
+                
+                dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
+                _ptr = (unsigned char *)[dicomData bytes];
+                
+                if (![self determineTransferSyntax])
+                    [dicomData release];
+                else
+                    return self;
             }
         }
 	}
-	return self;
+	return nil;
 }
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
@@ -594,18 +600,30 @@
         if( ptr)
         {
             memcpy( ptr, dicomData.bytes + position, length);
-            aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
             
-            if( aData == nil)
-                free( ptr);
+            void *tempPtr = malloc( length);
+            if( tempPtr)
+            {
+                free( tempPtr);
+                
+                aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
+            
+                if( aData == nil)
+                    free( ptr);
+            }
+            else
+                NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
         }
         else
             NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+        
 		position += length;
-		return aData;
+		
+        return aData;
 	}
 	else 
 		[exception raise];
+    
 	return nil;
 }
 
