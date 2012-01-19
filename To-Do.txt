@@ -23,6 +23,7 @@ A:
 
 ------------------------------------------------------------------------------------------
 
+- WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - 2D Viewer: Windows Tiling popup toolbar item
 - http://code.google.com/p/exposure-render/
