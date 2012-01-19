@@ -59,6 +59,12 @@
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
         @try {
             NSTask* task = [[[NSTask alloc] init] autorelease];
+            
+            NSString *path2odt2pdf = [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"];
+            
+            if( path2odt2pdf == nil)
+                NSLog( @"****** path2odt2pdf == nil");
+            
             [task setLaunchPath:[[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"]];
             [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@/Contents/basis-link/program/offapi.rdb", applicationPath], odtPath, pdfPath, nil]];
             [task setEnvironment:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@/Contents/basis-link/ure-link/lib", applicationPath] forKey:@"DYLD_LIBRARY_PATH"]];

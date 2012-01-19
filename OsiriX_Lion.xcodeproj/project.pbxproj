@@ -21996,11 +21996,11 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
-				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
 				59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
 				CECA66E306CD8C1500D8750E /* Copy Frameworks */,
+				ABF307FB1443330100BBC96A /* Copy odt2pdf script */,
 				CEED244F0C71EEDC00E3BEC5 /* SVN Revision Number */,
 				59F69A4E1056328D008585F5 /* Clean Frameworks */,
 				CED88262125064F70085A861 /* CodeSigning */,

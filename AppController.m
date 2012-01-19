@@ -3363,6 +3363,11 @@ static BOOL initialized = NO;
 	if( [[[fileMenu itemAtIndex: 11] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 10");
     
+    if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
+    {
+        NSLog( @"\r****** path2odt2pdf == nil\r*****************************");
+    }
+    
 	#endif
     
     [ROI loadDefaultSettings];
