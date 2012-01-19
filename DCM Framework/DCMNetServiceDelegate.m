@@ -234,15 +234,18 @@ static NSMutableArray *cachedServersArray = nil;
 							else
 								description = [NSString stringWithFormat:@"%@ (Bonjour)", [aServer hostName]];
 							
-							int transferSyntax = 2;
+							int transferSyntax = SendExplicitLittleEndian;
 							
 							if( [dict valueForKey: @"preferredSyntax"])
 							{
 								NSString *ts = [[[NSString alloc] initWithData: [dict valueForKey: @"preferredSyntax"] encoding:NSUTF8StringEncoding] autorelease];
 								
 								if( [ts isEqualToString: @"LittleEndianImplicit"])
-									transferSyntax = 0;
-									
+									transferSyntax = SendImplicitLittleEndian;
+                                
+                                if( [ts isEqualToString: @"LittleEndianExplicit"])
+									transferSyntax = SendExplicitLittleEndian;
+                                
 								if( [ts isEqualToString: @"JPEGProcess14SV1TransferSyntax"])
 									transferSyntax = SendJPEGLossless;
 									
