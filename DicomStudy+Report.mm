@@ -53,6 +53,8 @@
     BOOL succeeded = NO;
     NSException* lastException = nil;
     NSString* lastStdOut = nil;
+
+    NSString *path2odt2pdf = [[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"];
     
     NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
     while (!succeeded && [NSDate timeIntervalSinceReferenceDate] < startTime+10) {
@@ -60,12 +62,10 @@
         @try {
             NSTask* task = [[[NSTask alloc] init] autorelease];
             
-            NSString *path2odt2pdf = [[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"];
-            
             if( path2odt2pdf == nil)
                 NSLog( @"****** path2odt2pdf == nil");
             
-            [task setLaunchPath:[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]];
+            [task setLaunchPath:path2odt2pdf];// [[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]
             [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@/Contents/basis-link/program/offapi.rdb", applicationPath], odtPath, pdfPath, nil]];
             [task setEnvironment:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@/Contents/basis-link/ure-link/lib", applicationPath] forKey:@"DYLD_LIBRARY_PATH"]];
             [task setStandardOutput:[NSPipe pipe]];
@@ -80,6 +80,7 @@
             
             if (!succeeded) [NSThread sleepForTimeInterval:0.25];
         } @catch (NSException* e) {
+            NSLog(@"****** odt to pdf error: path is %@", path2odt2pdf);
             [lastException release];
             lastException = [e retain];
         } @finally {
