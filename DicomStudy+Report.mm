@@ -60,12 +60,12 @@
         @try {
             NSTask* task = [[[NSTask alloc] init] autorelease];
             
-            NSString *path2odt2pdf = [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"];
+            NSString *path2odt2pdf = [[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"];
             
             if( path2odt2pdf == nil)
                 NSLog( @"****** path2odt2pdf == nil");
             
-            [task setLaunchPath:[[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"]];
+            [task setLaunchPath:[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]];
             [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@/Contents/basis-link/program/offapi.rdb", applicationPath], odtPath, pdfPath, nil]];
             [task setEnvironment:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@/Contents/basis-link/ure-link/lib", applicationPath] forKey:@"DYLD_LIBRARY_PATH"]];
             [task setStandardOutput:[NSPipe pipe]];
@@ -123,22 +123,22 @@
         [[self class] _transformOdtAtPath:reportPath toPdfAtPath:outPdfPath];
     }
     else
-    if ([reportPath.pathExtension.lowercaseString isEqualToString:@"rtf"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"rtfd"]) {
-        int result = 0;
-        [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
-    }
-    else
-    if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"]) {
-        NSString* path = [[NSBundle bundleForClass:[self class]] pathForResource:@"pages2pdf" ofType:@"applescript"];
-        [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
-    }
-    else
-    if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"]) {
-        NSString* path = [[NSBundle bundleForClass:[self class]] pathForResource:@"word2pdf" ofType:@"applescript"];
-        [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
-    }
-    else
-        [NSException raise:NSGenericException format:@"Can't transform report to PDF: %@", reportPath];
+        if ([reportPath.pathExtension.lowercaseString isEqualToString:@"rtf"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"rtfd"]) {
+            int result = 0;
+            [N2Shell execute:@"/System/Library/Printers/Libraries/convert" arguments:[NSArray arrayWithObjects: @"-f", reportPath, @"-o", outPdfPath, nil] outStatus:&result];
+        }
+        else
+            if ([reportPath.pathExtension.lowercaseString isEqualToString:@"pages"]) {
+                NSString* path = [[NSBundle mainBundle] pathForResource:@"pages2pdf" ofType:@"applescript"];
+                [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
+            }
+            else
+                if ([reportPath.pathExtension.lowercaseString isEqualToString:@"doc"] || [reportPath.pathExtension.lowercaseString isEqualToString:@"docx"]) {
+                    NSString* path = [[NSBundle mainBundle] pathForResource:@"word2pdf" ofType:@"applescript"];
+                    [[self class] _runAppleScriptAtPath:path withArguments:[NSArray arrayWithObjects: reportPath, outPdfPath, nil]];
+                }
+                else
+                    [NSException raise:NSGenericException format:@"Can't transform report to PDF: %@", reportPath];
 }
 
 -(void)saveReportAsPdfAtPath:(NSString*)path
