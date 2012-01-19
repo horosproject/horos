@@ -22,9 +22,7 @@ static DCMTagDictionary *sharedTagDictionary;
 +(id)sharedTagDictionary{		
 	if (!sharedTagDictionary) {
 		//NSDate *date = [NSDate date];
-		NSBundle *bundle;
-		bundle  = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
-
+		NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
 		NSString *path = [bundle pathForResource:@"tagDictionary" ofType:@"plist"];
 		if( path == nil) NSLog(@"Cannot find tagDictionary");
 			sharedTagDictionary  = [[DCMTagDictionary alloc] initWithContentsOfFile:path];

@@ -3274,6 +3274,11 @@ static BOOL initialized = NO;
 //	
 //	NSMutableDictionary *nameDictionary = [NSMutableDictionary dictionary], *tagDictionary = [NSMutableDictionary dictionary];
 //	
+//    NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
+//    
+//    tagDictionary = [NSMutableDictionary dictionaryWithContentsOfFile: [bundle pathForResource:@"tagDictionary" ofType:@"plist"]];
+//    nameDictionary = [NSMutableDictionary dictionaryWithContentsOfFile: [bundle pathForResource:@"nameDictionary" ofType:@"plist"]];
+//    
 //	for( NSString *l in lines)
 //	{
 //		if( [l hasPrefix: @"#"] == NO)
@@ -3292,9 +3297,17 @@ static BOOL initialized = NO;
 //					
 //					NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [f objectAtIndex: 2], @"Description", [f objectAtIndex: 3], @"VM", [f objectAtIndex: 1], @"VR", nil];	//[f objectAtIndex: 4], @"Version", nil];
 //					
-//					[tagDictionary setObject: d forKey: grel];
-//					
-//					[nameDictionary setObject: grel forKey: [f objectAtIndex: 2]];
+//                    if( [tagDictionary objectForKey: grel])
+//                    {
+////                        NSLog( @"%@", [tagDictionary objectForKey: grel]);
+//                    }
+//                    else
+//                    {
+//                        NSLog( @"%@", d);
+//                        
+//                        [tagDictionary setObject: d forKey: grel];
+//                        [nameDictionary setObject: grel forKey: [f objectAtIndex: 2]];
+//                    }
 //				}
 //			}
 //			else
@@ -3304,6 +3317,7 @@ static BOOL initialized = NO;
 //	
 //	[tagDictionary writeToFile: @"/tmp/tagDictionary.plist" atomically: YES];
 //	[nameDictionary writeToFile: @"/tmp/nameDictionary.plist" atomically: YES];
+    
 //	warning : patientssex -> patientsex, patientsname -> patientname, ...
 	
 //	<?xml version="1.0" encoding="UTF-8"?>

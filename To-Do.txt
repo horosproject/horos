@@ -1,6 +1,7 @@
 - JPEG-LS support (through CharLS library)
 - Hide/Show Columns DICOM QR (Columns header contextual menu)
 - Web Server: passwords are now stored only as hash strings (better security for users passwords)
+- Up to Date DICOM Dictionary
 
 ------------------------------------------------------------------------------------------
 
@@ -23,7 +24,6 @@ A:
 
 ------------------------------------------------------------------------------------------
 
-- Update DICOM dictionary (at least for DCM Framework)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - 2D Viewer: Windows Tiling popup toolbar item
