@@ -1146,17 +1146,18 @@ void DicomDirInterface::addOneImagePerSeries() {
                     //              printf("\t\t\t\troot:");
                     //              rootRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
                                     
-                                    unsigned int iconSize = (IconSize == 0) ? 64 : IconSize;
-                                    switch (ApplicationProfile) {
-                                        case AP_BasicCardiac:
-                                            iconSize = 128;
-                                            break;
-                                        case AP_CTandMR:
-                                            iconSize = 64;
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                    unsigned int iconSize = 0;
+                                    if (IconSize)
+                                        iconSize = IconSize;
+                                    else
+                                        switch (ApplicationProfile) {
+                                            case AP_CTandMR:
+                                                iconSize = 64;
+                                                break;
+                                            default:
+                                                iconSize = 128;
+                                                break;
+                                        }
                                     
                                     DcmFileFormat fileformat;
                                     if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())

@@ -26,7 +26,7 @@ extern NSString* N2NonNullString(NSString* s);
 +(NSString*)dateString:(NSTimeInterval)date;
 -(NSString*)stringByTrimmingStartAndEnd;
 
--(NSString*)urlEncodedString __deprecated;
+-(NSString*)urlEncodedString __deprecated; // use 
 -(NSString*)xmlEscapedString;
 -(NSString*)xmlUnescapedString;
 

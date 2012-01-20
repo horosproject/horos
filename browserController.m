@@ -20037,7 +20037,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                 [studySelected saveReportAsPdfAtPath: [panel filename]];
             }
 		}
-		@catch (NSException * e) 
+		@catch (NSException * e)
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 			[AppController printStackTrace: e];

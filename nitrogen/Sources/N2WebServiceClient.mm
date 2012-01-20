@@ -14,6 +14,7 @@
 
 
 #import "N2WebServiceClient.h"
+#import "N2Debug.h"
 
 
 @implementation N2WebServiceClient
@@ -64,7 +65,7 @@
 	
 	[request setTimeoutInterval:10];
 	
-	NSLog(@"Sending %@ request to %@: %@", [request HTTPMethod], [request URL], content? [[[NSString alloc] initWithData:content encoding:NSUTF8StringEncoding] autorelease] : NULL);
+	DLog(@"Sending %@ request to %@: %@", [request HTTPMethod], [request URL], content? [[[NSString alloc] initWithData:content encoding:NSUTF8StringEncoding] autorelease] : NULL);
 	
 	NSError* error = NULL; 
 	NSURLResponse* response;

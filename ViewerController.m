@@ -5937,7 +5937,7 @@ return YES;
 {
 	// Create a new toolbar instance, and attach it to our document window 
 	toolbar = [[OsiriXToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
-	
+    
 	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
 	[toolbar setAllowsUserCustomization: YES];
 	[toolbar setAutosavesConfiguration: YES];
