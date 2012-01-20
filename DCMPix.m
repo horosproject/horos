@@ -5695,14 +5695,14 @@ END_CREATE_ROIS:
 		DCMSequenceAttribute *perFrameFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"Per-frameFunctionalGroupsSequence"];
 		
 		//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
-		if (perFrameFunctionalGroupsSequence)
+		if( perFrameFunctionalGroupsSequence)
 		{
-			if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0)
+			if( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0)
 			{
 				DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
-				if (sequenceItem)
+				if( sequenceItem)
 				{
-					if ([sequenceItem attributeArrayWithName:@"MREchoSequence"])
+					if( [sequenceItem attributeArrayWithName:@"MREchoSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5710,7 +5710,7 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0018: object];
 					}
 					
-					if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5720,7 +5720,7 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0028: object];
 					}
 					
-					if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5731,12 +5731,20 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0028: object];
 					}
 						
-					if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
 						if( object)
 							[self dcmFrameworkLoad0x0020: object];
+					}
+                    
+                    if( [sequenceItem attributeArrayWithName:@"PixelValueTransformationSequence"])
+					{
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
+						if( object)
+							[self dcmFrameworkLoad0x0028: object];
 					}
 				}
 			}
@@ -8029,6 +8037,31 @@ END_CREATE_ROIS:
 																	switch( gr20->group)
 																	{
 																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+                                                        
+                                                        val = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr20 = (SElement *) seq->object->group;
+																	
+																	switch( gr20->group)
+																	{
 																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
 																	}
 																	
