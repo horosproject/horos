@@ -1146,18 +1146,9 @@ void DicomDirInterface::addOneImagePerSeries() {
                     //              printf("\t\t\t\troot:");
                     //              rootRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
                                     
-                                    unsigned int iconSize = 0;
+                                    unsigned int iconSize = 128; // default icon size for one thumb per series
                                     if (IconSize)
                                         iconSize = IconSize;
-                                    else
-                                        switch (ApplicationProfile) {
-                                            case AP_CTandMR:
-                                                iconSize = 64;
-                                                break;
-                                            default:
-                                                iconSize = 128;
-                                                break;
-                                        }
                                     
                                     DcmFileFormat fileformat;
                                     if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())
