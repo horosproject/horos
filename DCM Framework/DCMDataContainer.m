@@ -65,17 +65,31 @@
 
 
 
-- (id) initWithData:(NSData *)data{
-
-	if (self = [super init]) {
-		dicomData = [data mutableCopy];
-		_ptr = (unsigned char *)[dicomData bytes];
-		if (![self determineTransferSyntax])
-			return nil;
-
+- (id) initWithData:(NSData *)data
+{
+	if (self = [super init])
+    {
+		void *ptr = malloc( data.length);
+        if( ptr)
+        {
+            memcpy( ptr, data.bytes, data.length);
+            
+            void *tempPtr = malloc( data.length);
+            if( tempPtr)
+            {
+                free( tempPtr);
+                
+                dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
+                _ptr = (unsigned char *)[dicomData bytes];
+                
+                if (![self determineTransferSyntax])
+                    [dicomData release];
+                else
+                    return self;
+            }
+        }
 	}
-	return self;
-
+	return nil;
 }
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
@@ -112,8 +126,10 @@
 		dicomData = [[NSMutableData dataWithContentsOfURL:aURL] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+        {
+			[dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -123,8 +139,10 @@
 		dicomData = [[NSMutableData dataWithBytes:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -134,8 +152,10 @@
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -145,8 +165,10 @@
 		dicomData = [[NSMutableData dataWithBytesNoCopy:bytes length:length freeWhenDone:flag] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		if (![self determineTransferSyntax])
-			return nil;
-		//[self initValues];
+		{
+            [dicomData release];
+            return nil;
+        }
 	}
 	return self;
 }
@@ -577,19 +599,31 @@
         void *ptr = malloc( length);
         if( ptr)
         {
-            memcpy( ptr, [dicomData bytes] + position, length);
-            aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
+            memcpy( ptr, dicomData.bytes + position, length);
             
-            if( aData == nil)
-                free( ptr);
+            void *tempPtr = malloc( length);
+            if( tempPtr)
+            {
+                free( tempPtr);
+                
+                aData = [NSMutableData dataWithBytesNoCopy: ptr length: length freeWhenDone: YES];
+            
+                if( aData == nil)
+                    free( ptr);
+            }
+            else
+                NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
         }
         else
             NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+        
 		position += length;
-		return aData;
+		
+        return aData;
 	}
 	else 
 		[exception raise];
+    
 	return nil;
 }
 

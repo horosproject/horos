@@ -13,6 +13,7 @@
 =========================================================================*/
 
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
 #import "DicomAlbum.h"
@@ -36,6 +37,9 @@
 #import "NSFileManager+N2.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "WebPortalUser.h"
+#import "WebPortal.h"
+#import "WebPortalDatabase.h"
 #endif
 
 #define WBUFSIZE 512
@@ -853,6 +857,25 @@ static NSRecursiveLock *dbModifyLock = nil;
 				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
 				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [[dict objectForKey: @"files"] count]];
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
+                
+                // Save as DICOM PDF
+                if( [[NSUserDefaults standardUserDefaults] boolForKey:@"generateDICOMPDFWhenValidated"] && [c intValue] == 4)
+                {
+                    BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+                    
+                    NSString *filePath = isMainDB? [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"] : [[NSFileManager defaultManager] tmpFilePathInTmp];
+                    
+                    [self saveReportAsDicomAtPath: filePath];
+                    
+                    [BrowserController addFiles: [NSArray arrayWithObject: filePath]
+                                      toContext: [self managedObjectContext]
+                                     toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
+                                      onlyDICOM: YES 
+                               notifyAddedFiles: YES
+                            parseExistingObject: YES
+                                       dbFolder: isMainDB? [[BrowserController currentBrowser] fixedDocumentsDirectory] : @"/tmp"
+                              generatedByOsiriX: YES];
+                }
 			}
 		}
 	}
@@ -1786,5 +1809,42 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return s;
 }
 
+#ifdef OSIRIX_VIEWER
+#ifndef OSIRIX_LIGHT
+-(NSArray*)authorizedUsers
+{
+    NSMutableArray *authorizedUsers = [NSMutableArray array];
+    NSManagedObjectContext *webContext = WebPortal.defaultWebPortal.database.managedObjectContext;
+    
+    // Find all users
+    NSError *error = nil;
+    NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+    dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
+    dbRequest.predicate = [NSPredicate predicateWithValue:YES];
+    dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
+    
+    [webContext lock];
+    
+    @try
+    {
+        error = nil;
+        NSArray *users = [webContext executeFetchRequest: dbRequest error: &error];
+        
+        for (WebPortalUser* user in users)
+        {
+            NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
+            
+            if( [studies containsObject: self])
+                [authorizedUsers addObject: user];
+        }
+    }
+    @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+    
+    [webContext unlock];
+    
+    return authorizedUsers;
+}
+#endif
+#endif
 
 @end

@@ -72,8 +72,10 @@ typedef char* DcmFileFormat;
 		float				orientation[ 6];
 		float				position[ 3];
 		float				slicePosition;
+    
+        NSMutableDictionary *metaDataDict;
 }
-
+@property( readonly) NSMutableDictionary *metaDataDict;
 @property BOOL rotateRawDataBy90degrees;
 
 // Is this DCM file based on another DCM file?

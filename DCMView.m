@@ -681,7 +681,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 + (BOOL) noPropagateSettingsInSeriesForModality: (NSString*) m
 {
-	if( IndependentCRWLWW && ([m isEqualToString: @"CR"] || [m isEqualToString: @"DR"] || [m isEqualToString: @"DX"]))
+	if( IndependentCRWLWW && ([m isEqualToString: @"CR"] || [m isEqualToString: @"DR"] || [m isEqualToString: @"DX"] || [m isEqualToString: @"RF"] || [m isEqualToString: @"XA"]))
 		return YES;
 	else
 		return NO;
@@ -1265,6 +1265,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( [loopItem ROImode] == ROI_selected) valid = YES;
 		}
     }
+    else if( [item action] == @selector( copy:) && [item tag] == 1) // copy all viewers
+    {
+		if( [ViewerController numberOf2DViewer] > 1)
+            valid = YES;
+	}
 	else if( [item action] == @selector( switchCopySettingsInSeries:))
 	{
 		valid = YES;
@@ -1525,13 +1530,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 	}
 
-	if( roiSelected == NO)
+	if( roiSelected == NO || [sender tag])
 	{
 		NSImage *im;
 		
 		[pb declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:self];
 		
-		im = [self nsimage: NO];
+		im = [self nsimage: NO allViewers: [sender tag]];
 		
 		[pb setData: [[NSBitmapImageRep imageRepWithData: [im TIFFRepresentation]] representationUsingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]] forType:NSTIFFPboardType];
 	}
@@ -1540,7 +1545,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[pb declareTypes:[NSArray arrayWithObjects:@"ROIObject", NSStringPboardType, nil] owner:nil];
 		[pb setData: [NSArchiver archivedDataWithRootObject: roiSelectedArray] forType:@"ROIObject"];
 		
-		NSMutableString		*r = [NSMutableString string];
+		NSMutableString *r = [NSMutableString string];
 		
 		for( long i = 0 ; i < [roiSelectedArray count] ; i++ )
 		{
@@ -2149,9 +2154,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSLog(@"DCMView released");
     
-	[NSObject cancelPreviousPerformRequestsWithTarget: self];
-    
-	[[NSNotificationCenter defaultCenter] removeObserver: self];
+	[self prepareToRelease];
 	
 	[self deleteMouseDownTimer];
 	
@@ -2692,7 +2695,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[self setNeedsDisplay:YES];
 			}
         }
-        else if(c ==  NSDownArrowFunctionKey)
+        else if(c == NSDownArrowFunctionKey)
         {
             if( [[self windowController] maxMovieIndex] > 1 && [[self windowController] maxMovieIndex] > 1) [super keyDown:event];
 			else
@@ -3969,6 +3972,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				clickCount = 1;
 			}
 			
+            if( clickCount > 1 && _mouseDownTimer)
+                [self deleteMouseDownTimer];
+            
 			if( clickCount > 1 && [self window] == [[BrowserController currentBrowser] window])
 			{
 				[[BrowserController currentBrowser] matrixDoublePressed:nil];
@@ -6227,7 +6233,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 - (void) prepareToRelease
-{	
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget: self];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 }
 
@@ -7192,7 +7199,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //    Point and Vector with
 //        coordinates {float x, y, z;}
 //        operators for:
-//            Point  = Point ± Vector
+//            Point  = Point Â± Vector
 //            Vector = Point - Point
 //            Vector = Scalar * Vector    (scalar product)
 //    Plane with a point and a normal {Point V0; Vector n;}
@@ -7338,6 +7345,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			*location = pp;
 		}
 	}
+}
+
+- (float) displayedScaleValue
+{
+    return scaleValue;
+}
+
+- (float) displayedRotation
+{
+    return rotation;
 }
 
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
@@ -7586,12 +7603,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
 						{
-							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) scaleValue*100.0];
+							[tempString appendFormat: NSLocalizedString( @"Zoom: %0.0f%%", @"No special characters for this string, only ASCII characters."), (float) [self displayedScaleValue]*100.0];
 							useStringTexture = NO;
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Rotation Angle"] && fullText)
 						{
-							[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) rotation % 360)];
+							[tempString appendFormat: NSLocalizedString( @" Angle: %0.0f", @"No special characters for this string, only ASCII characters."), (float) ((long) [self displayedRotation] % 360)];
 							useStringTexture = NO;
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Image Position"] && fullText)
@@ -9132,19 +9149,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						ViewerController *v = [self windowController];
 						
-						for( int i = 0 ; i < [v  maxMovieIndex]; i++)
-						{
-							for( DCMPix *pix in [v pixList: i])
-							{
-								if( pix != curDCM)
-								{
-									float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
-									
-									if( s)
-										[pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
-								}
-							}
-						}
+                        if( [[v imageViews] objectAtIndex: 0] == self)
+                        {
+                            for( int i = 0 ; i < [v  maxMovieIndex]; i++)
+                            {
+                                for( DCMPix *pix in [v pixList: i])
+                                {
+                                    if( pix !=  curDCM)
+                                    {
+                                        float s = [[pix.imageObj valueForKey: @"scale"] floatValue];
+                                        
+                                        if( s)
+                                            [pix.imageObj setValue: [NSNumber numberWithFloat: s * yChanged] forKey: @"scale"];
+                                    }
+                                }
+                            }
+                        }
 					}
 				}
 				
@@ -10297,7 +10317,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer] == NO) allViewers = NO;
 	
-	if( allViewers)
+	if( allViewers && [ViewerController numberOf2DViewer] > 1)
 	{
 		NSArray	*viewers = [ViewerController getDisplayed2DViewers];
 		
@@ -10369,7 +10389,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						removeGraphical: NO
 						   squarePixels: YES
 							   allTiles: [[NSUserDefaults standardUserDefaults] boolForKey: @"includeAllTiledViews"]
-					 allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
+					 allowSmartCropping: NO //[[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"]
 								 origin: nil
 								spacing: nil
 	 							 offset: nil

@@ -172,11 +172,11 @@
 //				DcmItem *metaInfo = fileformat.getMetaInfo();
 //				DcmXfer original_xfer(dataset->getOriginalXfer());
 //				
-////				DcmRepresentationParameter *params = &lossyParams;
-////				E_TransferSyntax tSyntax = EXS_JPEG2000;
+//				DcmRepresentationParameter *params = &lossyParams;
+//				E_TransferSyntax tSyntax = EXS_JPEGLSLossless;
 //				
-//				DcmRepresentationParameter *params = &losslessParams;
-//				E_TransferSyntax tSyntax = EXS_JPEGProcess14TransferSyntax;	//EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
+////				DcmRepresentationParameter *params = &losslessParams;
+////				E_TransferSyntax tSyntax = EXS_JPEGProcess14TransferSyntax;	//EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
 //				
 //				DcmXfer oxferSyn( tSyntax);
 //				dataset->chooseRepresentation(tSyntax, params);
@@ -256,7 +256,7 @@
 //		NSLog( @"failed to compress file: %@", [paths lastObject]);
 //		[[NSFileManager defaultManager] removeFileAtPath: [dest2 stringByAppendingString: @" temp"] handler: nil];
 //	}
-//	NSLog( @"** END");	
+//	NSLog( @"** END");
 }
 
 +(BOOL)decompressDicomFilesAtPaths:(NSArray*)files intoDirAtPath:(NSString*)dest
@@ -311,36 +311,39 @@
 	
 //	OFCondition cond;
 //	
-//	for( NSString *file in files)
+//	@synchronized( [BrowserController currentBrowser])
 //	{
-//		const char *fname = (const char *)[file UTF8String];
-//		const char *destination = (const char *)[[file stringByAppendingString:@"bb.dcm"] UTF8String];
-//		
-//		DcmFileFormat fileformat;
-//		cond = fileformat.loadFile(fname);
-//		
-//		if (cond.good())
+//		for( NSString *file in files)
 //		{
-//			DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
+//			const char *fname = (const char *)[file UTF8String];
+//			const char *destination = (const char *)[[file stringByAppendingString:@"bb.dcm"] UTF8String];
 //			
-//			if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
+//			DcmFileFormat fileformat;
+//			cond = fileformat.loadFile(fname);
+//			
+//			if (cond.good())
 //			{
-//				DcmDataset *dataset = fileformat.getDataset();
+//				DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
 //				
-//				// decompress data set if compressed
-//				dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
-//				
-//				// check if everything went well
-//				if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//				if( filexfer.getXfer() != EXS_LittleEndianExplicit || filexfer.getXfer() != EXS_LittleEndianImplicit)
 //				{
-//					fileformat.loadAllDataIntoMemory();
-//					cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//					DcmDataset *dataset = fileformat.getDataset();
+//					
+//					// decompress data set if compressed
+//					dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+//					
+//					// check if everything went well
+//					if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+//					{
+//						fileformat.loadAllDataIntoMemory();
+//						cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+//					}
+//					else NSLog( @"err");
 //				}
 //				else NSLog( @"err");
 //			}
 //			else NSLog( @"err");
 //		}
-//		else NSLog( @"err");
 //	}
 //	return YES;
 
@@ -359,7 +362,7 @@
 //	}
 //	[dcmObject release];
 //	
-//	return YES;	
+//	return YES;
 }
 
 +(NSString*)extractReportSR:(NSString*)dicomSR contentDate:(NSDate*)date {

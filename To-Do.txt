@@ -1,28 +1,17 @@
-New Features:
-- DICOM Q&R: realtime C-Find updates
-- DICOM Q&R: custom DICOM field for query
-- OsiriX new SDK buit-in
-- Curved-MPR path is automatically saved and reloaded
-- Curved-MPR paths can be saved and loaded from file ('.curvedPath')
-- Compiled with Xcode 4.2 (LLVM 3.0)
-- Support multiple Ultrasound regions 
-- Circle ROI on 3D MIP (3D VR Viewer & 3D MIP Panel)
-- Web Server: display unlimited number of studies
-- Web Server: DICOM Upload: display username in DB comments
+- JPEG-LS support (through CharLS library)
+- Hide/Show Columns DICOM QR (Columns header contextual menu)
+- Web Server: passwords are now stored only as hash strings (better security for users passwords)
+- Up to Date DICOM Dictionary
 
-- Angle for 3D VR
-- MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
-- Copy all Viewers (copy&paste)
-- Reports to PDF
-- Database Banner + KSA
----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 
 A:
-- DB remote: black image (multi-load)
+(OK) DB remote: black image (multi-load)
 - DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 - Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling
+- Make sure autoclean works (also with delayed files removal)
 - CD : 
 	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
 		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
@@ -31,11 +20,17 @@ A:
 		keystrokes: delete key, ...
 	(OK) iPod doesn't appear automatically
 	(OK) iPod eject button
+	(Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries))
+- Reinsert banner 32/64 bits
 
----------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 
+- WebPortal: LDAP/OpenDAP support
+- WebPortal: Groups (for sharing)
+- 2D Viewer: Windows Tiling popup toolbar item
+- http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
-- WebPortal: user-option to hide reports from user (default NO)
+- MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
@@ -45,6 +40,7 @@ A:
 - Option for Tiling Windows: always order from oldest study to ...
 - Web Server: Burn option if the CD/DVD is installed
 - Web Server: create albums and add studies to albums (admin)
+- Web Server: for admin, consult network logs
 - DICOM ECG
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study
@@ -60,7 +56,6 @@ A:
 - Save default order for albums
 - VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust
-- dcmtk 3.5.5 -> JPLS
 - DICOM Network: DICOM Authentication
 - Print images, containing ROIs
 - Option to include 3D viewers in Tile Window
@@ -230,10 +225,10 @@ make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc -arch i386 -arch
 ------------------------------------------------------------------------------------------------------------------------
 
 // Release
-- Bundle Version
-- Localizations strings:
+- X Bundle Version
+- X Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
-- Check if OsiriX Lite works...
+- X Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check non-debug lib for KDU & Papyrus in 64-bit
 - Check weasis permissions: everyone: read only

@@ -480,6 +480,16 @@ void DcmQueryRetrieveGetContext::getNextImage(DcmQueryRetrieveDatabaseStatus * d
 					if( status)
 						strcpy( subImgFileName, outfname);
 				}
+                else if( (filexfer.getXfer() == EXS_JPEGLSLossless && preferredXfer.getXfer() == EXS_JPEGLSLossy) ||
+				   (filexfer.getXfer() == EXS_JPEGLSLossy && preferredXfer.getXfer() == EXS_JPEGLSLossless))
+				{
+					// Switching from EXS_JPEGLSLossy <-> EXS_JPEGLSLossless : we only change the transfer syntax....
+					printf( "EXS_JPEGLSLossy <-> EXS_JPEGLSLossless switch\n");
+					status = compressFileFormat(fileformat, subImgFileName, outfname, xferSyntax);
+					
+					if( status)
+						strcpy( subImgFileName, outfname);
+				}
 				else
 				{
 					printf("---- Warning! I'm recompressing files that are already compressed, you should optimize your ts parameters to avoid this: presentation for syntax:%s -> %s\n", dcmFindNameOfUID( filexfer.getXferID()), dcmFindNameOfUID( preferredXfer.getXferID()));

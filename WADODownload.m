@@ -17,6 +17,11 @@
 #import "DicomDatabase.h"
 #include <libkern/OSAtomic.h>
 
+@interface NSURLRequest (DummyInterface)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
++ (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation WADODownload
 
 @synthesize _abortAssociation, showErrorMessage;
@@ -104,9 +109,9 @@
 	if( connection)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
+        
 		NSString *path = [[DicomDatabase defaultDatabase] incomingDirPath];
-		
+        
 		NSString *key = [NSString stringWithFormat:@"%ld", connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
 		
@@ -116,10 +121,15 @@
 		{
 			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
 				extension = @"osirixzip";
-		}
-		
-		[d writeToFile: [path stringByAppendingPathComponent: [[NSString stringWithFormat:@"WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension]] atomically: YES];
-		
+            
+            NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension];
+        
+            [d writeToFile: [path stringByAppendingPathComponent: filename] atomically: YES];
+            
+            // To remove the '.'
+            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
+        }
+        
 		[d setLength: 0]; // Free the memory immediately
 		[WADODownloadDictionary removeObjectForKey: key];
 		
@@ -176,6 +186,16 @@
 			}
 			retrieveStartingDate = [NSDate timeIntervalSinceReferenceDate];
 			
+            @try
+            {
+                if( [[url scheme] isEqualToString: @"https"])
+                    [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[url host]];
+            }
+            @catch (NSException *e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
 			NSURLConnection *downloadConnection = [NSURLConnection connectionWithRequest: [NSURLRequest requestWithURL: url cachePolicy: NSURLRequestReloadIgnoringLocalCacheData timeoutInterval: timeout] delegate: self];
 			
             if( downloadConnection)

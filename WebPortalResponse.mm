@@ -18,7 +18,6 @@
 #import "WebPortalSession.h"
 #import "WebPortalDatabase.h"
 #import "WebPortal.h"
-#import "WebPortal+Databases.h"
 #import "NSString+N2.h"
 #import "AppController.h"
 #import "DicomStudy.h"
@@ -345,6 +344,19 @@
 		
 		return [evaldToken xmlEscapedString];
 	}
+    
+    if ([part0 isEqual:@"LOCNUM"])
+    {
+        token = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@":"];
+        NSObject* o = [self object:dict valueForKeyPath:token context:context];
+        if (o)
+        {
+            if ([o isKindOfClass:[NSNumber class]] == NO)
+                o = [NSNumber numberWithFloat: [o.description floatValue]];
+            
+            return [NSNumberFormatter localizedStringFromNumber: (NSNumber*) o numberStyle: NSNumberFormatterDecimalStyle];
+        }
+    }
 	
 	// or is it just a value?
 	NSObject* o = [self object:dict valueForKeyPath:token context:context];
@@ -512,6 +524,8 @@
 		return wpc.dicomCStorePortString;
 	if ([key isEqual:@"newChallenge"])
 		return [wpc.session newChallenge];
+    if ([key isEqual:@"proposeReport"])
+        return [NSNumber numberWithBool: !wpc.user || wpc.user.downloadReport.boolValue];
 	if ([key isEqual:@"proposeDicomUpload"])
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.uploadDICOM.boolValue) && !wpc.requestIsIOS];
 	if ([key isEqual:@"proposeDicomSend"])
@@ -725,7 +739,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		
 		@try
 		{
-			otherStudies = [[[wpc.portal studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
+			otherStudies = [[[WebPortalUser studiesForUser: wpc.user predicate: [NSPredicate predicateWithFormat: @"(patientID == %@)", study.patientID] sortBy: @"date"] mutableCopy] autorelease];
 			
 			// Important> keep these two separates steps !
 			for( DicomStudy *s in otherStudies)

@@ -125,7 +125,7 @@
 	}
 	else if ([sender indexOfSelectedItem] == 10) {  //Status
 		[searchTypePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"is empty", nil), NSLocalizedString(@"is unread", nil),
-		  NSLocalizedString(@"is reviewed", nil), NSLocalizedString(@"is dictated", nil), nil]];
+		  NSLocalizedString(@"is reviewed", nil), NSLocalizedString(@"is dictated", nil), NSLocalizedString(@"is validated", nil),nil]];
 	}
 	else  //not dates
 		[searchTypePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"contains", nil), NSLocalizedString(@"starts with", nil),

@@ -27,5 +27,6 @@
 -(NSUInteger)itemsCount;
 -(id)contextForItemAtIndex:(NSUInteger)index;
 -(NSInteger)indexOfItemWithContext:(id)context;
+-(void)removeItemWithBundle: (NSBundle*) bundle;
 
 @end

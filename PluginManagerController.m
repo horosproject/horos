@@ -16,7 +16,7 @@
 #import <Message/NSMailDelivery.h>
 #import "WaitRendering.h"
 #import "Notifications.h"
-
+#import "PreferencesWindowController.h"
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
@@ -47,6 +47,22 @@ static NSDate *CachedPluginsListDate = nil;
 
 @implementation PluginManagerController
 
+- (void) WebViewProgressStartedNotification: (NSNotification*) n
+{
+    [statusProgressIndicator setHidden: NO];
+	[statusProgressIndicator startAnimation: self];
+    
+    [[self window] display];
+}
+
+- (void) WebViewProgressFinishedNotification: (NSNotification*) n
+{
+    [statusProgressIndicator setHidden: YES];
+	[statusProgressIndicator stopAnimation: self];
+    
+    [[self window] display];
+}
+
 - (id)init
 {
 	self = [super initWithWindowNibName:@"PluginManager"];
@@ -68,11 +84,16 @@ static NSDate *CachedPluginsListDate = nil;
 	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
 	
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressStartedNotification:) name: WebViewProgressStartedNotification object: webView];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector( WebViewProgressFinishedNotification:) name: WebViewProgressFinishedNotification object: webView];
+    
 	return self;
 }
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver: self]; 
+     
 	[plugins release];
 	[pluginsListURLs release];
 	[downloadURL release];
@@ -142,55 +163,23 @@ static NSDate *CachedPluginsListDate = nil;
 	[self refreshPluginList]; // needed to restore the availability menu in case the user did provided a good admin password
 }
 
-- (void)loadPlugins;
-{
-	while([filtersMenu numberOfItems]>0)
-	{
-		[filtersMenu removeItemAtIndex:0];
-	}
-		
-	while([roisMenu numberOfItems]>0)
-	{
-		[roisMenu removeItemAtIndex:0];
-	}
-	
-	while([othersMenu numberOfItems]>0)
-	{
-		[othersMenu removeItemAtIndex:0];
-	}
-
-	while([dbMenu numberOfItems]>0)
-	{
-		[dbMenu removeItemAtIndex:0];
-	}
-	
-	[PluginManager discoverPlugins];
-	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
-	
-	pluginsNeedToReload = NO;
-}
-
 - (IBAction)loadPlugins:(id)sender;
 {
-	[self loadPlugins];
+	[PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification;
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	if( pluginsNeedToReload)
-	{
-		@try
-		{
-			[self refreshPluginList];
-			[self loadPlugins];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"windowwillClose exception pluginmanagercontroller: %@", e);
-		}
-	}
+    @try
+    {
+        [self refreshPluginList];
+    }
+    @catch (NSException * e)
+    {
+        NSLog( @"windowwillClose exception pluginmanagercontroller: %@", e);
+    }
 }
 
 - (IBAction)showWindow:(id)sender;
@@ -236,12 +225,20 @@ static NSDate *CachedPluginsListDate = nil;
 
 	[super showWindow:sender];
 	[self refreshPluginList];
+    
+    // If we need to remove a plugin with a custom pref pane
+    for (NSWindow* window in [NSApp windows])
+    {
+        if ([window.windowController isKindOfClass:[PreferencesWindowController class]])
+            [window close];
+    }
 }
 
 - (void)refreshPluginList;
 {
 	NSIndexSet *selectedIndexes = [pluginTable selectedRowIndexes];
-	pluginsNeedToReload = YES;
+	
+    [PluginManager setMenus:filtersMenu :roisMenu :othersMenu :dbMenu];
 	
 	[self willChangeValueForKey:@"plugins"];
 	[plugins removeAllObjects];
@@ -328,20 +325,7 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (void)setURL:(NSString*)url;
 {
-	WaitRendering *splash = [[[WaitRendering alloc] init: NSLocalizedString( @"Loading...", nil)] autorelease];
-	[splash showWindow:self];
-	
 	[[webView mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
-	
-	while( [[webView mainFrame] dataSource] == nil || [[[webView mainFrame] dataSource] isLoading] == YES || [[[webView mainFrame] provisionalDataSource] isLoading] == YES)
-	{
-		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-	}
-	
-	[splash close];
-	
-	[statusTextField setHidden:YES];
-	[statusProgressIndicator setHidden:YES];
 }
 
 - (void)setURLforPluginWithName:(NSString*)name;
@@ -454,18 +438,18 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	
 	NSString *pluginPath = path;
 	
-	if([self isZippedFileAtPath:path])
+	if([self isZippedFileAtPath:path] && [self unZipFileAtPath:path])
 	{
-		if(![self unZipFileAtPath:path])
-		{
-			[statusTextField setStringValue:NSLocalizedString(@"Error: bad zip file.", nil)];
-			[statusProgressIndicator setHidden:YES];
-			[statusProgressIndicator stopAnimation:self];
-			return;
-		}
 		pluginPath = [path stringByDeletingPathExtension];
-		[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
 	}
+    else
+    {
+        [statusTextField setStringValue:NSLocalizedString(@"Error: bad zip file", nil)];
+        [statusProgressIndicator setHidden:YES];
+        [statusProgressIndicator stopAnimation:self];
+        return;
+    }
 	
 	NSString *oldPath = [PluginManager deletePluginWithName: [pluginPath lastPathComponent]];
 	
@@ -477,19 +461,13 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	else
 		installDirectoryPath = [PluginManager userActivePluginsDirectoryPath];
 	
-	[PluginManager movePluginFromPath:pluginPath toPath:installDirectoryPath];	
+    // Install the plugin
+	[PluginManager movePluginFromPath:pluginPath toPath: installDirectoryPath];	
 	
-//	NSTask *aTask = [[NSTask alloc] init];
-//    NSMutableArray *args = [NSMutableArray array];
-//	
-//    [args addObject:pluginPath];
-//    [aTask setLaunchPath:@"/usr/bin/touch"];
-//    [aTask setArguments:args];
-//    [aTask launch];
-//	[aTask waitUntilExit];
-//	[aTask release];
+    // load the plugin
+    [PluginManager loadPluginAtPath: [installDirectoryPath stringByAppendingPathComponent: [pluginPath lastPathComponent]]];
 	
-	[statusTextField setStringValue:NSLocalizedString(@"Plugin Installed", nil)];
+	[statusTextField setStringValue:NSLocalizedString( @"Plugin Installed", nil)];
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
 
@@ -503,19 +481,29 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (BOOL)unZipFileAtPath:(NSString*)path;
 {
-	NSTask *aTask = [[NSTask alloc] init];
-    NSMutableArray *args = [NSMutableArray array];
+    if( path.length == 0)
+        return NO;
+    
+    @try
+    {
+        NSTask *aTask = [[NSTask alloc] init];
+        NSMutableArray *args = [NSMutableArray array];
 
-	[args addObject:@"-o"];
-    [args addObject:path];
-    [args addObject:@"-d"];
-	[args addObject:[path stringByDeletingLastPathComponent]];
-    [aTask setLaunchPath:@"/usr/bin/unzip"];
-    [aTask setArguments:args];
-    [aTask launch];
-	[aTask waitUntilExit];
-	[aTask release];
-	
+        [args addObject:@"-o"];
+        [args addObject:path];
+        [args addObject:@"-d"];
+        [args addObject:[path stringByDeletingLastPathComponent]];
+        [aTask setLaunchPath:@"/usr/bin/unzip"];
+        [aTask setArguments:args];
+        [aTask launch];
+        [aTask waitUntilExit];
+        [aTask release];
+	}
+    @catch (NSException *e)
+    {
+        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+    }
+        
 	if([[NSFileManager defaultManager] fileExistsAtPath:[path stringByDeletingPathExtension]])
 	{
 		return YES;

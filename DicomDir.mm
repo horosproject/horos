@@ -16,6 +16,9 @@
 #include "dcddirif.h"
 #include "ofstd.h"
 
+#include "ddpiimpl.h"     /* for class DicomDirImageImplementation */
+
+
 @implementation DicomDir
 
 +(void)createDicomDirAtDir:(NSString*)path {
@@ -25,13 +28,18 @@
     ddir.disableTransferSyntaxCheck(); // -Nxc
     ddir.enableInventMode(OFTrue); // +I
     
-    ddir.enableIconImageMode(); // +X
-    ddir.setIconSize(96);
+//  ddir.enableIconImageMode(); // +X
+    ddir.enableOneIconPerSeriesMode(); // OsiriX addition
+    ddir.setIconSize(128); // we let DicomDirInterface pick the icon size.. which, depending on the modality, will be either 128 or 64
+
+    DicomDirImageImplementation imagePlugin;
+    ddir.addImageSupport(&imagePlugin);
     
     OFList<OFString> fileNames;
     OFStandard::searchDirectoryRecursively("", fileNames, NULL, path.fileSystemRepresentation); // +r +id burnFolder
     
-    OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlash, [[path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]] fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl
+    NSString* dicomdirPath = [path stringByAppendingPathComponent:[NSString stringWithUTF8String:DEFAULT_DICOMDIR_NAME]];
+    OFCondition result = ddir.createNewDicomDir(DicomDirInterface::AP_USBandFlash, [dicomdirPath fileSystemRepresentation], DEFAULT_FILESETID); // -Pfl
     if (!result.good())
         [NSException raise:NSGenericException format:@"Couldn't create new DICOMDIR file: %s", result.text()];
         
@@ -46,6 +54,8 @@
     result = ddir.writeDicomDir(EET_ExplicitLength, EGL_withoutGL);
     if (!result.good())
         [NSException raise:NSGenericException format:@"Couldn't write DICOMDIR file: %s", result.text()];
+    
+    chmod([dicomdirPath fileSystemRepresentation], 0755);
 }
 
 @end

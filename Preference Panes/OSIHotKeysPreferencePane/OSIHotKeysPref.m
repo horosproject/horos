@@ -120,6 +120,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Unread", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Reviewed", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Dictated", nil), @"action", nil],
+                                            [NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Mark Status as Validated", nil), @"action", nil],
 											[NSMutableDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Ortho MPR Cross Tool", nil), @"action", nil],
 											nil];
 	

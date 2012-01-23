@@ -13,12 +13,15 @@
 =========================================================================*/
 
 #import "WebPortalUser.h"
+#import "WebPortalStudy.h"
+#import "WebPortalDatabase.h"
 #import "DicomDatabase.h"
 #import "PSGenerator.h"
 #import "WebPortal.h"
 #import "AppController.h"
 #import "NSError+OsiriX.h"
-
+#import "DDData.h"
+#import "NSData+N2.h"
 
 static PSGenerator *generator = nil;
 
@@ -37,6 +40,7 @@ static PSGenerator *generator = nil;
 @dynamic isAdmin;
 @dynamic name;
 @dynamic password;
+@dynamic passwordHash;
 @dynamic passwordCreationDate;
 @dynamic phone;
 @dynamic sendDICOMtoAnyNodes;
@@ -44,6 +48,7 @@ static PSGenerator *generator = nil;
 @dynamic shareStudyWithUser;
 @dynamic studyPredicate;
 @dynamic uploadDICOM;
+@dynamic downloadReport;
 @dynamic uploadDICOMAddToSpecificStudies;
 @dynamic studies;
 
@@ -113,22 +118,106 @@ static PSGenerator *generator = nil;
 	[self setPrimitiveValue: v forKey: @"autoDelete"];
 }
 
-- (void) setPassword: (NSString*) newPassword
+- (void) setName: (NSString*) newName
 {
-	if( [newPassword isEqualToString: [self primitiveValueForKey: @"password"]] == NO)
-	{
-		[self setValue: [NSDate date] forKey: @"passwordCreationDate"];
-	}
-	
-	[self setPrimitiveValue: newPassword forKey: @"password"];
-	[self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+    if( [newName isEqualToString: self.name] == NO)
+    {
+        if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO)
+        {
+            
+        }
+        else
+        {
+            NSLog( @"------- WebPortalUser : name changed -> password reset");
+            [self generatePassword];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName: @"WebPortalUsernameChanged" object: self];
+        }
+        
+        [self willChangeValueForKey: @"name"];
+        [self setPrimitiveValue: newName forKey: @"name"];
+        [self didChangeValueForKey: @"name"];
+    }
 }
 
--(BOOL)validatePassword:(NSString**)value error:(NSError**)error {
-	if ([*value length] < 4) {
-		if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString(@"Password needs to be at least 4 characters long.", NULL)];
-		return NO;
-	}
+- (void) setPassword: (NSString*) newPassword
+{
+	if( [newPassword length] >= 4 && [newPassword isEqualToString: HASHPASSWORD] == NO)
+	{
+		[self setValue: [NSDate date] forKey: @"passwordCreationDate"];
+        
+        [self willChangeValueForKey: @"password"];
+        [self setPrimitiveValue: newPassword forKey: @"password"];
+        [self didChangeValueForKey: @"password"];
+        
+        [self setPrimitiveValue: @"" forKey: @"passwordHash"];
+        [self setPrimitiveValue: [NSDate date] forKey: @"passwordCreationDate"];
+    }
+}
+
+- (void) convertPasswordToHashIfNeeded
+{
+    if( [self.password length] > 0 && [self.password isEqualToString: HASHPASSWORD] == NO) // We dont want to store password, only sha1Digest version ! 
+    {
+        self.passwordHash = [[[[self.password stringByAppendingString: self.name] dataUsingEncoding:NSUTF8StringEncoding] sha1Digest] hex];
+        
+        [self willChangeValueForKey: @"password"];
+        [self setPrimitiveValue: HASHPASSWORD forKey: @"password"];
+        [self didChangeValueForKey: @"password"];
+        
+        NSLog( @"---- Convert password to hash string. Delete original password for user: %@", self.name);
+    }
+}
+
+-(BOOL)validatePassword:(NSString**)value error:(NSError**)error
+{
+    NSString *password2validate = *value;
+    
+    if( [password2validate isEqualToString: HASHPASSWORD] == NO)
+    {
+        if( [[password2validate stringByReplacingOccurrencesOfString: @"*" withString: @""] length] == 0)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only '*' characters.", NULL)];
+            return NO;
+        }
+	    
+        if( [password2validate length] < 4)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be at least 4 characters long.", NULL)];
+            return NO;
+        }
+        
+        if( [password2validate stringByTrimmingCharactersInSet: [NSCharacterSet decimalDigitCharacterSet]].length == 0)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only numbers: add letters.", NULL)];
+            return NO;
+        }
+        
+        if( [password2validate stringByReplacingOccurrencesOfString: [password2validate substringToIndex: 1] withString: @""].length == 0)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password cannot contain only the same character.", NULL)];
+            return NO;
+        }
+        
+        NSUInteger invidualCharacters = 0;
+        NSMutableArray *array = [NSMutableArray array];
+        for( int i = 0; i < [password2validate length]; i++)
+        {
+            NSString *character = [password2validate substringWithRange: NSMakeRange( i, 1)];
+            if( [array containsObject: character] == NO)
+            {
+                invidualCharacters++;
+                [array addObject: character];
+            }
+        }
+        
+        if( invidualCharacters < 3)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to have at least 3 different characters.", NULL)];
+            return NO;
+        }
+        
+    }
 	
 	return YES;
 }
@@ -193,6 +282,289 @@ static PSGenerator *generator = nil;
 	
 	return YES;
 }
+
+-(NSArray*)arrayByAddingSpecificStudiesForPredicate:(NSPredicate*)predicate toArray:(NSArray*)array
+{
+	NSMutableArray *specificArray = [NSMutableArray array];
+	BOOL truePredicate = NO;
+	
+	if (!predicate)
+	{
+		predicate = [NSPredicate predicateWithValue: YES];
+		truePredicate = YES;
+	}
+	
+	@try
+	{
+		NSArray* userStudies = self.studies.allObjects;
+		
+		if( userStudies.count == 0)
+			return array;
+		
+		// Find studies
+		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+		req.predicate = predicate;
+		NSArray* studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+		
+		for (WebPortalStudy* study in userStudies)
+		{
+			NSArray *obj = nil;
+			
+			if (self.canAccessPatientsOtherStudies.boolValue)
+				obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
+			else
+				obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+			
+			if ([obj count] >= 1)
+			{
+				for( id o in obj)
+				{
+					if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
+						[specificArray addObject: o];
+				}
+			}
+			else if (truePredicate && [obj count] == 0)
+			{
+				// It means this study doesnt exist in the entire DB -> remove it from this user list
+				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+				[self.managedObjectContext deleteObject:study];
+			}
+		}
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"********** addSpecificStudiesToArray : %@", e);
+	}
+	
+	for (id study in array)
+		if (![specificArray containsObject:study])
+			[specificArray addObject:study];
+	
+	return specificArray;
+}
+
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate
+{
+	return [self studiesForPredicate:predicate sortBy:NULL];
+}
+
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue
+{
+	return [self studiesForPredicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
+    return [WebPortalUser studiesForUser: self predicate: predicate sortBy: sortValue fetchLimit: fetchLimit fetchOffset: fetchOffset numberOfStudies: numberOfStudies];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate;
+{
+    return [WebPortalUser studiesForUser: user predicate: predicate sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;
+{
+    return [WebPortalUser studiesForUser: user predicate: predicate sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
+	NSArray* studiesArray = nil;
+	
+	[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+	
+	@try
+	{
+		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+		
+		BOOL allStudies = NO;
+		if( user.studyPredicate.length == 0)
+			allStudies = YES;
+		
+		if( allStudies == NO)
+		{
+			if( predicate)
+				req.predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects:	[DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate],
+                                                                                     predicate,
+                                                                                     nil]];
+			else
+				req.predicate = [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate];
+			
+			
+			studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+			
+			if( user)  
+				studiesArray = [user arrayByAddingSpecificStudiesForPredicate: predicate toArray:studiesArray];
+			
+			if( user.canAccessPatientsOtherStudies.boolValue)
+			{
+				NSFetchRequest* req = [[NSFetchRequest alloc] init];
+				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+				req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
+				
+				int previousStudiesArrayCount = studiesArray.count;
+				
+				studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+				
+				if( predicate && studiesArray.count != previousStudiesArrayCount)
+					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
+				
+				[req release];
+			}
+		}
+		else
+		{
+			if( predicate == nil)
+				predicate = [NSPredicate predicateWithValue: YES];
+			
+			req.predicate = predicate;
+			
+			studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+		}
+        
+        if( [sortValue length])
+		{
+			if( [sortValue rangeOfString: @"date"].location == NSNotFound)
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)]]];
+			else
+				studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: sortValue ascending: NO]]];
+		}
+        
+		if( numberOfStudies)
+			*numberOfStudies = studiesArray.count;
+		
+        if( fetchLimit)
+        {
+            NSRange range = NSMakeRange( fetchOffset, fetchLimit);
+            
+            if( range.location > studiesArray.count)
+                range.location = studiesArray.count;
+            
+            if( range.location + range.length > studiesArray.count)
+                range.length = studiesArray.count - range.location;
+            
+            studiesArray = [studiesArray subarrayWithRange: range];
+        }
+		
+	} @catch(NSException* e) {
+		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
+	} @finally {
+		[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
+	}
+	
+	return studiesArray;
+}
+
+-(NSArray*)studiesForAlbum:(NSString*)albumName
+{
+	return [self studiesForAlbum:albumName sortBy:nil];
+}
+
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue
+{
+    return [self studiesForAlbum: albumName sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
+    return [WebPortalUser studiesForUser:  self album: albumName sortBy: sortValue fetchLimit: fetchLimit fetchOffset: fetchOffset numberOfStudies: numberOfStudies];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName;
+{
+    return [WebPortalUser studiesForUser: self album: albumName sortBy: nil fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue;
+{
+    return [WebPortalUser studiesForUser: self album: albumName sortBy: sortValue fetchLimit: 0 fetchOffset: 0 numberOfStudies: nil];
+}
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies
+{
+	
+	NSArray *studiesArray = nil, *albumArray = nil;
+	
+	[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+	
+	@try
+	{
+		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+		req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+		req.predicate = [NSPredicate predicateWithFormat:@"name == %@", albumName];
+		albumArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+	}
+	@catch(NSException *e)
+	{
+		NSLog(@"******** studiesForAlbum exception: %@", e.description);
+	}
+	
+	[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
+	
+	NSManagedObject *album = [albumArray lastObject];
+	
+	if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
+	{
+		studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
+	}
+	else
+	{
+		NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
+		
+		if ( user.studyPredicate.length)
+		{
+			@try
+			{
+				studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
+				
+				NSArray *specificArray = [user arrayByAddingSpecificStudiesForPredicate:NULL toArray:NULL];
+				
+				for ( NSManagedObject *specificStudy in specificArray)
+				{
+					if ([originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
+					{
+						studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
+					}
+				}
+			}
+			@catch( NSException *e)
+			{
+				NSLog( @"****** User Filter Error : %@", e);
+				NSLog( @"****** NO studies will be displayed.");
+				
+				studiesArray = nil;
+			}
+		}
+		else studiesArray = originalAlbum;
+        
+		if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+		else
+			studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];								
+	}
+	
+    if( numberOfStudies)
+        *numberOfStudies = studiesArray.count;
+    
+    if( fetchLimit)
+    {
+        NSRange range = NSMakeRange( fetchOffset, fetchLimit);
+        
+        if( range.location > studiesArray.count)
+            range.location = studiesArray.count;
+        
+        if( range.location + range.length > studiesArray.count)
+            range.length = studiesArray.count - range.location;
+        
+        studiesArray = [studiesArray subarrayWithRange: range];
+    }
+    
+	return studiesArray;
+}
+
 
 @end
 

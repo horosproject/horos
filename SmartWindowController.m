@@ -246,6 +246,8 @@
 						break;
 				case dictated: value = @"3";
 						break;
+                case validated: value = @"4";
+                    break;
 				default: value = [[view valueField] stringValue];
 			}
 			

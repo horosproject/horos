@@ -343,7 +343,7 @@
 - (NSData *)getExportSettings:(QTMovie*) aMovie component:(NSDictionary*) component
 {
 	// QTKit is currently very limited.... The only solution for 64-bit app -> 32-bit process. Is Apple really investing in Quicktime anymore ??
-	
+    
 	NSString		*prefString = [NSString stringWithFormat:@"Quicktime Export:%d", [[component valueForKey:@"subtype"] unsignedLongValue]];
 	NSData			*data = nil;
 	NSTask			*theTask = [[NSTask alloc] init];
@@ -384,6 +384,11 @@
 	
 	[theTask release];
 	
+    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/QTExportOsiriX64bits-Movie" handler: nil];
+    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/QTExportOsiriX64bits-DataIN" handler: nil];
+    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/QTExportOsiriX64bits-DataOUT" handler: nil];
+    [[NSFileManager defaultManager] removeFileAtPath: @"/tmp/QTExportOsiriX64bits-Component" handler: nil];
+    
 	return data;
 }
 #endif
@@ -444,12 +449,14 @@
 	
 	panel = [NSSavePanel savePanel];
 	
+    [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]  withIntermediateDirectories: YES attributes: nil error: nil];
+    
 	if( produceFiles)
 	{
 		result = NSFileHandlingPanelOKButton;
 		
-		[[NSFileManager defaultManager] removeItemAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] error: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories:YES attributes: nil error:nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
 		
 		fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
 	}

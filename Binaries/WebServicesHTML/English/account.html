@@ -7,6 +7,15 @@
 	%INCLUDE:/errors.pvt.html%
 	%INCLUDE:/messages.pvt.html%
 
+	<script src="/sha1-min.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	function loginAction(form) {
+		form.sha1.value = hex_sha1(form.previouspassword.value+'%X:User.name%');
+		form.previouspassword.value = '';
+		return true;
+	}
+	</script>
+	
 	<div>
 		<div class="title">Username</div>
 		<div>%X:User.name%</div>
@@ -16,11 +25,12 @@
 		<div class="title">Password</div>
 		<div>
 			<form action="" method="POST">
+				<input type="hidden" id="sha1" name="sha1" value="" />
 				<table class="basic wide form">
 					<tr><td>Current Password:</td><td><input type="password" name="previouspassword" /></td></tr>
 					<tr><td>New Password:</td><td><input type="password" name="password" /></td></tr>
 					<tr><td>Repeat New Password:</td><td><input type="password" name="password2" /></td></tr>
-					<tr><td></td><td><button type="submit" name="action" value="changePassword">Save Password</button></td></tr>
+					<tr><td></td><td><button type="submit" name="action" value="changePassword" onclick="return loginAction(this.form)">Save Password</button></td></tr>
 				</table>
 			</form>
 		</div>

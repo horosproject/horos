@@ -681,7 +681,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 														positionY:0
 														spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
 														spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-														imageOrigin:NSMakePoint([[[srcViewer imageView] curDCM] originX], [[[srcViewer imageView] curDCM] originY])];
+														imageOrigin: [DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
 						
 						[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
 						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	

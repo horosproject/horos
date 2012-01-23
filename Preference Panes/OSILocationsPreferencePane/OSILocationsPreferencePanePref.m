@@ -86,11 +86,9 @@
 
 - (void) checkUniqueAETitle
 {
-	int i, x;
-	
 	NSArray *serverList = [dicomNodes arrangedObjects];
 	
-	for( x = 0; x < [serverList count]; x++)
+	for( int x = 0; x < [serverList count]; x++)
 	{
 		int value = [[[serverList objectAtIndex: x] valueForKey:@"Port"] intValue];
 		if( value < 1) value = 1;
@@ -100,7 +98,7 @@
 		
 		NSString *currentAETitle = [[serverList objectAtIndex: x] valueForKey: @"AETitle"];
 		
-		for( i = 0; i < [serverList count]; i++)
+		for( int i = 0; i < [serverList count]; i++)
 		{
 			if( i != x)
 			{
@@ -125,6 +123,36 @@
 				}
 			}
 		}
+        
+        // Check for unique description
+        
+        NSString *description = [[serverList objectAtIndex: x] valueForKey: @"Description"];
+        
+        for( int i = 0; i < [serverList count]; i++)
+		{
+			if( i != x)
+			{
+                if( [description isEqualToString: [[serverList objectAtIndex: i] valueForKey: @"Description"]])
+				{
+                    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HideSameNameAlert"] == NO)
+                    {
+                        NSAlert* alert = [[NSAlert new] autorelease];
+                        [alert setMessageText: NSLocalizedString(@"Same name", 0L)];
+                        [alert setInformativeText:  [NSString stringWithFormat: NSLocalizedString(@"This server name is not unique: %@. Server names should be unique, otherwise autorouting rules can fail.", 0L), description]];
+                        [alert setShowsSuppressionButton:YES ];
+                        [alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
+                        
+                        [alert runModal];
+                        
+                        if ([[alert suppressionButton] state] == NSOnState)
+                            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"HideSameNameAlert"];
+                        
+                        i = [serverList count];
+                        x = [serverList count];
+                    }
+                }
+            }
+        }
 	}
 }
 

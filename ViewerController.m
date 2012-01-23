@@ -161,7 +161,6 @@ static NSMenu *contextualMenu = nil;
 static NSMenu *clutPresetsMenu = nil;
 static NSMenu *convolutionPresetsMenu = nil;
 static NSMenu *opacityPresetsMenu = nil;
-static NSNotification *lastMenuNotification = nil;
 volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
@@ -463,9 +462,9 @@ return YES;
 		{
 			[item setState: NSOffState];
 		}
+		valid = YES;
 	}
-	
-	if( [item action] == @selector( resetWindowsState:))
+	else if( [item action] == @selector( resetWindowsState:))
 	{
 		NSArray				*studiesArray = [ViewerController getDisplayedStudies];
 		for( id loopItem in studiesArray)
@@ -1013,21 +1012,25 @@ return YES;
 
 - (void) refreshMenus
 {
-	lastMenuNotification = nil;
-	if( wlwwPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
-	else [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
+	if( wlwwPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+	else
+        [wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( clutPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
-	else [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
+	if( clutPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+	else
+        [clutPopup setMenu: [[clutPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( convolutionPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
-	else [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
+	if( convolutionPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+	else
+        [convPopup setMenu: [[convolutionPresetsMenu copy] autorelease]];
 	
-	lastMenuNotification = nil;
-	if( opacityPresetsMenu == nil) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
-	else [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
+	if( opacityPresetsMenu == nil) 
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+	else
+        [OpacityPopup setMenu: [[opacityPresetsMenu copy] autorelease]];
 
 	[clutPopup setTitle:curCLUTMenu];
 	[convPopup setTitle:curConvMenu];
@@ -2224,9 +2227,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 		if( presetsMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 35");
+			NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 39");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-			presetsMenu = [[viewerMenu itemAtIndex: 35]  submenu];
+			presetsMenu = [[viewerMenu itemAtIndex: 39]  submenu];
 			NSLog( @"***** Selected item: %@", [presetsMenu title]);
 		}
 		
@@ -2283,9 +2286,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *tilingMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Image Tiling", nil)] submenu];
 		if( tilingMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 42");
+			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 46");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
-			tilingMenu = [[viewerMenu itemAtIndex: 42] submenu];
+			tilingMenu = [[viewerMenu itemAtIndex: 46] submenu];
 			NSLog( @"***** Selected item: %@", [tilingMenu title]);
 		}
 		menu = [tilingMenu copy];
@@ -2314,9 +2317,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *orientationMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Orientation", nil)] submenu];
 		if( orientationMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... orientationMenu == nil -> orientationMenu == itemAtIndex == 8");
+			NSLog( @"***** NSLocalization bug.... orientationMenu == nil -> orientationMenu == itemAtIndex == 12");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Orientation", nil));
-			orientationMenu = [[viewerMenu itemAtIndex: 8]  submenu];
+			orientationMenu = [[viewerMenu itemAtIndex: 12]  submenu];
 			NSLog( @"***** Selected item: %@", [orientationMenu title]);
 		}
 		
@@ -2331,9 +2334,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
 		if( exportMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... exportMenu == nil -> exportMenu == itemAtIndex == 8");
+			NSLog( @"***** NSLocalization bug.... exportMenu == nil -> exportMenu == itemAtIndex == 11");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Export", nil));
-			exportMenu = [[fileMenu itemAtIndex: 8]  submenu];
+			exportMenu = [[fileMenu itemAtIndex: 11]  submenu];
 			NSLog( @"***** Selected item: %@", [exportMenu title]);
 		}
 		
@@ -3034,7 +3037,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	[self SetSyncButtonBehavior: self];
-	[self refreshMenus];
+//	[self refreshMenus];
 }
 
 - (void) windowDidBecomeMain:(NSNotification *)aNotification
@@ -3418,7 +3421,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateConvolutionMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( convolutionPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -3451,7 +3454,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateWLWWMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( wlwwPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -3482,9 +3485,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[contextualMenu release];
 		contextualMenu = nil;
-		[imageView setMenu: nil];	// Will force recomputing, when neaded
-		
-		lastMenuNotification = note;
+		[imageView setMenu: nil];	// Will force recomputing, when needed
 	}
 	
 	[wlwwPopup setMenu: [[wlwwPresetsMenu copy] autorelease]];
@@ -3531,8 +3532,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			curWLWWMenu = [[newName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: [NSDictionary dictionary]];
 		
 		[imageView setWLWW: iwl: iww];
     }
@@ -3545,7 +3545,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) UpdateOpacityMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( opacityPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -3988,7 +3988,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) buildMatrixPreview: (BOOL) showSelected
 {
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
-	
+	if( windowWillClose) return;
+    
 	DicomDatabase* db = [[BrowserController currentBrowser] database];
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
@@ -5844,8 +5845,7 @@ return YES;
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CLUT"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[DefaultsOsiriX getDefaults] objectForKey: @"CLUT"] forKey: @"CLUT"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 	}
 }
 
@@ -5897,7 +5897,7 @@ return YES;
 
 -(void) UpdateCLUTMenu: (NSNotification*) note
 {
-	if( lastMenuNotification != note)
+	if( clutPresetsMenu == nil || [note userInfo] != nil)
 	{
 		//*** Build the menu
 		short       i;
@@ -5940,7 +5940,7 @@ return YES;
 {
 	// Create a new toolbar instance, and attach it to our document window 
 	toolbar = [[OsiriXToolbar alloc] initWithIdentifier: ViewerToolbarIdentifier];
-	
+    
 	// Set up toolbar properties: Allow customization, give a default display mode, and remember state in user defaults 
 	[toolbar setAllowsUserCustomization: YES];
 	[toolbar setAutosavesConfiguration: YES];
@@ -6960,15 +6960,20 @@ return YES;
 						float	currentOrientation[ 9];
 						BOOL	equalVector = YES;
 						BOOL	keepFusion = NO;
+                        BOOL    nonZeroVector = NO;
 						
 						[[pixList[ 0] objectAtIndex:0] orientation: currentOrientation];
 						
 						for( i = 0; i < 9; i++)
 						{
-							if( previousOrientation[ i] != currentOrientation[ i]) equalVector = NO;
+							if( previousOrientation[ i] != currentOrientation[ i])
+                                equalVector = NO;
+                            
+                            if( currentOrientation[ i] != 0)
+                                nonZeroVector = YES;
 						}
 						
-						if( equalVector)
+						if( equalVector && nonZeroVector)
 						{
 							float start = [[[fileList[ 0] objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 							float end = [[[fileList[ 0] objectAtIndex: [fileList[ 0] count]-1] valueForKey:@"sliceLocation"] floatValue];
@@ -7124,6 +7129,8 @@ return YES;
 				[self didChangeValueForKey: @"KeyImageCounter"];
 				
 				[imageView computeColor];
+                
+                [self redrawToolbar];
 			}
 			
 			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
@@ -7194,6 +7201,8 @@ return YES;
 
 - (void) startLoadImageThread
 {
+    if( windowWillClose) return;
+    
 	originalOrientation = -1;
 	
 	stopThreadLoadImage = NO;
@@ -7298,6 +7307,8 @@ return YES;
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"Load Image Data Sub Thread";
+    
 	NSArray *p = [dict objectForKey: @"pixList"];
 	NSArray *f = [dict objectForKey: @"fileList"];
 	int from = [[dict objectForKey: @"from"] intValue];
@@ -7347,7 +7358,9 @@ return YES;
 		[pool release];
 		return;
 	}
-		
+    
+    [NSThread currentThread].name = @"Load Image Data";
+    
 	[ThreadLoadImageLock lock];
 	
 	@try 
@@ -8624,6 +8637,8 @@ return YES;
 
 - (IBAction) flipDataSeries: (id) sender
 {
+    if( windowWillClose) return;
+    
 	int activatedFusionState = [activatedFusion state];
 	int previousFusion = [popFusion selectedTag];
 	int previousCurImage = [imageView curImage];
@@ -9257,8 +9272,7 @@ return YES;
 		[presetsDict removeObjectForKey: name];
 		[[NSUserDefaults standardUserDefaults] setObject: presetsDict forKey:@"WLWW3"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: [NSDictionary dictionary]];
     }
 	
 	[name release];
@@ -9307,7 +9321,6 @@ return YES;
 	
 	[wlwwPopup setTitle: curWLWWMenu];
 	
-	lastMenuNotification = nil;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: curWLWWMenu userInfo: nil];
 	
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
@@ -9666,8 +9679,7 @@ static float oldsetww, oldsetwl;
 		[convDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: convDict forKey: @"Convolution"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -9741,7 +9753,6 @@ static float oldsetww, oldsetwl;
 				curConvMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
 		}
 	}
@@ -9755,8 +9766,7 @@ static float oldsetww, oldsetwl;
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Convolution Filter", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteConv:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this convolution filter : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -9904,8 +9914,7 @@ long				x, y;
 			curConvMenu = [[matrixName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object: curConvMenu userInfo: [NSDictionary dictionary]];
     }
 
     [addConvWindow orderOut:sender];
@@ -9968,8 +9977,7 @@ short				matrix[25];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"CLUT"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -9991,10 +9999,9 @@ short				matrix[25];
 	{
 		if( [str isEqualToString:NSLocalizedString(@"No CLUT", nil)] == YES)
 		{
-			int i, x;
-			for ( x = 0; x < maxMovieIndex; x++)
+			for( int x = 0; x < maxMovieIndex; x++)
 			{
-				for ( i = 0; i < [pixList[ x] count]; i ++) [[pixList[ x] objectAtIndex:i] setBlackIndex: 0];
+                for( DCMPix *p in pixList[ x]) [p setBlackIndex: 0];
 			}
 			
 			[imageView setCLUT: nil :nil :nil];
@@ -10011,7 +10018,6 @@ short				matrix[25];
 				curCLUTMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 			
 			[[[clutPopup menu] itemAtIndex:0] setTitle:str];
@@ -10081,7 +10087,6 @@ short				matrix[25];
 					curCLUTMenu = [str retain];
 				}
 				
-				lastMenuNotification = nil;
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
 				
 				[self propagateSettings];
@@ -10114,8 +10119,7 @@ short				matrix[25];
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteCLUT:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this CLUT : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 	}
     else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -10197,8 +10201,7 @@ short				matrix[25];
 			curCLUTMenu = [[clutName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateCLUTMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
 		
 		[self ApplyCLUTString:curCLUTMenu];
     }
@@ -10252,7 +10255,6 @@ short				matrix[25];
 			curOpacityMenu = [str retain];
 		}
 		
-		lastMenuNotification = nil;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 		
 		[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -10279,7 +10281,6 @@ short				matrix[25];
 				curOpacityMenu = [str retain];
 			}
 			
-			lastMenuNotification = nil;
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
 			
 			[[[OpacityPopup menu] itemAtIndex:0] setTitle:str];
@@ -10317,8 +10318,7 @@ short				matrix[25];
 		[clutDict removeObjectForKey: (id) contextInfo];
 		[[NSUserDefaults standardUserDefaults] setObject: clutDict forKey: @"OPACITY"];
 		
-		lastMenuNotification = nil;
-        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curCLUTMenu userInfo: nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curCLUTMenu userInfo: [NSDictionary dictionary]];
     }
 }
 
@@ -10328,8 +10328,7 @@ short				matrix[25];
     {
         NSBeginAlertSheet( NSLocalizedString(@"Remove a Color Look Up Table", nil), NSLocalizedString(@"Delete", nil), NSLocalizedString(@"Cancel", nil), nil, [self window], self, @selector(deleteOpacity:returnCode:contextInfo:), NULL, [sender title], [NSString stringWithFormat: NSLocalizedString( @"Are you sure you want to delete this Opacity Table : '%@'", nil), [sender title]]);
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: [NSDictionary dictionary]];
 	}
 	else if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
     {
@@ -10412,8 +10411,7 @@ short				matrix[25];
 			curOpacityMenu = [[OpacityName stringValue] retain];
         }
 		
-		lastMenuNotification = nil;
-		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateOpacityMenuNotification object: curOpacityMenu userInfo: [NSDictionary dictionary]];
 		
 		[self ApplyOpacityString:curOpacityMenu];
     }
@@ -12017,7 +12015,7 @@ int i,j,l;
 			
 			for( int x = 0; x < [pixList[y] count]; x++)
 			{
-				DCMPix	*curDCM = [pixList[ y] objectAtIndex: x];
+				DCMPix *curDCM = [pixList[ y] objectAtIndex: x];
 				
 				if( [roisSeries count] > x)
 				{
@@ -12025,7 +12023,10 @@ int i,j,l;
 					
 					for( ROI *r in roisImages)
 					{
-						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];	//NSMakePoint( curDCM.originX, curDCM.originY)];
+                        //Correct the origin only if the orientation is the same
+                        r.pix = curDCM;
+                        
+						[r setOriginAndSpacing: curDCM.pixelSpacingX :curDCM.pixelSpacingY :[DCMPix originCorrectedAccordingToOrientation: curDCM]];
 						
 						[[roiList[ y] objectAtIndex: x] addObject: r];
 						[imageView roiSet: r];
@@ -12399,7 +12400,7 @@ int i,j,l;
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
-			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created (this feature does not work with ROIs of types: Rectangles, Elipses and Axis).", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			NSRunCriticalAlertPanel(NSLocalizedString(@"ROIs Volume Error", nil), NSLocalizedString(@"The missing ROIs were not created : this feature does not work with ROIs that don't contain an area.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 
 	[splash close];
@@ -13409,6 +13410,26 @@ int i,j,l;
 
 - (ROI*) roiMorphingBetween:(ROI*) a and:(ROI*) b ratio:(float) ratio
 {
+    if( a.type == tROI || a.type == tOval)
+    {
+        NSMutableArray *points = a.points;
+        if( a.type == tROI)
+            a.isSpline = NO;
+        
+        a.type = tCPolygon;
+        a.points = points;
+    }
+    
+    if( b.type == tROI || b.type == tOval)
+    {
+        NSMutableArray *points = b.points;
+        if( b.type == tROI)
+            b.isSpline = NO;
+        
+        b.type = tCPolygon;
+        b.points = points;
+    }
+    
 	// Convert both ROIs into polygons, after a marching square isocontour
 	
 	NSMutableArray	*aPts = [a points];
@@ -13911,34 +13932,48 @@ int i,j,l;
 
 - (ROI*) convertPolygonROItoBrush:(ROI*) selectedROI
 {
-	NSSize s;
-	NSPoint o;
-	unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
-	ROI *theNewROI = nil;
-	
-	if( texture)
-	{
-		theNewROI = [[ROI alloc]		initWithTexture: texture
-										textWidth: s.width
-										textHeight: s.height
-										textName: @""
-										positionX: o.x
-										positionY: o.y
-										spacingX: [[imageView curDCM] pixelSpacingX]
-										spacingY: [[imageView curDCM] pixelSpacingY]
-										imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
-		if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
-		{
-		}
-		else
-		{
-			[theNewROI release];
-			theNewROI = nil;
-		}
-		
-		free( texture);
+    ROI *theNewROI = nil;
+    
+    if( selectedROI.type == tOval)
+    {
+        NSMutableArray *points = selectedROI.points;
+        if( selectedROI.type == tROI)
+            selectedROI.isSpline = NO;
+        
+        selectedROI.type = tCPolygon;
+        selectedROI.points = points;
+    }
+    
+    if( selectedROI.type == tCPolygon || selectedROI.type == tOPolygon || selectedROI.type == tPencil)
+    {
+        NSSize s;
+        NSPoint o;
+        unsigned char* texture = [[imageView curDCM] getMapFromPolygonROI: selectedROI size: &s origin: &o];
+        
+        if( texture)
+        {
+            theNewROI = [[ROI alloc]		initWithTexture: texture
+                                            textWidth: s.width
+                                            textHeight: s.height
+                                            textName: @""
+                                            positionX: o.x
+                                            positionY: o.y
+                                            spacingX: [[imageView curDCM] pixelSpacingX]
+                                            spacingY: [[imageView curDCM] pixelSpacingY]
+                                            imageOrigin: NSMakePoint([[imageView curDCM] originX], [[imageView curDCM] originY])];
+            if( [theNewROI reduceTextureIfPossible] == NO)	// NO means that the ROI is NOT empty
+            {
+            }
+            else
+            {
+                [theNewROI release];
+                theNewROI = nil;
+            }
+            
+            free( texture);
+        }
 	}
-	
+    
 	return [theNewROI autorelease];
 }
 
@@ -14058,6 +14093,8 @@ int i,j,l;
 		
 		if( index >= 0)
 		{
+            ROI	*newROI = nil;
+            
 			if( [selectedROI type] == tPlain) tag = 1;
 			else tag = 0;
 			
@@ -14065,7 +14102,7 @@ int i,j,l;
 			{
 				case 1:
 				{
-					ROI	*newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
+					newROI = [self convertBrushROItoPolygon: selectedROI numPoints:100];
 					
 					if( newROI)
 					{
@@ -14081,24 +14118,27 @@ int i,j,l;
 				
 				case 0:
 				{
-					ROI	*newROI = [self convertPolygonROItoBrush: selectedROI];
-					
-					if( newROI)
-					{
-						// Add the new ROI
-						[[selectedROI curView] roiSet: newROI];
-						[[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
-						[newROI setROIMode: ROI_selected];
-						[newROI setName: [selectedROI name]];
-						[newROI setComments: [selectedROI comments]];
-					}
+                    newROI = [self convertPolygonROItoBrush: selectedROI];
+                    
+                    if( newROI)
+                    {
+                        // Add the new ROI
+                        [[selectedROI curView] roiSet: newROI];
+                        [[roiList[curMovieIndex] objectAtIndex: index] addObject: newROI];
+                        [newROI setROIMode: ROI_selected];
+                        [newROI setName: [selectedROI name]];
+                        [newROI setComments: [selectedROI comments]];
+                    }
 				}
 				break;
 			}
 			
 			// Remove the old ROI
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedROI userInfo: nil];
-			[[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
+            if( newROI)
+            {
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixRemoveROINotification object:selectedROI userInfo: nil];
+                [[roiList[curMovieIndex] objectAtIndex: index] removeObject: selectedROI];
+            }
 		}
 	}
 	
@@ -16221,7 +16261,7 @@ int i,j,l;
 		[splash showWindow:self];
 		[[splash progress] setMaxValue: (to - from) / interval];
 		
-		int currentImageIndex = [imageView curImage];
+		int currentImageIndex = [self imageIndex];
 		
 		/////// ****************
 		
@@ -16356,6 +16396,8 @@ int i,j,l;
 		[[self window] setFrame: rf display: YES];
 		[self setMatrixVisible: v];
 		
+        [self setImageIndex: currentImageIndex];
+        
 		if( previousRows != 1 || previousColumns != 1)
 			[self setImageRows: previousRows columns: previousColumns];
 		
@@ -16364,8 +16406,10 @@ int i,j,l;
 		/////// ****************
 		
 		// Go back to initial frame
-		[imageView setIndex: currentImageIndex];
+        [self setImageIndex: currentImageIndex];
+        [[self window] update];
 		[imageView sendSyncMessage: 0];
+        
 		[self adjustSlider];
 		
 		[splash close];
@@ -18789,8 +18833,6 @@ int i,j,l;
 		[self buildMatrixPreview];
 	
 	[self matrixPreviewSelectCurrentSeries];
-	
-	[self refreshMenus];
 	
 	originalOrientation = -1;
 	[orientationMatrix setEnabled: NO];

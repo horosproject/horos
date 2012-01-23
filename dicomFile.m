@@ -63,8 +63,8 @@ static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
 static int CHECKFORLAVIM = -1;
-static int COMMENTSGROUP = NO;
-static int COMMENTSELEMENT = NO;
+static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO;
+static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO;
 static BOOL SEPARATECARDIAC4D = NO;
 //static BOOL SeparateCardiacMR = NO;
 //static int SeparateCardiacMRMode = 0;
@@ -312,6 +312,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			COMMENTSGROUP = [[sd objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[sd objectForKey: @"COMMENTSELEMENT"] intValue];
+            
+            COMMENTSGROUP2 = [[sd objectForKey: @"COMMENTSGROUP2"] intValue];
+			COMMENTSELEMENT2 = [[sd objectForKey: @"COMMENTSELEMENT2"] intValue];
+			
+            COMMENTSGROUP3 = [[sd objectForKey: @"COMMENTSGROUP3"] intValue];
+			COMMENTSELEMENT3 = [[sd objectForKey: @"COMMENTSELEMENT3"] intValue];
 			
 			useSeriesDescription = [sd boolForKey: @"useSeriesDescription"];
 			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
@@ -344,6 +350,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
 			COMMENTSGROUP = [[dict objectForKey: @"COMMENTSGROUP"] intValue];
 			COMMENTSELEMENT = [[dict objectForKey: @"COMMENTSELEMENT"] intValue];
+            
+			COMMENTSGROUP2 = [[dict objectForKey: @"COMMENTSGROUP2"] intValue];
+			COMMENTSELEMENT2 = [[dict objectForKey: @"COMMENTSELEMENT2"] intValue];
+			
+            COMMENTSGROUP3 = [[dict objectForKey: @"COMMENTSGROUP3"] intValue];
+			COMMENTSELEMENT3 = [[dict objectForKey: @"COMMENTSELEMENT3"] intValue];
 			
 			useSeriesDescription = [[dict objectForKey: @"useSeriesDescription"] intValue];
 			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
@@ -456,7 +468,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	@try
 	{
-		fileNb = Papy3FileOpen ( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
+		fileNb = Papy3FileOpen( (char*) [file UTF8String], (PAPY_FILE) 0, TRUE, 0);
 		if (fileNb < 0)
 			readable = NO;
 		else
@@ -473,7 +485,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				if( isImage)
 				{
-					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY  || gArrCompression [fileNb] == JPEG2000) *compressed = YES;
+					if( gArrCompression [fileNb] == JPEG_LOSSLESS || gArrCompression [fileNb] == JPEG_LOSSY || gArrCompression [fileNb] == JPEG2000 || gArrCompression [fileNb] == JPEGLSLossLess || gArrCompression [fileNb] == JPEGLSLossy) *compressed = YES;
 				}
 			}
 			Papy3FileClose (fileNb, TRUE);
@@ -1870,7 +1882,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				if( COMMENTSAUTOFILL)
 				{
-					NSString	*commentsField;
+					NSString *commentsField = nil;
 					
 					theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
 					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
@@ -1892,14 +1904,88 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 									if( theValueP->a && validAPointer( inGrOrModP->vr))
 									{
 										commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
-										
-										[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 									}
 								}
 							}
 						}
 						theErr = Papy3GroupFree (&theGroupP, TRUE);
 					}
+                    
+                    if( COMMENTSGROUP2 && COMMENTSELEMENT2)
+                    {
+                        if (gIsPapyFile [fileNb] == DICOM10)
+                            theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+                        
+                        
+                        theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP2);
+                        if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                        {
+                            SElement *inGrOrModP = theGroupP;
+                            
+                            int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP2);
+                            int theMaxElem = gArrGroup [theEnumGrNb].size;
+                            int j;
+                            
+                            for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+                            {
+                                if( inGrOrModP->element == COMMENTSELEMENT2)
+                                {
+                                    if( inGrOrModP->nb_val > 0)
+                                    {
+                                        UValue_T *theValueP = inGrOrModP->value;
+                                        
+                                        if( theValueP->a && validAPointer( inGrOrModP->vr))
+                                        {
+                                            if( commentsField)
+                                                commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding]];
+                                            else
+                                                commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+                                        }
+                                    }
+                                }
+                            }
+                            theErr = Papy3GroupFree (&theGroupP, TRUE);
+                        }
+                    }
+                    
+                    if( COMMENTSGROUP3 && COMMENTSELEMENT3)
+                    {
+                        if (gIsPapyFile [fileNb] == DICOM10)
+                            theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+                        
+                        theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP3);
+                        if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                        {
+                            SElement *inGrOrModP = theGroupP;
+                            
+                            int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP3);
+                            int theMaxElem = gArrGroup [theEnumGrNb].size;
+                            int j;
+                            
+                            for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+                            {
+                                if( inGrOrModP->element == COMMENTSELEMENT3)
+                                {
+                                    if( inGrOrModP->nb_val > 0)
+                                    {
+                                        UValue_T *theValueP = inGrOrModP->value;
+                                        
+                                        if( theValueP->a && validAPointer( inGrOrModP->vr))
+                                        {
+                                            if( commentsField)
+                                                commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding]];
+                                            else
+                                                commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+                                        }
+                                    }
+                                }
+                            }
+                            theErr = Papy3GroupFree (&theGroupP, TRUE);
+                        }
+                    }
+                    
+                    if( commentsField)
+                        [dicomElements setObject: commentsField forKey:@"commentsAutoFill"];
 				}
 				
 				if( CHECKFORLAVIM == YES)
@@ -2239,9 +2325,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NSString		*patientDOB =  [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
 					NSCalendarDate	*DOB = [NSCalendarDate dateWithString: patientDOB calendarFormat:@"%Y%m%d"];
 					
-					NSDate	*test = [NSDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]];
-					
-					if( DOB) [dicomElements setObject:test forKey:@"patientBirthDate"];
+					if( DOB) [dicomElements setObject: [NSDate dateWithTimeIntervalSinceReferenceDate: [DOB timeIntervalSinceReferenceDate]] forKey:@"patientBirthDate"];
 				}
 				//Patients Sex
 				val = Papy3GetElement (theGroupP, papPatientsSexGr, &nbVal, &itemType);
@@ -4055,6 +4139,26 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 - (int)commentsElement
 {
 	return COMMENTSELEMENT;
+}
+
+- (int)commentsGroup2
+{
+	return COMMENTSGROUP2;
+}
+
+- (int)commentsElement2
+{
+	return COMMENTSELEMENT2;
+}
+
+- (int)commentsGroup3
+{
+	return COMMENTSGROUP3;
+}
+
+- (int)commentsElement3
+{
+	return COMMENTSELEMENT3;
 }
 
 @end

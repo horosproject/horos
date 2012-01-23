@@ -1012,10 +1012,104 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			[self deleteCurrentCurvedPath];
 		}
 	}
+    else if( c == NSUpArrowFunctionKey || c == NSDownArrowFunctionKey || c == NSRightArrowFunctionKey || c ==  NSLeftArrowFunctionKey)
+    {
+        moveCenter = YES;
+        
+        [self restoreCamera];
+        
+        NSPoint center = NSMakePoint( [self frame].size.width/2., [self frame].size.height/2.);
+        
+        NSPoint b1 = NSMakePoint( crossLinesA[ 0][ 0], crossLinesA[ 0][ 1]);
+        NSPoint b2 = NSMakePoint( crossLinesA[ 1][ 0], crossLinesA[ 1][ 1]);
+        
+        NSPoint vector = NSMakePoint( b2.x-b1.x, b2.y-b1.y);
+        
+        float length = sqrt( (vector.x * vector.x) + (vector.y * vector.y));
+        
+        float slopeX = vector.x / length;
+        float slopeY = vector.y / length;
+        
+        if( xFlipped)
+        {
+            if( c == NSLeftArrowFunctionKey)
+                c = NSRightArrowFunctionKey;
+            
+            if( c == NSRightArrowFunctionKey)
+                c = NSLeftArrowFunctionKey;
+        }
+        
+        if( yFlipped)
+        {
+            if( c == NSUpArrowFunctionKey)
+                c = NSDownArrowFunctionKey;
+            
+            if( c == NSDownArrowFunctionKey)
+                c = NSUpArrowFunctionKey;
+        }
+        
+        if( c == NSDownArrowFunctionKey || c == NSUpArrowFunctionKey)
+        {
+            if( fabs( slopeY) < fabs( slopeX))
+            {
+                float c = slopeY;
+                slopeY = -slopeX;
+                slopeX = c;
+            }
+            
+            if( slopeY < 0)
+            {
+                slopeY = -slopeY;
+                slopeX = -slopeX;
+            }
+        }
+        else
+        {
+            if( fabs( slopeX) < fabs( slopeY))
+            {
+                float c = slopeY;
+                slopeY = -slopeX;
+                slopeX = c;
+            }
+            
+            if( slopeX < 0)
+            {
+                slopeY = -slopeY;
+                slopeX = -slopeX;
+            }
+        }
+        
+        float move = 2;
+        
+        if( [theEvent modifierFlags] & NSAlternateKeyMask) move = 6;
+        if( [theEvent modifierFlags] & NSCommandKeyMask) move = 1;
+        
+        if( c == NSDownArrowFunctionKey) { center.y -= move*slopeY; center.x += move*slopeX;}
+        if( c == NSUpArrowFunctionKey) { center.y += move*slopeY; center.x -= move*slopeX;}
+        
+        if( c == NSRightArrowFunctionKey) { center.y -= move*slopeY; center.x += move*slopeX;}
+        if( c == NSLeftArrowFunctionKey) { center.y += move*slopeY; center.x -= move*slopeX;}
+        
+        [vrView setWindowCenter: center];
+        [self updateViewMPR];
+        
+        moveCenter = NO;
+        camera.windowCenterX = 0;
+        camera.windowCenterY = 0;
+        camera.forceUpdate = YES;
+        [self restoreCamera];
+		[self updateViewMPR];
+        
+        moveCenter = NO;
+    }
 	else
 	{
+        float scale = self.scaleValue;
+        
 		[super keyDown: theEvent];
 		
+        self.scaleValue = scale;
+        
 		[windowController propagateWLWW: self];
 	}
 }

@@ -435,7 +435,7 @@ static float deg2rad = M_PI / 180.0;
 	mprView3.camera.viewUp = [Point3D pointWithX:0 y:0 z:1];
 	mprView3.camera.rollAngle = 0;
 	mprView3.angleMPR = 0;
-	mprView3.camera.parallelScale /= 2.;
+	mprView3.camera.parallelScale /= 1.5;
 	[mprView3 restoreCamera];
 	[mprView3 updateViewMPR];
 	
@@ -3357,42 +3357,50 @@ static float deg2rad = M_PI / 180.0;
 	[[self window] setShowsToolbarButton: NO];
 	[[[self window] toolbar] setVisible: YES];
 	
-	
-    //	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
-    //	{
-    //		
-    //		@try
-    //		{
-    //			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
-    //			
-    //			
-    //			NSImage *im = [item image];
-    //			
-    //			if( im == nil)
-    //			{
-    //				@try
-    //				{
-    //					im = [[item view] screenshotByCreatingPDF];
-    //				}
-    //				@catch (NSException * e)
-    //				{
-    //					NSLog( @"a");
-    //				}
-    //			}
-    //			
-    //			if( im)
-    //			{
-    //				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
-    //				
-    //				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[item label] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
-    //				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
-    //			}
-    //		}
-    //		@catch (NSException * e)
-    //		{
-    //			NSLog( @"b");
-    //		}
-    //	}
+#ifdef EXPORTTOOLBARITEM
+	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
+	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
+	{
+		@try
+		{
+			id item = [self toolbar: toolbar itemForItemIdentifier: s willBeInsertedIntoToolbar: YES];
+			
+			
+			NSImage *im = [item image];
+			
+			if( im == nil)
+			{
+				@try
+				{
+					if( [item respondsToSelector:@selector( setRecursiveEnabled:)])
+						[item setRecursiveEnabled: YES];
+					else if( [[item view] respondsToSelector:@selector( setRecursiveEnabled:)])
+						[[item view] setRecursiveEnabled: YES];
+					else if( item)
+						NSLog( @"%@", item);
+                    
+					im = [[item view] screenshotByCreatingPDF];
+				}
+				@catch (NSException * e)
+				{
+					NSLog( @"a");
+				}
+			}
+			
+			if( im)
+			{
+				NSBitmapImageRep *bits = [[[NSBitmapImageRep alloc] initWithData:[im TIFFRepresentation]] autorelease];
+				
+				NSString *path = [NSString stringWithFormat: @"/tmp/sc/%@.png", [[[[item label] stringByReplacingOccurrencesOfString: @"&" withString:@"And"] stringByReplacingOccurrencesOfString: @" " withString:@""] stringByReplacingOccurrencesOfString: @"/" withString:@"-"]];
+				[[bits representationUsingType: NSPNGFileType properties: nil] writeToFile:path  atomically: NO];
+			}
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"b");
+		}
+	}
+#endif
 	
 }
 
@@ -3426,6 +3434,14 @@ static float deg2rad = M_PI / 180.0;
 		
 		[toolbarItem setView: tbCPRType];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRType frame]), NSHeight([tbCPRType frame]))];
+    }
+    else if ([itemIdent isEqualToString: @"tbCPRPathMode"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Path Mode",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Path Mode",nil)];
+		
+		[toolbarItem setView: tbCPRPathMode];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbCPRPathMode frame]), NSHeight([tbCPRPathMode frame]))];
     }
     else if ([itemIdent isEqualToString: @"tbViewsPosition"])
 	{
@@ -3598,7 +3614,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3607,7 +3623,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -3975,6 +3991,10 @@ static float deg2rad = M_PI / 180.0;
                                                  alpha:1];
 												 
 	[curvedPathColor retain];
+    
+    [mprView1 setNeedsDisplay: YES];
+	[mprView2 setNeedsDisplay: YES];
+	[mprView3 setNeedsDisplay: YES];
 }
 
 - (void)setCurvedPath:(CPRCurvedPath *)newCurvedPath

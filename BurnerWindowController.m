@@ -23,6 +23,7 @@
 #import "BrowserController.h"
 #import "DicomStudy.h"
 #import "DicomImage.h"
+#import "DicomStudy+Report.h"
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
@@ -181,7 +182,7 @@
 }
 
 - (void)dealloc
-{
+{    
 	windowWillClose = YES;
 	
 	runBurnAnimation = NO;
@@ -311,13 +312,10 @@
 		if (cdName != nil && [cdName length] > 0)
 		{
 			runBurnAnimation = YES;
-			[NSThread detachNewThreadSelector:@selector(burnAnimation:) toTarget:self withObject:nil];
-			
+            
 			NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
 			t.name = NSLocalizedString( @"Burning...", nil);
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
-			
-//			[NSThread detachNewThreadSelector:@selector(performBurn:) toTarget:self withObject:nil];
 		}
 		else
 			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
@@ -342,17 +340,27 @@
 	{
 		if( no)
 		{
-			if( writeDMG) [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
-			else [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+			if( writeDMG)
+            {
+                [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
+                runBurnAnimation = NO;
+            }
+			else
+            {
+                [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+            }
 		}
+        else
+            runBurnAnimation = NO;
 	}
 	else
 	{
 		self.buttonsDisabled = NO;
+        runBurnAnimation = NO;
 	}
 	
 	burning = NO;
-	runBurnAnimation = NO;
+	
 	
 	[pool release];
 }
@@ -395,35 +403,32 @@
 
 - (void)burnCD:(id)object
 {
-	BOOL continueToBurn = YES;
-	
 	sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
 	
-	if( continueToBurn)
-	{
-		DRTrack*	track = [self createTrack];
+    DRTrack*	track = [self createTrack];
 
-		if (track)
-		{
-			DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
+    if (track)
+    {
+        DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
 
-			// We'll be the delegate for the setup panel. This allows us to show off some 
-			// of the customization you can do.
-			[bsp setDelegate:self];
-			
-			if ([bsp runSetupPanel] == NSOKButton)
-			{
-				DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
+        // We'll be the delegate for the setup panel. This allows us to show off some 
+        // of the customization you can do.
+        [bsp setDelegate:self];
+        
+        if ([bsp runSetupPanel] == NSOKButton)
+        {
+            DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
 
-				[bpp setDelegate:self];
-				
-				// If you wanted to run this as a sheet you would have sent
-				[bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
-			}
-			else
-				runBurnAnimation = NO;
-		}
-	}
+            [bpp setDelegate:self];
+            
+            // If you wanted to run this as a sheet you would have sent
+            [bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
+        }
+        else
+            runBurnAnimation = NO;
+    }
+    else
+        runBurnAnimation = NO;
 	
 	self.buttonsDisabled = NO;
 }
@@ -526,11 +531,9 @@
 	
 - (void) burnProgressPanelWillBegin:(NSNotification*)aNotification
 {
-
 	burning = YES;	// Keep the app from being quit from underneath the burn.
-	isThrobbing = NO;
 	burnAnimationIndex = 0;
-
+    runBurnAnimation = YES;
 }
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
@@ -562,11 +565,21 @@
 		[NSApp endSheet:self.window];
 	[[self window] performClose:nil];
 	
+    runBurnAnimation = NO;
+    
 	return YES;
 }
 
 - (void)windowWillClose:(NSNotification *)notification
 {
+    [irisAnimationTimer invalidate];
+    [irisAnimationTimer release];
+    irisAnimationTimer = nil;
+    
+    [burnAnimationTimer invalidate];
+    [burnAnimationTimer release];
+    burnAnimationTimer = nil;
+    
 	windowWillClose = YES;
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [compressionMode selectedTag] forKey:@"Compression Mode for Burning"];
@@ -577,8 +590,6 @@
 	
 	[[self window] setDelegate: nil];
 	
-	isIrisAnimation = NO;
-	isThrobbing = NO;
 	isExtracting = NO;
 	isSettingUpBurn = NO;
 	burning = NO;
@@ -649,14 +660,23 @@
 {
 	//NSLog(@"Set up burn");
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	isThrobbing = NO;
 	runBurnAnimation = NO;
 	[burnButton setEnabled:NO];
 	isExtracting = YES;
 	
 	[self performSelectorOnMainThread:@selector(estimateFolderSize:) withObject:nil waitUntilDone:YES];
 	isExtracting = NO;
-	[NSThread detachNewThreadSelector:@selector(irisAnimation:) toTarget:self withObject:nil];
+    
+    irisAnimationTimer = [[NSTimer timerWithTimeInterval: 0.1  target: self selector: @selector( irisAnimation:) userInfo: NO repeats: YES] retain];
+    [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSModalPanelRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer: irisAnimationTimer forMode: NSDefaultRunLoopMode];
+    
+    
+    burnAnimationTimer = [[NSTimer timerWithTimeInterval: 0.1  target: self selector: @selector( burnAnimation:) userInfo: NO repeats: YES] retain];
+    
+    [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSModalPanelRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer: burnAnimationTimer forMode: NSDefaultRunLoopMode];
+    
 	[burnButton setEnabled:YES];
 	
 	NSString *title = nil;
@@ -706,14 +726,7 @@
 
 - (void)addDICOMDIRUsingDCMTK_forFilesAtPaths:(NSArray*/*NSString*/)paths dicomImages:(NSArray*/*DicomImage*/)dimages
 {
-	if( [AppController hasMacOSXSnowLeopard] == NO)
-	{
-		NSRunCriticalAlertPanel( NSLocalizedString( @"DICOMDIR", nil), NSLocalizedString( @"DICOMDIR creation requires MacOS 10.6 or higher. DICOMDIR file will NOT be generated.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-	}
-	else
-	{
-        [DicomDir createDicomDirAtDir:[self folderToBurn]];
-	}
+    [DicomDir createDicomDirAtDir:[self folderToBurn]];
 }
 
 - (void) produceHtml:(NSString*) burnFolder
@@ -965,7 +978,7 @@
 				}
 			}
 			
-			for( NSManagedObject *study in studies)
+			for( DicomStudy *study in studies)
 			{
 				if( [[study valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[study valueForKey: @"reportURL"] hasPrefix: @"https://"])
 				{
@@ -974,7 +987,16 @@
 					[urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES];
 				}
 				else
-					[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+				{
+					// Convert to PDF
+					
+					NSString *pdfPath = [study saveReportAsPdfInTmp];
+					
+					if( [manager fileExistsAtPath: pdfPath] == NO)
+						[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+					else
+						[manager copyPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] handler: nil];
+				}
 			}
 			
 			[[[BrowserController currentBrowser] managedObjectContext] unlock];
@@ -1089,78 +1111,27 @@
 	if( windowWillClose)
 		return;
 	
-	isThrobbing = NO;
-	while (runBurnAnimation)
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSString *animation = [NSString stringWithFormat:@"burn_anim%02d", burnAnimationIndex++];
-		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
-		[burnButton setImage:image];
-		if (burnAnimationIndex > 11)
-			burnAnimationIndex = 0;
-		
-		[NSThread  sleepForTimeInterval:0.05];
-		[pool release];
-		
-		if( windowWillClose)
-			return;
-	}
+    if( runBurnAnimation == NO)
+        return;
+    
+    if( burnAnimationIndex > 11)
+        burnAnimationIndex = 0;
+    
+    NSString *animation = [NSString stringWithFormat:@"burn_anim%02d.tif", burnAnimationIndex++];
+    NSImage *image = [NSImage imageNamed: animation];
+    [burnButton setImage:image];
 }
 
--(void)irisAnimation:(id)object
+-(void)irisAnimation:(NSTimer*) timer
 {
-	if( windowWillClose)
-		return;
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	int index = 0;
-	isIrisAnimation = YES;
-	while (index <= 13 && isIrisAnimation)
-	{
-		NSString *animation = [NSString stringWithFormat:@"burn_iris%02d", index++];
-		NSString *path = [[NSBundle mainBundle] pathForResource:animation ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path] autorelease];
-		[burnButton setImage:image];
-		[NSThread  sleepForTimeInterval:0.075];
-		
-		if( windowWillClose)
-			return;
-	}
-	
-	if( isIrisAnimation)
-		[NSThread detachNewThreadSelector:@selector(throbAnimation:) toTarget:self withObject:nil];
-		
-	isIrisAnimation = NO;
-	[pool release];
-}
-
-- (void)throbAnimation:(id)object
-{
-	if( windowWillClose)
-		return;
-	
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	isThrobbing = YES;
-	while (isThrobbing)
-	{
-		NSString *path1 = [[NSBundle mainBundle] pathForResource:@"burn_anim00" ofType:@"tif"];
-		NSImage *image = [ [[NSImage alloc]  initWithContentsOfFile:path1] autorelease];
-		
-		[burnButton setImage:image];
-		[NSThread  sleepForTimeInterval:0.6];
-		if( windowWillClose)
-			return;
-		
-		NSString *path2 = [[NSBundle mainBundle] pathForResource:@"burn_throb" ofType:@"tif"];
-		NSImage *image2 = [[[NSImage alloc]  initWithContentsOfFile:path2] autorelease];
-		
-		[burnButton setImage:image2];
-		[NSThread  sleepForTimeInterval:0.4];
-		
-		if( windowWillClose)
-			return;
-	}
-	[pool release];
+    if( runBurnAnimation)
+        return;
+    
+	if( irisAnimationIndex > 13)
+        irisAnimationIndex = 0;
+    
+    NSString *animation = [NSString stringWithFormat:@"burn_iris%02d.tif", irisAnimationIndex++];
+    NSImage *image = [NSImage imageNamed: animation];
+    [burnButton setImage:image];
 }
 @end

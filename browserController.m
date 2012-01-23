@@ -27,6 +27,7 @@
 #import "DicomImage.h"
 #import "NSWindow+N2.h"
 #import "DicomStudy.h"
+#import "DicomStudy+Report.h"
 #import "DCMPix.h"
 #import "SRAnnotation.h"
 #import "AppController.h"
@@ -68,7 +69,6 @@
 #import "QTExportHTMLSummary.h"
 #import "BrowserControllerDCMTKCategory.h"
 #import "BrowserMatrix.h"
-#import "DicomStudy.h"
 #import "DicomAlbum.h"
 #import "PluginManager.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
@@ -451,7 +451,7 @@ static NSConditionLock *threadLock = nil;
 	// Reload series if needed
 	for( ViewerController *vc in vl)
 	{
-		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		if( [vc windowWillClose] == NO && [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
 			[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"]]] movie: NO viewer : vc keyImagesOnly: NO tryToFlipData: YES];
 		}
@@ -470,7 +470,7 @@ static NSConditionLock *threadLock = nil;
 	// Refresh preview matrix if needed
 	for( ViewerController *vc in vlToRebuild)
 	{
-		if( [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
+		if( [vc windowWillClose] == NO && [[vc window] isVisible] && [[vc imageView] mouseDragging] == NO)
 		{
 			[vc buildMatrixPreview: NO];
 		}
@@ -579,10 +579,6 @@ static NSConditionLock *threadLock = nil;
 #pragma mark-
 
 - (void)newFilesGUIUpdateRun:(int)state viewersListToReload:(NSMutableArray*)cReload viewersListToRebuild:(NSMutableArray*)cRebuild // __deprecated
-{
-}
-
-- (void) newFilesGUIUpdateRun:(int) state // __deprecated
 {
 }
 
@@ -894,6 +890,9 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[splash incrementBy:1];
+            
+            if( [splash aborted])
+                break;
 		}
 		[context unlock];
 		
@@ -2128,43 +2127,55 @@ static NSConditionLock *threadLock = nil;
 
 - (void) reduceCoreDataFootPrint
 {
-	NSLog(@"In %s", __PRETTY_FUNCTION__);
-
-	if( [_database tryLock])
-	{
-		@try
-		{
-			[[AppController sharedAppController] closeAllViewers: self];
-			
-			[reportFilesToCheck removeAllObjects];
-			
-			[[LogManager currentLogManager] checkLogs: nil];
-			[self resetLogWindowController];
-			[[LogManager currentLogManager] resetLogs];
-
+//	if( [managedObjectContext tryLock])
+//	{
+//		@try 
+//		{
+//			[[AppController sharedAppController] closeAllViewers: self];
+//			
+//			[reportFilesToCheck removeAllObjects];
+//			
+//			[[LogManager currentLogManager] checkLogs: nil];
+//			[self resetLogWindowController];
+//			[[LogManager currentLogManager] resetLogs];
+//			
 //			displayEmptyDatabase = YES;
 //			[self outlineViewRefresh];
 //			[self refreshMatrix: self];
-			
-			DicomDatabase* db = [_database retain];
-			[self setDatabase:nil];
-
-			[db reduceCoreDataFootPrint];
-			
-			[self setDatabase:[db autorelease]];
-		}
-		@catch (NSException * e) 
-		{
-			N2LogExceptionWithStackTrace(e);
-		}
-		@finally
-        {
-			[_database unlock];
-		}
-		
-		[DCMPix purgeCachedDictionaries];
-		[DCMView purgeStringTextureCache];
-	}
+//			
+//			NSError *error = nil;
+//			[managedObjectContext save: &error];
+//			
+//			if( error == nil)
+//				[managedObjectContext reset];
+//			
+//			[outlineViewArray release];
+//			outlineViewArray = nil;
+//
+//			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
+//			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+//			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
+//			
+//			displayEmptyDatabase = NO;
+//			
+//			[databaseOutline reloadData];
+//			[albumTable reloadData];
+//			
+//			[self outlineViewRefresh];
+//			[self refreshMatrix: self];
+//		}
+//		@catch (NSException * e) 
+//		{
+//			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+//			#ifdef OSIRIX_VIEWER
+//			[AppController printStackTrace: e];
+//			#endif
+//		}
+//		
+//		[managedObjectContext unlock];
+//	}
+//	
+//	NSLog( @"----- reduce memory footprint for CoreData");
 }
 
 - (void) autoCleanDatabaseDate: (id)sender // __deprecated
@@ -2176,7 +2187,12 @@ static NSConditionLock *threadLock = nil;
 {
 	return [[DicomDatabase activeLocalDatabase] isFileSystemFreeSizeLimitReached];
 }
-    
+
+- (void) autoCleanDatabaseFreeSpaceWarning: (NSString*) message
+{
+	NSRunCriticalAlertPanel( NSLocalizedString(@"Warning", nil),  message, NSLocalizedString(@"OK",nil), nil, nil);
+}
+
 - (void) autoCleanDatabaseFreeSpace: (id)sender // __deprecated
 {
 	[_database initiateCleanUnlessAlreadyCleaning];
@@ -3882,6 +3898,7 @@ static NSConditionLock *threadLock = nil;
 				else if( [study isDeleted] == NO && [study isFault] == NO)
 				{
 					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                    [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
 				}
 			}
 			@catch( NSException *e)
@@ -4521,13 +4538,27 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [key isEqualToString:@"stateText"])
 	{
-		if( [object intValue] >= 0) [item setValue:object forKey:key];
+        for( id managedObject in [self databaseSelection])
+        {
+            if( [object intValue] >= 0)
+                [managedObject setValue:object forKey:key];
+        }
 	}
 	else if( [key isEqualToString:@"lockedStudy"])
 	{
-		if( [[item valueForKey:@"type"] isEqualToString:@"Study"]) [item setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
-	}
-	else [item setValue:object forKey:key];
+        for( id managedObject in [self databaseSelection])
+        {
+            if( [[managedObject valueForKey:@"type"] isEqualToString:@"Study"])
+                [managedObject setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
+        }
+    }
+	else
+    {
+        for( id managedObject in [self databaseSelection])
+        {
+            [managedObject setValue:object forKey:key];
+        }
+    }
 	
 	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
 	
@@ -5410,7 +5441,7 @@ static NSConditionLock *threadLock = nil;
 	
 	if( index != NSNotFound)
 	{
-		if( expand)// || [databaseOutline isItemExpanded: study])
+		if( expand) // || [databaseOutline isItemExpanded: study])
 		{
 			[databaseOutline expandItem: study];
 			
@@ -5722,42 +5753,30 @@ static NSConditionLock *threadLock = nil;
 
 -(void) loadNextPatient:(NSManagedObject *) curImage :(long) direction :(ViewerController*) viewer :(BOOL) firstViewer keyImagesOnly:(BOOL) keyImages
 {
-	NSArray					*winList = [NSApp windows];
-	NSMutableArray			*viewersList = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-	BOOL					applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
-	BOOL					copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
+	BOOL applyToAllViewers = [[NSUserDefaults standardUserDefaults] boolForKey:@"nextSeriesToAllViewers"];
+	BOOL copyPatientsSettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDisplayImagesOfSamePatient"];
 	
+    NSDisableScreenUpdates();
+    
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"onlyDisplayImagesOfSamePatient"];
-	
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-		applyToAllViewers = !applyToAllViewers;
 	
 	if(  applyToAllViewers)
 	{
 		// If multiple viewer are opened, apply it to the entire list
-		for( NSWindow *win in winList)
-		{
-			if( [[win windowController] isKindOfClass:[ViewerController class]] && [[win windowController] windowWillClose] == NO)
-			{
-				[viewersList addObject: [win windowController]];
-			}
-		}
-		viewer = [viewersList objectAtIndex: 0];
-		curImage = [[viewer fileList] objectAtIndex: 0];
+		for( ViewerController *v in [ViewerController get2DViewers])
+            [v close];
 	}
 	else
-	{
-		[viewersList addObject: viewer];
-	}
+		[viewer close];
 	
-	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
+	NSManagedObject *study = [curImage valueForKeyPath:@"series.study"];
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
 	
 	if( index != NSNotFound)
 	{
 		BOOL				found = NO;
-		NSManagedObject		*nextStudy;
+		NSManagedObject		*nextStudy = nil;
 		do
 		{
 			index += direction;
@@ -5773,17 +5792,26 @@ static NSConditionLock *threadLock = nil;
 			else
 			{
 				NSBeep();
-				return;
+                break;
 			}
 			
 		}while( found == NO);
 		
-		NSManagedObject	*series =  [[self childrenArray:nextStudy] objectAtIndex:0];
-		
-		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
-		
-		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
+        if( found)
+        {
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: nextStudy]] byExtendingSelection: NO];
+            [self databaseOpenStudy: nextStudy];
+        }
+        
+//		NSManagedObject	*series =  [[self childrenArray:nextStudy] objectAtIndex:0];
+//		
+//		[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: series]] movie: NO viewer :viewer keyImagesOnly:keyImages];
+//		
+//		[self loadNextSeries:[[self childrenArray: series] objectAtIndex: 0] :0 :viewer :YES keyImagesOnly:keyImages];
 	}
+    
+    NSEnableScreenUpdates();
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDidLoadNewObjectNotification object:study userInfo:nil];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: copyPatientsSettings forKey: @"onlyDisplayImagesOfSamePatient"];
@@ -7201,11 +7229,16 @@ static BOOL withReset = NO;
         
         return proposedPosition;
     }
-    
+
     if (sender == splitDrawer)
     {
         proposedPosition = MAX(proposedPosition, [sender minPossiblePositionOfDividerAtIndex:offset]);
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
+    }
+    
+    if ([sender isEqual: bannerSplit])
+    {
+        return [sender frame].size.height - (banner.image.size.height+3);
     }
 	
     return proposedPosition;
@@ -7364,6 +7397,14 @@ static BOOL withReset = NO;
         [[[_bottomSplit subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
         [[[_bottomSplit subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+_bottomSplit.dividerThickness, 0, splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness, splitFrame.size.height)];
     }
+    
+    static BOOL noReentry = 1;
+    if( noReentry)
+    {
+        noReentry = 0;
+        [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
+        noReentry = 1;
+    }
 }
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
@@ -7399,7 +7440,10 @@ static BOOL withReset = NO;
 	if (sender == splitDrawer)
 		return 160;
 	
-    return 0;
+    if ([sender isEqual: bannerSplit])
+        return [sender frame].size.height - (banner.image.size.height+3);
+
+    return proposedMin;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate: (CGFloat)proposedMax ofSubviewAt: (NSInteger)offset
@@ -7412,6 +7456,9 @@ static BOOL withReset = NO;
     
 	if (sender == splitDrawer)
 		return 300;
+    
+    if (sender == bannerSplit)
+        return [sender frame].size.height - (banner.image.size.height+3);
     
 	return proposedMax;
 }
@@ -9352,11 +9399,11 @@ static BOOL needToRezoom;
 					}
 					
 					[NSApp beginSheet: subOpenWindow
-					   modalForWindow:	[NSApp mainWindow]
+					   modalForWindow: [NSApp mainWindow]
 						modalDelegate: nil
 					   didEndSelector: nil
 						  contextInfo: nil];
-					
+                    
 					int result = [NSApp runModalForWindow: subOpenWindow];
 					[subOpenWindow makeFirstResponder: nil];
 					
@@ -10527,8 +10574,11 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [NSMenuItem separatorItem]];
 	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
+	
+    [menu addItem: [NSMenuItem separatorItem]];
 	
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""] autorelease]];
@@ -10596,9 +10646,14 @@ static NSArray*	openSubSeriesArray = nil;
 //	{
 //		printf("%u\n",i);
 //	});
-
+    
 	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
 	
+#ifdef __LP64__
+    [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
+    [bannerSplit setPosition: 0 ofDividerAtIndex: 0];
+#endif
+    
 //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
 //	[waitCompressionWindow setCancel:YES];
 		
@@ -10671,7 +10726,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 		
-		statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), nil] retain];
+		statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), NSLocalizedString(@"validated", nil), nil] retain];
 		
 		
 		ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
@@ -10820,11 +10875,18 @@ static NSArray*	openSubSeriesArray = nil;
 //	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
 //		[self ReadDicomCDRom: nil];
 	
+    #ifdef __LP64__
+    #else
+    [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
+    #endif
+    
+    [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
+
 	#ifdef __LP64__
-	NSRect frame = [subSeriesWindow frame];
+	NSRect f = [subSeriesWindow frame];
 	
-	frame.size.height -= [warningBox frame].size.height;
-	[subSeriesWindow setFrame: frame display: NO];
+	f.size.height -= [warningBox frame].size.height;
+	[subSeriesWindow setFrame: f display: NO];
 	#endif
 	
 
@@ -10845,6 +10907,38 @@ static NSArray*	openSubSeriesArray = nil;
 //	}
 //	
 //	for( id log in logArray) [self.managedObjectContext deleteObject: log];
+}
+
+- (IBAction) clickBanner:(id) sender
+{
+    if( [[self window] isKeyWindow])
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Banner.html"]];
+}
+
+- (void) installBanner: (NSImage*) bannerImage
+{
+    [banner setImage: bannerImage];
+    [bannerSplit setPosition: bannerImage.size.height+3 ofDividerAtIndex: 0];
+}
+
+- (void) checkForBanner: (id) sender
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    NSError *error = nil;
+    NSURLResponse *urlResponse = nil;
+    
+    NSURLRequest *request = [[[NSURLRequest alloc] initWithURL: [NSURL URLWithString:@"http://www.osirix-viewer.com/OsiriXBanner.png"] cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData timeoutInterval: 30] autorelease];
+    NSData *imageData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
+    
+    if( imageData && error == nil && [urlResponse.MIMEType isEqualToString: @"image/png"])
+    {
+        NSImage *bannerImage = [[[NSImage alloc] initWithData: imageData] autorelease];
+    
+        if( bannerImage)
+            [self performSelectorOnMainThread: @selector( installBanner:) withObject: bannerImage waitUntilDone: NO];
+    }
+    
+    [pool release];
 }
 
 -(void)dealloc
@@ -11048,6 +11142,8 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)showDatabase: (id)sender
 {
+    [NSApp activateIgnoringOtherApps:YES];
+    
     [self.window makeKeyAndOrderFront:sender];
 	[self outlineViewRefresh];
 }
@@ -11152,6 +11248,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( decompressSelectedFiles:) || 
 			[menuItem action] == @selector( generateReport:) || 
 			[menuItem action] == @selector( deleteReport:) || 
+            [menuItem action] == @selector( convertReportToPDF:) ||
+            [menuItem action] == @selector( convertReportToDICOMSR:) ||
 			[menuItem action] == @selector( delItem:) || 
 			[menuItem action] == @selector( querySelectedStudy:) || 
 			[menuItem action] == @selector( burnDICOM:) || 
@@ -11161,8 +11259,25 @@ static NSArray*	openSubSeriesArray = nil;
 			)
 		return NO;
 	}
-
-	if( menuItem.menu == imageTileMenu)
+    
+    if( [menuItem action] == @selector( convertReportToPDF:) || [menuItem action] == @selector( convertReportToDICOMSR:))
+    {
+        NSManagedObject *item = [databaseOutline itemAtRow:[[databaseOutline selectedRowIndexes] firstIndex]];
+        
+        if( item)
+        {
+            DicomStudy *studySelected;
+            	
+            if ([[[item entity] name] isEqual:@"Study"])
+                studySelected = (DicomStudy*) item;
+            else
+                studySelected = [item valueForKey:@"study"];
+            
+            if( [studySelected valueForKey:@"reportURL"] == nil)
+                return NO;
+        }
+    }
+	else if( menuItem.menu == imageTileMenu)
 	{
 		return [[[NSApp mainWindow] windowController] isKindOfClass:[ViewerController class]];
 	}
@@ -11428,24 +11543,34 @@ static NSArray*	openSubSeriesArray = nil;
         
         [deleteQueue unlock];
         
-		int f = 0;
+		long f = 0;
 		NSString *lastFolder = nil;
 		for( NSString *file in copyArray)
 		{
 			unlink( [file UTF8String]);		// <- this is faster
 			
-			if( [lastFolder isEqualToString: [file stringByDeletingLastPathComponent]] == NO)
+            NSString *parentFolder = [file stringByDeletingLastPathComponent];
+			if( [lastFolder isEqualToString: parentFolder] == NO)
 			{
-				[folders addObject: [file stringByDeletingLastPathComponent]];
-				lastFolder = [file stringByDeletingLastPathComponent];
+				[folders addObject: parentFolder];
+                [lastFolder release];
+				lastFolder = [[NSString alloc] initWithString: parentFolder];
 			}
 			
-			[NSThread currentThread].progress = (float) f++ / (float) [copyArray count];
-			[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
-            
-            if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
-                break;
+            if( f%20 == 0)
+            {
+                [NSThread currentThread].progress = (float) f / (float) [copyArray count];
+                [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+                
+                if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
+                    break;
+            }
+            f++;
 		}
+        [NSThread currentThread].progress = (float) f / (float) [copyArray count];
+        [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [copyArray count]-f];
+        
+        [lastFolder release];
 		
         if( [NSThread currentThread].isCancelled == NO)
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
@@ -12213,7 +12338,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			
 			if( quality)
 			{
-				if( compression == compression_JPEG2000)
+				if( compression == compression_JPEG2000 || compression == compression_JPEGLS)
 					*quality = [[dict valueForKey: @"quality"] intValue];
 				else
 					*quality = 0;
@@ -13521,14 +13646,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				NSString *tempPath;
 				// if creating DICOMDIR. Limit length to 8 char
-				if (!addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
-				else
+				if (!addDICOMDIR)
+                {
+                    NSString *name = [curImage valueForKeyPath: @"series.study.name"];
+                    
+                    if( name == nil)
+                        name = @"unnamed";
+                    
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]]];
+				}
+                else
 				{
 					NSMutableString *name;
 					
 					if( [curImage valueForKeyPath: @"series.study.name"] == nil)
 						name = [NSMutableString stringWithString: @"unnamed"];
+                    
 					else if ([(NSString*) [curImage valueForKeyPath: @"series.study.name"] length] > 8)
 						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
 					else
@@ -13587,8 +13720,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				if( [folderTree selectedTag] == 0)
 				{
-					NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.id"]]];
-					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.studyName"]]];
+                    NSString *name = [curImage valueForKeyPath: @"series.study.studyName"];
+                    NSString *idstring = [curImage valueForKeyPath: @"series.study.id"];
+                    
+                    if( name == nil)
+                        name = @"unnamed";
+                    
+                    if( idstring == nil)
+                        idstring = @"0";
+                    
+					NSString *studyId = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: idstring]];
+					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]];
 					
 					if( studyId == nil || [studyId length] == 0)
 						studyId = [NSString stringWithString: @"0"];
@@ -13619,9 +13761,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 					
 					studyPath = tempPath;
 					
-					NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
-					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.name"]]];
+                    NSString *sname = [curImage valueForKeyPath: @"series.name"];
+                    if( sname == nil)
+                        sname = @"unnamed";
+                    
+					NSString *seriesName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: sname]];
 					
+                    NSNumber *seriesId = [curImage valueForKeyPath: @"series.id"];
+                    
 					if( seriesId == nil)
 						seriesId = [NSNumber numberWithInt: 0];
 					
@@ -13779,12 +13926,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
-				
-				if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-					name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+                
+				if ([studyName length] > 8)
+					name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 				else
-					name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+					name = [NSMutableString stringWithString:[studyName uppercaseString]];
 				
 				NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 				name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
@@ -13827,17 +13979,23 @@ static volatile int numberOfThreadsForJPEG = 0;
             for( int i = 0; i < [filesToExport count]; i++)
             {
                 NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
 				NSString *tempPath;
 				
 				if( !addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: studyName]]];
 				else
 				{
-					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					if ([studyName length] > 8)
+						name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 					else
-						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+						name = [NSMutableString stringWithString:[studyName uppercaseString]];
                     
 					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
@@ -13853,17 +14011,22 @@ static volatile int numberOfThreadsForJPEG = 0;
 			for( int i = 0; i < [filesToExport count]; i++)
 			{
 				NSManagedObject	*curImage = [dicomFiles2Export objectAtIndex:i];
+                NSString *studyName = [curImage valueForKeyPath: @"series.study.name"];
+                
+                if( studyName == nil)
+                    studyName = @"unnamed";
+                
 				NSMutableString *name;
 				NSString *tempPath;
 				
 				if( !addDICOMDIR)  
-					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: [curImage valueForKeyPath: @"series.study.name"]]]];
+					tempPath = [path stringByAppendingPathComponent: [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: studyName]]];
 				else
 				{
-					if ([(NSString*)[curImage valueForKeyPath: @"series.study.name"] length] > 8)
-						name = [NSMutableString stringWithString:[[[curImage valueForKeyPath: @"series.study.name"] substringToIndex:7] uppercaseString]];
+					if ([studyName length] > 8)
+						name = [NSMutableString stringWithString:[[studyName substringToIndex:7] uppercaseString]];
 					else
-						name = [NSMutableString stringWithString:[[curImage valueForKeyPath: @"series.study.name"] uppercaseString]];
+						name = [NSMutableString stringWithString:[studyName uppercaseString]];
 				
 					NSData* asciiData = [name dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
 					name = [[[NSMutableString alloc] initWithData:asciiData encoding:NSASCIIStringEncoding] autorelease];	
@@ -14273,71 +14436,74 @@ static volatile int numberOfThreadsForJPEG = 0;
     
 	for( NSString *path in pathsList)
 	{
-		NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
-		BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
-		BOOL isThereAnOsiriXDataAtTheRoot = [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]];
-		
-		if( isItAnIpod || isThereAnOsiriXDataAtTheRoot)
-		{
-			if( [path isEqualToString: defaultPath] == NO && [[path stringByAppendingPathComponent:@"OsiriX Data"] isEqualToString: defaultPath] == NO)
-			{
-				NSString *volumeName = [path lastPathComponent];
-				
-				//NSLog(@"Got a volume named %@", volumeName);
-							
-				// Find the OsiriX Data folder at root
-				if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];
-				
-				// Is this iPod already in the list?
-				BOOL found = NO;
-				for( NSDictionary *service in [bonjourBrowser services])
-				{
-					
-					if( [[service valueForKey:@"type"] isEqualToString:@"localPath"])
-					{
-						if( [[service valueForKey:@"Path"] isEqualToString: path])
-                            found = YES;
-					}
-				}
-				
-				if( found == NO)
-				{
-					int z = self.currentBonjourService;
-					NSDictionary	*selectedDict = nil;
-					if( z >= 0 && z < [bonjourBrowser.services count]) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
-					
-					NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
-					
-					NSString	*name = nil;
-					
-					if( isItAnIpod)
-                        name = volumeName;
-					else
-                        name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
-					
-					[dict setValue:path forKey:@"Path"];
-					[dict setValue:name forKey:@"Description"];
-					[dict setValue:@"localPath" forKey:@"type"];
-					
-					[[bonjourBrowser services] addObject: dict];
-					[bonjourBrowser arrangeServices];
-					[self displayBonjourServices];
-					
-					if( selectedDict)
-					{
-						NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
-						
-						if( index == NSNotFound)
-							[self resetToLocalDatabase];
-						else
-							self.currentBonjourService = index;
-						
-						[selectedDict release];
-					}
-					[self displayBonjourServices];
-				}
-			}
-		}
+        if( [path hasPrefix: @"/Volumes/"])
+        {
+            NSString *iPodControlPath = [path stringByAppendingPathComponent:@"iPod_Control"];
+            BOOL isItAnIpod = [[NSFileManager defaultManager] fileExistsAtPath:iPodControlPath];
+            BOOL isThereAnOsiriXDataAtTheRoot = [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]];
+            
+            if( isItAnIpod || isThereAnOsiriXDataAtTheRoot)
+            {
+                if( [path isEqualToString: defaultPath] == NO && [[path stringByAppendingPathComponent:@"OsiriX Data"] isEqualToString: defaultPath] == NO)
+                {
+                    NSString *volumeName = [path lastPathComponent];
+                    
+                    //NSLog(@"Got a volume named %@", volumeName);
+                                
+                    // Find the OsiriX Data folder at root
+                    if (![[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent:@"OsiriX Data"]]) [[NSFileManager defaultManager] createDirectoryAtPath:[path stringByAppendingPathComponent:@"OsiriX Data"] attributes:nil];
+                    
+                    // Is this iPod already in the list?
+                    BOOL found = NO;
+                    for( NSDictionary *service in [bonjourBrowser services])
+                    {
+                        
+                        if( [[service valueForKey:@"type"] isEqualToString:@"localPath"])
+                        {
+                            if( [[service valueForKey:@"Path"] isEqualToString: path])
+                                found = YES;
+                        }
+                    }
+                    
+                    if( found == NO)
+                    {
+                        int z = self.currentBonjourService;
+                        NSDictionary	*selectedDict = nil;
+                        if( z >= 0 && z < [bonjourBrowser.services count]) selectedDict = [[bonjourBrowser.services objectAtIndex: z] retain];
+                        
+                        NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
+                        
+                        NSString	*name = nil;
+                        
+                        if( isItAnIpod)
+                            name = volumeName;
+                        else
+                            name = [[[NSFileManager defaultManager] displayNameAtPath: volumeName] stringByAppendingString:@" DB"];
+                        
+                        [dict setValue:path forKey:@"Path"];
+                        [dict setValue:name forKey:@"Description"];
+                        [dict setValue:@"localPath" forKey:@"type"];
+                        
+                        [[bonjourBrowser services] addObject: dict];
+                        [bonjourBrowser arrangeServices];
+                        [self displayBonjourServices];
+                        
+                        if( selectedDict)
+                        {
+                            NSInteger index = [[bonjourBrowser services] indexOfObject: selectedDict];
+                            
+                            if( index == NSNotFound)
+                                [self resetToLocalDatabase];
+                            else
+                                self.currentBonjourService = index;
+                            
+                            [selectedDict release];
+                        }
+                        [self displayBonjourServices];
+                    }
+                }
+            }
+        }
 	}
 }*/
 
@@ -14432,8 +14598,24 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (IBAction)sendiDisk: (id)sender
 {
-//	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)// TODO: whats this?
-//	{
+	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+	{
+//        NSDictionary *server = nil;
+//        
+//        for ( NSDictionary *aServer in [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"])
+//        {
+//            if ([[aServer objectForKey:@"Description"] isEqualToString: @"GEPACS"]) 
+//            {
+//                server = aServer;
+//                break;
+//            }
+//        }
+//        
+//        if( server)
+//            [QueryController queryTest: server];
+        
+//      *******************************
+        
 //		[self reduceCoreDataFootPrint];
 //		
 //		[managedObjectContext release];
@@ -14443,9 +14625,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 //		
 //		[self outlineViewRefresh];
 //		[self refreshMatrix: self];
-//		
-//		return;
-//	}
+		
+		return;
+	}
 //
 //	
 //	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
@@ -14934,6 +15116,99 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 		}
+	}
+}
+
+- (IBAction) convertReportToDICOMSR: (id)sender
+{
+//    [checkBonjourUpToDateThreadLock lock]; // TODO: merge
+    
+    NSMutableArray *studies = [NSMutableArray array];
+    
+    for( NSManagedObject *o in [self databaseSelection])
+    {
+        DicomStudy *study = nil;
+        
+        if( [[o valueForKey:@"type"] isEqualToString:@"Series"])
+            study = [o valueForKey:@"study"];
+        else
+            study = (DicomStudy*) o;
+        
+        if( [studies containsObject: study] == NO)
+            [studies addObject: study];
+    }
+    
+    int i = 0;
+    NSMutableArray *newDICOMPDFReports = [NSMutableArray array];
+    for( DicomStudy *study in studies)
+    {
+        @try 
+        {
+            NSString *filename = [self getNewFileDatabasePath: @"dcm"];
+            
+            [study saveReportAsDicomAtPath: filename];
+            
+            [newDICOMPDFReports addObject: filename];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            [AppController printStackTrace: e];
+        }
+        
+        [BrowserController addFiles: newDICOMPDFReports
+                          toContext: [self managedObjectContext]
+                         toDatabase: self
+                          onlyDICOM: YES 
+                   notifyAddedFiles: YES
+                parseExistingObject: YES
+                           dbFolder: [self documentsDirectory]
+                  generatedByOsiriX: YES];
+    }
+    
+//    [checkBonjourUpToDateThreadLock unlock]; // TODO: merge
+    [self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
+}
+
+
+- (IBAction) convertReportToPDF: (id)sender
+{
+	NSIndexSet *index = [databaseOutline selectedRowIndexes];
+	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
+	
+	if( item)
+	{
+		DicomStudy *studySelected;
+		
+//		[checkBonjourUpToDateThreadLock lock]; // TODO: merge
+		
+		@try 
+		{			
+			if ([[[item entity] name] isEqual:@"Study"])
+				studySelected = (DicomStudy*) item;
+			else
+				studySelected = [item valueForKey:@"study"];
+			
+            NSSavePanel *panel = [NSSavePanel savePanel];
+            
+            [panel setCanSelectHiddenExtension:YES];
+            [panel setRequiredFileType: @"pdf"];
+            
+            NSString *filename = [NSString stringWithFormat: NSLocalizedString( @"%@-Report.pdf", nil), studySelected.name];
+            
+            if( [panel runModalForDirectory: nil file: filename] == NSFileHandlingPanelOKButton)
+            {
+                [studySelected saveReportAsPdfAtPath: [panel filename]];
+            }
+		}
+		@catch (NSException * e)
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+			[AppController printStackTrace: e];
+		}
+		
+//		[checkBonjourUpToDateThreadLock unlock]; // TODO: merge
+		[self performSelector: @selector( updateReportToolbarIcon:) withObject: nil afterDelay: 0.1];
 	}
 }
 
@@ -16151,6 +16426,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( decompressSelectedFiles:) || 
 			[toolbarItem action] == @selector( generateReport:) || 
 			[toolbarItem action] == @selector( deleteReport:) || 
+            [toolbarItem action] == @selector( convertReportToPDF:) ||
+            [toolbarItem action] == @selector( convertReportToDICOMSR:) ||
 			[toolbarItem action] == @selector( delItem:) || 
 			[toolbarItem action] == @selector( querySelectedStudy:) || 
 			[toolbarItem action] == @selector( burnDICOM:) || 
@@ -16541,6 +16818,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
 	NSString *dir = documentsDirectory();
 	return [[DicomDatabase defaultDatabase] baseDirPath];
+}
+
+- (NSString*) TEMPPATH // __deprecated
+{
+	return [_database tempDirPath];
 }
 
 - (NSString*)documentsDirectory // __deprecated

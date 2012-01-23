@@ -1816,6 +1816,11 @@ public:
 				   name: NSViewFrameDidChangeNotification
 				 object: nil];
         
+        [nc addObserver: self
+			   selector: @selector(checkForMovedVolume:)
+				   name: OsirixVRCameraDidChangeNotification
+				 object: nil];
+        
 		point3DActorArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DPositionsArray = [[NSMutableArray alloc] initWithCapacity:0];
 		point3DRadiusArray = [[NSMutableArray alloc] initWithCapacity:0];
@@ -2039,7 +2044,6 @@ public:
 		try
 		{
 			[self computeOrientationText];
-			[self checkForMovedVolume: nil];
             
 			[super drawRect:aRect];
 		}
@@ -2540,9 +2544,6 @@ public:
     
     if( Oval2DRadius > 0.001)
     {
-        [self getCosMatrix: Oval2DCos];
-        [self getOrigin: Oval2DPosition];
-        
         if( Oval2DPix == nil)
         {
             if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2) // MIP modes - full depth
@@ -2644,7 +2645,7 @@ public:
 }
 
 - (void) computeOrientationText
-{	
+{
     float cos[ 9];
     float vectors[ 9];
     char string[ 256];
@@ -2655,9 +2656,6 @@ public:
     float theta = acos( cos[8]);
     float psi = -atan2( cos[ 6], cos[ 7]);
     float phi = atan2( cos[ 2], cos[ 5]);
-//    NSLog( @"--------------------");
-//    NSLog( @"Up-Down Angle: %2.2f", theta*R2D - 90.);
-//    NSLog( @"Right-Left Angle: %2.2f", psi*R2D);
     
     phi *= R2D;
     theta *= R2D;
@@ -3016,6 +3014,9 @@ public:
                 
                 [self computeLength];
                 
+                [self getCosMatrix: Oval2DCos];
+                [self getOrigin: Oval2DPosition];
+                
                 [self setNeedsDisplay: YES];
             }
             break;
@@ -3276,11 +3277,11 @@ public:
 				}
 			break;
 			case tTranslate:
-					shiftDown = 1;
-					controlDown = 0;
-					[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
-					[self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
-					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
+                shiftDown = 1;
+                controlDown = 0;
+                [self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
+                [self getInteractor]->InvokeEvent(vtkCommand::MouseMoveEvent, NULL);					
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 			break;
 			
 			case tZoom:
@@ -4781,52 +4782,55 @@ public:
 		
 		dontRenderVolumeRenderingOsiriX = 0;
 	}
-	else if(c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
+	else if( currentTool == tMesure || currentTool == tOval)
 	{
-        if(currentTool == tMesure)
+        if( c == 27 || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey)
         {
-            vtkPoints *pts = Line2DData->GetPoints();
-            
-            if( bestRenderingWasGenerated)
+            if(currentTool == tMesure)
             {
-                bestRenderingWasGenerated = NO;
-                [self display];
-            }
-            dontRenderVolumeRenderingOsiriX = 1;
+                vtkPoints *pts = Line2DData->GetPoints();
+                
+                if( bestRenderingWasGenerated)
+                {
+                    bestRenderingWasGenerated = NO;
+                    [self display];
+                }
+                dontRenderVolumeRenderingOsiriX = 1;
 
-            if( pts->GetNumberOfPoints() != 0)
+                if( pts->GetNumberOfPoints() != 0)
+                {
+                    // Delete current ROI
+                    vtkPoints *pts = vtkPoints::New();
+                    vtkCellArray *rect = vtkCellArray::New();
+                    Line2DData-> SetPoints( pts); pts->Delete();
+                    Line2DData-> SetLines( rect); rect->Delete();
+                    
+                    [self computeLength];
+                    
+                    [self display];
+                }
+                
+                dontRenderVolumeRenderingOsiriX = 0;
+            }
+            else if( currentTool == tOval)
             {
+                if( bestRenderingWasGenerated)
+                {
+                    bestRenderingWasGenerated = NO;
+                    [self display];
+                }
+                dontRenderVolumeRenderingOsiriX = 1;
+                
                 // Delete current ROI
-                vtkPoints *pts = vtkPoints::New();
-                vtkCellArray *rect = vtkCellArray::New();
-                Line2DData-> SetPoints( pts); pts->Delete();
-                Line2DData-> SetLines( rect); rect->Delete();
+                aRenderer->RemoveActor( Oval2DText);
+                aRenderer->RemoveActor2D( Oval2DActor);
+                Oval2DRadius = 0;
                 
                 [self computeLength];
+                [self display];
                 
-                [self display];
+                dontRenderVolumeRenderingOsiriX = 0;
             }
-            
-            dontRenderVolumeRenderingOsiriX = 0;
-        }
-        else if( currentTool == tOval)
-        {
-            if( bestRenderingWasGenerated)
-            {
-                bestRenderingWasGenerated = NO;
-                [self display];
-            }
-            dontRenderVolumeRenderingOsiriX = 1;
-            
-            // Delete current ROI
-            aRenderer->RemoveActor( Oval2DText);
-            aRenderer->RemoveActor2D( Oval2DActor);
-            Oval2DRadius = 0;
-            
-            [self computeLength];
-            [self display];
-            
-            dontRenderVolumeRenderingOsiriX = 0;
         }
 	}
 	else if( (c == NSCarriageReturnCharacter || c == NSEnterCharacter || c == NSTabCharacter || c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3DCut)
@@ -8365,6 +8369,8 @@ public:
 
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
 {
+    if( [controller windowWillClose]) return;
+    
 	advancedCLUT = YES;
 	
 	NSArray *curves = [clut objectForKey:@"curves"];

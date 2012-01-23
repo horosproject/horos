@@ -736,8 +736,6 @@ static NSDate *lastWarningDate = nil;
 	NSString *replacing = NSLocalizedString(@" will be replaced by ", @"");
 	NSString *strVersion = NSLocalizedString(@" version ", @"");
 	
-	NSMutableDictionary *active = [NSMutableDictionary dictionary];
-	NSMutableDictionary *availabilities = [NSMutableDictionary dictionary];
 	
 	for(NSString *path in pluginsArray)
 	{
@@ -745,7 +743,7 @@ static NSDate *lastWarningDate = nil;
 		
 		NSString *pluginBundleName = [[path lastPathComponent] stringByDeletingPathExtension];
 		
-		NSURL *bundleURL = [NSURL fileURLWithPath:[PluginManager pathResolved:path]];
+		NSURL *bundleURL = [NSURL fileURLWithPath: [PluginManager pathResolved:path]];
 		CFDictionaryRef bundleInfoDict = CFBundleCopyInfoDictionaryInDirectory((CFURLRef)bundleURL);
 		
 		CFStringRef versionString = nil;
@@ -758,22 +756,18 @@ static NSDate *lastWarningDate = nil;
 		else
 			pluginBundleVersion = @"";		
 		
-		NSArray *pluginsDictArray = [PluginManager pluginsList];
-		for(NSDictionary *plug in pluginsDictArray)
+		for(NSDictionary *plug in [PluginManager pluginsList])
 		{
-			if([pluginBundleName isEqualToString:[plug objectForKey:@"name"]])
+			if([pluginBundleName isEqualToString: [plug objectForKey:@"name"]])
 			{
-				[replacingPlugins appendString:[plug objectForKey:@"name"]];
-				[replacingPlugins appendString:strVersion];
-				[replacingPlugins appendString:[plug objectForKey:@"version"]];
-				[replacingPlugins appendString:replacing];
-				[replacingPlugins appendString:pluginBundleName];
-				[replacingPlugins appendString:strVersion];
-				[replacingPlugins appendString:pluginBundleVersion];
-				[replacingPlugins appendString:@"\n\n"];
-				
-				[availabilities setObject:[plug objectForKey:@"availability"] forKey:path];
-				[active setObject:[plug objectForKey:@"active"] forKey:path];
+				[replacingPlugins appendString: [plug objectForKey:@"name"]];
+				[replacingPlugins appendString: strVersion];
+				[replacingPlugins appendString: [plug objectForKey:@"version"]];
+				[replacingPlugins appendString: replacing];
+				[replacingPlugins appendString: pluginBundleName];
+				[replacingPlugins appendString: strVersion];
+				[replacingPlugins appendString: pluginBundleVersion];
+				[replacingPlugins appendString: @"\n\n"];
 			}
 		}
 		
@@ -781,117 +775,27 @@ static NSDate *lastWarningDate = nil;
 			CFRelease( bundleInfoDict);
 	}
 	
-	pluginNames = [NSMutableString stringWithString:[pluginNames substringToIndex:[pluginNames length]-2]];
+	pluginNames = [NSMutableString stringWithString: [pluginNames substringToIndex:[pluginNames length]-2]];
 	if([replacingPlugins length]) replacingPlugins = [NSMutableString stringWithString:[replacingPlugins substringToIndex:[replacingPlugins length]-2]];
 	
 	NSString *msg;
 	NSString *areYouSure = NSLocalizedString(@"Are you sure you want to install", @"");
 	
-	if([pluginsArray count]==1)
+	if( [pluginsArray count] == 1)
 		msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the plugin named : %@ ?", @""), areYouSure, pluginNames];
 	else
 		msg = [NSString stringWithFormat:NSLocalizedString(@"%@ the following plugins : %@ ?", @""), areYouSure, pluginNames];
 	
-	if([replacingPlugins length])
+	if( [replacingPlugins length])
 		msg = [NSString stringWithFormat:@"%@\n\n%@", msg, replacingPlugins];
 	
 	NSInteger res = NSRunAlertPanel(NSLocalizedString(@"Plugins Installation", @""), msg, NSLocalizedString(@"OK", @""), NSLocalizedString(@"Cancel", @""), nil);
 	
-	if(res)
+	if( res)
 	{
-		// move the plugin package into the plugins (active) directory
-		NSString *destinationDirectory;
-		NSString *destinationPath;
+		for( NSString *path in pluginsArray)
+            [PluginManager installPluginFromPath: path];
 		
-		NSArray *pluginManagerAvailabilities = [PluginManager availabilities];
-		
-		for(NSString *path in pluginsArray)
-		{			
-			NSString *availability = [availabilities objectForKey:path];
-			BOOL isActive = [[active objectForKey:path] boolValue];
-			
-			if(!availability)
-				isActive = YES;
-			
-			if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:0]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
-			}
-#ifndef MACAPPSTORE
-			else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:1]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager systemActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager systemInactivePluginsDirectoryPath];
-			}
-			else if([availability isEqualToString:[pluginManagerAvailabilities objectAtIndex:2]])
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager appActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager appInactivePluginsDirectoryPath];
-			}
-			else
-#endif
-			{
-				if(isActive)
-					destinationDirectory = [PluginManager userActivePluginsDirectoryPath];
-				else
-					destinationDirectory = [PluginManager userInactivePluginsDirectoryPath];
-			}
-			
-			destinationPath = [destinationDirectory stringByAppendingPathComponent:[path lastPathComponent]];
-			
-			// delete the plugin if it already exists.
-			
-			NSString *pathToDelete = nil;
-			
-			if([[NSFileManager defaultManager] fileExistsAtPath:destinationPath]) // .osirixplugin extension
-				pathToDelete = destinationPath;
-			else
-			{
-				NSString *pathWithOldExt = [[destinationPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"plugin"];
-				
-				if([[NSFileManager defaultManager] fileExistsAtPath:pathWithOldExt]) // the plugin already exists but with the old extension ".plugin"
-					pathToDelete = pathWithOldExt;
-			}
-			
-			BOOL move = YES;
-			
-			if(pathToDelete)
-			{
-				// first, try with NSFileManager
-				
-				if( [[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil] == NO)			// Please leave this line! ANR
-				{
-                    #ifndef MACAPPSTORE
-					NSMutableArray *args = [NSMutableArray array];
-					[args addObject:@"-r"];
-					[args addObject:pathToDelete];
-					
-					[[BLAuthentication sharedInstance] executeCommand:@"/bin/rm" withArgs:args];
-                    #endif
-				}
-				
-				[[NSFileManager defaultManager] removeFileAtPath: pathToDelete handler: nil];			// Please leave this line! ANR
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath: pathToDelete])
-				{
-					NSRunAlertPanel( NSLocalizedString( @"Plugins Installation", nil), NSLocalizedString( @"Failed to remove previous version of the plugin.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-					move = NO;
-				}
-			}
-			
-			// move the new plugin to the plugin folder				
-			if( move)
-				[PluginManager movePluginFromPath:path toPath:destinationPath];
-		}
-		
-		[PluginManager discoverPlugins];
 		[PluginManager setMenus: filtersMenu :roisMenu :othersMenu :dbMenu];
 		
 #ifndef OSIRIX_LIGHT
@@ -903,8 +807,6 @@ static NSDate *lastWarningDate = nil;
 				[[window windowController] refreshPluginList];
 		}
 #endif
-		
-		NSRunInformationalAlertPanel(NSLocalizedString(@"Plugin Update Completed", @""), NSLocalizedString(@"All your plugins are now up to date. Restart OsiriX to use the new or updated plugins.", @""), NSLocalizedString(@"OK", @""), nil, nil);
 	}
 }
 
@@ -1030,6 +932,9 @@ static NSDate *lastWarningDate = nil;
 
 + (void) displayImportantNotice:(id) sender
 {
+    if( [AppController isFDACleared])
+        return;
+    
 	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16) // 16 hours
 	{
 		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1) for primary diagnostic imaging.\r\rFor a FDA / CE-1 certified version, please check our web page:\r\rhttp://www.osirix-viewer.com/Certifications.html\r", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"Certifications", nil));
@@ -1536,9 +1441,9 @@ static NSDate *lastWarningDate = nil;
 		mainOpacityMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Opacity", nil)] submenu];
 		if( mainOpacityMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... mainOpacityMenu == nil -> mainOpacityMenu == itemAtIndex == 38");
+			NSLog( @"***** NSLocalization bug.... mainOpacityMenu == nil -> mainOpacityMenu == itemAtIndex == 42");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Opacity", nil));
-			mainOpacityMenu = [[viewerMenu itemAtIndex: 38]  submenu];
+			mainOpacityMenu = [[viewerMenu itemAtIndex: 42]  submenu];
 			NSLog( @"***** Selected item: %@", [mainOpacityMenu title]);
 		}
 	}
@@ -1589,9 +1494,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 		if( mainMenuWLWWMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... mainMenuWLWWMenu == nil -> mainMenuWLWWMenu == itemAtIndex == 35");
+			NSLog( @"***** NSLocalization bug.... mainMenuWLWWMenu == nil -> mainMenuWLWWMenu == itemAtIndex == 39");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-			mainMenuWLWWMenu = [[viewerMenu itemAtIndex: 35]  submenu];
+			mainMenuWLWWMenu = [[viewerMenu itemAtIndex: 39]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuWLWWMenu title]);
 		}
 	}
@@ -1648,9 +1553,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuConvMenu = [[viewerMenu itemWithTitle: NSLocalizedString(@"Convolution Filters", nil)] submenu];
 		if( mainMenuConvMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... mainMenuConvMenu == nil -> mainMenuConvMenu == itemAtIndex == 39");
+			NSLog( @"***** NSLocalization bug.... mainMenuConvMenu == nil -> mainMenuConvMenu == itemAtIndex == 43");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Convolution Filters", nil));
-			mainMenuConvMenu = [[viewerMenu itemAtIndex: 39]  submenu];
+			mainMenuConvMenu = [[viewerMenu itemAtIndex: 43]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuConvMenu title]);
 		}
 	}
@@ -1701,9 +1606,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuCLUTMenu = [[[viewerMenu itemWithTitle:NSLocalizedString(@"Color Look Up Table", nil)] submenu] retain];
 		if( mainMenuCLUTMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... mainMenuCLUTMenu == nil -> mainMenuCLUTMenu == itemAtIndex == 36");
+			NSLog( @"***** NSLocalization bug.... mainMenuCLUTMenu == nil -> mainMenuCLUTMenu == itemAtIndex == 40");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Color Look Up Table", nil));
-			mainMenuCLUTMenu = [[viewerMenu itemAtIndex: 36]  submenu];
+			mainMenuCLUTMenu = [[viewerMenu itemAtIndex: 40]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuCLUTMenu title]);
 		}
     }
@@ -1819,6 +1724,12 @@ static NSDate *lastWarningDate = nil;
 		case 22:
 			[dict setValue: @"RLELossless" forKey: @"preferredSyntax"];
 		break;
+        case 23:
+			[dict setValue: @"JPEGLSLossless" forKey: @"preferredSyntax"];
+            break;
+        case 24:
+			[dict setValue: @"JPEGLSLossy" forKey: @"preferredSyntax"];
+            break;
 		default:
 			[dict setValue: @"LittleEndianExplicit" forKey: @"preferredSyntax"];
 		break;
@@ -1990,6 +1901,8 @@ static NSDate *lastWarningDate = nil;
 	[STORESCP lock];
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DICOM Store-SCP";
+    
 	@try 
 	{
 		
@@ -2094,6 +2007,8 @@ static NSDate *lastWarningDate = nil;
 #ifndef OSIRIX_LIGHT
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DICOM Store-SCP TLS";
+    
 	if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
 	{
 		[STORESCPTLS lock];
@@ -2136,6 +2051,18 @@ static NSDate *lastWarningDate = nil;
 		
 	if( [[url scheme] isEqualToString: @"osirix"])
 	{
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpXMLRPCServer"] == NO)
+		{
+			int result = NSRunInformationalAlertPanel(NSLocalizedString(@"URL scheme", nil), NSLocalizedString(@"OsiriX URL scheme (osirix://) is currently not activated!\r\rShould I activate it now? Restart is necessary.", nil), NSLocalizedString(@"No",nil), NSLocalizedString(@"Activate & Restart",nil), nil);
+			
+			if( result == NSAlertAlternateReturn)
+			{
+				[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"httpXMLRPCServer"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+				[[NSApplication sharedApplication] terminate: self];
+			}
+		}
+		
 		NSString *content = [url resourceSpecifier];
 		
 		BOOL betweenQuotation = NO;
@@ -2205,11 +2132,22 @@ static NSDate *lastWarningDate = nil;
 				
 				if( [urlParameters objectForKey: @"methodName"]) // XML-RPC message
 				{
-					NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
+                    // Send the XML-RPC as a notification : give a chance to plugin to answer
+                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixXMLRPCMessageNotification object: urlParameters];
+                    
+                    // Did someone processed the message?
+                    if( [[urlParameters valueForKey: @"Processed"] boolValue])
+                    {
+                        NSLog( @"--- %@ processed by a plugin", [url resourceSpecifier]);
+                    }
+                    else // Built-in messages
+                    {
+                        NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
 					
-					[paramDict removeObjectForKey: @"methodName"];
+                        [paramDict removeObjectForKey: @"methodName"];
 					
-					[XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
+                        [XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
+                    }
 				}
 				
 				if( [urlParameters objectForKey: @"image"])
@@ -2606,11 +2544,6 @@ static NSDate *lastWarningDate = nil;
 	return r;
 }
 
-+ (BOOL) isFDACleared
-{
-	return NO;
-}
-
 + (BOOL) willExecutePlugin
 {
 	BOOL returnValue = YES;
@@ -2807,10 +2740,10 @@ static BOOL initialized = NO;
 				#ifdef MACAPPSTORE
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
-				[[NSUserDefaults standardUserDefaults] setObject:@"(~/Library/Application Support/OsiriX App/)" forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(~/Library/Application Support/OsiriX App/)", nil) forKey:@"DefaultDatabasePath"];
 				#else
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
-				[[NSUserDefaults standardUserDefaults] setObject:@"(Current User Documents folder)" forKey:@"DefaultDatabasePath"];
+				[[NSUserDefaults standardUserDefaults] setObject: NSLocalizedString( @"(Current User Documents folder)", nil) forKey:@"DefaultDatabasePath"];
 				#endif
 				
 				#ifdef __LP64__
@@ -3223,6 +3156,11 @@ static BOOL initialized = NO;
 //	
 //	NSMutableDictionary *nameDictionary = [NSMutableDictionary dictionary], *tagDictionary = [NSMutableDictionary dictionary];
 //	
+//    NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DCMTagDictionary")];
+//    
+//    tagDictionary = [NSMutableDictionary dictionaryWithContentsOfFile: [bundle pathForResource:@"tagDictionary" ofType:@"plist"]];
+//    nameDictionary = [NSMutableDictionary dictionaryWithContentsOfFile: [bundle pathForResource:@"nameDictionary" ofType:@"plist"]];
+//    
 //	for( NSString *l in lines)
 //	{
 //		if( [l hasPrefix: @"#"] == NO)
@@ -3241,9 +3179,17 @@ static BOOL initialized = NO;
 //					
 //					NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys: [f objectAtIndex: 2], @"Description", [f objectAtIndex: 3], @"VM", [f objectAtIndex: 1], @"VR", nil];	//[f objectAtIndex: 4], @"Version", nil];
 //					
-//					[tagDictionary setObject: d forKey: grel];
-//					
-//					[nameDictionary setObject: grel forKey: [f objectAtIndex: 2]];
+//                    if( [tagDictionary objectForKey: grel])
+//                    {
+////                        NSLog( @"%@", [tagDictionary objectForKey: grel]);
+//                    }
+//                    else
+//                    {
+//                        NSLog( @"%@", d);
+//                        
+//                        [tagDictionary setObject: d forKey: grel];
+//                        [nameDictionary setObject: grel forKey: [f objectAtIndex: 2]];
+//                    }
 //				}
 //			}
 //			else
@@ -3253,6 +3199,7 @@ static BOOL initialized = NO;
 //	
 //	[tagDictionary writeToFile: @"/tmp/tagDictionary.plist" atomically: YES];
 //	[nameDictionary writeToFile: @"/tmp/nameDictionary.plist" atomically: YES];
+    
 //	warning : patientssex -> patientsex, patientsname -> patientname, ...
 	
 //	<?xml version="1.0" encoding="UTF-8"?>
@@ -3282,39 +3229,46 @@ static BOOL initialized = NO;
 	NSMenu *mainMenu = [NSApp mainMenu];
 	
 	if( [[[mainMenu itemAtIndex: 5] title] isEqualToString: NSLocalizedString(@"2D Viewer", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 1");
     
 	if( [[[mainMenu itemAtIndex: 1] title] isEqualToString: NSLocalizedString(@"File", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 2");
 	
 	NSMenu *viewerMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"2D Viewer", nil)] submenu];
 	
-	if( [[[viewerMenu itemAtIndex: 37] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 39] title] isEqualToString: NSLocalizedString(@"Window Width & Level", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 3");
     
-	if( [[[viewerMenu itemAtIndex: 44] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 46] title] isEqualToString: NSLocalizedString(@"Image Tiling", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 4");
     
-	if( [[[viewerMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 12] title] isEqualToString: NSLocalizedString(@"Orientation", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 5");
     
-	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 42] title] isEqualToString: NSLocalizedString(@"Opacity", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 6");
     
-	if( [[[viewerMenu itemAtIndex: 41] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 43] title] isEqualToString: NSLocalizedString(@"Convolution Filters", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 7");
     
-	if( [[[viewerMenu itemAtIndex: 38] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[viewerMenu itemAtIndex: 40] title] isEqualToString: NSLocalizedString(@"Color Look Up Table", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 8");
 	
 	NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
 	
-	if( [[[fileMenu itemAtIndex: 10] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
-        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS");
+	if( [[[fileMenu itemAtIndex: 11] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
+        NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 10");
+    
+    if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
+    {
+        NSLog( @"\r****** path2odt2pdf == nil\r*****************************");
+    }
     
 	#endif
     
     _appDidFinishLoading = YES;
+    
+    [ROI loadDefaultSettings];
 }
 
 - (void) checkForOsirixMimeType
@@ -3700,6 +3654,11 @@ static BOOL initialized = NO;
 
 
 #pragma mark-
+
++ (BOOL) isFDACleared
+{
+	return NO;
+}
 
 - (void) displayUpdateMessage: (NSString*) msg
 {
@@ -4797,7 +4756,7 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: origCopySettings forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
-	if( [viewersList count] > 0)
+	if( [viewersList count] > 0 && keyWindow >= 0)
 	{
 		[[[viewersList objectAtIndex: keyWindow] window] makeKeyAndOrderFront:self];
 		[[viewersList objectAtIndex: keyWindow] propagateSettings];

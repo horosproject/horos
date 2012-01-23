@@ -1022,7 +1022,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
-	
+    
     //#define RANDOMFILES
 #ifdef RANDOMFILES
     NSMutableArray* randomArray = [NSMutableArray array];
@@ -1217,6 +1217,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
     
+    NSLog(@"Add: %@", dicomFilesArray);
+    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
     NSMutableArray* modifiedStudiesArray = [NSMutableArray array];
@@ -1392,7 +1394,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							study.patientUID = [curDict objectForKey: @"patientUID"];
 							study.id = [curDict objectForKey: @"studyNumber"];
 							
-							if ([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] && inParseExistingObject)
+							if (([DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] || [DCMAbstractSyntaxUID isPDF: SOPClassUID]) && inParseExistingObject)
 							{
 								if ([[curDict objectForKey: @"studyDescription"] length])
 									study.studyName = [curDict objectForKey: @"studyDescription"];

@@ -74,14 +74,18 @@
 	
 	for( i = 0; i < dataSize; i++)
 	{
-		dL = ((data[ i] - minValue) * (HISTOSIZE-1)) / (maxValue - minValue);
+		dL = ((data[ i] - minValue) * HISTOSIZE) / (maxValue - minValue);
 		
-		if( dL < 0) dL = 0;
-		if( dL > (HISTOSIZE-1)) dL = (HISTOSIZE-1);
+		if( dL < 0)
+            dL = 0;
+        
+		if( dL > (HISTOSIZE-1))
+            dL = (HISTOSIZE-1);
 		
 		histoData[ dL] ++;
 		
-		if( histoData[ dL] > max) max = histoData[ dL];
+		if( histoData[ dL] > max)
+            max = histoData[ dL];
 	}
 	
 	[histo setRange: minValue :maxValue];

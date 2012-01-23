@@ -14,6 +14,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+#define HASHPASSWORD @"**********"
+
 /** \brief  Core Data Entity for a web user */
 @class WebPortalStudy;
 
@@ -33,6 +35,7 @@
 @property (nonatomic, retain) NSNumber * isAdmin;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * password;
+@property (nonatomic, retain) NSString * passwordHash;
 @property (nonatomic, retain) NSDate * passwordCreationDate;
 @property (nonatomic, retain) NSString * phone;
 @property (nonatomic, retain) NSNumber * sendDICOMtoAnyNodes;
@@ -40,16 +43,35 @@
 @property (nonatomic, retain) NSNumber * shareStudyWithUser;
 @property (nonatomic, retain) NSString * studyPredicate;
 @property (nonatomic, retain) NSNumber * uploadDICOM;
+@property (nonatomic, retain) NSNumber * downloadReport;
 @property (nonatomic, retain) NSNumber * uploadDICOMAddToSpecificStudies;
 @property (nonatomic, retain) NSSet* studies;
 
 -(void)generatePassword;
+-(void)convertPasswordToHashIfNeeded;
 
 -(BOOL)validatePassword:(NSString**)value error:(NSError**)error;
 -(BOOL)validateDownloadZIP:(NSNumber**)value error:(NSError**)error;
 -(BOOL)validateName:(NSString**)value error:(NSError**)error;
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error;
 
+-(NSArray*)arrayByAddingSpecificStudiesForPredicate:(NSPredicate*)predicate toArray:(NSArray*)array;
+
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate;
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;
+-(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
+
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate;
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;
++(NSArray*)studiesForUser: (WebPortalUser*) user predicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
+
+-(NSArray*)studiesForAlbum:(NSString*)albumName;
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue;
+-(NSArray*)studiesForAlbum:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
+
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName;
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue;
++(NSArray*)studiesForUser: (WebPortalUser*) user album:(NSString*)albumName sortBy:(NSString*)sortValue fetchLimit:(int) fetchLimit fetchOffset:(int) fetchOffset numberOfStudies:(int*) numberOfStudies;
 @end
 
 @interface WebPortalUser (CoreDataGeneratedAccessors)
@@ -60,3 +82,4 @@
 - (void)removeStudies:(NSSet *)value;
 
 @end
+

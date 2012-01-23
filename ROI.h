@@ -157,7 +157,7 @@ enum
 @property int originalIndexForAlias;
 @property BOOL locked, selectable, isAliased, displayCMOrPixels;
 @property(nonatomic, retain) NSString *name, *comments;
-@property(readonly) long type;
+@property long type;
 @property(nonatomic, setter=setROIMode:) long ROImode;
 @property(retain) NSMutableArray *points; // Return/set the points state of the ROI
 @property(readonly) NSMutableArray *zPositions;

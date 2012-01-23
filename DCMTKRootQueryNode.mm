@@ -52,6 +52,7 @@
 	dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
 	dataset-> insertEmptyElement(DCM_StudyID, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfStudyRelatedInstances, OFTrue);
+    dataset-> insertEmptyElement(DCM_InstitutionName, OFTrue);
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
         dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);

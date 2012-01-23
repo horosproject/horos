@@ -46,6 +46,35 @@ static NSTimeInterval lastConnection = 0;
 
 @implementation XMLRPCMethods
 
+- (void) displayError: (NSError*) error
+{
+    NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
+}
+
+- (void) separateThread
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    [NSThread currentThread].name = @"XML-RPC Listener";
+    
+    NSError *error = nil;
+    if( ![httpServ start: &error])
+    {
+        httpServ = nil;
+        
+        [self performSelectorOnMainThread:@selector( displayError:) withObject: error waitUntilDone: YES];
+    }
+    else
+    {
+        NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
+        
+        NSRunLoop *theRL = [NSRunLoop currentRunLoop];
+        while( [theRL runMode: NSDefaultRunLoopMode beforeDate: [NSDate distantFuture]]);
+    }
+    
+    [pool release];
+}
+
 - (id) init
 {
 	self = [super init];
@@ -59,16 +88,19 @@ static NSTimeInterval lastConnection = 0;
 		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
 		[httpServ setDelegate:self];
 		NSError *error = nil;
-		if (![httpServ start:&error])
-		{
-			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
-			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
-			httpServ = nil;
-		}
-		else
-		{
-			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
-		}
+        
+        [NSThread detachNewThreadSelector: @selector( separateThread) toTarget: self withObject: nil];
+        
+//		if (![httpServ start: &error])
+//		{
+//			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
+//			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
+//			httpServ = nil;
+//		}
+//		else
+//		{
+//			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
+//		}
 	}
 	return self;
 }
@@ -87,21 +119,34 @@ static NSTimeInterval lastConnection = 0;
 
 }
 
+- (void) processHTTPConnectionOnMainThread: (NSDictionary*) dict
+{
+    basicHTTPConnection *conn = [dict objectForKey: @"conn"];
+    HTTPServerRequest *mess = [dict objectForKey: @"mess"];
+    
+    [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+}
+
 - (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
 {
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
-	
-	@try
+	@synchronized( self)
 	{
-		[self HTTPConnectionProtected:conn didReceiveRequest:mess];
-	}
-	
-	@catch (NSException * e)
-	{
-		NSLog( @"HTTPConnection WebServices : %@", e);
-	}
-	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+        if( [NSDate timeIntervalSinceReferenceDate] - lastConnection < 0.3)
+            [NSThread sleepForTimeInterval: 0.3];
+        
+        lastConnection = [NSDate timeIntervalSinceReferenceDate];
+        
+        @try
+        {
+            [self performSelectorOnMainThread: @selector( processHTTPConnectionOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: conn, @"conn", mess, @"mess", nil] waitUntilDone: YES];
+//            [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+        }
+        
+        @catch (NSException * e)
+        {
+            NSLog( @"HTTPConnection WebServices : %@", e);
+        }
+    }
 }
 
 - (NSDictionary*) getParameters: (NSXMLDocument *) doc encoding: (NSString *) encoding
@@ -167,11 +212,19 @@ static NSTimeInterval lastConnection = 0;
 		{
 			NSRange separatorRange = [s rangeOfString: @"="];
 			
-			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"studyUID"])
-				studyUID = [s substringFromIndex: separatorRange.location+1];
-				
-			if( [[s substringToIndex: separatorRange.location] isEqualToString: @"seriesUID"])
-				seriesUID = [s substringFromIndex: separatorRange.location+1];
+            if( separatorRange.location != NSNotFound)
+            {
+                @try
+                {
+                    if( [[s substringToIndex: separatorRange.location] isEqualToString: @"studyUID"])
+                        studyUID = [s substringFromIndex: separatorRange.location+1];
+                        
+                    if( [[s substringToIndex: separatorRange.location] isEqualToString: @"seriesUID"])
+                        seriesUID = [s substringFromIndex: separatorRange.location+1];
+                }
+                @catch (NSException * e) { N2LogExceptionWithStackTrace(e); }
+            }
+            else NSLog( @"**** no studyUID");
 		}
 		
 		if( studyUID)
@@ -262,7 +315,7 @@ static NSTimeInterval lastConnection = 0;
 	//
 	// Parameters:
 	// URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
-	// Display: display the images at the end of the download? (Optional parameter)
+	// Display: display the images at the end of the download? (Optional parameter : it requires a WADO URL, containing the studyUID parameter)
 	//
 	// Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
 	// Response: {error: "0"}
@@ -271,7 +324,7 @@ static NSTimeInterval lastConnection = 0;
 	{
 		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
 		{
-			if(1 != [paramDict count] && 2 != [paramDict count])
+			if( [paramDict count] < 1)
 			{
 				[self postError: 400 version: vers message: mess];
 				return;
@@ -835,6 +888,18 @@ static NSTimeInterval lastConnection = 0;
                     
                     NSArray *filterArray = [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue"], @"value", [paramDict objectForKey: @"filterKey"], @"name", nil]];
                     
+                    if( [paramDict objectForKey: @"filterValue2"] && [paramDict objectForKey: @"filterKey2"])
+                    {
+                        filterArray = [filterArray arrayByAddingObject:
+                                       [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue2"], @"value", [paramDict objectForKey: @"filterKey2"], @"name", nil]];
+                    }
+                    
+                    if( [paramDict objectForKey: @"filterValue3"] && [paramDict objectForKey: @"filterKey3"])
+                    {
+                        filterArray = [filterArray arrayByAddingObject:
+                                       [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue3"], @"value", [paramDict objectForKey: @"filterKey3"], @"name", nil]];
+                    }
+                    
                     [rootNode queryWithValues: filterArray];
                     
                     int retrieveMode = CMOVERetrieveMode;
@@ -1167,9 +1232,15 @@ static NSTimeInterval lastConnection = 0;
 		
         return;
     }
-
-	NSLog( @"**** Bad Request: we accept only http POST");
-
-   [self postError: 405 version: vers message: mess];
+    else
+    {
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Bad Request
+        NSString *message = @"This is the XML-RPC server of OsiriX : use POST request according to the XML-RPC standard.\r\rDocumentation : http://www.osirix-viewer.com/XML-RPC.pdf";
+        NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
+        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
+        CFHTTPMessageSetBody(response, (CFDataRef) (CFDataRef)data);
+        [mess setResponse: response];
+        CFRelease(response);
+    }
 }
 @end

@@ -82,7 +82,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
     IBOutlet NSView *tbStraightenedCPRAngle;
     double straightenedCPRAngle; // this is in degrees, the CPRView uses radians
-    IBOutlet NSView *tbCPRType, *tbViewsPosition;
+    IBOutlet NSView *tbCPRType, *tbViewsPosition, *tbCPRPathMode;
     CPRType cprType;
     ViewsPosition viewsPosition;
     

@@ -46,8 +46,6 @@
 	IBOutlet NSButton *downloadButton;
 	IBOutlet NSTextField *statusTextField;
 	IBOutlet NSProgressIndicator *statusProgressIndicator;
-	
-	BOOL pluginsNeedToReload;
 }
 
 - (NSMutableArray*)plugins;
@@ -55,7 +53,6 @@
 - (IBAction)modifiyActivation:(id)sender;
 - (IBAction)delete:(id)sender;
 - (IBAction)modifiyAvailability:(id)sender;
-- (void)loadPlugins;
 - (IBAction)loadPlugins:(id)sender;
 - (void)refreshPluginList;
 

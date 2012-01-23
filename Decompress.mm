@@ -11,6 +11,7 @@
 #import <WebKit/WebKit.h>
 #include <mingpp.h>
 #import "N2Debug.h"
+#import <Quartz/Quartz.h>
 
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
@@ -30,6 +31,8 @@
 #include "dcuid.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
+#include "Binaries/dcmtk-source/dcmjpls/djdecode.h" //JPEG-LS
+#include "Binaries/dcmtk-source/dcmjpls/djencode.h" //JPEG-LS
 
 extern "C"
 {
@@ -73,7 +76,7 @@ int compressionForModality( NSArray *array, NSArray *arrayLow, int limit, NSStri
 			
 			if( quality)
 			{
-				if( compression == compression_JPEG2000)
+				if( compression == compression_JPEG2000 || compression == compression_JPEGLS)
 					*quality = [[dict valueForKey: @"quality"] intValue];
 				else
 					*quality = 0;
@@ -112,7 +115,8 @@ int main(int argc, const char *argv[])
 	{
 		// register global JPEG decompression codecs
 		DJDecoderRegistration::registerCodecs();
-
+        DJLSDecoderRegistration::registerCodecs();
+        
 		// register global JPEG compression codecs
 		DJEncoderRegistration::registerCodecs(
 			ECC_lossyRGB,
@@ -139,7 +143,9 @@ int main(int argc, const char *argv[])
 			OFFalse,
 			OFFalse,
 			OFTrue);
-
+        
+        DJLSEncoderRegistration::registerCodecs();
+        
 		// register RLE compression codec
 		DcmRLEEncoderRegistration::registerCodecs();
 
@@ -204,13 +210,18 @@ int main(int argc, const char *argv[])
 				
 				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
+                    NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
 					@try
 					{
 						[t setLaunchPath: @"/usr/bin/unzip"];
 						[t setCurrentDirectoryPath: @"/tmp/"];
-						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
 						[t waitUntilExit];
@@ -219,7 +230,9 @@ int main(int argc, const char *argv[])
 					{
 						NSLog( @"***** unzipFile exception: %@", e);
 					}
-					
+                    
+					[[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                    
 					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
 				}
 				else
@@ -323,18 +336,31 @@ int main(int argc, const char *argv[])
 										NSLog( @"failed to compress file: %@", curFile);
 								}
 							}
-							else if( compression == compression_JPEG || compression == compression_JPEG2000)
+							else if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
 							{
 								DcmRepresentationParameter *params = nil;
 								E_TransferSyntax tSyntax;
 								DJ_RPLossless losslessParams(6,0);
 								DJ_RPLossy JP2KParams( quality);
 								DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
-								
+                                
 								if( compression == compression_JPEG)
 								{
 									params = &losslessParams;
 									tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+								}
+                                else if( compression == compression_JPEGLS)
+								{
+									if( quality == DCMLosslessQuality)
+									{
+										params = &JP2KParamsLossLess;
+										tSyntax = EXS_JPEGLSLossless;
+									}
+									else
+									{
+										params = &JP2KParams;
+										tSyntax = EXS_JPEGLSLossy;
+									}
 								}
 								else if( compression == compression_JPEG2000)
 								{
@@ -374,23 +400,32 @@ int main(int argc, const char *argv[])
 									// store in lossless JPEG format
 									fileformat.loadAllDataIntoMemory();
 									
-									[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-									cond = fileformat.saveFile( [curFileDest UTF8String], tSyntax);
-									status =  (cond.good()) ? YES : NO;
-									
+                                    {
+                                        NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                                        
+                                        [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                        
+                                        cond = fileformat.saveFile( [tempCurFileDest UTF8String], tSyntax);
+                                        status =  (cond.good()) ? YES : NO;
+                                        
+                                        [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                                    }
+                                    
 									if( status == NO)
 									{
 										[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
+										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                                        {
 											[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-										} else
-											if( destDirec)
-											{
-												[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-												NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-											}
-											else
-												NSLog( @"failed to compress file: %@", curFile);
+										}
+                                        else if( destDirec)
+                                        {
+                                            [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                            NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+                                        }
+                                        else
+                                            NSLog( @"failed to compress file: %@", curFile);
 									}
 									else
 									{
@@ -411,11 +446,12 @@ int main(int argc, const char *argv[])
 							}
 						}
 					}
-					else
-						if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue]) {
-							[[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
-							[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-						} else NSLog( @"compress : cannot read file: %@", curFile);
+					else if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                    {
+                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                        [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                    }
+                    else NSLog( @"compress : cannot read file: %@", curFile);
 				}
 			}
 		}
@@ -469,7 +505,6 @@ int main(int argc, const char *argv[])
 			for( i = fileListFirstItemIndex; i < argc ; i++)
 			{
 				NSString *curFile = [NSString stringWithUTF8String:argv[ i]];
-				
 				NSString *curFileDest;
 				
 				if( destDirec)
@@ -481,13 +516,18 @@ int main(int argc, const char *argv[])
 				
 				if( [[curFile pathExtension] isEqualToString: @"zip"] || [[curFile pathExtension] isEqualToString: @"osirixzip"])
 				{
+                    NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                    
 					NSTask *t = [[[NSTask alloc] init] autorelease];
 	
 					@try
 					{
 						[t setLaunchPath: @"/usr/bin/unzip"];
 						[t setCurrentDirectoryPath: @"/tmp/"];
-						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", curFileDest, curFile, nil];
+						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
 						[t waitUntilExit];
@@ -497,6 +537,8 @@ int main(int argc, const char *argv[])
 						NSLog( @"***** unzipFile exception: %@", e);
 					}
 					
+                    [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                    
 					[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
 				}
 				else
@@ -504,7 +546,6 @@ int main(int argc, const char *argv[])
 					OFCondition cond;
 					
 					const char *fname = (const char *)[curFile UTF8String];
-					const char *destination = (const char *)[curFileDest UTF8String];
 					
 					DcmFileFormat fileformat;
 					cond = fileformat.loadFile(fname);
@@ -554,13 +595,23 @@ int main(int argc, const char *argv[])
 							if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
 							{
 								fileformat.loadAllDataIntoMemory();
-								cond = fileformat.saveFile(destination, EXS_LittleEndianExplicit);
+                                
+                                NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                                
+                                [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                                [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                
+								cond = fileformat.saveFile( [tempCurFileDest UTF8String], EXS_LittleEndianExplicit);
 								status =  (cond.good()) ? YES : NO;
+                                
+                                [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
 							}
 							else status = NO;
 							
 							if( status == NO) // Try DCM Framework...
 							{
+                                NSLog( @"********* Failed to open with dcmtk, try DCMFramework");
+                                
 								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
 								
 								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
@@ -570,7 +621,7 @@ int main(int argc, const char *argv[])
 								}
 								@catch (NSException *e)
 								{
-									NSLog( @"dcmObject writeToFile failed: %@", e);
+									NSLog( @"******** dcmObject writeToFile failed: %@", e);
 								}
 								[dcmObject release];
 							}
@@ -663,6 +714,8 @@ int main(int argc, const char *argv[])
 				NSString* inputDir = [NSString stringWithUTF8String:argv[fileListFirstItemIndex++]];
 				NSArray* inputFiles = [inputDir stringsByAppendingPaths:[[NSFileManager defaultManager] contentsOfDirectoryAtPath:inputDir error:NULL]];
 				createSwfMovie(inputFiles, path);
+                
+                [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
 		}
 		
@@ -777,6 +830,22 @@ int main(int argc, const char *argv[])
 					[printOp setShowsPrintPanel: NO];
 					[printOp setShowsProgressPanel: NO];
 					[printOp runOperation];
+                    
+                    //jf remove empty last PDF page
+                    NSURL *pdfURL = [theURL URLByAppendingPathExtension:@"pdf"];
+                    PDFDocument *pdf = [[[PDFDocument alloc]initWithURL:pdfURL]autorelease];
+                    NSUInteger pdfPageCount = [pdf pageCount];
+                    if (pdfPageCount > 1)
+                    {
+                        NSUInteger pdfLastPageIndex = pdfPageCount - 1;
+                        PDFPage *pdfLastPage = [pdf pageAtIndex:pdfLastPageIndex];
+                        NSUInteger pdfLastPageCharCount = [pdfLastPage numberOfCharacters];
+                        if (pdfLastPageCharCount < 2)
+                        {
+                            [pdf removePageAtIndex:pdfLastPageIndex];
+                            [pdf writeToURL:pdfURL];
+                        }
+                    }
 				}
 			}
 			@catch (NSException * e)

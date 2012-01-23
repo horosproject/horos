@@ -1164,6 +1164,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 {
 	if( [notification object] == [self window])
 	{
+        windowWillClose = YES;
 		[[self window] setAcceptsMouseMovedEvents: NO];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixWindow3dCloseNotification object: self userInfo: 0];

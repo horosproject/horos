@@ -112,19 +112,21 @@ function shareDestinationChange(select) {
 					<td>%X:Study.stateText%</td>
 				</tr>
 				%]IF:Study.stateText%
+                %[IF:Info.proposeReport%
 				%[IF:Study.reportIsLink%
 				<tr>
 					<td>Report:</td>
 					<td><a href="%X:Study.reportURL%" target="blank" class="report">Link to Report</a></td>
 				</tr>
 				%ELSE:Study.reportIsLink%
-				%[IF:Study.reportURL&&!Info.isIOS%
+				%[IF:Study.reportURL%
 				<tr>
 					<td>Report:</td>
-					<td><a href="report.%U:Study.reportExtension%?xid=%Study.XID%" class="report">Download Report</a></td>
+					<td><a href="report.pdf?xid=%Study.XID%" class="report">View Report as PDF file</a></td>
 				</tr>
-				%]IF:Study.reportURL&&!Info.isIOS%
+				%]IF:Study.reportURL%
 				%]IF:Study.reportIsLink%
+                %]IF:Info.proposeReport%
 				%[IF:Study.otherStudiesForThisPatient.count%
 				<tr>
 					<td>Other&nbsp;Studies&nbsp;for&nbsp;this&nbsp;patient:</td>
@@ -178,7 +180,7 @@ function shareDestinationChange(select) {
 									%[IF:Series.noFiles<2%
 										1 image
 									%ELSE:Series.noFiles<2%
-										%Series.noFiles% images
+										%LOCNUM:Series.noFiles% images
 									%]IF:Series.noFiles<2%
 								</span>
 								%[IF:Series.comment%
@@ -195,11 +197,12 @@ function shareDestinationChange(select) {
 						</td>
 						%]IF:Info.proposeWADORetrieve%
 						%]IF:Info.isMacOS||Info.isIOS%
+                        
+                        %[IF:Info.proposeZipDownload%
 						<td class="narrow middle">
-							%[IF:Info.proposeZipDownload%
 							<a href="%U:Study.name% - %U:Series.name%.%[IF:Info.isMacOS%osirixzip%ELSE:Info.isMacOS%zip%]IF:Info.isMacOS%?xid=%Series.XID%"><img src="images/download.png"/></a>
-							%]IF:Info.proposeZipDownload%
 						</td>
+                        %]IF:Info.proposeZipDownload%
 	
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
@@ -242,6 +245,14 @@ function shareDestinationChange(select) {
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
+				<tr>
+					<td>This study is visible by:</td>
+					<td>
+					%[FOREACH:Study.authorizedUsers:aUser%
+					%X:aUser.name%<br>
+					%]FOREACH:Study.authorizedUsers:aUser%
+					</td>
+				</tr>
 				<tr>
 					<td>User:</td>
 					<td>

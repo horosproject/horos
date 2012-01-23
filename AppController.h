@@ -52,7 +52,8 @@ enum
 	compression_sameAsDefault = 0,
 	compression_none = 1,
 	compression_JPEG = 2,
-	compression_JPEG2000 = 3
+	compression_JPEG2000 = 3,
+    compression_JPEGLS = 4
 };
 
 enum

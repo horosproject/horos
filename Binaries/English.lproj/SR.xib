@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.SystemVersion">11C74</string>
+		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
+		<string key="IBDocument.AppKitVersion">1138.23</string>
+		<string key="IBDocument.HIToolboxVersion">567.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">1938</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSPopUpButtonCell</string>
@@ -34,7 +34,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="5203879">
 			<object class="NSCustomObject" id="792367187">
 				<string key="NSClassName">SRController</string>
@@ -58,7 +61,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{500, 380}</string>
 				<object class="NSView" key="NSWindowView" id="727277037">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSCustomView" id="329325748">
@@ -66,11 +69,14 @@
 							<int key="NSvFlags">274</int>
 							<string key="NSFrame">{{7, 9}, {483, 364}}</string>
 							<reference key="NSSuperview" ref="727277037"/>
+							<reference key="NSWindow"/>
 							<string key="NSClassName">SRView</string>
 							<string key="NSExtension">NSOpenGLView</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{500, 380}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{500, 402}</string>
@@ -78,7 +84,7 @@
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="152261239">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="43446382">
@@ -86,6 +92,7 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{0, 1}, {182, 35}}</string>
 						<reference key="NSSuperview" ref="152261239"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<int key="NSNumRows">1</int>
 						<int key="NSNumCols">6</int>
@@ -102,7 +109,7 @@
 								<reference key="NSControlView" ref="43446382"/>
 								<int key="NSTag">2</int>
 								<int key="NSButtonFlags">-1228652289</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">130</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Zoom</string>
@@ -174,7 +181,7 @@
 								<reference key="NSControlView" ref="43446382"/>
 								<int key="NSTag">18</int>
 								<int key="NSButtonFlags">-1228652289</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">130</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotateCamera</string>
@@ -237,6 +244,8 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{189, 37}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -5333,172 +5342,12 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<int key="connectionID">578</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeFloatValueFrom:</string>
-						<reference key="source" ref="351252265"/>
-						<reference key="destination" ref="293615399"/>
-					</object>
-					<int key="connectionID">592</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeIntValueFrom:</string>
-						<reference key="source" ref="293615399"/>
-						<reference key="destination" ref="351252265"/>
-					</object>
-					<int key="connectionID">593</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">export3DWindow</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="785543590"/>
-					</object>
-					<int key="connectionID">594</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">framesSlider</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="351252265"/>
-					</object>
-					<int key="connectionID">595</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">rotation</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="886515830"/>
-					</object>
-					<int key="connectionID">596</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">endQuicktimeSettings:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="556312170"/>
-					</object>
-					<int key="connectionID">597</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">endQuicktimeSettings:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="477995466"/>
-					</object>
-					<int key="connectionID">598</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">export3DFileFormat:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="553561766"/>
-					</object>
-					<int key="connectionID">612</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">export3DFileFormat:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="1010249839"/>
-					</object>
-					<int key="connectionID">613</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">export3DFileFormat:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="119383660"/>
-					</object>
-					<int key="connectionID">614</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">export3DFileFormat:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="1072778539"/>
-					</object>
-					<int key="connectionID">615</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">export3DView</string>
 						<reference key="source" ref="792367187"/>
 						<reference key="destination" ref="1048074889"/>
 					</object>
 					<int key="connectionID">616</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">export3DVRWindow</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="633896481"/>
-					</object>
-					<int key="connectionID">631</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">VRFrames</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="121213130"/>
-					</object>
-					<int key="connectionID">632</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">endQuicktimeVRSettings:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="738816087"/>
-					</object>
-					<int key="connectionID">634</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">endQuicktimeVRSettings:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="549370478"/>
-					</object>
-					<int key="connectionID">635</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">export3DFileFormat:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="695301354"/>
-					</object>
-					<int key="connectionID">638</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DInfoPanel</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="963219231"/>
-					</object>
-					<int key="connectionID">645</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DRadiusSlider</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="616047180"/>
-					</object>
-					<int key="connectionID">646</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DColorWell</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="126496186"/>
-					</object>
-					<int key="connectionID">647</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBSetSelected3DPointColor:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="126496186"/>
-					</object>
-					<int key="connectionID">648</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -5510,67 +5359,11 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">controller</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="792367187"/>
-					</object>
-					<int key="connectionID">664</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DPropagateToAll</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="81796482"/>
-					</object>
-					<int key="connectionID">668</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DSetDefault</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="633865448"/>
-					</object>
-					<int key="connectionID">669</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBSetSelected3DPointRadius:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="616047180"/>
-					</object>
-					<int key="connectionID">670</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">save3DPointsDefaultProperties:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="633865448"/>
-					</object>
-					<int key="connectionID">671</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBPropagate3DPointsSettings:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="81796482"/>
-					</object>
-					<int key="connectionID">672</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">perspectiveView</string>
 						<reference key="source" ref="792367187"/>
 						<reference key="destination" ref="366063690"/>
 					</object>
 					<int key="connectionID">680</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchProjection:</string>
-						<reference key="source" ref="329325748"/>
-						<reference key="destination" ref="424243416"/>
-					</object>
-					<int key="connectionID">681</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -5653,6 +5446,286 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<int key="connectionID">725</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">OrientationsView</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="748412006"/>
+					</object>
+					<int key="connectionID">809</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">setOrientation:</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="807779391"/>
+					</object>
+					<int key="connectionID">810</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">BackgroundColorView</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="553202378"/>
+					</object>
+					<int key="connectionID">904</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">heightValue</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="264713981"/>
+					</object>
+					<int key="connectionID">1065</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">eyeDistance</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="765548655"/>
+					</object>
+					<int key="connectionID">1066</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">distanceValue</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="184744164"/>
+					</object>
+					<int key="connectionID">1067</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">stereoIconView</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="508177340"/>
+					</object>
+					<int key="connectionID">1068</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">ApplyGeometrieSettings:</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="584313393"/>
+					</object>
+					<int key="connectionID">1071</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">ApplyGeometrieSettings:</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="504472439"/>
+					</object>
+					<int key="connectionID">1072</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">SRGeometrieSettingsWindow</string>
+						<reference key="source" ref="792367187"/>
+						<reference key="destination" ref="549418330"/>
+					</object>
+					<int key="connectionID">1073</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">export3DWindow</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="785543590"/>
+					</object>
+					<int key="connectionID">594</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">framesSlider</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="351252265"/>
+					</object>
+					<int key="connectionID">595</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">rotation</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="886515830"/>
+					</object>
+					<int key="connectionID">596</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endQuicktimeSettings:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="556312170"/>
+					</object>
+					<int key="connectionID">597</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endQuicktimeSettings:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="477995466"/>
+					</object>
+					<int key="connectionID">598</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export3DFileFormat:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="553561766"/>
+					</object>
+					<int key="connectionID">612</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export3DFileFormat:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="1010249839"/>
+					</object>
+					<int key="connectionID">613</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export3DFileFormat:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="119383660"/>
+					</object>
+					<int key="connectionID">614</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export3DFileFormat:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="1072778539"/>
+					</object>
+					<int key="connectionID">615</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">export3DVRWindow</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="633896481"/>
+					</object>
+					<int key="connectionID">631</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">VRFrames</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="121213130"/>
+					</object>
+					<int key="connectionID">632</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endQuicktimeVRSettings:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="738816087"/>
+					</object>
+					<int key="connectionID">634</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endQuicktimeVRSettings:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="549370478"/>
+					</object>
+					<int key="connectionID">635</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export3DFileFormat:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="695301354"/>
+					</object>
+					<int key="connectionID">638</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DInfoPanel</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="963219231"/>
+					</object>
+					<int key="connectionID">645</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DRadiusSlider</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="616047180"/>
+					</object>
+					<int key="connectionID">646</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DColorWell</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="126496186"/>
+					</object>
+					<int key="connectionID">647</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBSetSelected3DPointColor:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="126496186"/>
+					</object>
+					<int key="connectionID">648</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">controller</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="792367187"/>
+					</object>
+					<int key="connectionID">664</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DPropagateToAll</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="81796482"/>
+					</object>
+					<int key="connectionID">668</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DSetDefault</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="633865448"/>
+					</object>
+					<int key="connectionID">669</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBSetSelected3DPointRadius:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="616047180"/>
+					</object>
+					<int key="connectionID">670</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">save3DPointsDefaultProperties:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="633865448"/>
+					</object>
+					<int key="connectionID">671</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBPropagate3DPointsSettings:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="81796482"/>
+					</object>
+					<int key="connectionID">672</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">switchProjection:</string>
+						<reference key="source" ref="329325748"/>
+						<reference key="destination" ref="424243416"/>
+					</object>
+					<int key="connectionID">681</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">IBSetSelected3DPointAnnotationColor:</string>
 						<reference key="source" ref="329325748"/>
@@ -5707,14 +5780,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<reference key="destination" ref="447595059"/>
 					</object>
 					<int key="connectionID">761</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeIntValueFrom:</string>
-						<reference key="source" ref="286928936"/>
-						<reference key="destination" ref="143065260"/>
-					</object>
-					<int key="connectionID">789</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -5797,894 +5862,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<int key="connectionID">800</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">OrientationsView</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="748412006"/>
-					</object>
-					<int key="connectionID">809</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setOrientation:</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="807779391"/>
-					</object>
-					<int key="connectionID">810</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-						<reference key="source" ref="326744210"/>
-						<reference key="destination" ref="843921023"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="326744210"/>
-							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">820</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-						<reference key="source" ref="860170469"/>
-						<reference key="destination" ref="843921023"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="860170469"/>
-							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">827</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-						<reference key="source" ref="362142485"/>
-						<reference key="destination" ref="843921023"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="362142485"/>
-							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">834</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: useFirstSurface</string>
-						<reference key="source" ref="888925460"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="888925460"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: useFirstSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">835</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: useSecondSurface</string>
-						<reference key="source" ref="614618239"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="614618239"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: useSecondSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">836</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: resolution</string>
-						<reference key="source" ref="767144471"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="767144471"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: resolution</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">resolution</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">837</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: shouldDecimate</string>
-						<reference key="source" ref="486050351"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="486050351"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: shouldDecimate</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">shouldDecimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">838</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: shouldSmooth</string>
-						<reference key="source" ref="46665735"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="46665735"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: shouldSmooth</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">shouldSmooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">839</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: decimate</string>
-						<reference key="source" ref="577779190"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="577779190"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: decimate</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">decimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">840</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: shouldDecimate</string>
-						<reference key="source" ref="577779190"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="577779190"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: shouldDecimate</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">shouldDecimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">841</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: smooth</string>
-						<reference key="source" ref="515368493"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="515368493"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: smooth</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">smooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">845</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: shouldSmooth</string>
-						<reference key="source" ref="515368493"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="515368493"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: shouldSmooth</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">shouldSmooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">846</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: firstTransparency</string>
-						<reference key="source" ref="743694092"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="743694092"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: firstTransparency</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">firstTransparency</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">848</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: secondTransparency</string>
-						<reference key="source" ref="493141829"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="493141829"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: secondTransparency</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">secondTransparency</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">849</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="743694092"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="743694092"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">851</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="818111996"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="818111996"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">852</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="244237147"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="244237147"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">853</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="1037423356"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1037423356"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">854</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">editable: useSecondSurface</string>
-						<reference key="source" ref="989679991"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="989679991"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">editable: useSecondSurface</string>
-							<string key="NSBinding">editable</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">855</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="469425611"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="469425611"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">857</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="196744851"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="196744851"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">858</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="493141829"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="493141829"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">859</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="988780687"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="988780687"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">860</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="424030913"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="424030913"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">861</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="377109237"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="377109237"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">867</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="644689313"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="644689313"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">868</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useFirstSurface</string>
-						<reference key="source" ref="117872225"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="117872225"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">869</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: useSecondSurface</string>
-						<reference key="source" ref="58882403"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="58882403"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: useSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">useSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">870</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: firstColor</string>
-						<reference key="source" ref="117872225"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="117872225"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: firstColor</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">firstColor</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">872</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: secondColor</string>
-						<reference key="source" ref="58882403"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="58882403"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: secondColor</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">secondColor</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">873</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionResolution</string>
-						<reference key="source" ref="709251745"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="709251745"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionResolution</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionResolution</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">874</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionDecimate</string>
-						<reference key="source" ref="869655166"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="869655166"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionDecimate</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionDecimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">875</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionSmooth</string>
-						<reference key="source" ref="155290349"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="155290349"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionSmooth</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionSmooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">876</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionShouldDecimate</string>
-						<reference key="source" ref="617550579"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="617550579"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionShouldDecimate</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionShouldDecimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">877</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionShouldSmooth</string>
-						<reference key="source" ref="812206947"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="812206947"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionShouldSmooth</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionShouldSmooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">878</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionShouldDecimate</string>
-						<reference key="source" ref="869655166"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="869655166"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionShouldDecimate</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionShouldDecimate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">879</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionShouldSmooth</string>
-						<reference key="source" ref="155290349"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="155290349"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionShouldSmooth</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionShouldSmooth</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">880</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionUseFirstSurface</string>
-						<reference key="source" ref="396595170"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="396595170"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionUseFirstSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionUseFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">881</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionUseSecondSurface</string>
-						<reference key="source" ref="1001332040"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1001332040"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionUseSecondSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionUseSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">882</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionFirstSurface</string>
-						<reference key="source" ref="654079716"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="654079716"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionFirstSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">883</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseFirstSurface</string>
-						<reference key="source" ref="654079716"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="654079716"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">884</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseFirstSurface</string>
-						<reference key="source" ref="14158256"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="14158256"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">885</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseFirstSurface</string>
-						<reference key="source" ref="817391534"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="817391534"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">887</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionFirstTransparency</string>
-						<reference key="source" ref="817391534"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="817391534"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionFirstTransparency</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionFirstTransparency</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">888</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionFirstColor</string>
-						<reference key="source" ref="454281195"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="454281195"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionFirstColor</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionFirstColor</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">889</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseFirstSurface</string>
-						<reference key="source" ref="454281195"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="454281195"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseFirstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">890</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionSecondSurface</string>
-						<reference key="source" ref="892559803"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="892559803"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionSecondSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">891</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseSecondSurface</string>
-						<reference key="source" ref="892559803"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="892559803"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">892</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseSecondSurface</string>
-						<reference key="source" ref="735164747"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="735164747"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">893</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionSecondTransparency</string>
-						<reference key="source" ref="735164747"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="735164747"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionSecondTransparency</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionSecondTransparency</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">894</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: fusionSecondColor</string>
-						<reference key="source" ref="1049787668"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1049787668"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: fusionSecondColor</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">fusionSecondColor</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">895</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: fusionUseSecondSurface</string>
-						<reference key="source" ref="1049787668"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1049787668"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">fusionUseSecondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">896</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: firstSurface</string>
-						<reference key="source" ref="377109237"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="377109237"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: firstSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">firstSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">897</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: secondSurface</string>
-						<reference key="source" ref="644689313"/>
-						<reference key="destination" ref="792367187"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="644689313"/>
-							<reference key="NSDestination" ref="792367187"/>
-							<string key="NSLabel">value: secondSurface</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">secondSurface</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">898</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">BackgroundColorView</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="553202378"/>
-					</object>
-					<int key="connectionID">904</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">changeColor:</string>
 						<reference key="source" ref="329325748"/>
@@ -6699,38 +5876,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<reference key="destination" ref="122685322"/>
 					</object>
 					<int key="connectionID">906</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.afterExportMarkThemAsKeyImages</string>
-						<reference key="source" ref="161400298"/>
-						<reference key="destination" ref="843921023"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="161400298"/>
-							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">value: values.afterExportMarkThemAsKeyImages</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.afterExportMarkThemAsKeyImages</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1011</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.afterExportSendToDICOMNode</string>
-						<reference key="source" ref="495622612"/>
-						<reference key="destination" ref="843921023"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="495622612"/>
-							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">value: values.afterExportSendToDICOMNode</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.afterExportSendToDICOMNode</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">1012</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -6789,6 +5934,926 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<int key="connectionID">1063</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: firstTransparency</string>
+						<reference key="source" ref="743694092"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="743694092"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: firstTransparency</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">firstTransparency</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">848</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="743694092"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="743694092"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">851</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="377109237"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="377109237"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">867</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: firstSurface</string>
+						<reference key="source" ref="377109237"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="377109237"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: firstSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">firstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">897</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="117872225"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="117872225"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">869</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: firstColor</string>
+						<reference key="source" ref="117872225"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="117872225"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: firstColor</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">firstColor</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">872</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="244237147"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="244237147"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">853</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="818111996"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="818111996"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">852</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="1037423356"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1037423356"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">854</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useFirstSurface</string>
+						<reference key="source" ref="424030913"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="424030913"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">861</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: useFirstSurface</string>
+						<reference key="source" ref="888925460"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="888925460"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: useFirstSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">useFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">835</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: useSecondSurface</string>
+						<reference key="source" ref="614618239"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="614618239"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: useSecondSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">836</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="196744851"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="196744851"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">858</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">editable: useSecondSurface</string>
+						<reference key="source" ref="989679991"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="989679991"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">editable: useSecondSurface</string>
+							<string key="NSBinding">editable</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">855</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="58882403"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="58882403"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">870</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: secondColor</string>
+						<reference key="source" ref="58882403"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="58882403"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: secondColor</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">secondColor</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">873</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="988780687"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="988780687"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">860</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="469425611"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="469425611"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">857</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: secondTransparency</string>
+						<reference key="source" ref="493141829"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="493141829"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: secondTransparency</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">secondTransparency</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">849</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="493141829"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="493141829"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">859</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: useSecondSurface</string>
+						<reference key="source" ref="644689313"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="644689313"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: useSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">useSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">868</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: secondSurface</string>
+						<reference key="source" ref="644689313"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="644689313"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: secondSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">secondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">898</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: resolution</string>
+						<reference key="source" ref="767144471"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="767144471"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: resolution</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">resolution</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">837</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseSecondSurface</string>
+						<reference key="source" ref="735164747"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="735164747"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">893</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionSecondTransparency</string>
+						<reference key="source" ref="735164747"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="735164747"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionSecondTransparency</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionSecondTransparency</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">894</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionFirstSurface</string>
+						<reference key="source" ref="654079716"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="654079716"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionFirstSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">883</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseFirstSurface</string>
+						<reference key="source" ref="654079716"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="654079716"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">884</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionResolution</string>
+						<reference key="source" ref="709251745"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="709251745"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionResolution</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionResolution</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">874</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseFirstSurface</string>
+						<reference key="source" ref="14158256"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="14158256"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">885</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionFirstColor</string>
+						<reference key="source" ref="454281195"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="454281195"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionFirstColor</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionFirstColor</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">889</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseFirstSurface</string>
+						<reference key="source" ref="454281195"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="454281195"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">890</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionUseSecondSurface</string>
+						<reference key="source" ref="1001332040"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1001332040"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionUseSecondSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionUseSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">882</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseFirstSurface</string>
+						<reference key="source" ref="817391534"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="817391534"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseFirstSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">887</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionFirstTransparency</string>
+						<reference key="source" ref="817391534"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="817391534"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionFirstTransparency</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionFirstTransparency</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">888</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionSecondColor</string>
+						<reference key="source" ref="1049787668"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1049787668"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionSecondColor</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionSecondColor</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">895</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseSecondSurface</string>
+						<reference key="source" ref="1049787668"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1049787668"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">896</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionSecondSurface</string>
+						<reference key="source" ref="892559803"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="892559803"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionSecondSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">891</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionUseSecondSurface</string>
+						<reference key="source" ref="892559803"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="892559803"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionUseSecondSurface</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionUseSecondSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">892</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionUseFirstSurface</string>
+						<reference key="source" ref="396595170"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="396595170"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionUseFirstSurface</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionUseFirstSurface</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">881</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeIntValueFrom:</string>
+						<reference key="source" ref="293615399"/>
+						<reference key="destination" ref="351252265"/>
+					</object>
+					<int key="connectionID">593</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeFloatValueFrom:</string>
+						<reference key="source" ref="351252265"/>
+						<reference key="destination" ref="293615399"/>
+					</object>
+					<int key="connectionID">592</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: shouldDecimate</string>
+						<reference key="source" ref="486050351"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="486050351"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: shouldDecimate</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">shouldDecimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">838</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: shouldSmooth</string>
+						<reference key="source" ref="46665735"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="46665735"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: shouldSmooth</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">shouldSmooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">839</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: smooth</string>
+						<reference key="source" ref="515368493"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="515368493"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: smooth</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">smooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">845</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: shouldSmooth</string>
+						<reference key="source" ref="515368493"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="515368493"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: shouldSmooth</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">shouldSmooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">846</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: decimate</string>
+						<reference key="source" ref="577779190"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="577779190"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: decimate</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">decimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">840</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: shouldDecimate</string>
+						<reference key="source" ref="577779190"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="577779190"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: shouldDecimate</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">shouldDecimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">841</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionShouldDecimate</string>
+						<reference key="source" ref="617550579"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="617550579"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionShouldDecimate</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionShouldDecimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">877</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionShouldSmooth</string>
+						<reference key="source" ref="812206947"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="812206947"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionShouldSmooth</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionShouldSmooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">878</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionSmooth</string>
+						<reference key="source" ref="155290349"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="155290349"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionSmooth</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionSmooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">876</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionShouldSmooth</string>
+						<reference key="source" ref="155290349"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="155290349"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionShouldSmooth</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionShouldSmooth</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">880</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: fusionDecimate</string>
+						<reference key="source" ref="869655166"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="869655166"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">value: fusionDecimate</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">fusionDecimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">875</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: fusionShouldDecimate</string>
+						<reference key="source" ref="869655166"/>
+						<reference key="destination" ref="792367187"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="869655166"/>
+							<reference key="NSDestination" ref="792367187"/>
+							<string key="NSLabel">enabled: fusionShouldDecimate</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">fusionShouldDecimate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">879</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeIntValueFrom:</string>
+						<reference key="source" ref="286928936"/>
+						<reference key="destination" ref="143065260"/>
+					</object>
+					<int key="connectionID">789</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+						<reference key="source" ref="326744210"/>
+						<reference key="destination" ref="843921023"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="326744210"/>
+							<reference key="NSDestination" ref="843921023"/>
+							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+							<string key="NSBinding">selectedIndex</string>
+							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">820</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+						<reference key="source" ref="860170469"/>
+						<reference key="destination" ref="843921023"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="860170469"/>
+							<reference key="NSDestination" ref="843921023"/>
+							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+							<string key="NSBinding">selectedIndex</string>
+							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">827</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+						<reference key="source" ref="362142485"/>
+						<reference key="destination" ref="843921023"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="362142485"/>
+							<reference key="NSDestination" ref="843921023"/>
+							<string key="NSLabel">selectedIndex: values.EXPORTMATRIXFOR3D</string>
+							<string key="NSBinding">selectedIndex</string>
+							<string key="NSKeyPath">values.EXPORTMATRIXFOR3D</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">834</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.afterExportSendToDICOMNode</string>
+						<reference key="source" ref="495622612"/>
+						<reference key="destination" ref="843921023"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="495622612"/>
+							<reference key="NSDestination" ref="843921023"/>
+							<string key="NSLabel">value: values.afterExportSendToDICOMNode</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.afterExportSendToDICOMNode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1012</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.afterExportMarkThemAsKeyImages</string>
+						<reference key="source" ref="161400298"/>
+						<reference key="destination" ref="843921023"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="161400298"/>
+							<reference key="NSDestination" ref="843921023"/>
+							<string key="NSLabel">value: values.afterExportMarkThemAsKeyImages</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.afterExportMarkThemAsKeyImages</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1011</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">makeKeyAndOrderFront:</string>
 						<reference key="source" ref="549418330"/>
@@ -6797,76 +6862,20 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<int key="connectionID">1064</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">heightValue</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="264713981"/>
-					</object>
-					<int key="connectionID">1065</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">eyeDistance</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="765548655"/>
-					</object>
-					<int key="connectionID">1066</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">distanceValue</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="184744164"/>
-					</object>
-					<int key="connectionID">1067</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">stereoIconView</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="508177340"/>
-					</object>
-					<int key="connectionID">1068</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">ApplyGeometrieSettings:</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="584313393"/>
-					</object>
-					<int key="connectionID">1071</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">ApplyGeometrieSettings:</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="504472439"/>
-					</object>
-					<int key="connectionID">1072</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">SRGeometrieSettingsWindow</string>
-						<reference key="source" ref="792367187"/>
-						<reference key="destination" ref="549418330"/>
-					</object>
-					<int key="connectionID">1073</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.DISTANCETOSCREEN</string>
-						<reference key="source" ref="184744164"/>
+						<string key="label">value: values.EYESEPARATION</string>
+						<reference key="source" ref="765548655"/>
 						<reference key="destination" ref="843921023"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="184744164"/>
+							<reference key="NSSource" ref="765548655"/>
 							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">value: values.DISTANCETOSCREEN</string>
+							<string key="NSLabel">value: values.EYESEPARATION</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.DISTANCETOSCREEN</string>
+							<string key="NSKeyPath">values.EYESEPARATION</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1080</int>
+					<int key="connectionID">1084</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -6886,19 +6895,19 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.EYESEPARATION</string>
-						<reference key="source" ref="765548655"/>
+						<string key="label">value: values.DISTANCETOSCREEN</string>
+						<reference key="source" ref="184744164"/>
 						<reference key="destination" ref="843921023"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="765548655"/>
+							<reference key="NSSource" ref="184744164"/>
 							<reference key="NSDestination" ref="843921023"/>
-							<string key="NSLabel">value: values.EYESEPARATION</string>
+							<string key="NSLabel">value: values.DISTANCETOSCREEN</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.EYESEPARATION</string>
+							<string key="NSKeyPath">values.DISTANCETOSCREEN</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">1084</int>
+					<int key="connectionID">1080</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -9836,20 +9845,17 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">ColorTransferView</string>
 					<string key="superclassName">NSView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="renderButton:">id</string>
-						<string key="selectPicker:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="renderButton:">
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">renderButton:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">renderButton:</string>
+						<object class="IBActionInfo" key="NS.object.0">
 							<string key="name">renderButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="selectPicker:">
-							<string key="name">selectPicker:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="pick">NSColorWell</string>
 						<string key="position">NSTextField</string>
@@ -9891,26 +9897,16 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string key="className">OSIWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="applyShading:">id</string>
 						<string key="redo:">id</string>
 						<string key="undo:">id</string>
-						<string key="updateAutoAdjustPrinting:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="applyShading:">
-							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="redo:">
 							<string key="name">redo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="undo:">
 							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateAutoAdjustPrinting:">
-							<string key="name">updateAutoAdjustPrinting:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -9956,14 +9952,11 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<string key="ApplyGeometrieSettings:">id</string>
 						<string key="ApplySettings:">id</string>
 						<string key="BApplySettings:">id</string>
-						<string key="BChangeSettings:">id</string>
 						<string key="BSettingsPopup:">id</string>
-						<string key="ChangeSettings:">id</string>
 						<string key="SettingsPopup:">id</string>
 						<string key="flyThruButtonMenu:">id</string>
 						<string key="flyThruControllerInit:">id</string>
 						<string key="roiGetManager:">id</string>
-						<string key="setDefaultTool:">id</string>
 						<string key="setOrientation:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -9979,16 +9972,8 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 							<string key="name">BApplySettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="BChangeSettings:">
-							<string key="name">BChangeSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="BSettingsPopup:">
 							<string key="name">BSettingsPopup:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ChangeSettings:">
-							<string key="name">ChangeSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="SettingsPopup:">
@@ -10005,10 +9990,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						</object>
 						<object class="IBActionInfo" key="roiGetManager:">
 							<string key="name">roiGetManager:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setDefaultTool:">
-							<string key="name">setDefaultTool:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setOrientation:">
@@ -10266,22 +10247,15 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<string key="IBSetSelected3DPointColor:">id</string>
 						<string key="IBSetSelected3DPointRadius:">id</string>
 						<string key="SwitchStereoMode:">id</string>
-						<string key="axView:">id</string>
 						<string key="changeColor:">id</string>
-						<string key="coView:">id</string>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="endQuicktimeSettings:">id</string>
 						<string key="endQuicktimeVRSettings:">id</string>
 						<string key="export3DFileFormat:">id</string>
-						<string key="exportDICOMFile:">id</string>
 						<string key="exportQuicktime:">id</string>
 						<string key="invertedSides:">id</string>
-						<string key="saView:">id</string>
-						<string key="saViewOpposite:">id</string>
 						<string key="save3DPointsDefaultProperties:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
-						<string key="squareView:">id</string>
-						<string key="switchOrientationWidget:">id</string>
 						<string key="switchProjection:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -10313,16 +10287,8 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 							<string key="name">SwitchStereoMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="axView:">
-							<string key="name">axView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="changeColor:">
 							<string key="name">changeColor:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="coView:">
-							<string key="name">coView:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
@@ -10341,10 +10307,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 							<string key="name">export3DFileFormat:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exportQuicktime:">
 							<string key="name">exportQuicktime:</string>
 							<string key="candidateClassName">id</string>
@@ -10353,28 +10315,12 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 							<string key="name">invertedSides:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="saView:">
-							<string key="name">saView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saViewOpposite:">
-							<string key="name">saViewOpposite:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="save3DPointsDefaultProperties:">
 							<string key="name">save3DPointsDefaultProperties:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setCurrentdcmExport:">
 							<string key="name">setCurrentdcmExport:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="squareView:">
-							<string key="name">squareView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchOrientationWidget:">
-							<string key="name">switchOrientationWidget:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchProjection:">
@@ -10507,20 +10453,10 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
-					<string key="className">VTKView</string>
-					<string key="superclassName">vtkCocoaGLView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/VTKView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">Window3DController</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="AddCLUT:">id</string>
-						<string key="ApplyCLUT:">id</string>
-						<string key="ApplyOpacity:">id</string>
 						<string key="SetWLWW:">id</string>
 						<string key="clutAction:">id</string>
 						<string key="endCLUT:">id</string>
@@ -10528,20 +10464,11 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<string key="endOpacity:">id</string>
 						<string key="endSetWLWW:">id</string>
 						<string key="fullScreenMenu:">id</string>
-						<string key="print:">id</string>
 						<string key="updateSetWLWW:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="AddCLUT:">
 							<string key="name">AddCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyCLUT:">
-							<string key="name">ApplyCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyOpacity:">
-							<string key="name">ApplyOpacity:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="SetWLWW:">
@@ -10570,10 +10497,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						</object>
 						<object class="IBActionInfo" key="fullScreenMenu:">
 							<string key="name">fullScreenMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updateSetWLWW:">
@@ -10680,14 +10603,6 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						<string key="minorKey">./Classes/Window3DController.h</string>
 					</object>
 				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">vtkCocoaGLView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/vtkCocoaGLView.h</string>
-					</object>
-				</object>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
@@ -10698,27 +10613,27 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<real value="1060" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="3D">{128, 128}</string>
-			<string key="3DRotate">{128, 128}</string>
-			<string key="3DRotateCamera">{128, 128}</string>
-			<string key="AxialSmall">{128, 128}</string>
-			<string key="CorSmall">{128, 128}</string>
-			<string key="Move">{128, 128}</string>
+			<string key="3D">{19, 19}</string>
+			<string key="3DRotate">{28, 28}</string>
+			<string key="3DRotateCamera">{28, 28}</string>
+			<string key="AxialSmall">{30, 30}</string>
+			<string key="CorSmall">{30, 30}</string>
+			<string key="Move">{28, 28}</string>
 			<string key="NSMenuCheckmark">{9, 8}</string>
 			<string key="NSMenuMixedState">{7, 2}</string>
 			<string key="NSSwitch">{15, 15}</string>
-			<string key="Point">{128, 128}</string>
-			<string key="Rotate">{128, 128}</string>
-			<string key="SagSmall">{128, 128}</string>
-			<string key="SagSmallOpposite">{128, 128}</string>
-			<string key="Stereo">{128, 128}</string>
-			<string key="WLWW">{128, 128}</string>
-			<string key="Zoom">{128, 128}</string>
+			<string key="Point">{28, 28}</string>
+			<string key="Rotate">{28, 28}</string>
+			<string key="SagSmall">{30, 30}</string>
+			<string key="SagSmallOpposite">{30, 30}</string>
+			<string key="Stereo">{32, 32}</string>
+			<string key="WLWW">{28, 28}</string>
+			<string key="Zoom">{28, 28}</string>
 		</dictionary>
 	</data>
 </archive>

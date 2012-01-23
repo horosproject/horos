@@ -755,6 +755,10 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
 }
 
+-(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {
+    [super cleanForFreeSpaceMB:freeMemoryRequested];
+}
+
 #pragma mark Special
 
 -(BOOL)rebuildAllowed {
@@ -764,14 +768,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting { // don't
 }
 
-/*-(BOOL)save:(NSError**)err { // don't
-	return YES;
-}*/
-
 -(void)rebuild:(BOOL)complete { // do nothing
-}
-
--(void)autoClean { // do nothing
 }
 
 -(void)addDefaultAlbums { // do nothing

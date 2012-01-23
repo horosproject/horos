@@ -688,6 +688,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"points3DcolorBlue"];
 	[defaultValues setObject:@"1.0" forKey:@"points3DcolorAlpha"];
 	[defaultValues setObject:@"1.0" forKey:@"MagneticWindows"];
+	[defaultValues setObject:@"0" forKey:@"MPR2DViewsPosition"];
 	
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
@@ -847,6 +848,7 @@ static NSHost *currentHost = nil;
 
     [defaultValues setObject:@"120" forKey:@"DatabaseRefreshInterval"];
     
+    [defaultValues setObject:@"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
 	[defaultValues setObject:@"0" forKey:@"UseFrameofReferenceUID"];
 	[defaultValues setObject:@"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
 	[defaultValues setObject:@"1" forKey:@"CommentsFromDICOMFiles"];
@@ -991,6 +993,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
     [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
+    [defaultValues setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
+    
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

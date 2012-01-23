@@ -40,12 +40,10 @@
 	
 	<div>
 		<div class="title">Browse</div>
-		<div class="timeFrameStudyList"><a href="studyList?browse=6hours">Last 6 hours</a></div>
-		<div class="timeFrameStudyList"><a href="studyList?browse=today">Today</a></div>
-		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div>
+		<div class="peopleStudyList"><a href="studyList?browse=all">Study List</a></div><br>
 		%[IF:!User||User.canSeeAlbums%
 		%[FOREACH:Albums:Album%
-			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div>
+			<div class="%[IF:Album.smartAlbum%SmartAlbum%ELSE:Album.smartAlbum%Album%]IF:Album.smartAlbum%"><a href="studyList?album=%U:Album.name%">%X:Album.name%</a></div><br>
 		%]FOREACH:Albums:Album%
 		%]IF:!User||User.canSeeAlbums%
 	</div>

@@ -1103,6 +1103,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"Compute Pixels thread";
+    
 	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
 	
 	int p = MPProcessors ();
@@ -2141,7 +2143,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 //			no = newNo;
 //		}
 		
-		if( ptsInt != nil && no > 1)	{
+		if( ptsInt != nil && no > 1)
+        {
 			BOOL restore = NO, addition = NO, outside = NO;
 			
 			ras_FillPolygon( ptsInt, no, tempImage, size->width, size->height, [pixArray count], -FLT_MAX, FLT_MAX, outside, 255, addition, NO, NO, nil, nil, nil, nil, nil, 0, 2, 0, restore);
@@ -4883,6 +4886,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					roi.name = roiName;
 					roi.rgbcolor = color;
 					roi.points = pointsArray;
+                    roi.opacity = 1.0;
+                    roi.thickness = 1.0;
 					
 					[roiArray[ [imgObjects indexOfObject: img] ] addObject: roi];
 					
@@ -5052,7 +5057,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 1 != nil ! %@", srcFile);
 			}
 			else
 			{
@@ -5066,7 +5071,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					
 					if( retainedCacheGroup != nil)
-						NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+						NSLog( @"******** DCMPix : retainedCacheGroup 2 != nil ! %@", srcFile);
 					
 					retainedCacheGroup = dic;
 					
@@ -5081,7 +5086,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e)
 	{
-		NSLog(@"reloadAnnotations: %@", e);
+		NSLog( @"*********** reloadAnnotations: %@", e);
 	}
 	
 	[PapyrusLock unlock];
@@ -5475,7 +5480,7 @@ END_CREATE_ROIS:
 				[dic setValue: [NSNumber numberWithInt: [[dic objectForKey: @"count"] intValue]+1] forKey: @"count"];
 				retainedCacheGroup = dic;
 			}
-			else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+			else NSLog( @"******** DCMPix : retainedCacheGroup 3 != nil ! %@", srcFile);
 		}
 		else
 		{
@@ -5491,7 +5496,7 @@ END_CREATE_ROIS:
 					[dic setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 					retainedCacheGroup = dic;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 4 != nil ! %@", srcFile);
 				
 				[cachedDCMFrameworkFiles setObject: dic forKey: srcFile];
 			}
@@ -5499,7 +5504,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"loadDICOMDCMFramework exception : %@", e);
+		NSLog( @"******** loadDICOMDCMFramework exception : %@", e);
 		dcmObject = nil;
 	}
 	
@@ -5507,7 +5512,7 @@ END_CREATE_ROIS:
 	
 	if(dcmObject == nil)
 	{
-		NSLog(@"loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
+		NSLog( @"******** loadDICOMDCMFramework - no DCMObject at srcFile address, nothing to do");
 		[purgeCacheLock lock];
 		[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]-1];
 		[pool release];
@@ -5696,14 +5701,14 @@ END_CREATE_ROIS:
 		DCMSequenceAttribute *perFrameFunctionalGroupsSequence = (DCMSequenceAttribute *)[dcmObject attributeWithName:@"Per-frameFunctionalGroupsSequence"];
 		
 		//NSLog(@"perFrameFunctionalGroupsSequence: %@", [perFrameFunctionalGroupsSequence description]);
-		if (perFrameFunctionalGroupsSequence)
+		if( perFrameFunctionalGroupsSequence)
 		{
-			if ( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0)
+			if( perFrameFunctionalGroupsSequence.sequence.count > imageNb && imageNb >= 0)
 			{
 				DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
-				if (sequenceItem)
+				if( sequenceItem)
 				{
-					if ([sequenceItem attributeArrayWithName:@"MREchoSequence"])
+					if( [sequenceItem attributeArrayWithName:@"MREchoSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5711,7 +5716,7 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0018: object];
 					}
 					
-					if ([sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5721,7 +5726,7 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0028: object];
 					}
 					
-					if ([sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
@@ -5732,12 +5737,20 @@ END_CREATE_ROIS:
 							[self dcmFrameworkLoad0x0028: object];
 					}
 						
-					if ([sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
+					if( [sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
 					{
 						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
 						DCMObject *object = [[seq sequence] objectAtIndex: 0];
 						if( object)
 							[self dcmFrameworkLoad0x0020: object];
+					}
+                    
+                    if( [sequenceItem attributeArrayWithName:@"PixelValueTransformationSequence"])
+					{
+						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
+						DCMObject *object = [[seq sequence] objectAtIndex: 0];
+						if( object)
+							[self dcmFrameworkLoad0x0028: object];
 					}
 				}
 			}
@@ -6351,7 +6364,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"loadDICOMDCMFramework exception 2: %@", e);
+		NSLog( @"******** loadDICOMDCMFramework exception 2: %@", e);
 		returnValue = NO;
 	}
 	
@@ -6389,7 +6402,7 @@ END_CREATE_ROIS:
 				[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: 1] forKey: @"count"];
 				
 				if( retainedCacheGroup != nil)
-					NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+					NSLog( @"******** DCMPix : retainedCacheGroup 5 != nil ! %@", srcFile);
 				
 				retainedCacheGroup = cachedGroupsForThisFile;
 				
@@ -6413,7 +6426,7 @@ END_CREATE_ROIS:
 					[cachedGroupsForThisFile setValue: [NSNumber numberWithInt: [[cachedGroupsForThisFile valueForKey: @"count"] intValue] +1] forKey: @"count"];
 					retainedCacheGroup = cachedGroupsForThisFile;
 				}
-				else NSLog( @"******** DCMPix : retainedCacheGroup != nil !");
+				else NSLog( @"******** DCMPix : retainedCacheGroup 6 != nil ! %@", srcFile);
 			}
 		}
 		
@@ -6481,44 +6494,47 @@ END_CREATE_ROIS:
 	if( purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	
-	[purgeCacheLock lockWhenCondition: 0];
-	[PapyrusLock lock];
-	
-	@try 
-	{
-		[cachedDCMFrameworkFiles removeAllObjects];
-	
-		for( NSString *file in [cachedPapyGroups allKeys])
-		{
-			NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
-			
-			if( cachedGroupsForThisFile)
-			{
-				int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
-				[cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
-				[cachedGroupsForThisFile removeObjectForKey: @"count"];
-					
-				for( NSValue *pointer in [cachedGroupsForThisFile allValues])
-				{
-					SElement *theGroupP = (SElement*) [pointer pointerValue];
-					Papy3GroupFree ( &theGroupP, TRUE);
-				}
-					
-				[cachedPapyGroups removeObjectForKey: file];
-				Papy3FileClose (fileNb, TRUE);
-			}
-		}
-		
-		[cachedPapyGroups removeAllObjects];
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	
-	[PapyrusLock unlock];
-	[purgeCacheLock unlock];
+	if( [purgeCacheLock lockWhenCondition: 0 beforeDate: [NSDate dateWithTimeIntervalSinceNow: 10]])
+    {
+        [PapyrusLock lock];
+        
+        @try 
+        {
+            [cachedDCMFrameworkFiles removeAllObjects];
+        
+            for( NSString *file in [cachedPapyGroups allKeys])
+            {
+                NSMutableDictionary *cachedGroupsForThisFile = [cachedPapyGroups valueForKey: file];
+                
+                if( cachedGroupsForThisFile)
+                {
+                    int fileNb = [[cachedGroupsForThisFile valueForKey: @"fileNb"] intValue];
+                    [cachedGroupsForThisFile removeObjectForKey: @"fileNb"];
+                    [cachedGroupsForThisFile removeObjectForKey: @"count"];
+                        
+                    for( NSValue *pointer in [cachedGroupsForThisFile allValues])
+                    {
+                        SElement *theGroupP = (SElement*) [pointer pointerValue];
+                        Papy3GroupFree ( &theGroupP, TRUE);
+                    }
+                        
+                    [cachedPapyGroups removeObjectForKey: file];
+                    Papy3FileClose (fileNb, TRUE);
+                }
+            }
+            
+            [cachedPapyGroups removeAllObjects];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+        
+        
+        [PapyrusLock unlock];
+        [purgeCacheLock unlock];
+    }
+    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 10 secs : purgeCacheLock condition: %d", [purgeCacheLock condition]);
 }
 
 - (void) clearCachedDCMFrameworkFiles
@@ -8029,6 +8045,31 @@ END_CREATE_ROIS:
 																	switch( gr20->group)
 																	{
 																		case 0x0018: [self papyLoadGroup0x0018: gr20]; break;
+																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
+																	}
+																	
+																	// get the next element of the list
+																	seq = seq->next;
+																}
+															}
+														}
+                                                        
+                                                        val = Papy3GetElement (gr, papPixelValueTransformationSequence, &nbVal, &elemType);
+														if (val != NULL && nbVal >= 1)
+														{
+															// there is a sequence
+															if (val->sq)
+															{
+																// get a pointer to the first element of the list
+																Papy_List *seq = val->sq->object->item;
+																
+																// loop through the elements of the sequence
+																while (seq)
+																{
+																	SElement * gr20 = (SElement *) seq->object->group;
+																	
+																	switch( gr20->group)
+																	{
 																		case 0x0028: [self papyLoadGroup0x0028: gr20]; break;
 																	}
 																	

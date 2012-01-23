@@ -50,6 +50,9 @@
 /** This function is called at the OsiriX startup, if you need to do some memory allocation, etc. */
 - (void) initPlugin;
 
+/** This function is called if OsiriX needs to kill the current running plugin, to install an update, for example. */
+- (void) willUnload;
+
 /** Opportunity for plugins to make Menu changes if necessary */
 
 - (void)setMenus;

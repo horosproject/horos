@@ -100,19 +100,24 @@ static NSString *albumDragType = @"Osirix Album drag";
 	local_point.x -= 35;
 	local_point.y += 35;
 	
-	NSArray				*cells = [self selectedCells];
+	NSArray *cells = [self selectedCells];
 	
 	if( [cells count])
 	{
-		int		i, width = 0;
-		NSImage	*firstCell = [[cells objectAtIndex: 0] image];
+        NSArray *subArray = cells;
+        
+        if( subArray.count > 20)
+            subArray = [cells subarrayWithRange: NSMakeRange( 0, 20)];
+        
+		int i, width = 0;
+		NSImage	*firstCell = [[subArray objectAtIndex: 0] image];
 		
 		#define MARGIN 3
 		
 		width += MARGIN;
-		for( i = 0; i < [cells count]; i++)
+		for( i = 0; i < [subArray count]; i++)
 		{
-			width += [[[cells objectAtIndex: i] image] size].width;
+			width += [[[subArray objectAtIndex: i] image] size].width;
 			width += MARGIN;
 		}
 		
@@ -127,11 +132,11 @@ static NSString *albumDragType = @"Osirix Album drag";
 			
 			width = 0;
 			width += MARGIN;
-			for( i = 0; i < [cells count]; i++)
+			for( i = 0; i < [subArray count]; i++)
 			{
 				NSRectFill( NSMakeRect( width, 0, [firstCell size].width, [firstCell size].height));
 				
-				NSImage	*im = [[cells objectAtIndex: i] image];
+				NSImage	*im = [[subArray objectAtIndex: i] image];
 				[im drawAtPoint: NSMakePoint(width, 3) fromRect:NSMakeRect(0,0,[im size].width, [im size].height) operation: NSCompositeCopy fraction: 0.8];
 			
 				width += [im size].width;

@@ -38,9 +38,11 @@
 
 + (NSString*) pathResolved:(NSString*) inPath;
 + (void)discoverPlugins;
++ (void) unloadPluginWithName: (NSString*) name;
++ (void) loadPluginAtPath: (NSString*) path;
 + (void) setMenus:(NSMenu*) filtersMenu :(NSMenu*) roisMenu :(NSMenu*) othersMenu :(NSMenu*) dbMenu;
 + (BOOL) isComPACS;
-
++ (void) installPluginFromPath: (NSString*) path;
 + (NSString*)activePluginsDirectoryPath;
 + (NSString*)inactivePluginsDirectoryPath;
 + (NSString*)userActivePluginsDirectoryPath;

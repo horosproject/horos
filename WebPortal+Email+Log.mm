@@ -13,7 +13,6 @@
  =========================================================================*/
 
 #import "WebPortal+Email+Log.h"
-#import "WebPortal+Databases.h"
 #import "WebPortalDatabase.h"
 #import "WebPortalResponse.h"
 #import "NSUserDefaults+OsiriX.h"
@@ -160,7 +159,7 @@
 							@try
 							{
 								filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
-								filteredStudies = [self arrayByAddingSpecificStudiesForUser:user predicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]] toArray:filteredStudies];
+								filteredStudies = [user arrayByAddingSpecificStudiesForPredicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]] toArray:filteredStudies];
 								
 								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
@@ -268,8 +267,9 @@
 	[messageHeaders setObject:user.email forKey:@"To"];
 	[messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
 	[messageHeaders setObject:emailSubject forKey:@"Subject"];
-	NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease];
-	[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+    
+    // NSAttributedString initWithHTML is NOT thread-safe
+    [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
 	
 	return user;
 }

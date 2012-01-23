@@ -30,9 +30,12 @@
  *  CVS/RCS Log at end of file
  *
  */
+ 
+int gForce1024RescaleInterceptForCT = 0;
 
 #include "osconfig.h"
 #include "djcodecd.h"
+#include "ofstd.h"
 
 // dcmdata includes
 #include "dcdatset.h"  /* for class DcmDataset */
@@ -259,6 +262,38 @@ OFCondition DJCodecDecoder::decode(
 						  {
 							imageSamplesPerPixel = 1;
 							result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+							
+							if( gForce1024RescaleInterceptForCT && precision > 8)
+							{
+								if (0 == strcmp(sopClassUID, UID_CTImageStorage))
+								{
+									const char *string = NULL;
+									
+									if (((DcmItem *)dataset)->findAndGetString(DCM_RescaleIntercept, string, OFFalse).good() && string != NULL)
+									{
+										Sint16 previousRescaleIntercept = atoi( string);
+										if( previousRescaleIntercept != -1024)
+										{
+											delete ((DcmItem *)dataset)->remove(DCM_RescaleIntercept);
+											
+											int difference = previousRescaleIntercept + 1024;
+											Uint16 *imageData = imageData16;
+											long loop = imageRows * imageColumns;
+											while( loop-->0)
+											{
+												if( *imageData < -difference)
+													*imageData++ = 0;
+												else
+													*imageData++ += difference;
+											}
+											
+											char buf[64];
+											OFStandard::ftoa(buf, sizeof(buf), -1024, OFStandard::ftoa_uppercase, 0, 6);
+											if (result.good()) result = ((DcmItem *)dataset)->putAndInsertString(DCM_RescaleIntercept, buf);
+										}
+									}
+								}
+							}
 						  }
 						  break;
 						case EPI_YBR_Full:

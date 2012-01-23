@@ -722,6 +722,10 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
     {
         /* open file for input */
         DcmInputFileStream fileStream(fileName);
+/*        cout << "Asd.." << fileStream.avail() << "\n";
+        if (fileStream.avail() > 240000000) {
+            cout << "!!!" << fileStream.avail() << "\n";
+        }*/
         /* check stream status */
         l_error = fileStream.status();
         if (l_error.good())

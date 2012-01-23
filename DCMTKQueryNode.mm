@@ -544,137 +544,141 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	@synchronized( self)
 	{
-		[self purgeChildren];
-		
-		//add query keys
-		
-		if( dataset == nil)
-			dataset = [self queryPrototype];
-		
-		NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
-		
-		NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
-		
-		dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
-		
-	//	const char *queryLevel;
-	//	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good())
-	//	{
-	//		const char *string = [[NSString stringWithCString: queryLevel] cStringUsingEncoding: encoding];
-	//		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
-	//	}
-		
-		if( values)
-		{
-			NSEnumerator *enumerator = [values objectEnumerator];
-			NSDictionary *dictionary;
-			
-			while (dictionary = [enumerator nextObject])
-			{
-				const char *string;
-				NSString *key = [dictionary objectForKey:@"name"];
-				id value  = [dictionary objectForKey:@"value"];
-				if ([key isEqualToString:@"PatientsName"])
-				{	
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_PatientsName, string);
-				}
-				else if ([key isEqualToString:@"ReferringPhysiciansName"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_ReferringPhysiciansName, string);
-				}
-				else if ([key isEqualToString:@"InstitutionName"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_InstitutionName, string);
-				}
-				else if ([key isEqualToString:@"Comments"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_ImageComments, string);
-				}
-				else if ([key isEqualToString:@"AccessionNumber"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_AccessionNumber, string);
-				}
-				else if ([key isEqualToString:@"PatientID"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_PatientID, string);
-				}
-				else if ([key isEqualToString:@"StudyDescription"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_StudyDescription, string);
-				}
-				else if ([key isEqualToString:@"Comments"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_ImageComments, string);
-				}
-				else if ([key isEqualToString:@"StudyDate"])
-				{
-					NSString *date = [(DCMCalendarDate *)value queryString];
-					string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
-					dataset->putAndInsertString(DCM_StudyDate, string);
-				}
-				else if ([key isEqualToString:@"PatientBirthDate"])
-				{
-					NSString *date = [(DCMCalendarDate *)value queryString];
-					string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
-					dataset->putAndInsertString(DCM_PatientsBirthDate, string);
-				}
-				else if ([key isEqualToString:@"StudyTime"])
-				{
-					NSString *date = [(DCMCalendarDate *)value queryString];
-					string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
-					dataset->putAndInsertString(DCM_StudyTime, string);
-				}
-				else if ([key isEqualToString:@"StudyInstanceUID"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_StudyInstanceUID, string);
-				}
-				else if ([key isEqualToString:@"StudyID"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_StudyID, string);
-				}
-				else if ([key isEqualToString:@"ModalitiesinStudy"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
-				}
-                else if ([key isEqualToString:@"Modality"])
-				{
-					string = [(NSString*)value cStringUsingEncoding:encoding];
-					dataset->putAndInsertString(DCM_Modality, string);
-				}
-                else
+        @try
+        {
+            [self purgeChildren];
+            
+            //add query keys
+            
+            if( dataset == nil)
+                dataset = [self queryPrototype];
+            
+            NSString *stringEncoding = [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"];
+            
+            NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet:stringEncoding];
+            
+            dataset->putAndInsertString(DCM_SpecificCharacterSet, [stringEncoding UTF8String]);
+            
+        //	const char *queryLevel;
+        //	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good())
+        //	{
+        //		const char *string = [[NSString stringWithCString: queryLevel] cStringUsingEncoding: encoding];
+        //		dataset->putAndInsertString(DCM_QueryRetrieveLevel, string);
+        //	}
+            
+            if( values)
+            {
+                NSEnumerator *enumerator = [values objectEnumerator];
+                NSDictionary *dictionary;
+                
+                while (dictionary = [enumerator nextObject])
                 {
-                    DcmTag tag;
-                    OFCondition result = DcmTag::findTagFromName( [key UTF8String], tag);
-                    
-                    if( result.good())
+                    const char *string;
+                    NSString *key = [dictionary objectForKey:@"name"];
+                    id value  = [dictionary objectForKey:@"value"];
+                    if ([key isEqualToString:@"PatientsName"])
+                    {	
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_PatientsName, string);
+                    }
+                    else if ([key isEqualToString:@"ReferringPhysiciansName"])
                     {
                         string = [(NSString*)value cStringUsingEncoding:encoding];
-                        dataset->putAndInsertString( tag.getXTag(), string);
+                        dataset->putAndInsertString(DCM_ReferringPhysiciansName, string);
+                    }
+                    else if ([key isEqualToString:@"InstitutionName"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_InstitutionName, string);
+                    }
+                    else if ([key isEqualToString:@"Comments"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_ImageComments, string);
+                    }
+                    else if ([key isEqualToString:@"AccessionNumber"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_AccessionNumber, string);
+                    }
+                    else if ([key isEqualToString:@"PatientID"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_PatientID, string);
+                    }
+                    else if ([key isEqualToString:@"StudyDescription"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_StudyDescription, string);
+                    }
+                    else if ([key isEqualToString:@"Comments"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_ImageComments, string);
+                    }
+                    else if ([key isEqualToString:@"StudyDate"])
+                    {
+                        NSString *date = [(DCMCalendarDate *)value queryString];
+                        string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
+                        dataset->putAndInsertString(DCM_StudyDate, string);
+                    }
+                    else if ([key isEqualToString:@"PatientBirthDate"])
+                    {
+                        NSString *date = [(DCMCalendarDate *)value queryString];
+                        string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
+                        dataset->putAndInsertString(DCM_PatientsBirthDate, string);
+                    }
+                    else if ([key isEqualToString:@"StudyTime"])
+                    {
+                        NSString *date = [(DCMCalendarDate *)value queryString];
+                        string = [(NSString*)date cStringUsingEncoding:NSISOLatin1StringEncoding];
+                        dataset->putAndInsertString(DCM_StudyTime, string);
+                    }
+                    else if ([key isEqualToString:@"StudyInstanceUID"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_StudyInstanceUID, string);
+                    }
+                    else if ([key isEqualToString:@"StudyID"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_StudyID, string);
+                    }
+                    else if ([key isEqualToString:@"ModalitiesinStudy"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_ModalitiesInStudy, string);
+                    }
+                    else if ([key isEqualToString:@"Modality"])
+                    {
+                        string = [(NSString*)value cStringUsingEncoding:encoding];
+                        dataset->putAndInsertString(DCM_Modality, string);
                     }
                     else
-                        NSLog( @"**** DICOM C-FIND with unknown value: %@ : %@", key, value);
+                    {
+                        DcmTag tag;
+                        OFCondition result = DcmTag::findTagFromName( [key UTF8String], tag);
+                        
+                        if( result.good())
+                        {
+                            string = [(NSString*)value cStringUsingEncoding:encoding];
+                            dataset->putAndInsertString( tag.getXTag(), string);
+                        }
+                        else
+                            NSLog( @"**** DICOM C-FIND with unknown value: %@ : %@", key, value);
+                    }
                 }
-			}
-		}
-		
-		if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset])
-		{
-		
-		}
-		else NSLog( @"setupNetworkWithSyntax error : queryWithValues DCMTKQueryNode");
-		
-		if (dataset != NULL) delete dataset;
+            }
+            
+            if ([self setupNetworkWithSyntax:UID_FINDStudyRootQueryRetrieveInformationModel dataset:dataset])
+            {
+            
+            }
+            else NSLog( @"setupNetworkWithSyntax error : queryWithValues DCMTKQueryNode");
+            
+            if (dataset != NULL) delete dataset;
+        }
+        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
 	}
 }
 
@@ -1071,6 +1075,27 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
         numTransferSyntaxes = 5;
         break;
+        
+        case EXS_JPEGLSLossless:
+            /* we prefer JPEG LS lossless */
+            transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
+            
+            numTransferSyntaxes = 4;
+            break;
+        case EXS_JPEGLSLossy:
+            /* we prefer JPEG LS lossy or lossless */
+            transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+            transferSyntaxes[1] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+            transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;
+            
+            numTransferSyntaxes = 5;
+            break;
+            
 //#ifdef WITH_ZLIB
 //      case EXS_DeflatedLittleEndianExplicit:
 //        /* we prefer deflated transmission */
@@ -1232,6 +1257,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"DCMTK Network release variables";
+    
 	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
 	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
 	DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];

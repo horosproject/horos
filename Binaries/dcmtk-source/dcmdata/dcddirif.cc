@@ -911,6 +911,7 @@ DicomDirInterface::DicomDirInterface()
     TransferSyntaxCheck(OFTrue),
     ConsistencyCheck(OFTrue),
     IconImageMode(OFFalse),
+    OneIconPerSeriesMode(OFFalse),
     BackupFilename(),
     BackupCreated(OFFalse),
     IconSize(64),
@@ -1107,10 +1108,74 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
 }
 
 
+/// added in OsiriX
+void DicomDirInterface::addOneImagePerSeries() {
+    DcmDirectoryRecord* rootRecord = &(DicomDir->getRootRecord());
+    
+//  printf("root record card is %d\n", rootRecord->cardSub());
+    if( rootRecord)
+    {
+        for (unsigned int i = 0; i < rootRecord->cardSub(); ++i) {
+        DcmDirectoryRecord* patientRecord = rootRecord->getSub(i);
+        if( patientRecord)
+            {
+        //      printf("\trecord sub %d type is %d (10 is patient), with card %d\n", i, patientRecord->getRecordType(), patientRecord->cardSub());
+                for (unsigned int x = 0; x < patientRecord->cardSub(); ++x) {
+                    DcmDirectoryRecord* studyRecord = patientRecord->getSub(x);
+                    if( studyRecord)
+                    {
+            //          printf("\t\trecord sub %d type is %d (15 is study), with card %d\n", i, studyRecord->getRecordType(), studyRecord->cardSub());
+                        for (unsigned int y = 0; y < studyRecord->cardSub(); ++y) {
+                            DcmDirectoryRecord* seriesRecord = studyRecord->getSub(y);
+                            if( seriesRecord)
+                            {
+                //              printf("\t\t\trecord sub %d type is %d (14 is series), with card %d\n", i, seriesRecord->getRecordType(), seriesRecord->cardSub());
+                //              for (unsigned int i = 0; i < seriesRecord->cardSub(); ++i) {
+                //                  DcmDirectoryRecord* imageRecord = seriesRecord->getSub(i);
+                //                  printf("\t\t\t\trecord sub %d type is %d (4 is image), with card %d\n", i, imageRecord->getRecordType(), imageRecord->cardSub());
+                //              }
+                                
+                                DcmDirectoryRecord* imageRecord = seriesRecord->getSub(seriesRecord->cardSub()/2);
+                                if( imageRecord)
+                                {
+                                    if (imageRecord->getRecordType() != ERT_Image)
+                                        continue;
+                                    
+                    //              printf("\t\t\t\tusing image at index %d, %s\n", seriesRecord->cardSub()/2, imageRecord->getRecordsOriginFile());
+                    //              imageRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
+                    //              printf("\t\t\t\troot:");
+                    //              rootRecord->print(std::cout, DCMTypes::PF_shortenLongTagValues, 10);
+                                    
+                                    unsigned int iconSize = 128; // default icon size for one thumb per series
+                                    if (IconSize)
+                                        iconSize = IconSize;
+                                    
+                                    DcmFileFormat fileformat;
+                                    if (fileformat.loadFile(imageRecord->getRecordsOriginFile()).bad())
+                                        continue;
+
+                                    OFCondition status = addIconImage(seriesRecord, fileformat.getDataset(), iconSize, OFString(imageRecord->getRecordsOriginFile()));
+                                    if (status.bad())
+                                    {
+                                        printWarningMessage("cannot create IconImageSequence");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 // write the current DICOMDIR object to file
 OFCondition DicomDirInterface::writeDicomDir(const E_EncodingType encodingType,
                                              const E_GrpLenEncoding groupLength)
 {
+    if (OneIconPerSeriesMode)
+        addOneImagePerSeries();
+    
     OFCondition result = EC_IllegalCall;
     /* check whether DICOMDIR object is valid */
     if (isDicomDirValid())
@@ -2561,6 +2626,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmItem *dataset,
             copyElement(dataset, DCM_Modality, record);
             copyElement(dataset, DCM_SeriesInstanceUID, record);
             copyElement(dataset, DCM_SeriesNumber, record);
+            copyElement(dataset, DCM_SeriesDescription, record, OFTrue);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
                 (ApplicationProfile == AP_MPEG2MPatML))
@@ -3195,7 +3261,6 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
         printRecordErrorMessage(EC_MemoryExhausted, ERT_ValueMap, "create");
     return record;
 }
-
 
 // create new image record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
@@ -4025,6 +4090,24 @@ OFBool DicomDirInterface::enableIconImageMode(const OFBool newMode)
     /* return old mode */
     return oldMode;
 }
+
+
+
+
+
+
+
+// only generate ONE icon per series // added in OsiriX
+OFBool DicomDirInterface::enableOneIconPerSeriesMode(const OFBool newMode)
+{
+    /* save current mode */
+    OFBool oldMode = OneIconPerSeriesMode;
+    /* set new mode */
+    OneIconPerSeriesMode = newMode;
+    /* return old mode */
+    return oldMode;
+}
+
 
 
 // enable/disable the backup mode, i.e. whether to create a backup of the DICOMDIR

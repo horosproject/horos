@@ -202,11 +202,20 @@ static BOOL newRouteMode = NO;
 				
 				self.filterType = [[selectedRoute valueForKey: @"filterType"] intValue];
 				
+                int count = 0;
 				for( i = 0; i < [serversArray count]; i++)
 				{
-					if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]]) 
+					if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]])
+                    {
 						[serverPopup selectItemAtIndex: i];
+                        count++;
+                    }
 				}
+                
+                if( count > 1)
+                {
+                    NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil), [NSString stringWithFormat:NSLocalizedString( @"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil), [selectedRoute valueForKey: @"server"]],NSLocalizedString( @"OK", nil), nil, nil);
+                }
 				
 				[self selectServer: serverPopup];
 				

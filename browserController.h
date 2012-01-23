@@ -249,6 +249,9 @@ extern NSString* O2AlbumDragType;
 //	NSThread* AupdateStatsThread;
 	id _activityHelper;
     
+    
+    IBOutlet NSSplitView *bannerSplit;
+    IBOutlet NSButton *banner;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -307,6 +310,8 @@ extern NSString* O2AlbumDragType;
 - (IBAction) saveAlbums:(id) sender;
 - (IBAction) addAlbums:(id) sender;
 - (IBAction) defaultAlbums: (id) sender;
+- (IBAction) clickBanner:(id) sender;
+- (IBAction)drawerToggle: (id)sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
 - (BOOL) shouldTerminate: (id) sender;
@@ -352,6 +357,7 @@ extern NSString* O2AlbumDragType;
 - (BOOL) isNetworkLogsActive;
 - (void) ReadDicomCDRom:(id) sender __deprecated;
 - (NSString*) INCOMINGPATH __deprecated;
+- (NSString*) TEMPPATH __deprecated;
 - (IBAction) matrixDoublePressed:(id)sender;
 - (void) addURLToDatabaseEnd:(id) sender;
 - (void) addURLToDatabase:(id) sender;
@@ -541,7 +547,8 @@ extern NSString* O2AlbumDragType;
 
 
 - (IBAction) deleteReport: (id) sender;
-//- (IBAction)srReports: (id)sender;
+- (IBAction) convertReportToPDF: (id)sender;
+- (IBAction) convertReportToDICOMSR: (id)sender;
 
 - (IBAction) rebuildThumbnails:(id) sender;
 

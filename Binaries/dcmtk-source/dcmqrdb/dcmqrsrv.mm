@@ -923,161 +923,149 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     DIC_AE calledAETitle;
     ASC_getAPTitles(assoc->params, NULL, calledAETitle, NULL);
 	//change to have 10 possible Syntaxes. We want to accept any incoming Syntax
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
-    int numTransferSyntaxes = 0;
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }; // 12 transfer syntaxes
+    int nTS = 0;
 	
     switch (options_.networkTransferSyntax_)
     {
-      case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
-        break;
+    case EXS_LittleEndianImplicit:
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+    break;
 		
-	  default:
-      case EXS_LittleEndianExplicit:
-        /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;	//;
-        transferSyntaxes[1] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[6] = UID_JPEG2000LosslessOnlyTransferSyntax;						//jpeg 2000
-		transferSyntaxes[7] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-//		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+    default:
+    case EXS_LittleEndianExplicit:
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
 		
-        numTransferSyntaxes = 10;
-        break;
-		
-      case EXS_BigEndianExplicit:
-        /* we prefer Big Endian Explicit */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_JPEGProcess14SV1TransferSyntax;				//jpeg lossless
-		transferSyntaxes[4] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[6] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-        numTransferSyntaxes = 8;
-        break;
+    case EXS_BigEndianExplicit:
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+    break;
 		
 #ifndef DISABLE_COMPRESSION_EXTENSION
-      case EXS_JPEGProcess14SV1TransferSyntax:
-        /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-        transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess1TransferSyntax;					//jpeg 8
-		transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-        transferSyntaxes[4] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[5] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[6] = UID_BigEndianExplicitTransferSyntax;
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
-        break;
-      case EXS_JPEGProcess1TransferSyntax:
-        /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-        transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess2_4TransferSyntax;					//jpeg 12
-		transferSyntaxes[2] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-        transferSyntaxes[4] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[5] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[6] = UID_BigEndianExplicitTransferSyntax;
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
-        break;
-      case EXS_JPEGProcess2_4TransferSyntax:
-        /* we prefer JPEGExtended (default lossy for 12 bit images) */
-        transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-		transferSyntaxes[1] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[2] = UID_JPEGProcess1TransferSyntax;
-		transferSyntaxes[3] = UID_JPEG2000TransferSyntax;						//jpeg 2000
-        transferSyntaxes[4] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[5] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[6] = UID_BigEndianExplicitTransferSyntax;
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
-        break;
-      case EXS_JPEG2000LosslessOnly:
-        /* we prefer JPEG 2000 lossless */
-        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;				
-		transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[5] = UID_JPEGProcess2_4TransferSyntax;		
-		transferSyntaxes[6] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[7] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[7] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
-        break;
-      case EXS_JPEG2000:
-        /* we prefer JPEG 2000 lossy or lossless */
-        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-		transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-		transferSyntaxes[4] = UID_BigEndianExplicitTransferSyntax;				
-		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
-		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;	//bzip
-		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-		transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 10;
-        break;
-//#ifdef WITH_ZLIB
-//      case EXS_DeflatedLittleEndianExplicit:
-//        /* we prefer deflated transmission */
-//        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-//        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-//        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-//        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-//		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;
-//		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
-//		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
-//		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[8] = UID_RLELosslessTransferSyntax;					//RLE
-//        transferSyntaxes[9] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-//		
-//        numTransferSyntaxes = 10;
-//        break;
-//#endif
-      case EXS_RLELossless:
-        /* we prefer RLE Lossless */
-        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        transferSyntaxes[3] = UID_BigEndianExplicitTransferSyntax;
-		transferSyntaxes[4] = UID_JPEG2000TransferSyntax;
-		transferSyntaxes[5] = UID_JPEGProcess14SV1TransferSyntax;
-		transferSyntaxes[6] = UID_JPEGProcess2_4TransferSyntax;		
-		transferSyntaxes[7] = UID_JPEGProcess1TransferSyntax;
-//		transferSyntaxes[8] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
-		
-        numTransferSyntaxes = 9;
-        break;
+    case EXS_JPEGProcess14SV1TransferSyntax:
+        transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax ;                          
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_JPEGProcess1TransferSyntax:
+        transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_JPEGProcess2_4TransferSyntax:
+        transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_JPEG2000LosslessOnly: 
+        transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;	
+    break;
+            
+    case EXS_JPEG2000:
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;		
+		transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+		transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+		transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_JPEGLSLossless:
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_JPEGLSLossy:
+        transferSyntaxes[ nTS++] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
+            
+    case EXS_RLELossless:
+        transferSyntaxes[ nTS++] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_JPEGProcess2_4TransferSyntax;		
+        transferSyntaxes[ nTS++] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[ nTS++] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[ nTS++] = UID_BigEndianExplicitTransferSyntax;
+    break;
 #endif
     }
 	
+    if( nTS > 12)
+        NSLog( @"******* MEMORY LEAK nTS > 12");
+    
     const char * const nonStorageSyntaxes[] =
     {
         UID_VerificationSOPClass,
@@ -1148,7 +1136,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
     assoc->params,
     (const char**)selectedNonStorageSyntaxes, numberOfSelectedNonStorageSyntaxes,
-    (const char**)transferSyntaxes, numTransferSyntaxes);
+    (const char**)transferSyntaxes, nTS);
     if (cond.bad()) {
     DcmQueryRetrieveOptions::errmsg("Cannot accept presentation contexts:");
     DimseCondition::dump(cond);
@@ -1189,7 +1177,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
           ** syntax.  Accepting a transfer syntax will override previously
           ** accepted transfer syntaxes.
           */
-          for (int k=numTransferSyntaxes-1; k>=0; k--)
+          for (int k=nTS-1; k>=0; k--)
           {
             for (int j=0; j < (int)pc.transferSyntaxCount; j++)
             {
