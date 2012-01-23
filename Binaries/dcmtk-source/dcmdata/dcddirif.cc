@@ -2626,6 +2626,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmItem *dataset,
             copyElement(dataset, DCM_Modality, record);
             copyElement(dataset, DCM_SeriesInstanceUID, record);
             copyElement(dataset, DCM_SeriesNumber, record);
+            copyElement(dataset, DCM_SeriesDescription, record, OFTrue);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
                 (ApplicationProfile == AP_MPEG2MPatML))
