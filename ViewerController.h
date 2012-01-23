@@ -88,7 +88,9 @@ enum
 	
 	DCMView					*imageView;
 	
+    IBOutlet NSView         *windowsTiling;
 	IBOutlet NSView         *orientationView;
+    IBOutlet NSMenu         *orientationViewPopUpMenu;
 	IBOutlet NSMatrix		*orientationMatrix;
 	
 	short					currentOrientationTool, originalOrientation;
@@ -337,6 +339,7 @@ enum
 	
 	int						isDataVolumicIn4DLevel;
 	int						previousFullscreenColumns, previousFullscreenRows, previousFullscreenCurImage, previousFullscreenViewIndex;
+    NSMenu *SetWindowsTiling;
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
@@ -557,6 +560,7 @@ enum
 - (IBAction) cancel:(id)sender;
 - (void) viewerControllerInit;
 - (IBAction) ConvertToRGBMenu:(id) sender;
+- (IBAction) SetWindowsTiling:(id)sender;
 - (BOOL) updateTilingViewsValue;
 - (void) setUpdateTilingViewsValue:(BOOL) v;
 - (IBAction) ConvertToBWMenu:(id) sender;

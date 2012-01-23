@@ -142,6 +142,7 @@ static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
+static NSString*    WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
@@ -2513,6 +2514,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) tileWindows
 {
 	[[AppController sharedAppController] tileWindows: nil];
+}
+
+- (IBAction) SetWindowsTiling:(NSPopUpButton*) menu
+{
+    int tag = [menu selectedTag];
+    int rows = tag / 10;
+    int columns = tag % 10;
+    
+    
+    NSLog( @"rows: %d columns: %d", rows, columns);
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
@@ -5249,6 +5260,18 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	}
+    else if([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
+    {
+        // Set up the standard properties 
+        [toolbarItem setLabel: NSLocalizedString(@"Windows", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Windows Tiling", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
+        
+        // Use a custom view, a text field, for the search item 
+        [toolbarItem setView: windowsTiling];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
+	}
 	else if([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
 	 {
 	// Set up the standard properties 
@@ -5427,6 +5450,7 @@ static ViewerController *draggedController = nil;
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
+                                        WindowsTilingToolbarItemIdentifier,
 										TileWindowsToolbarItemIdentifier,
 										SerieToolbarItemIdentifier,
 										PatientToolbarItemIdentifier,
@@ -5474,6 +5498,7 @@ static ViewerController *draggedController = nil;
 														FlipDataToolbarItemIdentifier,
 														DatabaseWindowToolbarItemIdentifier,
 														TileWindowsToolbarItemIdentifier,
+                                                        WindowsTilingToolbarItemIdentifier,
 														PlayToolbarItemIdentifier,
 														SpeedToolbarItemIdentifier,
 														MovieToolbarItemIdentifier,
