@@ -438,6 +438,16 @@
 		7EE416FB08B2615A00D4C9CC /* QueryLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7EE416C708B2612600D4C9CC /* QueryLogController.h */; };
 		7EE416FC08B2615B00D4C9CC /* QueryLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EE416C808B2612600D4C9CC /* QueryLogController.m */; };
 		7EE713BC097450B000510E88 /* dcmmkdir in Resources */ = {isa = PBXBuildFile; fileRef = 7EE713BA097450B000510E88 /* dcmmkdir */; };
+		8404168714CF195800242C63 /* Tiling1x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168214CF195800242C63 /* Tiling1x3.pdf */; };
+		8404168814CF195800242C63 /* Tiling1x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168214CF195800242C63 /* Tiling1x3.pdf */; };
+		8404168914CF195800242C63 /* Tiling2x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168314CF195800242C63 /* Tiling2x3.pdf */; };
+		8404168A14CF195800242C63 /* Tiling2x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168314CF195800242C63 /* Tiling2x3.pdf */; };
+		8404168B14CF195800242C63 /* Tiling3x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168414CF195800242C63 /* Tiling3x1.pdf */; };
+		8404168C14CF195800242C63 /* Tiling3x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168414CF195800242C63 /* Tiling3x1.pdf */; };
+		8404168D14CF195800242C63 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168514CF195800242C63 /* Tiling3x2.pdf */; };
+		8404168E14CF195800242C63 /* Tiling3x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168514CF195800242C63 /* Tiling3x2.pdf */; };
+		8404168F14CF195800242C63 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168614CF195800242C63 /* Tiling3x3.pdf */; };
+		8404169014CF195800242C63 /* Tiling3x3.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 8404168614CF195800242C63 /* Tiling3x3.pdf */; };
 		8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */; };
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
@@ -8407,6 +8417,11 @@
 		7EE416C708B2612600D4C9CC /* QueryLogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryLogController.h; sourceTree = "<group>"; };
 		7EE416C808B2612600D4C9CC /* QueryLogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryLogController.m; sourceTree = "<group>"; };
 		7EE713BA097450B000510E88 /* dcmmkdir */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dcmmkdir; sourceTree = "<group>"; };
+		8404168214CF195800242C63 /* Tiling1x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x3.pdf; path = Binaries/Icons/Tiling/Tiling1x3.pdf; sourceTree = "<group>"; };
+		8404168314CF195800242C63 /* Tiling2x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x3.pdf; path = Binaries/Icons/Tiling/Tiling2x3.pdf; sourceTree = "<group>"; };
+		8404168414CF195800242C63 /* Tiling3x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling3x1.pdf; path = Binaries/Icons/Tiling/Tiling3x1.pdf; sourceTree = "<group>"; };
+		8404168514CF195800242C63 /* Tiling3x2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling3x2.pdf; path = Binaries/Icons/Tiling/Tiling3x2.pdf; sourceTree = "<group>"; };
+		8404168614CF195800242C63 /* Tiling3x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling3x3.pdf; path = Binaries/Icons/Tiling/Tiling3x3.pdf; sourceTree = "<group>"; };
 		8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
@@ -12991,6 +13006,11 @@
 		848A6BE514C5BB9500C936C3 /* Tiling */ = {
 			isa = PBXGroup;
 			children = (
+				8404168214CF195800242C63 /* Tiling1x3.pdf */,
+				8404168314CF195800242C63 /* Tiling2x3.pdf */,
+				8404168414CF195800242C63 /* Tiling3x1.pdf */,
+				8404168514CF195800242C63 /* Tiling3x2.pdf */,
+				8404168614CF195800242C63 /* Tiling3x3.pdf */,
 				848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */,
 				848A6BE814C5BBA700C936C3 /* Tiling1x2.pdf */,
 				848A6BE914C5BBA700C936C3 /* Tiling2x1.pdf */,
@@ -22610,6 +22630,11 @@
 				848A6BED14C5BBA700C936C3 /* Tiling1x2.pdf in Resources */,
 				848A6BEF14C5BBA700C936C3 /* Tiling2x1.pdf in Resources */,
 				848A6BF114C5BBA700C936C3 /* Tiling2x2.pdf in Resources */,
+				8404168714CF195800242C63 /* Tiling1x3.pdf in Resources */,
+				8404168914CF195800242C63 /* Tiling2x3.pdf in Resources */,
+				8404168B14CF195800242C63 /* Tiling3x1.pdf in Resources */,
+				8404168D14CF195800242C63 /* Tiling3x2.pdf in Resources */,
+				8404168F14CF195800242C63 /* Tiling3x3.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22982,6 +23007,11 @@
 				848A6BEE14C5BBA700C936C3 /* Tiling1x2.pdf in Resources */,
 				848A6BF014C5BBA700C936C3 /* Tiling2x1.pdf in Resources */,
 				848A6BF214C5BBA700C936C3 /* Tiling2x2.pdf in Resources */,
+				8404168814CF195800242C63 /* Tiling1x3.pdf in Resources */,
+				8404168A14CF195800242C63 /* Tiling2x3.pdf in Resources */,
+				8404168C14CF195800242C63 /* Tiling3x1.pdf in Resources */,
+				8404168E14CF195800242C63 /* Tiling3x2.pdf in Resources */,
+				8404169014CF195800242C63 /* Tiling3x3.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

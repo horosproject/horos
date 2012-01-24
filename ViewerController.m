@@ -2522,8 +2522,54 @@ static volatile int numberOfThreadsForRelisce = 0;
     int rows = tag / 10;
     int columns = tag % 10;
     
+    int displayedViewersCount = [ViewerController getDisplayed2DViewers].count;
     
-    NSLog( @"rows: %d columns: %d", rows, columns);
+    BOOL copyAutoTilingPreference = [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AUTOTILING"];
+    
+    if( displayedViewersCount > rows*columns)
+    {
+        while( [ViewerController getDisplayed2DViewers].count > rows*columns)
+        {
+            if( [[ViewerController getDisplayed2DViewers] lastObject] != self)
+                [[[[ViewerController getDisplayed2DViewers] lastObject] window] close];
+        }
+    }
+    
+    if( displayedViewersCount < rows*columns)
+    {
+        NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+        
+        NSUInteger index = [seriesArray indexOfObject: [imageView seriesObj]];
+        
+        if( index == NSNotFound)
+            index = 0;
+        
+        for( int i = displayedViewersCount ; i < rows*columns; i++)
+        {
+            index++;
+            if( index >= seriesArray.count)
+                index = 0;
+            
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries: [seriesArray objectAtIndex: index] :nil :YES keyImagesOnly: NO];
+            
+            [newViewer showCurrentThumbnail: self];
+        }
+        
+        for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+        [[self window] makeKeyAndOrderFront: self];
+        [self refreshToolbar];
+        [self updateNavigator];
+    }
+    
+    if( delayedTileWindows)
+        [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+    delayedTileWindows = YES;
+    
+    [[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil] afterDelay: 0.1];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: copyAutoTilingPreference forKey: @"AUTOTILING"];
 }
 
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
@@ -2744,7 +2790,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( delayedTileWindows)
 			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		delayedTileWindows = YES;
-		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.3];
 	}
 	
 	[[NSCursor arrowCursor] set];
@@ -5451,7 +5497,6 @@ static ViewerController *draggedController = nil;
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
                                         WindowsTilingToolbarItemIdentifier,
-										TileWindowsToolbarItemIdentifier,
 										SerieToolbarItemIdentifier,
 										PatientToolbarItemIdentifier,
 										ToolsToolbarItemIdentifier,
@@ -6393,6 +6438,8 @@ return YES;
 	
 	[AppController displayImportantNotice: self];
 	
+    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", 1, 1] forKey: @"LastWindowsTilingRowsColumns"];
+    
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];

@@ -988,6 +988,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
     [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
     [defaultValues setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
+    [defaultValues setObject:@"880" forKey:@"WebServerMaxWidthForMovie"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

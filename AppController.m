@@ -3229,9 +3229,7 @@ static BOOL initialized = NO;
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
-	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
-	}
 	
 	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
@@ -4370,20 +4368,20 @@ static BOOL initialized = NO;
 
 - (void) tileWindows:(id)sender
 {
-	long				i, x;
+	long i, x;
 	// Array of open Windows
-	NSArray				*winList = [NSApp windows];
+	NSArray *winList = [NSApp windows];
 	// array of viewers
-	NSMutableArray		*viewersList = [NSMutableArray array];
-	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
-	NSRect				screenRect =  screenFrame();
+	NSMutableArray *viewersList = [NSMutableArray array];
+	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
+	NSRect screenRect =  screenFrame();
 	// User default to keep studies segregated to separate screens
-	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
 //	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	// Array of arrays of viewers with same StudyUID
-	NSMutableArray		*studyList = [NSMutableArray array];
-	int					keyWindow = 0, numberOfMonitors;	
-	NSArray				*screens = [self viewerScreens];
+	NSMutableArray *studyList = [NSMutableArray array];
+	int keyWindow = 0, numberOfMonitors;	
+	NSArray *screens = [self viewerScreens];
 	
 //	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
 //	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
@@ -4843,6 +4841,8 @@ static BOOL initialized = NO;
 	else
 		NSLog(@"NO tiling");
 	
+    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", lastRows, lastColumns] forKey: @"LastWindowsTilingRowsColumns"];
+    
 	accumulateAnimations = NO;
 	if( [accumulateAnimationsArray count])
 	{

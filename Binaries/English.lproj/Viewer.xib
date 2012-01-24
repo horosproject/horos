@@ -72,7 +72,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{200, 200}</string>
 				<object class="NSView" key="NSWindowView" id="484109505">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="670214740">
@@ -149,7 +149,7 @@
 													</object>
 												</object>
 											</array>
-											<string key="NSFrame">{{1, 1}, {205, 490}}</string>
+											<string key="NSFrame">{{1, 1}, {216, 490}}</string>
 											<reference key="NSSuperview" ref="651288944"/>
 											<reference key="NSNextKeyView" ref="183170652"/>
 											<reference key="NSDocView" ref="183170652"/>
@@ -245,10 +245,9 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{543, 503}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="670214740"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{200, 222}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1328,7 +1327,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{333, 227}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{333, 249}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2047,7 +2046,7 @@ ZSBvcHRpb24ga2V5IGRvd24uA</string>
 					</array>
 					<string key="NSFrameSize">{383, 518}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{383, 540}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2527,7 +2526,7 @@ a2V5Lg</string>
 					</array>
 					<string key="NSFrameSize">{552, 306}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{552, 328}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3327,7 +3326,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					</array>
 					<string key="NSFrameSize">{475, 238}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{475, 260}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -4022,7 +4021,7 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					</array>
 					<string key="NSFrameSize">{386, 351}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{386, 373}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -4386,7 +4385,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{367, 271}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{334, 293}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -5069,7 +5068,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{402, 312}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{402, 334}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -5844,7 +5843,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{412, 235}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{382, 256}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -6161,7 +6160,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 					</array>
 					<string key="NSFrameSize">{552, 254}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{552, 256}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -6441,7 +6440,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 					</array>
 					<string key="NSFrameSize">{333, 191}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{333, 213}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -6818,7 +6817,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 					</array>
 					<string key="NSFrameSize">{337, 107}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{337, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -7630,7 +7629,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{633, 327}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{564, 307}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8134,7 +8133,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{560, 140}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{531, 162}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8758,7 +8757,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{502, 520}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{502, 542}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8990,7 +8989,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{306, 142}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{306, 164}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9171,7 +9170,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{339, 173}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{298, 195}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9632,7 +9631,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSOnImage" ref="888121851"/>
 										<reference key="NSMixedImage" ref="844388719"/>
 										<string key="NSAction">_popUpItemAction:</string>
-										<int key="NSTag">22</int>
+										<int key="NSTag">21</int>
 										<reference key="NSTarget" ref="303685936"/>
 									</object>
 									<object class="NSMenuItem" id="149462921">
@@ -9649,6 +9648,86 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSMixedImage" ref="844388719"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<int key="NSTag">22</int>
+										<reference key="NSTarget" ref="303685936"/>
+									</object>
+									<object class="NSMenuItem" id="1025938912">
+										<reference key="NSMenu" ref="887610458"/>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<object class="NSCustomResource" key="NSImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Tiling1x3</string>
+										</object>
+										<reference key="NSOnImage" ref="888121851"/>
+										<reference key="NSMixedImage" ref="844388719"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">13</int>
+										<reference key="NSTarget" ref="303685936"/>
+									</object>
+									<object class="NSMenuItem" id="148488701">
+										<reference key="NSMenu" ref="887610458"/>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<object class="NSCustomResource" key="NSImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Tiling2x3</string>
+										</object>
+										<reference key="NSOnImage" ref="888121851"/>
+										<reference key="NSMixedImage" ref="844388719"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">23</int>
+										<reference key="NSTarget" ref="303685936"/>
+									</object>
+									<object class="NSMenuItem" id="1044327698">
+										<reference key="NSMenu" ref="887610458"/>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<object class="NSCustomResource" key="NSImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Tiling3x3</string>
+										</object>
+										<reference key="NSOnImage" ref="888121851"/>
+										<reference key="NSMixedImage" ref="844388719"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">33</int>
+										<reference key="NSTarget" ref="303685936"/>
+									</object>
+									<object class="NSMenuItem" id="1005670007">
+										<reference key="NSMenu" ref="887610458"/>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<object class="NSCustomResource" key="NSImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Tiling3x1</string>
+										</object>
+										<reference key="NSOnImage" ref="888121851"/>
+										<reference key="NSMixedImage" ref="844388719"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">31</int>
+										<reference key="NSTarget" ref="303685936"/>
+									</object>
+									<object class="NSMenuItem" id="877680874">
+										<reference key="NSMenu" ref="887610458"/>
+										<string key="NSTitle"/>
+										<string key="NSKeyEquiv"/>
+										<int key="NSKeyEquivModMask">1048576</int>
+										<int key="NSMnemonicLoc">2147483647</int>
+										<object class="NSCustomResource" key="NSImage">
+											<string key="NSClassName">NSImage</string>
+											<string key="NSResourceName">Tiling3x2</string>
+										</object>
+										<reference key="NSOnImage" ref="888121851"/>
+										<reference key="NSMixedImage" ref="844388719"/>
+										<string key="NSAction">_popUpItemAction:</string>
+										<int key="NSTag">32</int>
 										<reference key="NSTarget" ref="303685936"/>
 									</object>
 								</array>
@@ -10829,7 +10908,7 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					</array>
 					<string key="NSFrameSize">{740, 276}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{675, 296}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -11139,7 +11218,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{346, 163}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{314, 185}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -11540,7 +11619,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 					</array>
 					<string key="NSFrameSize">{319, 336}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -14710,6 +14789,22 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 						</object>
 					</object>
 					<int key="connectionID">2518</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.LastWindowsTilingRowsColumns</string>
+						<reference key="source" ref="303685936"/>
+						<reference key="destination" ref="578485805"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="303685936"/>
+							<reference key="NSDestination" ref="578485805"/>
+							<string key="NSLabel">selectedTag: values.LastWindowsTilingRowsColumns</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">values.LastWindowsTilingRowsColumns</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">2563</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -20806,6 +20901,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 							<reference ref="1062207232"/>
 							<reference ref="1057991174"/>
 							<reference ref="149462921"/>
+							<reference ref="1025938912"/>
+							<reference ref="148488701"/>
+							<reference ref="1044327698"/>
+							<reference ref="1005670007"/>
+							<reference ref="877680874"/>
 						</array>
 						<reference key="parent" ref="303685936"/>
 					</object>
@@ -20827,6 +20927,31 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 					<object class="IBObjectRecord">
 						<int key="objectID">2562</int>
 						<reference key="object" ref="149462921"/>
+						<reference key="parent" ref="887610458"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2565</int>
+						<reference key="object" ref="1025938912"/>
+						<reference key="parent" ref="887610458"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2566</int>
+						<reference key="object" ref="148488701"/>
+						<reference key="parent" ref="887610458"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2567</int>
+						<reference key="object" ref="1044327698"/>
+						<reference key="parent" ref="887610458"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2568</int>
+						<reference key="object" ref="1005670007"/>
+						<reference key="parent" ref="887610458"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">2569</int>
+						<reference key="object" ref="877680874"/>
 						<reference key="parent" ref="887610458"/>
 					</object>
 				</array>
@@ -21635,6 +21760,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 				<string key="2556.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2557.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="2562.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2565.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2566.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2567.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2568.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="2569.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="312.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="314.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="315.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -21966,7 +22096,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">2562</int>
+			<int key="maxID">2569</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -22859,6 +22989,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 						<string key="newValueText">NSTextField</string>
 						<string key="orientationMatrix">NSMatrix</string>
 						<string key="orientationView">NSView</string>
+						<string key="orientationViewPopUpMenu">NSMenu</string>
 						<string key="patientView">NSView</string>
 						<string key="popFusion">NSPopUpButton</string>
 						<string key="popupRoi">NSPopUpButton</string>
@@ -23309,6 +23440,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 							<string key="name">orientationView</string>
 							<string key="candidateClassName">NSView</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="orientationViewPopUpMenu">
+							<string key="name">orientationViewPopUpMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="patientView">
 							<string key="name">patientView</string>
 							<string key="candidateClassName">NSView</string>
@@ -23705,8 +23840,13 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 			<string key="TIFFSmall">{32, 32}</string>
 			<string key="Tiling1x1">{57, 57}</string>
 			<string key="Tiling1x2">{57, 57}</string>
+			<string key="Tiling1x3">{57, 57}</string>
 			<string key="Tiling2x1">{57, 57}</string>
 			<string key="Tiling2x2">{57, 57}</string>
+			<string key="Tiling2x3">{59, 58}</string>
+			<string key="Tiling3x1">{59, 59}</string>
+			<string key="Tiling3x2">{58, 58}</string>
+			<string key="Tiling3x3">{59, 58}</string>
 			<string key="WLWW">{28, 28}</string>
 			<string key="Zoom">{28, 28}</string>
 			<string key="iPhoto">{32, 32}</string>
