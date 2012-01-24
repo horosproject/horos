@@ -7361,6 +7361,9 @@ static BOOL withReset = NO;
         leftFrame.size.height = splitFrame.size.height;
         [left setFrame:leftFrame];
         
+        if ([splitDrawer isSubviewCollapsed:0] || [left isHidden])
+            leftFrame.size.width = 0;
+        
         rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
         rightFrame.size.height = splitFrame.size.height;
         rightFrame.size.width = availableWidth - leftFrame.size.width;
@@ -7439,10 +7442,23 @@ static BOOL withReset = NO;
 
 - (void)drawerToggle: (id)sender
 {
-    NSView* leftView = [[splitDrawer subviews] objectAtIndex:0];
-    if ([splitDrawer isSubviewCollapsed:0] || [leftView isHidden])
+    NSView* left = [[splitDrawer subviews] objectAtIndex:0];
+    BOOL expand = [splitDrawer isSubviewCollapsed:0] || [left isHidden];
+    
+    if (expand)
         [splitDrawer setPosition:160 ofDividerAtIndex:0];
-    else [splitDrawer setPosition:[splitDrawer minPossiblePositionOfDividerAtIndex:0] ofDividerAtIndex:0];
+    else [splitDrawer setPosition:0 ofDividerAtIndex:0];
+    
+/*    NSRect f = [_bottomSplit frame];
+    if (expand && f.origin.x < 100) {
+        f.size.width -= 160;
+        f.origin.x += 160;
+    } 
+    if (!expand && f.origin.x >= 100) {
+        f.size.width += 160;
+        f.origin.x -= 160;
+    }
+    [_bottomSplit setFrame:f];*/
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
@@ -7454,7 +7470,7 @@ static BOOL withReset = NO;
 		return oMatrix.cellSize.width;
     
 	if (sender == splitDrawer)
-		return 160;
+        return 160;
 	
     if ([sender isEqual: bannerSplit])
         return [sender frame].size.height - (banner.image.size.height+3);
