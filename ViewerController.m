@@ -858,7 +858,10 @@ return YES;
 				[dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
 			else
 				[dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
-				
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
+                [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
+            
 			[state addObject: dict];
 		}
 	}

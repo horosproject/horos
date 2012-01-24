@@ -8504,6 +8504,9 @@ static NSConditionLock *threadLock = nil;
 						[v setScaleValue: scale];
 						[v setRotation: rotation];
 						[v setOrigin: NSMakePoint( x, y)];
+                        
+                        if( [dict valueForKey: @"LastWindowsTilingRowsColumns"])
+                            [[NSUserDefaults standardUserDefaults] setObject: [dict valueForKey: @"LastWindowsTilingRowsColumns"] forKey: @"LastWindowsTilingRowsColumns"];
 					}
 				}
 				
