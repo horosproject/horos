@@ -5582,6 +5582,12 @@ return YES;
 
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
+    
+    if ([self.database isReadOnly])
+        if ([toolbarItem.itemIdentifier isEqualToString:DeleteToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier]
+            )
+            return NO;
 	
     BOOL enable = YES;
     if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])

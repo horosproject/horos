@@ -303,6 +303,7 @@
 		}
 		else if( [fileArray count] == 1 && [[[fileArray objectAtIndex: 0] pathExtension] isEqualToString: @"albums"])  // It's a database albums file !
 		{
+            
 			[[BrowserController currentBrowser] addAlbumsFile: [fileArray objectAtIndex: 0]];
 		}
 		else
@@ -316,6 +317,9 @@
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender
 {
+    if ([[[BrowserController currentBrowser] database] isReadOnly])
+		return;
+    
     NSPasteboard *paste = [sender draggingPasteboard];
         //gets the dragging-specific pasteboard from the sender
     NSArray *types = [NSArray arrayWithObjects:NSFilenamesPboardType, nil];

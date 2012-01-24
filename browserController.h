@@ -48,7 +48,7 @@ extern NSString* O2AlbumDragType;
 
 @interface BrowserController : NSWindowController
 #if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
-<NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate>   //NSObject
+<NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate, NSMenuDelegate>   //NSObject
 #endif
 {
 //	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
@@ -461,7 +461,6 @@ extern NSString* O2AlbumDragType;
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder __deprecated;
 +(NSArray*)addFiles:(NSArray*)newFilesArray toContext:(NSManagedObjectContext*)context toDatabase:(BrowserController*)browserController onlyDICOM:(BOOL)onlyDICOM  notifyAddedFiles:(BOOL)notifyAddedFiles parseExistingObject:(BOOL)parseExistingObject dbFolder:(NSString*)dbFolder generatedByOsiriX:(BOOL)generatedByOsiriX __deprecated;
 +(NSArray*) addFiles:(NSArray*) newFilesArray toContext: (NSManagedObjectContext*) context toDatabase: (BrowserController*) browserController onlyDICOM: (BOOL) onlyDICOM  notifyAddedFiles: (BOOL) notifyAddedFiles parseExistingObject: (BOOL) parseExistingObject dbFolder: (NSString*) dbFolder generatedByOsiriX: (BOOL) generatedByOsiriX mountedVolume: (BOOL) mountedVolume __deprecated;
-- (void) createDBContextualMenu;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination;
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination showGUI: (BOOL) showGUI;
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;

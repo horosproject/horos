@@ -194,6 +194,7 @@ NSString* soundex4( NSString *inString)
 @dynamic albums;
 @dynamic series;
 
+
 static NSRecursiveLock *dbModifyLock = nil;
 
 + (NSRecursiveLock*) dbModifyLock

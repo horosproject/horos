@@ -4061,7 +4061,10 @@ static NSConditionLock *threadLock = nil;
 
 - (IBAction)delItem: (id)sender
 {
-	NSInteger				result;
+	if (self.database.isReadOnly)
+        return;
+    
+    NSInteger				result;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	BOOL					matrixThumbnails = YES;
 	int						animState = [animationCheck state];
@@ -4578,7 +4581,10 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	[self setDatabaseValue: object item: item forKey: [tableColumn identifier]];
+	if ([self.database isReadOnly])
+        return;
+    
+    [self setDatabaseValue: object item: item forKey: [tableColumn identifier]];
 }
 
 - (void)outlineView:(NSOutlineView *)outlineView sortDescriptorsDidChange:(NSArray *)oldDescriptors
@@ -5297,7 +5303,10 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
-	if(![self.database isReadOnly] && ( [[tableColumn identifier] isEqualToString:@"comment"] || [[tableColumn identifier] isEqualToString:@"comment2"] || [[tableColumn identifier] isEqualToString:@"comment3"] || [[tableColumn identifier] isEqualToString:@"comment4"]))
+    if ([self.database isReadOnly])
+        return NO;
+    
+	if( [[tableColumn identifier] isEqualToString:@"comment"] || [[tableColumn identifier] isEqualToString:@"comment2"] || [[tableColumn identifier] isEqualToString:@"comment3"] || [[tableColumn identifier] isEqualToString:@"comment4"])
 	{
 		DatabaseIsEdited = YES;
 		return YES;
@@ -5307,6 +5316,13 @@ static NSConditionLock *threadLock = nil;
 		DatabaseIsEdited = NO;
 		return NO;
 	}
+}
+
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldTrackCell:(NSCell *)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    if ([self.database isReadOnly])
+        return NO;
+    
+    return YES;
 }
 
 - (IBAction) displayImagesOfSeries: (id) sender
@@ -10536,13 +10552,15 @@ static NSArray*	openSubSeriesArray = nil;
 	return [[NSUserDefaults dateTimeFormatter] stringFromDate:d];
 }
 
-- (void) createDBContextualMenu // DATABASE contextual menu
+-(void)menuWillOpen:(NSMenu*)menu // DATABASE contextual menu
 {
-	NSMenu *menu = [[[NSMenu alloc] initWithTitle:@"Tools"] autorelease];
-	
+    [menu removeAllItems];
+    
+	BOOL isWritable = ![self.database isReadOnly];
+    
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Display only this patient", nil) action: @selector(searchForCurrentPatient:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
 	
+	[menu addItem: [NSMenuItem separatorItem]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil)  action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
@@ -10551,8 +10569,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Reveal In Finder", nil) action: @selector(revealInFinder:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
 	
+	[menu addItem: [NSMenuItem separatorItem]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Quicktime", nil) action: @selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""] autorelease]];
@@ -10560,42 +10578,55 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
 	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector( sendEmailNotification:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Add selected study(s) to user(s)", nil)  action:@selector( addStudiesToUser:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Send an email notification to user(s)", nil)  action:@selector( sendEmailNotification:) keyEquivalent:@""] autorelease]];
+    }
 	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Lock Studies", nil)  action:@selector(lockStudies:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
-	
-    [menu addItem: [NSMenuItem separatorItem]];
-	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete", nil) action: @selector(delItem:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [NSMenuItem separatorItem]];
-	
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Burn", nil) action: @selector(burnDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Anonymize", nil) action: @selector(anonymizeDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease]];
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Compress DICOM files", nil)  action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Decompress DICOM files", nil)  action:@selector(decompressSelectedFiles:) keyEquivalent:@""] autorelease]];
+    }
+    
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Lock Studies", nil)  action:@selector(lockStudies:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unlock Studies", nil)  action:@selector(unlockStudies:) keyEquivalent:@""] autorelease]];
+    }
+    
+    if (isWritable) { // TODO: allow report access, read-only
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Create/Open Report", nil) action: @selector(generateReport:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to PDF...", nil) action: @selector(convertReportToPDF:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Convert Report to DICOM PDF", nil) action: @selector(convertReportToDICOMSR:) keyEquivalent:@""] autorelease]];
+	}
+    
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Merge Selected Studies", nil) action: @selector(mergeStudies:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Unify patient identity", nil) action: @selector(unifyStudies:) keyEquivalent:@""] autorelease]];
+	}
+    
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete", nil) action: @selector(delItem:) keyEquivalent:@""] autorelease]];
+	}
+    
+    if (isWritable) {
+        [menu addItem: [NSMenuItem separatorItem]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Query Selected Patient from Q&R Window...", nil) action: @selector(querySelectedStudy:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Burn", nil) action: @selector(burnDICOM:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Anonymize", nil) action: @selector(anonymizeDICOM:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease]];
+    }
 
 	 NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 	
-	if( [autoroutingRules count])
+	if(isWritable && [autoroutingRules count])
 	{
 		[menu addItem: [NSMenuItem separatorItem]];
 		
@@ -10633,8 +10664,6 @@ static NSArray*	openSubSeriesArray = nil;
 			[menu addItem: item];
 		}
 	}
-	
-	[databaseOutline setMenu: menu];
 }
 
 -(void) awakeFromNib
@@ -10710,7 +10739,9 @@ static NSArray*	openSubSeriesArray = nil;
 //		[self showDatabase: self];
 		
 		// NSMenu for DatabaseOutline
-		[self createDBContextualMenu];
+        NSMenu* menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+        [menu setDelegate:self];
+		[databaseOutline setMenu:menu];
 		
 		[self addHelpMenu];
 		
@@ -16404,6 +16435,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return YES;
 	#endif
 	
+    if ([self.database isReadOnly])
+        if ([toolbarItem.itemIdentifier isEqualToString:ImportToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:WebServerSingleNotification] || 
+            [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:AnonymizerToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:iDiskGetToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:TrashToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier] || // TODO: if report already exists, allow user to view it
+            [toolbarItem.itemIdentifier isEqualToString:BurnerToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:QueryToolbarItemIdentifier]
+            )
+            return NO;
+    
 	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
 	{
 		if(	[toolbarItem action] == @selector( rebuildThumbnails:) ||

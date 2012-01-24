@@ -1383,7 +1383,6 @@ static NSDate *lastWarningDate = nil;
 	#endif
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
-	[[BrowserController currentBrowser] createDBContextualMenu]; // Update the routing rules
 	[DicomFile resetDefaults];
 	
 	[DCMView setDefaults];
