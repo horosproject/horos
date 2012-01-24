@@ -18,6 +18,7 @@
 @interface ThreadsManager : NSObject {
 	@private 
 	NSArrayController* _threadsController;
+    NSTimer* _timer;
 }
 
 @property(readonly) NSArrayController* threadsController;

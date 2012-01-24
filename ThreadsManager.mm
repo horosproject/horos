@@ -16,6 +16,12 @@
 #import "ThreadModalForWindowController.h"
 #import "NSThread+N2.h"
 
+@interface ThreadsManager ()
+
+-(void)subRemoveThread:(NSThread*)thread;
+
+@end
+
 @implementation ThreadsManager
 
 @synthesize threadsController = _threadsController;
@@ -34,13 +40,25 @@
 	[_threadsController setSelectsInsertedObjects:NO];
 	[_threadsController setAvoidsEmptySelection:NO];
 	[_threadsController setObjectClass:[NSThread class]];
-	
+    
+    // cleanup timer
+	_timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(cleanupFinishedThreads:) userInfo:nil repeats:YES];
+    
 	return self;
 }
 
 -(void)dealloc {
+    [_timer invalidate];
 	[_threadsController release];
 	[super dealloc];
+}
+
+-(void)cleanupFinishedThreads:(NSTimer*)timer {
+    @synchronized (_threadsController) {
+        for (NSThread* thread in _threadsController.content)
+            if (thread.isFinished) 
+                [self subRemoveThread:thread];
+    }
 }
 
 #pragma mark Interface
@@ -71,21 +89,24 @@
 	{
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
-		
+        
 		if ([_threadsController.arrangedObjects containsObject:thread] || [thread isFinished])
 		{
             // Do nothing
         }
 		else
         {
-            if (![thread isMainThread] && ![thread isExecuting])
+            if (![thread isMainThread]/* && ![thread isExecuting]*/)
             {
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
                 [_threadsController addObject:thread];
                 
                 @try
                 {
-                    [thread start]; // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+                    // We need to start the thread NOW, to be sure, it happens AFTER the addObject
+                    if (![thread isExecuting])
+                        [thread start];
+                    
                 }
                 @catch (NSException* e)
                 {
@@ -118,8 +139,10 @@
 		if (![NSThread isMainThread])
 			NSLog( @"***** NSThread we should NOT be here");
         
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
-        [_threadsController removeObject:thread];
+        if ([_threadsController.content containsObject:thread]) {
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+            [_threadsController removeObject:thread];
+        }
 	}
 	}
 }

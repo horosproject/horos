@@ -88,6 +88,9 @@ static NSString* const NSThreadStackArrayKey = @"NSThreadStackArrayKey";
 //    if (self.isCancelled)
 //    	return nil;
 	
+    if (self.isFinished)
+        return nil;
+    
 	NSMutableArray* a = nil;
 	
 	@synchronized (self.threadDictionary) {
@@ -255,7 +258,9 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 
 -(CGFloat)subthreadsAwareProgress {
 	@synchronized (self.threadDictionary) {
-		CGFloat progress = self.progress;
+		if (self.isFinished)
+            return 1;
+        CGFloat progress = self.progress;
 		if (progress < 0)
 			return progress;
 		

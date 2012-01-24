@@ -963,6 +963,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	@try
     {
+        [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
 		[self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
 	}
     @catch (NSException* e)
@@ -1217,7 +1218,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
     
-    NSLog(@"Add: %@", dicomFilesArray);
+  //  NSLog(@"Add: %@", dicomFilesArray);
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
