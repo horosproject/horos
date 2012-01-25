@@ -710,6 +710,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return 0;
 }
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 -(short) getImageFile
 {
 	NSString	*extension = [[filePath pathExtension] lowercaseString];
@@ -1047,6 +1048,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	return -1;
 }
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
+
 
 //-(short) getSIGNA5
 //{

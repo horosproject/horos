@@ -10151,6 +10151,7 @@ END_CREATE_ROIS:
 		}
 	}
 }
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
 -(void) CheckLoad
 {

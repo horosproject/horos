@@ -112,14 +112,27 @@ static NSString* const NSThreadSubRangeKey = @"subRange";
 	return [self.stackArray lastObject];
 }
 
+static NSString* const SuperThreadProgressKey = @"SuperThreadProgress";
+
 -(void)enterOperation {
 	@synchronized (self.threadDictionary) {
+        NSNumber* n = [NSNumber numberWithFloat:self.progress];
 		[self.stackArray addObject:[NSMutableDictionary dictionary]];
+        [self.currentOperationDictionary setObject:n forKey:SuperThreadProgressKey];
 		self.progress = -1;
 	}
 }
 
--(void)enterOperationWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen {
+-(void)enterOperationIgnoringLowerLevels {
+	@synchronized (self.threadDictionary) {
+		[self enterOperation];
+		[self.currentOperationDictionary setObject:[NSNull null] forKey:NSThreadSubRangeKey];
+        self.progress = -1;
+    }
+}
+
+-(void)enterOperationWithRange:(CGFloat)rangeLoc:(CGFloat)rangeLen
+{
 	@synchronized (self.threadDictionary) {
 		[self enterOperation];
 		[self.currentOperationDictionary setObject:[NSValue valueWithPoint:NSMakePoint(rangeLoc,rangeLen)] forKey:NSThreadSubRangeKey];
@@ -130,8 +143,14 @@ static NSString* const NSThreadSubRangeKey = @"subRange";
 
 -(void)exitOperation {
 	@synchronized (self.threadDictionary) {
-		if (self.stackArray.count > 1)
-			[self.stackArray removeLastObject];
+		if (self.stackArray.count > 1) {
+            [self willChangeValueForKey:NSThreadStatusKey];
+			NSNumber* temp = [[[self.currentOperationDictionary objectForKey:SuperThreadProgressKey] retain] autorelease];
+            [self.stackArray removeLastObject];
+            [self didChangeValueForKey:NSThreadStatusKey];
+            if (temp) self.progress = temp.floatValue;
+            else self.progress = 1;
+        }
 		self.progress = 1;
 	}
 }
@@ -267,10 +286,12 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 		NSPoint range = NSMakePoint(0,1);
 		for (NSDictionary* i in self.stackArray) {
 			NSValue* iv = [i objectForKey:NSThreadSubRangeKey];
-			if (iv) {
+			if ([iv isKindOfClass:[NSValue class]]) {
 				NSPoint ir = [iv pointValue];
 				range = NSMakePoint(range.x+range.y*ir.x, range.y*ir.y);
-			}
+			} else if ([iv isKindOfClass:[NSNull class]]) {
+                range = NSMakePoint(0,1);
+            }
 		}
 		
 		return range.x+range.y*self.progress;

@@ -21,6 +21,7 @@
 #import "DicomSeries.h"
 #import "BrowserController.h"
 #import "Notifications.h"
+#import "NSThread+N2.h"
 
 
 @interface DicomDatabase ()
@@ -89,6 +90,8 @@
 }
 
 -(void)cleanOldStuff {
+    if (self.isReadOnly)
+        return;
 	if (!self.isLocal) return;
 	if ([AppController.sharedAppController isSessionInactive]) return;
 //	if ([NSDate timeIntervalSinceReferenceDate] - gLastActivity < 60*10) return; // TODO: this
@@ -330,7 +333,15 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 }
 
 -(void)cleanForFreeSpace {
-	[_cleanLock lock];
+	if (self.isReadOnly)
+        return;
+    
+    [_cleanLock lock];
+    
+    NSThread* thread = [NSThread currentThread];
+    [thread enterOperationIgnoringLowerLevels];
+    thread.status = NSLocalizedString(@"Cleaning database...", nil);
+    
 	@try {
         
         if( [NSUserDefaults.standardUserDefaults boolForKey:@"AUTOCLEANINGSPACE"])
@@ -358,12 +369,20 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
+        [thread exitOperation];
 		[_cleanLock unlock];
 	}
 }
 
 -(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {
+	if (self.isReadOnly)
+        return;
+
 	[_cleanLock lock];
+    
+    NSThread* thread = [NSThread currentThread];
+    [thread enterOperation];
+    
 	@try {
 		NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
 		if ([fsattrs objectForKey:NSFileSystemFreeSize] == nil) {
@@ -384,13 +403,15 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 		
 		NSLog(@"Info: cleaning for space (%lld MB available, %lld MB requested)", free, (unsigned long long)freeMemoryRequested);
 		
+        unsigned long long initialDelta = freeMemoryRequested - free;
+        
         NSMutableArray* studies = [NSMutableArray array];
         NSMutableArray* studiesDates = [NSMutableArray array];
         
         BOOL flagDoNotDeleteIfComments = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontDeleteStudiesWithComments"];
         NSInteger autocleanSpaceMode = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] intValue];
         
-        for (DicomStudy* study in [self objectsForEntity:self.studyEntity]) {   
+        for (DicomStudy* study in [self objectsForEntity:self.studyEntity]) {
             // if study is locked, do not delete it
             if ([study.lockedStudy boolValue])
                 continue;
@@ -435,6 +456,8 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
         BOOL flagDeleteLinkedImages = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOCLEANINGDELETEORIGINAL"];
         
         for (NSArray* sd in studiesDates) {
+            { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
+            
             DicomStudy* study = [sd objectAtIndex:0];
             NSLog(@"Info: study [%@ - %@ - %@] is being deleted for space (added %@, last opened %@)", study.name, study.studyName, study.date, study.dateAdded, study.dateOpened);
             
@@ -448,7 +471,7 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
             // delete image files
             for (DicomImage* image in imagesToDelete) {
                 NSString* path = image.completePath;
-                [NSFileManager.defaultManager removeItemAtPath:path error:NULL];
+                unlink(path.fileSystemRepresentation); // faster than [NSFileManager.defaultManager removeItemAtPath:path error:NULL];
                 if ([path.pathExtension isEqualToString:@"hdr"]) // ANALYZE -> DELETE IMG
                     [NSFileManager.defaultManager removeItemAtPath:[path.stringByDeletingPathExtension stringByAppendingPathExtension:@"img"] error:NULL];
             }
@@ -456,11 +479,18 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
             // delete managed objects: images, series, studies
             
             for (DicomSeries* series in [[study series] allObjects]) {
-                for (DicomImage* image in series.images.allObjects)
-                    [self.managedObjectContext deleteObject:image];
-                [self.managedObjectContext deleteObject:series];
-            }
-            [self.managedObjectContext deleteObject:study];
+                @try {
+                    for (DicomImage* image in series.images.allObjects)
+                        @try {
+                            [self.managedObjectContext deleteObject:image];
+                        } @catch (...) { }
+                } @catch (...) { }
+                @try {
+                    [self.managedObjectContext deleteObject:series];
+                } @catch (...) { }
+            } @try {
+                [self.managedObjectContext deleteObject:study];
+            } @catch (...) { }
             
             // did we free up enough space?
             
@@ -474,6 +504,7 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
+        [thread exitOperation];
         [_cleanLock unlock];
     }
 }

@@ -756,8 +756,11 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 }
 
 -(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {
-    [super cleanForFreeSpaceMB:freeMemoryRequested];
 }
+
+-(void)cleanOldStuff {
+}
+
 
 #pragma mark Special
 
