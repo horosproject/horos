@@ -2892,20 +2892,22 @@ extern "C"
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
 			
 			NSString *status = nil;
-			NSString *name = @"";
 			
 			if( [object isMemberOfClass:[DCMTKStudyQueryNode class]])
 			{
-				name = [object name];
-				
-				if( [array count] == 1) status = [NSString stringWithFormat: NSLocalizedString( @"%d study - %@", nil), [array count], name];
-				else status = [NSString stringWithFormat: NSLocalizedString( @"%d studies - %@", nil), [array count], name];
+				if( [array count] == 1) status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [array count]];
+				else status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [array count]];
+                
+                if( [object name])
+                    status = [status stringByAppendingFormat:@" - %@", [object name]];
 			}
 			
 			if( [object isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
-				name = [object theDescription];
-				status = [NSString stringWithFormat: NSLocalizedString( @"%d series - %@", nil), [array count], name];
+				status = [NSString stringWithFormat: NSLocalizedString( @"%d series", nil), [array count]];
+                
+                if( [object theDescription])
+                    status = [status stringByAppendingFormat:@" - %@", [object theDescription]];
 			}
 			
 			[NSThread currentThread].status = [status stringByReplacingOccurrencesOfString: @"^" withString: @" "];

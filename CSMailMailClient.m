@@ -271,14 +271,25 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
 - (NSDictionary *) defaultSMTPAccountFromMail
 {
-	NSDictionary *viableAccount = nil, *selectedAccount = nil;
+	NSMutableDictionary *viableAccount = nil, *selectedAccount = nil;
     BOOL found = NO;
+    NSArray *deliveryAccounts = nil, *mailAccounts = nil;
     
-	NSArray *deliveryAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("DeliveryAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+    NSString *LionPath = [@"~/Library/Mail/V2/MailData/Accounts.plist" stringByExpandingTildeInPath];
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: LionPath])
+    {
+        deliveryAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"DeliveryAccounts"];
+        mailAccounts = [[NSDictionary dictionaryWithContentsOfFile: LionPath] objectForKey: @"MailAccounts"];
+    }
+    
 	if (!deliveryAccounts)
+        deliveryAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("DeliveryAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+    if (!deliveryAccounts)
 		return viableAccount;
     
-	NSArray *mailAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("MailAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+    if (!mailAccounts)
+        mailAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("MailAccounts"), CFSTR("com.apple.Mail"))) autorelease];
 	if (!mailAccounts)
 		return viableAccount;
     
@@ -293,7 +304,7 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 		if (!identifier)
 			continue;
         
-		viableAccount = [deliveryAccountsBySMTPIdentifier objectForKey:identifier];
+		viableAccount = [[[deliveryAccountsBySMTPIdentifier objectForKey:identifier] mutableCopy] autorelease];
 		if( viableAccount && (found == NO || [[[account objectForKey:@"EmailAddresses"] objectAtIndex: 0] isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey: @"notificationsEmailsSender"]]))
         {
 			NSString *bareAddress = [[account objectForKey:@"EmailAddresses"] objectAtIndex:0UL];
@@ -311,6 +322,8 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 					viableAccount = nil;
 				}
 			}
+            else
+                [viableAccount setObject: @"465" forKey: @"PortNumber"];
             
             if (viableAccount)
             {
