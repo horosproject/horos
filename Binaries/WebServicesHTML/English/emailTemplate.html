@@ -4,7 +4,9 @@ You are registered on the OsiriX Web Portal at <a href="%WebServerURL%">%WebServ
 <br/>
 
 %[IF:customText.length%
+<b>Here is a message from %X:FromUser.name% (%X:FromUser.email%) about this case:<br/>
 %X:customText%<br/><br/>
+</b>
 %]IF:customText.length%
 
 %[IF:Studies.count>1%

@@ -24,7 +24,7 @@
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "DicomDatabase.h"
-
+#import "CSMailMailClient.h"
 
 @interface WebPortalServer ()
 
@@ -143,6 +143,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+    
+    
+    [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {

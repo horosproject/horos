@@ -121,6 +121,25 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
   return [[[CSMailMailClient alloc] init] autorelease];
 }
 
+- (id)init
+{
+    self = [super init];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerUseMailAppForEmails"] == NO)
+    {
+        if (!defaultSMTPAccount)
+        {
+            defaultSMTPAccount = [[self defaultSMTPAccountFromMail] retain];
+            if (!defaultSMTPAccount)
+            {
+                //We can't do anything without an account.
+                NSLog( @"**** MailMe: No suitable SMTP account found");
+            }
+        }
+    }
+    return self;
+}
+
 - (NSAppleScript *)script
 {
   if (script)
@@ -514,8 +533,6 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 {
     BOOL useMail = [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerUseMailAppForEmails"];
     
-    useMail = NO;
-    
     return [self deliverMessage: messageBody headers: messageHeaders withMailApp: useMail];
 }
 
@@ -552,6 +569,13 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
         if( [[defaultSMTPAccount valueForKey: @"SSLEnabled"] boolValue])
             mode = SMTPClientTLSModeTLSIfPossible;
         
+        NSString *fromEmail;
+        
+        if( [messageHeaders objectForKey:@"Sender"])
+            fromEmail = [messageHeaders objectForKey:@"Sender"];
+        else
+            fromEmail = fromAddress;
+        
         [[SMTPClient clientWithServerAddress: [defaultSMTPAccount valueForKey: @"Hostname"]
                                        ports: [NSArray arrayWithObject: [defaultSMTPAccount valueForKey: @"PortNumber"]]
                                      tlsMode: mode
@@ -559,10 +583,8 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                                     password: [defaultSMTPAccount valueForKey: @"Password"]]
          sendMessage: messageBody
          withSubject: [messageHeaders objectForKey:@"Subject"]
-         from: fromAddress
+         from: [messageHeaders objectForKey:@"Sender"]
          to: [messageHeaders objectForKey:@"To"]];
-        
-        NSLog( @"%@", messageBody);
         
         return YES;
     }

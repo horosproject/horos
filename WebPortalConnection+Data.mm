@@ -798,7 +798,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 			
 			// Send the email
-			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL replyTo:user.email customText:[parameters objectForKey:@"message"]];
+			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL customText: [parameters objectForKey:@"message"] from: user];
 			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
 			
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
@@ -806,6 +806,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
 	}
 	
+    
 	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
 	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName)"), study.name, study.studyName] forKey:@"PageTitle"];
 	

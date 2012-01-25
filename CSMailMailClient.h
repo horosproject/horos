@@ -25,7 +25,7 @@ enum {
 + (id) mailClient;
 - (NSString *)name;
 - (NSString *)version;
-
+- (NSDictionary *) defaultSMTPAccountFromMail;
 - (NSString *)applicationName;
 
 - (BOOL)applicationIsInstalled;
