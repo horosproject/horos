@@ -4,6 +4,8 @@
 - Up to Date DICOM Dictionary
 - New 2D Viewer toolbar item : Windows Tiling : add or remove windows
 
+- WebPortal: option for direct SMTP support for emails (TODO: select account sender, GUI)
+
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
 ------------------------------------------------------------------------------------------
@@ -33,7 +35,7 @@ A:
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - WebPortal: Move a case to an album
-- WebPortal: Better email support (stop using Mail.app)
+
 - 2D Viewer: Windows Tiling popup toolbar item
 - http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
