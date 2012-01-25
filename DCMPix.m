@@ -24,6 +24,7 @@
 #import "ROI.h"
 #import "SRAnnotation.h"
 #import "Notifications.h"
+#import "NSUserDefaults+OsiriX.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMUSRegion.h"   // US Regions
@@ -10142,6 +10143,7 @@ END_CREATE_ROIS:
 		}
 	}
 }
+#pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
 -(void) CheckLoad
 {
@@ -12551,7 +12553,7 @@ END_CREATE_ROIS:
 							if(inGrOrModP->vr==DA)
 							{
 								calendarDate = [DCMCalendarDate dicomDate:field];
-								[field setString:[BrowserController DateOfBirthFormat: calendarDate]];
+								[field setString:[[NSUserDefaults dateFormatter] stringFromDate:calendarDate]];
 							}
 							else if(inGrOrModP->vr==DT)
 							{
@@ -12632,8 +12634,8 @@ END_CREATE_ROIS:
 				NSString *vr = [attr vr];
 				if([vr isEqualToString:@"DA"])
 				{
-					if( result == nil) result = [NSMutableString stringWithString: [BrowserController DateOfBirthFormat: field]];
-					else [result appendFormat: @" / %@", [BrowserController DateOfBirthFormat: field]];
+					if( result == nil) result = [NSMutableString stringWithString: [[NSUserDefaults dateFormatter] stringFromDate:field]];
+					else [result appendFormat: @" / %@", [[NSUserDefaults dateFormatter] stringFromDate:field]];
 				}
 				else if([vr isEqualToString:@"TM"])
 				{
@@ -12751,7 +12753,7 @@ END_CREATE_ROIS:
 //									value = [value description];
 									
 									if([fieldName isEqualToString:@"dateOfBirth"])
-										value = [BrowserController DateOfBirthFormat: (NSDate *) value];
+										value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
 									else
 										value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
 								}

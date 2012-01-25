@@ -8,6 +8,7 @@
 
 ------------------------------------------------------------------------------------------
 
+
 A:
 (OK) DB remote: black image (multi-load)
 - DB Remote: ROIs
@@ -23,9 +24,10 @@ A:
 (OK)		keystrokes: delete key, ...
 (OK) iPod doesn't appear automatically
 (OK) iPod eject button
-Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
-	
 
+
+- Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
+	
 ------------------------------------------------------------------------------------------
 
 - WebPortal: LDAP/OpenDAP support
