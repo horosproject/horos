@@ -271,7 +271,8 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
 - (NSDictionary *) defaultSMTPAccountFromMail
 {
-	NSDictionary *viableAccount = nil;
+	NSDictionary *viableAccount = nil, *selectedAccount = nil;
+    BOOL found = NO;
     
 	NSArray *deliveryAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("DeliveryAccounts"), CFSTR("com.apple.Mail"))) autorelease];
 	if (!deliveryAccounts)
@@ -293,9 +294,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 			continue;
         
 		viableAccount = [deliveryAccountsBySMTPIdentifier objectForKey:identifier];
-		if (viableAccount) {
+		if( viableAccount && (found == NO || [[[account objectForKey:@"EmailAddresses"] objectAtIndex: 0] isEqualToString: [[NSUserDefaults standardUserDefaults] objectForKey: @"notificationsEmailsSender"]]))
+        {
 			NSString *bareAddress = [[account objectForKey:@"EmailAddresses"] objectAtIndex:0UL];
 			NSString *name = [account objectForKey:@"FullUserName"];
+            [fromAddress release];
 			fromAddress = [(name ? [NSString stringWithFormat:@"%@ <%@>", name, bareAddress] : bareAddress) copy];
 			if (!fromAddress) {
 				viableAccount = nil;
@@ -357,21 +360,20 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                     
                     NSMutableDictionary *tempDictionary = [NSMutableDictionary dictionaryWithDictionary: viableAccount];
                     
-                    [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease]  forKey: @"Password"];
+                    [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease] forKey: @"Password"];
                     
-                    viableAccount = tempDictionary;
+                    selectedAccount = tempDictionary;
                     
                     SecKeychainItemFreeContent(/*attrList*/ NULL, passwordBytes);
                 }
             }
             
-			if (viableAccount) {
-				break;
-			}
+			if (selectedAccount)
+				found = YES;
 		}
 	}
-    
-	return viableAccount;
+//    NSLog( @"SMTP Account selected: %@ %@", [selectedAccount valueForKey: @"Hostname"], [selectedAccount valueForKey: @"Username"]);
+	return selectedAccount;
 }
 
 - (NSAppleEventDescriptor *)descriptorForThisProcess
