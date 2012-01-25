@@ -707,23 +707,20 @@ enum SMTPSubstatuses {
 					}
 					[self writeLine:[NSString stringWithFormat:@"To: %@", to]];
 					
-//					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
-//					[self writeLine:@"Mime-Version: 1.0"];
-//					[self writeLine:@"Content-Type: text/html; charset=\"UTF-7\""];
-//					[self writeLine:@"Content-Transfer-Encoding: 7bit"];
-					
 					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
 					[self writeLine:@"Mime-Version: 1.0"];
-					[self writeLine:@"Content-Type: text/html; charset=utf-8"];
-					[self writeLine:@"Content-Transfer-Encoding: 8bit"];
-                    
-//                    char converted[([string length] + 1)];
-//                    [string getCString:converted maxLength:([string length] + 1) encoding: NSISOLatin1StringEncoding];
+					[self writeLine:@"Content-Type: text/html; charset=\"UTF-7\""];
+					[self writeLine:@"Content-Transfer-Encoding: 7bit"];
+					
+//					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
+//					[self writeLine:@"Mime-Version: 1.0"];
+//					[self writeLine:@"Content-Type: text/html; charset=utf-8"];
+//					[self writeLine:@"Content-Transfer-Encoding: 8bit"];
                     
 					[self writeLine:@""];
 					
 					NSString* message = [self.message stringByReplacingOccurrencesOfString:@"\r\n." withString:@"\r\n.."];
-					[self writeLine: message];
+					[self writeLine: [message UTF7Data]];
 					
 					[self writeLine:@"."];
                     
@@ -768,29 +765,14 @@ enum SMTPSubstatuses {
 
 @implementation NSString (SMTP)
 
--(NSData*)UTF7Data {
-	static iconv_t iconv_descr = nil;
-	if (!iconv_descr) iconv_descr = iconv_open("UTF-7", "UTF-8");
-	if (iconv_descr == (iconv_t)-1) [NSException raise:NSGenericException format:@"iconv_open error %d", errno];
-	
-	NSMutableData* odata = [NSMutableData data];
-	
-	char* in_p = (char*)[self UTF8String];
-	size_t in_size = strlen(in_p);
 
-	iconv(iconv_descr, NULL, 0, NULL, 0); // reset iconv
-	
-	do {
-		char out_buff[1024];
-		char* out_p = out_buff;
-		size_t out_avail = sizeof(out_buff);
-		// do the transformation
-		iconv(iconv_descr, &in_p, &in_size, &out_p, &out_avail);
-		// copy the output buffer to odata
-		[odata appendBytes:out_buff length:(sizeof(out_buff)-out_avail)];
-	} while (in_size > 0);
 
-	return odata;
+
+-(NSData*)UTF7Data
+{
+    CFDataRef data = CFStringCreateExternalRepresentation (NULL, (CFStringRef) self, kCFStringEncodingUTF7, 0);
+    
+	return [(NSData*)data autorelease];
 }
 
 -(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
