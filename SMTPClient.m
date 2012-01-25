@@ -707,15 +707,23 @@ enum SMTPSubstatuses {
 					}
 					[self writeLine:[NSString stringWithFormat:@"To: %@", to]];
 					
+//					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
+//					[self writeLine:@"Mime-Version: 1.0"];
+//					[self writeLine:@"Content-Type: text/html; charset=\"UTF-7\""];
+//					[self writeLine:@"Content-Transfer-Encoding: 7bit"];
+					
 					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
 					[self writeLine:@"Mime-Version: 1.0"];
-					[self writeLine:@"Content-Type: text/html; charset=\"UTF-7\""];
-					[self writeLine:@"Content-Transfer-Encoding: 7bit"];
-					
+					[self writeLine:@"Content-Type: text/html; charset=utf-8"];
+					[self writeLine:@"Content-Transfer-Encoding: quoted-printable"];
+                    
+//                    char converted[([string length] + 1)];
+//                    [string getCString:converted maxLength:([string length] + 1) encoding: NSISOLatin1StringEncoding];
+                    
 					[self writeLine:@""];
 					
 					NSString* message = [self.message stringByReplacingOccurrencesOfString:@"\r\n." withString:@"\r\n.."];
-					[self writeLine:[message UTF7Data]];
+					[self writeLine: message];
 					
 					[self writeLine:@"."];
                     
