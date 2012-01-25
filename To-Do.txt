@@ -2,6 +2,8 @@
 - Hide/Show Columns DICOM QR (Columns header contextual menu)
 - Web Server: passwords are now stored only as hash strings (better security for users passwords)
 - Up to Date DICOM Dictionary
+- New 2D Viewer toolbar item : Windows Tiling : add or remove windows
+
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
 ------------------------------------------------------------------------------------------
@@ -29,13 +31,13 @@ Change preview and matrixview to use thumbnails and load images only when needed
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - WebPortal: Move a case to an album
+- WebPortal: Better email support (stop using Mail.app)
 - 2D Viewer: Windows Tiling popup toolbar item
 - http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
-
 - When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
 - Delete Alias ROI?
 - CPR : adapt coloscopy path algo to CPR vessels
