@@ -715,7 +715,7 @@ enum SMTPSubstatuses {
 					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
 					[self writeLine:@"Mime-Version: 1.0"];
 					[self writeLine:@"Content-Type: text/html; charset=utf-8"];
-					[self writeLine:@"Content-Transfer-Encoding: quoted-printable"];
+					[self writeLine:@"Content-Transfer-Encoding: 8bit"];
                     
 //                    char converted[([string length] + 1)];
 //                    [string getCString:converted maxLength:([string length] + 1) encoding: NSISOLatin1StringEncoding];
