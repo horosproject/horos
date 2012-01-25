@@ -17,7 +17,7 @@ A:
 - DB Remote: HD Free Space: delete entire DB?
 (OK) Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling
-- Make sure autoclean works (also with delayed files removal)
+(OK) Make sure autoclean works (also with delayed files removal)
 (OK)- CD (read-only DBs in general) : 
 (OK)	Should be read-only (drag & drop (OK), import (OK), delete (OK), …, outlineview editcell..., 
 (OK)		toolbar: report (OK), import (OK), notification (OK), addstudies(OK), query(OK), idisk get(OK), burn(OK), delete(OK), 
