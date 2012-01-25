@@ -7,7 +7,7 @@
 //
 
 #import "CSMailMailClient.h"
-
+#import "SMTPClient.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import <CoreServices/CoreServices.h>
 #import <Carbon/Carbon.h>
@@ -200,8 +200,9 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
 - (void)dealloc
 {
-  [script release];
-  [super dealloc];
+    [defaultSMTPAccount release];
+    [script release];
+    [super dealloc];
 }
 
 - (NSString *)name
@@ -247,6 +248,111 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 
     return [[NSWorkspace sharedWorkspace] iconForFile:path];
   }
+}
+
+- (NSDictionary *) defaultSMTPAccountFromMail
+{
+	NSDictionary *viableAccount = nil;
+    
+	NSArray *deliveryAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("DeliveryAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+	if (!deliveryAccounts)
+		return viableAccount;
+    
+	NSArray *mailAccounts = [NSMakeCollectable(CFPreferencesCopyAppValue(CFSTR("MailAccounts"), CFSTR("com.apple.Mail"))) autorelease];
+	if (!mailAccounts)
+		return viableAccount;
+    
+	NSMutableDictionary *deliveryAccountsBySMTPIdentifier = [NSMutableDictionary dictionaryWithCapacity:[deliveryAccounts count]];
+	for (NSDictionary *account in deliveryAccounts) {
+		NSString *identifier = [NSString stringWithFormat:@"%@:%@", [account objectForKey:@"Hostname"], [account objectForKey:@"Username"]];
+		[deliveryAccountsBySMTPIdentifier setObject:account
+											 forKey:identifier];
+	}
+	for (NSDictionary *account in mailAccounts) {
+		NSString *identifier = [account objectForKey:@"SMTPIdentifier"];
+		if (!identifier)
+			continue;
+        
+		viableAccount = [deliveryAccountsBySMTPIdentifier objectForKey:identifier];
+		if (viableAccount) {
+			NSString *bareAddress = [[account objectForKey:@"EmailAddresses"] objectAtIndex:0UL];
+			NSString *name = [account objectForKey:@"FullUserName"];
+			fromAddress = [(name ? [NSString stringWithFormat:@"%@ <%@>", name, bareAddress] : bareAddress) copy];
+			if (!fromAddress) {
+				viableAccount = nil;
+			}
+            
+			NSNumber *portNumber = [viableAccount objectForKey:@"PortNumber"];
+			if (portNumber) {
+				NSInteger port = [portNumber integerValue];
+				if (port <= 0 || port > 0xFFFF) {
+					viableAccount = nil;
+				}
+			}
+            
+            if (viableAccount)
+            {
+                NSString *hostname = [viableAccount valueForKey: @"Hostname"];
+                NSString *username = [viableAccount valueForKey: @"Username"];
+                NSString *port = [viableAccount valueForKey: @"PortNumber"];
+                
+                OSStatus err;
+                UInt32 passwordLength = 0U;
+                void *passwordBytes = NULL;
+                err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
+                                                      (UInt32)[hostname length], [hostname UTF8String],
+                                                      /*securityDomainLength*/ 0U, /*securityDomain*/ NULL,
+                                                      (UInt32)[username length], [username UTF8String],
+                                                      /*pathLength*/ 0U, /*path*/ NULL,
+                                                      (UInt16)[port integerValue],
+                                                      kSecProtocolTypeSMTP, kSecAuthenticationTypeAny,
+                                                      &passwordLength, &passwordBytes,
+                                                      /*itemRef*/ NULL);
+                
+                if (err != noErr)
+                {
+                    //Try looking it up as a MobileMe account.
+                    NSMutableArray *usernameComponents = [[[username componentsSeparatedByString:@"@"] mutableCopy] autorelease];
+                    [usernameComponents removeLastObject];
+                    username = [usernameComponents componentsJoinedByString:@"@"];
+                    
+                    NSString *serviceName = @"iTools";
+                    
+                    err = SecKeychainFindGenericPassword(/*keychainOrArray*/ NULL,
+                                                         (UInt32)[serviceName length], [serviceName UTF8String],
+                                                         (UInt32)[username length],    [username UTF8String],
+                                                         &passwordLength,              &passwordBytes,
+                                                         /*itemRef*/ NULL);
+                    
+                    if (err != noErr)
+                    {
+                        NSLog(@"**** MailMe: Could not get password for SMTP account %@: %i/%s", username, (int)err, GetMacOSStatusCommentString(err));
+                    }
+                }
+                
+                //If we successfully got either a regular SMTP password or a MobileMe password…
+                if (err == noErr)
+                {
+                    //…then let's proceed with sending the message.
+                    NSData *passwordData = [NSData dataWithBytesNoCopy:passwordBytes length:passwordLength freeWhenDone:NO];
+                    
+                    NSMutableDictionary *tempDictionary = [NSMutableDictionary dictionaryWithDictionary: viableAccount];
+                    
+                    [tempDictionary setValue: [[[NSString alloc] initWithData: passwordData encoding: NSUTF8StringEncoding] autorelease]  forKey: @"Password"];
+                    
+                    viableAccount = tempDictionary;
+                    
+                    SecKeychainItemFreeContent(/*attrList*/ NULL, passwordBytes);
+                }
+            }
+            
+			if (viableAccount) {
+				break;
+			}
+		}
+	}
+    
+	return viableAccount;
 }
 
 - (NSAppleEventDescriptor *)descriptorForThisProcess
@@ -402,20 +508,185 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
   return YES;
 }
 
-- (BOOL)deliverMessage:(NSAttributedString *)messageBody
-	       headers:(NSDictionary *)messageHeaders
+
+- (BOOL)deliverMessage:(NSString *)messageBody
+               headers:(NSDictionary *)messageHeaders
 {
-  return [self doHandler:@"deliver_message"
-	      forMessage:messageBody
-		 headers:messageHeaders];
+    BOOL useMail = [[NSUserDefaults standardUserDefaults] boolForKey: @"WebServerUseMailAppForEmails"];
+    
+    useMail = NO;
+    
+    return [self deliverMessage: messageBody headers: messageHeaders withMailApp: useMail];
 }
 
-- (BOOL)constructMessage:(NSAttributedString *)messageBody
-		 headers:(NSDictionary *)messageHeaders
+- (BOOL)deliverMessage:(NSString *)messageBody
+               headers:(NSDictionary *)messageHeaders
+           withMailApp:(BOOL) mailApp
 {
-  return [self doHandler:@"construct_message"
-	      forMessage:messageBody
-		 headers:messageHeaders];
+    if( mailApp)
+    {
+        NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[messageBody dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease]; // This function is NOT thread safe !
+        
+        if( [NSThread isMainThread] == NO)
+            NSLog( @"************** This function is NOT thread safe : [[NSAttributedString alloc] initWithHTML");
+        
+        return [self doHandler:@"deliver_message"
+                    forMessage:m
+                       headers:messageHeaders];
+    }
+    else
+    {
+        if (!defaultSMTPAccount)
+        {
+            defaultSMTPAccount = [[self defaultSMTPAccountFromMail] retain];
+            if (!defaultSMTPAccount)
+            {
+                //We can't do anything without an account.
+                NSLog( @"**** MailMe: No suitable SMTP account found");
+                return NO;
+            }
+        }
+        
+        int mode = SMTPClientTLSModeNone;
+        
+        if( [[defaultSMTPAccount valueForKey: @"SSLEnabled"] boolValue])
+            mode = SMTPClientTLSModeTLSIfPossible;
+        
+        [[SMTPClient clientWithServerAddress: [defaultSMTPAccount valueForKey: @"Hostname"]
+                                       ports: [NSArray arrayWithObject: [defaultSMTPAccount valueForKey: @"PortNumber"]]
+                                     tlsMode: mode
+                                    username: [defaultSMTPAccount valueForKey: @"Username"]
+                                    password: [defaultSMTPAccount valueForKey: @"Password"]]
+         sendMessage: messageBody
+         withSubject: [messageHeaders objectForKey:@"Subject"]
+         from: fromAddress
+         to: [messageHeaders objectForKey:@"To"]];
+        
+        NSLog( @"%@", messageBody);
+        
+        return YES;
+    }
+    
+//    {
+//        NSString *pathToMailSenderProgram = [[NSBundle bundleForClass:[self class]] pathForResource:@"simple-mailer" ofType:@"py"];
+//        
+//        NSString *destAddress = [messageHeaders objectForKey:@"To"];
+//        
+//        [NSMakeCollectable(destAddress) autorelease];
+//        
+//        if (destAddress)
+//        {
+//            if([destAddress length])
+//            {
+//                NSString *title = [messageHeaders objectForKey:@"Subject"];
+//                
+//                if (!defaultSMTPAccount)
+//                {
+//                    defaultSMTPAccount = [[self defaultSMTPAccountFromMail] retain];
+//                    if (!defaultSMTPAccount) {
+//                        //We can't do anything without an account.
+//                        NSLog( @"**** MailMe: No suitable SMTP account found");
+//                        return NO;
+//                    }
+//                }
+//                
+//                BOOL useTLS = [[defaultSMTPAccount objectForKey:@"SSLEnabled"] boolValue];
+//                NSString *username = [defaultSMTPAccount objectForKey:@"Username"];
+//                NSString *hostname = [defaultSMTPAccount objectForKey:@"Hostname"];
+//                NSNumber *port = [defaultSMTPAccount objectForKey:@"PortNumber"];
+//                NSString *userAtHostPort = [NSString stringWithFormat:
+//                                            (port != nil) ? @"%@@%@:%@" : @"%@@%@",
+//                                            username, hostname, port];
+//                
+//                BOOL success = NO;
+//                
+//                OSStatus err;
+//                UInt32 passwordLength = 0U;
+//                void *passwordBytes = NULL;
+//                err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
+//                                                      (UInt32)[hostname length], [hostname UTF8String],
+//                                                      /*securityDomainLength*/ 0U, /*securityDomain*/ NULL,
+//                                                      (UInt32)[username length], [username UTF8String],
+//                                                      /*pathLength*/ 0U, /*path*/ NULL,
+//                                                      (UInt16)[port integerValue],
+//                                                      kSecProtocolTypeSMTP, kSecAuthenticationTypeAny,
+//                                                      &passwordLength, &passwordBytes,
+//                                                      /*itemRef*/ NULL);
+//                
+//                if (err != noErr) {
+//                    //Try looking it up as a MobileMe account.
+//                    NSMutableArray *usernameComponents = [[[username componentsSeparatedByString:@"@"] mutableCopy] autorelease];
+//                    [usernameComponents removeLastObject];
+//                    username = [usernameComponents componentsJoinedByString:@"@"];
+//                    
+//                    NSString *serviceName = @"iTools";
+//                    
+//                    err = SecKeychainFindGenericPassword(/*keychainOrArray*/ NULL,
+//                                                         (UInt32)[serviceName length], [serviceName UTF8String],
+//                                                         (UInt32)[username length],    [username UTF8String],
+//                                                         &passwordLength,              &passwordBytes,
+//                                                         /*itemRef*/ NULL);
+//                    
+//                    if (err != noErr) {
+//                        NSLog(@"**** MailMe: Could not get password for SMTP account %@: %i/%s", userAtHostPort, (int)err, GetMacOSStatusCommentString(err));
+//                    }
+//                }
+//                
+//                //If we successfully got either a regular SMTP password or a MobileMe password…
+//                if (err == noErr) {
+//                    //…then let's proceed with sending the message.
+//                    NSData *passwordData = [NSData dataWithBytesNoCopy:passwordBytes length:passwordLength freeWhenDone:NO];
+//                    
+//                    //Use only stock Python and matching modules.
+//                    NSDictionary *environment = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                                 @"", @"PYTHONPATH",
+//                                                 @"/bin:/usr/bin:/usr/local/bin", @"PATH",
+//                                                 nil];
+//                    NSTask *task = [[[NSTask alloc] init] autorelease];
+//                    [task setEnvironment:environment];
+//                    [task setLaunchPath:@"/usr/bin/python"];
+//                    
+//                    [task setArguments:[NSArray arrayWithObjects:
+//                                        pathToMailSenderProgram,
+//                                        [@"--user-agent=" stringByAppendingFormat:@"OsiriX/%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]],
+//                                        useTLS ? @"--tls" : @"--no-tls",
+//                                        userAtHostPort,
+//                                        fromAddress,
+//                                        destAddress,
+//                                        /*subject*/ title,
+//                                        nil]];
+//                    NSPipe *stdinPipe = [NSPipe pipe];
+//                    [task setStandardInput:stdinPipe];
+//                    
+//                    [task launch];
+//                    
+//                    [[stdinPipe fileHandleForReading] closeFile];
+//                    NSFileHandle *stdinFH = [stdinPipe fileHandleForWriting];
+//                    [stdinFH writeData:passwordData];
+//                    [stdinFH writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
+//                    [stdinFH writeData:[[messageBody string] dataUsingEncoding:NSUTF8StringEncoding]];
+//                    [stdinFH closeFile];
+//                    
+//                    [task waitUntilExit];
+//                    int status = [task terminationStatus];
+//                    success = (status == 0);
+//                    if (!success) 
+//                        NSLog(@"*****(MailMe) WARNING: Could not send message using simple-mailer; it returned exit status %d.", status);
+//                    
+//                    SecKeychainItemFreeContent(/*attrList*/ NULL, passwordBytes);
+//                }
+//                
+//                if (!success) {
+//                    NSLog(@"***** (MailMe) WARNING: Could not send email message \"%@\" to address %@", title, destAddress);
+//                } else
+//                    NSLog(@"***** (MailMe) Successfully sent message \"%@\" to address %@", title, destAddress);
+//            } else {
+//                NSLog(@"***** (MailMe) WARNING: No destination address set");
+//            }
+//        } else {
+//            NSLog(@"***** (MailMe) WARNING: No destination address set");
+//        }
+//    }
 }
 
 - (int)features
@@ -428,5 +699,4 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 {
   return @"com.apple.mail";
 }
-
 @end

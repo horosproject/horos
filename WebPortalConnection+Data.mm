@@ -962,7 +962,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         
 						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
 						
-						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+						[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						
 						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						

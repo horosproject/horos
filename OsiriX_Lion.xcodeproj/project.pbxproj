@@ -483,6 +483,10 @@
 		8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
 		8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
 		84321F23147E9BDA00C86CC1 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84321F22147E9BDA00C86CC1 /* Quartz.framework */; };
+		843DE35914D0338500878891 /* simple-mailer.py in Resources */ = {isa = PBXBuildFile; fileRef = 843DE35814D0338500878891 /* simple-mailer.py */; };
+		843DE35D14D0385D00878891 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 843DE35B14D0385D00878891 /* SMTPClient.h */; };
+		843DE35E14D0385D00878891 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 843DE35C14D0385D00878891 /* SMTPClient.m */; };
+		843DE36414D0395B00878891 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 843DE36314D0395B00878891 /* libiconv.dylib */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
@@ -8454,6 +8458,10 @@
 		84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2OpenGLViewWithSplitsWindow.m; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
 		84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2OpenGLViewWithSplitsWindow.h; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
 		84321F22147E9BDA00C86CC1 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = ../../../../System/Library/Frameworks/Quartz.framework; sourceTree = "<group>"; };
+		843DE35814D0338500878891 /* simple-mailer.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = "simple-mailer.py"; sourceTree = "<group>"; };
+		843DE35B14D0385D00878891 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
+		843DE35C14D0385D00878891 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
+		843DE36314D0395B00878891 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -12168,6 +12176,7 @@
 				CEEA2D8613DB57C000F4CE1C /* libtiffOsiriX.a in Frameworks */,
 				CEEA2D8513DB576600F4CE1C /* libvtktiff.a in Frameworks */,
 				AB451813149F464B006674BF /* libCharLS.a in Frameworks */,
+				843DE36414D0395B00878891 /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12323,6 +12332,7 @@
 				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
+				843DE36314D0395B00878891 /* libiconv.dylib */,
 				84321F22147E9BDA00C86CC1 /* Quartz.framework */,
 				841524C4113D6BDB008250E6 /* QuartzCore.framework */,
 				CEF0E4BB06AEC91F001FF9E5 /* Message.framework */,
@@ -12454,6 +12464,7 @@
 				CE8CAB0A0B4715DD0068DBAE /* DICOMPrint */,
 				AB7250370ADE6F5D00A212A0 /* Decompress */,
 				596D30AC1439B979004EE9EC /* odt2pdf */,
+				843DE35814D0338500878891 /* simple-mailer.py */,
 				596D30AE1439B98A004EE9EC /* pages2pdf.applescript */,
 				596D30AF1439B98A004EE9EC /* word2pdf.applescript */,
 				AB9DCD7A09A9C47800AA19E7 /* ReportTemplate.rtf */,
@@ -12652,6 +12663,8 @@
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
 				CE2119C710E4C25300F9C50C /* CSMailMailClient.h */,
 				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
+				843DE35B14D0385D00878891 /* SMTPClient.h */,
+				843DE35C14D0385D00878891 /* SMTPClient.m */,
 				597BB90912A7D3C000D0A172 /* WebPortal.h */,
 				597BB90A12A7D3C000D0A172 /* WebPortal.mm */,
 				59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */,
@@ -19761,6 +19774,7 @@
 				AB45185B149F47C0006674BF /* djcodecd.h in Headers */,
 				AB45185D149F47C0006674BF /* djcodece.h in Headers */,
 				AB45185F149F47C0006674BF /* djcparam.h in Headers */,
+				843DE35D14D0385D00878891 /* SMTPClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22635,6 +22649,7 @@
 				8404168B14CF195800242C63 /* Tiling3x1.pdf in Resources */,
 				8404168D14CF195800242C63 /* Tiling3x2.pdf in Resources */,
 				8404168F14CF195800242C63 /* Tiling3x3.pdf in Resources */,
+				843DE35914D0338500878891 /* simple-mailer.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24342,6 +24357,7 @@
 				AB451851149F47C0006674BF /* djdecode.cc in Sources */,
 				AB451855149F47C0006674BF /* djencode.cc in Sources */,
 				AB451861149F47C0006674BF /* djrparam.cc in Sources */,
+				843DE35E14D0385D00878891 /* SMTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

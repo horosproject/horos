@@ -37,8 +37,7 @@
 	NSString *ts = [dict objectForKey: @"template"];
 	NSDictionary *messageHeaders = [dict objectForKey: @"headers"];
 	
-	NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease]; // This function is NOT thread safe !
-	[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+	[[CSMailMailClient mailClient] deliverMessage:ts headers:messageHeaders];
 
 	[pool release];
 }

@@ -17,7 +17,9 @@ enum {
 
 @interface CSMailMailClient : NSObject
 {
-  NSAppleScript *script;
+    NSAppleScript *script;
+    NSDictionary *defaultSMTPAccount;
+    NSString *fromAddress;
 }
 
 + (id) mailClient;
@@ -31,9 +33,10 @@ enum {
 
 - (int)features;
 
-- (BOOL)deliverMessage:(NSAttributedString *)messageBody
+- (BOOL)deliverMessage:(NSString *)messageBody
 	       headers:(NSDictionary *)messageHeaders;
-- (BOOL)constructMessage:(NSAttributedString *)messageBody
-		 headers:(NSDictionary *)messageHeaders;
+- (BOOL)deliverMessage:(NSString *)messageBody
+               headers:(NSDictionary *)messageHeaders
+           withMailApp:(BOOL) mailApp;
 
 @end
