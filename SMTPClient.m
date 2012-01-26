@@ -6,7 +6,8 @@
 //
 
 #import "SMTPClient.h"
-#import <iconv.h>
+#import "NSData+N2.h"
+//#import <iconv.h>
 #include <CommonCrypto/CommonDigest.h>
 
 NSString* const SMTPServerAddressKey = @"SMTPServerAddress";
@@ -70,17 +71,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 
 @interface NSDictionary (SMTP)
 
--(id)objectForKey:(id)key ofClass:(Class)cl;    
-
-@end
-
-@interface NSData (SMTP)
-
--(NSData*)md5;
--(NSString*)hex;
--(NSString*)base64;
-+(NSData*)dataWithBase64:(NSString*)base64;
--(NSData*)initWithBase64:(NSString*)base64;
+-(id)SMTP_objectForKey:(id)key ofClass:(Class)cl;    
 
 @end
 
@@ -93,16 +84,16 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 @synthesize password = _authPassword;
 
 +(void)send:(NSDictionary*)params {
-	NSString* serverAddress = [params objectForKey:SMTPServerAddressKey ofClass:NSString.class];
-	NSArray* serverPorts = [params objectForKey:SMTPServerPortsKey ofClass:NSArray.class];
-	NSNumber* serverTlsMode = [params objectForKey:SMTPServerTLSModeKey ofClass:NSNumber.class];
-	NSNumber* serverAuthFlag = [params objectForKey:SMTPServerAuthFlagKey ofClass:NSNumber.class];
-	NSString* serverUsername = [params objectForKey:SMTPServerAuthUsernameKey ofClass:NSString.class];
-	NSString* serverPassword = [params objectForKey:SMTPServerAuthPasswordKey ofClass:NSString.class];
-	NSString* from = [params objectForKey:SMTPFromKey ofClass:NSString.class];
-	NSString* to = [params objectForKey:SMTPToKey ofClass:NSString.class];
-	NSString* subject = [params objectForKey:SMTPSubjectKey ofClass:NSString.class];
-	NSString* message = [params objectForKey:SMTPMessageKey ofClass:NSString.class];
+	NSString* serverAddress = [params SMTP_objectForKey:SMTPServerAddressKey ofClass:NSString.class];
+	NSArray* serverPorts = [params SMTP_objectForKey:SMTPServerPortsKey ofClass:NSArray.class];
+	NSNumber* serverTlsMode = [params SMTP_objectForKey:SMTPServerTLSModeKey ofClass:NSNumber.class];
+	NSNumber* serverAuthFlag = [params SMTP_objectForKey:SMTPServerAuthFlagKey ofClass:NSNumber.class];
+	NSString* serverUsername = [params SMTP_objectForKey:SMTPServerAuthUsernameKey ofClass:NSString.class];
+	NSString* serverPassword = [params SMTP_objectForKey:SMTPServerAuthPasswordKey ofClass:NSString.class];
+	NSString* from = [params SMTP_objectForKey:SMTPFromKey ofClass:NSString.class];
+	NSString* to = [params SMTP_objectForKey:SMTPToKey ofClass:NSString.class];
+	NSString* subject = [params SMTP_objectForKey:SMTPSubjectKey ofClass:NSString.class];
+	NSString* message = [params SMTP_objectForKey:SMTPMessageKey ofClass:NSString.class];
 	
 	BOOL auth = [serverAuthFlag boolValue];
 	
@@ -191,7 +182,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 
 @interface NSString (SMTP)
 
--(NSData*)UTF7Data;
+//-(NSData*)UTF7Data;
 -(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
 
 @end
@@ -766,16 +757,6 @@ enum SMTPSubstatuses {
 
 @implementation NSString (SMTP)
 
-
-
-
--(NSData*)UTF7Data
-{
-    CFDataRef data = CFStringCreateExternalRepresentation (NULL, (CFStringRef) self, kCFStringEncodingUTF7, 0);
-    
-	return [(NSData*)data autorelease];
-}
-
 -(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
 	NSInteger i = [self rangeOfCharacterFromSet:charset].location;
 	if (i != NSNotFound) {
@@ -793,130 +774,11 @@ enum SMTPSubstatuses {
 
 @implementation NSDictionary (SMTP)
 
--(id)objectForKey:(id)key ofClass:(Class)cl {
+-(id)SMTP_objectForKey:(id)key ofClass:(Class)cl {
 	id obj = [self objectForKey:key];
 	if (obj && ![obj isKindOfClass:cl])
 		return nil;
 	return obj;
-}
-
-@end
-
-@implementation NSData (SMTP)
-
--(NSData*)md5 {
-    NSMutableData* hash = [NSMutableData dataWithLength:16];
-    CC_MD5(self.bytes, self.length, (unsigned char*)hash.mutableBytes);
-    return hash;
-}
-
--(NSString*)hex {
-	NSMutableString* stringBuffer = [NSMutableString stringWithCapacity:([self length] * 2)];
-	const unsigned char* dataBuffer = (unsigned char*)[self bytes];
-	for (int i = 0; i < [self length]; ++i)
-		[stringBuffer appendFormat:@"%02X", (unsigned long)dataBuffer[i]];
-	return [[stringBuffer copy] autorelease];
-}
-
-static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
--(NSString*)base64 {
-	if ([self length] == 0)
-		return @"";
-	
-    char *characters = (char*)malloc((([self length] + 2) / 3) * 4);
-	if (characters == NULL)
-		return nil;
-	NSUInteger length = 0;
-	
-	NSUInteger i = 0;
-	while (i < [self length])
-	{
-		char buffer[3] = {0,0,0};
-		short bufferLength = 0;
-		while (bufferLength < 3 && i < [self length])
-			buffer[bufferLength++] = ((char *)[self bytes])[i++];
-		
-		//  Encode the bytes in the buffer to four characters, including padding "=" characters if necessary.
-		characters[length++] = base64EncodingTable[(buffer[0] & 0xFC) >> 2];
-		characters[length++] = base64EncodingTable[((buffer[0] & 0x03) << 4) | ((buffer[1] & 0xF0) >> 4)];
-		if (bufferLength > 1)
-			characters[length++] = base64EncodingTable[((buffer[1] & 0x0F) << 2) | ((buffer[2] & 0xC0) >> 6)];
-		else characters[length++] = '=';
-		if (bufferLength > 2)
-			characters[length++] = base64EncodingTable[buffer[2] & 0x3F];
-		else characters[length++] = '=';	
-	}
-	
-	return [[[NSString alloc] initWithBytesNoCopy:characters length:length encoding:NSASCIIStringEncoding freeWhenDone:YES] autorelease];	
-}
-
-+(NSData*)dataWithBase64:(NSString*)base64 {
-	if (!base64) return NULL;
-	return [[[NSData alloc] initWithBase64:base64] autorelease];
-}
-
--(NSData*)initWithBase64:(NSString*)base64 {
-	if ([base64 length] == 0)
-		return [[NSData data] retain];
-	
-	static char *decodingTable = NULL;
-	if (decodingTable == NULL)
-	{
-		decodingTable = (char*)malloc(256);
-		if (decodingTable == NULL)
-			return nil;
-		memset(decodingTable, CHAR_MAX, 256);
-		NSUInteger i;
-		for (i = 0; i < 64; i++)
-			decodingTable[(short)base64EncodingTable[i]] = i;
-	}
-	
-	const char *characters = [base64 cStringUsingEncoding:NSASCIIStringEncoding];
-	if (characters == NULL)     //  Not an ASCII string!
-		return nil;
-	char *bytes = (char*)malloc((([base64 length] + 3) / 4) * 3);
-	if (bytes == NULL)
-		return nil;
-	NSUInteger length = 0;
-	
-	NSUInteger i = 0;
-	while (YES)
-	{
-		char buffer[4];
-		short bufferLength;
-		for (bufferLength = 0; bufferLength < 4; i++)
-		{
-			if (characters[i] == '\0')
-				break;
-			if (isspace(characters[i]) || characters[i] == '=')
-				continue;
-			buffer[bufferLength] = decodingTable[(short)characters[i]];
-			if (buffer[bufferLength++] == CHAR_MAX)      //  Illegal character!
-			{
-				free(bytes);
-				return nil;
-			}
-		}
-		
-		if (bufferLength == 0)
-			break;
-		if (bufferLength == 1)      //  At least two characters are needed to produce one byte!
-		{
-			free(bytes);
-			return nil;
-		}
-		
-		//  Decode the characters in the buffer to bytes.
-		bytes[length++] = (buffer[0] << 2) | (buffer[1] >> 4);
-		if (bufferLength > 2)
-			bytes[length++] = (buffer[1] << 4) | (buffer[2] >> 2);
-		if (bufferLength > 3)
-			bytes[length++] = (buffer[2] << 6) | buffer[3];
-	}
-	
-	realloc(bytes, length);
-	return [self initWithBytesNoCopy:bytes length:length];
 }
 
 @end
