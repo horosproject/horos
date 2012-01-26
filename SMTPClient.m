@@ -719,9 +719,9 @@ enum SMTPSubstatuses {
                     
 					[self writeLine:@""];
 					
-					NSString* message = [self.message stringByReplacingOccurrencesOfString:@"\r\n." withString:@"\r\n.."];
+//					NSString* message = [self.message stringByReplacingOccurrencesOfString:@"\r\n." withString:@"\r\n.."];
                     
-                    [self writeLine: [[message dataUsingEncoding:NSUTF8StringEncoding] base64]];
+                    [self writeLine: [[self.message dataUsingEncoding:NSUTF8StringEncoding] base64]];
 					
 					[self writeLine:@"."];
                     
