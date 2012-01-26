@@ -10,6 +10,113 @@
 #import "BLAuthentication.h"
 #import <Security/AuthorizationTags.h>
 
+OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
+                                                         AuthorizationRef authorization, 
+                                                         const char *pathToTool, 
+                                                         AuthorizationFlags options, 
+                                                         char * const *arguments, 
+                                                         FILE **communicationsPipe,
+                                                         FILE **errPipe,
+                                                         pid_t* processid
+                                                         )
+{  
+    char stderrpath[] = "/tmp/AuthorizationExecuteWithPrivilegesStdErrXXXXXXX.err" ;
+	const char* commandtemplate = "echo $$; \"$@\" 2>%s" ;
+    if (communicationsPipe == errPipe) {
+        commandtemplate = "echo $$; \"$@\" 2>1";
+    } else if (errPipe == 0) {
+        commandtemplate = "echo $$; \"$@\"";
+    }
+	char command[1024];
+	char ** args;
+	OSStatus result;
+	int argcount = 0;
+	int i;
+	int stderrfd = 0;
+	FILE* commPipe = 0;
+	
+	/* Create temporary file for stderr */
+    
+    if (errPipe) {
+        stderrfd = mkstemps (stderrpath, strlen(".err")); 
+        
+        /* create a pipe on that path */ 
+        close(stderrfd); unlink(stderrpath);
+        if (mkfifo(stderrpath,S_IRWXU | S_IRWXG) != 0) {
+            fprintf(stderr,"Error mkfifo:%d\n",errno);
+            return errAuthorizationInternal;
+        }
+        
+        if (stderrfd < 0)
+            return errAuthorizationInternal;
+    }
+    
+	/* Create command to be executed */
+	for (argcount = 0; arguments[argcount] != 0; ++argcount) {}	
+	args = (char**)malloc (sizeof(char*)*(argcount + 5));
+	args[0] = "-c";
+	snprintf (command, sizeof (command), commandtemplate, stderrpath);
+	args[1] = command;
+	args[2] = "";
+	args[3] = (char*)pathToTool;
+	for (i = 0; i < argcount; ++i) {
+		args[i+4] = arguments[i];
+	}
+	args[argcount+4] = 0;
+    
+    /* for debugging: log the executed command */
+	/* printf ("Exec:\n%s", "/bin/sh"); for (i = 0; args[i] != 0; ++i) { printf (" \"%s\"", args[i]); } printf ("\n"); */
+    
+	/* Execute command */
+	result = AuthorizationExecuteWithPrivileges( 
+                                                authorization, "/bin/sh",  options, args, &commPipe );
+	if (result != noErr) {
+		unlink (stderrpath);
+		return result;
+	}
+	
+    [NSThread sleepForTimeInterval: 0.2];
+    
+	/* Read the first line of stdout => it's the pid */
+	{
+		int stdoutfd = fileno (commPipe);
+		char pidnum[1024];
+		pid_t pid = 0;
+		int i = 0;
+		char ch = 0;
+		while ((read(stdoutfd, &ch, sizeof(ch)) == 1) && (ch != '\n') && (i < sizeof(pidnum))) {
+			pidnum[i++] = ch;
+		}
+		pidnum[i] = 0;
+		if (ch != '\n') {
+			// we shouldn't get there
+			unlink (stderrpath);
+			return errAuthorizationInternal;
+		}
+		sscanf(pidnum, "%d", &pid);
+		if (processid) {
+			*processid = pid;
+		}
+	}
+	
+	if (errPipe) {
+        stderrfd = open(stderrpath, O_RDONLY, 0);
+        *errPipe = fdopen(stderrfd, "r");
+        /* Now it's safe to unlink the stderr file, as the opened handle will be still valid */
+        unlink (stderrpath);
+	} else {
+		unlink(stderrpath);
+	}
+	if (communicationsPipe) {
+		*communicationsPipe = commPipe;
+	} else {
+		fclose (commPipe);
+	}
+    
+	return noErr;
+}
+
+
 @implementation BLAuthentication
 
 // returns an instace of itself, creating one if needed
@@ -277,12 +384,22 @@
 	char* args[30]; // can only handle 30 arguments to a given command
 	OSStatus err = 0;
 	int i = 0;
-	
+	pid_t processid;
+    
 	if(![self authenticate:[NSArray arrayWithObject:pathToCommand]])
 		return NO;
 	
-	if( arguments == nil || [arguments count] < 1  ) {
-		err = AuthorizationExecuteWithPrivileges(authorizationRef, [pathToCommand UTF8String], 0, NULL, NULL);
+	if( arguments == nil || [arguments count] < 1)
+    {
+        err = AuthorizationExecuteWithPrivilegesStdErrAndPid(   authorizationRef, 
+                                                             [pathToCommand UTF8String], 
+                                                             kAuthorizationFlagDefaults, 
+                                                             nil, 
+                                                             nil,
+                                                             nil,
+                                                             &processid);
+        
+//		err = AuthorizationExecuteWithPrivileges(authorizationRef, [pathToCommand UTF8String], 0, NULL, NULL);
 	}
 	else
 	{
@@ -292,13 +409,21 @@
 			i++;
 		}
 		args[i] = NULL;
-
-		err = AuthorizationExecuteWithPrivileges(authorizationRef,
-												[pathToCommand UTF8String],
-												0, args, NULL);
+        
+        err = AuthorizationExecuteWithPrivilegesStdErrAndPid(   authorizationRef, 
+                                                             [pathToCommand UTF8String], 
+                                                             kAuthorizationFlagDefaults, 
+                                                             args, 
+                                                             nil,
+                                                             nil,
+                                                             &processid);
+        
+//		err = AuthorizationExecuteWithPrivileges(authorizationRef,
+//												[pathToCommand UTF8String],
+//												0, args, NULL);
 	}
 	
-    if(err!=0)
+    if( err != 0)
 	{
 		NSBeep();
 		NSLog(@"Error %d in AuthorizationExecuteWithPrivileges",(int)err);
@@ -306,10 +431,15 @@
 	}
 	else
 	{
-		int status;
-		pid_t result = wait( &status);
-		[NSThread sleepForTimeInterval: 0.5];
-		
+        pid_t waitResult;
+		int junkStatus;
+        
+        do
+        {
+			waitResult = waitpid( processid, &junkStatus, 0);
+		}
+        while((waitResult < 0) && (errno == EINTR));
+        
 		return YES;
 	}
     #endif
