@@ -315,21 +315,17 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
 				viableAccount = nil;
 			}
             
-			NSNumber *portNumber = [viableAccount objectForKey:@"PortNumber"];
-			if (portNumber) {
-				NSInteger port = [portNumber integerValue];
-				if (port <= 0 || port > 0xFFFF) {
-					viableAccount = nil;
-				}
-			}
-            else
-                [viableAccount setObject: @"465" forKey: @"PortNumber"];
+            if( [[viableAccount objectForKey: @"UseDefaultPorts"] boolValue])
+				[viableAccount removeObjectForKey: @"PortNumber"];
             
             if (viableAccount)
             {
                 NSString *hostname = [viableAccount valueForKey: @"Hostname"];
                 NSString *username = [viableAccount valueForKey: @"Username"];
                 NSString *port = [viableAccount valueForKey: @"PortNumber"];
+                
+                if( port == nil)
+                    port = @"0";
                 
                 OSStatus err;
                 UInt32 passwordLength = 0U;
@@ -591,8 +587,15 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
         else
             fromEmail = fromAddress;
         
+        NSArray *ports = nil;
+        
+        if( [defaultSMTPAccount valueForKey: @"PortNumber"])
+            ports = [NSArray arrayWithObject: [defaultSMTPAccount valueForKey: @"PortNumber"]];
+        else
+            ports = [NSArray arrayWithObjects: [NSNumber numberWithInteger:25], [NSNumber numberWithInteger:465], [NSNumber numberWithInteger:587], nil];
+            
         [[SMTPClient clientWithServerAddress: [defaultSMTPAccount valueForKey: @"Hostname"]
-                                       ports: [NSArray arrayWithObject: [defaultSMTPAccount valueForKey: @"PortNumber"]]
+                                       ports: ports
                                      tlsMode: mode
                                     username: [defaultSMTPAccount valueForKey: @"Username"]
                                     password: [defaultSMTPAccount valueForKey: @"Password"]]

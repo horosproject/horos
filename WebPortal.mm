@@ -538,15 +538,19 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return html;
 }
 
--(NSString*)addressWithPortUnlessDefault {
+-(NSString*)addressWithPortUnlessDefault
+{
 	NSString* add = self.address;
-	if (![add contains:@":"]) {
+	if (![add contains:@":"])
+    {
 		BOOL isDefaultPort = NO;
 		if (!self.usesSSL && self.portNumber == 80) isDefaultPort = YES;
 		if (self.usesSSL && self.portNumber == 443) isDefaultPort = YES;
 		if (!isDefaultPort)
 			add = [add stringByAppendingFormat:@":%d", self.portNumber];
-	} else {
+	}
+    else
+    {
 		if (!self.usesSSL && [add hasSuffix:@":80"]) add = [add substringWithRange:NSMakeRange(0,add.length-3)];
 		if (self.usesSSL && [add hasSuffix:@":443"]) add = [add substringWithRange:NSMakeRange(0,add.length-4)];
 	}
@@ -554,7 +558,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return add;
 }
 
--(NSString*)URL {
+-(NSString*)URL
+{
 	return [NSString stringWithFormat: @"%@://%@", self.usesSSL? @"https" : @"http", self.addressWithPortUnlessDefault];
 }
 
