@@ -58,7 +58,6 @@
 -(NSUInteger)countObjectsForEntity:(NSEntityDescription*)entity predicate:(NSPredicate*)p error:(NSError**)err;
 -(id)newObjectForEntity:(NSEntityDescription*)entity;
 
--(BOOL)isVolatile;
 -(BOOL)save;
 -(BOOL)save:(NSError**)err;
 

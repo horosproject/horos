@@ -110,7 +110,7 @@
 			[imagePaths addObject:image.completePath];
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
-	RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForAddress:destination.location name:destination.description update:NO];
+	RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	
@@ -191,15 +191,15 @@
 	NSString* dstAET = nil;
 	NSInteger dstPort = 0;
 	NSInteger dstSyntax = 0;
-	if (destination.type == DataNodeIdentifierTypeRemote)
+	if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
     {
-		[RemoteDicomDatabase address:destination.location toAddress:&dstAddress port:NULL];
+		[RemoteDatabaseNodeIdentifier location:destination.location toAddress:&dstAddress port:NULL];
 		dstPort = [[destination.dictionary objectForKey:@"port"] integerValue];
 		dstAET = [destination.dictionary objectForKey:@"AETitle"];
 		if (!dstAET || !dstPort || !dstSyntax)
         {
 			thread.status = NSLocalizedString(@"Fetching destination information...", nil);
-			RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForAddress:destination.location name:destination.description update:NO];
+			RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
             NSDictionary* dstInfo = nil;
             @try
             {
@@ -214,9 +214,9 @@
 			if ([dstInfo objectForKey:@"Port"]) dstPort = [[dstInfo objectForKey:@"Port"] integerValue];
 			if ([dstInfo objectForKey:@"TransferSyntax"]) dstSyntax = [[dstInfo objectForKey:@"TransferSyntax"] integerValue];
 		}
-	} else if (destination.type == DataNodeIdentifierTypeDicom)
+	} else if ([destination isKindOfClass:[DicomNodeIdentifier class]])
     {
-		[RemoteDicomDatabase address:destination.location toAddress:&dstAddress port:&dstPort aet:&dstAET];
+		[DicomNodeIdentifier location:destination.location toAddress:&dstAddress port:&dstPort aet:&dstAET];
 		dstSyntax = [[destination.dictionary objectForKey:@"TransferSyntax"] integerValue];
 	}
 
@@ -230,26 +230,21 @@
 {
 	if (_database.isLocal)
     {
-		switch (destination.type)
-        {
-			case DataNodeIdentifierTypeLocal:
-            { // local OsiriX to local OsiriX
+		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
-			} break;
-			case DataNodeIdentifierTypeRemote:
-            { // local OsiriX to remote OsiriX
+        } else
+        if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]]) { // local OsiriX to remote OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
                 thread.supportsCancel = YES;
 				thread.name = NSLocalizedString(@"Sending images...", nil);
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
-			} break;
-			case DataNodeIdentifierTypeDicom:
-            { // local OsiriX to remote DICOM
+        } else
+        if ([destination isKindOfClass:[DicomNodeIdentifier class]]) { // local OsiriX to remote DICOM
 				NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 				for (int i = 0; i < r.count; ++i)
 					if ([[r objectAtIndex:i] isEqual:destination.dictionary])
@@ -257,29 +252,22 @@
 				[self selectServer:dicomImages];
 				return YES;
 				// [_database storeScuImages:dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax];
-			} break;
 		}
 	}
     else
     {
-		switch (destination.type)
-        {
-			case DataNodeIdentifierTypeLocal:
-            { // remote OsiriX to local OsiriX
+		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // remote OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
-			} break;
-			case DataNodeIdentifierTypeRemote: // remote OsiriX to remote OsiriX
-			case DataNodeIdentifierTypeDicom:
-            { // remote OsiriX to remote DICOM
+		} else
+        if ([destination isKindOfClass:[RemoteDatabaseNodeIdentifier class]] || [destination isKindOfClass:[DicomNodeIdentifier class]]) { // remote OsiriX to remote OsiriX // remote OsiriX to remote DICOM
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Initiating image transfert...", nil);
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
-			} break;
 		}
 	}
 	

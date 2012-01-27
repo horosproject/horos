@@ -266,10 +266,6 @@
 	return [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
 }
 
--(BOOL)isVolatile {
-	return NO;
-}
-
 -(BOOL)save {
     return [self save:NULL];
 }

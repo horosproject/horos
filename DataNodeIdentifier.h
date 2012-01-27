@@ -17,46 +17,78 @@
 
 @class DicomDatabase, PrettyCell;
 
-enum {
+/*enum {
 	DataNodeIdentifierTypeDefault,
 	DataNodeIdentifierTypeLocal,
 	DataNodeIdentifierTypeRemote,
 	DataNodeIdentifierTypeDicom,
 	DataNodeIdentifierTypeOther
 };
-typedef NSInteger DataNodeIdentifierType;
+typedef NSInteger DataNodeIdentifierType;*/
 
 
 @interface DataNodeIdentifier : NSObject {
-	DataNodeIdentifierType _type;
+//	DataNodeIdentifierType _type;
 	NSString* _location;
 	NSString* _description;
 	NSDictionary* _dictionary;
-//	NSView* _extraView;
+    BOOL _discovered; // i.e. if this node was detected through bonjour, or mounted
+    BOOL _defaults; // if this node is listed in the user defaults, entered by the user
+//    BOOL available; // if this node 
 }
 
-+(id)dataNodeIdentifierForLocalPath:(NSString*)path;
-+(id)dataNodeIdentifierForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
-+(id)dataNodeIdentifierForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
-+(id)dataNodeIdentifierForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+//+(id)dataNodeIdentifierForLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
-@property(readonly) DataNodeIdentifierType type;
+//@property(readonly) DataNodeIdentifierType type;
 @property(retain) NSString* location;
 @property(retain) NSString* description;
 @property(retain) NSDictionary* dictionary;
-//@property(retain) NSView* extraView;
+@property BOOL discovered;
+@property BOOL defaults;
 
--(BOOL)isEqualToSourceIdentifier:(DataNodeIdentifier*)other;
+-(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+
+-(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni;
 -(NSComparisonResult)compare:(DataNodeIdentifier*)other;
 
 -(DicomDatabase*)database;
 
--(void)willDisplayCell:(PrettyCell*)cell;
-
--(BOOL)isVolatile; // like bonjour sources, CD/DVDs, ...
 -(BOOL)isReadOnly;
 -(NSString*)toolTip;
 
--(NSInteger)subtypeForSorting;
+-(void)willDisplayCell:(PrettyCell*)cell;
+
+@end
+
+@interface LocalDatabaseNodeIdentifier : DataNodeIdentifier
+
++(id)localDatabaseNodeIdentifierWithPath:(NSString*)path;
++(id)localDatabaseNodeIdentifierWithPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+    
+@end
+
+@interface RemoteDataNodeIdentifier : DataNodeIdentifier
+
+@end
+
+@interface RemoteDatabaseNodeIdentifier : RemoteDataNodeIdentifier
+
++(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+
++(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port;
++(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port;
++(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port;
++(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port;
+
+@end
+
+@interface DicomNodeIdentifier : RemoteDataNodeIdentifier
+
++(id)dicomNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
+
++(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port aet:(NSString**)aet;
++(NSHost*)location:(NSString*)location toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet;
++(NSString*)locationWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
++(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port aet:(NSString*)aet;
 
 @end

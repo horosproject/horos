@@ -29,6 +29,7 @@
 #import "NSManagedObject+N2.h"
 #import "DCMTKStoreSCU.h"
 #import "ViewerController.h"
+#import "DataNodeIdentifier.h"
 
 @interface RemoteDicomDatabase ()
 
@@ -42,79 +43,18 @@
 
 @implementation RemoteDicomDatabase
 
-+(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port {
-	NSString* h = nil;
-	if (!host) host = &h;
-	NSArray* addressParts = [address componentsSeparatedByString:@":"];
-	*host = [addressParts objectAtIndex:0];
-	if (port)
-		if (addressParts.count > 1)
-			*port = [[addressParts objectAtIndex:1] integerValue];
-		else *port = 8780;
-	return *host;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location {
+	return [self databaseForLocation:location name:nil];
 }
 
-+(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port aet:(NSString**)aet {
-	NSArray* addressParts = [address componentsSeparatedByString:@"@"];
-	if (addressParts.count > 1) {
-		if (aet) *aet = [addressParts objectAtIndex:0];
-		address = [addressParts objectAtIndex:1];
-	} else *aet = nil;
-    
-	NSString* h = nil;
-	if (!host) host = &h;
-	addressParts = [address componentsSeparatedByString:@":"];
-	*host = [addressParts objectAtIndex:0];
-	if (port)
-		if (addressParts.count > 1)
-			*port = [[addressParts objectAtIndex:1] integerValue];
-		else *port = 11112;
-	return *host;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name {
+	return [self databaseForLocation:location name:nil update:YES];
 }
 
-+(NSHost*)hostWithAddressOrName:(NSString*)str {
-    NSHost* rhost = nil;
-    if (![str rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]].length)
-        rhost = [NSHost hostWithAddress:str];
-	else rhost = [NSHost hostWithName:str];
-    return rhost;
-}
-
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port {
-	address = [self address:address toAddress:NULL port:port];
-	NSHost* rhost = [self hostWithAddressOrName:address];
-	if (host) *host = rhost;
-	return rhost;
-}
-
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet {
-	address = [self address:address toAddress:NULL port:port aet:aet];
-	NSHost* rhost = [self hostWithAddressOrName:address];
-	if (host) *host = rhost;
-	return rhost;
-}
-
-+(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet {
-	return [self addressWithHostname:host.address port:port aet:aet];
-}
-
-+(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet {
-	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, port];
-}
-
-
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)address {
-	return [self databaseForAddress:address name:nil];
-}
-
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name {
-	return [self databaseForAddress:address name:nil update:YES];
-}
-
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name update:(BOOL)flagUpdate {
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate {
 	NSHost* host;
 	NSInteger port;
-	[self address:address toHost:&host port:&port];
+	[RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
 	
     if (!host.addresses.count && !host.names.count)
         [NSException raise:NSGenericException format:@"%@", NSLocalizedString(@"This remote database is unaccessible because its address could not be resolved.", nil)];
@@ -142,14 +82,10 @@
 	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
 }
 
--(BOOL)isVolatile {
-	return YES;
-}
-
--(id)initWithAddress:(NSString*)address {
+-(id)initWithLocation:(NSString*)location {
 	NSHost* host;
 	NSInteger port;
-	[RemoteDicomDatabase address:address toHost:&host port:&port];
+	[RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
 	return [self initWithHost:host port:port update:YES];
 }
 

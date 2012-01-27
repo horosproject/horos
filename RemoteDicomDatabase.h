@@ -31,18 +31,11 @@
 @property(readonly) NSInteger port;
 @property(readonly,retain) NSHost* host;
 
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port;
-+(NSHost*)address:(NSString*)address toHost:(NSHost**)host port:(NSInteger*)port aet:(NSString**)aet;
-+(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port;
-+(NSString*)address:(NSString*)address toAddress:(NSString**)host port:(NSInteger*)port aet:(NSString**)aet;
-+(NSString*)addressWithHost:(NSHost*)host port:(NSInteger)port aet:(NSString*)aet;
-+(NSString*)addressWithHostname:(NSString*)host port:(NSInteger)port aet:(NSString*)aet;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name;
++(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate;
 
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)path;
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)path name:(NSString*)name;
-+(RemoteDicomDatabase*)databaseForAddress:(NSString*)address name:(NSString*)name update:(BOOL)flagUpdate;
-
--(id)initWithAddress:(NSString*)address;
+-(id)initWithLocation:(NSString*)location;
 -(id)initWithHost:(NSHost*)host port:(NSInteger)port update:(BOOL)flagUpdate;
 
 -(NSThread*)initiateUpdate;
