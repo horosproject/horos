@@ -177,7 +177,7 @@ int main(int argc, const char *argv[])
 		
 		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
 		
-# pragma mark compress
+#pragma mark compress
 		if( [what isEqualToString:@"compress"])
 		{
 			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];

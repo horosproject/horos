@@ -24,13 +24,19 @@ extern const NSNumber* const N2No;
 
 #pragma mark NSSize
 
+#ifdef __cplusplus
+
 namespace n2 {
 	NSSize floor(const NSSize& s);
 	NSSize ceil(const NSSize& s);
 	NSSize round(const NSSize& s);
 }
 
+#endif
+
 NSSize NSRoundSize(NSSize s) DEPRECATED_ATTRIBUTE;
+
+#ifdef __cplusplus
 
 NSSize NSMakeSize(CGFloat wh);
 NSSize operator-(const NSSize& s);						// -[x,y] = [-x,-y]
@@ -130,3 +136,6 @@ NSRect operator-(const NSRect& r, const NSSize& s);
 BOOL operator==(const NSRect& r1, const NSRect& r2);
 BOOL operator!=(const NSRect& r1, const NSRect& r2);
 NSPoint RectBR(const NSRect& r);
+
+#endif
+

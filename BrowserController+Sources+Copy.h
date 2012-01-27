@@ -17,6 +17,6 @@
 
 @interface BrowserController (SourcesCopy) 
 
--(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(BrowserSource*)destination;
+-(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(BrowserSourceIdentifier*)destination;
 
 @end

@@ -1655,7 +1655,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 			serie = [[NSString alloc] initWithString:[[filePath lastPathComponent] stringByDeletingPathExtension]];
 			Modality = [[NSString alloc] initWithString:@"NIfTI"];
-			date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+			date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
 			
 			width = NIfTI->dim[ 1];
 
@@ -1707,7 +1707,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	{
 		NIfTI = nifti_image_read( [file UTF8String], 0);
 		 
-		returnString = [[[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI)] autorelease];
+		returnString = [[[NSString alloc] initWithCString: nifti_image_to_ascii( NIfTI) encoding:NSUTF8StringEncoding] autorelease];
 		NSLog(@"NIFTI INFO:  %@", returnString);
 		
 		// Now build the XML document
@@ -3843,7 +3843,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 			
 		Modality = [[NSString alloc] initWithString:extension];
-		date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
+		date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL] fileCreationDate] retain];
 		
 		if ([decoder seriesDescription])
 			serie = [[decoder seriesDescription] retain];

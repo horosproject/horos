@@ -14,7 +14,7 @@
 
 #import "BrowserController+Sources.h"
 #import "BrowserController+Sources+Copy.h"
-#import "BrowserSource.h"
+#import "BrowserSourceIdentifier.h"
 #import "PrettyCell.h"
 #import "DicomDatabase.h"
 #import "RemoteDicomDatabase.h"
@@ -59,13 +59,13 @@
 
 @end
 
-@interface DefaultBrowserSource : BrowserSource
+@interface DefaultBrowserSourceIdentifier : BrowserSourceIdentifier
 
-+(DefaultBrowserSource*)source;
++(DefaultBrowserSourceIdentifier*)source;
 
 @end
 
-@interface BonjourBrowserSource : BrowserSource
+@interface BonjourBrowserSourceIdentifier : BrowserSourceIdentifier
 {
 	NSNetService* _service;
 }
@@ -76,7 +76,7 @@
 
 @end
 
-@interface MountedBrowserSource : BrowserSource
+@interface MountedBrowserSourceIdentifier : BrowserSourceIdentifier
 {
 	NSString* _devicePath;
 	DicomDatabase* _database;
@@ -87,15 +87,15 @@
 }
 
 enum {
-    MountedBrowserSourceTypeUndefined = 0,
-    MountedBrowserSourceIPODType = 1
+    MountedBrowserSourceIdentifierTypeUndefined = 0,
+    MountedBrowserSourceIdentifierIPODType = 1
 };
 
 @property(retain) NSString* devicePath;
 @property BOOL available;
 @property NSInteger mtype;
 
-+(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type;
++(id)browserSourceIdentifierForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type;
 
 -(void)willUnmount;
 
@@ -112,7 +112,7 @@ enum {
 {
 	[_sourcesArrayController setSortDescriptors:[NSArray arrayWithObjects: [[[NSSortDescriptor alloc] initWithKey:@"self" ascending:YES] autorelease], NULL]];
 	[_sourcesArrayController setAutomaticallyRearrangesObjects:YES];
-	[_sourcesArrayController addObject:[DefaultBrowserSource source]];
+	[_sourcesArrayController addObject:[DefaultBrowserSourceIdentifier source]];
 	[_sourcesArrayController setSelectsInsertedObjects:NO];
 	
 	_sourcesHelper = [[BrowserSourcesHelper alloc] initWithBrowser:self];
@@ -137,31 +137,31 @@ enum {
 	return [[_sourcesArrayController arrangedObjects] count];
 }
 
--(BrowserSource*)sourceAtRow:(int)row
+-(BrowserSourceIdentifier*)sourceIdentifierAtRow:(int)row
 {
 	return ([_sourcesArrayController.arrangedObjects count] > row)? [_sourcesArrayController.arrangedObjects objectAtIndex:row] : nil;
 }
 
--(int)rowForSource:(BrowserSource*)source
+-(int)rowForSourceIdentifier:(BrowserSourceIdentifier*)source
 {
 	for (NSInteger i = 0; i < [[_sourcesArrayController arrangedObjects] count]; ++i)
-		if ([[_sourcesArrayController.arrangedObjects objectAtIndex:i] isEqualToSource:source])
+		if ([[_sourcesArrayController.arrangedObjects objectAtIndex:i] isEqualToSourceIdentifier:source])
 			return i;
 	return -1;
 }
 
--(BrowserSource*)sourceForDatabase:(DicomDatabase*)database
+-(BrowserSourceIdentifier*)sourceIdentifierForDatabase:(DicomDatabase*)database
 {
 	if (database == [DicomDatabase defaultDatabase])
-		return [DefaultBrowserSource source];
+		return [DefaultBrowserSourceIdentifier source];
 	if (database.isLocal)
-		return [BrowserSource browserSourceForLocalPath:database.baseDirPath];
-	else return [BrowserSource browserSourceForAddress:[NSString stringWithFormat:@"%@:%d", [(RemoteDicomDatabase*)database address], [(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
+		return [BrowserSourceIdentifier browserSourceIdentifierForLocalPath:database.baseDirPath];
+	else return [BrowserSourceIdentifier browserSourceIdentifierForAddress:[NSString stringWithFormat:@"%@:%d", [(RemoteDicomDatabase*)database address], [(RemoteDicomDatabase*)database port]] description:nil dictionary:nil];	
 }
 
 -(int)rowForDatabase:(DicomDatabase*)database
 {
-	return [self rowForSource:[self sourceForDatabase:database]];
+	return [self rowForSourceIdentifier:[self sourceIdentifierForDatabase:database]];
 }
 
 -(void)selectSourceForDatabase:(DicomDatabase*)database
@@ -185,7 +185,7 @@ enum {
     {
 		[self rowForDatabase:_database];
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
-		[NSUserDefaults.standardUserDefaults setObject:[[NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
+		[[NSUserDefaults standardUserDefaults] setObject:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
 		i = [self rowForDatabase:_database];
 	}
     if (i != [_sourcesTableView selectedRow])
@@ -203,7 +203,7 @@ enum {
 		if ([type isEqualToString:@"Local"])
         {
 			NSString* path = [io objectAtIndex:1];
-			if (![NSFileManager.defaultManager fileExistsAtPath:path])
+			if (![[NSFileManager defaultManager] fileExistsAtPath:path])
             {
 				NSString* message = NSLocalizedString(@"The selected database's data was not found on your computer.", nil);
 				if ([path hasPrefix:@"/Volumes/"])
@@ -273,9 +273,9 @@ enum {
 	return [thread autorelease];
 }
 
--(void)setDatabaseFromSource:(BrowserSource*)source
+-(void)setDatabaseFromSourceIdentifier:(BrowserSourceIdentifier*)source
 {
-	if ([source isEqualToSource:[self sourceForDatabase:_database]])
+	if ([source isEqualToSourceIdentifier:[self sourceIdentifierForDatabase:_database]])
 		return;
 	
     @try
@@ -287,11 +287,11 @@ enum {
         else
             switch (source.type)
             {
-                case BrowserSourceTypeLocal:
+                case BrowserSourceIdentifierTypeLocal:
                 {
                     [self initiateSetDatabaseAtPath:source.location name:source.description];
                 } break;
-                case BrowserSourceTypeRemote:
+                case BrowserSourceIdentifierTypeRemote:
                 {
                     NSString* host; NSInteger port; [RemoteDicomDatabase address:source.location toAddress:&host port:&port];
                     [self initiateSetRemoteDatabaseWithAddress:host port:port name:source.description];
@@ -322,8 +322,8 @@ enum {
 }
 
 -(int)findDBPath:(NSString*)path dbFolder:(NSString*)DBFolderLocation { // __deprecated
-	NSInteger i = [self rowForSource:[BrowserSource browserSourceForLocalPath:path]];
-	if (i == -1) i = [self rowForSource:[BrowserSource browserSourceForLocalPath:DBFolderLocation]];
+	NSInteger i = [self rowForSourceIdentifier:[BrowserSourceIdentifier browserSourceIdentifierForLocalPath:path]];
+	if (i == -1) i = [self rowForSourceIdentifier:[BrowserSourceIdentifier browserSourceIdentifierForLocalPath:DBFolderLocation]];
 	return i;
 }
 
@@ -342,12 +342,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	if ((self = [super init]))
     {
 		_browser = browser;
-		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"localDatabasePaths" options:NSKeyValueObservingOptionInitial context:LocalBrowserSourcesContext];
-		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"OSIRIXSERVERS" options:NSKeyValueObservingOptionInitial context:RemoteBrowserSourcesContext];
-		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:DicomBrowserSourcesContext];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"localDatabasePaths" options:NSKeyValueObservingOptionInitial context:LocalBrowserSourcesContext];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"OSIRIXSERVERS" options:NSKeyValueObservingOptionInitial context:RemoteBrowserSourcesContext];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"SERVERS" options:NSKeyValueObservingOptionInitial context:DicomBrowserSourcesContext];
 		_bonjourSources = [[NSMutableDictionary alloc] init];
-		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
-		[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
+		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
 		_nsbOsirix = [[NSNetServiceBrowser alloc] init];
 		[_nsbOsirix setDelegate:self];
 		[_nsbOsirix searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
@@ -355,10 +355,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[_nsbDicom setDelegate:self];
 		[_nsbDicom searchForServicesOfType:@"_dicom._tcp." inDomain:@""];
 		// mounted devices
-		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
-		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
-		[NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
-		for (NSString* path in [NSWorkspace.sharedWorkspace mountedRemovableMedia])
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
+		for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
 			[self _analyzeVolumeAtPath:path];
 	}
 	
@@ -367,18 +367,18 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)dealloc
 {
-	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
-	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
-	[NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceWillUnmountNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceWillUnmountNotification object:nil];
 	[_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
-	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
-	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"searchDICOMBonjour"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"searchDICOMBonjour"];
 	[_bonjourSources release];
-	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"SERVERS"];
-	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
-	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:@"localDatabasePaths"];
-//	[[NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"] removeObserver:self forValuesKey:@"values"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
+	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"localDatabasePaths"];
+//	[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] removeObserver:self forValuesKey:@"values"];
 	_browser = nil;
 	[super dealloc];
 }
@@ -400,12 +400,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (context == LocalBrowserSourcesContext)
     {
-		NSArray* a = [NSUserDefaults.standardUserDefaults objectForKey:@"localDatabasePaths"];
-		// remove old items
+		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
+        // remove old items
 		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
         {
-			BrowserSource* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if (is.type == BrowserSourceTypeLocal && ![is isKindOfClass:[DefaultBrowserSource class]])
+			BrowserSourceIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
+			if (is.type == BrowserSourceIdentifierTypeLocal && ![is isKindOfClass:[DefaultBrowserSourceIdentifier class]])
 				if (![[a valueForKey:@"Path"] containsObject:is.location])
 					[_browser.sources removeObjectAtArrangedObjectIndex:i];
 		}
@@ -417,23 +417,23 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 				continue;
 			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dpath];
 			if (i == NSNotFound)
-				[_browser.sources addObject:[BrowserSource browserSourceForLocalPath:dpath description:[d objectForKey:@"Description"] dictionary:d]];
+				[_browser.sources addObject:[BrowserSourceIdentifier browserSourceIdentifierForLocalPath:dpath description:[d objectForKey:@"Description"] dictionary:d]];
 			else
             {
-				[[_browser sourceAtRow:i] setDescription:[d objectForKey:@"Description"]];
-				[[_browser sourceAtRow:i] setDictionary:d];
+				[[_browser sourceIdentifierAtRow:i] setDescription:[d objectForKey:@"Description"]];
+				[[_browser sourceIdentifierAtRow:i] setDictionary:d];
 			}
 		}
 	}
 	
 	if (context == RemoteBrowserSourcesContext)
     {
-		NSArray* a = [NSUserDefaults.standardUserDefaults objectForKey:@"OSIRIXSERVERS"];
+		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
 		// remove old items
 		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
         {
-			BrowserSource* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if (is.type == BrowserSourceTypeRemote)
+			BrowserSourceIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
+			if (is.type == BrowserSourceIdentifierTypeRemote)
 				if (![[a valueForKey:@"Address"] containsObject:is.location])
 					[_browser.sources removeObjectAtArrangedObjectIndex:i];
 		}
@@ -443,26 +443,26 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			NSString* dadd = [d valueForKey:@"Address"];
 			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dadd];
 			if (i == NSNotFound)
-				[_browser.sources addObject:[BrowserSource browserSourceForAddress:dadd description:[d objectForKey:@"Description"] dictionary:d]];
+				[_browser.sources addObject:[BrowserSourceIdentifier browserSourceIdentifierForAddress:dadd description:[d objectForKey:@"Description"] dictionary:d]];
 			else
             {
-				[[_browser sourceAtRow:i] setDescription:[d objectForKey:@"Description"]];
-				[[_browser sourceAtRow:i] setDictionary:d];
+				[[_browser sourceIdentifierAtRow:i] setDescription:[d objectForKey:@"Description"]];
+				[[_browser sourceIdentifierAtRow:i] setDictionary:d];
 			}
 		}
 	}
 	
 	if (context == DicomBrowserSourcesContext)
     {
-		NSArray* a = [NSUserDefaults.standardUserDefaults objectForKey:@"SERVERS"];
+		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
 		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
 		for (NSDictionary* ai in a)
 			[aa setObject:ai forKey:[RemoteDicomDatabase addressWithHostname:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
 		// remove old items
 		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
         {
-			BrowserSource* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if (is.type == BrowserSourceTypeDicom)
+			BrowserSourceIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
+			if (is.type == BrowserSourceIdentifierTypeDicom)
             {
 				if (![[aa allKeys] containsObject:is.location])
 					[_browser.sources removeObjectAtArrangedObjectIndex:i];
@@ -473,43 +473,43 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
 			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:aai];
 			if (i == NSNotFound)
-				[_browser.sources addObject:[BrowserSource browserSourceForDicomNodeAtAddress:aai description:[[aa objectForKey:aai] objectForKey:@"Description"] dictionary:[aa objectForKey:aai]]];
+				[_browser.sources addObject:[BrowserSourceIdentifier browserSourceIdentifierForDicomNodeAtAddress:aai description:[[aa objectForKey:aai] objectForKey:@"Description"] dictionary:[aa objectForKey:aai]]];
 			else
             {
-				[[_browser sourceAtRow:i] setDescription:[[aa objectForKey:aai] objectForKey:@"Description"]];
-				[[_browser sourceAtRow:i] setDictionary:[aa objectForKey:aai]];
+				[[_browser sourceIdentifierAtRow:i] setDescription:[[aa objectForKey:aai] objectForKey:@"Description"]];
+				[[_browser sourceIdentifierAtRow:i] setDictionary:[aa objectForKey:aai]];
 			}
 		}
 	}
 	
 	if (context == SearchBonjourNodesContext)
     {
-		if ([NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"])
         {
-			for (BrowserSource* bs in [_bonjourSources allValues])
-				if (bs.type == BrowserSourceTypeRemote)
+			for (BrowserSourceIdentifier* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceIdentifierTypeRemote)
 					[_browser.sources removeObject:bs];
 		}
         else
         {
-			for (BrowserSource* bs in [_bonjourSources allValues])
-				if (bs.type == BrowserSourceTypeRemote && bs.location)
+			for (BrowserSourceIdentifier* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceIdentifierTypeRemote && bs.location)
 					[_browser.sources addObject:bs];
 		}
 	}
 	
 	if (context == SearchDicomNodesContext)
     {
-		if (![NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])
+		if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
         {
-			for (BrowserSource* bs in [_bonjourSources allValues])
-				if (bs.type == BrowserSourceTypeDicom)
+			for (BrowserSourceIdentifier* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceIdentifierTypeDicom)
 					[_browser.sources removeObject:bs];
 		}
         else
         {
-			for (BrowserSource* bs in [_bonjourSources allValues])
-				if (bs.type == BrowserSourceTypeDicom && bs.location)
+			for (BrowserSourceIdentifier* bs in [_bonjourSources allValues])
+				if (bs.type == BrowserSourceIdentifierTypeDicom && bs.location)
 					[_browser.sources addObject:bs];
 		}
 	}
@@ -519,11 +519,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
-	BrowserSource* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
+    BrowserSourceIdentifier* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
 	if (!source) return;
 	
 	NSLog(@"Detected remote database: %@", service);
-	
+    
 	NSMutableArray* addresses = [NSMutableArray array];
 	for (NSData* address in service.addresses)
     {
@@ -550,21 +550,26 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     {
 		// NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
 		if (!source.location)
-			if (source.type == BrowserSourceTypeRemote)
+			if (source.type == BrowserSourceIdentifierTypeRemote)
 				source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
 			else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
 	}
 	
-	if (source.type == BrowserSourceTypeRemote)
+    if ([_browser rowForSourceIdentifier:source] >= 0) { // Already known
+        NSLog(@" -> Already known");
+        return;
+    }
+    
+	if (source.type == BrowserSourceIdentifierTypeRemote)
 		source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
 	else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
 		
 	if (source.location)
     {
-//		NSLog(@"Adding %@", source.location);
-		if (source.type == BrowserSourceTypeRemote && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+		NSLog(@" -> Adding %@", source.location);
+		if (source.type == BrowserSourceIdentifierTypeRemote && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"])
 			[_browser.sources addObject:source];
-		if (source.type == BrowserSourceTypeDicom && [NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])
+		if (source.type == BrowserSourceIdentifierTypeDicom && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 			[_browser.sources addObject:source];
 	}
 }
@@ -585,10 +590,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	NSLog(@"Bonjour service found: %@", service);
 	
-	BonjourBrowserSource* source;
+	BonjourBrowserSourceIdentifier* source;
 	if (nsb == _nsbOsirix)
-		source = [BonjourBrowserSource browserSourceForAddress:nil description:service.name dictionary:nil];
-	else source = [BonjourBrowserSource browserSourceForDicomNodeAtAddress:nil description:service.name dictionary:nil];
+		source = [BonjourBrowserSourceIdentifier browserSourceIdentifierForAddress:nil description:service.name dictionary:nil];
+	else source = [BonjourBrowserSourceIdentifier browserSourceIdentifierForDicomNodeAtAddress:nil description:service.name dictionary:nil];
 	
 	source.service = service;
 	[_bonjourSources setObject:source forKey:[NSValue valueWithPointer:service]];
@@ -609,19 +614,19 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	NSLog(@"Bonjour service gone: %@", service);
 	
-	BonjourBrowserSource* bs = nil;
-	for (BonjourBrowserSource* bsi in [_bonjourSources allValues])
+	BonjourBrowserSourceIdentifier* bs = nil;
+	for (BonjourBrowserSourceIdentifier* bsi in [_bonjourSources allValues])
 		if ([bsi.service isEqual:service])
 			bs = bsi;
 	if (!bs)
 		return;
 	
-	if (bs.type == BrowserSourceTypeRemote && ![NSUserDefaults.standardUserDefaults boolForKey:@"DoNotSearchForBonjourServices"])
+	if (bs.type == BrowserSourceIdentifierTypeRemote && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"])
 		[_browser.sources removeObject:bs];
-	if (bs.type == BrowserSourceTypeDicom && [NSUserDefaults.standardUserDefaults boolForKey:@"searchDICOMBonjour"])
+	if (bs.type == BrowserSourceIdentifierTypeDicom && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
 		[_browser.sources removeObject:bs];
 	
-	if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:bs])
+	if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToSourceIdentifier:bs])
 		[_browser setDatabase:DicomDatabase.defaultDatabase];
 	
 	[_bonjourSources removeObjectForKey:[_bonjourSources keyForObject:bs]];
@@ -630,8 +635,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)_analyzeVolumeAtPath:(NSString*)path
 {
 	BOOL used = NO;
-	for (BrowserSource* ibs in _browser.sources.arrangedObjects)
-		if (ibs.type == BrowserSourceTypeLocal && [ibs.location hasPrefix:path])
+	for (BrowserSourceIdentifier* ibs in _browser.sources.arrangedObjects)
+		if (ibs.type == BrowserSourceIdentifierTypeLocal && [ibs.location hasPrefix:path])
 			return; // device is somehow already listed as a source
 	
 	NSTask* task = [[NSTask alloc] init];
@@ -648,14 +653,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 	if ([[result objectForKey:@"OpticalMediaType"] length]) // is CD/DVD or other optical media
 		@try {
-			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceTypeUndefined]];
+			[_browser.sources addObject:[MountedBrowserSourceIdentifier browserSourceIdentifierForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceIdentifierTypeUndefined]];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         }
 	
     if ([[result objectForKey:@"MediaType"] isEqualToString:@"iPod"])
         @try {
-			[_browser.sources addObject:[MountedBrowserSource browserSourceForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceIPODType]];
+			[_browser.sources addObject:[MountedBrowserSourceIdentifier browserSourceIdentifierForDevicePath:path description:path.lastPathComponent dictionary:nil type:MountedBrowserSourceIdentifierIPODType]];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         }
@@ -716,16 +721,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     
     if ([notification.name isEqualToString:NSWorkspaceDidUnmountNotification])
     {
-        MountedBrowserSource* mbs = nil;
-        for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
-            if ([ibs isKindOfClass:[MountedBrowserSource class]] && [ibs.devicePath isEqualToString:path])
+        MountedBrowserSourceIdentifier* mbs = nil;
+        for (MountedBrowserSourceIdentifier* ibs in _browser.sources.arrangedObjects)
+            if ([ibs isKindOfClass:[MountedBrowserSourceIdentifier class]] && [ibs.devicePath isEqualToString:path])
             {
                 mbs = ibs;
                 break;
             }
         if (mbs)
         {
-            if ([[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs])
+            if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToSourceIdentifier:mbs])
                 [_browser setDatabase:DicomDatabase.defaultDatabase];
             [_browser.sources removeObject:mbs];
         }
@@ -750,9 +755,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
     [DCMPix purgeCachedDictionaries];
     
-	MountedBrowserSource* mbs = nil;
-	for (MountedBrowserSource* ibs in _browser.sources.arrangedObjects)
-		if ([ibs isKindOfClass:[MountedBrowserSource class]] && [ibs.devicePath isEqualToString:path])
+	MountedBrowserSourceIdentifier* mbs = nil;
+	for (MountedBrowserSourceIdentifier* ibs in _browser.sources.arrangedObjects)
+		if ([ibs isKindOfClass:[MountedBrowserSourceIdentifier class]] && [ibs.devicePath isEqualToString:path])
         {
 			mbs = ibs;
 			break;
@@ -761,7 +766,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	if (mbs)
         [mbs willUnmount];
     
-    if (mbs && [[_browser sourceForDatabase:_browser.database] isEqualToSource:mbs])
+    if (mbs && [[_browser sourceIdentifierForDatabase:_browser.database] isEqualToSourceIdentifier:mbs])
     {
         DicomDatabase* db = [DicomDatabase activeLocalDatabase];
         if (db == _browser.database)
@@ -772,7 +777,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(NSString*)tableView:(NSTableView*)tableView toolTipForCell:(NSCell*)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn*)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
 {
-	BrowserSource* bs = [_browser sourceAtRow:row];
+	BrowserSourceIdentifier* bs = [_browser sourceIdentifierAtRow:row];
 	NSString* tip = [bs toolTip];
 	if (tip) return tip;
 	return bs.location;
@@ -784,7 +789,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	cell.font = [NSFont systemFontOfSize:11];
 	cell.textColor = nil;
     [cell.rightSubviews removeAllObjects];
-	BrowserSource* bs = [_browser sourceAtRow:row];
+	BrowserSourceIdentifier* bs = [_browser sourceIdentifierAtRow:row];
     cell.title = bs.description;
 	[bs willDisplayCell:cell];
 }
@@ -804,7 +809,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (row < [_browser sourcesCount])
     {
-		if ([[_browser sourceAtRow:row] isReadOnly])
+		if ([[_browser sourceIdentifierAtRow:row] isReadOnly])
 			return NSDragOperationNone;
 		[tableView setDropRow:row dropOperation:NSTableViewDropOn];
 		return NSTableViewDropAbove;
@@ -828,25 +833,25 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSMutableArray* dicomImages = [DicomImage dicomImagesInObjects:items];
 	[[NSMutableArray arrayWithArray:[dicomImages valueForKey:@"path"]] removeDuplicatedStringsInSyncWithThisArray:dicomImages]; // remove duplicated paths
 	
-	return [_browser initiateCopyImages:dicomImages toSource:[_browser sourceAtRow:row]];
+	return [_browser initiateCopyImages:dicomImages toSource:[_browser sourceIdentifierAtRow:row]];
 }
 
 -(void)tableViewSelectionDidChange:(NSNotification*)notification
 {
 	NSInteger row = [(NSTableView*)notification.object selectedRow];
-	BrowserSource* bs = [_browser sourceAtRow:row];
-	[_browser setDatabaseFromSource:bs];
+	BrowserSourceIdentifier* bs = [_browser sourceIdentifierAtRow:row];
+	[_browser setDatabaseFromSourceIdentifier:bs];
 }
 
 @end
 
-@implementation DefaultBrowserSource
+@implementation DefaultBrowserSourceIdentifier
 
-+(DefaultBrowserSource*)source
++(DefaultBrowserSourceIdentifier*)source
 {
-	static DefaultBrowserSource* source = nil;
+	static DefaultBrowserSourceIdentifier* source = nil;
 	if (!source)
-		source = [[DefaultBrowserSource browserSourceForLocalPath:DicomDatabase.defaultDatabase.baseDirPath] retain];
+		source = [[DefaultBrowserSourceIdentifier browserSourceIdentifierForLocalPath:DicomDatabase.defaultDatabase.baseDirPath] retain];
 	return source;
 }
 
@@ -868,7 +873,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
-@implementation BonjourBrowserSource
+@implementation BonjourBrowserSourceIdentifier
 
 @synthesize service = _service;
 
@@ -886,7 +891,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	NSImage* image = [[[NSImage alloc] initWithSize:cell.image.size] autorelease];
 	[image lockFocus];
-	[cell.image drawInRect:NSMakeRect(NSZeroPoint,cell.image.size) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
+	[cell.image drawInRect:NSMakeRect(0,0,cell.image.size.width,cell.image.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
 	[bonjour drawInRect:NSMakeRect(1,1,14,14) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
 	[image unlockFocus];
 	
@@ -908,7 +913,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 @end
 
 
-@implementation MountedBrowserSource
+@implementation MountedBrowserSourceIdentifier
 
 @synthesize devicePath = _devicePath, available = _available, mtype = _mtype;
 
@@ -963,7 +968,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         }
         
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
-		[ThreadsManager.defaultManager addThreadAndStart:thread];
+		[[ThreadsManager defaultManager] addThreadAndStart:thread];
 		[_database scanAtPath:self.devicePath];
 		
 		if (![[_database objectsForEntity:_database.imageEntity] count])
@@ -974,7 +979,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		
         _available = YES;
         
-		if ([NSUserDefaults.standardUserDefaults boolForKey:@"autoSelectSourceCDDVD"] && [NSFileManager.defaultManager fileExistsAtPath:self.devicePath])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSource:) withObject:self waitUntilDone:NO];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)
@@ -998,33 +1003,33 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     return _database;
 }
 
-+(id)browserSourceForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type
++(id)browserSourceIdentifierForDevicePath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type
 {
 	BOOL scan = YES;
-	NSString* path = [NSFileManager.defaultManager tmpFilePathInTmp];
+	NSString* path = [[NSFileManager defaultManager] tmpFilePathInTmp];
 	
 	// does it contain an OsiriX Data folder?
 	BOOL isDir;
-	if ([NSFileManager.defaultManager fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
 		path = devicePath;
 		scan = NO;
 	}
     
-    if (type == MountedBrowserSourceIPODType) {
+    if (type == MountedBrowserSourceIdentifierIPODType) {
 		path = devicePath;
 		scan = NO;
     }
 	
-	MountedBrowserSource* bs = [self browserSourceForLocalPath:path description:description dictionary:dictionary];
+	MountedBrowserSourceIdentifier* bs = [self browserSourceIdentifierForLocalPath:path description:description dictionary:dictionary];
 	bs.devicePath = devicePath;
     bs.mtype = type;
-	[NSFileManager.defaultManager createDirectoryAtPath:path attributes:nil];
+	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if (scan) {
 		[bs initiateVolumeScan];
 	}
 	
-    if (type == MountedBrowserSourceIPODType) {
+    if (type == MountedBrowserSourceIdentifierIPODType) {
         bs.available = YES;
     }
     
@@ -1055,7 +1060,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super willDisplayCell:cell];
 	
 //	NSLog(@"%@", [self _bcsChars:self.devicePath]);
-	NSImage* im = [NSWorkspace.sharedWorkspace iconForFile:self.devicePath];
+	NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.devicePath];
 	im.size = [im sizeByScalingProportionallyToSize: cell.image? cell.image.size : NSMakeSize(16,16) ];
 	cell.image = im;
     
@@ -1072,14 +1077,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(BOOL)isVolatile
 {
-	if (self.mtype == MountedBrowserSourceIPODType)
+	if (self.mtype == MountedBrowserSourceIdentifierIPODType)
         return NO;
     return YES;
 }
 
 -(BOOL)isReadOnly
 {
-	if (self.mtype == MountedBrowserSourceIPODType)
+	if (self.mtype == MountedBrowserSourceIdentifierIPODType)
         return NO;
 	return YES;
 }
