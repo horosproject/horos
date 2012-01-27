@@ -38,7 +38,7 @@
 		<!-- Optional parameter. Allows to have the Weasis menu bar in the top bar on Mac OS X (works only with the native Aqua look and feel) -->
 		<property name="apple.laf.useScreenMenuBar" value="true" />
 		<!-- Optional parameter. Allows to get plug-ins translations -->
-		<property name="weasis.i18n" value="%X:Info.baseUrl%/weasis-i18n" />
+		<property name="weasis.i18n" value="%X:Info.baseUrl%/../weasis-i18n" />
 	</resources>
 	<application-desc main-class="org.weasis.launcher.WebstartLauncher">
 		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.allParameters%</argument>
