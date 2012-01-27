@@ -16,7 +16,7 @@
 #import "DicomImage.h"
 #import "DicomFile.h"
 #import "DicomDatabase.h"
-#import "BrowserSourceIdentifier.h"
+#import "DataNodeIdentifier.h"
 #import "DCMNetServiceDelegate.h"
 #import "MutableArrayCategory.h"
 #import "ThreadsManager.h"
@@ -32,7 +32,7 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
 	NSArray* dicomImages = [io objectAtIndex:0];
-	BrowserSourceIdentifier* destination = [io objectAtIndex:1];
+	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	
 	NSMutableArray* imagePaths = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
@@ -102,7 +102,7 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
 	NSArray* dicomImages = [io objectAtIndex:0];
-	BrowserSourceIdentifier* destination = [io objectAtIndex:1];
+	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	
 	NSMutableArray* imagePaths = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
@@ -132,7 +132,7 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* dicomImages = [[[io objectAtIndex:0] mutableCopy] autorelease];
-	BrowserSourceIdentifier* destination = [io objectAtIndex:1];
+	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	RemoteDicomDatabase* srcDatabase = [io objectAtIndex:2];
 	
 	NSMutableArray* imagePaths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
@@ -181,7 +181,7 @@
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* dicomImages = [[[io objectAtIndex:0] mutableCopy] autorelease];
-	BrowserSourceIdentifier* destination = [io objectAtIndex:1];
+	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	RemoteDicomDatabase* srcDatabase = [io objectAtIndex:2];
 	
 	NSMutableArray* imagePaths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
@@ -191,7 +191,7 @@
 	NSString* dstAET = nil;
 	NSInteger dstPort = 0;
 	NSInteger dstSyntax = 0;
-	if (destination.type == BrowserSourceIdentifierTypeRemote)
+	if (destination.type == DataNodeIdentifierTypeRemote)
     {
 		[RemoteDicomDatabase address:destination.location toAddress:&dstAddress port:NULL];
 		dstPort = [[destination.dictionary objectForKey:@"port"] integerValue];
@@ -214,7 +214,7 @@
 			if ([dstInfo objectForKey:@"Port"]) dstPort = [[dstInfo objectForKey:@"Port"] integerValue];
 			if ([dstInfo objectForKey:@"TransferSyntax"]) dstSyntax = [[dstInfo objectForKey:@"TransferSyntax"] integerValue];
 		}
-	} else if (destination.type == BrowserSourceIdentifierTypeDicom)
+	} else if (destination.type == DataNodeIdentifierTypeDicom)
     {
 		[RemoteDicomDatabase address:destination.location toAddress:&dstAddress port:&dstPort aet:&dstAET];
 		dstSyntax = [[destination.dictionary objectForKey:@"TransferSyntax"] integerValue];
@@ -226,13 +226,13 @@
 	[pool release];
 }
 
--(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(BrowserSourceIdentifier*)destination
+-(BOOL)initiateCopyImages:(NSArray*)dicomImages toSource:(DataNodeIdentifier*)destination
 {
 	if (_database.isLocal)
     {
 		switch (destination.type)
         {
-			case BrowserSourceIdentifierTypeLocal:
+			case DataNodeIdentifierTypeLocal:
             { // local OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
@@ -240,7 +240,7 @@
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 			} break;
-			case BrowserSourceIdentifierTypeRemote:
+			case DataNodeIdentifierTypeRemote:
             { // local OsiriX to remote OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
                 thread.supportsCancel = YES;
@@ -248,7 +248,7 @@
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 			} break;
-			case BrowserSourceIdentifierTypeDicom:
+			case DataNodeIdentifierTypeDicom:
             { // local OsiriX to remote DICOM
 				NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 				for (int i = 0; i < r.count; ++i)
@@ -264,7 +264,7 @@
     {
 		switch (destination.type)
         {
-			case BrowserSourceIdentifierTypeLocal:
+			case DataNodeIdentifierTypeLocal:
             { // remote OsiriX to local OsiriX
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
@@ -272,8 +272,8 @@
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
 				return YES;
 			} break;
-			case BrowserSourceIdentifierTypeRemote: // remote OsiriX to remote OsiriX
-			case BrowserSourceIdentifierTypeDicom:
+			case DataNodeIdentifierTypeRemote: // remote OsiriX to remote OsiriX
+			case DataNodeIdentifierTypeDicom:
             { // remote OsiriX to remote DICOM
 				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyRemoteImagesToRemoteBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Initiating image transfert...", nil);

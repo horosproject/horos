@@ -12,47 +12,47 @@
  PURPOSE.
  =========================================================================*/
 
-#import "BrowserSourceIdentifier.h"
+#import "DataNodeIdentifier.h"
 #import "PrettyCell.h"
 #import "RemoteDicomDatabase.h"
 #import "NSImage+N2.h"
 #import <stdlib.h>
 
-@interface BrowserSourceIdentifier ()
+@interface DataNodeIdentifier ()
 
 @property(readwrite) NSInteger type;
 
 @end
 
-@implementation BrowserSourceIdentifier
+@implementation DataNodeIdentifier
 
 @synthesize type = _type, location = _location, description = _description, dictionary = _dictionary;//, extraView = _extraView;
 
-+(id)browserSourceIdentifierForLocalPath:(NSString*)path {
-	return [[self class] browserSourceIdentifierForLocalPath:path description:nil dictionary:nil];
++(id)dataNodeIdentifierForLocalPath:(NSString*)path {
+	return [[self class] dataNodeIdentifierForLocalPath:path description:nil dictionary:nil];
 }
 
-+(id)browserSourceIdentifierForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-	BrowserSourceIdentifier* bs = [[[[self class] alloc] init] autorelease];
-	bs.type = BrowserSourceIdentifierTypeLocal;
++(id)dataNodeIdentifierForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+	DataNodeIdentifier* bs = [[[[self class] alloc] init] autorelease];
+	bs.type = DataNodeIdentifierTypeLocal;
 	bs.location = path;
 	bs.description = description;
 	bs.dictionary = dictionary;
 	return bs;
 }
 
-+(id)browserSourceIdentifierForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-	BrowserSourceIdentifier* bs = [[[[self class] alloc] init] autorelease];
-	bs.type = BrowserSourceIdentifierTypeRemote;
++(id)dataNodeIdentifierForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+	DataNodeIdentifier* bs = [[[[self class] alloc] init] autorelease];
+	bs.type = DataNodeIdentifierTypeRemote;
 	bs.location = address;
 	bs.description = description;
 	bs.dictionary = dictionary;
 	return bs;
 }
 
-+(id)browserSourceIdentifierForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-	BrowserSourceIdentifier* bs = [[[[self class] alloc] init] autorelease];
-	bs.type = BrowserSourceIdentifierTypeDicom;
++(id)dataNodeIdentifierForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary {
+	DataNodeIdentifier* bs = [[[[self class] alloc] init] autorelease];
+	bs.type = DataNodeIdentifierTypeDicom;
 	bs.location = address;
 	bs.description = description;
 	bs.dictionary = dictionary;
@@ -66,24 +66,24 @@
 	[super dealloc];
 }
 
--(BOOL)isEqualToSourceIdentifier:(BrowserSourceIdentifier*)other {
+-(BOOL)isEqualToSourceIdentifier:(DataNodeIdentifier*)other {
 	if (self.type != other.type)
 		return NO;
 	
 	if (self.dictionary && self.dictionary == other.dictionary)
 		return YES;
 	
-	if (self.type == BrowserSourceIdentifierTypeLocal) {
+	if (self.type == DataNodeIdentifierTypeLocal) {
 		if ([[DicomDatabase baseDirPathForPath:self.location] isEqualToString:[DicomDatabase baseDirPathForPath:other.location]])
 			return YES;
 	} else
-	if (self.type == BrowserSourceIdentifierTypeRemote) {
+	if (self.type == DataNodeIdentifierTypeRemote) {
 		NSHost* h1; NSInteger p1; [RemoteDicomDatabase address:self.location toHost:&h1 port:&p1];
 		NSHost* h2; NSInteger p2; [RemoteDicomDatabase address:other.location toHost:&h2 port:&p2];
 		if (p1 == p2 && [h1 isEqualToHost:h2])
 			return YES;
 	} else
-	if (self.type == BrowserSourceIdentifierTypeDicom) {
+	if (self.type == DataNodeIdentifierTypeDicom) {
 		NSHost* h1; NSInteger p1; NSString* a1; [RemoteDicomDatabase address:self.location toHost:&h1 port:&p1 aet:&a1];
 		NSHost* h2; NSInteger p2; NSString* a2; [RemoteDicomDatabase address:other.location toHost:&h2 port:&p2 aet:&a2];
 		if (p1 == p2 && [h1 isEqualToHost:h2] && [a1 isEqualToString:a2])
@@ -101,10 +101,10 @@
 {
 	switch (self.type)
     {
-		case BrowserSourceIdentifierTypeLocal:
+		case DataNodeIdentifierTypeLocal:
         {
 			BOOL isDir;
-			if (![NSFileManager.defaultManager fileExistsAtPath:self.location isDirectory:&isDir])
+			if (![[NSFileManager defaultManager] fileExistsAtPath:self.location isDirectory:&isDir])
             {
 				cell.image = [NSImage imageNamed:@"away.tif"];
 				cell.textColor = NSColor.grayColor;
@@ -136,13 +136,13 @@
 		}
         break;
             
-		case BrowserSourceIdentifierTypeRemote:
+		case DataNodeIdentifierTypeRemote:
         {
 			cell.image = [NSImage imageNamed:@"FixedIP.tif"];
 		}
         break;
             
-		case BrowserSourceIdentifierTypeDicom:
+		case DataNodeIdentifierTypeDicom:
         {
 			cell.image = [NSImage imageNamed:@"DICOMDestination.tif"];
 		}
@@ -153,7 +153,7 @@
         cell.image = [NSImage imageNamed: [_dictionary valueForKey: @"icon"]];
 }
 
--(NSComparisonResult)compare:(BrowserSourceIdentifier*)other {
+-(NSComparisonResult)compare:(DataNodeIdentifier*)other {
 	if (self.type != other.type) return self.type > other.type;
 	if ([self subtypeForSorting] != [other subtypeForSorting]) return [self subtypeForSorting] > [other subtypeForSorting];
 	return [self.description caseInsensitiveCompare:other.description];

@@ -18,36 +18,36 @@
 @class DicomDatabase, PrettyCell;
 
 enum {
-	BrowserSourceIdentifierTypeDefault,
-	BrowserSourceIdentifierTypeLocal,
-	BrowserSourceIdentifierTypeRemote,
-	BrowserSourceIdentifierTypeDicom,
-	BrowserSourceIdentifierTypeOther
+	DataNodeIdentifierTypeDefault,
+	DataNodeIdentifierTypeLocal,
+	DataNodeIdentifierTypeRemote,
+	DataNodeIdentifierTypeDicom,
+	DataNodeIdentifierTypeOther
 };
-typedef NSInteger BrowserSourceIdentifierType;
+typedef NSInteger DataNodeIdentifierType;
 
 
-@interface BrowserSourceIdentifier : NSObject {
-	BrowserSourceIdentifierType _type;
+@interface DataNodeIdentifier : NSObject {
+	DataNodeIdentifierType _type;
 	NSString* _location;
 	NSString* _description;
 	NSDictionary* _dictionary;
 //	NSView* _extraView;
 }
 
-+(id)browserSourceIdentifierForLocalPath:(NSString*)path;
-+(id)browserSourceIdentifierForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
-+(id)browserSourceIdentifierForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
-+(id)browserSourceIdentifierForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)dataNodeIdentifierForLocalPath:(NSString*)path;
++(id)dataNodeIdentifierForLocalPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)dataNodeIdentifierForAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
++(id)dataNodeIdentifierForDicomNodeAtAddress:(NSString*)address description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
-@property(readonly) BrowserSourceIdentifierType type;
+@property(readonly) DataNodeIdentifierType type;
 @property(retain) NSString* location;
 @property(retain) NSString* description;
 @property(retain) NSDictionary* dictionary;
 //@property(retain) NSView* extraView;
 
--(BOOL)isEqualToSourceIdentifier:(BrowserSourceIdentifier*)other;
--(NSComparisonResult)compare:(BrowserSourceIdentifier*)other;
+-(BOOL)isEqualToSourceIdentifier:(DataNodeIdentifier*)other;
+-(NSComparisonResult)compare:(DataNodeIdentifier*)other;
 
 -(DicomDatabase*)database;
 

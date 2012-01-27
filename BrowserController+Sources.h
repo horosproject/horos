@@ -14,7 +14,7 @@
 
 #import "browserController.h"
 
-@class BrowserSourceIdentifier, DicomDatabase;
+@class DataNodeIdentifier, DicomDatabase;
 
 @interface BrowserController (Sources)
 
@@ -23,9 +23,9 @@
 
 -(void)redrawSources;
 
--(BrowserSourceIdentifier*)sourceIdentifierAtRow:(int)row;
+-(DataNodeIdentifier*)sourceIdentifierAtRow:(int)row;
 -(int)rowForDatabase:(DicomDatabase*)database;
--(BrowserSourceIdentifier*)sourceIdentifierForDatabase:(DicomDatabase*)database;
+-(DataNodeIdentifier*)sourceIdentifierForDatabase:(DicomDatabase*)database;
 -(void)selectCurrentDatabaseSource;
 
 -(long)currentBonjourService __deprecated;
