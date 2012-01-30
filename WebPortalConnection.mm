@@ -592,7 +592,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			else
 			if ([requestedPath isEqualToString:@"/admin/user"])
 				[self processAdminUserHtml];
-			else
+            else
+            if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin)
+                exit(0);
+            else
 				response.data = [self.portal dataForPath:requestedPath];
 			
 			if (!response.data.length && !response.statusCode)
