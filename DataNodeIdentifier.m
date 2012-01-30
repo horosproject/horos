@@ -97,9 +97,15 @@
     return [NSSet setWithObject:@"detected"];
 }
 
++(NSSet*)keyPathsForValuesAffectingDescription {
+    return [NSSet setWithObject:@"available"]; // this causes 
+}
+
 -(void)willDisplayCell:(PrettyCell*)cell {    
+    static NSColor* gray = nil;
+    if (!gray) gray = [[NSColor colorWithDeviceWhite:0.4 alpha:1] retain];
     if (!self.available)
-        cell.textColor = NSColor.darkGrayColor;
+        cell.textColor = gray;
     if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
         cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
 }
@@ -122,13 +128,16 @@
     return [super isEqualToDataNodeIdentifier:dni];
 }
 
+-(BOOL)available {
+    return [[NSFileManager defaultManager] fileExistsAtPath:self.location];
+}
+
 -(void)willDisplayCell:(PrettyCell*)cell {    
     [super willDisplayCell:cell];
 
     BOOL isDir;
     if (![[NSFileManager defaultManager] fileExistsAtPath:self.location isDirectory:&isDir]) {
         cell.image = [NSImage imageNamed:@"away.tif"];
-        cell.textColor = NSColor.grayColor;
         return;
     }
     
