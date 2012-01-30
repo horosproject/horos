@@ -32,9 +32,8 @@ typedef NSInteger DataNodeIdentifierType;*/
 	NSString* _location;
 	NSString* _description;
 	NSDictionary* _dictionary;
-    BOOL _discovered; // i.e. if this node was detected through bonjour, or mounted
-    BOOL _defaults; // if this node is listed in the user defaults, entered by the user
-//    BOOL available; // if this node 
+    BOOL _detected; // i.e. if this node was detected through bonjour, or mounted
+    BOOL _entered; // if this node is listed in the user defaults, entered by the user
 }
 
 //+(id)dataNodeIdentifierForLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
@@ -43,8 +42,8 @@ typedef NSInteger DataNodeIdentifierType;*/
 @property(retain) NSString* location;
 @property(retain) NSString* description;
 @property(retain) NSDictionary* dictionary;
-@property BOOL discovered;
-@property BOOL defaults;
+@property BOOL detected;
+@property BOOL entered;
 
 -(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 

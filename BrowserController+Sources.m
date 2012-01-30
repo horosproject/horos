@@ -80,7 +80,6 @@
 {
 	NSString* _devicePath;
 	DicomDatabase* _database;
-    BOOL _available;
     NSInteger _mountType;
     NSThread* _scanThread;
     NSButton* _unmountButton;
@@ -92,7 +91,6 @@ enum {
 };
 
 @property(retain) NSString* devicePath;
-@property BOOL available;
 @property NSInteger mountType;
 
 +(id)mountedDatabaseNodeIdentifierWithPath:(NSString*)devicePath description:(NSString*)description dictionary:(NSDictionary*)dictionary type:(NSInteger)type;
@@ -373,8 +371,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[super dealloc];
 }
 
--(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args
-{
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
     [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }
 
@@ -392,26 +389,32 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     {
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
         // remove old items
-		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
+		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
         {
-			DataNodeIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if ([is isKindOfClass:[LocalDatabaseNodeIdentifier class]] && ![is isKindOfClass:[DefaultLocalDatabaseNodeIdentifier class]])
-				if (![[a valueForKey:@"Path"] containsObject:is.location])
-					[_browser.sources removeObjectAtArrangedObjectIndex:i];
+			if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]] && dni.entered) // is a local database and is flagged as "entered"
+				if (![[a valueForKey:@"Path"] containsObject:dni.location]) {          // is no longer in the entered list
+					dni.entered = NO;                                                 // mark it as not entered
+                    if (!dni.detected)
+                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                }
 		}
 		// add new items
 		for (NSDictionary* d in a)
         {
 			NSString* dpath = [d valueForKey:@"Path"];
-			if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath])
+			if ([[DicomDatabase baseDirPathForPath:dpath] isEqualToString:DicomDatabase.defaultDatabase.baseDirPath]) // is already listed as "default database"
 				continue;
-			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dpath];
-			if (i == NSNotFound)
-				[_browser.sources addObject:[LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:dpath description:[d objectForKey:@"Description"] dictionary:d]];
-			else
-            {
-				[[_browser sourceIdentifierAtRow:i] setDescription:[d objectForKey:@"Description"]];
-				[[_browser sourceIdentifierAtRow:i] setDictionary:d];
+            DataNodeIdentifier* dni;
+			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dpath];
+			if (i == NSNotFound) {
+                dni = [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:dpath description:[d objectForKey:@"Description"] dictionary:d];
+                dni.entered = YES;
+				[_browser.sources addObject:dni];
+			} else {
+                dni = [_browser.sources.content objectAtIndex:i];
+                dni.entered = YES;
+				dni.description = [d objectForKey:@"Description"];
+				dni.dictionary = d;
 			}
 		}
 	}
@@ -420,24 +423,30 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     {
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
 		// remove old items
-		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
+		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
         {
-			DataNodeIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if ([is isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-				if (![[a valueForKey:@"Address"] containsObject:is.location])
-					[_browser.sources removeObjectAtArrangedObjectIndex:i];
+			if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.entered) // is a remote database and is flagged as "entered"
+				if (![[a valueForKey:@"Address"] containsObject:dni.location]) {        // is no longer in the entered list
+					dni.entered = NO;                                                  // mark it as not entered
+                    if (!dni.detected)
+                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                }
 		}
 		// add new items
 		for (NSDictionary* d in a)
         {
 			NSString* dadd = [d valueForKey:@"Address"];
-			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:dadd];
-			if (i == NSNotFound)
-				[_browser.sources addObject:[RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d]];
-			else
-            {
-				[[_browser sourceIdentifierAtRow:i] setDescription:[d objectForKey:@"Description"]];
-				[[_browser sourceIdentifierAtRow:i] setDictionary:d];
+            DataNodeIdentifier* dni;
+			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
+			if (i == NSNotFound) {
+                dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
+                dni.entered = YES;
+				[_browser.sources addObject:dni];
+			} else {
+                dni = [_browser.sources.content objectAtIndex:i];
+                dni.entered = YES;
+                dni.description = [d objectForKey:@"Description"];
+				dni.dictionary = d;
 			}
 		}
 	}
@@ -449,58 +458,72 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		for (NSDictionary* ai in a)
 			[aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
 		// remove old items
-		for (NSInteger i = [[_browser.sources arrangedObjects] count]-1; i >= 0; --i)
+		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
         {
-			DataNodeIdentifier* is = [_browser.sources.arrangedObjects objectAtIndex:i];
-			if ([is isKindOfClass:[DicomNodeIdentifier class]])
-            {
-				if (![[aa allKeys] containsObject:is.location])
-					[_browser.sources removeObjectAtArrangedObjectIndex:i];
-			}
+			if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.entered) // is a dicom node and is flagged as "entered"
+				if (![[aa allKeys] containsObject:dni.location]) {             // is no longer in the entered list
+					dni.entered = NO;                                         // mark it as not entered
+                    if (!dni.detected)
+                        [_browser.sources removeObject:dni]; // not entered, not detected.. remove it
+                }
 		}
 		// add new items
-		for (NSString* aai in aa)
+		for (NSString* aak in aa)
         {
-			NSUInteger i = [[_browser.sources.arrangedObjects valueForKey:@"location"] indexOfObject:aai];
-			if (i == NSNotFound)
-				[_browser.sources addObject:[DicomNodeIdentifier dicomNodeIdentifierWithLocation:aai description:[[aa objectForKey:aai] objectForKey:@"Description"] dictionary:[aa objectForKey:aai]]];
-			else
-            {
-				[[_browser sourceIdentifierAtRow:i] setDescription:[[aa objectForKey:aai] objectForKey:@"Description"]];
-				[[_browser sourceIdentifierAtRow:i] setDictionary:[aa objectForKey:aai]];
+            DataNodeIdentifier* dni;
+			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
+			if (i == NSNotFound) {
+				dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
+                dni.entered = YES;
+                [_browser.sources addObject:dni];
+			} else {
+                dni = [_browser.sources.content objectAtIndex:i];
+                dni.entered = YES;
+				dni.dictionary = [aa objectForKey:aak];
+                dni.description = [dni.dictionary objectForKey:@"Description"];
 			}
 		}
 	}
 	
 	if (context == SearchBonjourNodesContext)
     {
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"])
-        {
-			for (DataNodeIdentifier* bs in [_bonjourSources allValues])
-				if ([bs isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-					[_browser.sources removeObject:bs];
-		}
-        else
-        {
-			for (DataNodeIdentifier* bs in [_bonjourSources allValues])
-				if ([bs isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && bs.location)
-					[_browser.sources addObject:bs];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
+        { // remove remote databases detected with bonjour
+			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
+                    dni.detected = NO;
+                    if (!dni.entered && [_browser.sources.content containsObject:dni])
+                        [_browser.sources removeObject:dni];
+                }
+		} else 
+        { // add remote databases detected with bonjour
+			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected) { // && dni.location
+					dni.detected = YES;
+                    if (![_browser.sources.content containsObject:dni])
+                        [_browser.sources addObject:dni];
+                }
 		}
 	}
 	
 	if (context == SearchDicomNodesContext)
     {
 		if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-        {
-			for (DataNodeIdentifier* bs in [_bonjourSources allValues])
-				if ([bs isKindOfClass:[DicomNodeIdentifier class]])
-					[_browser.sources removeObject:bs];
-		}
-        else
-        {
-			for (DataNodeIdentifier* bs in [_bonjourSources allValues])
-				if ([bs isKindOfClass:[DicomNodeIdentifier class]] && bs.location)
-					[_browser.sources addObject:bs];
+        { // remove dicom nodes detected with bonjour
+			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
+                    dni.detected = NO;
+                    if (!dni.entered && [_browser.sources.content containsObject:dni])
+                        [_browser.sources removeObject:dni];
+                }
+		} else
+        { // add dicom nodes detected with bonjour
+			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected) { // && dni.location
+					dni.detected = YES;
+                    if (![_browser.sources.content containsObject:dni])
+                        [_browser.sources addObject:dni];
+                }
 		}
 	}
 	
@@ -509,8 +532,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
-    DataNodeIdentifier* source = [_bonjourSources objectForKey:[NSValue valueWithPointer:service]];
+    NSValue* key = [NSValue valueWithPointer:service];
+    DataNodeIdentifier* source = [_bonjourSources objectForKey:key];
 	if (!source) return;
+    
+    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+        NSLog(@"Hey");
 	
 	NSLog(@"Detected remote database: %@", service);
     
@@ -545,11 +572,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
 	}
 	
-    if ([_browser rowForSourceIdentifier:source] >= 0) { // Already known
-        NSLog(@" -> Already known");
-        // TODO: put THAT dsi in _bonjourSources instead of this, and mark it as discovered IUOHOHOPIHOPIHPIHPIHPIHPIHPIH
-        return;
-    }
+    NSUInteger i = [_browser.sources.content indexOfObject:source];
+    if (i != NSNotFound) // Already known
+        [_bonjourSources setObject:(source = [_browser.sources.content objectAtIndex:i]) forKey:key];
     
 	if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
 		source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
@@ -558,10 +583,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	if (source.location)
     {
 		NSLog(@" -> Adding %@", source.location);
-		if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"])
-			[_browser.sources addObject:source];
-		if ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-			[_browser.sources addObject:source];
+		if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
+            ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
+			
+            source.detected = YES;
+            if (![_browser.sources.content containsObject:source])
+                [_browser.sources addObject:source];
+        }
 	}
 }
 
@@ -586,7 +614,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		source = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:nil description:service.name dictionary:nil];
 	else source = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:nil description:service.name dictionary:nil];
 	
-    source.discovered = YES;
+//    source.discovered = YES;
 //	source.service = service;
 	[_bonjourSources setObject:source forKey:[NSValue valueWithPointer:[service retain]]];
 	
@@ -618,10 +646,13 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		return;
     DataNodeIdentifier* dni = [_bonjourSources objectForKey:bsk];
 	
-	if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]]/* && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]*/)
-		[_browser.sources removeObject:dni];
-	if ([dni isKindOfClass:[DicomNodeIdentifier class]]/* && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"]*/)
-		[_browser.sources removeObject:dni];
+    if (([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) ||
+        ([dni isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
+        
+        dni.detected = NO;
+        if (!dni.entered && [_browser.sources.content containsObject:dni])
+            [_browser.sources removeObject:dni];
+    }
 	
     // if the disappearing node is active, seelct the default DB
 	if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:dni])
@@ -909,7 +940,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 @implementation MountedDatabaseNodeIdentifier
 
 @synthesize devicePath = _devicePath;
-@synthesize available = _available;
 @synthesize mountType = _mountType;
 
 -(id)init
@@ -972,7 +1002,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 			return;
 		}
 		
-        _available = YES;
+        self.detected = YES;
         
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSource:) withObject:self waitUntilDone:NO];
@@ -993,7 +1023,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(DicomDatabase*)database
 {
-	if (!_available)
+	if (!_detected)
         [UnavaliableDataNodeException raise:NSGenericException format:@"%@", NSLocalizedString(@"This disk is being processed. It is currently not available.", nil)];
     return _database;
 }
@@ -1025,7 +1055,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	}
 	
     if (type == MountTypeIPod) {
-        bs.available = YES;
+        bs.detected = YES;
     }
     
 	return bs;
@@ -1059,7 +1089,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	im.size = [im sizeByScalingProportionallyToSize: cell.image? cell.image.size : NSMakeSize(16,16) ];
 	cell.image = im;
     
-    if (!_available)
+    if (!_detected)
         cell.textColor = [NSColor grayColor];
     
     [cell.rightSubviews addObject:_unmountButton];

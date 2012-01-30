@@ -24,8 +24,8 @@
 @synthesize location = _location;
 @synthesize description = _description;
 @synthesize dictionary = _dictionary;
-@synthesize discovered = _discovered;
-@synthesize defaults = _defaults;
+@synthesize detected = _detected;
+@synthesize entered = _entered;
 
 -(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
     if ((self = [super init])) {
@@ -42,6 +42,12 @@
 	self.description = nil;
 	self.dictionary = nil;
 	[super dealloc];
+}
+
+-(BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[DataNodeIdentifier class]])
+        return [self isEqualToDataNodeIdentifier:object];
+    return NO;
 }
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni {
@@ -83,7 +89,17 @@
 	return NO;
 }
 
+-(BOOL)available {
+    return self.detected;
+}
+
++(NSSet*)keyPathsForValuesAffectingAvailable {
+    return [NSSet setWithObject:@"detected"];
+}
+
 -(void)willDisplayCell:(PrettyCell*)cell {    
+    if (!self.available)
+        cell.textColor = NSColor.darkGrayColor;
     if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
         cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
 }
@@ -107,6 +123,8 @@
 }
 
 -(void)willDisplayCell:(PrettyCell*)cell {    
+    [super willDisplayCell:cell];
+
     BOOL isDir;
     if (![[NSFileManager defaultManager] fileExistsAtPath:self.location isDirectory:&isDir]) {
         cell.image = [NSImage imageNamed:@"away.tif"];
@@ -150,6 +168,7 @@
 }
 
 -(void)willDisplayCell:(PrettyCell*)cell {    
+    [super willDisplayCell:cell];
     cell.image = [NSImage imageNamed:@"FixedIP.tif"];
 }
 
@@ -161,8 +180,8 @@
     return [[[self class] alloc] initWithLocation:location description:description dictionary:dictionary];
 }
 
--(BOOL)isEqualToDataNodeIdentifier:(LocalDatabaseNodeIdentifier*)dni {
-    if (![dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
+-(BOOL)isEqualToDataNodeIdentifier:(RemoteDatabaseNodeIdentifier*)dni {
+    if (![dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         return NO;
     
     NSHost* selfHost; NSInteger selfPort;
@@ -207,7 +226,8 @@
     return [[[self class] alloc] initWithLocation:location description:description dictionary:dictionary];
 }
 
--(void)willDisplayCell:(PrettyCell*)cell {    
+-(void)willDisplayCell:(PrettyCell*)cell {
+    [super willDisplayCell:cell];
     cell.image = [NSImage imageNamed:@"DICOMDestination.tif"];
 }
 

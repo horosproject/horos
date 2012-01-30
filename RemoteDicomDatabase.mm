@@ -78,6 +78,14 @@
 
 @synthesize address = _address, port = _port, host = _host;
 
+-(NSString*)location {
+    return [RemoteDatabaseNodeIdentifier locationWithAddress:self.address port:self.port];
+}
+
+-(DataNodeIdentifier*)dataNodeIdentifier {
+    return [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:self.location description:self.description dictionary:nil];
+}
+
 -(NSString*)name {
 	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
 }

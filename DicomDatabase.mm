@@ -39,6 +39,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "DataNodeIdentifier.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -297,6 +298,10 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
 @synthesize isReadOnly = _isReadOnly;
+
+-(DataNodeIdentifier*)dataNodeIdentifier {
+    return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:self.baseDirPath];
+}
 
 -(NSString*)description {
 	return [NSString stringWithFormat:@"<%@ 0x%08x> \"%@\"", self.className, self, self.name];

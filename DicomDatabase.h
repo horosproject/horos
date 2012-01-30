@@ -19,7 +19,7 @@ enum {Compress, Decompress};
 extern NSString* const CurrentDatabaseVersion;
 extern NSString* const OsirixDataDirName;
 
-@class N2MutableUInteger, DicomAlbum;
+@class N2MutableUInteger, DicomAlbum, DataNodeIdentifier;
 
 /*
  This class currently only does 1/1000 of what it is planned to do later.
@@ -68,6 +68,8 @@ extern NSString* const OsirixDataDirName;
 @property BOOL isReadOnly;
 
 -(BOOL)isLocal;
+
+-(DataNodeIdentifier*)dataNodeIdentifier;
 
 #pragma mark Entities
 extern NSString* const DicomDatabaseImageEntityName;
