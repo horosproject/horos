@@ -1532,7 +1532,6 @@ extern "C"
 		selectedServer = [sourcesTable selectedRow];
 	
 	atLeastOneSource = NO;
-	BOOL firstResults = YES;
 	
 	NSString *filterValue = [patientID stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	NSMutableArray *result = [NSMutableArray array];
@@ -1568,28 +1567,34 @@ extern "C"
     if( [notification object] == [queryManager rootNode] && temporaryCFindResultArray)
     {
         if( [[self window] isVisible] && [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
-        {
-            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
-            
+        {            
             NSArray	*curResult = [[notification object] children];
             
             @synchronized( curResult)
             {
-                NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
-                
-                for( NSUInteger x = 0 ; x < [curResult count] ; x++)
+                if( firstServerRealtimeResults)
                 {
-                    int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                    [temporaryCFindResultArray removeAllObjects];
+                    [temporaryCFindResultArray addObjectsFromArray: curResult];
+                }
+                else if( [curResult count] < 4000)
+                {
+                    NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
                     
-                    if( index == -1) // not found
-                        [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
-                    else 
+                    for( NSUInteger x = 0 ; x < [curResult count] ; x++)
                     {
-                        if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
+                        int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                        
+                        if( index == -1) // not found
+                            [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
+                        else 
                         {
-                            if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                            if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
                             {
-                                [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                                if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                                {
+                                    [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                                }
                             }
                         }
                     }
@@ -1600,6 +1605,8 @@ extern "C"
                 
                 [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
             }
+            
+            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
         }
     }
 }
@@ -1638,7 +1645,7 @@ extern "C"
 			selectedServer = [sourcesTable selectedRow];
 		
 		atLeastOneSource = NO;
-		BOOL firstResults = YES;
+		firstServerRealtimeResults = YES;
 		
         if( [NSThread isMainThread])
             [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
@@ -1941,9 +1948,9 @@ extern "C"
                         [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
                     }
                     
-					if( firstResults)
+					if( firstServerRealtimeResults)
 					{
-						firstResults = NO;
+						firstServerRealtimeResults = NO;
 						[tempResultArray removeAllObjects];
 						[tempResultArray addObjectsFromArray: [queryManager queries]];
 					}
@@ -1986,6 +1993,8 @@ extern "C"
 		
 		if( [tempResultArray count])
 			[tempResultArray sortUsingDescriptors: [self sortArray]];
+        
+        firstServerRealtimeResults = YES;
 		
 	}
 	@catch (NSException * e) 

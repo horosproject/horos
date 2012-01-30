@@ -236,7 +236,7 @@ static volatile BOOL computeNumberOfStudiesForAlbums = NO;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
-@synthesize viewersListToReload, viewersListToRebuild, newFilesConditionLock, databaseLastModification;
+@synthesize viewersListToReload, viewersListToRebuild, addedFilesConditionLock, databaseLastModification;
 @synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
@@ -1577,9 +1577,9 @@ static NSConditionLock *threadLock = nil;
 			if([NSThread isMainThread])
 				[browserController newFilesGUIUpdate: browserController];
 				
-			[browserController.newFilesConditionLock lock];
+			[browserController.addedFilesConditionLock lock];
 			
-			int prevCondition = [browserController.newFilesConditionLock condition];
+			int prevCondition = [browserController.addedFilesConditionLock condition];
 			
 			for( ViewerController *a in vlToReload)
 			{
@@ -1592,8 +1592,8 @@ static NSConditionLock *threadLock = nil;
 					[browserController.viewersListToRebuild addObject: a];
 			}
 			
-			if( newStudy || prevCondition == 1) [browserController.newFilesConditionLock unlockWithCondition: 1];
-			else [browserController.newFilesConditionLock unlockWithCondition: 2];
+			if( newStudy || prevCondition == 1) [browserController.addedFilesConditionLock unlockWithCondition: 1];
+			else [browserController.addedFilesConditionLock unlockWithCondition: 2];
 			
 			if([NSThread isMainThread])
 				[browserController newFilesGUIUpdate: browserController];
@@ -1725,7 +1725,7 @@ static NSConditionLock *threadLock = nil;
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess)
 		return;
 	
-	if( [newFilesConditionLock tryLockWhenCondition: 1] || [newFilesConditionLock tryLockWhenCondition: 2])
+	if( [addedFilesConditionLock tryLockWhenCondition: 1] || [addedFilesConditionLock tryLockWhenCondition: 2])
 	{
 		NSMutableArray *cReload = [NSMutableArray arrayWithArray: viewersListToReload], *vReload = [NSMutableArray arrayWithCapacity: 20];
 		
@@ -1749,10 +1749,10 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 		
-		int condition = [newFilesConditionLock condition];
+		int condition = [addedFilesConditionLock condition];
 		
-		if( [viewersListToRebuild count] || [viewersListToReload count]) [newFilesConditionLock unlockWithCondition: condition];
-		else [newFilesConditionLock unlockWithCondition: 0];
+		if( [viewersListToRebuild count] || [viewersListToReload count]) [addedFilesConditionLock unlockWithCondition: condition];
+		else [addedFilesConditionLock unlockWithCondition: 0];
 		
 		[self newFilesGUIUpdateRun: condition viewersListToReload: vReload viewersListToRebuild: vRebuild];
 	}
@@ -1760,12 +1760,12 @@ static NSConditionLock *threadLock = nil;
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
-	[newFilesConditionLock lock];
+	[addedFilesConditionLock lock];
 	
 	[viewersListToReload removeObject: [note object]];
 	[viewersListToRebuild removeObject: [note object]];
 	
-	[newFilesConditionLock unlock];
+	[addedFilesConditionLock unlock];
 }
 
 - (void) asyncWADODownload:(NSString*) filename
@@ -5439,8 +5439,8 @@ static NSConditionLock *threadLock = nil;
 				NSLog(@"------------------- Limit Reached - Finishing autoCleanDatabaseFreeSpace");
 				
 				// This will do a outlineViewRefresh
-				if( [newFilesConditionLock tryLock])
-					[newFilesConditionLock unlockWithCondition: 1];
+				if( [addedFilesConditionLock tryLock])
+					[addedFilesConditionLock unlockWithCondition: 1];
 			}
 		}
 	}
@@ -14177,7 +14177,7 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		
 		albumNoOfStudiesCache = [[NSMutableArray alloc] init];
-		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
+		addedFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
 		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
 		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
 		persistentStoreCoordinatorDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];

@@ -3444,14 +3444,17 @@ static BOOL initialized = NO;
 	
 	#ifndef OSIRIX_LIGHT
 	#ifndef MACAPPSTORE
-	@try
-	{
-		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"**** Exception ILCrashReporter: %@", e);
-	}
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+    {
+        @try
+        {
+            [[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"**** Exception ILCrashReporter: %@", e);
+        }
+    }
 	#endif
 	#endif
 	

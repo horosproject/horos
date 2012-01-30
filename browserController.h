@@ -209,7 +209,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	IBOutlet NSArrayController		*notificationEmailArrayController;
 	NSString						*temporaryNotificationEmail, *customTextNotificationEmail;
 	
-	NSConditionLock					*newFilesConditionLock;
+	NSConditionLock					*addedFilesConditionLock;
 	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
 	
 	volatile BOOL					newFilesInIncoming;
@@ -278,7 +278,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 @property float rtstructProgressPercent;
 @property (nonatomic) NSTimeInterval databaseLastModification;
 @property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
-@property(readonly) NSConditionLock* newFilesConditionLock;
+@property(readonly) NSConditionLock* addedFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
 

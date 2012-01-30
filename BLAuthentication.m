@@ -9,6 +9,7 @@
 
 #import "BLAuthentication.h"
 #import <Security/AuthorizationTags.h>
+#include <sys/stat.h>
 
 OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
                                                          AuthorizationRef authorization, 
