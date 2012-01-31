@@ -538,6 +538,10 @@
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
 		84CD254C11ECB49A004669D6 /* OsiriXDB_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */; };
+		84CE7CA614D84F87008CA119 /* Tiling1x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */; };
+		84CE7CA714D84F87008CA119 /* Tiling1x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */; };
+		84CE7CA814D84F87008CA119 /* Tiling2x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */; };
+		84CE7CA914D84F87008CA119 /* Tiling2x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */; };
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
@@ -8497,6 +8501,8 @@
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
+		84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x4.pdf; path = Binaries/Icons/Tiling/Tiling1x4.pdf; sourceTree = "<group>"; };
+		84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x4.pdf; path = Binaries/Icons/Tiling/Tiling2x4.pdf; sourceTree = "<group>"; };
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
@@ -13021,6 +13027,8 @@
 				848A6BE814C5BBA700C936C3 /* Tiling1x2.pdf */,
 				848A6BE914C5BBA700C936C3 /* Tiling2x1.pdf */,
 				848A6BEA14C5BBA700C936C3 /* Tiling2x2.pdf */,
+				84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */,
+				84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */,
 			);
 			name = Tiling;
 			sourceTree = "<group>";
@@ -22642,6 +22650,8 @@
 				8404168B14CF195800242C63 /* Tiling3x1.pdf in Resources */,
 				8404168D14CF195800242C63 /* Tiling3x2.pdf in Resources */,
 				8404168F14CF195800242C63 /* Tiling3x3.pdf in Resources */,
+				84CE7CA614D84F87008CA119 /* Tiling1x4.pdf in Resources */,
+				84CE7CA814D84F87008CA119 /* Tiling2x4.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23019,6 +23029,8 @@
 				8404168C14CF195800242C63 /* Tiling3x1.pdf in Resources */,
 				8404168E14CF195800242C63 /* Tiling3x2.pdf in Resources */,
 				8404169014CF195800242C63 /* Tiling3x3.pdf in Resources */,
+				84CE7CA714D84F87008CA119 /* Tiling1x4.pdf in Resources */,
+				84CE7CA914D84F87008CA119 /* Tiling2x4.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
