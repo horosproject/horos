@@ -39,6 +39,8 @@
 #import "DicomDatabase+Scan.h"
 #import "DCMPix.h"
 
+#import "NSString+N2.h"
+
 /*
 #include <IOKit/IOKitLib.h>
 #include <IOKit/IOMessage.h>
@@ -336,7 +338,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		_bonjourSources = [[NSMutableDictionary alloc] init];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"searchDICOMBonjour" options:NSKeyValueObservingOptionInitial context:SearchDicomNodesContext];
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"DoNotSearchForBonjourServices" options:NSKeyValueObservingOptionInitial context:SearchBonjourNodesContext];
-		_nsbOsirix = [[NSNetServiceBrowser alloc] init];
+        _nsbOsirix = [[NSNetServiceBrowser alloc] init];
 		[_nsbOsirix setDelegate:self];
 		[_nsbOsirix searchForServicesOfType:@"_osirixdb._tcp." inDomain:@""];
 		_nsbDicom = [[NSNetServiceBrowser alloc] init];
@@ -536,10 +538,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     DataNodeIdentifier* source = [_bonjourSources objectForKey:key];
 	if (!source) return;
     
-    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-        NSLog(@"Hey");
-	
-	NSLog(@"Detected remote database: %@", service);
+    NSHost* host = [NSHost hostWithName:service.hostName];
+    if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
+        if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
+            [_bonjourSources removeObjectForKey:key];
+            return; // it's me
+        }
     
 	NSMutableArray* addresses = [NSMutableArray array];
 	for (NSData* address in service.addresses)
@@ -600,13 +604,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
 {
-	if (nsb == _nsbOsirix)
-		if ([service isEqual:[[BonjourPublisher currentPublisher] netService]])
-			return; // it's me
-	if (nsb == _nsbDicom)
-		if ([service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]])
-			return; // it's me
-	
 	NSLog(@"Bonjour service found: %@", service);
 	
 	DataNodeIdentifier* source;
