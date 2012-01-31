@@ -622,13 +622,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didRemoveService:(NSNetService*)service moreComing:(BOOL)moreComing
 {
-	if (nsb == _nsbOsirix)
-		if ([service isEqual:[[BonjourPublisher currentPublisher] netService]])
-			return; // it's me
-	if (nsb == _nsbDicom)
-		if ([service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]])
-			return; // it's me
-	
 	NSLog(@"Bonjour service gone: %@", service);
 	
     NSValue* bsk = nil;
@@ -641,6 +634,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     }
 	if (!bsk)
 		return;
+    
     DataNodeIdentifier* dni = [_bonjourSources objectForKey:bsk];
 	
     if (([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) ||

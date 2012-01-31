@@ -232,6 +232,9 @@ static NSMutableDictionary* databasesDictionary = nil;
 }
 
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
+    if (!c)
+        return nil;
+    
 	//if (databasesDictionary)
 		@synchronized(databasesDictionary) {
 			// is it the MOC of a listed database?
