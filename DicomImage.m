@@ -897,6 +897,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		
 		if( !isLocal)
 		{
+            NSString* temp = [DicomImage completePathForLocalPath:path directory:[DicomImage dbPathForManagedContext:[self managedObjectContext]]];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
+                return temp;
+            
 			if( download)
 				completePathCache = [[(RemoteDicomDatabase*)db fetchDataForImage:self maxFiles:1] retain];
 			else

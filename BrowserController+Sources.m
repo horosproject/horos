@@ -498,7 +498,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		} else 
         { // add remote databases detected with bonjour
 			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected) { // && dni.location
+				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected && dni.location) {
 					dni.detected = YES;
                     if (![_browser.sources.content containsObject:dni])
                         [_browser.sources addObject:dni];
@@ -519,7 +519,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		} else
         { // add dicom nodes detected with bonjour
 			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected) { // && dni.location
+				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected && dni.location) {
 					dni.detected = YES;
                     if (![_browser.sources.content containsObject:dni])
                         [_browser.sources addObject:dni];

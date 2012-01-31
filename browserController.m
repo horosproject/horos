@@ -7443,11 +7443,11 @@ static BOOL withReset = NO;
 - (void)drawerToggle: (id)sender
 {
     NSView* left = [[splitDrawer subviews] objectAtIndex:0];
-    BOOL expand = [splitDrawer isSubviewCollapsed:0] || [left isHidden];
+    BOOL shouldExpand = [left isHidden] || [splitDrawer isSubviewCollapsed:0];
     
-    if (expand)
-        [splitDrawer setPosition:160 ofDividerAtIndex:0];
-    else [splitDrawer setPosition:0 ofDividerAtIndex:0];
+    [left setHidden:!shouldExpand];
+    
+    [splitDrawer resizeSubviewsWithOldSize:splitDrawer.bounds.size];
     
 /*    NSRect f = [_bottomSplit frame];
     if (expand && f.origin.x < 100) {
@@ -7462,7 +7462,7 @@ static BOOL withReset = NO;
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
-{	
+{
 	if (sender == splitViewHorz)
 		return oMatrix.cellSize.height;
 

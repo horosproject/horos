@@ -104,8 +104,11 @@
 -(void)willDisplayCell:(PrettyCell*)cell {    
     static NSColor* gray = nil;
     if (!gray) gray = [[NSColor colorWithDeviceWhite:0.4 alpha:1] retain];
-    if (!self.available)
+    
+    if (!self.available) {
         cell.textColor = gray;
+    }
+    
     if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
         cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
 }

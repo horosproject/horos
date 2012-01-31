@@ -173,6 +173,50 @@
 	return [self.tempDirPath stringByAppendingPathComponent:[DicomFile NSreplaceBadCharacter:name]];
 }
 
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
+    NSArray* r = [super addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+    
+    NSMutableArray* filesToSend = [NSMutableArray arrayWithCapacity:r.count];
+    for (NSInteger i = 0; i < r.count; ++i) {
+        DicomImage* image = [r objectAtIndex:i];
+        NSString* path = image.completePath;
+        if ([path hasPrefix:self.dataDirPath]) { // is in DATABASE dir, remote databases work in TEMP dir only
+            NSString* tpath = [self localPathForImage:image];
+            [[NSFileManager defaultManager] removeItemAtPath:tpath error:NULL];
+            [[NSFileManager defaultManager] moveItemAtPath:path toPath:tpath error:NULL];
+            path = image.pathString = tpath;
+            image.pathNumber = nil;
+            // [image clearCompletePathCache]; useless
+        } 
+        
+        [filesToSend addObject:path];
+    }
+    
+    if (filesToSend.count)
+        [self performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, [NSNumber numberWithBool:generatedByOsiriX], nil]];
+    
+    return r;
+}
+
+-(void)_uploadFilesAtPathsGeneratedByOsiriX:(NSArray*)io {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        NSArray* paths = [io objectAtIndex:0];
+        BOOL byOsiriX = [[io objectAtIndex:1] boolValue];
+        
+        NSThread* thread = [NSThread currentThread];
+        thread.name = NSLocalizedString(@"Remote DICOM add...", @"name of thread that sends dicom files to the remote database after local addFiles");
+        thread.status = NSLocalizedString(@"Sending data...", nil);
+        [[ThreadsManager defaultManager] addThreadAndStart:thread];
+        
+        [self uploadFilesAtPaths:paths generatedByOsiriX:byOsiriX];
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
+}
+
 #pragma mark Communication
 
 +(void)_data:(NSMutableData*)data appendInt:(unsigned int)i {

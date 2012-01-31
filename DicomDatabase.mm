@@ -1628,21 +1628,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								// Relations
 								[image setValue:seriesTable forKey:@"series"];
 								
-								//									if (isBonjour)
-								//									{
-								//										if (local)
-								//										{
-								//											NSString *bonjourPath = [BonjourBrowser uniqueLocalPath: image];
-								//											[[NSFileManager defaultManager] removeItemAtPath: bonjourPath error: nil];
-								//											[[NSFileManager defaultManager] moveItemAtPath: newFile toPath: bonjourPath error: nil];
-								//											[bonjourFilesToSend addObject: bonjourPath];
-								//										}
-								//										else
-								//											[bonjourFilesToSend addObject: newFile];
-								//										
-								//										NSLog( @"------ AddFiles to a shared Bonjour DB: %@", [newFile lastPathComponent]);
-								//									}
-								
 								if (DICOMSR == NO)
 								{
 									if (COMMENTSAUTOFILL)
@@ -1818,14 +1803,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         // Reapply annotations from DICOMSR file
         for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
-        
-        //				if (isBonjour && [bonjourFilesToSend count] > 0)
-        //				{
-        //					if (generatedByOsiriX)
-        //						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourGeneratedByOsiriXDB:) toTarget: browserController withObject: bonjourFilesToSend];
-        //					else 
-        //						[NSThread detachNewThreadSelector: @selector( sendFilesToCurrentBonjourDB:) toTarget: browserController withObject: bonjourFilesToSend];
-        //				}
         
     }
     @catch (NSException* e)
