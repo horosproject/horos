@@ -1071,52 +1071,56 @@ extern "C"
 	NSArray *local_studyArrayCache = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
-	@try
-	{
-		NSError *error = nil;
-		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
-		
-		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		[context lock];
-		
-		@try
-		{
-			local_studyArrayCache = [context executeFetchRequest:request error: &error];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		[context unlock];
-		
-		@try
-		{
-			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		if( local_studyArrayCache && local_studyArrayInstanceUID)
-		{
-			if( [NSThread isMainThread])
-				[self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
-			else
-				[self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
-		}
-		else
-			NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
+    static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
+    @synchronized( kComputeStudyArrayInstanceUIDLock)
+    {
+        @try
+        {
+            NSError *error = nil;
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
+            
+            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [request setPredicate: predicate];
+            
+            [context lock];
+            
+            @try
+            {
+                local_studyArrayCache = [context executeFetchRequest:request error: &error];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            [context unlock];
+            
+            @try
+            {
+                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            if( local_studyArrayCache && local_studyArrayInstanceUID)
+            {
+                if( [NSThread isMainThread])
+                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+                else
+                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
+            }
+            else
+                NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
+        }
+        @catch (NSException * e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+    }
 	
 	afterDelayRefresh = NO;
 	
