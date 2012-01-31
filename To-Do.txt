@@ -13,7 +13,7 @@
 
 A:
 (OK) DB remote: black image (multi-load)
-- DB Remote: ROIs
+(OK)- DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
 (OK) Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling
@@ -27,9 +27,11 @@ A:
 (OK) iPod doesn't appear automatically
 (OK) iPod eject button
 
+- Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 
-- Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
-	
+Added features:
+- Access DICOM CD/DVD as a database
+
 ------------------------------------------------------------------------------------------
 
 - WebPortal: LDAP/OpenDAP support
