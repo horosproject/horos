@@ -192,23 +192,41 @@ void restartSTORESCP()
 
 @end
 
-@implementation BrowserController
+@interface BrowserControllerClassHelper : NSObject
+@end
 
-+(void)initializeBrowserControllerClass
-{
-	[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[BrowserController class]];
+@implementation BrowserControllerClassHelper
+
+static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassHelperContext";
+
+-(id)init {
+    if ((self = [super init])) {
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:BrowserControllerClassHelperContext];
+    }
+    
+    return self;
 }
 
-+(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
-	if (context == BrowserController.class)
+	if (context == BrowserControllerClassHelperContext)
     {
 		if ([keyPath isEqualToString:valuesKeyPath(OsirixCanActivateDefaultDatabaseOnlyDefaultsKey)])
         {
 			if ([NSUserDefaults canActivateAnyLocalDatabase])
-				[DicomDatabase setActiveLocalDatabase:[[self currentBrowser] database]];
+				[DicomDatabase setActiveLocalDatabase:[[BrowserController currentBrowser] database]];
 		}
 	}
+}
+
+@end
+
+@implementation BrowserController
+
++(void)initializeBrowserControllerClass
+{
+	static BrowserControllerClassHelper* helper = nil;
+    if (!helper) helper = [[BrowserControllerClassHelper alloc] init];
 }
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
@@ -16578,7 +16596,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSString*)getLocalDCMPath: (NSManagedObject*)obj : (long)no
 {
-	if (![_database isLocal]) return [(RemoteDicomDatabase*)_database fetchDataForImage:(DicomImage*)obj maxFiles:no];
+	if (![_database isLocal]) return [(RemoteDicomDatabase*)_database cacheDataForImage:(DicomImage*)obj maxFiles:no];
 	else return [obj valueForKey:@"completePath"];
 }
 

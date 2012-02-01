@@ -540,7 +540,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
 }
 
--(NSString*)fetchDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles { // maxFiles is veeery indicative
+-(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles { // maxFiles is veeery indicative
 	NSString* localPath = [self localPathForImage:image];
 	
 	if ([NSFileManager.defaultManager fileExistsAtPath:localPath])

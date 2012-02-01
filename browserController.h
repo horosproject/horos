@@ -249,7 +249,6 @@ extern NSString* O2AlbumDragType;
 //	NSThread* AupdateStatsThread;
 	id _activityHelper;
     
-    
     IBOutlet NSSplitView *bannerSplit;
     IBOutlet NSButton *banner;
 }

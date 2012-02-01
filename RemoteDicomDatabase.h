@@ -40,9 +40,9 @@
 
 -(NSThread*)initiateUpdate;
 
+-(NSString*)cacheDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles;
 -(NSString*)localPathForImage:(DicomImage*)image;
 
--(NSString*)fetchDataForImage:(DicomImage*)image maxFiles:(NSInteger)maxFiles;
 -(void)uploadFilesAtPaths:(NSArray*)paths;
 -(void)uploadFilesAtPaths:(NSArray*)paths generatedByOsiriX:(BOOL)generatedByOsiriX;
 -(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum;

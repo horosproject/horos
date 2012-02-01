@@ -148,7 +148,7 @@
         @try
         {
             DicomImage* dicomImage = [dicomImages objectAtIndex:i];
-            NSString* srcPath = [srcDatabase fetchDataForImage:dicomImage maxFiles:0];
+            NSString* srcPath = [srcDatabase cacheDataForImage:dicomImage maxFiles:0];
             
             if (srcPath)
             {
