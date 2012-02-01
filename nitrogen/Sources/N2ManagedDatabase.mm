@@ -209,8 +209,8 @@
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
--(NSManagedObject*)objectWithID:(NSString*)theId {
-	return [self.managedObjectContext objectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:theId]]];
+-(id)objectWithID:(NSString*)urlString {
+	return [self.managedObjectContext objectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:urlString]]];
 }
 
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e {

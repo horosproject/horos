@@ -1635,8 +1635,8 @@ static NSConditionLock *threadLock = nil;
 -(long)saveDatabase:(NSString*)path context:(NSManagedObjectContext*)context // __deprecated
 {
 	NSError* err = nil;
-	DicomDatabase* db = [DicomDatabase databaseForContext:context];
-	[db save:&err];
+	DicomDatabase* database = [DicomDatabase databaseForContext:context];
+	[database save:&err];
 	return [err code];
 
 //	long retError = 0;
@@ -3791,13 +3791,12 @@ static NSConditionLock *threadLock = nil;
 
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete
 {
-	NSManagedObjectContext *context = self.managedObjectContext;
 	NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
 	
 	[reportFilesToCheck removeAllObjects];
 	
-	[context lock];
+	[_database lock];
 	
 	@try
 	{
@@ -3847,7 +3846,7 @@ static NSConditionLock *threadLock = nil;
 				}
 			}
 			
-			[context deleteObject: obj];
+			[_database.managedObjectContext deleteObject:obj];
 		}
 	}
 	@catch ( NSException *e)
@@ -3863,7 +3862,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		[context save: nil];
+		[_database save: nil];
 	}
 	@catch( NSException *e)
 	{	
@@ -3879,7 +3878,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if( [series isDeleted] == NO && [series isFault] == NO && [[series valueForKey:@"images"] count] == 0)
 				{
-					[context deleteObject: series];
+					[_database.managedObjectContext deleteObject:series];
 				}
 				else if( [series isDeleted] == NO && [series isFault] == NO)
 				{
@@ -3895,7 +3894,7 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{	
-			[context save: nil];
+			[_database save:nil];
 		}
 		@catch( NSException *e)
 		{
@@ -3911,7 +3910,7 @@ static NSConditionLock *threadLock = nil;
 				{
 					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
 					
-					[context deleteObject: study];
+					[_database.managedObjectContext deleteObject:study];
 				}
 				else if( [study isDeleted] == NO && [study isFault] == NO)
 				{
@@ -3942,7 +3941,7 @@ static NSConditionLock *threadLock = nil;
 	[wait close];
 	[wait release];
 		
-	[context unlock];
+	[_database unlock];
 }
 
 - (void) delObjects:(NSMutableArray*) objectsToDelete
@@ -4550,7 +4549,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key
 {
-	DatabaseIsEdited = NO;
+    DatabaseIsEdited = NO;
 	
 	[_database lock];
 	
@@ -8170,7 +8169,7 @@ static BOOL needToRezoom;
                         _cachedAlbumsContext = nil;
                     }
                     
-					[_database save:NULL];
+					[_database save:NULL]; // TODO: why?
 					
 					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 					
@@ -8235,7 +8234,7 @@ static BOOL needToRezoom;
 //							cachedAlbumsManagedObjectContext = nil;
 //						}
 						
-						[_database save:NULL];
+						[_database save:NULL]; // TODO: why?
 						
 						[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 						
@@ -9481,9 +9480,7 @@ static BOOL needToRezoom;
 						
 						// Create the new series
 						
-						NSManagedObjectContext *context = [self managedObjectContext];
-						
-						[context lock];
+						[_database lock];
 						
 						@try
 						{					
@@ -9493,9 +9490,9 @@ static BOOL needToRezoom;
 							
 							for( NSArray *array in splittedSeries)
 							{
-								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext:_database.managedObjectContext];
 								
-								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext:_database.managedObjectContext] attributesByName] allKeys]) // Duplicate values
 								{
 									id value = nil;
 									
@@ -9513,9 +9510,9 @@ static BOOL needToRezoom;
 								// Add the images
 								for( DicomImage *image in array)
 								{
-									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext:_database.managedObjectContext];
 								
-									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext:_database.managedObjectContext] attributesByName] allKeys]) // Duplicate values
 									{
 										[newImage setValue: [image valueForKey: name] forKey: name];
 									}
@@ -9527,17 +9524,18 @@ static BOOL needToRezoom;
 								[newSeries setValue: nil forKey:@"thumbnail"];
 							}
 								
-							[context deleteObject: originalSeries];
+							[_database.managedObjectContext deleteObject:originalSeries];
 							
-							[context save: nil];
+							[_database save: nil];
 						}
 						@catch (NSException * e)
 						{
                             N2LogExceptionWithStackTrace(e/*, @"reparsing"*/);
 						}
-						
-						[context unlock];
-						
+						@finally {
+                            [_database unlock];
+						}
+                        
 						[self refreshDatabase: self];
 						[self refreshMatrix: self];
 						
@@ -9549,12 +9547,10 @@ static BOOL needToRezoom;
 						
 						// Create the new series
 						
-						NSManagedObjectContext *context = [self managedObjectContext];
-						
-						[context lock];
+						[_database lock];
 						
 						@try
-						{					
+						{
 							int reparseIndex = 1;
 							
 							DicomSeries *originalSeries = [[[splittedSeries lastObject] lastObject] valueForKey: @"Series"];
@@ -9566,9 +9562,9 @@ static BOOL needToRezoom;
 								for ( NSArray *array in splittedSeries)
 									[array4D addObject: [array objectAtIndex: i]];
 								
-								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext: context];
+								DicomSeries *newSeries = [NSEntityDescription insertNewObjectForEntityForName: @"Series" inManagedObjectContext:_database.managedObjectContext];
 								
-								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+								for ( NSString *name in [[[NSEntityDescription entityForName: @"Series" inManagedObjectContext:_database.managedObjectContext] attributesByName] allKeys]) // Duplicate values
 								{
 									id value = nil;
 									
@@ -9586,9 +9582,9 @@ static BOOL needToRezoom;
 								// Add the images
 								for( DicomImage *image in array4D)
 								{
-									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext: context];
+									DicomImage *newImage = [NSEntityDescription insertNewObjectForEntityForName: @"Image" inManagedObjectContext:_database.managedObjectContext];
 								
-									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext: context] attributesByName] allKeys]) // Duplicate values
+									for ( NSString *name in [[[NSEntityDescription entityForName: @"Image" inManagedObjectContext:_database.managedObjectContext] attributesByName] allKeys]) // Duplicate values
 									{
 										[newImage setValue: [image valueForKey: name] forKey: name];
 									}
@@ -9600,16 +9596,17 @@ static BOOL needToRezoom;
 								[newSeries setValue: nil forKey:@"thumbnail"];
 							}
 							
-							[context deleteObject: originalSeries];
+							[_database.managedObjectContext deleteObject: originalSeries];
 							
-							[context save: nil];
+							[_database save:nil];
 						}
 						@catch (NSException * e)
 						{
                             N2LogExceptionWithStackTrace(e/*, @"reparsing"*/);
 						}
-						
-						[context unlock];
+						@finally {
+                            [_database unlock];
+                        }
 						
 						[self refreshDatabase: self];
 						[self refreshMatrix: self];
@@ -13293,7 +13290,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							
 							@try
 							{
-								[self.userManagedObjectContext save: nil];
+								[[[WebPortal defaultWebPortal] database] save:nil];
 							}
 							@catch (NSException * e)
 							{
@@ -13410,7 +13407,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 									
 									@try
 									{
-										[self.userManagedObjectContext save: nil];
+										[[[WebPortal defaultWebPortal] database] save:nil];
 									}
 									@catch (NSException * e)
 									{

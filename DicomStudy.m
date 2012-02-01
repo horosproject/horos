@@ -1497,7 +1497,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[self managedObjectContext] save: nil];
+                
+                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
+				[database save:nil];
 				
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
@@ -1589,8 +1591,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[self managedObjectContext] save: nil];
-				
+
+                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
+				[database save:nil];
+
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
 			@catch (NSException * e)
@@ -1646,8 +1650,10 @@ static NSRecursiveLock *dbModifyLock = nil;
 						[[self managedObjectContext] deleteObject: i];
 					}
 				}
-				[[self managedObjectContext] save: nil];
-				
+
+                DicomDatabase* database = [DicomDatabase databaseForContext:self.managedObjectContext];
+				[database save:nil];
+
 				[r setValue: [NSNumber numberWithBool: YES] forKeyPath: @"inDatabaseFolder"];
 			}
 			@catch (NSException * e)

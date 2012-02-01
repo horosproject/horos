@@ -49,7 +49,7 @@
 -(id)independentDatabase;
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
--(NSManagedObject*)objectWithID:(NSString*)theId;
+-(id)objectWithID:(NSString*)urlString;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err;

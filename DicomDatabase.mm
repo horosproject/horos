@@ -54,6 +54,8 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 -(void)modifyDefaultAlbums;
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
+-(NSString*)unsavedAddedFilesPlistPath;
++(NSArray*)allDatabases;
 
 @end
 
@@ -61,6 +63,15 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 +(void)initializeDicomDatabaseClass {
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
+    [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(_saveUnsavedAddedFilesTimerCallback:) userInfo:NULL repeats:YES];
+}
+
++(void)_saveUnsavedAddedFilesTimerCallback:(NSTimer*)timer {
+	for (DicomDatabase* dbi in [self allDatabases])
+		@synchronized (dbi.unsavedAddedFiles) {
+            if (dbi.unsavedAddedFiles.count)
+                [dbi save];
+        }
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
@@ -174,7 +185,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 		}
 }
 
--(oneway void)release { // TODO: remove logs..
+-(oneway void)release {
 	NSInteger prc;
 	@synchronized(self) {
 		prc = self.retainCount;
@@ -301,6 +312,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
 @synthesize isReadOnly = _isReadOnly;
+@synthesize unsavedAddedFiles = _unsavedAddedFiles;
 
 -(DataNodeIdentifier*)dataNodeIdentifier {
     return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:self.baseDirPath];
@@ -352,7 +364,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	_dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
 	_processFilesLock = [[NSRecursiveLock alloc] init];
 	_importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
-	
+    
 	// create dirs if necessary
 	
 	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
@@ -369,6 +381,27 @@ static DicomDatabase* activeLocalDatabase = nil;
 	if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
 		[NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
 	
+    if ([DicomDatabase existingDatabaseAtPath:p] == self) // if is main (not independent)
+        if ([[NSFileManager defaultManager] fileExistsAtPath:self.unsavedAddedFilesPlistPath]) {
+            NSArray* unsavedAddedFiles = [NSArray arrayWithContentsOfFile:self.unsavedAddedFilesPlistPath];
+            NSLog(@"Warning: some files (%d) were added but OsiriX didn't get to save their indexes into the DB file, reimporting these files...", unsavedAddedFiles.count);
+
+            @try {
+                NSMutableArray* completePaths = [NSMutableArray array];
+                for (NSString* path in unsavedAddedFiles)
+                    [completePaths addObject:[DicomImage completePathForLocalPath:path directory:self.dataBaseDirPath]];
+                
+                [self addFilesAtPaths:completePaths];
+                
+                [self save];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+                // TODO: this is bad
+            }
+            
+            [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
+        }
+    
 	// report templates
 #ifndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
@@ -402,6 +435,8 @@ static DicomDatabase* activeLocalDatabase = nil;
         [self modifyDefaultAlbums];
         [self initRouting];
         [self initClean];
+        
+        _unsavedAddedFiles = [[NSMutableArray alloc] init];
 	
         [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	}
@@ -412,7 +447,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(void)dealloc {
 	[self deallocClean];
 	[self deallocRouting];
-
+    
 	NSRecursiveLock* temp;
 	
 	temp = _importFilesFromIncomingDirLock;
@@ -426,7 +461,11 @@ static DicomDatabase* activeLocalDatabase = nil;
 	_processFilesLock = nil;
 	[temp unlock];
 	[temp release];
-	
+    
+    @synchronized (_unsavedAddedFiles) {
+        [_unsavedAddedFiles release];
+	}
+        
 	self.dataFileIndex = nil;
 	self.dataBaseDirPath = nil;
 	self.baseDirPath = nil;
@@ -466,7 +505,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return context;
 }
 
--(BOOL)save:(NSError **)err {
+-(BOOL)save:(NSError**)err {
 	// TODO: BrowserController did this...
 //	if ([[AppController sharedAppController] isSessionInactive]) {
 //		NSLog(@"---- Session is not active : db will not be saved");
@@ -479,10 +518,20 @@ static DicomDatabase* activeLocalDatabase = nil;
 	@try {
         NSError* error = nil;
         if (!err) err = &error;
+        
 		b = [super save:err];
-        if (*err) NSLog(@"DicomDatabase save error: %@", *err);
-		[NSUserDefaults.standardUserDefaults setObject:CurrentDatabaseVersion forKey:@"DATABASEVERSION"];
-		[CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        
+        @synchronized (_unsavedAddedFiles) {
+            [_unsavedAddedFiles removeAllObjects];
+            [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
+        }
+        
+        if (*err)
+            NSLog(@"DicomDatabase save error: %@", *err);
+		else {
+            [NSUserDefaults.standardUserDefaults setObject:CurrentDatabaseVersion forKey:@"DATABASEVERSION"];
+            [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        }
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -576,6 +625,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSString*)loadingFilePath {
 	return [self.baseDirPath stringByAppendingPathComponent:@"Loading"];
+}
+
+-(NSString*)unsavedAddedFilesPlistPath {
+	return [self.baseDirPath stringByAppendingPathComponent:@"UnaddedFilesIndex.plist"];
 }
 
 -(const char*)baseDirPathC {
@@ -1145,7 +1198,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		
 		[thread enterOperationWithRange:thread.progress:0];
-		NSArray* addedImagesArray = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+		NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1221,7 +1274,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
  album
  
  */
--(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
+-(NSArray*)addFilesInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
 	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
@@ -1507,7 +1560,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						/*********** Find image object *************/
 						
 						BOOL local = NO;
-						
 						if (dataDirPath && [newFile hasPrefix: dataDirPath])
 							local = YES;
 						
@@ -1824,7 +1876,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		@try
 		{
-			NSAutoreleasePool* pool2 = [NSAutoreleasePool new];
+            if (addedImagesArray.count)
+                @synchronized (_unsavedAddedFiles) {
+                    [_unsavedAddedFiles addObjectsFromArray:[addedImagesArray valueForKey:@"path"]];
+                    [self performSelectorInBackground:@selector(_writeUnsavedAddedFilesPlistThread) withObject:nil];
+                }
+            
+            NSAutoreleasePool* pool2 = [NSAutoreleasePool new];
 			@try {
 				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
 				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
@@ -1859,35 +1917,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             N2LogExceptionWithStackTrace(ne);
 		}
-		
-		BOOL addFailed = NO;
-		
-		@try
+        
+        self.timeOfLastModification = [NSDate timeIntervalSinceReferenceDate];
+        if (postNotifications)
         {
-			NSError* err = nil;
-			if (![self save:&err])
-            {
-				NSLog( @"***** error saving DB: %@", [[err userInfo] description]);
-				NSLog( @"***** saveDatabase ERROR: %@", [err localizedDescription]);
-				addFailed = YES;
-			}
-		} @catch (NSException* e)
-        {
-			N2LogExceptionWithStackTrace(e);
-		}
-		
-		if (addFailed == NO)
-        {
-			self.timeOfLastModification = [NSDate timeIntervalSinceReferenceDate];
-			if (postNotifications)
-            {
-				if (growlString)
-					[self performSelectorOnMainThread:@selector(_growlImagesAdded:) withObject:growlString waitUntilDone:NO];
-                
-				if (newStudy && growlStringNewStudy)
-					[self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
-			}
-		}
+            if (growlString)
+                [self performSelectorOnMainThread:@selector(_growlImagesAdded:) withObject:growlString waitUntilDone:NO];
+            
+            if (newStudy && growlStringNewStudy)
+                [self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
+        }
 	
 	}
     @catch (NSException* e)
@@ -1898,6 +1937,20 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     [pool release];
     
 	return addedImagesArray;
+}
+
+-(void)_writeUnsavedAddedFilesPlistThread
+{
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        @synchronized (_unsavedAddedFiles) {
+            [_unsavedAddedFiles writeToFile:self.unsavedAddedFilesPlistPath atomically:YES];
+        }
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
 }
 
 -(void)_notify:(NSArray*)args

@@ -1462,25 +1462,23 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			
 			if (singleProcess)
 			{
-				NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
-				[dbContext retain];
+				DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
 				
-				if( [dbContext tryLock])
+				if ([database tryLock])
 				{
 					@try
 					{
-						[dbContext save: nil];
+						[database save:nil];
 					}
 					@catch (NSException * e)
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
-					
-					[dbContext unlock];
+					@finally {
+                        [database unlock];
+                    }
 				}
-				
-				[dbContext release];
-				
+								
 				@try
 				{
 					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
@@ -1514,23 +1512,23 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
-					NSManagedObjectContext *dbContext = [[BrowserController currentBrowser] localManagedObjectContext];
-					[dbContext retain];
-					if( [dbContext tryLock])
+                    DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
+
+					if ([database tryLock])
 					{
 						@try
 						{
-							[dbContext save: nil];
+							[database save:nil];
 						}
 						@catch (NSException * e)
 						{
                             N2LogExceptionWithStackTrace(e);
 						}
-						[dbContext unlock];
+                        @finally {
+                            [database unlock];
+                        }
 					}
-					
-					[dbContext release];
-					
+                    
                     if( [[DicomDatabase defaultDatabase] isLocal] == NO)
                         NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
                     

@@ -35,6 +35,7 @@ extern NSString* const OsirixDataDirName;
 	BOOL _isFileSystemFreeSizeLimitReached;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 	NSTimeInterval _timeOfLastModification;
+    NSMutableArray* _unsavedAddedFiles;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
 	// +Routing
 	NSMutableArray* _routingSendQueues;
@@ -66,6 +67,7 @@ extern NSString* const OsirixDataDirName;
 @property(readwrite,retain,nonatomic) NSString* name;
 @property(readwrite) NSTimeInterval timeOfLastModification;
 @property BOOL isReadOnly;
+@property(readonly) NSArray* unsavedAddedFiles;
 
 -(BOOL)isLocal;
 
@@ -121,7 +123,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications;	
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems;	
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;	
--(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;
+-(NSArray*)addFilesInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX;
 
 
 

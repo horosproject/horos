@@ -1097,7 +1097,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't delete user <b>%@</b> because he doesn't exist.", @"Web Portal, admin, user edition, delete error (%@ is user.name)"), originalName]];
 		else {
 			[self.portal.database.managedObjectContext deleteObject:tempUser];
-			[tempUser.managedObjectContext save:NULL];
+			[self.portal.database save:NULL];
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"User <b>%@</b> successfully deleted.", @"Web Portal, admin, user edition, delete ok (%@ is user.name)"), originalName]];
 		}
 	}
@@ -1196,7 +1196,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					if (![remainingStudies containsObject:iwpStudy])
 						[webUser removeStudiesObject:iwpStudy];
 				
-				[webUser.managedObjectContext save:NULL];
+				[self.portal.database save:NULL];
 				
 				[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"Changes for user <b>%@</b> successfully saved.", nil), webUser.name]];
 				luser = webUser;
