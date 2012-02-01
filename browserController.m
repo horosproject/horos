@@ -10983,6 +10983,7 @@ static BOOL withReset = NO;
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil) action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
+    [contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action:@selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
@@ -11035,6 +11036,8 @@ static BOOL withReset = NO;
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Sub-Selection", nil)];
+	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Reparsed Series", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
@@ -12999,7 +13002,7 @@ static BOOL needToRezoom;
 		
 		if( [toOpenArray count] == 1)	// Just one thumbnail is selected
 		{
-			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || openReparsedSeriesFlag)
 			{
 				NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
 				NSMutableArray	*splittedSeries = [NSMutableArray array];
@@ -13643,6 +13646,13 @@ static BOOL needToRezoom;
 	openSubSeriesFlag = YES;
 	[self viewerDICOM: sender];
 	openSubSeriesFlag = NO;
+}
+
+- (void) viewerReparsedSeries: (id) sender
+{
+    openReparsedSeriesFlag = YES;
+    [self viewerDICOM: sender];
+    openReparsedSeriesFlag = NO;
 }
 
 - (void) viewerDICOM: (id)sender
@@ -14442,7 +14452,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil)  action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed Series", nil)  action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
+    [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease]];
@@ -21270,6 +21281,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( searchForCurrentPatient:) || 
 			[toolbarItem action] == @selector( viewerDICOM:) || 
 		    [toolbarItem action] == @selector( viewerSubSeriesDICOM:) || 
+            [toolbarItem action] == @selector( viewerReparsedSeries:) ||
 			[toolbarItem action] == @selector( MovieViewerDICOM:) || 
 			[toolbarItem action] == @selector( viewerDICOMMergeSelection:) || 
 			[toolbarItem action] == @selector( revealInFinder:) || 

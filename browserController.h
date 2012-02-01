@@ -220,7 +220,7 @@ enum dbObjectSelection {oAny,oMiddle,oFirstForFirst};
 	BOOL							rtstructProgressBar;
 	float							rtstructProgressPercent;
 	
-	BOOL							avoidRecursive, openSubSeriesFlag;
+	BOOL							avoidRecursive, openSubSeriesFlag, openReparsedSeriesFlag;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
 	NSTimeInterval					lastCheckIncoming;
