@@ -433,6 +433,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 - (void) dealloc
 {
+    NSLog(@"OSIWindowController released");
+    
     [NSObject cancelPreviousPerformRequestsWithTarget: self];
     
     [[NSNotificationCenter defaultCenter] removeObserver: self];

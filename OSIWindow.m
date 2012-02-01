@@ -31,4 +31,11 @@ static BOOL dontConstrainWindow = NO;
 	return [super constrainFrameRect: frameRect toScreen: screen]; 
 }
 
+- (void) dealloc
+{
+    NSLog( @"OSIWindow dealloc");
+    
+    [super dealloc];
+}
+
 @end
