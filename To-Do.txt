@@ -39,7 +39,7 @@ Added features:
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - WebPortal: Burn option if the CD/DVD is installed
-- WebPortal: create albums and add studies to albums (admin)
+- WebPortal: create albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
 - 2D Viewer: Windows Tiling popup toolbar item
 - http://code.google.com/p/exposure-render/

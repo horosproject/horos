@@ -947,18 +947,19 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
                         if( webPortalDefaultTitle.length == 0)
                             webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
-                        [emailMessage appendString: webPortalDefaultTitle];
-                        [emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: @"\r\r"];
                         
-						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+                        [emailMessage appendString: webPortalDefaultTitle];
+                        [emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: @"<br><br>"];
+                        
+						[emailMessage appendString: NSLocalizedString( @"Username:<br><br>", nil)];
 						[emailMessage appendString: u.name];
-						[emailMessage appendString: @"\r\r"];
-						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+						[emailMessage appendString: @"<br><br>"];
+						[emailMessage appendString: NSLocalizedString( @"Password:<br><br>", nil)];
 						[emailMessage appendString: u.password];
-						[emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: NSLocalizedString( @"Login here:\r", nil)];
+						[emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: NSLocalizedString( @"Login here:<br>", nil)];
                         [emailMessage appendString: self.portal.URL];
                         
 						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
