@@ -484,13 +484,17 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSNumber *)numberImages{
 	return _numberImages;
 }
-- (NSMutableArray *)children{
-	return _children;
+- (NSMutableArray *)children
+{
+    return _children;
 }
 - (void)purgeChildren
 {
-	[_children release];
-	_children = nil;
+    @synchronized( self)
+    {
+        [_children release];
+        _children = nil;
+    }
 }
 - (void)addChild:(DcmDataset *)dataset{
 
@@ -871,40 +875,66 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		
 		[self queryWithValues: nil dataset: dataset];
 		
-		for( DCMTKImageQueryNode *image in [self children])
-		{
-			if( [image uid])
-			{
-				if( [localObjectUIDs containsString: [image uid]] == NO)
-				{
-					NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
-					[urlToDownload addObject: url];
-				}
-			}
-			else NSLog( @"****** no image uid !");
-		}
+        NSArray *childrenArray = nil;
+        @synchronized( self)
+        {
+            childrenArray = [[self children] retain];
+        }
+        
+        @try
+        {
+            for( DCMTKImageQueryNode *image in childrenArray)
+            {
+                if( [image uid])
+                {
+                    if( [localObjectUIDs containsString: [image uid]] == NO)
+                    {
+                        NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [self uid], [image seriesInstanceUID], [image uid], ts]];
+                        [urlToDownload addObject: url];
+                    }
+                }
+                else NSLog( @"****** no image uid !");
+            }
+        }
+        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+        
+        [childrenArray release];
 		
 		[self purgeChildren];
 	}
 	
 	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
 	{
-		// search the images
-		if( [self children] == nil)
-			[self queryWithValues: nil];
+        NSArray *childrenArray = nil;
+        @synchronized( self)
+        {
+            childrenArray = [self children];
+            
+            // search the images
+            if( childrenArray == nil)
+                [self queryWithValues: nil];
 		
-		for( DCMTKQueryNode *image in [self children])
-		{
-			if( [image uid])
-			{
-				if( [localObjectUIDs containsString: [image uid]] == NO)
-				{
-					NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
-					[urlToDownload addObject: url];
-				}
-			}
-			else NSLog( @"****** no image uid !");
-		}
+            childrenArray = [[self children] retain];
+        }
+        
+        @try
+        {
+            for( DCMTKQueryNode *image in childrenArray)
+            {
+                if( [image uid])
+                {
+                    if( [localObjectUIDs containsString: [image uid]] == NO)
+                    {
+                        NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", [study uid], [self uid], [image uid], ts]];
+                        [urlToDownload addObject: url];
+                    }
+                }
+                else NSLog( @"****** no image uid !");
+            }
+        }
+        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+        
+        [childrenArray release];
 		
 		[self purgeChildren];
 	}
