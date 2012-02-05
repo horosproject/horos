@@ -2535,6 +2535,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					[serieID release];
 					serieID = n;
 				}
+               
+               if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
+               {
+                   NSString	*n;
+                   
+                   n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
+                   [serieID release];
+                   serieID = n;
+               }
 				
 				//Segregate by TE  values
 				if( echoTime != nil && splitMultiEchoMR)
@@ -3025,7 +3034,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject: studyID forKey: @"seriesID"];
+                if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
+                    [dicomElements setObject:serieID forKey:@"seriesID"];
+                else
+                    [dicomElements setObject: studyID forKey: @"seriesID"];
+                
 				[dicomElements setObject: [NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey: @"imageID"];
 			}
 			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series
@@ -3467,6 +3480,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[serieID release];
 			serieID = n;
 		}
+        
+        if( [dcmObject attributeValueWithName: @"SOPClassUID"] != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: [dcmObject attributeValueWithName: @"SOPClassUID"]])
+		{
+			NSString	*n;
+			
+			n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , [dcmObject attributeValueWithName: @"SOPClassUID"]];
+			[serieID release];
+			serieID = n;
+		}
 		
 		if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
 		{
@@ -3571,7 +3593,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			if( combineProjectionSeriesMode == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject:studyID forKey:@"seriesID"];
+                if( [dcmObject attributeValueWithName: @"SOPClassUID"] != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: [dcmObject attributeValueWithName: @"SOPClassUID"]])
+                    [dicomElements setObject:serieID forKey:@"seriesID"];
+                else
+                    [dicomElements setObject:studyID forKey:@"seriesID"];
+                
 				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
 			}
 			else if( combineProjectionSeriesMode == 1)	// *******Split all CR and DR Modality series in a study into one series

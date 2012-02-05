@@ -35,15 +35,30 @@
 	return self;
 }
 
-- (NSArray*) ListOfMediaSOPClassUID
+- (NSArray*) ListOfMediaSOPClassUID // Displayed in DB window
 {
 	NSMutableArray *l = [NSMutableArray array];
 	
-	for( NSString *s in [DCMAbstractSyntaxUID imageSyntaxes])
+    [l addObject: @"Displayed SOP Class UIDs"];
+    
+	for( NSString *s in [[DCMAbstractSyntaxUID imageSyntaxes] sortedArrayUsingSelector: @selector(compare:)])
 		[l addObject: [NSString stringWithFormat: @"%@ - %@", s, [BrowserController compressionString: s]]];
 	
 	return l;
 }
+
+- (NSArray*) ListOfMediaSOPClassUIDStored
+{
+	NSMutableArray *l = [NSMutableArray array];
+	
+    [l addObject: @"Stored SOP Class UIDs"];
+    
+	for( NSString *s in [[DCMAbstractSyntaxUID allSupportedSyntaxes] sortedArrayUsingSelector: @selector(compare:)])
+		[l addObject: [NSString stringWithFormat: @"%@ - %@", s, [BrowserController compressionString: s]]];
+	
+	return l;
+}
+
 
 - (void) dealloc
 {	

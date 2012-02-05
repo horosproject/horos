@@ -15,6 +15,9 @@
 #import "DCMAbstractSyntaxUID.h"
 
 static NSArray *imagesSyntaxes = nil;
+static NSArray *hiddenImagesSyntaxes = nil;
+static NSMutableArray *allSupportedSyntaxes = nil;
+
 static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 // Images ...
@@ -216,6 +219,27 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 @implementation DCMAbstractSyntaxUID
 
++ (NSArray*) allSupportedSyntaxes
+{
+    if( allSupportedSyntaxes == nil)
+    {
+        allSupportedSyntaxes = [NSMutableArray array];
+
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID imageSyntaxes]];
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID radiotherapySyntaxes]];
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID structuredReportSyntaxes]];
+        [allSupportedSyntaxes addObject: KeyObjectSelectionDocumentStorage];
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID presentationStateSyntaxes]];
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID supportedPrivateClasses]];
+        [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID waveformSyntaxes]];
+        [allSupportedSyntaxes addObjectsFromArray: hiddenImagesSyntaxes];
+        
+        [allSupportedSyntaxes retain]; 
+    }
+    
+    return  allSupportedSyntaxes;
+}
+
 + (NSString *)verificationClassUID{
 	return DCM_Verification;
 }
@@ -390,6 +414,24 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return NO;
 }
 
++ (BOOL) isHiddenImageStorage:(NSString *)sopClassUID
+{
+    if( sopClassUID)
+	{
+		for( NSString *sopUID in [DCMAbstractSyntaxUID hiddenImageSyntaxes])
+		{
+			if( [sopClassUID isEqualToString: sopUID]) return YES;
+		}
+	}
+	
+	return NO;
+}
+
++ (NSArray *)hiddenImageSyntaxes
+{
+    return hiddenImagesSyntaxes;
+}
+
 + (NSArray *)imageSyntaxes
 {
 	if( imagesSyntaxes == nil)
@@ -450,6 +492,25 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		{
 			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		}
+        
+        @try 
+		{
+			if( [[NSUserDefaults standardUserDefaults] arrayForKey: @"hiddenDisplayedStorageSOPClassUIDArray"])
+            {
+                [hiddenImagesSyntaxes release];
+                hiddenImagesSyntaxes = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"hiddenDisplayedStorageSOPClassUIDArray"] retain];
+                
+                NSMutableArray *mutableArray = [NSMutableArray arrayWithArray: imagesSyntaxes];
+                
+				[mutableArray removeObjectsInArray: hiddenImagesSyntaxes];
+                
+                imagesSyntaxes = mutableArray;
+            }
+		}
+		@catch (NSException * e) 
+		{
+			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		}
 		
 		[imagesSyntaxes retain];
 	}
@@ -494,29 +555,20 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return KeyObjectSelectionDocumentStorage;
 }
 
-+ (BOOL) isKeyObjectDocument:(NSString *)sopClassUID  {
-	return (sopClassUID != nil && [sopClassUID isEqualToString:KeyObjectSelectionDocumentStorage]);
++ (BOOL) isKeyObjectDocument:(NSString *)sopClassUID 
+{
+	return (sopClassUID != nil && [sopClassUID isEqualToString: KeyObjectSelectionDocumentStorage]);
 }
 
-	/**
-	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
-	 * @return			true if the UID argument matches one of the known standard generic or specific Structured Report Storage SOP Classes (not including Key Object)
-	 */
++ (NSArray*) structuredReportSyntaxes
+{
+    return [NSArray arrayWithObjects: BasicTextSRStorage, EnhancedSRStorage, ComprehensiveSRStorage, MammographyCADSRStorage, ProcedureLogStorage, ChestCADSR, XRayRadiationDoseSR, nil];
+}
+
 + (BOOL) isStructuredReport:(NSString *)sopClassUID
 {
-		if( sopClassUID != nil && (
-		       [sopClassUID isEqualToString:BasicTextSRStorage]
-		    || [sopClassUID isEqualToString:EnhancedSRStorage]
-		    || [sopClassUID isEqualToString:ComprehensiveSRStorage]
-		    || [sopClassUID isEqualToString:MammographyCADSRStorage]
-			|| [sopClassUID isEqualToString:ProcedureLogStorage]
-			|| [sopClassUID isEqualToString:ChestCADSR]
-			|| [sopClassUID isEqualToString:XRayRadiationDoseSR]
-		//    || [sopClassUID isEqualToString:KeyObjectSelectionDocumentStorage]
-		))
-		{
+		if( sopClassUID != nil && [[DCMAbstractSyntaxUID structuredReportSyntaxes] containsObject: sopClassUID])
 			return YES;
-		}
 		
 	return NO;
 }
@@ -526,26 +578,25 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return GrayscaleSoftcopyPresentationStateStorage;
 }
 
-	/**
-	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
-	 * @return			true if the UID argument matches one of the known standard Presentation State Storage SOP Classes (currently just the Grayscale Softcopy Presentation State Storage SOP Class)
-	 */
++(NSArray*) presentationStateSyntaxes
+{
+    return [NSArray arrayWithObjects: GrayscaleSoftcopyPresentationStateStorage, ColorSoftcopyPresentationStateStorage, PseudoColorSoftcopyPresentationStateStorage, BlendingSoftcopyPresentationStateStorage, nil];
+}
+
 + (BOOL) isPresentationState:(NSString *)sopClassUID {
-		return sopClassUID != nil && (
-				[sopClassUID isEqualToString:GrayscaleSoftcopyPresentationStateStorage]
-			||	[sopClassUID isEqualToString:ColorSoftcopyPresentationStateStorage]
-			||	[sopClassUID isEqualToString:PseudoColorSoftcopyPresentationStateStorage]
-			||	[sopClassUID isEqualToString:BlendingSoftcopyPresentationStateStorage]
-		);
+		return sopClassUID != nil && [[DCMAbstractSyntaxUID presentationStateSyntaxes] containsObject: sopClassUID];
+}
+
++ (NSArray*) supportedPrivateClasses
+{
+    // Dont forget to add them to PapyFiles3.c PapyFileOpen
+    
+    return [NSArray arrayWithObjects: @"1.3.46.670589", MRSpectroscopyStorage, RawDataStorage, nil];
 }
 
 + (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID
 {
-	// Dont forget to add them to PapyFiles3.c PapyFileOpen
-	
-	return sopClassUID != nil && (  [sopClassUID hasPrefix: @"1.3.46.670589"] ||
-									[sopClassUID hasPrefix: MRSpectroscopyStorage] ||
-									[sopClassUID hasPrefix: RawDataStorage]);
+	return sopClassUID != nil && [[DCMAbstractSyntaxUID supportedPrivateClasses] containsObject: sopClassUID];
 }
 
 		// Waveforms ...
@@ -573,19 +624,13 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return BasicVoiceStorage;
 }
 
-	/**
-	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
-	 * @return			true if the UID argument matches one of the known standard Waveform Storage SOP Classes
-	 */
++ (NSArray*) waveformSyntaxes
+{
+    return [NSArray arrayWithObjects: TwelveLeadECGStorage, GeneralECGStorage, AmbulatoryECGStorage, HemodynamicWaveformStorage,CardiacElectrophysiologyWaveformStorage, BasicVoiceStorage, nil];
+}
+
 + (BOOL) isWaveform:(NSString *)sopClassUID {
-		return sopClassUID != nil && (
-		       [sopClassUID isEqualToString:TwelveLeadECGStorage]
-		    || [sopClassUID isEqualToString:GeneralECGStorage]
-		    || [sopClassUID isEqualToString:AmbulatoryECGStorage]
-		    || [sopClassUID isEqualToString:HemodynamicWaveformStorage]
-		    || [sopClassUID isEqualToString:CardiacElectrophysiologyWaveformStorage]
-		    || [sopClassUID isEqualToString:BasicVoiceStorage]
-		);
+		return sopClassUID != nil && [[DCMAbstractSyntaxUID waveformSyntaxes] containsObject: sopClassUID];
 }
 	
 		// Standalone ...
@@ -648,20 +693,14 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return RTTreatmentSummaryRecordStorage;
 }
 
-	/**
-	 * @param	sopClassUID	UID of the SOP Class, as a String without trailing zero padding
-	 * @return			true if the UID argument matches one of the known standard RT non-image Storage SOP Classes (dose, structure set, plan and treatment records)
-	 */
-+ (BOOL)isRadiotherapy: (NSString *)sopClassUID{
-		return sopClassUID != nil && (
-		       [sopClassUID  isEqualToString:RTDoseStorage]
-		    || [sopClassUID  isEqualToString:RTStructureSetStorage]
-		    || [sopClassUID  isEqualToString:RTBeamsTreatmentRecordStorage]
-		    || [sopClassUID  isEqualToString:RTPlanStorage]
-		    || [sopClassUID  isEqualToString:RTBrachyTreatmentRecordStorage]
-		    || [sopClassUID  isEqualToString:RTTreatmentSummaryRecordStorage]
-		);
++(NSArray*) radiotherapySyntaxes
+{
+    return [NSArray arrayWithObjects: RTDoseStorage, RTStructureSetStorage, RTBeamsTreatmentRecordStorage, RTPlanStorage, RTBrachyTreatmentRecordStorage, RTTreatmentSummaryRecordStorage, nil];
+}
 
++ (BOOL)isRadiotherapy: (NSString *)sopClassUID
+{
+		return sopClassUID != nil && [[DCMAbstractSyntaxUID radiotherapySyntaxes] containsObject: sopClassUID];
 }
 
 // Spectroscopy ...
@@ -710,6 +749,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		    || [DCMAbstractSyntaxUID isSpectroscopy:sopClassUID]
 		    || [DCMAbstractSyntaxUID isRawData:sopClassUID]
 			|| [DCMAbstractSyntaxUID isPDF:sopClassUID]
+            || [DCMAbstractSyntaxUID isHiddenImageStorage:sopClassUID]
 		;
 	}
 	

@@ -1254,6 +1254,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
+    [NSThread currentThread].name = @"CFind Thread";
+    
 	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
 	DcmDataset *dataset = (DcmDataset*) [[dict objectForKey: @"dataset"] pointerValue];
 	NSRecursiveLock *lock = [dict objectForKey: @"lock"];
