@@ -55,7 +55,7 @@
 
 -(void)cleanupFinishedThreads:(NSTimer*)timer {
     @synchronized (_threadsController) {
-        for (NSThread* thread in _threadsController.content)
+        for (NSThread* thread in [[_threadsController.content copy] autorelease])
             if (thread.isFinished) 
                 [self subRemoveThread:thread];
     }
