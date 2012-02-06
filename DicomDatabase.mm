@@ -781,7 +781,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 return [[a name] caseInsensitiveCompare:[b name]];
             } @catch (...) {
             }
-            return 0;
+            return nil;
         }];
     } @catch (NSException* e) {
         N2LogException(e);
