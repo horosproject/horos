@@ -132,7 +132,7 @@
 {
 	if (isValid)
 	{
-		NSLog( @"http connection closed");
+//		NSLog( @"http connection closed");
 		
         isValid = NO;
         [istream close];

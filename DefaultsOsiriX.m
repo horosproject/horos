@@ -990,6 +990,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
     [defaultValues setObject:@"880" forKey:@"WebServerMaxWidthForMovie"];
     [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
+    [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
