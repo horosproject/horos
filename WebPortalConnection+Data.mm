@@ -1406,9 +1406,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSLog( @"****** WADO Server : study not found");
 		
 		if ([studies count] > 1)
-			NSLog( @"****** WADO Server : more than 1 study with same uid");
+			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
 		
-		NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+        NSArray *allSeries = [NSArray array];
+        
+        for( DicomStudy *s in studies)
+            allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
 		
 		if (seriesUID)
 			allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
@@ -1510,9 +1513,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				NSLog( @"****** WADO Server : study not found");
 			
 			if ([studies count] > 1)
-				NSLog( @"****** WADO Server : more than 1 study with same uid");
+				NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
 			
-			NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+            NSArray *allSeries = [NSArray array];
+            
+            for( DicomStudy *s in studies)
+                allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
 			
 			if (seriesUID)
 				allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
