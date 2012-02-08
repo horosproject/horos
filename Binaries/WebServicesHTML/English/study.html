@@ -166,12 +166,20 @@ function shareDestinationChange(select) {
 						</td>
 						%]IF:Info.proposeDicomSend||Info.proposeWeasis||Info.proposeWADORetrieve%
 						<td class="narrow middle center">
+							%[IF:Series.noFiles>9%
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
+							%ELSE:Series.noFiles>9%
+							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%&frames=yes">
+							%]IF:Series.noFiles>9%
 								<img src="/thumbnail?xid=%Series.XID%" />
 							</a>
 						</td>
 						<td class="fat">
+							%[IF:Series.noFiles>9%
 							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%">
+							%ELSE:Series.noFiles>9%
+							<a href="series%Series.seriesExtension%?xid=%Series.XID%&%Info.getParameters(xid=)%&frames=yes">
+							%]IF:Series.noFiles>9%
 								<span class="bigger">%X:ZWS:Series.name%</span>
 								<span class="gray">
 									%[IF:Series.stateText%
