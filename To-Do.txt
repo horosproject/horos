@@ -6,6 +6,8 @@
 - WebPortal: option for direct SMTP support for emails
 - WebPortal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
 
+- WebPortal: password forgotten, frame < 5 & non-volumic
+
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
 ------------------------------------------------------------------------------------------
@@ -39,7 +41,7 @@ Added features:
 - WebPortal: Burn option if the CD/DVD is installed
 - WebPortal: create albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
-- 2D Viewer: Windows Tiling popup toolbar item
+- Windows Tiling for 3D viewers (new level)
 - http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
