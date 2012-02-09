@@ -12,18 +12,16 @@
      PURPOSE.
 =========================================================================*/
 
-#import <Cocoa/Cocoa.h>
-#import "basicHTTPServer.h"
+#import "N2XMLRPCConnection.h"
 
+@class N2ConnectionListener;
+@class HTTPServerRequest;
 
 /** \brief XML-RPC for RIS integration */
-@interface XMLRPCMethods : NSObject
-{
-	basicHTTPServer	*httpServ;
+@interface XMLRPCInterface : NSObject<N2XMLRPCConnectionDelegate> {
+    N2ConnectionListener* _listener;
 }
 
-- (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding;
-- (void) HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess;
-- (void) postError: (NSInteger) err version: (NSString*) vers message: (HTTPServerRequest *)mess;
+- (BOOL)processXMLRPCMessage:(NSString*)selName httpServerMessage:(NSMutableDictionary*)httpServerMessage HTTPServerRequest:(HTTPServerRequest*)mess version:(NSString*)vers paramDict:(NSDictionary*)paramDict encoding:(NSString*)encoding __deprecated;
 
 @end

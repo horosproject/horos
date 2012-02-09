@@ -245,7 +245,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	return _tlsFlag;
 }
 
--(void)setStatus:(N2ConnectionStatus)status {
+-(void)setStatus:(NSInteger)status {
 	if (status == _status)
 		return;
 	

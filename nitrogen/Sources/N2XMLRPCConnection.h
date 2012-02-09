@@ -15,15 +15,24 @@
 #import <Cocoa/Cocoa.h>
 #import "N2Connection.h"
 
+@protocol N2XMLRPCConnectionDelegate <NSObject>
+
+@optional
+-(NSString*)selectorStringForXMLRPCRequestMethodName:(NSString*)name;
+-(BOOL)isSelectorAvailableToXMLRPC:(NSString*)selectorString;
+
+@end
+
 @interface N2XMLRPCConnection : N2Connection {
-	id _delegate;
+	NSObject<N2XMLRPCConnectionDelegate>* _delegate;
 	BOOL _executed, _waitingToClose;
 	NSTimer* _timeout;
 }
 
-@property(retain) id delegate;
+@property(retain) NSObject<N2XMLRPCConnectionDelegate>* delegate;
 
 -(void)handleRequest:(CFHTTPMessageRef)request;
 -(void)writeAndReleaseResponse:(CFHTTPMessageRef)response;
 
 @end
+

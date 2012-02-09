@@ -3358,7 +3358,7 @@ static BOOL initialized = NO;
 	
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"]) {
-		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
+		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCInterface alloc] init];
 	}
 	#endif
 	

@@ -514,7 +514,7 @@ extern NSString* O2AlbumDragType;
 - (void) displayBonjourServices;
 - (NSString*) askPassword;
 - (void) resetToLocalDatabase;
-- (void) switchToDefaultDBIfNeeded;
+- (void) switchToDefaultDBIfNeeded __deprecated;
 - (void) checkIncomingThread:(id) sender __deprecated;
 - (void) checkIncoming:(id) sender __deprecated;
 - (void) checkIncomingNow:(id) sender __deprecated;
@@ -592,7 +592,7 @@ extern NSString* O2AlbumDragType;
 + (NSString*) DateTimeFormat:(NSDate*) d __deprecated;
 + (NSString*) TimeFormat:(NSDate*) t;
 
-- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements;
+- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements __deprecated;
 
 // - (void) executeSend :(NSArray*) samePatientArray server:(NSDictionary*) server dictionary:(NSDictionary*) dict __deprecated;
 

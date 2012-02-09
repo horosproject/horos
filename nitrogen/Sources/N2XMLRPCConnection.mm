@@ -19,6 +19,7 @@
 #import "N2Shell.h"
 
 @implementation N2XMLRPCConnection
+
 @synthesize delegate = _delegate;
 
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
@@ -98,11 +99,32 @@
 	CFRelease(request);
 }
 
+-(NSString*)selectorStringForXMLRPCRequestMethodName:(NSString*)name isValidated:(BOOL*)isValidated {
+    NSString* sel = nil;
+    
+    if ([_delegate respondsToSelector:@selector(selectorStringForXMLRPCRequestMethodName:)])
+        sel = [_delegate selectorStringForXMLRPCRequestMethodName:name];
+    if (sel)
+        if (isValidated) *isValidated = YES;
+    
+    if (!sel) {
+        sel = [NSString stringWithFormat:@"%@:error:", name];
+        if (![_delegate respondsToSelector:NSSelectorFromString(sel)])
+            sel = [NSString stringWithFormat:@"%@:", name];
+        if (isValidated) *isValidated = NO;
+    }
+    
+    return sel;
+}
+
 -(void)handleRequest:(CFHTTPMessageRef)request {
 	NSString* contentLengthString = (NSString*)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Content-Length");
 	if (contentLengthString) [contentLengthString autorelease];
 	NSInteger contentLength = contentLengthString? [contentLengthString intValue] : 0;
 	NSData* content = [(NSData*)CFHTTPMessageCopyBody(request) autorelease];
+    
+    NSString* version = [(id)CFHTTPMessageCopyVersion(request) autorelease];
+    if (!version) version = (NSString*)kCFHTTPVersion1_1;
 	
 	if (contentLengthString && contentLength < [content length])
 		content = [content subdataWithRange:NSMakeRange(0, contentLength)];
@@ -132,29 +154,27 @@
 //		for (int i = 0; i < [methodParameterNames count]; ++i)
 //			[methodParameters setObject:[[methodParameterValues objectAtIndex:i] objectValue] forKey:[[methodParameterNames objectAtIndex:i] objectValue]];
 		
-		NSMutableString* methodSignatureString = [NSMutableString stringWithCapacity:128];
-		[methodSignatureString appendString:methodName];
-		for (NSXMLNode* n in params)
-			[methodSignatureString appendString:@":"];
-		
-		SEL methodSelector = NSSelectorFromString(methodSignatureString);
-		if (![_delegate respondsToSelector:methodSelector] || ![_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] || ![_delegate performSelector:@selector(isMethodAvailableToXMLRPC:) withObject:methodSignatureString])
-			[NSException raise:NSGenericException format:@"invalid method/parameters", [methodNames count]];
+        BOOL methodSelectorIsValidated = NO;
+		NSString* methodSelectorString = [self selectorStringForXMLRPCRequestMethodName:methodName isValidated:&methodSelectorIsValidated];
+        SEL methodSelector = NSSelectorFromString(methodSelectorString);
+		if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
+			[NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
 		
 		NSMethodSignature* methodSignature = [_delegate methodSignatureForSelector:methodSelector];
 		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
 		[invocation setTarget:_delegate];
 		[invocation setSelector:methodSelector];
 		
-		NSLog(@"71210test2 1 %@", [N2Shell hostname]);
-		for (int i = 0; i < [params count]; ++i) {
-			const char* argType = [methodSignature getArgumentTypeAtIndex:2+i];
-			NSXMLNode* n = [params objectAtIndex:i];
+//		NSLog(@"71210test2 1 %@", [N2Shell hostname]);
+        int paramIndex = 0;
+		for (; paramIndex < [params count]; ++paramIndex) {
+			const char* argType = [methodSignature getArgumentTypeAtIndex:2+paramIndex];
+			NSXMLNode* n = [params objectAtIndex:paramIndex];
 			NSObject* o = [N2XMLRPC ParseElement:n];
 			
 			switch (argType[0]) {
 				case '@': {
-					[invocation setArgument:&o atIndex:2+i];
+					[invocation setArgument:&o atIndex:2+paramIndex];
 				} break;
 				case 'i':
 				case 'f': {
@@ -163,11 +183,11 @@
 					switch (argType[0]) {
 						case 'i': {
 							NSInteger i = [n intValue];
-							[invocation setArgument:&i atIndex:2+i];
+							[invocation setArgument:&i atIndex:2+paramIndex];
 						} break;
 						case 'f': {
 							CGFloat f = [n floatValue];
-							[invocation setArgument:&f atIndex:2+i];
+							[invocation setArgument:&f atIndex:2+paramIndex];
 						} break;
 						default: {
 							[NSException raise:NSGenericException format:@"client side unsupported argument type %c in %@", argType[0], methodSignature];
@@ -179,22 +199,33 @@
 				} break;
 			}
 		}
+        
+        NSError* error = nil;
+        if ([methodSelectorString hasSuffix:@":error:"]) {
+            NSError** errorp = &error;
+            [invocation setArgument:&errorp atIndex:2+paramIndex];
+        }
 		
-		NSLog(@"71210test2 8");
+//		NSLog(@"71210test2 8");
 		[invocation invoke];
 
+        if (error) {
+            [self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, error.code, (CFStringRef)error.localizedDescription, (CFStringRef)version)];
+            return;
+        }
+        
 		NSString* returnValue = [N2XMLRPC ReturnElement:invocation];
 		NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", returnValue];
 		NSData* responseData = [responseXml dataUsingEncoding:NSUTF8StringEncoding];
 		
-		NSLog(@"71210test2 9");
-		CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, kCFHTTPVersion1_0);
+//		NSLog(@"71210test2 9");
+		CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
 		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
 		CFHTTPMessageSetBody(response, (CFDataRef)responseData);
 		[self writeAndReleaseResponse:response];
 	} @catch (NSException* e) {
 		NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [e description]);
-		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e description], kCFHTTPVersion1_0)];
+		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e reason], (CFStringRef)version)];
 	}
 }
 

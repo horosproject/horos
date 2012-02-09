@@ -5624,8 +5624,7 @@ static NSConditionLock *threadLock = nil;
 	return index;
 }
 
-- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements
-{
+- (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements { // __deprecated
 	if( elements)
 		*elements = nil;
 			
@@ -16602,7 +16601,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[_sourcesTableView reloadData];
 }
 
-- (void) switchToDefaultDBIfNeeded
+- (void) switchToDefaultDBIfNeeded // __deprecated
 {
 	NSString *defaultPath = [self documentsDirectoryFor: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] url: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"]];
 	

@@ -35,14 +35,14 @@ enum N2ConnectionStatus {
 	NSMutableData *_inputBuffer, *_outputBuffer;
 	//BOOL _hasBytesAvailable, _hasSpaceAvailable, _handleConnectionClose;
 	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent;
-	N2ConnectionStatus _status;
+	NSInteger _status;
 	BOOL _tlsFlag;
     BOOL _closeOnRemoteClose;
     NSError* _error;
 }
 
 @property(readonly) NSString* address;
-@property(nonatomic) N2ConnectionStatus status;
+@property(nonatomic) NSInteger status;
 @property NSUInteger maximumReadSizePerEvent;
 @property BOOL closeOnRemoteClose;
 @property(readonly,retain) NSError* error;

@@ -12,1235 +12,760 @@
      PURPOSE.
 =========================================================================*/
 
-#import "AppController.h"
 #import "XMLRPCMethods.h"
-#import "BrowserController.h"
-#import "ViewerController.h"
-#import "DCMView.h"
-#import "QueryController.h"
-#import "DCMNetServiceDelegate.h"
-#import "Notifications.h"
-#import "N2Debug.h"
+#import "N2ConnectionListener.h"
+#import "N2XMLRPCConnection.h"
+#import "AppController.h"
+#import "N2XMLRPC.h"
 #import "NSThread+N2.h"
-#import "WADODownload.h"
 #import "ThreadsManager.h"
-#import "DicomSeries.h"
+#import "N2Debug.h"
+#import "DicomImage.h"
 #import "DicomStudy.h"
+#import "DicomSeries.h"
+#import "DicomAlbum.h"
+#import "BrowserController.h"
+#import "DicomDatabase.h"
+#import "ViewerController.h"
 #import "DCMTKRootQueryNode.h"
+#import "DCMNetServiceDelegate.h"
+#import "DCMView.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "QueryController.h"
+#import "WADODownload.h"
 
-#import <sys/socket.h>
-#import <netinet/in.h>
-#import <arpa/inet.h>
-#import <unistd.h>
+@implementation XMLRPCInterface
 
-// HTTP SERVER
-//
-// XML-RPC Standard
-//
-// XML-RPC Generator for MacOS: http://www.ditchnet.org/xmlrpc/
-//
-// About XML-RPC: http://www.xmlrpc.com/
-
-static NSTimeInterval lastConnection = 0;
-
-@implementation XMLRPCMethods
-
-- (void) displayError: (NSError*) error
-{
-    NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
-}
-
-- (void) separateThread
-{
-    NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    
-    [NSThread currentThread].name = @"XML-RPC Listener";
-    
-    NSError *error = nil;
-    if( ![httpServ start: &error])
-    {
-        httpServ = nil;
-        
-        [self performSelectorOnMainThread:@selector( displayError:) withObject: error waitUntilDone: YES];
+-(id)init {
+	if ((self = [super init])) {
+        NSInteger port = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"];
+        _listener = [[N2ConnectionListener alloc] initWithPort:port connectionClass:[N2XMLRPCConnection class]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
     }
-    else
-    {
-        NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
-        
-        NSRunLoop *theRL = [NSRunLoop currentRunLoop];
-        while( [theRL runMode: NSDefaultRunLoopMode beforeDate: [NSDate distantFuture]]);
-    }
-    
-    [pool release];
-}
-
-- (id) init
-{
-	self = [super init];
-	if (self != nil)
-	{
-		httpServ = [[basicHTTPServer alloc] init];
-		
-		[httpServ setType:@"_http._tcp."];
-
-		[httpServ setName:@"OsiriXXMLRPCServer"];
-		[httpServ setPort: [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"]];
-		[httpServ setDelegate:self];
-		NSError *error = nil;
-        
-        [NSThread detachNewThreadSelector: @selector( separateThread) toTarget: self withObject: nil];
-        
-//		if (![httpServ start: &error])
-//		{
-//			NSLog(@"Error starting HTTP XMLRPC Server: %@", error);
-//			NSRunCriticalAlertPanel( NSLocalizedString(@"HTTP XMLRPC Server Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Error starting HTTP XMLRPC Server: %@", nil), error], NSLocalizedString(@"OK",nil), nil, nil);
-//			httpServ = nil;
-//		}
-//		else
-//		{
-//			NSLog(@"<><><><><><><> Starting HTTP XMLRPC server on port %d", [httpServ port]);
-//		}
-	}
+	
 	return self;
 }
 
-- (void) dealloc
-{
-	[httpServ release];
+-(void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[_listener release]; _listener = NULL;
 	[super dealloc];
 }
 
-#pragma mark-
-#pragma mark Methods
-
-- (void)HTTPConnection:(basicHTTPConnection *)conn didSendResponse:(HTTPServerRequest *)mess
-{
-
+-(void)connectionOpened:(NSNotification*)notification {
+	N2XMLRPCConnection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
+	[connection setDelegate:self];
 }
 
-- (void) processHTTPConnectionOnMainThread: (NSDictionary*) dict
-{
-    basicHTTPConnection *conn = [dict objectForKey: @"conn"];
-    HTTPServerRequest *mess = [dict objectForKey: @"mess"];
+-(NSError*)errorWithCode:(NSInteger)code {
+    NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
+    return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
+}
+
+#pragma mark N2XMLRPCConnectionDelegate
+
+-(NSString*)selectorStringForXMLRPCRequestMethodName:(NSString*)selName {
+    selName = [selName lowercaseString];
+	if ([selName isEqualToString:@"killosirix"])
+        return @"KillOsiriX:error:";
+	if ([selName isEqualToString:@"downloadurl"])
+        return @"DownloadURL:error:";
+	if ([selName isEqualToString:@"displaystudy"])
+        return @"DisplayStudy:error:";
+    if ([selName isEqualToString:@"displayseries"])
+        return @"DisplaySeries:error:";
+	if ([selName isEqualToString:@"dbwindowfind"] || [selName isEqualToString:@"findobject"])
+        return @"FindObject:error:";
+	if ([selName isEqualToString:@"switchtodefaultdbifneeded"])
+        return @"SelectDefaultDatabase:error:";
+    if ([selName isEqualToString:@"opendb"])
+        return @"OpenDatabase:error:";
+	if ([selName isEqualToString:@"selectalbum"])
+        return @"SelectAlbum:error:";
+    if ([selName isEqualToString:@"closeallwindows"])
+        return @"CloseAllWindows:error:";
+	if ([selName isEqualToString:@"getdisplayed2dviewerseries"])
+        return @"GetDisplayed2DViewerSeries:error:";
+	if ([selName isEqualToString:@"getdisplayed2dviewerstudies"])
+        return @"GetDisplayed2DViewerStudies:error:";
+	if ([selName isEqualToString:@"close2dviewerwithseriesuid"])
+        return @"Close2DViewerWithSeriesUID:error:";
+	if ([selName isEqualToString:@"close2dviewerwithstudyuid"])
+        return @"Close2DViewerWithStudyUID:error:";
+	if ([selName isEqualToString:@"retrieve"])
+        return @"Retrieve:error:";
+	if ([selName isEqualToString:@"cmove"])
+        return @"CMove:error:";
+	if ([selName isEqualToString:@"displaystudylistbypatientname"])
+        return @"DisplayStudyListByPatientName:error:";
+	if ([selName isEqualToString:@"displaystudylistbypatientid"])
+        return @"DisplayStudyListByPatientId:error:";
+    if ([selName isEqualToString:@"pathtofrontdcm"])
+        return @"PathToFrontDCM:error:";
+    return nil;
+}
+
+#pragma mark Utilities for exposed methods
+
+-(DicomDatabase*)database {
+    return [[BrowserController currentBrowser] database];
+}
+
++(NSDictionary*)dictionaryForObject:(NSManagedObject*)obj {
+    NSMutableDictionary* d = [NSMutableDictionary dictionary];
     
-    [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+    for (NSString* key in [obj.entity attributesByName])
+        [d setObject:[obj valueForKey:key] forKey:key];
+    
+    return d;
 }
 
-- (void)HTTPConnection:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
-{
-	@synchronized( self)
-	{
-        if( [NSDate timeIntervalSinceReferenceDate] - lastConnection < 0.3)
-            [NSThread sleepForTimeInterval: 0.3];
-        
-        lastConnection = [NSDate timeIntervalSinceReferenceDate];
-        
-        @try
+-(DicomStudy*)studyForObject:(NSManagedObject*)obj {
+    if ([obj isKindOfClass:[DicomStudy class]]) return (id)obj;
+    if ([obj isKindOfClass:[DicomSeries class]]) return [obj valueForKey:@"study"];
+    if ([obj isKindOfClass:[DicomImage class]]) return [obj valueForKey:@"series.study"];
+    return nil;
+}
+
+-(NSArray*)objectsWithEntityName:(NSString*)entityName predicate:(NSPredicate*)predicate error:(NSError**)error {
+    DicomDatabase* database = [self database];
+    [database initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+    NSEntityDescription* entity = [database entityForName:entityName];
+    return [[self database] objectsForEntity:entity predicate:predicate error:error]; // TODO: test with independentDatabase
+}
+
+#define ReturnWithCode(code) { if (error) *error = [self errorWithCode:code]; return nil; }
+
+#pragma mark Exposed Methods
+
+/**
+ Method: KillOsiriX
+ */
+-(void)KillOsiriX:(NSDictionary*)params error:(NSError**)error {
+    [[AppController sharedAppController] performSelectorOnMainThread:@selector(terminate:) withObject:self waitUntilDone:NO];
+}
+
+/**
+ Method: DownloadURL
+
+ Parameters:
+ URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
+ Display: display the images at the end of the download? (Optional parameter : it requires a WADO URL, containing the studyUID parameter)
+
+ Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
+ Response: {}
+ */
+-(NSDictionary*)DownloadURL:(NSDictionary*)paramDict error:(NSError**)error {
+    @try
+    {
+        if ([[paramDict valueForKey:@"URL"] length])
         {
-            [self performSelectorOnMainThread: @selector( processHTTPConnectionOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: conn, @"conn", mess, @"mess", nil] waitUntilDone: YES];
-//            [self HTTPConnectionProtected:conn didReceiveRequest:mess];
+            NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(_threadRetrieveWado:) object:paramDict] autorelease];
+            t.name = NSLocalizedString(@"WADO Retrieve...", nil);
+            t.supportsCancel = YES;
+            t.status = [paramDict valueForKey:@"URL"];
+            [[ThreadsManager defaultManager] addThreadAndStart:t];
         }
-        
-        @catch (NSException * e)
-        {
-            NSLog( @"HTTPConnection WebServices : %@", e);
-        }
+        else 
+            ReturnWithCode(400); // Bad Request
     }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    return [NSDictionary dictionary];
 }
 
-- (NSDictionary*) getParameters: (NSXMLDocument *) doc encoding: (NSString *) encoding
-{
-	NSError *error = nil;
-	
-	NSArray *keys = [doc nodesForXPath:@"methodCall/params//member/name" error:&error];
-	NSArray *values = [doc nodesForXPath:@"methodCall/params//member/value" error:&error];
-	if( [keys count] != [values count])
-		return nil;
-	
-	int i;
-	NSMutableDictionary *paramDict = [NSMutableDictionary dictionary];
-	for( i = 0; i < [keys count]; i++)
-	{
-		id value;
-		
-		if( [encoding isEqualToString:@"UTF-8"] == NO && [[[values objectAtIndex: i] objectValue] isKindOfClass:[NSString class]])
-			value = [(NSString*)CFXMLCreateStringByUnescapingEntities(NULL, (CFStringRef)[[values objectAtIndex: i] objectValue], NULL) autorelease];
-		else
-			value = [[values objectAtIndex: i] objectValue];
-		
-		NSString *key = [[keys objectAtIndex: i] objectValue];
-		
-		key = [key stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		
-		[paramDict setValue: value forKey: key];
-	}
-	
-	return paramDict;
-}
-
-- (void) showStudy: (NSDictionary*) dict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	if( [dict valueForKey: @"series"])
-		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"series"] command: @"Open"];
-	else
-		[[BrowserController currentBrowser] displayStudy: [dict valueForKey: @"study"] object: [dict valueForKey: @"study"] command: @"Open"];
-	
-	[pool release];
-}
-
-- (void) asyncWADODownload:(NSDictionary*) paramDict
-{
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSString *url = [paramDict valueForKey:@"URL"];
-	
-	WADODownload *downloader = [[WADODownload alloc] init];
-	
-	[downloader WADODownload: [NSArray arrayWithObject: [NSURL URLWithString: url]]];
-	
-	[downloader release];
-	
-	if( [[paramDict valueForKey:@"Display"] boolValue])
-	{
-		NSString *studyUID = nil;
-		NSString *seriesUID = nil;
-		
-		for( NSString *s in [[[url componentsSeparatedByString: @"?"] lastObject] componentsSeparatedByString: @"&"])
-		{
-			NSRange separatorRange = [s rangeOfString: @"="];
-			
-            if( separatorRange.location != NSNotFound)
-            {
-                @try
-                {
-                    if( [[s substringToIndex: separatorRange.location] isEqualToString: @"studyUID"])
-                        studyUID = [s substringFromIndex: separatorRange.location+1];
-                        
-                    if( [[s substringToIndex: separatorRange.location] isEqualToString: @"seriesUID"])
-                        seriesUID = [s substringFromIndex: separatorRange.location+1];
-                }
-                @catch (NSException * e) { N2LogExceptionWithStackTrace(e); }
-            }
-            else NSLog( @"**** no studyUID");
-		}
-		
-		if( studyUID)
-		{
-			BOOL found = NO;
-			NSTimeInterval started = [NSDate timeIntervalSinceReferenceDate];
-			
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-			
-			if( studyUID && seriesUID)
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID]];
-			else
-				[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID]];
-			
-			DicomStudy *study = nil;
-			DicomSeries *series = nil;
-			
-			while( found == NO && [NSDate timeIntervalSinceReferenceDate] - started < 300)
-			{
-				[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 1.0]];
-				
-				NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-				
-				[context lock];
-				
-				@try
-				{
-					NSError *error = nil;
-					NSArray *array = [context executeFetchRequest:dbRequest error:&error];
-					
-					if( [[[array lastObject] valueForKey:@"studyInstanceUID"] isEqualToString: studyUID])
-					{
-						study = [array lastObject];
-						
-						if( seriesUID)
-						{
-							for( DicomSeries *s in [study.series allObjects])
-							{
-								if( [s.seriesDICOMUID isEqualToString: seriesUID])
-									series = s;
-							}
-						}
-						found = YES;
-					}
-				}
-				@catch (NSException * e) { 
+-(void)_threadRetrieveWado:(NSDictionary*)paramDict {
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	@try {
+        NSString* url = [paramDict valueForKey:@"URL"];
+        
+        WADODownload* downloader = [[WADODownload alloc] init];        
+        [downloader WADODownload:[NSArray arrayWithObject:[NSURL URLWithString:url]]];
+        [downloader release];
+        
+        if ([[paramDict valueForKey:@"Display"] boolValue]) {
+            NSString* studyUID = nil;
+            NSString* seriesUID = nil;
+            
+            for (NSString* s in [[[url componentsSeparatedByString:@"?"] lastObject] componentsSeparatedByString:@"&"]) {
+                NSRange separatorRange = [s rangeOfString:@"="];
+                if (separatorRange.location == NSNotFound)
+                    continue;
+                @try {
+                    if ([[s substringToIndex:separatorRange.location] isEqualToString:@"studyUID"])
+                        studyUID = [s substringFromIndex:separatorRange.location+1];
+                    if ([[s substringToIndex:separatorRange.location] isEqualToString:@"seriesUID"])
+                        seriesUID = [s substringFromIndex:separatorRange.location+1];
+                } @catch (NSException* e) {
                     N2LogExceptionWithStackTrace(e);
                 }
-				
-				[context unlock];
-			}
-			
-			if( found)
-				[self performSelectorOnMainThread: @selector( showStudy:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: study, @"study", series, @"series", nil] waitUntilDone: NO];
-		}
-	}
-	
-	[pool release];
-}
-
-- (void) retrieve:(NSDictionary*) dict
-{
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    
-    for( DCMTKQueryNode	*study in [dict valueForKey: @"children"])
-    {
-        [study move: dict retrieveMode: [[dict valueForKey: @"retrieveMode"] intValue]];
-    }
-    
-    [pool release];
-}
-
-- (void) processXMLRPCMessage: (NSString*) selName httpServerMessage: (NSMutableDictionary*) httpServerMessage HTTPServerRequest: (HTTPServerRequest*) mess version:(NSString*) vers paramDict: (NSDictionary*) paramDict encoding: (NSString*) encoding
-{
-	if( vers == nil)
-		vers = [NSString stringWithString: (NSString*) kCFHTTPVersion1_1];
-	
-	selName = [selName lowercaseString];
-	
-#pragma mark KillOsiriX			
-	if ( [selName isEqualToString:@"killosirix"])
-		[[AppController sharedAppController] performSelector:@selector(terminate:) withObject:self afterDelay:0];
-
-#pragma mark DownloadURL
-	// ********************************************
-	// Method: DownloadURL
-	//
-	// Parameters:
-	// URL: any URLs that return a file compatible with OsiriX, including .dcm, .zip, .osirixzip, ...
-	// Display: display the images at the end of the download? (Optional parameter : it requires a WADO URL, containing the studyUID parameter)
-	//
-	// Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"downloadurl"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if( [paramDict count] < 1)
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			//DLog(@"\tParamDict: %@", paramDict);
-			
-			NSString *listOfElements = nil;
-			NSNumber *ret = nil;
-			
-			@try
-			{
-				if( [[paramDict valueForKey:@"URL"] length])
-				{
-					NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( asyncWADODownload:) object: paramDict] autorelease];
-					t.name = NSLocalizedString( @"WADO Retrieve...", nil);
-					t.supportsCancel = YES;
-					t.status = [paramDict valueForKey:@"URL"];
-					[[ThreadsManager defaultManager] addThreadAndStart: t];
-				}
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"****** XML-RPC Exception: %@", e);
-			}
-			
-			// *****
-			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-	
-#pragma mark DisplayStudy
-	
-	// ********************************************
-	// Method: DisplayStudy / DisplaySeries
-	//
-	// Parameters:
-	// PatientID:  0010,0020
-	// StudyID:  0020,0010 (DisplayStudy)
-	// or
-	// SeriesInstanceUID: 0020,000e (DisplaySeries)
-	//
-	// Example: {PatientID: "1100697", StudyID: "A10043712203"}
-	// Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
-	// Response: {error: "0", elements: array of elements corresponding to the request}
-	
-	if ([selName isEqualToString:@"displaystudy"] || [selName isEqualToString:@"displayseries"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (2 != [paramDict count] && 1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			//DLog(@"\tParamDict: %@", paramDict);
-			
-			NSString *listOfElements = nil;
-			NSNumber *ret = nil;
-			
-			@try
-			{
-				if ([selName isEqualToString:@"displaystudy"])
-				{
-					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"StudyInstanceUID"] length] > 0)
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID =='%@' AND studyInstanceUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
-					else if( [[paramDict valueForKey:@"PatientID"] length] > 0)
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"patientID == '%@'", [paramDict valueForKey:@"PatientID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
-					else if( [[paramDict valueForKey:@"StudyInstanceUID"] length] > 0)
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser] findObject:[NSString stringWithFormat: @"studyInstanceUID == '%@'", [paramDict valueForKey:@"StudyInstanceUID"]] table: @"Study" execute: @"Open" elements: &listOfElements]];
-				}
-				
-				if ([selName isEqualToString:@"displayseries"])
-				{
-					if( [[paramDict valueForKey:@"PatientID"] length] > 0 && [[paramDict valueForKey:@"SeriesInstanceUID"] length] > 0)
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"study.patientID =='%@' AND seriesDICOMUID == '%@'", [paramDict valueForKey:@"PatientID"], [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
-					else if( [[paramDict valueForKey:@"SeriesInstanceUID"] length] > 0)
-						ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"seriesDICOMUID == '%@'", [paramDict valueForKey:@"SeriesInstanceUID"]] table: @"Series" execute: @"Open" elements: &listOfElements]];
-				}
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"****** XML-RPC Exception: %@", e);
-			}
-			
-			// *****
-			NSString *xml;
-			if( listOfElements)
-				xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
-			else
-				xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark DBWindowFind
-	
-	// ********************************************
-	// Method: DBWindowFind
-	//
-	// Parameters:
-	// request: SQL request, see 'Predicate Format String Syntax' from Apple documentation
-	// table: OsiriX Table: Image, Series, Study
-	// execute: Nothing, Select, Open, Delete
-	//
-	// execute is performed at the  study level: you cannot delete a single series of a study
-	//
-	// Example: {request: "name == 'OsiriX'", table: "Study", execute: "Select"}
-	// Example: {request: "(name LIKE '*OSIRIX*')", table: "Study", execute: "Open"}
-	//
-	// Response: {error: "0", elements: array of elements corresponding to the request}
-	
-	if ([selName isEqualToString:@"dbwindowfind"] || [selName isEqualToString:@"findobject"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (3 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSString *listOfElements = nil;
-			
-			NSNumber *ret = [NSNumber numberWithInt: [[BrowserController currentBrowser]	findObject:	[paramDict valueForKey:@"request"]
-																							  table: [paramDict valueForKey:@"table"]
-																							execute: [paramDict valueForKey:@"execute"]
-																						   elements: &listOfElements]];
-			
-			// *****
-			
-			// Use  <?xml version=\"1.0\" encoding=\"UTF-8\"?>  ??? 
-			
-			NSString *xml;
-			if( listOfElements)
-				xml = [NSString stringWithFormat: @"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", [ret stringValue], listOfElements];
-			else
-				xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark SwitchToDefaultDBIfNeeded
-	
-	// ********************************************
-	// Method: SwitchToDefaultDBIfNeeded
-	//
-	// Parameters:
-	// No parameter
-	//
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"switchtodefaultdbifneeded"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			NSNumber *ret = [NSNumber numberWithInt: 0];
-			
-			[[BrowserController currentBrowser] switchToDefaultDBIfNeeded];
-			
-			// Done, we can send the response to the sender
-			
-			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark OpenDB
-	
-	// ********************************************
-	// Method: OpenDB
-	//
-	// Parameters:
-	// path: path of the folder containing the 'OsiriX Data' folder
-	//
-	// if path is valid, but not DB is found, OsiriX will create a new one
-	//
-	// Example: {path: "/Users/antoinerosset/Documents/"}
-	//
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"opendb"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSNumber *ret = [NSNumber numberWithInt: 0];
-			
-			if( [[NSFileManager defaultManager] fileExistsAtPath: [paramDict valueForKey:@"path"]])
-				[[BrowserController currentBrowser] openDatabasePath: [paramDict valueForKey:@"path"]];
-			else ret = [NSNumber numberWithInt: -1];
-			
-			// *****
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark SelectAlbum
-	
-	// ********************************************
-	// Method: SelectAlbum
-	//
-	// Parameters:
-	// name: name of the album
-	//
-	// Example: {name: "Today"}
-	//
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"selectalbum"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSTableView	*albumTable = [[BrowserController currentBrowser] albumTable];
-			NSArray	*albumArray = [[BrowserController currentBrowser] albumArray];
-			NSNumber *ret = [NSNumber numberWithInt: -1];
-			
-			for( NSManagedObject *album in albumArray)
-			{
-				if( [[album valueForKey:@"name"] isEqualToString: [paramDict valueForKey:@"name"]])
-				{
-					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [albumArray indexOfObject: album]] byExtendingSelection: NO];
-					ret = [NSNumber numberWithInt: 0];
-				}
-			}
-			
-			// *****
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark CloseAllWindows
-	
-	// ********************************************
-	// Method: CloseAllWindows
-	//
-	// Parameters: No Parameters
-	//
-	// Response: {error: "0"}
-	
-	if( [selName isEqualToString: @"closeallwindows"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-				[[v window] close];
-			
-			// Done, we can send the response to the sender
-			
-			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark GetDisplayed2DViewerSeries
-	
-	// ********************************************
-	// Method: GetDisplayed2DViewerSeries
-	//
-	// Parameters: No Parameters
-	//
-	// Response: {error: "0", elements: array of series corresponding to displayed windows}
-	
-	if( [selName isEqualToString: @"getdisplayed2dviewerseries"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			// Generate an answer containing the elements
-			NSMutableString *a = [NSMutableString stringWithString: @"<value><array><data>"];
-			
-			for( id loopItem5 in viewersList)
-			{
-				NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
-				
-				NSManagedObject *series = [[loopItem5 imageView] seriesObj];
-				
-				NSArray *allKeys = [[[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"] attributesByName] allKeys];
-				
-				for (NSString *keyname in allKeys)
-				{
-					@try
-					{
-						if( [[series valueForKey: keyname] isKindOfClass:[NSString class]] ||
-						   [[series valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-						   [[series valueForKey: keyname] isKindOfClass:[NSNumber class]])
-						{
-							NSString *value = [[series valueForKey: keyname] description];
-							value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
-							[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
-						}
-					}
-					
-					@catch (NSException * e)
-					{
-					}
-				}
-				
-				[c appendString: @"</struct></value>"];
-				
-				[a appendString: c];
-			}
-			[a appendString: @"</data></array></value>"];
-			
-			// Done, we can send the response to the sender
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark GetDisplayed2DViewerStudies
-	
-	// ********************************************
-	// Method: GetDisplayed2DViewerStudies
-	//
-	// Parameters: No Parameters
-	//
-	// Response: {error: "0", elements: array of studies corresponding to displayed windows}
-	
-	if( [selName isEqualToString: @"getdisplayed2dviewerstudies"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			// Generate an answer containing the elements
-			NSMutableString *a = [NSMutableString stringWithString: @"<value><array><data>"];
-			
-			for( id loopItem4 in viewersList)
-			{
-				NSMutableString *c = [NSMutableString stringWithString: @"<value><struct>"];
-				
-				NSManagedObject *study = [[[loopItem4 imageView] seriesObj] valueForKey:@"study"];
-				
-				NSArray *allKeys = [[[[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"] attributesByName] allKeys];
-				
-				for (NSString *keyname in allKeys)
-				{
-					@try
-					{
-						if( [[study valueForKey: keyname] isKindOfClass:[NSString class]] ||
-						   [[study valueForKey: keyname] isKindOfClass:[NSDate class]] ||
-						   [[study valueForKey: keyname] isKindOfClass:[NSNumber class]])
-						{
-							NSString *value = [[study valueForKey: keyname] description];
-							value = [(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value, NULL) autorelease];
-							[c appendFormat: @"<member><name>%@</name><value>%@</value></member>", keyname, value];
-						}
-					}
-					
-					@catch (NSException * e)
-					{
-					}
-				}
-				
-				[c appendString: @"</struct></value>"];
-				
-				[a appendString: c];
-			}
-			[a appendString: @"</data></array></value>"];
-			
-			// Done, we can send the response to the sender
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member><member><name>elements</name>%@</member></struct></value></param></params></methodResponse>", @"0", a];
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark Close2DViewerWithSeriesUID
-	
-	// ********************************************
-	// Method: Close2DViewerWithSeriesUID
-	//
-	// Parameters:
-	// uid: series instance uid to close
-	//
-	// Example: {uid: "1.3.12.2.1107.5.1.4.51988.4.0.1164229612882469"}
-	//
-	// Response: {error: "0"}
-	
-	if( [selName isEqualToString: @"close2dviewerwithseriesuid"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			
-			// *****
-			
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			for( int i = 0; i < [viewersList count] ; i++)
-			{
-				NSManagedObject *series = [[[viewersList objectAtIndex: i] imageView] seriesObj];
-				
-				if( [[series valueForKey:@"seriesDICOMUID"] isEqualToString: [paramDict valueForKey:@"uid"]])
-					[[[viewersList objectAtIndex: i] window] close];
-			}
-			
-			// Done, we can send the response to the sender
-			
-			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark Close2DViewerWithStudyUID
-	
-	// ********************************************
-	// Method: Close2DViewerWithStudyUID
-	//
-	// Parameters:
-	// uid: study instance uid to close
-	//
-	// Example: {uid: "1.2.840.113745.101000.1008000.37915.4331.5559218"}
-	//
-	// Response: {error: "0"}
-	
-	if( [selName isEqualToString: @"close2dviewerwithstudyuid"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			
-			// *****
-			
-			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
-			
-			for( int i = 0; i < [viewersList count] ; i++)
-			{
-				NSManagedObject *study = [[[[viewersList objectAtIndex: i] imageView] seriesObj] valueForKey:@"study"];
-				
-				if( [[study valueForKey:@"studyInstanceUID"] isEqualToString: [paramDict valueForKey:@"uid"]])
-					[[[viewersList objectAtIndex: i] window] close];
-			}
-			
-			// Done, we can send the response to the sender
-			
-			NSString *xml = @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>0</value></member></struct></value></param></params></methodResponse>";		// Simple answer, no errors
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-
-#pragma mark Retrieve
-    // ********************************************
-	// Method: Retrieve
-	//
-	// Parameters:
-    //
-	// serverName: 
-	// filterValue: 
-    // filterKey:
-	//
-	// Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
-	//
-	// Response: {error: "0"}
-	
-	if( [selName isEqualToString: @"retrieve"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (3 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
+            }
             
-            NSNumber *ret = [NSNumber numberWithInt: -1];
-            
-			// *****
-            @try
-            {
-                NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
-                NSDictionary *sourceServer = nil;
+            if (studyUID) {
+                NSPredicate* predicate = nil;
+                if (seriesUID)
+                    predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID];
+                else predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
                 
+                DicomDatabase* database = [self database];
                 
-                for( NSDictionary *s in sources)
-                {
-                    if( [[s valueForKey:@"Description"] isEqualToString: [paramDict valueForKey:@"serverName"]]) // We found the source server
-                    {
-                        sourceServer = s;
+                NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+                do {
+                    NSArray* studies = [database objectsForEntity:database.studyEntity predicate:predicate];
+                    if ([[[studies lastObject] valueForKey:@"studyInstanceUID"] isEqualToString:studyUID]) {
+                        DicomStudy* study = [studies lastObject];
+                        DicomSeries* series = nil;
+                        if (seriesUID)
+                            for (DicomSeries* s in study.series)
+                                if ([s.seriesDICOMUID isEqualToString:seriesUID])
+                                    series = s;
+                        
+                        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[NSArray arrayWithObject: series? (id)series : (id)study] waitUntilDone:NO];
+                        
                         break;
                     }
-                }
-                
-                if( sourceServer)
-                {
-                    //We found the DICOM node, prepare the query
-                    DCMTKRootQueryNode *rootNode = [[DCMTKRootQueryNode alloc] initWithDataset: nil
-                                                                                    callingAET: [NSUserDefaults defaultAETitle]
-                                                                                     calledAET: [sourceServer objectForKey:@"AETitle"]
-                                                                                      hostname: [sourceServer objectForKey:@"Address"]
-                                                                                          port: [[sourceServer objectForKey:@"Port"] intValue]
-                                                                                transferSyntax: 0
-                                                                                   compression: nil
-                                                                               extraParameters: sourceServer];
                     
-                    NSArray *filterArray = [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue"], @"value", [paramDict objectForKey: @"filterKey"], @"name", nil]];
-                    
-                    if( [paramDict objectForKey: @"filterValue2"] && [paramDict objectForKey: @"filterKey2"])
-                    {
-                        filterArray = [filterArray arrayByAddingObject:
-                                       [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue2"], @"value", [paramDict objectForKey: @"filterKey2"], @"name", nil]];
-                    }
-                    
-                    if( [paramDict objectForKey: @"filterValue3"] && [paramDict objectForKey: @"filterKey3"])
-                    {
-                        filterArray = [filterArray arrayByAddingObject:
-                                       [NSDictionary dictionaryWithObjectsAndKeys: [paramDict objectForKey: @"filterValue3"], @"value", [paramDict objectForKey: @"filterKey3"], @"name", nil]];
-                    }
-                    
-                    [rootNode queryWithValues: filterArray];
-                    
-                    int retrieveMode = CMOVERetrieveMode;
-                    if( [[sourceServer valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode)
-                        retrieveMode = WADORetrieveMode;
-                    if( [[sourceServer valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode)
-                        retrieveMode = CGETRetrieveMode;
-                    
-                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSUserDefaults defaultAETitle], @"moveDestination", [NSNumber numberWithInt: retrieveMode] , @"retrieveMode", [rootNode children], @"children", nil];
-                    
-                    if( [[rootNode children] count])
-                    {
-                        ret = [NSNumber numberWithInt: 0];
-                        [NSThread detachNewThreadSelector: @selector( retrieve:) toTarget: self withObject: dict];
-                    }
-                    else
-                    {
-                        NSLog( @"--- study not found");
-                        ret = [NSNumber numberWithInt: -3];
-                    }
-                }
-                else
-                {
-                    NSLog( @"--- server not found");
-                    ret = [NSNumber numberWithInt: -2];
-                }
+                    [NSThread sleepForTimeInterval:1];
+                } while ([NSDate timeIntervalSinceReferenceDate] - startTime < 300); // try for 300 seconds = 5 minutes
             }
-            @catch (NSException * e) { 
-                N2LogExceptionWithStackTrace(e);
-            }
-            
-            // Done, we can send the response to the sender
-			
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
+        }
+	} @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
+}
+
+
+/**
+ Method: DisplayStudy
+
+ Parameters:
+ PatientID:  0010,0020
+ StudyID:  0020,0010
+
+ Example: {PatientID: "1100697", StudyID: "A10043712203"}
+ Response: {elements: array of elements corresponding to the request}
+ */
+-(NSDictionary*)DisplayStudy:(NSDictionary*)paramDict error:(NSError**)error {
+    NSMutableArray* subpredicates = [NSMutableArray array];
+    NSString* temp;
+    
+    temp = [paramDict valueForKey:@"PatientID"];
+    if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"patientID == %@", temp]];
+    temp = [paramDict valueForKey:@"StudyInstanceUID"];
+    if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", temp]];
+
+    if (subpredicates.count)
+        ReturnWithCode(400); // Bad Request
+    
+    NSArray* objects = [self objectsWithEntityName:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    
+    if (!objects.count)
+        ReturnWithCode(404);
+    
+    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+    
+    NSMutableArray* elements = [NSMutableArray array];
+    for (NSManagedObject* obj in objects)
+        [elements addObject:[[self class] dictionaryForObject:obj]];
+    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+}
+
+/**
+ Method: DisplaySeries
+ 
+ Parameters:
+ PatientID:  0010,0020
+ SeriesInstanceUID: 0020,000e
+ 
+ Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
+ Response: {elements: array of elements corresponding to the request}
+ */
+-(NSDictionary*)DisplaySeries:(NSDictionary*)paramDict error:(NSError**)error {
+    NSMutableArray* subpredicates = [NSMutableArray array];
+    NSString* temp;
+    
+    temp = [paramDict valueForKey:@"PatientID"];
+    if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"study.patientID == %@", temp]];
+    temp = [paramDict valueForKey:@"SeriesInstanceUID"];
+    if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", temp]];
+    
+    if (subpredicates.count)
+        ReturnWithCode(400); // Bad Request
+    
+    NSArray* objects = [self objectsWithEntityName:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    
+    if (!objects.count)
+        ReturnWithCode(404);
+    
+    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+    
+    NSMutableArray* elements = [NSMutableArray array];
+    for (NSManagedObject* obj in objects)
+        [elements addObject:[[self class] dictionaryForObject:obj]];
+    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+}
+
+/**
+ Method: DBWindowFind
+
+ Parameters:
+ request: SQL request, see 'Predicate Format String Syntax' from Apple documentation
+ table: OsiriX entity name: Image, Series, Study
+ execute: Select, Open, Delete or Nothing - you may skip this entry
+
+ execute is performed at the  study level: you cannot delete a single series of a study
+
+ Example: {request: "name == 'OsiriX'", table: "Study", execute: "Select"}
+ Example: {request: "(name LIKE '*OSIRIX*')", table: "Study", execute: "Open"}
+
+ Response: {elements: array of elements corresponding to the request}
+ */
+-(NSDictionary*)FindObject:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* request = [paramDict valueForKey:@"request"];
+    NSString* entityName = [paramDict valueForKey:@"table"];
+    NSString* command = [paramDict valueForKey:@"execute"];
+    
+    if (!request.length || !entityName.length)
+        ReturnWithCode(400); // Bad Request
+
+    NSArray* objects = [self objectsWithEntityName:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
+    
+    if (!objects.count)
+        ReturnWithCode(404);
+    
+    if ([command isEqualToString:@"Open"])
+        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+    if ([command isEqualToString:@"Select"])
+        [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjects:) withObject:objects waitUntilDone:NO];
+    
+    NSMutableArray* elements = [NSMutableArray array];
+    for (NSManagedObject* obj in objects)
+        [elements addObject:[[self class] dictionaryForObject:obj]];
+
+    if ([command isEqualToString:@"Delete"])
+        [self performSelectorOnMainThread:@selector(_onMainThreadDeleteObjects:) withObject:objects waitUntilDone:NO];
+    
+    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+}
+
+-(void)_onMainThreadOpenObjects:(NSArray*)objects { // actually, only the first element is opened...
+    for (NSManagedObject* obj in objects) {
+        DicomStudy* study = [self studyForObject:obj];
+        if ([study.imageSeries count]) {
+			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Open"];
+            break;
         }
     }
+}
 
+-(void)_onMainThreadSelectObjects:(NSArray*)objects { // actually, only the first element is opened...
+    for (NSManagedObject* obj in objects) {
+        DicomStudy* study = [self studyForObject:obj];
+        if ([study.imageSeries count]) {
+			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Select"];
+            break;
+        }
+    }
+}
+
+-(void)_onMainThreadDeleteObjects:(NSArray*)objects {
+    DicomDatabase* database = [self database];
     
-#pragma mark CMove
-	
-	// ********************************************
-	// Method: CMove
-	//
-	// Parameters:
-	// accessionNumber: accessionNumber of the study to retrieve
-	// server: server description where the images are located (See OsiriX Locations Preferences)
-	//
-	// Example: {accessionNumber: "UA876410", server: "Main-PACS"}
-	//
-	// Response: {error: "0"}
-	
-	if( [selName isEqualToString: @"cmove"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (2 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSArray *sources = [DCMNetServiceDelegate DICOMServersList];
-			NSDictionary *sourceServer = nil;
-			NSNumber *ret = [NSNumber numberWithInt: 0];
-			
-			for( NSDictionary *s in sources)
-			{
-				if( [[s valueForKey:@"Description"] isEqualToString: [paramDict valueForKey:@"server"]]) // We found the source server
-				{
-					sourceServer = s;
-					
-					break;
-				}
-			}
-			
-			if( sourceServer)
-			{
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];	// CMove requires this unlock !
-				
-				@try
-				{
-					ret = [NSNumber numberWithInt :[QueryController queryAndRetrieveAccessionNumber: [paramDict valueForKey:@"accessionNumber"] server: sourceServer]];
-				}
-				@catch (NSException * e)
-				{
-					NSLog( @"***** queryAndRetrieveAccessionNumber exception: %@", e);
-				}
-				
-				[[[BrowserController currentBrowser] managedObjectContext] lock];
-			}
-			else ret = [NSNumber numberWithInt: -1];
-			
-			// Done, we can send the response to the sender
-			
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark DisplayStudyListByPatientName
-	
-	// ********************************************
-	// Method: DisplayStudyListByPatientName
-	//
-	// Parameters:
-	// PatientName: name of the patient
-	//
-	// Example: {PatientName: "DOE^JOHN"}
-	//
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"displaystudylistbypatientname"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSNumber *ret = [NSNumber numberWithInt: 0];
-			
-			[[BrowserController currentBrowser] setSearchString:[paramDict valueForKey:@"PatientName"]];
-			
-			// *****
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
-	
-#pragma mark DisplayStudyListByPatientId
-	
-	// ********************************************
-	// Method: DisplayStudyListByPatientId
-	//
-	// Parameters:
-	// PatientID: patient ID
-	//
-	// Example: {id: "0123456789"}
-	//
-	// Response: {error: "0"}
-	
-	if ([selName isEqualToString:@"displaystudylistbypatientid"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			if (1 != [paramDict count])
-			{
-				[self postError: 400 version: vers message: mess];
-				return;
-			}
-			// *****
-			
-			NSNumber *ret = [NSNumber numberWithInt: 0];
-			
-			[[BrowserController currentBrowser] setSearchString:[paramDict valueForKey:@"PatientID"]];
-			
-			// *****
-			NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%@</value></member></struct></value></param></params></methodResponse>", [ret stringValue]];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue: doc forKey: @"NSXMLDocumentResponse"];
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
+    for (NSManagedObject* obj in objects) {
+        DicomStudy* study = [self studyForObject:obj];
+        if (study)
+            [database.managedObjectContext deleteObject:study]; // TODO: but this is BAD... will the included Series and Images be removed and deleted from the DB ?
+    }
     
-    if ([selName isEqualToString:@"pathtofrontdcm"])
-	{
-		if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)							// Is this order already processed ?
-		{
-			[httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];
-			ViewerController *frontViewer = [ViewerController frontMostDisplayed2DViewer];
-			NSString	*path = @"";
-			if (frontViewer){ // is there a front viewer?
-				path  = [[BrowserController currentBrowser] getLocalDCMPath:[[frontViewer fileList] objectAtIndex:[[frontViewer imageView] curImage]] :0];
-				if (paramDict && [[paramDict valueForKey:@"onlyfilename"] isEqualToString:@"yes"]) path = [path lastPathComponent];
-			}
-			// We must build an AppleScript response 'cause Applescript doesn't understand XMLRPC responses. The response is a dictionary.
-			id ASResponse;
-			ASResponse = [NSDictionary dictionaryWithObject:path forKey:@"currentDCMPath"];
-			[httpServerMessage setValue:ASResponse forKey: @"ASResponse"];
-			
-			NSString *xmlrpcresponse = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>currentDCMPath</name><value>%@</value></member></struct></value></param></params></methodResponse>", path];
-			
-			NSError *error = nil;
-			NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString: xmlrpcresponse options:NSXMLNodeOptionsNone error:&error] autorelease];
-			[httpServerMessage setValue:doc forKey:@"NSXMLDocumentResponse"];
-            [httpServerMessage setValue: [NSNumber numberWithBool: YES] forKey: @"Processed"];		// To tell to other XML-RPC that we processed this order
-		}
-	}
+    [database save];
 }
 
-- (void) postError: (NSInteger) err version: (NSString*) vers message: (HTTPServerRequest *)mess 
+/**
+ Method: SwitchToDefaultDBIfNeeded
+
+ Parameters:
+ No parameters
+
+ Response: {}
+ */
+-(NSDictionary*)SelectDefaultDatabase:(NSDictionary*)paramDict error:(NSError**)error {
+    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase defaultDatabase] waitUntilDone:NO];
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: OpenDB
+
+ Parameters:
+ path: path of the folder containing the 'OsiriX Data' folder
+
+ if path is valid, but not DB is found, OsiriX will create a new one
+
+ Example: {path: "/Users/antoinerosset/Documents/"}
+
+ Response: {}
+*/
+-(NSDictionary*)OpenDatabase:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* path = [paramDict valueForKey:@"path"];
+    
+    if (!path.length)
+        ReturnWithCode(400); // Bad Request
+    
+    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase databaseAtPath:path] waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: SelectAlbum
+
+ Parameters:
+ name: name of the album
+
+ Example: {name: "Today"}
+
+ Response: {}
+ */
+-(NSDictionary*)SelectAlbum:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* name = [paramDict objectForKey:@"name"];
+    
+    if (!name.length)
+        ReturnWithCode(400); // Bad Request
+    
+    DicomDatabase* database = [self database];
+    
+    NSArray* albums = [database albums];
+    for (NSInteger i = 0; i < albums.count; ++i) {
+        DicomAlbum* album = [albums objectAtIndex:i];
+        if ([album.name isEqualToString:name]) {
+            [self performSelectorOnMainThread:@selector(_onMainThreadSelectAlbumAtIndex:) withObject:[NSNumber numberWithInteger:i] waitUntilDone:NO];
+            return [NSDictionary dictionary];
+        }
+    }
+    
+    ReturnWithCode(404); // Not Found
+}
+
+-(void)_onMainThreadSelectAlbumAtIndex:(NSInteger)i {
+    [[[BrowserController currentBrowser] albumTable] selectRowIndexes:[NSIndexSet indexSetWithIndex:i] byExtendingSelection:NO];
+}
+
+/**
+ Method: CloseAllWindows
+
+ Parameters: No Parameters
+
+ Response: {}
+ */
+-(NSDictionary*)CloseAllWindows:(NSDictionary*)paramDict error:(NSError**)error {
+    for (ViewerController* v in [ViewerController getDisplayed2DViewers])
+        [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: GetDisplayed2DViewerSeries
+
+ Parameters: No Parameters
+
+ Response: {elements: array of series corresponding to displayed windows}
+*/
+-(NSDictionary*)GetDisplayed2DViewerSeries:(NSDictionary*)paramDict error:(NSError**)error {
+    NSMutableArray* elements = [NSMutableArray array];
+    for (NSManagedObject* obj in [[ViewerController getDisplayed2DViewers] valueForKeyPath:@"imageView.seriesObj"])
+        [elements addObject:[[self class] dictionaryForObject:obj]];
+    
+    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+}
+
+/**
+ Method: GetDisplayed2DViewerStudies
+
+ Parameters: No Parameters
+
+ Response: {elements: array of studies corresponding to displayed windows}
+*/
+-(NSDictionary*)GetDisplayed2DViewerStudies:(NSDictionary*)paramDict error:(NSError**)error {
+    NSMutableArray* elements = [NSMutableArray array];
+    for (NSManagedObject* obj in [[ViewerController getDisplayed2DViewers] valueForKeyPath:@"imageView.seriesObj.study"])
+        [elements addObject:[[self class] dictionaryForObject:obj]];
+    
+    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+}
+
+/**
+ Method: Close2DViewerWithSeriesUID
+
+ Parameters:
+ uid: series instance uid to close
+
+ Example: {uid: "1.3.12.2.1107.5.1.4.51988.4.0.1164229612882469"}
+
+ Response: {}
+*/
+-(NSDictionary*)Close2DViewerWithSeriesUID:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* uid = [paramDict objectForKey:@"uid"];
+    
+    if (!uid.length)
+        ReturnWithCode(400);
+    
+    for (ViewerController* v in [ViewerController getDisplayed2DViewers])
+        if ([[v valueForKeyPath:@"imageView.seriesObj.seriesDICOMUID"] isEqualToString:uid])
+            [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: Close2DViewerWithStudyUID
+
+ Parameters:
+ uid: study instance uid to close
+
+ Example: {uid: "1.2.840.113745.101000.1008000.37915.4331.5559218"}
+
+ Response: {}
+ */
+-(NSDictionary*)Close2DViewerWithStudyUID:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* uid = [paramDict objectForKey:@"uid"];
+    
+    if (!uid.length)
+        ReturnWithCode(400);
+    
+    for (ViewerController* v in [ViewerController getDisplayed2DViewers])
+        if ([[v valueForKeyPath:@"imageView.seriesObj.study.studyInstanceUID"] isEqualToString:uid])
+            [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: Retrieve
+
+ Parameters:
+ serverName: 
+ filterValue: 
+ filterKey:
+
+ Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
+
+ Response: {}
+ */
+-(NSDictionary*)Retrieve:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* serverName = [paramDict objectForKey:@"serverName"];
+    NSInteger retrieveModeParam = [[paramDict objectForKey:@"retrieveMode"] integerValue];
+    
+    if (!serverName.length)
+        ReturnWithCode(400);
+    
+    NSDictionary* source = nil;
+    NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+    for (NSDictionary* si in sources)
+        if ([[si objectForKey:@"Description"] isEqualToString:serverName]) {
+            source = si;
+            break;
+        }
+    
+    if (!source)
+        ReturnWithCode(404);
+    
+    @try {
+        DCMTKRootQueryNode* rootNode = [[DCMTKRootQueryNode alloc] initWithDataset:nil
+                                                                        callingAET:[NSUserDefaults defaultAETitle]
+                                                                         calledAET:[source objectForKey:@"AETitle"]
+                                                                          hostname:[source objectForKey:@"Address"]
+                                                                              port:[[source objectForKey:@"Port"] intValue]
+                                                                    transferSyntax:0
+                                                                       compression:nil
+                                                                   extraParameters:source];
+        
+        NSMutableArray* filters = [NSMutableArray array];
+        for (NSInteger i = 1; i < 100; ++i) {
+            NSString* filterKey = [paramDict objectForKey:(i != 1 ? [NSString stringWithFormat:@"filterKey%d", (int)i] : @"filterKey")];
+            NSString* filterValue = [paramDict objectForKey:(i != 1 ? [NSString stringWithFormat:@"filterValue%d", (int)i] : @"filterValue")];
+            if (filterKey && filterValue)
+                [filters addObject:[NSDictionary dictionaryWithObjectsAndKeys: filterValue, @"value", filterKey, @"name", nil]];
+        }
+       
+        [rootNode queryWithValues:filters];
+        
+        int retrieveMode = CMOVERetrieveMode;
+        if (retrieveModeParam == WADORetrieveMode) retrieveMode = WADORetrieveMode;
+        if (retrieveModeParam == CGETRetrieveMode) retrieveMode = CGETRetrieveMode;
+        
+        if ([[rootNode children] count])
+        {
+            NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  [NSUserDefaults defaultAETitle], @"moveDestination",
+                                  [NSNumber numberWithInt:retrieveMode] , @"retrieveMode",
+                                  [rootNode children], @"children", nil];
+            [NSThread detachNewThreadSelector:@selector(_threadRetrieve:) toTarget:self withObject:dict];
+            
+            return [NSDictionary dictionary];
+        }
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    ReturnWithCode(500);
+}
+
+-(void)_threadRetrieve:(NSDictionary*)dict
 {
-	CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, err, NULL, (CFStringRef) vers); // Bad Request
-	NSString *xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", err];
-	NSLog( @"***** xml error returned: %@", xml);
-	NSError *error = nil;
-	NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:&error] autorelease];
-	NSData *data = [doc XMLData];
-	CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-	CFHTTPMessageSetBody(response, (CFDataRef)data);
-	[mess setResponse:response];
-	CFRelease(response);
-}
-
-- (void)HTTPConnectionProtected:(basicHTTPConnection *)conn didReceiveRequest:(HTTPServerRequest *)mess
-{
-    CFHTTPMessageRef request = [mess request];
-	
-	// curl -d @/Users/antoinerosset/Desktop/test.xml "http://localhost:8080"
-	
-//	NSDictionary *allHeaderFields = [(id)CFHTTPMessageCopyAllHeaderFields(request) autorelease];
-//	NSLog( @"%@", allHeaderFields);
-	
-    NSString *vers = [(id)CFHTTPMessageCopyVersion(request) autorelease];
-    if (!vers)
-	{
-        [self postError: 505 version: vers message: mess];
-		
-        return;
-    }
-
-    NSString *method = [(id)CFHTTPMessageCopyRequestMethod(request) autorelease];
-    if (!method)
-	{
-        [self postError: 400 version: vers message: mess];
-		
-        return;
-    }
-	
-    if ([method isEqual:@"POST"])
-	{
-        NSError *error = nil;
-        NSData *data = [(id)CFHTTPMessageCopyBody(request) autorelease];
-        NSXMLDocument *doc = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:&error] autorelease];
-		
-		if( error)
-			NSLog( @"***** %@", error);
-		
-		NSString *encoding = [doc characterEncoding];
-		
-        NSArray *array = [doc nodesForXPath:@"//methodName" error:&error];
-		
-		if( [array count] == 1)
-		{
-			NSString *selName = [[array objectAtIndex:0] objectValue];
-			DLog(@"XMLRPC call: %@", selName);
-			
-			selName = [selName stringByTrimmingCharactersInSet: [NSCharacterSet whitespaceAndNewlineCharacterSet]];
-			
-			char buffer[256];
-			NSString *ipAddressString = @"";
-			
-			struct sockaddr *addr = (struct sockaddr *) [[conn peerAddress] bytes];
-			if( addr->sa_family == AF_INET)
-			{
-				if (inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, buffer, sizeof(buffer)))
-					ipAddressString = [NSString stringWithCString:buffer];
-			}
-			
-			NSMutableDictionary	*httpServerMessage = [NSMutableDictionary dictionaryWithObjectsAndKeys: selName, @"MethodName", doc, @"NSXMLDocument", [NSNumber numberWithBool: NO], @"Processed", ipAddressString, @"peerAddress", nil];
-			
-			#pragma mark-
-			#pragma mark Send the XML-RPC as a notification
-			
-			// Send the XML-RPC as a notification : give a chance to plugin to answer
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixXMLRPCMessageNotification object: httpServerMessage];
-			
-			// Did someone processed the message?
-			if( [[httpServerMessage valueForKey: @"Processed"] boolValue])
-			{
-				//NSLog( @"XML-RPC Message processed. Sending the reponse.");
-				
-				NSData *data = [[httpServerMessage valueForKey: @"NSXMLDocumentResponse"] XMLData];
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK
-				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-				CFHTTPMessageSetBody(response, (CFDataRef)data);
-				[mess setResponse:response];
-				CFRelease(response);
-				
-				return;
-			}
-			else // Built-in messages
-			{
-				NSDictionary *paramDict = [self getParameters: doc encoding: encoding];
-				
-				[self processXMLRPCMessage: selName httpServerMessage: httpServerMessage HTTPServerRequest: mess version: vers paramDict: paramDict encoding: encoding];
-			}
-			
-			if( [[httpServerMessage valueForKey: @"Processed"] boolValue] == NO)
-			{
-				[self postError: 404 version: vers message: mess];
-				
-				NSLog( @"**** unable to understand this xml-rpc message: %@", selName);
-				NSLog( @"%@", doc);
-				NSLog( @"************************************************************");
-				
-				return;
-			}
-			else
-			{
-				NSData *data = [[httpServerMessage valueForKey: @"NSXMLDocumentResponse"] XMLData];
-				CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef) vers); // OK
-				CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-				CFHTTPMessageSetBody(response, (CFDataRef)data);
-				[mess setResponse:response];
-				CFRelease(response);
-				
-				return;
-			}
-		}
-		NSLog( @"**** Bad Request : methodName?");
-		[self postError: 400 version: vers message: mess];
-		
-        return;
-    }
-    else
-    {
-        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef) vers); // Bad Request
-        NSString *message = @"This is the XML-RPC server of OsiriX : use POST request according to the XML-RPC standard.\r\rDocumentation : http://www.osirix-viewer.com/XML-RPC.pdf";
-        NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
-        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [data length]]);
-        CFHTTPMessageSetBody(response, (CFDataRef) (CFDataRef)data);
-        [mess setResponse: response];
-        CFRelease(response);
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        for (DCMTKQueryNode* study in [dict valueForKey:@"children"])
+            [study move:dict retrieveMode:[[dict valueForKey:@"retrieveMode"] intValue]];
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
     }
 }
+
+/**
+ Method: CMove
+
+ Parameters:
+ accessionNumber: accessionNumber of the study to retrieve
+ server: server description where the images are located (See OsiriX Locations Preferences)
+
+ Example: {accessionNumber: "UA876410", server: "Main-PACS"}
+
+ Response: {}
+ */
+-(NSDictionary*)CMove:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* accessionNumber = [paramDict objectForKey:@"accessionNumber"];
+    NSString* serverName = [paramDict objectForKey:@"server"];
+    
+    NSDictionary* source = nil;
+    NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+    for (NSDictionary* si in sources)
+        if ([[si objectForKey:@"Description"] isEqualToString:serverName]) {
+            source = si;
+            break;
+        }
+    
+    if (!source || !accessionNumber.length)
+        ReturnWithCode(404);
+    
+    [self performSelectorOnMainThread:@selector(_onMainThreadQueryRetrieve:) withObject:[NSArray arrayWithObjects: accessionNumber, source, nil] waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+-(void)_onMainThreadQueryRetrieve:(NSArray*)args {
+    [QueryController queryAndRetrieveAccessionNumber:[args objectAtIndex:0] server:[args objectAtIndex:1]];
+}
+
+/**
+ Method: DisplayStudyListByPatientName
+
+ Parameters:
+ PatientName: name of the patient
+
+ Example: {PatientName: "DOE^JOHN"}
+
+ Response: {}
+ */
+-(NSDictionary*)DisplayStudyListByPatientName:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* patientName = [paramDict objectForKey:@"PatientName"];
+    
+    if (!patientName.length)
+        ReturnWithCode(404);
+    
+    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setSearchString:) withObject:patientName waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: DisplayStudyListByPatientId
+
+ Parameters:
+ PatientID: patient ID
+
+ Example: {id: "0123456789"}
+
+ Response: {}
+ */
+-(NSDictionary*)DisplayStudyListByPatientId:(NSDictionary*)paramDict error:(NSError**)error {
+    NSString* patientId = [paramDict objectForKey:@"PatientID"];
+    
+    if (!patientId.length)
+        ReturnWithCode(404);
+    
+    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setSearchString:) withObject:patientId waitUntilDone:NO];
+    
+    return [NSDictionary dictionary];
+}
+
+/**
+ Method: PathToFrontDCM
+ 
+ Parameters:
+ onlyfilename: string with value "yes" to activate only filename mode; if absent or not equal to "yes", the full path is returned
+ 
+ Response: {currentDCMPath: "/path/to/file.dcm"}
+           {currentDCMPath: "file.dcm"} if onlyfilename == "yes"
+           {currentDCMPath: ""} if no viewer is open
+ */
+-(NSDictionary*)PathToFrontDCM:(NSDictionary*)paramDict error:(NSError**)error {
+    BOOL onlyFilename = [[paramDict objectForKey:@"onlyfilename"] isEqualToString:@"yes"];
+    
+    ViewerController* viewer = [ViewerController frontMostDisplayed2DViewer];
+    
+    NSString* path = nil;
+    
+    if (viewer) {
+        path  = [[BrowserController currentBrowser] getLocalDCMPath:[[viewer fileList] objectAtIndex:[[viewer imageView] curImage]] :0];
+        if (onlyFilename)
+            path = [path lastPathComponent];
+    }
+    
+    if (!path)
+        path = @"";
+    
+    return [NSDictionary dictionaryWithObject:path forKey:@"currentDCMPath"];
+}
+
+#pragma mark Old
+
+- (BOOL)processXMLRPCMessage:(NSString*)selName httpServerMessage:(NSMutableDictionary*)httpServerMessage HTTPServerRequest:(HTTPServerRequest*)mess version:(NSString*)vers paramDict:(NSDictionary*)paramDict encoding:(NSString*)encoding { // __deprecated
+    SEL methodSelector = NSSelectorFromString([self selectorStringForXMLRPCRequestMethodName:selName]);
+    
+    NSDictionary* response;
+    NSError* error = nil;
+    
+    if ([self respondsToSelector:methodSelector])
+        @try {
+            NSDictionary* response = [self performSelector:methodSelector withObject:paramDict withObject:(id)&error];
+            
+            if (response)
+                [httpServerMessage setValue:response forKey: @"ASResponse"];
+
+            if (error)
+                response = [NSDictionary dictionaryWithObject:[[NSNumber numberWithInteger:error.code] stringValue] forKey:@"error"];
+            
+        } @catch (NSException* e) {
+            if (error)
+                response = [NSDictionary dictionaryWithObject:[[NSNumber numberWithInteger:error.code] stringValue] forKey:@"error"];
+        } @finally {
+            return YES;
+        }
+    
+    // this next block is here for retro-compatibility if eventually any plugin was calling this...
+    NSString* xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:response]];
+    NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:NULL] autorelease];
+    [httpServerMessage setObject:doc forKey:@"NSXMLDocumentResponse"];
+    
+    return NO;
+}
+
 @end
+
+// TODO: announce with bonjour type _http._tcp.

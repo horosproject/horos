@@ -24,6 +24,7 @@
 #import <OsiriXAPI/WebPortal.h>
 #import <OsiriXAPI/WebPortalDatabase.h>
 #import <OsiriXAPI/DicomDatabase.h>
+#import <OsiriXAPI/DicomStudy.h>
 
 #import "DDKeychain.h"
 
@@ -170,9 +171,10 @@
 {
 	if( [keyPath isEqualToString: @"selection"] && [NSThread isMainThread])
 	{
-		// Automatically display the selected study in the main DB window
-		if( [[studiesArrayController selectedObjects] lastObject])
-			[[BrowserController currentBrowser]	findObject:	[NSString stringWithFormat: @"patientUID =='%@' AND studyInstanceUID == '%@'", [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"patientUID"], [[[studiesArrayController selectedObjects] lastObject] valueForKey:@"studyInstanceUID"]] table: @"Study" execute: @"Select" elements: nil];
+		DicomStudy* study = [[studiesArrayController selectedObjects] lastObject];
+        // Automatically display the selected study in the main DB window
+		if( study)
+			[[BrowserController currentBrowser] displayStudy:study object:study command:@"Select"];
 	}
 }
 

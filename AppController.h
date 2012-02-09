@@ -123,7 +123,7 @@ extern AppController* OsiriX;
 	
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
-	XMLRPCMethods					*XMLRPCServer;
+	XMLRPCInterface					*XMLRPCServer;
 	ThreadPoolServer				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff, isSessionInactive;
@@ -135,7 +135,7 @@ extern AppController* OsiriX;
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
 @property(readonly) NSNetService* dicomBonjourPublisher;
-@property (readonly) XMLRPCMethods *XMLRPCServer;
+@property (readonly) XMLRPCInterface *XMLRPCServer;
 
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;
