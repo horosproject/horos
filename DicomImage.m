@@ -83,20 +83,23 @@ void* sopInstanceUIDEncode( NSString *sopuid)
 	unsigned int	i, x;
 	unsigned char	*r = malloc( 1024);
 	
-	for( i = 0, x = 0; i < [sopuid length];)
-	{
-		unsigned char c1, c2;
-		
-		c1 = [sopuid characterAtIndex: i];
-		i++;
-		if( i == [sopuid length]) c2 = 0;
-		else c2 = [sopuid characterAtIndex: i];
-		i++;
-		
-		r[ x] = (charToInt( c1) << 4) + charToInt( c2);
-		x++;
+    if( r)
+    {
+        for( i = 0, x = 0; i < [sopuid length];)
+        {
+            unsigned char c1, c2;
+            
+            c1 = [sopuid characterAtIndex: i];
+            i++;
+            if( i == [sopuid length]) c2 = 0;
+            else c2 = [sopuid characterAtIndex: i];
+            i++;
+            
+            r[ x] = (charToInt( c1) << 4) + charToInt( c2);
+            x++;
+        }
 	}
-	
+    
 	return r;
 }
 

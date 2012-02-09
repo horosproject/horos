@@ -128,11 +128,18 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     
 	if (!title) title = &ignore;
 	
+    if ([parameters objectForKey:@"sortKey"])
+        if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+            [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
+    
+    if (![self.session objectForKey:@"StudiesSortKey"])
+        [self.session setObject:@"date" forKey:@"StudiesSortKey"];
+    
 	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length)
     {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		result = [WebPortalUser studiesForUser: user album:albumReq sortBy:[parameters objectForKey:@"sortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+		result = [WebPortalUser studiesForUser: user album:albumReq sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
 	}
 	else
     {
@@ -228,13 +235,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             *title = NSLocalizedString(@"Study List", @"Web portal, study list, title");
             //browsePredicate = [NSPredicate predicateWithValue:YES];
         }	
-        
-        if ([parameters objectForKey:@"sortKey"])
-            if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
-                [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
-        
-        if (![self.session objectForKey:@"StudiesSortKey"])
-            [self.session setObject:@"name" forKey:@"StudiesSortKey"];
         
         result = [WebPortalUser studiesForUser: user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
     }
