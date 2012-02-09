@@ -42,8 +42,6 @@
 //
 // About XML-RPC: http://www.xmlrpc.com/
 
-static NSTimeInterval lastConnection = 0;
-
 @implementation XMLRPCMethods
 
 - (void) displayError: (NSError*) error
@@ -131,11 +129,6 @@ static NSTimeInterval lastConnection = 0;
 {
 	@synchronized( self)
 	{
-        if( [NSDate timeIntervalSinceReferenceDate] - lastConnection < 0.3)
-            [NSThread sleepForTimeInterval: 0.3];
-        
-        lastConnection = [NSDate timeIntervalSinceReferenceDate];
-        
         @try
         {
             [self performSelectorOnMainThread: @selector( processHTTPConnectionOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: conn, @"conn", mess, @"mess", nil] waitUntilDone: YES];
