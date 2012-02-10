@@ -33,6 +33,7 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "QueryController.h"
 #import "WADODownload.h"
+#import "NSManagedObject+N2.h"
 
 @implementation XMLRPCInterface
 
@@ -132,9 +133,20 @@
 
 -(NSArray*)objectsWithEntityName:(NSString*)entityName predicate:(NSPredicate*)predicate error:(NSError**)error {
     DicomDatabase* database = [self database];
+    
     [database initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-    NSEntityDescription* entity = [database entityForName:entityName];
-    return [[self database] objectsForEntity:entity predicate:predicate error:error]; // TODO: test with independentDatabase
+    
+    NSArray* independentObjects = [[database independentDatabase] objectsForEntity:[database entityForName:entityName] predicate:predicate error:error];
+    
+    NSMutableArray* objects = [NSMutableArray arrayWithCapacity:independentObjects.count];
+    for (NSManagedObject* independentObject in independentObjects)
+        @try {
+            [objects addObject:[database.managedObjectContext objectWithID:independentObject.objectID]];
+        } @catch (NSException* e) {
+            // ignore exception
+        }
+    
+    return objects;
 }
 
 #define ReturnWithCode(code) { if (error) *error = [self errorWithCode:code]; return nil; }
@@ -216,7 +228,7 @@
                 
                 NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
                 do {
-                    NSArray* studies = [database objectsForEntity:database.studyEntity predicate:predicate];
+                    NSArray* studies = [self objectsWithEntityName:@"Study" predicate:predicate error:NULL];
                     if ([[[studies lastObject] valueForKey:@"studyInstanceUID"] isEqualToString:studyUID]) {
                         DicomStudy* study = [studies lastObject];
                         DicomSeries* series = nil;
@@ -266,9 +278,6 @@
     
     NSArray* objects = [self objectsWithEntityName:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
     
-    if (!objects.count)
-        ReturnWithCode(404);
-    
     [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
@@ -300,9 +309,6 @@
         ReturnWithCode(400); // Bad Request
     
     NSArray* objects = [self objectsWithEntityName:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
-    
-    if (!objects.count)
-        ReturnWithCode(404);
     
     [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
     
@@ -354,6 +360,7 @@
 
 -(void)_onMainThreadOpenObjects:(NSArray*)objects { // actually, only the first element is opened...
     for (NSManagedObject* obj in objects) {
+        NSLog(@"Opening %@", obj.XID);
         DicomStudy* study = [self studyForObject:obj];
         if ([study.imageSeries count]) {
 			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Open"];
