@@ -268,8 +268,10 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if ([self status] == N2ConnectionStatusClosed)
 		return;
 	[self setStatus:N2ConnectionStatusClosed];
-//	DLog(@"Close");
+	NSLog(@"Close");
 	
+    NSLog(@"closing n2connection with %d %d", [_outputStream streamStatus], [_inputStream streamStatus]);
+    
 	if (_outputStream)
 		[_outputStream close];
 	[_outputStream release]; _outputStream = nil;
@@ -356,7 +358,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable) {
 		++_handleHasSpaceAvailable;
         if (self.closeOnNextSpaceAvailable)
-            [self close];
+            [self performSelector:@selector(close) withObject:nil afterDelay:0];
         else {
             if ([_outputBuffer length])
                 [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
@@ -366,7 +368,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if (event == NSStreamEventEndEncountered) {
 		[stream close];
         if ([self closeOnRemoteClose])
-            [self close];
+            [self performSelector:@selector(close) withObject:nil afterDelay:0];
     }
 	
 	if (event == NSStreamEventErrorOccurred) {

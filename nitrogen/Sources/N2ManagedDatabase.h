@@ -20,7 +20,7 @@
 		NSString* _sqlFilePath;
 	@private
 	NSManagedObjectContext* _managedObjectContext;
-//		NSRecursiveLock* writeLock;
+    NSLock* _saveLock;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;

@@ -172,6 +172,8 @@
 	self = [super init];
 //	writeLock = [[NSRecursiveLock alloc] init];
 	
+    _saveLock = [[NSLock alloc] init];
+    
 	self.sqlFilePath = p;
 	
 	if (!c)
@@ -276,15 +278,15 @@
 	
 	BOOL b = NO;
 	
-	[self lock];
-	@try {
-		b = [self.managedObjectContext save:err];
-	} @catch(NSException* e) {
-		if (!*err)
-			*err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
-	} @finally {
-		[self unlock];
-	}
+    if ([_saveLock tryLock])
+        @try {
+            b = [self.managedObjectContext save:err];
+        } @catch(NSException* e) {
+            if (!*err)
+                *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
+        } @finally {
+    		[_saveLock unlock];
+        }
 	
 	return b;
 }

@@ -10374,13 +10374,13 @@ static NSArray*	openSubSeriesArray = nil;
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
         @try
         {
-            thread.name = NSLocalizedString(@"Opening database...", nil);
-//            ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:thread window:nil]; sorry but this window is really ugly at startup...
+            //thread.name = NSLocalizedString(@"Opening database...", nil);
+            //ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:thread window:nil]; // sorry but this window is really ugly at startup...
             
             theDatabase = [[DicomDatabase activeLocalDatabase] retain]; // explicitly released later
             
-//            [tmfwc invalidate];
-  //          [tmfwc release];
+            //[tmfwc invalidate];
+            //[tmfwc release];
         }
         @catch (NSException* e)
         {

@@ -40,6 +40,7 @@
 #import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "DataNodeIdentifier.h"
+#import "NSThread+N2.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -383,21 +384,19 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
     if ([DicomDatabase existingDatabaseAtPath:p] == self) // if is main (not independent)
         if ([[NSFileManager defaultManager] fileExistsAtPath:self.unsavedAddedFilesPlistPath]) {
-            NSArray* unsavedAddedFiles = [NSArray arrayWithContentsOfFile:self.unsavedAddedFilesPlistPath];
-            NSLog(@"Warning: some files (%d) were added but OsiriX didn't get to save their indexes into the DB file, reimporting these files...", unsavedAddedFiles.count);
+            NSMutableArray* unsavedAddedFiles = [NSMutableArray arrayWithContentsOfFile:self.unsavedAddedFilesPlistPath];
+            
+            NSLog(@".... %d", unsavedAddedFiles.count);
+            
+            for (int i = 1; i < unsavedAddedFiles.count; ++i)
+                if ([[unsavedAddedFiles objectAtIndex:i] isEqualToString:[unsavedAddedFiles objectAtIndex:i-1]])
+                    [unsavedAddedFiles removeObjectAtIndex:i];
 
-            @try {
-                NSMutableArray* completePaths = [NSMutableArray array];
-                for (NSString* path in unsavedAddedFiles)
-                    [completePaths addObject:[DicomImage completePathForLocalPath:path directory:self.dataBaseDirPath]];
-                
-                [self addFilesAtPaths:completePaths];
-                
-                [self save];
-            } @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
-                // TODO: this is bad
-            }
+            NSLog(@"Warning: some files (%d) were added but OsiriX didn't get to save their indexes into the DB file, moving them back to incoming...", unsavedAddedFiles.count);
+            
+            NSString* incomingDirPath = self.incomingDirPath;
+            for (NSString* path in unsavedAddedFiles)
+                [[NSFileManager defaultManager] moveItemAtPath:[DicomImage completePathForLocalPath:path directory:self.dataBaseDirPath] toPath:[incomingDirPath stringByAppendingPathComponent:path] error:NULL];
             
             [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
         }
@@ -514,7 +513,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	BOOL b = NO;
 	
-	[self lock];
+//	[self lock];
 	@try {
         NSError* error = nil;
         if (!err) err = &error;
@@ -535,7 +534,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-		[self unlock];
+//		[self unlock];
 	}
 	
 	return b;
@@ -1979,7 +1978,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
 			
-			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // fiveSeconds :)
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // fiveSeconds 
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
@@ -2010,17 +2009,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                     {
                         NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
                     }
-                    else
-                    {
 #else
                     NSError* err = nil;
                     if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err] == NO)
                     {
                         NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
                     }
+#endif
                     else
                     {
-#endif
 						if( [extension isEqualToString: @"dcm"] == NO)
 						{
 							DicomFile *dcmFile = [[[DicomFile alloc] init: dstPath] autorelease];
@@ -2470,13 +2467,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     {
 		if (listenerCompressionSettings == 1 || listenerCompressionSettings == 0) // decompress, listenerCompressionSettings == 0 for zip support!
         { 
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@...", @"decompressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
-            [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+            [self performSelectorInBackground:@selector(_threadDecompressToIncoming:) withObject:compressedPathArray];
 		}
         else if (listenerCompressionSettings == 2) // compress
         { 
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@...", @"compressing (count) (file/files)..."), compressedPathArray.count, (compressedPathArray.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil))];
-			[self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+            [self performSelectorInBackground:@selector(_threadCompressToIncoming:) withObject:compressedPathArray];
         }
 	}
 #endif
@@ -2485,6 +2480,28 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 	[thread exitOperation];
 	return addedFiles.count;
+}
+
+-(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
+}
+
+-(void)_threadCompressToIncoming:(NSArray*)compressedPathArray {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        [self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
 }
 
 -(void)importFilesFromIncomingDirThread
