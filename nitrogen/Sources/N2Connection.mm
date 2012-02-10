@@ -268,9 +268,6 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if ([self status] == N2ConnectionStatusClosed)
 		return;
 	[self setStatus:N2ConnectionStatusClosed];
-	NSLog(@"Close");
-	
-    NSLog(@"closing n2connection with %d %d", [_outputStream streamStatus], [_inputStream streamStatus]);
     
 	if (_outputStream)
 		[_outputStream close];
