@@ -2218,7 +2218,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		[OsiriX setReceivingIcon];
 		
-		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles)
+        NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+        
+		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
 		{
 			NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
 			NSString *originalPath = srcPath;
