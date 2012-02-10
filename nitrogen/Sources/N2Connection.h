@@ -34,10 +34,10 @@ enum N2ConnectionStatus {
 	NSOutputStream* _outputStream;
 	NSMutableData *_inputBuffer, *_outputBuffer;
 	//BOOL _hasBytesAvailable, _hasSpaceAvailable, _handleConnectionClose;
-	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent;
+	NSUInteger _handleOpenCompleted, _maximumReadSizePerEvent, _handleHasSpaceAvailable;
 	NSInteger _status;
 	BOOL _tlsFlag;
-    BOOL _closeOnRemoteClose;
+    BOOL _closeOnRemoteClose, _closeWhenDoneSending, _closeOnNextSpaceAvailable;
     NSError* _error;
 }
 
@@ -45,6 +45,8 @@ enum N2ConnectionStatus {
 @property(nonatomic) NSInteger status;
 @property NSUInteger maximumReadSizePerEvent;
 @property BOOL closeOnRemoteClose;
+@property BOOL closeWhenDoneSending;
+@property BOOL closeOnNextSpaceAvailable;
 @property(readonly,retain) NSError* error;
 
 // non-tls

@@ -523,10 +523,6 @@
 		841721C910D8D745001A833F /* HTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B510D8D745001A833F /* HTTPServer.m */; };
 		841721CB10D8D745001A833F /* SSCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 841721B710D8D745001A833F /* SSCrypto.m */; };
 		841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721B410D8D745001A833F /* HTTPServer.h */; };
-		8417221310D8DB72001A833F /* TCPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417221110D8DB72001A833F /* TCPServer.h */; };
-		8417221410D8DB72001A833F /* TCPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221210D8DB72001A833F /* TCPServer.m */; };
-		8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8417221710D8DB93001A833F /* basicHTTPServer.h */; };
-		8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8417221810D8DB93001A833F /* basicHTTPServer.m */; };
 		841722B010D90595001A833F /* DDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = 841722AE10D90595001A833F /* DDKeychain.h */; };
 		841722B110D90595001A833F /* DDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 841722AF10D90595001A833F /* DDKeychain.m */; };
 		84281FFE13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
@@ -8519,10 +8515,6 @@
 		841721B510D8D745001A833F /* HTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HTTPServer.m; path = cocoahttpserver/HTTPServer.m; sourceTree = "<group>"; };
 		841721B610D8D745001A833F /* SSCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSCrypto.h; path = cocoahttpserver/SSCrypto.h; sourceTree = "<group>"; };
 		841721B710D8D745001A833F /* SSCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSCrypto.m; path = cocoahttpserver/SSCrypto.m; sourceTree = "<group>"; };
-		8417221110D8DB72001A833F /* TCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCPServer.h; sourceTree = "<group>"; };
-		8417221210D8DB72001A833F /* TCPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TCPServer.m; sourceTree = "<group>"; };
-		8417221710D8DB93001A833F /* basicHTTPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basicHTTPServer.h; sourceTree = "<group>"; };
-		8417221810D8DB93001A833F /* basicHTTPServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = basicHTTPServer.m; sourceTree = "<group>"; };
 		841722AE10D90595001A833F /* DDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDKeychain.h; path = cocoahttpserver/DDKeychain.h; sourceTree = "<group>"; };
 		841722AF10D90595001A833F /* DDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DDKeychain.m; path = cocoahttpserver/DDKeychain.m; sourceTree = "<group>"; };
 		84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2OpenGLViewWithSplitsWindow.m; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
@@ -13654,17 +13646,6 @@
 			name = XML;
 			sourceTree = "<group>";
 		};
-		AB9120A110DA2D5C006E0AAB /* basic HTTP Server */ = {
-			isa = PBXGroup;
-			children = (
-				8417221110D8DB72001A833F /* TCPServer.h */,
-				8417221210D8DB72001A833F /* TCPServer.m */,
-				8417221710D8DB93001A833F /* basicHTTPServer.h */,
-				8417221810D8DB93001A833F /* basicHTTPServer.m */,
-			);
-			name = "basic HTTP Server";
-			sourceTree = "<group>";
-		};
 		AB9723880C684B4E00DC727C /* DB_Previous_Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -17088,7 +17069,6 @@
 		CE9101AA0C86A6B800D8D273 /* XMLRPC Service */ = {
 			isa = PBXGroup;
 			children = (
-				AB9120A110DA2D5C006E0AAB /* basic HTTP Server */,
 				CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */,
 				CE882AC50C889B6500D4F982 /* XMLRPCMethods.mm */,
 			);
@@ -19622,8 +19602,6 @@
 				841721C410D8D745001A833F /* HTTPConnection.h in Headers */,
 				841721C610D8D745001A833F /* HTTPResponse.h in Headers */,
 				841721FC10D8D8A0001A833F /* HTTPServer.h in Headers */,
-				8417221310D8DB72001A833F /* TCPServer.h in Headers */,
-				8417221910D8DB93001A833F /* basicHTTPServer.h in Headers */,
 				841722B010D90595001A833F /* DDKeychain.h in Headers */,
 				AB91224E10DA7199006E0AAB /* BonjourPublisher.h in Headers */,
 				A9FE55F410DB7DCF000D0395 /* OpenGLScreenReader.h in Headers */,
@@ -23783,8 +23761,6 @@
 				841721C710D8D745001A833F /* HTTPResponse.m in Sources */,
 				841721C910D8D745001A833F /* HTTPServer.m in Sources */,
 				841721CB10D8D745001A833F /* SSCrypto.m in Sources */,
-				8417221410D8DB72001A833F /* TCPServer.m in Sources */,
-				8417221A10D8DB93001A833F /* basicHTTPServer.m in Sources */,
 				A930149510DA63C200AF0051 /* OpenGLScreenReader.m in Sources */,
 				CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */,
 				CE2119CA10E4C25300F9C50C /* CSMailMailClient.m in Sources */,

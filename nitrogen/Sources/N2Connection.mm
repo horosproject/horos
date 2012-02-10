@@ -43,7 +43,14 @@
 NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChangeNotification";
 
 @implementation N2Connection
-@synthesize address = _address, status = _status, maximumReadSizePerEvent = _maximumReadSizePerEvent, closeOnRemoteClose = _closeOnRemoteClose, error = _error;
+
+@synthesize address = _address;
+@synthesize status = _status;
+@synthesize maximumReadSizePerEvent = _maximumReadSizePerEvent;
+@synthesize closeOnRemoteClose = _closeOnRemoteClose;
+@synthesize error = _error;
+@synthesize closeWhenDoneSending = _closeWhenDoneSending;
+@synthesize closeOnNextSpaceAvailable = _closeOnNextSpaceAvailable;
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
 	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
@@ -192,7 +199,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 }
 
 -(void)dealloc {
-	//	NSLog(@"[N2Connection dealloc]");
+//  NSLog(@"[N2Connection dealloc]");
 	[self close];
 	[_inputBuffer release];
 	[_outputBuffer release];
@@ -261,7 +268,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	if ([self status] == N2ConnectionStatusClosed)
 		return;
 	[self setStatus:N2ConnectionStatusClosed];
-	//	NSLog(@"Close %d", self.retainCount);
+//	DLog(@"Close");
 	
 	if (_outputStream)
 		[_outputStream close];
@@ -285,17 +292,21 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 
 -(void)trySendingDataNow {
 	NSUInteger length = [_outputBuffer length];
-	if (length) {
+	if (length && _handleHasSpaceAvailable) {
 		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
 		if (sentLength != -1) {
-			//			NSLog(@"%@ Sent %d bytes (of %d)", self, sentLength, length);
+			if (sentLength < length)
+                --_handleHasSpaceAvailable;
+//          DLog(@"%@ Sent %d bytes (of %d)", self, sentLength, length);
 			[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:nil length:0];
 			if (!_outputBuffer.length) {
 				//				NSLog(@"All data sent");
+                if (self.closeWhenDoneSending)
+                    self.closeOnNextSpaceAvailable = YES;
 				[self connectionFinishedSendingData];
 			}
 		} else
-			DLog(@"%@ Send error: %@", self, [_outputStream streamError]);
+			NSLog(@"%@ Send error: %@", self, [_outputStream streamError]);
 	}
 }
 
@@ -342,8 +353,15 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 			[self performSelector:@selector(streamHandleEvent:) withObject:[NSArray arrayWithObjects:stream, [NSNumber numberWithUnsignedInteger:event], nil] afterDelay:0];
 	}
 	
-	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable && [_outputBuffer length])
-		[self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
+	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable) {
+		++_handleHasSpaceAvailable;
+        if (self.closeOnNextSpaceAvailable)
+            [self close];
+        else {
+            if ([_outputBuffer length])
+                [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
+        }
+    }
 	
 	if (event == NSStreamEventEndEncountered) {
 		[stream close];

@@ -2444,6 +2444,8 @@ static NSDate *lastWarningDate = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
 		[N2Debug setActive:YES];
 	
+//  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
+    
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];
 	STORESCPTLS = [[NSRecursiveLock alloc] init];

@@ -114,8 +114,11 @@
 +(NSDictionary*)dictionaryForObject:(NSManagedObject*)obj {
     NSMutableDictionary* d = [NSMutableDictionary dictionary];
     
-    for (NSString* key in [obj.entity attributesByName])
-        [d setObject:[obj valueForKey:key] forKey:key];
+    for (NSString* key in [obj.entity attributesByName]) {
+        id value = [obj valueForKey:key];
+        if (value)
+            [d setObject:value forKey:key];
+    }
     
     return d;
 }
@@ -333,9 +336,6 @@
         ReturnWithCode(400); // Bad Request
 
     NSArray* objects = [self objectsWithEntityName:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
-    
-    if (!objects.count)
-        ReturnWithCode(404);
     
     if ([command isEqualToString:@"Open"])
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];

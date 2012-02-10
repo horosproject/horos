@@ -53,7 +53,6 @@ NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedCon
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2ConnectionListenerOpenedConnectionNotification object:self userInfo:[NSDictionary dictionaryWithObject:connection forKey:N2ConnectionListenerOpenedConnection]];
 	
 	return connection;
-	
 }
 
 static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {

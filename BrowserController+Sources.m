@@ -38,6 +38,7 @@
 #import <arpa/inet.h>
 #import "DicomDatabase+Scan.h"
 #import "DCMPix.h"
+#import "NSHost+N2.h"
 
 #import "NSString+N2.h"
 
@@ -438,6 +439,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		for (NSDictionary* d in a)
         {
 			NSString* dadd = [d valueForKey:@"Address"];
+            if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:[NSHost currentHost]]) // don't list self
+                continue;
             DataNodeIdentifier* dni;
 			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
 			if (i == NSNotFound) {
@@ -472,6 +475,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// add new items
 		for (NSString* aak in aa)
         {
+            if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:NULL] isEqualToHost:[NSHost currentHost]]) // don't list self
+                continue;
             DataNodeIdentifier* dni;
 			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
 			if (i == NSNotFound) {
