@@ -141,7 +141,7 @@
         if (!doc)
             return; // data is incomplete, try later with more data
         
-        DLog(@"Handling XMLRPC request: %@", [doc XMLString]);
+//        DLog(@"Handling XMLRPC request: %@", [doc XMLString]);
         
 		NSArray* methodCalls = [doc nodesForXPath:@"methodCall" error:NULL];
 		if ([methodCalls count] != 1)
@@ -170,7 +170,7 @@
 			[NSException raise:NSGenericException format:@"method call contains %d method names", [methodNames count]];
 		NSString* methodName = [[methodNames objectAtIndex:0] stringValue];
         
-		DLog(@"Handling XMLRPC method call: %@", methodName);
+		DLog(@"XMLRPC call: %@", methodName);
 		
         //		NSArray* methodParameterNames = [doc nodesForXPath:@"methodCall/params//member/name" error:NULL];
         //		NSMutableArray* methodParameterValues = [[doc nodesForXPath:@"methodCall/params//member/value" error:NULL] mutableArray];
@@ -188,7 +188,7 @@
 		if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
 			[NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
 		
-		DLog(@"\tHandled by: %@", methodSelectorString);
+//		DLog(@"\tHandled by: %@", methodSelectorString);
         
 		NSMethodSignature* methodSignature = [_delegate methodSignatureForSelector:methodSelector];
 		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
@@ -236,7 +236,7 @@
             [invocation setArgument:&errorp atIndex:2+paramIndex];
         }
 		
-		DLog(@"\tInvoking: %@", invocation);
+		DLog(@"\tXMLRPC invoking: %@", methodSelectorString);
 		[invocation invoke];
         
         if (error) {
@@ -245,12 +245,12 @@
             return;
         }
         
-        DLog(@"\tOk");
+        DLog(@"\tXMLRPC done.");
         
 		NSString* returnValue = [N2XMLRPC ReturnElement:invocation options:[self N2XMLRPCOptions]];
 		NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", returnValue];
 		
-        DLog(@"Response: %@", responseXml);
+//        DLog(@"Response: %@", responseXml);
         
         NSData* responseData = [responseXml dataUsingEncoding:NSUTF8StringEncoding];
 		
