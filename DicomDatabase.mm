@@ -2392,6 +2392,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					}
 				}
 			}
+            
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
 		}
 		
 		if (twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)

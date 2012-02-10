@@ -148,7 +148,7 @@
 			[NSException raise:NSGenericException format:@"request contains %d method calls", [methodCalls count]];
 		NSXMLElement* methodCall = [methodCalls objectAtIndex:0];
         
-        [_inputStream close];
+        [_inputStream close]; [_inputStream release]; _inputStream = nil;
         
         [self performSelectorInBackground:@selector(handleXMLRPCCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]];
 	} @catch (NSException* e) {

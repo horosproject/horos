@@ -276,7 +276,7 @@
     temp = [paramDict valueForKey:@"StudyInstanceUID"];
     if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"studyInstanceUID == %@", temp]];
 
-    if (subpredicates.count)
+    if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
     NSError* lerror = nil;
@@ -317,7 +317,7 @@
     temp = [paramDict valueForKey:@"SeriesInstanceUID"];
     if (temp.length) [subpredicates addObject:[NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", temp]];
     
-    if (subpredicates.count)
+    if (!subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
     NSError* lerror = nil;

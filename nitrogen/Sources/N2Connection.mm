@@ -272,11 +272,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	
 	if (_outputStream)
 		[_outputStream close];
-	[_outputStream release]; _outputStream = NULL;
+	[_outputStream release]; _outputStream = nil;
 	
 	if (_inputStream)
 		[_inputStream close];
-	[_inputStream release]; _inputStream = NULL;
+	[_inputStream release]; _inputStream = nil;
 	
 	_handleOpenCompleted = 0;
 }
@@ -384,7 +384,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[_outputBuffer appendData:data];
 	if (self.status == N2ConnectionStatusOk)	
 		[self trySendingDataNow];
-	// the output buffer is sent every 0.01 seconds - that's quick enough, otherwise [self transferData:NULL];
+	// the output buffer is sent every 0.01 seconds - that's quick enough, otherwise [self transferData:nil];
 }
 
 -(NSInteger)availableSize {
