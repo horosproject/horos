@@ -43,24 +43,30 @@
 	[super dealloc];
 }
 
--(void)reconnect {
-	_timeout = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(timeout:) userInfo:NULL repeats:NO];
-	[super reconnect];
-}
-
 -(void)open {
-	_timeout = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(timeout:) userInfo:NULL repeats:NO];
-	[super open];
+	@synchronized (self) {
+        [_timeout invalidate];
+        _timeout = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(timeout:) userInfo:NULL repeats:NO];
+    }
+
+    [super open];
 }
 
 -(void)close {
-	if (_timeout) [_timeout invalidate]; _timeout = NULL;
+	@synchronized (self) {
+        [_timeout invalidate];
+        _timeout = NULL;
+    }
+    
 	[super close];
 }
 
 -(void)timeout:(NSTimer*)timer {
-	_timeout = NULL;
-	[self close];
+	@synchronized (self) {
+        _timeout = NULL;
+    }
+
+    [self close];
 }
 
 -(void)handleData:(NSMutableData*)data {

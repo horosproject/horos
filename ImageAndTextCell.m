@@ -14,6 +14,7 @@
 
 #import "ImageAndTextCell.h"
 #import "BrowserController.h"
+#import "N2Debug.h"
 
 @implementation ImageAndTextCell
 
@@ -142,8 +143,9 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrameIn inView:(NSView *)controlView {
-	
 	NSRect cellFrame = cellFrameIn;
+    
+    NS_DURING
 	
     if (image != nil)
 	{
@@ -188,6 +190,10 @@
         
         [lastImage compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
 	}
+
+    NS_HANDLER
+    N2LogExceptionWithStackTrace(localException);
+    NS_ENDHANDLER
 	
 	[super drawWithFrame:cellFrame inView:controlView];
     
