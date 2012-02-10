@@ -91,10 +91,10 @@
 	
 	if ([o isKindOfClass:[NSArray class]]) {
 		NSMutableString* s = [NSMutableString stringWithCapacity:512];
-		[s appendString:@"<value><array><data>"];
+		[s appendString:@"<array><data>"];
 		for (NSObject* o2 in (NSArray*)o)
 			[s appendFormat:@"<value>%@</value>", [N2XMLRPC FormatElement:o2]];
-		[s appendString:@"</data></array></value>"];
+		[s appendString:@"</data></array>"];
 		return [NSString stringWithString:s];
 	}
 	

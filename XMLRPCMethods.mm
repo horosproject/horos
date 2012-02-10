@@ -117,7 +117,7 @@
     
     for (NSString* key in [obj.entity attributesByName]) {
         id value = [obj valueForKey:key];
-        if (value)
+        if ([value isKindOfClass:[NSString class]] || [value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSDate class]])
             [d setObject:value forKey:key];
     }
     
@@ -360,7 +360,6 @@
 
 -(void)_onMainThreadOpenObjects:(NSArray*)objects { // actually, only the first element is opened...
     for (NSManagedObject* obj in objects) {
-        NSLog(@"Opening %@", obj.XID);
         DicomStudy* study = [self studyForObject:obj];
         if ([study.imageSeries count]) {
 			[[BrowserController currentBrowser] displayStudy:study object:obj command:@"Open"];
