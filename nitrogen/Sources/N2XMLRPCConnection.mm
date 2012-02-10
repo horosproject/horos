@@ -21,6 +21,14 @@
 @implementation N2XMLRPCConnection
 
 @synthesize delegate = _delegate;
+@synthesize dontSpecifyStringType = _dontSpecifyStringType;
+
+-(NSUInteger)N2XMLRPCOptions {
+    NSUInteger o = 0;
+    if (self.dontSpecifyStringType)
+        o |= N2XMLRPCDontSpecifyStringTypeOptionMask;
+    return o;
+}
 
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
 	if ((self = [super initWithAddress:address port:port tls:tlsFlag is:is os:os])) {
@@ -239,7 +247,7 @@
         
         DLog(@"\tOk");
         
-		NSString* returnValue = [N2XMLRPC ReturnElement:invocation];
+		NSString* returnValue = [N2XMLRPC ReturnElement:invocation options:[self N2XMLRPCOptions]];
 		NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", returnValue];
 		
         DLog(@"Response: %@", responseXml);

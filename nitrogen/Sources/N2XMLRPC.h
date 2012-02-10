@@ -18,8 +18,14 @@
 @interface N2XMLRPC : NSObject {
 }
 
+enum N2XMLRPCOptionMasks {
+    N2XMLRPCDontSpecifyStringTypeOptionMask = 1<<0
+};
+
 +(NSObject*)ParseElement:(NSXMLNode*)n;
 +(NSString*)FormatElement:(NSObject*)o;
++(NSString*)FormatElement:(NSObject*)o options:(NSUInteger)options;
 +(NSString*)ReturnElement:(NSInvocation*)invocation;
++(NSString*)ReturnElement:(NSInvocation*)invocation options:(NSUInteger)options;
 
 @end

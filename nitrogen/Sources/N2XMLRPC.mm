@@ -72,7 +72,7 @@
 	[NSException raise:NSGenericException format:@"unhandled XMLRPC data type: %@", [e name]]; return NULL;
 }
 
-+(NSString*)FormatElement:(NSObject*)o {
++(NSString*)FormatElement:(NSObject*)o options:(NSUInteger)options {
 	if (!o)
 		return @"<nil/>";
 	
@@ -80,20 +80,22 @@
 		NSMutableString* s = [NSMutableString stringWithCapacity:512];
 		[s appendString:@"<struct>"];
 		for (NSString* k in (NSDictionary*)o)
-			[s appendFormat:@"<member><name>%@</name><value>%@</value></member>", k, [N2XMLRPC FormatElement:[(NSDictionary*)o objectForKey:k]]];
+			[s appendFormat:@"<member><name>%@</name><value>%@</value></member>", k, [N2XMLRPC FormatElement:[(NSDictionary*)o objectForKey:k] options:options]];
 		[s appendString:@"</struct>"];
 		return [NSString stringWithString:s];
 	}
 	
 	if ([o isKindOfClass:[NSString class]]) {
-		return [NSString stringWithFormat:@"<string>%@</string>", [(NSString*)o xmlEscapedString]];
+		if (options & N2XMLRPCDontSpecifyStringTypeOptionMask)
+            return [(NSString*)o xmlEscapedString];
+        else return [NSString stringWithFormat:@"<string>%@</string>", [(NSString*)o xmlEscapedString]];
 	}
 	
 	if ([o isKindOfClass:[NSArray class]]) {
 		NSMutableString* s = [NSMutableString stringWithCapacity:512];
 		[s appendString:@"<array><data>"];
 		for (NSObject* o2 in (NSArray*)o)
-			[s appendFormat:@"<value>%@</value>", [N2XMLRPC FormatElement:o2]];
+			[s appendFormat:@"<value>%@</value>", [N2XMLRPC FormatElement:o2 options:options]];
 		[s appendString:@"</data></array>"];
 		return [NSString stringWithString:s];
 	}
@@ -122,12 +124,16 @@
 	[NSException raise:NSGenericException format:@"execution succeeded but return class %@ unsupported", [o className]]; return NULL;
 }
 
-+(NSString*)ReturnElement:(NSInvocation*)invocation {
++(NSString*)FormatElement:(NSObject*)o {
+    return [[self class] FormatElement:o options:0];
+}
+
++(NSString*)ReturnElement:(NSInvocation*)invocation options:(NSUInteger)options {
 	const char* returnType = [[invocation methodSignature] methodReturnType];
 	switch (returnType[0]) {
 		case '@': {
 			NSObject* o; [invocation getReturnValue:&o];
-			return [N2XMLRPC FormatElement:o];
+			return [N2XMLRPC FormatElement:o options:options];
 		} break;
 		case 'i': {
 			int i; [invocation getReturnValue:&i];
@@ -150,5 +156,8 @@
 	[NSException raise:NSGenericException format:@"execution succeeded but return type %c unsupported", returnType[0]]; return NULL;
 }
 
++(NSString*)ReturnElement:(NSInvocation*)invocation {
+    return [[self class] ReturnElement:invocation options:0];
+}
 
 @end

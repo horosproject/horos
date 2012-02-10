@@ -25,14 +25,17 @@
 
 @interface N2XMLRPCConnection : N2Connection {
 	NSObject<N2XMLRPCConnectionDelegate>* _delegate;
-	BOOL _executed, _waitingToClose;
+	BOOL _executed, _waitingToClose, _dontSpecifyStringType;
 	NSTimer* _timeout;
 }
 
 @property(retain) NSObject<N2XMLRPCConnectionDelegate>* delegate;
+@property BOOL dontSpecifyStringType;
 
 -(void)handleRequest:(CFHTTPMessageRef)request;
 -(void)writeAndReleaseResponse:(CFHTTPMessageRef)response;
+
+-(NSUInteger)N2XMLRPCOptions;
 
 @end
 

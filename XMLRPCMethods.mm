@@ -55,12 +55,8 @@
 
 -(void)connectionOpened:(NSNotification*)notification {
 	N2XMLRPCConnection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
+    connection.dontSpecifyStringType = YES;
 	[connection setDelegate:self];
-}
-
--(NSError*)errorWithCode:(NSInteger)code {
-    NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
-    return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
 }
 
 #pragma mark N2XMLRPCConnectionDelegate
@@ -116,9 +112,9 @@
     NSMutableDictionary* d = [NSMutableDictionary dictionary];
     
     for (NSString* key in [obj.entity attributesByName]) {
-        id value = [obj valueForKey:key];
+        NSObject* value = [obj valueForKey:key];
         if ([value isKindOfClass:[NSString class]] || [value isKindOfClass:[NSNumber class]] || [value isKindOfClass:[NSDate class]])
-            [d setObject:value forKey:key];
+            [d setObject:[(NSString*)CFXMLCreateStringByEscapingEntities(NULL, (CFStringRef)value.description, NULL) autorelease] forKey:key];
     }
     
     return d;
@@ -149,7 +145,14 @@
     return objects;
 }
 
+-(NSError*)errorWithCode:(NSInteger)code {
+    NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
+    return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
+}
+
 #define ReturnWithCode(code) { if (error) *error = [self errorWithCode:code]; return nil; }
+#define ReturnWithErrorValueAndObjectForKey(code, object, key) { return [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%d", (int)code], @"error", object, key, nil]; }
+#define ReturnWithErrorValue(code) { return [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", (int)code] forKey:@"error"]; }
 
 #pragma mark Exposed Methods
 
@@ -168,7 +171,7 @@
  Display: display the images at the end of the download? (Optional parameter : it requires a WADO URL, containing the studyUID parameter)
 
  Example: {URL: "http://127.0.0.1:3333/wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX"}
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)DownloadURL:(NSDictionary*)paramDict error:(NSError**)error {
     @try
@@ -188,7 +191,7 @@
         N2LogExceptionWithStackTrace(e);
     }
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 -(void)_threadRetrieveWado:(NSDictionary*)paramDict {
@@ -262,7 +265,7 @@
  StudyID:  0020,0010
 
  Example: {PatientID: "1100697", StudyID: "A10043712203"}
- Response: {elements: array of elements corresponding to the request}
+ Response: {error: "0", elements: array of elements corresponding to the request}
  */
 -(NSDictionary*)DisplayStudy:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* subpredicates = [NSMutableArray array];
@@ -276,14 +279,23 @@
     if (subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
+    NSError* lerror = nil;
+    if (!error)
+        error = &lerror;
+    
     NSArray* objects = [self objectsWithEntityName:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    
+    if (error && *error)
+        ReturnWithErrorValue((*error).code);
+    if (objects.count == 0)
+        ReturnWithErrorValue(-1);
     
     [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
     for (NSManagedObject* obj in objects)
         [elements addObject:[[self class] dictionaryForObject:obj]];
-    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
 /**
@@ -294,7 +306,7 @@
  SeriesInstanceUID: 0020,000e
  
  Example: {PatientID: "1100697", SeriesInstanceUID: "1.3.12.2.1107.5.1.4.54693.30000007120706534864000001110"}
- Response: {elements: array of elements corresponding to the request}
+ Response: {error: "0", elements: array of elements corresponding to the request}
  */
 -(NSDictionary*)DisplaySeries:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* subpredicates = [NSMutableArray array];
@@ -308,14 +320,23 @@
     if (subpredicates.count)
         ReturnWithCode(400); // Bad Request
     
+    NSError* lerror = nil;
+    if (!error)
+        error = &lerror;
+    
     NSArray* objects = [self objectsWithEntityName:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
     
+    if (error && *error)
+        ReturnWithErrorValue((*error).code);
+    if (objects.count == 0)
+        ReturnWithErrorValue(-1);
+
     [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
     for (NSManagedObject* obj in objects)
         [elements addObject:[[self class] dictionaryForObject:obj]];
-    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
 /**
@@ -331,7 +352,7 @@
  Example: {request: "name == 'OsiriX'", table: "Study", execute: "Select"}
  Example: {request: "(name LIKE '*OSIRIX*')", table: "Study", execute: "Open"}
 
- Response: {elements: array of elements corresponding to the request}
+ Response: {error: "0", elements: array of elements corresponding to the request}
  */
 -(NSDictionary*)FindObject:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* request = [paramDict valueForKey:@"request"];
@@ -341,8 +362,17 @@
     if (!request.length || !entityName.length)
         ReturnWithCode(400); // Bad Request
 
+    NSError* lerror = nil;
+    if (!error)
+        error = &lerror;
+    
     NSArray* objects = [self objectsWithEntityName:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
     
+    if (error && *error)
+        ReturnWithErrorValue((*error).code);
+    if (objects.count == 0)
+        ReturnWithErrorValue(-1);
+
     if ([command isEqualToString:@"Open"])
         [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
     if ([command isEqualToString:@"Select"])
@@ -355,7 +385,7 @@
     if ([command isEqualToString:@"Delete"])
         [self performSelectorOnMainThread:@selector(_onMainThreadDeleteObjects:) withObject:objects waitUntilDone:NO];
     
-    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
 -(void)_onMainThreadOpenObjects:(NSArray*)objects { // actually, only the first element is opened...
@@ -396,11 +426,11 @@
  Parameters:
  No parameters
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)SelectDefaultDatabase:(NSDictionary*)paramDict error:(NSError**)error {
     [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase defaultDatabase] waitUntilDone:NO];
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -413,7 +443,7 @@
 
  Example: {path: "/Users/antoinerosset/Documents/"}
 
- Response: {}
+ Response: {error: "0"}
 */
 -(NSDictionary*)OpenDatabase:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* path = [paramDict valueForKey:@"path"];
@@ -421,9 +451,11 @@
     if (!path.length)
         ReturnWithCode(400); // Bad Request
     
-    [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase databaseAtPath:path] waitUntilDone:NO];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabase:) withObject:[DicomDatabase databaseAtPath:path] waitUntilDone:NO];
+    else ReturnWithErrorValue(-1);
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -434,7 +466,7 @@
 
  Example: {name: "Today"}
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)SelectAlbum:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* name = [paramDict objectForKey:@"name"];
@@ -449,11 +481,11 @@
         DicomAlbum* album = [albums objectAtIndex:i];
         if ([album.name isEqualToString:name]) {
             [self performSelectorOnMainThread:@selector(_onMainThreadSelectAlbumAtIndex:) withObject:[NSNumber numberWithInteger:i] waitUntilDone:NO];
-            return [NSDictionary dictionary];
+            ReturnWithErrorValue(0);
         }
     }
     
-    ReturnWithCode(404); // Not Found
+    ReturnWithErrorValue(-1);
 }
 
 -(void)_onMainThreadSelectAlbumAtIndex:(NSInteger)i {
@@ -465,12 +497,12 @@
 
  Parameters: No Parameters
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)CloseAllWindows:(NSDictionary*)paramDict error:(NSError**)error {
     for (ViewerController* v in [ViewerController getDisplayed2DViewers])
         [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -478,14 +510,14 @@
 
  Parameters: No Parameters
 
- Response: {elements: array of series corresponding to displayed windows}
+ Response: {error: "0", elements: array of series corresponding to displayed windows}
 */
 -(NSDictionary*)GetDisplayed2DViewerSeries:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* elements = [NSMutableArray array];
     for (NSManagedObject* obj in [[ViewerController getDisplayed2DViewers] valueForKeyPath:@"imageView.seriesObj"])
         [elements addObject:[[self class] dictionaryForObject:obj]];
     
-    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
 /**
@@ -493,14 +525,14 @@
 
  Parameters: No Parameters
 
- Response: {elements: array of studies corresponding to displayed windows}
+ Response: {error: "0", elements: array of studies corresponding to displayed windows}
 */
 -(NSDictionary*)GetDisplayed2DViewerStudies:(NSDictionary*)paramDict error:(NSError**)error {
     NSMutableArray* elements = [NSMutableArray array];
     for (NSManagedObject* obj in [[ViewerController getDisplayed2DViewers] valueForKeyPath:@"imageView.seriesObj.study"])
         [elements addObject:[[self class] dictionaryForObject:obj]];
     
-    return [NSDictionary dictionaryWithObject:elements forKey:@"elements"];
+    ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
 /**
@@ -511,7 +543,7 @@
 
  Example: {uid: "1.3.12.2.1107.5.1.4.51988.4.0.1164229612882469"}
 
- Response: {}
+ Response: {error: "0"}
 */
 -(NSDictionary*)Close2DViewerWithSeriesUID:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* uid = [paramDict objectForKey:@"uid"];
@@ -523,7 +555,7 @@
         if ([[v valueForKeyPath:@"imageView.seriesObj.seriesDICOMUID"] isEqualToString:uid])
             [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -534,7 +566,7 @@
 
  Example: {uid: "1.2.840.113745.101000.1008000.37915.4331.5559218"}
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)Close2DViewerWithStudyUID:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* uid = [paramDict objectForKey:@"uid"];
@@ -546,7 +578,7 @@
         if ([[v valueForKeyPath:@"imageView.seriesObj.study.studyInstanceUID"] isEqualToString:uid])
             [[v window] performSelectorOnMainThread:@selector(close) withObject:nil waitUntilDone:NO];
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -559,7 +591,7 @@
 
  Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)Retrieve:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* serverName = [paramDict objectForKey:@"serverName"];
@@ -577,7 +609,7 @@
         }
     
     if (!source)
-        ReturnWithCode(404);
+        ReturnWithErrorValue(-2);
     
     @try {
         DCMTKRootQueryNode* rootNode = [[DCMTKRootQueryNode alloc] initWithDataset:nil
@@ -611,13 +643,14 @@
                                   [rootNode children], @"children", nil];
             [NSThread detachNewThreadSelector:@selector(_threadRetrieve:) toTarget:self withObject:dict];
             
-            return [NSDictionary dictionary];
-        }
+            ReturnWithErrorValue(0);
+        } else
+            ReturnWithErrorValue(-3);
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     }
     
-    ReturnWithCode(500);
+    ReturnWithErrorValue(-1);
 }
 
 -(void)_threadRetrieve:(NSDictionary*)dict
@@ -642,12 +675,15 @@
 
  Example: {accessionNumber: "UA876410", server: "Main-PACS"}
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)CMove:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* accessionNumber = [paramDict objectForKey:@"accessionNumber"];
     NSString* serverName = [paramDict objectForKey:@"server"];
     
+    if (!accessionNumber.length || !serverName.length)
+        ReturnWithCode(400);
+
     NSDictionary* source = nil;
     NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
     for (NSDictionary* si in sources)
@@ -656,12 +692,12 @@
             break;
         }
     
-    if (!source || !accessionNumber.length)
-        ReturnWithCode(404);
+    if (!source)
+        ReturnWithErrorValue(-1);
     
     [self performSelectorOnMainThread:@selector(_onMainThreadQueryRetrieve:) withObject:[NSArray arrayWithObjects: accessionNumber, source, nil] waitUntilDone:NO];
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 -(void)_onMainThreadQueryRetrieve:(NSArray*)args {
@@ -676,17 +712,17 @@
 
  Example: {PatientName: "DOE^JOHN"}
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)DisplayStudyListByPatientName:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* patientName = [paramDict objectForKey:@"PatientName"];
     
     if (!patientName.length)
-        ReturnWithCode(404);
+        ReturnWithCode(400);
     
     [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setSearchString:) withObject:patientName waitUntilDone:NO];
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -697,17 +733,17 @@
 
  Example: {id: "0123456789"}
 
- Response: {}
+ Response: {error: "0"}
  */
 -(NSDictionary*)DisplayStudyListByPatientId:(NSDictionary*)paramDict error:(NSError**)error {
     NSString* patientId = [paramDict objectForKey:@"PatientID"];
     
     if (!patientId.length)
-        ReturnWithCode(404);
+        ReturnWithCode(400);
     
     [[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setSearchString:) withObject:patientId waitUntilDone:NO];
     
-    return [NSDictionary dictionary];
+    ReturnWithErrorValue(0);
 }
 
 /**
@@ -716,9 +752,9 @@
  Parameters:
  onlyfilename: string with value "yes" to activate only filename mode; if absent or not equal to "yes", the full path is returned
  
- Response: {currentDCMPath: "/path/to/file.dcm"}
-           {currentDCMPath: "file.dcm"} if onlyfilename == "yes"
-           {currentDCMPath: ""} if no viewer is open
+ Response: {error: "0", currentDCMPath: "/path/to/file.dcm"}
+           {error: "0", currentDCMPath: "file.dcm"} if onlyfilename == "yes"
+           {error: "0", currentDCMPath: ""} if no viewer is open
  */
 -(NSDictionary*)PathToFrontDCM:(NSDictionary*)paramDict error:(NSError**)error {
     BOOL onlyFilename = [[paramDict objectForKey:@"onlyfilename"] isEqualToString:@"yes"];
@@ -736,7 +772,7 @@
     if (!path)
         path = @"";
     
-    return [NSDictionary dictionaryWithObject:path forKey:@"currentDCMPath"];
+    ReturnWithErrorValueAndObjectForKey(0, path, @"currentDCMPath");
 }
 
 #pragma mark Old
@@ -765,7 +801,7 @@
         }
     
     // this next block is here for retro-compatibility if eventually any plugin was calling this...
-    NSString* xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:response]];
+    NSString* xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:response options:N2XMLRPCDontSpecifyStringTypeOptionMask]];
     NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:NULL] autorelease];
     [httpServerMessage setObject:doc forKey:@"NSXMLDocumentResponse"];
     
