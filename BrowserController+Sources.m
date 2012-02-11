@@ -543,7 +543,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     DataNodeIdentifier* source = [_bonjourSources objectForKey:key];
 	if (!source) return;
     
-    NSHost* host = [NSHost hostWithName:service.hostName];
+    NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
     if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
         if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
             [_bonjourSources removeObjectForKey:key];

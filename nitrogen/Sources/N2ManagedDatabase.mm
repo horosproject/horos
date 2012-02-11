@@ -172,8 +172,6 @@
 	self = [super init];
 //	writeLock = [[NSRecursiveLock alloc] init];
 	
-    _saveLock = [[NSLock alloc] init];
-    
 	self.sqlFilePath = p;
 	
 	if (!c)
@@ -252,13 +250,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [self.managedObjectContext lock];
+  //  [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext countForFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-		[self.managedObjectContext unlock];
+	//	[self.managedObjectContext unlock];
     }
     
 	return 0;
@@ -278,15 +276,15 @@
 	
 	BOOL b = NO;
 	
-    if ([_saveLock tryLock])
-        @try {
-            b = [self.managedObjectContext save:err];
-        } @catch(NSException* e) {
-            if (!*err)
-                *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
-        } @finally {
-    		[_saveLock unlock];
-        }
+    [self.managedObjectContext.persistentStoreCoordinator lock];
+    @try {
+        b = [self.managedObjectContext save:err];
+    } @catch(NSException* e) {
+        if (!*err)
+            *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
+    } @finally {
+        [self.managedObjectContext.persistentStoreCoordinator unlock];
+    }
 	
 	return b;
 }

@@ -513,14 +513,14 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	BOOL b = NO;
 	
-//	[self lock];
+//    [self.managedObjectContext.persistentStoreCoordinator lock];
 	@try {
         NSError* error = nil;
         if (!err) err = &error;
         
-		b = [super save:err];
-        
         @synchronized (_unsavedAddedFiles) {
+            b = [super save:err];
+            
             [_unsavedAddedFiles removeAllObjects];
             [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
         }
@@ -534,7 +534,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-//		[self unlock];
+//		[self.managedObjectContext.persistentStoreCoordinator unlock];
 	}
 	
 	return b;

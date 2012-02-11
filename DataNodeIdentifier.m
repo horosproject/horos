@@ -118,11 +118,11 @@
 @implementation LocalDatabaseNodeIdentifier
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path {
-    return [[self class] localDatabaseNodeIdentifierWithPath:path description:nil dictionary:nil];
+    return [[[self class] localDatabaseNodeIdentifierWithPath:path description:nil dictionary:nil] autorelease];
 }
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[self class] alloc] initWithLocation:path description:description dictionary:dictionary];
+    return [[[[self class] alloc] initWithLocation:path description:description dictionary:dictionary] autorelease];
 }
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni {
@@ -189,7 +189,7 @@
 @implementation RemoteDatabaseNodeIdentifier
 
 +(id)remoteDatabaseNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[self class] alloc] initWithLocation:location description:description dictionary:dictionary];
+    return [[[[self class] alloc] initWithLocation:location description:description dictionary:dictionary] autorelease];
 }
 
 -(BOOL)isEqualToDataNodeIdentifier:(RemoteDatabaseNodeIdentifier*)dni {
@@ -235,7 +235,7 @@
 @implementation DicomNodeIdentifier
 
 +(id)dicomNodeIdentifierWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    return [[[self class] alloc] initWithLocation:location description:description dictionary:dictionary];
+    return [[[[self class] alloc] initWithLocation:location description:description dictionary:dictionary] autorelease];
 }
 
 -(void)willDisplayCell:(PrettyCell*)cell {
