@@ -4165,7 +4165,8 @@ public:
 					}
 				}
 			}
-			
+			aa[ 0] = a[ 1];
+            
 			A2:
 			for( found = NO, x = aa[ 1]; x >= 0 && x > aa[ 0]; x-=CHECKINTERVAL)
 			{
@@ -4182,6 +4183,7 @@ public:
 					}
 				}
 			}
+            aa[ 1] = aa[ 0];
 			
 			////////////
 			A3:
@@ -4200,6 +4202,7 @@ public:
 					}
 				}
 			}
+            aa[ 2] = aa[ 3];
 			
 			A4:
 			for( found = NO, y = aa[ 3]; y >= 0 && y > aa[ 2]; y-=CHECKINTERVAL)
@@ -4217,7 +4220,8 @@ public:
 					}
 				}
 			}
-			
+			aa[ 3] = aa[ 2];
+            
 			////////////
 			A5:
 			for( found = NO, z = aa[ 4]; z < depth && z < aa[ 5]; z+=CHECKINTERVAL)
@@ -4235,6 +4239,7 @@ public:
 					}
 				}
 			}
+            aa[ 4] = aa[ 5];
 			
 			A6:
 			for( found = NO, z = aa[ 5]; z >= 0 && z > aa[ 4]; z-=CHECKINTERVAL)
@@ -4252,6 +4257,8 @@ public:
 					}
 				}
 			}
+            aa[ 5] = aa[ 4];
+            
 			A7:
 			
 			aa[ 1]+=CHECKINTERVAL;	aa[ 0]-=CHECKINTERVAL;
@@ -4262,8 +4269,6 @@ public:
 			aa[ 2] = aa[ 2] < 0 ? 0 : aa[ 2];		aa[ 3] = aa[ 3] < 0 ? 0 : aa[ 3];
 			aa[ 4] = aa[ 4] < 0 ? 0 : aa[ 4];		aa[ 5] = aa[ 5] < 0 ? 0 : aa[ 5];
 			
-			NSLog( @"x: %d %%, y: %d %%, z: %d %%",  100 * (aa[ 1] - aa[ 0]) / (width), 100 * (aa[ 3] - aa[ 2]) / (height), 100 * (aa[ 5] - aa[ 4]) / (depth));
-			
 			for( x = 0 ; x < 6; x++)
 				a[ x] = aa[ x];
 			
@@ -4271,6 +4276,9 @@ public:
 			a[ 2] = a[ 2] >= height ? height-1 : a[ 2];		a[ 3] = a[ 3] >= height ? height-1 : a[ 3];
 			a[ 4] = a[ 4] >= depth ? depth-1 : a[ 4];		a[ 5] = a[ 5] >= depth ? depth-1 : a[ 5];
 			
+            NSLog( @"x: %2.2f %%, y: %2.2f %%, z: %2.2f %%",  100 * (a[ 1] - a[ 0]) / (width), 100 * (a[ 3] - a[ 2]) / (height), 100 * (a[ 5] - a[ 4]) / (depth));
+			
+            
 			a[ 2] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
 			a[ 3] /= [firstObject pixelSpacingX] / [firstObject pixelSpacingY];
 			
