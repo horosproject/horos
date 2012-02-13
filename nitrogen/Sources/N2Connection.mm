@@ -291,7 +291,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 
 -(void)trySendingDataNow {
 	NSUInteger length = [_outputBuffer length];
-	if (length && _handleHasSpaceAvailable) {
+	if (length && _handleHasSpaceAvailable && _outputStream.streamStatus == NSStreamStatusOpen) {
 		NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
 		if (sentLength != -1) {
 			if (sentLength < length)

@@ -146,7 +146,7 @@
 	
 	@try {
         if (_doc) [_doc release];
-		_doc = [[[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL] autorelease];
+		_doc = [[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL];
         if (!_doc)
             return; // data is incomplete, try later with more data
         
@@ -218,7 +218,8 @@
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
         CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
         CFHTTPMessageSetBody(response, (CFDataRef)responseData);
-        [self writeAndReleaseResponse:response];    } @catch (NSException* e) {
+        [self writeAndReleaseResponse:response];
+    } @catch (NSException* e) {
 		NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [e reason]);
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e reason], (CFStringRef)version)];
 	} @finally {

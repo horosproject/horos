@@ -226,13 +226,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-//    [self.managedObjectContext lock];
+    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
         return [self.managedObjectContext executeFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-//		[self.managedObjectContext unlock];
+		[self.managedObjectContext.persistentStoreCoordinator unlock];
     }
 	return nil;
 }
@@ -250,13 +250,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-  //  [self.managedObjectContext lock];
+    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
         return [self.managedObjectContext countForFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-	//	[self.managedObjectContext unlock];
+		[self.managedObjectContext.persistentStoreCoordinator unlock];
     }
     
 	return 0;
