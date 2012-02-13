@@ -226,15 +226,30 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
-        return [self.managedObjectContext executeFetchRequest:req error:err];
+        BOOL isMainThread = [NSThread isMainThread];
+        NSManagedObjectContext* searchmoc = isMainThread? self.managedObjectContext : self.independentContext;
+        NSArray* iobjects = [searchmoc executeFetchRequest:req error:err];
+        
+        // if isMainThread, we return the found objects (which live on this database's moc)
+        if (isMainThread)
+            return iobjects;
+        // else we return objects in this database's moc corresponding to the found objects (which live in an independent moc)
+        NSMutableArray* objects = [NSMutableArray arrayWithCapacity:iobjects.count];
+        for (NSManagedObject* iobject in iobjects)
+            @try {
+                id object = [self.managedObjectContext existingObjectWithID:iobject.objectID error:NULL];
+                if (object)
+                    [objects addObject:object];
+            } @catch (NSException* e) {
+            }
+        return objects;
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-		[self.managedObjectContext.persistentStoreCoordinator unlock];
     }
-	return nil;
+
+    return nil;
 }
 
 -(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e {
@@ -250,13 +265,15 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [self.managedObjectContext.persistentStoreCoordinator lock];
+//    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
-        return [self.managedObjectContext countForFetchRequest:req error:err];
+        BOOL isMainThread = [NSThread isMainThread];
+        NSManagedObjectContext* searchmoc = isMainThread? self.managedObjectContext : self.independentContext;
+        return [searchmoc countForFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-		[self.managedObjectContext.persistentStoreCoordinator unlock];
+//		[self.managedObjectContext.persistentStoreCoordinator unlock];
     }
     
 	return 0;

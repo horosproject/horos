@@ -25,7 +25,9 @@ NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedCon
 
 @implementation N2ConnectionListener
 
--(N2Connection*)handleNewConnectionFromAddress:(NSData*)addr inputStream:(NSInputStream*)istr outputStream:(NSOutputStream*)ostr {
+@synthesize threadPerConnection = _threadPerConnection;
+
+-(void)handleNewConnectionFromAddress:(NSData*)addr inputStream:(NSInputStream*)istr outputStream:(NSOutputStream*)ostr {
 	NSString* address = NULL;
 	if (addr) {
 		struct sockaddr* sa = (struct sockaddr*)[addr bytes];
@@ -47,12 +49,45 @@ NSString* N2ConnectionListenerOpenedConnection = @"N2ConnectionListenerOpenedCon
 	
 	DLog(@"Handling new connection from %@", address);
 	
-	N2Connection* connection = [[[_class alloc] initWithAddress:address port:0 is:istr os:ostr] autorelease];
-	[_clients addObject:connection];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:N2ConnectionListenerOpenedConnectionNotification object:self userInfo:[NSDictionary dictionaryWithObject:connection forKey:N2ConnectionListenerOpenedConnection]];
-	
-	return connection;
+    if (_threadPerConnection)
+        [self performSelectorInBackground:@selector(_threadHandleNewConnection:) withObject:[NSArray arrayWithObjects: istr, ostr, address, nil]];
+    else {
+        N2Connection* connection = [[[_class alloc] initWithAddress:address port:0 is:istr os:ostr] autorelease];
+        
+        @synchronized (_clients) {
+            [_clients addObject:connection];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:N2ConnectionListenerOpenedConnectionNotification object:self userInfo:[NSDictionary dictionaryWithObject:connection forKey:N2ConnectionListenerOpenedConnection]];
+    }
+}
+
+-(void)_threadHandleNewConnection:(NSArray*)args {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    N2Connection* c = nil;
+    @try {
+        NSInputStream* istr = [args objectAtIndex:0];
+        NSOutputStream* ostr = [args objectAtIndex:1];
+        NSString* address = [args objectAtIndex:2];
+        
+        c = [[_class alloc] initWithAddress:address port:0 is:istr os:ostr];
+        
+        @synchronized (_clients) {
+            [_clients addObject:c];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:N2ConnectionListenerOpenedConnectionNotification object:self userInfo:[NSDictionary dictionaryWithObject:c forKey:N2ConnectionListenerOpenedConnection]];
+        
+        while (c.status != N2ConnectionStatusClosed) {
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+        }
+        
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [c release];
+        [pool release];
+    }
 }
 
 static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void *data, void *info) {
@@ -68,7 +103,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 	if (0 == getpeername(nativeSocketHandle, (struct sockaddr*)name, &namelen))
 		peer = [NSData dataWithBytes:name length:namelen];
 	
-	DLog(@"Accepting connection from %@", peer);
+//	DLog(@"Accepting connection from %@", peer);
 	
 	CFReadStreamRef readStream = NULL;
 	CFWriteStreamRef writeStream = NULL;
@@ -205,7 +240,9 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
     {
 		case N2ConnectionStatusClosed:
 			[connection close];
-			[_clients removeObject:connection];
+			@synchronized (_clients) {
+                [_clients removeObject:connection];
+            }
 			break;
             
         default:

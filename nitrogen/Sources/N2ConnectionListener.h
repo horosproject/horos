@@ -25,10 +25,12 @@ extern NSString* N2ConnectionListenerOpenedConnection;
     CFSocketRef ipv4socket;
     CFSocketRef ipv6socket;	
 	NSMutableArray* _clients;
+    BOOL _threadPerConnection;
 }
+
+@property BOOL threadPerConnection;
 
 -(id)initWithPort:(NSInteger)port connectionClass:(Class)classs;
 -(id)initWithPath:(NSString*)path connectionClass:(Class)classs;
--(N2Connection*)handleNewConnectionFromAddress:(NSData*)addr inputStream:(NSInputStream*)istr outputStream:(NSOutputStream*)ostr;
 
 @end

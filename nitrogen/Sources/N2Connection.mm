@@ -170,22 +170,22 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 }
 
 -(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os {
-	self = [super init];
-	
-	_address = [address retain];
-	_port = port;
-	_tlsFlag = tlsFlag;
-	
-	_inputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
-	_outputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
-	
-	if (is && os) {
-		_status = N2ConnectionStatusConnecting;
-		_inputStream = [is retain];
-		_outputStream = [os retain];
-		[self open];
-	} else
-		[self reconnect];
+	if ((self = [super init])) {
+        _address = [address retain];
+        _port = port;
+        _tlsFlag = tlsFlag;
+        
+        _inputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
+        _outputBuffer = [[NSMutableData alloc] initWithCapacity:1024];
+        
+        if (is && os) {
+            _status = N2ConnectionStatusConnecting;
+            _inputStream = [is retain];
+            _outputStream = [os retain];
+            [self open];
+        } else
+            [self reconnect];
+    }
 	
 	return self;
 }
@@ -199,7 +199,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 }
 
 -(void)dealloc {
-//  NSLog(@"[N2Connection dealloc]");
+    //  NSLog(@"[N2Connection dealloc]");   
 	[self close];
 	[_inputBuffer release];
 	[_outputBuffer release];
@@ -314,8 +314,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 
 -(void)stream:(NSStream*)stream handleEvent:(NSStreamEvent)event {
 	//#ifdef DEBUG
-	//NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
-	//NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
+//	NSString* NSEventName[] = {@"NSStreamEventNone", @"NSStreamEventOpenCompleted", @"NSStreamEventHasBytesAvailable", @"NSStreamEventHasSpaceAvailable", @"NSStreamEventErrorOccurred", @"NSStreamEventEndEncountered"};
+//	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 	//#endif
 	
 	if (event == NSStreamEventOpenCompleted)

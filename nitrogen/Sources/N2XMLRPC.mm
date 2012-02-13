@@ -186,7 +186,11 @@
 }
 
 +(NSString*)responseWithValue:(id)value {
-    return [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [[self class] FormatElement:value]];
+    return [[self class ]responseWithValue:value options:0];
+}
+
++(NSString*)responseWithValue:(id)value options:(NSUInteger)options {
+    return [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [[self class] FormatElement:value options:options]];
 }
 
 @end

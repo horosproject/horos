@@ -46,6 +46,7 @@
 	if ((self = [super init])) {
         NSInteger port = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"];
         _listener = [[N2ConnectionListener alloc] initWithPort:port connectionClass:[XMLRPCInterfaceConnection class]];
+        _listener.threadPerConnection = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
     }
 	
@@ -137,17 +138,7 @@
     
     [database initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
     
-    NSArray* independentObjects = [[database independentDatabase] objectsForEntity:[database entityForName:entityName] predicate:predicate error:error];
-    
-    NSMutableArray* objects = [NSMutableArray arrayWithCapacity:independentObjects.count];
-    for (NSManagedObject* independentObject in independentObjects)
-        @try {
-            [objects addObject:[database.managedObjectContext objectWithID:independentObject.objectID]];
-        } @catch (NSException* e) {
-            // ignore exception
-        }
-    
-    return objects;
+    return [database objectsForEntity:[database entityForName:entityName] predicate:predicate error:error];
 }
 
 -(NSError*)errorWithCode:(NSInteger)code {

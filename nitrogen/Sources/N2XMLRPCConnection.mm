@@ -159,14 +159,15 @@
         
         [_inputStream close]; [_inputStream release]; _inputStream = nil;
         
-        [self performSelectorInBackground:@selector(threadHandleXmlrpcMethodCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]];
+       // [self performSelectorInBackground:@selector(handleXmlrpcMethodCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]]; // naaah we're already in a dedicated thread
+        [self performSelector:@selector(handleXmlrpcMethodCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]];
 	} @catch (NSException* e) {
 		NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [e reason]);
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e reason], (CFStringRef)version)];
 	}
 }
 
--(void)threadHandleXmlrpcMethodCall:(NSArray*)args {
+-(void)handleXmlrpcMethodCall:(NSArray*)args {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     NSString* version = [args objectAtIndex:1];
@@ -208,13 +209,8 @@
         
         DLog(@"\tXMLRPC done, took %f seconds.", -[dateBeforeCall timeIntervalSinceNow]);
         
-        NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:result options:[self N2XMLRPCOptions]]];
+        NSData* responseData = [[N2XMLRPC responseWithValue:result options:[self N2XMLRPCOptions]] dataUsingEncoding:NSUTF8StringEncoding];
         
-        // DLog(@"Response: %@", responseXml);
-        
-        NSData* responseData = [responseXml dataUsingEncoding:NSUTF8StringEncoding];
-        
-        // NSLog(@"71210test2 9");
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
         CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
         CFHTTPMessageSetBody(response, (CFDataRef)responseData);
