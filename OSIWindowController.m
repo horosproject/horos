@@ -25,6 +25,7 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "DicomDatabase.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
@@ -43,6 +44,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 		if (_database) {
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:_database];
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
 		}
 		
 		_database = database;
@@ -50,6 +52,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 		if (_database) {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
 		}
 	}
 }
@@ -59,6 +62,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 
 -(void)observeDatabaseAddNotification:(NSNotification*)notification {
 	[self refreshDatabase:[[notification userInfo] objectForKey:OsirixAddToDBCompleteNotificationImagesArray]];
+}
+
+-(void)observeManagedObjectContextObjectsDidChangeNotification:(NSNotification*)notification {
+	[self refreshDatabase:nil];
 }
 
 -(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {

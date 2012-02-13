@@ -39,6 +39,7 @@
 
 -(void)dealloc {
 //	NSLog(@"---------- DEL %@", self);
+//    [self save:NULL];
 	self.database = nil;
 	[super dealloc];
 	[NSNotificationCenter.defaultCenter removeObserver:self]; // Apple bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
@@ -135,13 +136,25 @@
 			
 			if (isNewFile)
 				NSLog(@"New database file created at %@", sqlFilePath);
-		}
+            
+            // this line is very important, if there is no sql file
+            [moc save:NULL];
+
+		} else {
+            [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc]; // TODO: remove observer later
+        }
         
-        // this line is very important, if there is no sql file
-        [moc save:NULL];
 	}
     
     return moc;
+}
+
+-(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
+    else {
+        [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+    }
 }
 
 -(void)lock {
@@ -209,41 +222,56 @@
 	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
--(id)objectWithID:(NSString*)urlString {
-	return [self.managedObjectContext objectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:urlString]]];
+-(id)objectWithURI:(NSString*)urlString {
+	return [self.managedObjectContext existingObjectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:urlString]] error:NULL];
+}
+
+-(NSArray*)objectsWithIDs:(NSArray*)objectIDs {
+    NSMutableArray* r = [NSMutableArray arrayWithCapacity:objectIDs.count];
+    for (NSManagedObjectID* oid in objectIDs) {
+        id o = [self.managedObjectContext existingObjectWithID:oid error:NULL];
+        if (o) [r addObject:o];
+    }
+    
+    return r;
 }
 
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e {
-	return [self objectsForEntity:e predicate:nil error:NULL];
+	return [self objectsForEntity:e predicate:nil optimize:YES error:NULL];
 }
 
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
-	return [self objectsForEntity:e predicate:p error:NULL];
+	return [self objectsForEntity:e predicate:p optimize:YES error:NULL];
 }
 
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
+	return [self objectsForEntity:e predicate:p optimize:YES error:err];
+}
+
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e optimize:(BOOL)flag {
+	return [self objectsForEntity:e predicate:nil optimize:flag error:NULL];
+}
+
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag {
+	return [self objectsForEntity:e predicate:p optimize:flag error:NULL];
+}
+
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag error:(NSError**)err {
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
     @try {
-        BOOL isMainThread = [NSThread isMainThread];
-        NSManagedObjectContext* searchmoc = isMainThread? self.managedObjectContext : self.independentContext;
-        NSArray* iobjects = [searchmoc executeFetchRequest:req error:err];
+        BOOL depend = !flag;
+        if ([NSThread isMainThread]) depend = YES;
         
+        NSManagedObjectContext* searchmoc = depend? self.managedObjectContext : self.independentContext;
+        NSArray* iobjects = [searchmoc executeFetchRequest:req error:err];
         // if isMainThread, we return the found objects (which live on this database's moc)
-        if (isMainThread)
+        if (depend)
             return iobjects;
         // else we return objects in this database's moc corresponding to the found objects (which live in an independent moc)
-        NSMutableArray* objects = [NSMutableArray arrayWithCapacity:iobjects.count];
-        for (NSManagedObject* iobject in iobjects)
-            @try {
-                id object = [self.managedObjectContext existingObjectWithID:iobject.objectID error:NULL];
-                if (object)
-                    [objects addObject:object];
-            } @catch (NSException* e) {
-            }
-        return objects;
+        return [self objectsWithIDs:[iobjects valueForKey:@"objectID"]];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {

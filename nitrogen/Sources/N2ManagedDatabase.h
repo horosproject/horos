@@ -48,10 +48,16 @@
 -(id)independentDatabase;
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
--(id)objectWithID:(NSString*)urlString;
+
+-(id)objectWithURI:(NSString*)urlString;
+-(NSArray*)objectsWithIDs:(NSArray*)objectIDs;
+
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
 -(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err;
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e optimize:(BOOL)flag;
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag;
+-(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag error:(NSError**)err;
 -(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e;
 -(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
 -(NSUInteger)countObjectsForEntity:(NSEntityDescription*)entity predicate:(NSPredicate*)p error:(NSError**)err;

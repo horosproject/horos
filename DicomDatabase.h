@@ -113,7 +113,6 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 #pragma mark Albums
 -(void)addDefaultAlbums;
 -(NSArray*)albums;
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context; // this method should be private, but is declared because called from deprecated api
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
 
 -(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum;

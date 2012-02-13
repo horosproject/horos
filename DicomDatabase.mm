@@ -765,16 +765,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 #pragma mark Albums
 
-+(NSArray*)albumsInContext:(NSManagedObjectContext*)context {
-	if (!context) return [NSArray array];
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
-	req.predicate = [NSPredicate predicateWithValue:YES];
-    
-//    [context lock];
-    NSArray* albums = [context executeFetchRequest:req error:NULL]; // this call locks the db
+-(NSArray*)albums {
+    NSArray* albums = [self objectsForEntity:self.albumEntity];
     @try {
-//        NSSortDescriptor* sd = [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
         albums = [albums sortedArrayUsingComparator: ^(id a, id b) { // the risk here is that an album is deleted while the list is being sorted
             @try {
                 return [[a name] caseInsensitiveCompare:[b name]];
@@ -784,15 +777,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         }];
     } @catch (NSException* e) {
         N2LogException(e);
-    } @finally {
-//        [context unlock];
     }
     
     return albums;
-}
-
--(NSArray*)albums {
-	return [DicomDatabase albumsInContext:self.managedObjectContext];
 }
 
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string {
@@ -1197,7 +1184,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		
 		[thread enterOperationWithRange:thread.progress:0];
-		NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+//      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+        NSArray* addedImagesArray = [self objectsWithIDs:[[[self independentDatabase] addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX] valueForKey:@"objectID"]];
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1291,7 +1279,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[self lock];
 	@try
     {
-		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
+		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity optimize:NO] mutableCopy];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
 		
@@ -1858,6 +1846,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         // Reapply annotations from DICOMSR file
         for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
         
+        [self.managedObjectContext save:NULL];
     }
     @catch (NSException* e)
     {
@@ -2487,6 +2476,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try {
+        NSThread* thread = [NSThread currentThread];
+        thread.name = NSLocalizedString(@"DICOM Decompression...", nil);
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Decompressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
+        [ThreadsManager.defaultManager addThreadAndStart:thread];
         [self decompressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
@@ -2498,6 +2491,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(void)_threadCompressToIncoming:(NSArray*)compressedPathArray {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try {
+        NSThread* thread = [NSThread currentThread];
+        thread.name = NSLocalizedString(@"DICOM Compression...", nil);
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Compressing %d %@", nil), compressedPathArray.count, compressedPathArray.count == 1? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)];
+        [ThreadsManager.defaultManager addThreadAndStart:thread];
         [self compressFilesAtPaths:compressedPathArray intoDirAtPath:self.incomingDirPath];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
@@ -2642,9 +2639,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		NSManagedObject *newStudyTable, *newSeriesTable, *newImageTable, *newAlbumTable;
 		NSArray *albumProperties, *studyProperties, *seriesProperties, *imageProperties;
-		
-		NSArray* albums = [DicomDatabase albumsInContext:oldContext];
-		albumProperties = [[[[oldModel entitiesByName] objectForKey:@"Album"] attributesByName] allKeys];
+        
+        NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+        req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:oldContext];
+        req.predicate = [NSPredicate predicateWithValue:YES];
+		NSArray* albums = [oldContext executeFetchRequest:req error:NULL];
+        
+		albumProperties = [[[NSEntityDescription entityForName:@"Album" inManagedObjectContext:oldContext] attributesByName] allKeys];
 		for (NSManagedObject* oldAlbum in albums)
 		{
 			newAlbumTable = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: newContext];

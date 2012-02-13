@@ -186,7 +186,7 @@ void restartSTORESCP()
 -(void)previewMatrixScrollViewFrameDidChange:(NSNotification*)note;
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize;
 -(void)splitViewDidResizeSubviews:(NSNotification*)notification;
--(NSArray*)albumsInContext:(NSManagedObjectContext*)context;
+-(NSArray*)albumsInDatabase;
 -(void)initContextualMenus;
 -(void)setupAlbumsContextualMenu;
 
@@ -339,30 +339,55 @@ static volatile BOOL waitForRunningProcess = NO;
 	return DefaultFolderSizeForDB;
 }
 
--(NSArray*)albumsInContext:(NSManagedObjectContext*)context
+-(NSArray*)albumsInDatabase
 {
-	@synchronized (self)
+    @synchronized (self)
     {
-		if (_cachedAlbums && _cachedAlbumsContext && _cachedAlbumsContext == context)
+		if (_cachedAlbums && _cachedAlbumsContext && _cachedAlbumsContext == _database.managedObjectContext)
 			return [[_cachedAlbums copy] autorelease];
 	}
 
-	NSArray* r = [DicomDatabase albumsInContext:context];
+	NSArray* r = [_database albums];
     
-    if (context == _database.managedObjectContext)
-        @synchronized (self)
-    {
-            [_cachedAlbums release];
-            _cachedAlbums = [r retain];
-            _cachedAlbumsContext = _database.managedObjectContext;
-        }
+    @synchronized (self) {
+        [_cachedAlbums release];
+        _cachedAlbums = [r retain];
+        _cachedAlbumsContext = _database.managedObjectContext;
+    }
     
     return [[r copy] autorelease];
 }
 
++(NSArray*)albumsInContext:(NSManagedObjectContext*)context { // __deprecated
+    if (!context) return [NSArray array];
+    
+	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+	req.entity = [NSEntityDescription entityForName: @"Album" inManagedObjectContext:context];
+	req.predicate = [NSPredicate predicateWithValue:YES];
+    
+    NSArray* albums = nil;
+    [context lock];
+    @try {
+        albums = [context executeFetchRequest:req error:NULL]; // this call locks the db -- does it?
+        albums = [albums sortedArrayUsingComparator: ^(id a, id b) { // the risk here is that an album is deleted while the list is being sorted
+            @try {
+                return [[a name] caseInsensitiveCompare:[b name]];
+            } @catch (...) {
+            }
+            return 0; // equal comparaison
+        }];
+    } @catch (NSException* e) {
+        N2LogException(e);
+    } @finally {
+        [context unlock];
+    }
+    
+    return albums;
+}
+
 -(NSArray*)albums
 {
-	return [self albumsInContext:_database.managedObjectContext];
+	return [self albumsInDatabase];
 }
 
 static NSConditionLock *threadLock = nil;
@@ -1111,6 +1136,15 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+-(void)_observeManagedObjectContextObjectsDidChangeNotification:(NSNotification*)n {
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(_observeManagedObjectContextObjectsDidChangeNotification:) withObject:n waitUntilDone:NO];
+    else {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_reactToDatabaseAdd) object:nil];
+        [self performSelector:@selector(_reactToDatabaseAdd) withObject:nil afterDelay:0.01];
+    }
+}
+
 -(void)_reactToDatabaseAdd
 {
     [self outlineViewRefresh];
@@ -1161,9 +1195,11 @@ static NSConditionLock *threadLock = nil;
 			[self waitForRunningProcesses];
 			[reportFilesToCheck removeAllObjects];
 
-			if (_database)
+			if (_database) {
 				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database];
-			
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:_database.managedObjectContext];
+			}
+            
 	//		if (refresh) { // TODO: here
 	//			NSArray *albumArray = self.albumArray;
 	//			if( [albumArray count] > albumTable.selectedRow && albumTable.selectedRow >= 0)
@@ -1217,7 +1253,9 @@ static NSConditionLock *threadLock = nil;
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:@"InvalidateAlbumsCache" object:_database];
-		
+            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
+            
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 			
             [self setupAlbumsContextualMenu];
@@ -8255,7 +8293,7 @@ static BOOL needToRezoom;
 {
 	if (!_database) return [NSArray array];
     
-    NSArray *albumsArray = [self albumsInContext:_database.managedObjectContext];
+    NSArray *albumsArray = [self albumsInDatabase];
 	
 	return [[NSArray arrayWithObject: [NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray: albumsArray];
 }
@@ -8460,7 +8498,7 @@ static BOOL needToRezoom;
 		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
-			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
+			[items addObject:[_database objectWithURI:[NSManagedObject UidForXid:xid]]];
 		
         NSMutableArray* studies = [NSMutableArray array];
         for (NSManagedObject* object in items)
