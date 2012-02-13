@@ -34,13 +34,18 @@
 #import "QueryController.h"
 #import "WADODownload.h"
 #import "NSManagedObject+N2.h"
+#import "Notifications.h"
+
+@interface XMLRPCInterfaceConnection : N2XMLRPCConnection
+
+@end
 
 @implementation XMLRPCInterface
 
 -(id)init {
 	if ((self = [super init])) {
         NSInteger port = [[NSUserDefaults standardUserDefaults] integerForKey:@"httpXMLRPCServerPort"];
-        _listener = [[N2ConnectionListener alloc] initWithPort:port connectionClass:[N2XMLRPCConnection class]];
+        _listener = [[N2ConnectionListener alloc] initWithPort:port connectionClass:[XMLRPCInterfaceConnection class]];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
     }
 	
@@ -54,7 +59,7 @@
 }
 
 -(void)connectionOpened:(NSNotification*)notification {
-	N2XMLRPCConnection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
+	XMLRPCInterfaceConnection* connection = [[notification userInfo] objectForKey:N2ConnectionListenerOpenedConnection];
     connection.dontSpecifyStringType = YES;
 	[connection setDelegate:self];
 }
@@ -777,35 +782,56 @@
 
 #pragma mark Old
 
-- (BOOL)processXMLRPCMessage:(NSString*)selName httpServerMessage:(NSMutableDictionary*)httpServerMessage HTTPServerRequest:(HTTPServerRequest*)mess version:(NSString*)vers paramDict:(NSDictionary*)paramDict encoding:(NSString*)encoding { // __deprecated
-    SEL methodSelector = NSSelectorFromString([self selectorStringForXMLRPCRequestMethodName:selName]);
+- (void)processXMLRPCMessage:(NSString*)selName httpServerMessage:(NSMutableDictionary*)httpServerMessage HTTPServerRequest:(HTTPServerRequest*)mess version:(NSString*)vers paramDict:(NSDictionary*)paramDict encoding:(NSString*)encoding { // __deprecated
+    XMLRPCInterfaceConnection* conn = [[[XMLRPCInterfaceConnection alloc] init] autorelease];
+    conn.delegate = self;
     
-    NSDictionary* response;
     NSError* error = nil;
-    
-    if ([self respondsToSelector:methodSelector])
-        @try {
-            NSDictionary* response = [self performSelector:methodSelector withObject:paramDict withObject:(id)&error];
-            
-            if (response)
-                [httpServerMessage setValue:response forKey: @"ASResponse"];
+    id response = nil;
+    @try {
+        response = [conn methodCall:selName params:[NSArray arrayWithObject:paramDict] error:&error];
+    } @catch (NSException* e) {
+        if (!error)
+            error = [NSError errorWithDomain:NSCocoaErrorDomain code:-1 userInfo:nil];
+    }
+    if (error)
+        response = [NSDictionary dictionaryWithObject:[[NSNumber numberWithInteger:error.code] stringValue] forKey:@"error"];
 
-            if (error)
-                response = [NSDictionary dictionaryWithObject:[[NSNumber numberWithInteger:error.code] stringValue] forKey:@"error"];
-            
-        } @catch (NSException* e) {
-            if (error)
-                response = [NSDictionary dictionaryWithObject:[[NSNumber numberWithInteger:error.code] stringValue] forKey:@"error"];
-        } @finally {
-            return YES;
-        }
+    if (response && httpServerMessage) {
+        [httpServerMessage setValue:response forKey:@"ASResponse"];
+        [httpServerMessage setValue:[[[NSXMLDocument alloc] initWithXMLString:[N2XMLRPC responseWithValue:response] options:0 error:NULL] autorelease] forKey:@"NSXMLDocumentResponse"];
+    }
+}
+
+#pragma mark New
+
+-(id)methodCall:(NSString*)methodName parameters:(NSDictionary*)parameters error:(NSError**)error {
+    XMLRPCInterfaceConnection* conn = [[[XMLRPCInterfaceConnection alloc] init] autorelease];
+    conn.delegate = self;
+    return [conn methodCall:methodName params:[NSArray arrayWithObject:parameters] error:error];
+}
+
+@end
+
+@implementation XMLRPCInterfaceConnection
+
+-(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
+    NSXMLDocument* doc = _doc? _doc : [[[NSXMLDocument alloc] initWithXMLString:[N2XMLRPC requestWithMethodName:methodName arguments:params] options:0 error:NULL] autorelease];
     
-    // this next block is here for retro-compatibility if eventually any plugin was calling this...
-    NSString* xml = [NSString stringWithFormat: @"<?xml version=\"1.0\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:response options:N2XMLRPCDontSpecifyStringTypeOptionMask]];
-    NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithXMLString:xml options:NSXMLNodeOptionsNone error:NULL] autorelease];
-    [httpServerMessage setObject:doc forKey:@"NSXMLDocumentResponse"];
+    NSMutableDictionary* notificationObject = [NSMutableDictionary dictionaryWithObjectsAndKeys: methodName, @"MethodName", params, @"Parameters", doc, @"NSXMLDocument", [NSNumber numberWithBool:NO], @"Processed", self.address, @"peerAddress", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixXMLRPCMessageNotification object:notificationObject];
     
-    return NO;
+    if ([[notificationObject valueForKey:@"Processed"] boolValue] || [notificationObject valueForKey:@"Response"] || [notificationObject valueForKey:@"NSXMLDocumentResponse"]) { // request processed, most probably by a plugin
+        // new plugins are expected to return a value through the Response key, containing Cocoa values (NSNumber, NSArray, NSDictionary...)
+        id response = [notificationObject valueForKey:@"Response"];
+        if (response)
+            return response;
+        // older plugins returned a NSXMLDocument in the NSXMLDocumentResponse key
+        doc = [notificationObject valueForKey:@"NSXMLDocumentResponse"];
+        return [N2XMLRPC ParseElement:[[doc objectsForXQuery:@"/methodResponse/params/param/value" error:NULL] objectAtIndex:0]];
+    }
+    
+    return [super methodCall:methodName params:params error:error];
 }
 
 @end

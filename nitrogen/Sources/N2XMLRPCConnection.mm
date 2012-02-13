@@ -15,6 +15,7 @@
 #import "N2XMLRPCConnection.h"
 #import "N2Debug.h"
 #import "N2XMLRPC.h"
+#import "NSInvocation+N2.h"
 
 #import "N2Shell.h"
 
@@ -40,6 +41,7 @@
 
 -(void)dealloc {
 	[self setDelegate:NULL];
+    [_doc release];
 	[super dealloc];
 }
 
@@ -143,107 +145,60 @@
 		content = [content subdataWithRange:NSMakeRange(0, contentLength)];
 	
 	@try {
-		NSXMLDocument* doc = [[[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL] autorelease];
-        if (!doc)
+        if (_doc) [_doc release];
+		_doc = [[[NSXMLDocument alloc] initWithData:content options:NSXMLNodeOptionsNone error:NULL] autorelease];
+        if (!_doc)
             return; // data is incomplete, try later with more data
         
 //        DLog(@"Handling XMLRPC request: %@", [doc XMLString]);
         
-		NSArray* methodCalls = [doc nodesForXPath:@"methodCall" error:NULL];
+		NSArray* methodCalls = [_doc nodesForXPath:@"methodCall" error:NULL];
 		if ([methodCalls count] != 1)
 			[NSException raise:NSGenericException format:@"request contains %d method calls", [methodCalls count]];
 		NSXMLElement* methodCall = [methodCalls objectAtIndex:0];
         
         [_inputStream close]; [_inputStream release]; _inputStream = nil;
         
-        [self performSelectorInBackground:@selector(handleXMLRPCCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]];
+        [self performSelectorInBackground:@selector(threadHandleXmlrpcMethodCall:) withObject:[NSArray arrayWithObjects: methodCall, version, nil]];
 	} @catch (NSException* e) {
 		NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [e reason]);
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e reason], (CFStringRef)version)];
 	}
 }
 
--(void)handleXMLRPCCall:(NSArray*)args {
+-(void)threadHandleXmlrpcMethodCall:(NSArray*)args {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
+    
     NSString* version = [args objectAtIndex:1];
     
     @try {
         NSXMLElement* methodCall = [args objectAtIndex:0];
         
         NSArray* methodNames = [methodCall nodesForXPath:@"methodName" error:NULL];
-		if ([methodNames count] != 1)
-			[NSException raise:NSGenericException format:@"method call contains %d method names", [methodNames count]];
-		NSString* methodName = [[methodNames objectAtIndex:0] stringValue];
+        if ([methodNames count] != 1)
+            [NSException raise:NSGenericException format:@"method call contains %d method names", [methodNames count]];
+        NSString* methodName = [[methodNames objectAtIndex:0] stringValue];
         
-		DLog(@"XMLRPC call: %@", methodName);
-		
+        DLog(@"XMLRPC call: %@", methodName);
+        
         //		NSArray* methodParameterNames = [doc nodesForXPath:@"methodCall/params//member/name" error:NULL];
         //		NSMutableArray* methodParameterValues = [[doc nodesForXPath:@"methodCall/params//member/value" error:NULL] mutableArray];
         //		if ([methodParameterNames count] != [methodParameterValues count])
         //			[NSException raise:NSGenericException format:@"request parameters inconsistent", [methodNames count]];
-		NSArray* params = [methodCall nodesForXPath:@"params/param/value/*" error:NULL];
-		
+        NSArray* params = [methodCall nodesForXPath:@"params/param/value/*" error:NULL];
+        
         //		NSMutableDictionary* methodParameters = [NSMutableDictionary dictionaryWithCapacity:[methodParameterNames count]];
         //		for (int i = 0; i < [methodParameterNames count]; ++i)
         //			[methodParameters setObject:[[methodParameterValues objectAtIndex:i] objectValue] forKey:[[methodParameterNames objectAtIndex:i] objectValue]];
-		
-        BOOL methodSelectorIsValidated = NO;
-		NSString* methodSelectorString = [self selectorStringForXMLRPCRequestMethodName:methodName isValidated:&methodSelectorIsValidated];
-        SEL methodSelector = NSSelectorFromString(methodSelectorString);
-		if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
-			[NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
-		
-//		DLog(@"\tHandled by: %@", methodSelectorString);
         
-		NSMethodSignature* methodSignature = [_delegate methodSignatureForSelector:methodSelector];
-		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
-		[invocation setTarget:_delegate];
-		[invocation setSelector:methodSelector];
-		
-        //		NSLog(@"71210test2 1 %@", [N2Shell hostname]);
-        int paramIndex = 0;
-		for (; paramIndex < [params count]; ++paramIndex) {
-			const char* argType = [methodSignature getArgumentTypeAtIndex:2+paramIndex];
-			NSXMLNode* n = [params objectAtIndex:paramIndex];
-			NSObject* o = [N2XMLRPC ParseElement:n];
-			
-			switch (argType[0]) {
-				case '@': {
-					[invocation setArgument:&o atIndex:2+paramIndex];
-				} break;
-				case 'i':
-				case 'f': {
-					NSAssert([o isKindOfClass:[NSNumber class]], @"Expecting a numeric parameter");
-					NSNumber* n = (NSNumber*)o;
-					switch (argType[0]) {
-						case 'i': {
-							NSInteger i = [n intValue];
-							[invocation setArgument:&i atIndex:2+paramIndex];
-						} break;
-						case 'f': {
-							CGFloat f = [n floatValue];
-							[invocation setArgument:&f atIndex:2+paramIndex];
-						} break;
-						default: {
-							[NSException raise:NSGenericException format:@"client side unsupported argument type %c in %@", argType[0], methodSignature];
-						} break;
-					}
-				} break;
-				default: {
-					[NSException raise:NSGenericException format:@"client side unsupported argument type %c in %@", argType[0], methodSignature];
-				} break;
-			}
-		}
+        NSMutableArray* objcparams = [NSMutableArray array];
+        for (NSXMLNode* param in params)
+            [objcparams addObject:[N2XMLRPC ParseElement:param]];
         
         NSError* error = nil;
-        if ([methodSelectorString hasSuffix:@":error:"]) {
-            NSError** errorp = &error;
-            [invocation setArgument:&errorp atIndex:2+paramIndex];
-        }
-		
-		DLog(@"\tXMLRPC invoking: %@", methodSelectorString);
-		[invocation invoke];
+        
+        NSDate* dateBeforeCall = [NSDate date];
+        NSObject* result = [self methodCall:methodName params:objcparams error:&error];
         
         if (error) {
             NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [error localizedDescription]);
@@ -251,26 +206,51 @@
             return;
         }
         
-        DLog(@"\tXMLRPC done.");
+        DLog(@"\tXMLRPC done, took %f seconds.", -[dateBeforeCall timeIntervalSinceNow]);
         
-		NSString* returnValue = [N2XMLRPC ReturnElement:invocation options:[self N2XMLRPCOptions]];
-		NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", returnValue];
-		
-//        DLog(@"Response: %@", responseXml);
+        NSString* responseXml = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [N2XMLRPC FormatElement:result options:[self N2XMLRPCOptions]]];
+        
+        // DLog(@"Response: %@", responseXml);
         
         NSData* responseData = [responseXml dataUsingEncoding:NSUTF8StringEncoding];
-		
-        //		NSLog(@"71210test2 9");
-		CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
-		CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
-		CFHTTPMessageSetBody(response, (CFDataRef)responseData);
-		[self writeAndReleaseResponse:response];
-	} @catch (NSException* e) {
+        
+        // NSLog(@"71210test2 9");
+        CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
+        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
+        CFHTTPMessageSetBody(response, (CFDataRef)responseData);
+        [self writeAndReleaseResponse:response];    } @catch (NSException* e) {
 		NSLog(@"Warning: [N2XMLRPCConnection handleRequest:] %@", [e reason]);
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 500, (CFStringRef)[e reason], (CFStringRef)version)];
 	} @finally {
         [pool release];
     }
+}
+
+-(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
+    BOOL methodSelectorIsValidated = NO;
+    NSString* methodSelectorString = [self selectorStringForXMLRPCRequestMethodName:methodName isValidated:&methodSelectorIsValidated];
+    SEL methodSelector = NSSelectorFromString(methodSelectorString);
+    if (!methodSelectorIsValidated && (![_delegate respondsToSelector:methodSelector] || ([_delegate respondsToSelector:@selector(isMethodAvailableToXMLRPC:)] && ![_delegate isSelectorAvailableToXMLRPC:methodSelectorString])))
+        [NSException raise:NSGenericException format:@"invalid XMLRPC method call: %@", methodName];
+
+    //		DLog(@"\tHandled by: %@", methodSelectorString);
+    
+    NSInvocation* invocation = [NSInvocation invocationWithSelector:methodSelector target:_delegate];
+   
+    if (params.count < 1)
+        params = [NSArray arrayWithObject:[NSDictionary dictionary]];
+
+    int paramIndex = 0;
+    for (; paramIndex < [params count]; ++paramIndex)
+        [invocation setArgumentObject:[params objectAtIndex:paramIndex] atIndex:paramIndex+2];
+    
+    if ([methodSelectorString hasSuffix:@":error:"]) {
+        [invocation setArgument:&error atIndex:2+paramIndex];
+    }
+    
+    [invocation invoke];
+    
+    return [invocation returnValue];
 }
 
 -(void)writeAndReleaseResponse:(CFHTTPMessageRef)response {

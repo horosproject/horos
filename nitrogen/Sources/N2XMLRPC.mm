@@ -109,17 +109,29 @@
 	}
 	
 	if ([o isKindOfClass:[NSNumber class]])
-		switch ([(NSNumber*)o objCType][0]) {
-			case 'c':
+		switch (CFNumberGetType((CFNumberRef)o)) {
+            case kCFNumberCharType:
 				return [NSString stringWithFormat:@"<boolean>%d</boolean>", int([(NSNumber*)o boolValue])];
-			case 'i':
+            case kCFNumberSInt8Type:
+            case kCFNumberSInt16Type:
+            case kCFNumberSInt32Type:
+            case kCFNumberSInt64Type:
+            case kCFNumberShortType:
+            case kCFNumberIntType:
+            case kCFNumberLongType:
+            case kCFNumberLongLongType:
+            case kCFNumberCFIndexType:
+            case kCFNumberNSIntegerType:
 				return [NSString stringWithFormat:@"<int>%d</int>", [(NSNumber*)o intValue]];
-			case 'f':
-			case 'd':
+            case kCFNumberFloatType:
+            case kCFNumberFloat32Type:
+            case kCFNumberFloat64Type:
+            case kCFNumberDoubleType:
+            case kCFNumberCGFloatType:
 				return [NSString stringWithFormat:@"<double>%f</double>", [(NSNumber*)o doubleValue]];
-			default:
-				[NSException raise:NSGenericException format:@"execution succeeded but return NSNumber of type %c unsupported", [(NSNumber*)o objCType][0]]; return NULL;
-	}
+            default:
+				[NSException raise:NSGenericException format:@"execution succeeded but return NSNumber of type %d unsupported", (int)CFNumberGetType((CFNumberRef)o)]; return NULL;
+        }
 	
 	[NSException raise:NSGenericException format:@"execution succeeded but return class %@ unsupported", [o className]]; return NULL;
 }
@@ -128,16 +140,21 @@
     return [[self class] FormatElement:o options:0];
 }
 
-+(NSString*)ReturnElement:(NSInvocation*)invocation options:(NSUInteger)options {
-	const char* returnType = [[invocation methodSignature] methodReturnType];
-	switch (returnType[0]) {
+/*+(NSString*)ReturnElement:(NSInvocation*)invocation options:(NSUInteger)options { 
+    NSUInteger length = [[invocation methodSignature] methodReturnLength];
+    uint8_t buff[length];
+    [invocation getReturnValue:&buff[0]];
+    
+    const char* returnType = [[invocation methodSignature] methodReturnType];
+	if (returnType[0] == @encode(char)[0])
+    
+    switch (returnType[0]) {
 		case '@': {
-			NSObject* o; [invocation getReturnValue:&o];
-			return [N2XMLRPC FormatElement:o options:options];
+			return [N2XMLRPC FormatElement:(id)*(&buff[0]) options:options];
 		} break;
 		case 'i': {
 			int i; [invocation getReturnValue:&i];
-			return [NSString stringWithFormat:@"<int>%d</int>", i];
+			return [NSString stringWithFormat:@"<int>%d</int>", (int)*(&buff[0])];
 		} break;
 		case 'l': {
 			long l; [invocation getReturnValue:&l];
@@ -158,6 +175,23 @@
 
 +(NSString*)ReturnElement:(NSInvocation*)invocation {
     return [[self class] ReturnElement:invocation options:0];
+}*/
+
++(NSString*)requestWithMethodName:(NSString*)methodName arguments:(NSArray*)args {
+    NSMutableString* request = [NSMutableString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodCall><methodName>%@</methodName><params>", methodName];
+    for (id arg in args)
+		[request appendFormat:@"<param><value>%@</value></param>", [[self class] FormatElement:arg]];
+    [request appendFormat:@"</params></methodCall>"];
+	return request;
+}
+
++(NSString*)responseWithValue:(id)value {
+    return [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?><methodResponse><params><param><value>%@</value></param></params></methodResponse>", [[self class] FormatElement:value]];
 }
 
 @end
+
+
+
+
+

@@ -25,7 +25,8 @@ enum N2XMLRPCOptionMasks {
 +(NSObject*)ParseElement:(NSXMLNode*)n;
 +(NSString*)FormatElement:(NSObject*)o;
 +(NSString*)FormatElement:(NSObject*)o options:(NSUInteger)options;
-+(NSString*)ReturnElement:(NSInvocation*)invocation;
-+(NSString*)ReturnElement:(NSInvocation*)invocation options:(NSUInteger)options;
+
++(NSString*)requestWithMethodName:(NSString*)methodName arguments:(NSArray*)args;
++(NSString*)responseWithValue:(id)value;
 
 @end
