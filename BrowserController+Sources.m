@@ -992,7 +992,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[[ThreadsManager defaultManager] addThreadAndStart:thread];
 		[_database scanAtPath:self.devicePath];
 		
-		if (![[_database objectsForEntity:_database.imageEntity] count])
+		if (![[_database.independentDatabase objectsForEntity:_database.imageEntity] count])
         {
 			[[[BrowserController currentBrowser] sources] removeObject:self];
 			return;

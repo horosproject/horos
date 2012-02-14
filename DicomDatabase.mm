@@ -337,11 +337,14 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return dict;
 }*/
 
--(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
 { 
 	p = [DicomDatabase baseDirPathForPath:p];
-//	NSLog(@"DicomDatabase initWithPath:%@", p);
 	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
+
+    if (!mainDbReference)
+        mainDbReference = [DicomDatabase existingDatabaseAtPath:p];
+    
 	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
 	
 	NSString* sqlFilePath = [DicomDatabase sqlFilePathForBasePath:p];
@@ -351,47 +354,46 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	self.baseDirPath = p;
 	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
-	if (!_dataBaseDirPath) _dataBaseDirPath = p;
+	if (!_dataBaseDirPath) _dataBaseDirPath = p; // TODO: what if this path is not mounted?
 	[_dataBaseDirPath retain];
 	
-    [DicomDatabase knowAbout:self];
-
-	self = [super initWithPath:sqlFilePath context:c];
+    [DicomDatabase knowAbout:self]; // retains self
+    
+	self = [super initWithPath:sqlFilePath context:c mainDatabase:mainDbReference];
 	
 	// post-init
 	
-	[NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
-	
-	_dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
-	_processFilesLock = [[NSRecursiveLock alloc] init];
-	_importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
-    
-	// create dirs if necessary
-	
-	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
-	[NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
-	[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
-	[NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
-	[NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
-	if (self.baseDirPath) strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC)); else baseDirPathC[0] = 0;
-	if (self.incomingDirPath) strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC)); else incomingDirPathC[0] = 0;
-	if (self.tempDirPath) strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC)); else tempDirPathC[0] = 0;
-	
-	// if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
-	
-	if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
-		[NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
-	
-    if ([DicomDatabase existingDatabaseAtPath:p] == self) // if is main (not independent)
+    if (!mainDbReference) // is main (not independent)
+    {
+	    [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
+        
+        _dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
+        _processFilesLock = [[NSRecursiveLock alloc] init];
+        _importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
+        _unsavedAddedFiles = [[NSMutableArray alloc] init];
+        
+        // create dirs if necessary
+        [NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
+        [NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
+        [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+        [NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
+        [NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
+        if (self.baseDirPath) strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC)); else baseDirPathC[0] = 0;
+        if (self.incomingDirPath) strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC)); else incomingDirPathC[0] = 0;
+        if (self.tempDirPath) strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC)); else tempDirPathC[0] = 0;
+        
+        // if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
+        
+        if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
+            [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+        
         if ([[NSFileManager defaultManager] fileExistsAtPath:self.unsavedAddedFilesPlistPath]) {
             NSMutableArray* unsavedAddedFiles = [NSMutableArray arrayWithContentsOfFile:self.unsavedAddedFilesPlistPath];
-            
-            NSLog(@".... %d", unsavedAddedFiles.count);
             
             for (int i = 1; i < unsavedAddedFiles.count; ++i)
                 if ([[unsavedAddedFiles objectAtIndex:i] isEqualToString:[unsavedAddedFiles objectAtIndex:i-1]])
                     [unsavedAddedFiles removeObjectAtIndex:i];
-
+            
             NSLog(@"Warning: some files (%d) were added but OsiriX didn't get to save their indexes into the DB file, moving them back to incoming...", unsavedAddedFiles.count);
             
             NSString* incomingDirPath = self.incomingDirPath;
@@ -400,42 +402,35 @@ static DicomDatabase* activeLocalDatabase = nil;
             
             [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
         }
-    
-	// report templates
+        
+        // report templates
 #ifndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
-	
-	for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
-		NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-		if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp])
-			[NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
-	}
-	
-	NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
-	if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
-		[NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
-	
-    NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
-	if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
-        [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
-
+        
+        for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+            NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
+            if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp])
+                [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
+        }
+        
+        NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
+        if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
+            [NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
+        
+        NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
+        if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
+            [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
+        
 #endif
 #endif
 
-    [self checkForHtmlTemplates];
+        [self checkForHtmlTemplates];
 
-	// ...
-	
-	if (isNewFile)
-		[self addDefaultAlbums];
-    
-    if ([DicomDatabase existingDatabaseAtPath:p] == self) // if is main (not independent)
-	{
+        if (isNewFile)
+            [self addDefaultAlbums];
         [self modifyDefaultAlbums];
         [self initRouting];
         [self initClean];
-        
-        _unsavedAddedFiles = [[NSMutableArray alloc] init];
 	
         [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	}
@@ -1279,7 +1274,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[self lock];
 	@try
     {
-		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity optimize:NO] mutableCopy];
+		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
 		

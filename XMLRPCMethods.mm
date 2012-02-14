@@ -133,14 +133,6 @@
     return nil;
 }
 
--(NSArray*)objectsWithEntityName:(NSString*)entityName predicate:(NSPredicate*)predicate error:(NSError**)error {
-    DicomDatabase* database = [self database];
-    
-    [database initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
-    
-    return [database objectsForEntity:[database entityForName:entityName] predicate:predicate error:error];
-}
-
 -(NSError*)errorWithCode:(NSInteger)code {
     NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
     return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
@@ -223,20 +215,22 @@
                     predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@ AND ANY series.seriesDICOMUID == %@", studyUID, seriesUID];
                 else predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
                 
-                DicomDatabase* database = [self database];
-                
                 NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
                 do {
-                    NSArray* studies = [self objectsWithEntityName:@"Study" predicate:predicate error:NULL];
-                    if ([[[studies lastObject] valueForKey:@"studyInstanceUID"] isEqualToString:studyUID]) {
-                        DicomStudy* study = [studies lastObject];
-                        DicomSeries* series = nil;
+                    DicomDatabase* database = self.database;
+
+                    NSArray* istudies = [database.independentDatabase objectsForEntity:@"Study" predicate:predicate error:NULL];
+                    DicomStudy* istudy = [istudies lastObject];
+                    if ([istudy.studyInstanceUID isEqualToString:studyUID]) {
+                        DicomSeries* iseries = nil;
                         if (seriesUID)
-                            for (DicomSeries* s in study.series)
-                                if ([s.seriesDICOMUID isEqualToString:seriesUID])
-                                    series = s;
+                            for (DicomSeries* is in istudy.series)
+                                if ([is.seriesDICOMUID isEqualToString:seriesUID])
+                                    iseries = is;
                         
-                        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[NSArray arrayWithObject: series? (id)series : (id)study] waitUntilDone:NO];
+                        NSManagedObject* obj = iseries? (id)iseries : (id)istudy; // in independentDatabase
+                        obj = [database.managedObjectContext objectWithID:obj.objectID]; // in mainDatabase
+                        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[NSArray arrayWithObject:obj] waitUntilDone:NO];
                         
                         break;
                     }
@@ -279,18 +273,20 @@
     if (!error)
         error = &lerror;
     
-    NSArray* objects = [self objectsWithEntityName:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    DicomDatabase* database = self.database;
+
+    NSArray* iobjects = [database.independentDatabase objectsForEntity:@"Study" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
-    if (objects.count == 0)
+    if (iobjects.count == 0)
         ReturnWithErrorValue(-1);
     
-    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[database objectsWithIDs:[iobjects valueForKey:@"objectID"]] waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
-    for (NSManagedObject* obj in objects)
-        [elements addObject:[[self class] dictionaryForObject:obj]];
+    for (NSManagedObject* iobj in iobjects)
+        [elements addObject:[[self class] dictionaryForObject:iobj]];
     ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
@@ -320,18 +316,20 @@
     if (!error)
         error = &lerror;
     
-    NSArray* objects = [self objectsWithEntityName:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
+    DicomDatabase* database = self.database;
+    
+    NSArray* iobjects = [database.independentDatabase objectsForEntity:@"Series" predicate:[NSCompoundPredicate andPredicateWithSubpredicates:subpredicates] error:error];
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
-    if (objects.count == 0)
+    if (iobjects.count == 0)
         ReturnWithErrorValue(-1);
 
-    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[database objectsWithIDs:[iobjects valueForKey:@"objectID"]] waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
-    for (NSManagedObject* obj in objects)
-        [elements addObject:[[self class] dictionaryForObject:obj]];
+    for (NSManagedObject* iobj in iobjects)
+        [elements addObject:[[self class] dictionaryForObject:iobj]];
     ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }
 
@@ -362,24 +360,26 @@
     if (!error)
         error = &lerror;
     
-    NSArray* objects = [self objectsWithEntityName:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
+    DicomDatabase* database = self.database;
+
+    NSArray* iobjects = [database.independentDatabase objectsForEntity:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);
-    if (objects.count == 0)
+    if (iobjects.count == 0)
         ReturnWithErrorValue(-1);
-
+    
     if ([command isEqualToString:@"Open"])
-        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:objects waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(_onMainThreadOpenObjects:) withObject:[database objectsWithIDs:[iobjects valueForKey:@"objectID"]] waitUntilDone:NO];
     if ([command isEqualToString:@"Select"])
-        [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjects:) withObject:objects waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(_onMainThreadSelectObjects:) withObject:[database objectsWithIDs:[iobjects valueForKey:@"objectID"]] waitUntilDone:NO];
     
     NSMutableArray* elements = [NSMutableArray array];
-    for (NSManagedObject* obj in objects)
-        [elements addObject:[[self class] dictionaryForObject:obj]];
+    for (NSManagedObject* iobj in iobjects)
+        [elements addObject:[[self class] dictionaryForObject:iobj]];
 
     if ([command isEqualToString:@"Delete"])
-        [self performSelectorOnMainThread:@selector(_onMainThreadDeleteObjects:) withObject:objects waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(_onMainThreadDeleteObjects:) withObject:[database objectsWithIDs:[iobjects valueForKey:@"objectID"]] waitUntilDone:NO];
     
     ReturnWithErrorValueAndObjectForKey(0, elements, @"elements");
 }

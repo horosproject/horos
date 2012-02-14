@@ -20,11 +20,13 @@
 		NSString* _sqlFilePath;
 	@private
 	NSManagedObjectContext* _managedObjectContext;
+    N2ManagedDatabase* _mainDatabase;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
 @property(readwrite,retain) NSManagedObjectContext* managedObjectContext; // only change this value if you know what you're doing
+@property(readonly,retain) N2ManagedDatabase* mainDatabase; // for independentDatabases
 
 // locking actually locks the context
 -(void)lock;
@@ -40,8 +42,8 @@
 -(BOOL)migratePersistentStoresAutomatically; // default implementation returns YES
 
 -(id)initWithPath:(NSString*)sqlFilePath;
--(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)c;
--(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath; // THIS METHOD IS PROTECTED, you may want to override this, but NEVER CALL IT FROM OUTSIDE
+-(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)context;
+-(id)initWithPath:(NSString*)sqlFilePath context:(NSManagedObjectContext*)context mainDatabase:(N2ManagedDatabase*)mainDbReference;
 
 -(NSManagedObjectContext*)independentContext:(BOOL)independent;
 -(NSManagedObjectContext*)independentContext;
@@ -52,19 +54,22 @@
 -(id)objectWithURI:(NSString*)urlString;
 -(NSArray*)objectsWithIDs:(NSArray*)objectIDs;
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e;
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err;
--(NSArray*)objectsForEntity:(NSEntityDescription*)e optimize:(BOOL)flag;
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag;
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag error:(NSError**)err;
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e;
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p;
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)entity predicate:(NSPredicate*)p error:(NSError**)err;
--(id)newObjectForEntity:(NSEntityDescription*)entity;
+// in these methods, e can be an NSEntityDescription* or an NSString*
+-(NSArray*)objectsForEntity:(id)e;
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p;
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err;
+-(NSUInteger)countObjectsForEntity:(id)e;
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p;
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err;
+-(id)newObjectForEntity:(id)e;
 
 -(BOOL)save;
 -(BOOL)save:(NSError**)err;
 
+@end
+
+@interface N2ManagedDatabase (Protected)
+
+-(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath;
 
 @end

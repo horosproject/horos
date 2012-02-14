@@ -20,7 +20,7 @@
 @interface N2ManagedDatabase ()
 
 @property(readwrite,retain) NSString* sqlFilePath;
-//@property(readwrite,retain) NSManagedObjectContext* managedObjectContext;
+@property(readwrite,retain) N2ManagedDatabase* mainDatabase;
 
 @end
 
@@ -50,7 +50,9 @@
 
 @implementation N2ManagedDatabase
 
-@synthesize sqlFilePath = _sqlFilePath, managedObjectContext = _managedObjectContext;
+@synthesize sqlFilePath = _sqlFilePath;
+@synthesize managedObjectContext = _managedObjectContext;
+@synthesize mainDatabase = _mainDatabase;
 
 -(NSManagedObjectContext*)managedObjectContext {
 	return _managedObjectContext;
@@ -95,6 +97,8 @@
     //	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
 	
 	@synchronized (self) {
+        if (self.managedObjectContext.hasChanges)
+            [self save];
 		if ([sqlFilePath isEqualToString:self.sqlFilePath])
 			moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
 		if (!moc.persistentStoreCoordinator) {
@@ -169,37 +173,30 @@
 	[self.managedObjectContext unlock];
 }
 
-//-(void)writeLock {
-//	[writeLock lock];
-//}
-//
-//-(BOOL)tryWriteLock {
-//	return [writeLock tryLock];
-//}
-//
-//-(void)writeUnlock {
-//	[writeLock unlock];
-//}
+-(id)initWithPath:(NSString*)p {
+	return [self initWithPath:p context:nil mainDatabase:nil];
+}
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c {
+    return [self initWithPath:p context:c mainDatabase:nil];
+}
+
+-(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference {
 	self = [super init];
-//	writeLock = [[NSRecursiveLock alloc] init];
 	
 	self.sqlFilePath = p;
+    self.mainDatabase = mainDbReference;
 	
-	if (!c)
-		c = [self contextAtPath:p];
-	self.managedObjectContext = c;
+	self.managedObjectContext = c? c : [self contextAtPath:p];
 	
 	return self;
 }
 
--(id)initWithPath:(NSString*)p {
-	return [self initWithPath:p context:nil];
-}
-
 -(void)dealloc {
+    if ([self.managedObjectContext hasChanges])
+        [self save];
 //	[self.managedObjectContext reset];
+    self.mainDatabase = nil;
 	self.managedObjectContext = nil;
 	self.sqlFilePath = nil;
 //	[writeLock release];
@@ -215,11 +212,7 @@
 }
 
 -(id)independentDatabase {
-	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext]] autorelease];
-}
-
--(NSEntityDescription*)entityForName:(NSString*)name {
-	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
+	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 
 -(id)objectWithURI:(NSString*)urlString {
@@ -236,59 +229,52 @@
     return r;
 }
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e {
-	return [self objectsForEntity:e predicate:nil optimize:YES error:NULL];
+-(NSEntityDescription*)entityForName:(NSString*)name {
+	return [NSEntityDescription entityForName:name inManagedObjectContext:self.managedObjectContext];
 }
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
-	return [self objectsForEntity:e predicate:p optimize:YES error:NULL];
+-(NSEntityDescription*)_entity:(id*)entity {
+    if ([*entity isKindOfClass:[NSString class]])
+        *entity = [self entityForName:*entity];
+    return *entity;
 }
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
-	return [self objectsForEntity:e predicate:p optimize:YES error:err];
+-(NSArray*)objectsForEntity:(id)e {
+	return [self objectsForEntity:e predicate:nil error:NULL];
 }
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e optimize:(BOOL)flag {
-	return [self objectsForEntity:e predicate:nil optimize:flag error:NULL];
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p {
+	return [self objectsForEntity:e predicate:p error:NULL];
 }
 
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag {
-	return [self objectsForEntity:e predicate:p optimize:flag error:NULL];
-}
-
--(NSArray*)objectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p optimize:(BOOL)flag error:(NSError**)err {
-	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+-(NSArray*)objectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
+	[self _entity:&e];
+    
+    NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
     @try {
-        BOOL depend = !flag;
-        if ([NSThread isMainThread]) depend = YES;
-        
-        NSManagedObjectContext* searchmoc = depend? self.managedObjectContext : self.independentContext;
-        NSArray* iobjects = [searchmoc executeFetchRequest:req error:err];
-        // if isMainThread, we return the found objects (which live on this database's moc)
-        if (depend)
-            return iobjects;
-        // else we return objects in this database's moc corresponding to the found objects (which live in an independent moc)
-        return [self objectsWithIDs:[iobjects valueForKey:@"objectID"]];
+        return [self.managedObjectContext executeFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
     }
-
+    
     return nil;
 }
 
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e {
+-(NSUInteger)countObjectsForEntity:(id)e {
 	return [self countObjectsForEntity:e predicate:nil error:NULL];
 }
 
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p {
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p {
 	return [self countObjectsForEntity:e predicate:p error:NULL];
 }
 
--(NSUInteger)countObjectsForEntity:(NSEntityDescription*)e predicate:(NSPredicate*)p error:(NSError**)err {
+-(NSUInteger)countObjectsForEntity:(id)e predicate:(NSPredicate*)p error:(NSError**)err {
+	[self _entity:&e];
+
 	NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
@@ -307,7 +293,8 @@
 	return 0;
 }
 
--(id)newObjectForEntity:(NSEntityDescription*)entity {
+-(id)newObjectForEntity:(id)entity {
+    [self _entity:&entity];
 	return [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
 }
 

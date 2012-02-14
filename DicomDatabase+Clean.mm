@@ -81,7 +81,7 @@
 	@try {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Cleaning...", nil);
-		[self cleanOldStuff];
+		[self.independentDatabase cleanOldStuff];
 	} @catch (NSException * e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
@@ -310,6 +310,8 @@
 				}
 		}
 		
+        [self save];
+        
 		[self cleanForFreeSpace];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
