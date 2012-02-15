@@ -2205,7 +2205,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
-	NSArray* addedFiles = nil;
+	NSUInteger addedFilesCount = 0;
 	
 	[thread enterOperation];
 	thread.status = NSLocalizedString(@"Listing files...", nil);
@@ -2456,7 +2456,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
 			
 			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
-			addedFiles = [[self addFilesAtPaths:filesArray] valueForKey:@"completePath"];
+			NSArray* addedFiles = [self addFilesAtPaths:filesArray];
+            addedFilesCount = addedFiles.count;
 			
 			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
 			{
@@ -2506,7 +2507,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[OsiriX unsetReceivingIcon];
 
 	[thread exitOperation];
-	return addedFiles.count;
+	return addedFilesCount;
 }
 
 -(void)_threadDecompressToIncoming:(NSArray*)compressedPathArray {
