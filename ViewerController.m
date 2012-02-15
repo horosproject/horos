@@ -131,7 +131,6 @@ static NSString*	RevertToolbarItemIdentifier			= @"Revert.tif";
 static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tif";
 static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
 static NSString*	KeyImagesToolbarItemIdentifier		= @"keyImages";
-static NSString*	DeleteToolbarItemIdentifier			= @"trash.icns";
 static NSString*	TileWindowsToolbarItemIdentifier	= @"windows.tif";
 static NSString*	SUVToolbarItemIdentifier			= @"SUV.tif";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tif";
@@ -5106,16 +5105,7 @@ static ViewerController *draggedController = nil;
 	[self setToolbarReportIconForItem:toolbarItem];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(generateReport:)];
-    } 
-	else if ( [itemIdent isEqualToString: DeleteToolbarItemIdentifier])
-	{
-	[toolbarItem setLabel: NSLocalizedString(@"Delete", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Delete this series from the study", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: DeleteToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(deleteSeries:)];
-    } 
+    }
 	
 	else if ([itemIdent isEqualToString: TileWindowsToolbarItemIdentifier]) {
 	
@@ -5563,7 +5553,6 @@ static ViewerController *draggedController = nil;
 														iChatBroadCastToolbarItemIdentifier,
 														StatusToolbarItemIdentifier,
 														KeyImagesToolbarItemIdentifier,
-														DeleteToolbarItemIdentifier,
 														ReportToolbarItemIdentifier,
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
@@ -15468,47 +15457,6 @@ int i,j,l;
 		
 		for( DCMPix *d in pixList[ maxMovieIndex-1])
 			[d setTransferFunction: tf];
-	}
-}
-
--(void) deleteSeries:(id) sender
-{	
-	int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Series", nil), NSLocalizedString(@"Are you sure you want to delete this series?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
-	
-	if( result == NSAlertDefaultReturn)
-	{
-		NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]];
-		NSManagedObject *s = [o valueForKey: @"series"];
-		NSManagedObject *seriesToLoad = nil;
-		
-		for( NSManagedObject *series in [[BrowserController currentBrowser] childrenArray: [s valueForKey:@"study"]])
-		{
-			if( series != s)
-			{
-				seriesToLoad = series;
-				break;
-			}
-		}
-		
-		NSMutableArray *objectsToDelete = [NSMutableArray array];
-		
-		for( int x = 0 ; x < maxMovieIndex; x++)
-			[objectsToDelete addObjectsFromArray: fileList[ x]];
-		
-		NSRect frame = [[self window] frame];
-		
-		[[BrowserController currentBrowser] delObjects: objectsToDelete];
-		
-		if( seriesToLoad)
-		{
-			ViewerController *v = [[BrowserController currentBrowser] loadSeries :seriesToLoad :nil :YES keyImagesOnly: displayOnlyKeyImages];
-			[[v window] setFrame: frame display: NO];
-			[v matrixPreviewSelectCurrentSeries];
-			[[AppController sharedAppController] checkAllWindowsAreVisible: v makeKey: YES];
-			[[v window] makeKeyAndOrderFront: v];
-			[v refreshToolbar];
-			[v updateNavigator];
-		}
 	}
 }
 
