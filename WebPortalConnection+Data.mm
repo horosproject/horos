@@ -232,7 +232,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         }	
         
         if ([parameters objectForKey:@"sortKey"])
-            if ([[[independentDicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+            if ([[[self.independentDicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
                 [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
         
         if (![self.session objectForKey:@"StudiesSortKey"])
@@ -684,7 +684,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //		[self resetPOST];
 	
 	NSMutableArray* albums = [NSMutableArray array];
-	for (DicomAlbum* album in independentDicomDatabase.albums)
+	for (DicomAlbum* album in self.independentDicomDatabase.albums)
     {
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
         {
@@ -1293,7 +1293,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 -(void)processAlbumsJson {
 	NSMutableArray* jsonAlbumsArray = [NSMutableArray array];
 	
-	for (DicomAlbum* album in [independentDicomDatabase albums])
+	for (DicomAlbum* album in [self.independentDicomDatabase albums])
 		if (![album.name isEqualToString:NSLocalizedString(@"Database", nil)]) {
 			NSMutableDictionary* albumDictionary = [NSMutableDictionary dictionary];
 			
@@ -1388,7 +1388,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (studyUID)
 			predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
 		
-		NSArray* studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:predicate];
+		NSArray* studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:predicate];
 		
 		if ([studies count] == 0)
 			NSLog( @"****** WADO Server : study not found");
@@ -1465,7 +1465,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
 	
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	dbRequest.entity = independentDicomDatabase.studyEntity;
+	dbRequest.entity = self.independentDicomDatabase.studyEntity;
 	
 	@try {
 		NSMutableDictionary *imageCache = nil;
@@ -1491,7 +1491,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             if (studyUID)
 				predicate1 = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID];
 			
-			NSArray* studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:predicate1];
+			NSArray* studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:predicate1];
 			
 			if ([studies count] == 0)
 				NSLog( @"****** WADO Server : study not found");

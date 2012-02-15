@@ -37,7 +37,7 @@
 	NSData *postBoundary;
 	NSString *POSTfilename;
     
-    DicomDatabase* independentDicomDatabase;
+    DicomDatabase* _independentDicomDatabase;
 }
 
 -(CFHTTPMessageRef)request;

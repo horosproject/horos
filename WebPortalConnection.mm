@@ -98,7 +98,6 @@ static NSString* NotNil(NSString *s) {
 @synthesize session;
 @synthesize user;
 @synthesize parameters, GETParams;
-@synthesize independentDicomDatabase = independentDicomDatabase;
 
 -(WebPortalSession*)session {
 	if (!session)
@@ -135,8 +134,16 @@ static NSString* NotNil(NSString *s) {
 -(id)initWithAsyncSocket:(AsyncSocket*)newSocket forServer:(HTTPServer*)myServer {
 	self = [super initWithAsyncSocket:newSocket forServer:myServer];
 	sendLock = [[NSLock alloc] init];
-    independentDicomDatabase = [[self.portal.dicomDatabase independentDatabase] retain];
 	return self;
+}
+
+-(DicomDatabase*)independentDicomDatabase {
+    if (_independentDicomDatabase)
+        return _independentDicomDatabase;
+    
+    _independentDicomDatabase = [[self.portal.dicomDatabase independentDatabase] retain];
+    
+    return _independentDicomDatabase;
 }
 
 -(void)dealloc {
@@ -152,7 +159,7 @@ static NSString* NotNil(NSString *s) {
 	
 	self.session = NULL;
     
-    [independentDicomDatabase release];
+    [_independentDicomDatabase release];
 	
 	[super dealloc];
 }
@@ -746,7 +753,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						// Add study to specific study list for this user
 						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
-							NSArray *studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+							NSArray *studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
 							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
