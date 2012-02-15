@@ -448,19 +448,24 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[self deallocClean];
 	[self deallocRouting];
     
-	NSRecursiveLock* temp;
-	
-	temp = _importFilesFromIncomingDirLock;
-	[temp lock]; // if currently importing, wait until finished
-	_importFilesFromIncomingDirLock = nil;
-	[temp unlock];
-	[temp release];
-	
-	temp = _processFilesLock;
-	[temp lock]; // if currently importing, wait until finished
-	_processFilesLock = nil;
-	[temp unlock];
-	[temp release];
+    if (!self.mainDatabase) {
+        NSRecursiveLock* temp;
+        
+        temp = _importFilesFromIncomingDirLock;
+        [temp lock]; // if currently importing, wait until finished
+        _importFilesFromIncomingDirLock = nil;
+        [temp unlock];
+        [temp release];
+        
+        temp = _processFilesLock;
+        [temp lock]; // if currently importing, wait until finished
+        _processFilesLock = nil;
+        [temp unlock];
+        [temp release];
+    } else {
+        [_importFilesFromIncomingDirLock release];
+        [_processFilesLock release];
+    }
     
     @synchronized (_unsavedAddedFiles) {
         [_unsavedAddedFiles release];
