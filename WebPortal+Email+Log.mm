@@ -104,7 +104,7 @@
 		return;
 	}
 	
-	if ([self.dicomDatabase tryLock])
+//	if ([self.dicomDatabase tryLock])
 	{
 		[database.managedObjectContext lock];
 		
@@ -144,7 +144,7 @@
 			@try
 			{
 				// Find all studies AFTER the lastCheckDate
-				NSArray *studies = [dicomDatabase objectsForEntity:dicomDatabase.studyEntity];
+				NSArray *studies = [dicomDatabase.independentDatabase objectsForEntity:@"Study"];
 				
 				if ([studies count] > 0)
 				{
@@ -171,7 +171,7 @@
 							
 							if ([filteredStudies count] > 0)
 							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
+								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:[filteredStudies valueForKey:@"objectID"]] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
 							}
 						}
 					}
@@ -183,7 +183,7 @@
 			}
 		}
 		[database.managedObjectContext unlock];
-		[dicomDatabase.managedObjectContext unlock];
+//		[dicomDatabase.managedObjectContext unlock];
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];

@@ -26,6 +26,9 @@
 
 @interface DicomDatabase ()
 
+-(NSMutableArray*)routingSendQueues;
+-(NSRecursiveLock*)routingLock;
+  
 +(void)_syncRoutingTimer;
 
 @end
@@ -33,8 +36,14 @@
 @implementation DicomDatabase (Routing)
 
 -(void)initRouting {
-	_routingSendQueues = [[NSMutableArray alloc] init];
-	_routingLock = [[NSRecursiveLock alloc] init];
+    if (!self.mainDatabase) {
+        _routingSendQueues = [[NSMutableArray alloc] init];
+        _routingLock = [[NSRecursiveLock alloc] init];
+    } else {
+        _routingSendQueues = [[self.mainDatabase routingSendQueues] retain];
+        _routingLock = [[self.mainDatabase routingLock] retain];
+    }
+    
 	[DicomDatabase _syncRoutingTimer];
 }
 
@@ -48,6 +57,14 @@
 	[temp release];
 	
 	[_routingSendQueues release]; _routingSendQueues = nil;
+}
+
+-(NSMutableArray*)routingSendQueues {
+    return _routingSendQueues;
+}
+
+-(NSRecursiveLock*)routingLock {
+    return _routingLock;
 }
 
 +(void)_syncRoutingTimer {

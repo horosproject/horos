@@ -853,7 +853,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 													 errorDescription:NULL];
 	NSMutableArray* items = [NSMutableArray array];
 	for (NSString* xid in xids)
-		[items addObject:[_browser.database objectWithURI:[NSManagedObject UidForXid:xid]]];
+		[items addObject:[_browser.database objectWithID:[NSManagedObject UidForXid:xid]]];
 	
 	NSString *filePath, *destPath;
 	NSMutableArray* dicomImages = [DicomImage dicomImagesInObjects:items];

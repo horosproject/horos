@@ -80,12 +80,12 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 	
 	NSString* axidEntityName = [axid objectAtIndex:1];
-		
+    
 	N2ManagedDatabase* db = self.portal.dicomDatabase;
 	if ([axidEntityName isEqualToString:@"User"])
 		db = self.portal.database;
 	
-	NSManagedObject* o = [db objectWithURI:[NSManagedObject UidForXid:xid]];
+	NSManagedObject* o = [db objectWithID:[NSManagedObject UidForXid:xid]];
 	
 	// ensure that the user is allowed to access this object
 	if (user && ([o isKindOfClass: [DicomStudy class]] || [o isKindOfClass: [DicomSeries class]])) // Too slow to check for DicomImage

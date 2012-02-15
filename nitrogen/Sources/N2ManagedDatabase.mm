@@ -20,7 +20,7 @@
 @interface N2ManagedDatabase ()
 
 @property(readwrite,retain) NSString* sqlFilePath;
-@property(readwrite,retain) N2ManagedDatabase* mainDatabase;
+@property(readwrite,retain) id mainDatabase;
 
 @end
 
@@ -43,6 +43,19 @@
 	self.database = nil;
 	[super dealloc];
 	[NSNotificationCenter.defaultCenter removeObserver:self]; // Apple bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
+}
+
+-(BOOL)save:(NSError**)error {
+    [self.persistentStoreCoordinator lock];
+    @try {
+        return [super save:error];
+    } @catch (...) {
+        @throw;
+    } @finally {
+        [self.persistentStoreCoordinator unlock];
+    }
+    
+    return NO;
 }
 
 @end
@@ -97,10 +110,12 @@
     //	NSMutableDictionary* persistentStoreCoordinatorsDictionary = self.persistentStoreCoordinatorsDictionary;
 	
 	@synchronized (self) {
-        if (self.managedObjectContext.hasChanges)
-            [self save];
+//        if (self.managedObjectContext.hasChanges)
+//            [self save];
+        
 		if ([sqlFilePath isEqualToString:self.sqlFilePath])
 			moc.persistentStoreCoordinator = self.managedObjectContext.persistentStoreCoordinator;
+        
 		if (!moc.persistentStoreCoordinator) {
             //			moc.persistentStoreCoordinator = [persistentStoreCoordinatorsDictionary objectForKey:sqlFilePath];
 			
@@ -138,14 +153,15 @@
 				} while (!pStore && i < 2);
 			}
 			
-			if (isNewFile)
+			if (isNewFile) {
+                [moc save:NULL];
 				NSLog(@"New database file created at %@", sqlFilePath);
-            
-            // this line is very important, if there is no sql file
-            [moc save:NULL];
+            }
 
 		} else {
-            [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc]; // TODO: remove observer later
+            if (self.mainDatabase)
+                NSLog(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
+            [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
         }
         
 	}
@@ -195,6 +211,7 @@
 -(void)dealloc {
     if ([self.managedObjectContext hasChanges])
         [self save];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
 //	[self.managedObjectContext reset];
     self.mainDatabase = nil;
 	self.managedObjectContext = nil;
@@ -215,18 +232,44 @@
 	return [[[[self class] alloc] initWithPath:self.sqlFilePath context:[self independentContext] mainDatabase:self] autorelease];
 }
 
--(id)objectWithURI:(NSString*)urlString {
-	return [self.managedObjectContext existingObjectWithID:[self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:urlString]] error:NULL];
+-(id)objectWithID:(id)oid {
+    [self.managedObjectContext lock];
+    @try {
+        if ([oid isKindOfClass:[NSManagedObjectID class]]) {
+            // nothing, just avoid all other checks for performance
+        } else if ([oid isKindOfClass:[NSManagedObject class]]) {
+            oid = [oid objectID];
+        } else if ([oid isKindOfClass:[NSURL class]]) {
+            oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:oid];
+        } else if ([oid isKindOfClass:[NSString class]]) {
+            oid = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:oid]];
+        } // else we're in trouble: oid is invalid, but let's give Core Data a chance to handle it anyway
+        return [self.managedObjectContext existingObjectWithID:oid error:NULL];
+    } @catch (...) {
+        // nothing, just return nil
+    } @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+    return nil;
 }
 
 -(NSArray*)objectsWithIDs:(NSArray*)objectIDs {
-    NSMutableArray* r = [NSMutableArray arrayWithCapacity:objectIDs.count];
-    for (NSManagedObjectID* oid in objectIDs) {
-        id o = [self.managedObjectContext existingObjectWithID:oid error:NULL];
-        if (o) [r addObject:o];
+    [self.managedObjectContext lock];
+    @try {
+        NSMutableArray* r = [NSMutableArray arrayWithCapacity:objectIDs.count];
+        for (id oid in objectIDs) {
+            id o = [self objectWithID:oid];
+            if (o) [r addObject:o];
+        }
+        return r;
+    } @catch (...) {
+        @throw;
+    } @finally {
+        [self.managedObjectContext unlock];
     }
     
-    return r;
+    return nil;
 }
 
 -(NSEntityDescription*)entityForName:(NSString*)name {
@@ -254,11 +297,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
+    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
         return [self.managedObjectContext executeFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
+        [self.managedObjectContext.persistentStoreCoordinator unlock];
     }
     
     return nil;
@@ -279,15 +324,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-//    [self.managedObjectContext.persistentStoreCoordinator lock];
+    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
-        BOOL isMainThread = [NSThread isMainThread];
-        NSManagedObjectContext* searchmoc = isMainThread? self.managedObjectContext : self.independentContext;
-        return [searchmoc countForFetchRequest:req error:err];
+        return [self.managedObjectContext countForFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-//		[self.managedObjectContext.persistentStoreCoordinator unlock];
+        [self.managedObjectContext.persistentStoreCoordinator unlock];
     }
     
 	return 0;

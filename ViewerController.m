@@ -6449,6 +6449,10 @@ return YES;
 	}
 	
 	BOOL rebuild = NO, reload = NO;
+    
+    if (!newImages)
+        rebuild = reload = YES;
+    
 	DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
 	for (DicomImage* dicomImage in newImages) {
 		if (dicomImage.series == firstObject.series)

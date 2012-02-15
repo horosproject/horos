@@ -20,13 +20,13 @@
 		NSString* _sqlFilePath;
 	@private
 	NSManagedObjectContext* _managedObjectContext;
-    N2ManagedDatabase* _mainDatabase;
+    id _mainDatabase;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
 @property(readwrite,retain) NSManagedObjectContext* managedObjectContext; // only change this value if you know what you're doing
-@property(readonly,retain) N2ManagedDatabase* mainDatabase; // for independentDatabases
+@property(readonly,retain) id mainDatabase; // for independentDatabases
 
 // locking actually locks the context
 -(void)lock;
@@ -51,7 +51,7 @@
 
 -(NSEntityDescription*)entityForName:(NSString*)name;
 
--(id)objectWithURI:(NSString*)urlString;
+-(id)objectWithID:(id)oid;
 -(NSArray*)objectsWithIDs:(NSArray*)objectIDs;
 
 // in these methods, e can be an NSEntityDescription* or an NSString*

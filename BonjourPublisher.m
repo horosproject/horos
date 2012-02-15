@@ -585,12 +585,12 @@ extern const char *GetPrivateIP();
 							[database lock];
                             @try
 							{
-								DicomAlbum* album = [database objectWithURI:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
 								NSMutableSet* albumStudies = [album mutableSetValueForKey:@"studies"];
 								
 								for (NSString* uri in studies)
 								{
-									DicomStudy* study = [database objectWithURI:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[albumStudies addObject:study];
 									[study archiveAnnotationsAsDICOMSR];
 								}
@@ -636,12 +636,12 @@ extern const char *GetPrivateIP();
 							[database lock];
 							@try
 							{
-								DicomAlbum* album = [database objectWithURI:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
 								NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
 								
 								for (NSString* uri in studies)
 								{
-									DicomStudy* study = [database objectWithURI:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
 									[albumStudies removeObject:study];
 									[study archiveAnnotationsAsDICOMSR];
 								}
@@ -708,7 +708,7 @@ extern const char *GetPrivateIP();
                         [database lock];
 						@try
 						{					
-							NSManagedObject* item = [database objectWithURI:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+							NSManagedObject* item = [database objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
 							
 							//NSLog(@"URL:%@", object);
 							if( item)

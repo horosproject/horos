@@ -49,7 +49,10 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 @property(readwrite,retain) NSString* baseDirPath;
 @property(readwrite,retain) NSString* dataBaseDirPath;
-@property(readwrite,retain) N2MutableUInteger* dataFileIndex;
+@property(readonly,retain) N2MutableUInteger* dataFileIndex;
+@property(readonly,retain) NSRecursiveLock* processFilesLock;
+@property(readonly,retain) NSRecursiveLock* importFilesFromIncomingDirLock;
+@property(readwrite,retain) NSMutableArray* unsavedAddedFiles;
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
 -(void)modifyDefaultAlbums;
@@ -302,18 +305,13 @@ static DicomDatabase* activeLocalDatabase = nil;
 	}
 }
 
--(id)independentDatabase {
-	DicomDatabase* idd = [super independentDatabase];
-	[idd->_dataFileIndex release];
-	idd->_dataFileIndex = [_dataFileIndex retain];
-	return idd;
-}
-
 #pragma mark Instance
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
 @synthesize isReadOnly = _isReadOnly;
 @synthesize unsavedAddedFiles = _unsavedAddedFiles;
+@synthesize processFilesLock = _processFilesLock;
+@synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
 
 -(DataNodeIdentifier*)dataNodeIdentifier {
     return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:self.baseDirPath];
@@ -429,11 +427,19 @@ static DicomDatabase* activeLocalDatabase = nil;
         if (isNewFile)
             [self addDefaultAlbums];
         [self modifyDefaultAlbums];
-        [self initRouting];
-        [self initClean];
 	
         [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
 	}
+    else // is independentDatabase
+    {
+        _dataFileIndex = [[self.mainDatabase dataFileIndex] retain];
+        _processFilesLock = [[self.mainDatabase processFilesLock] retain];
+        _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
+        _unsavedAddedFiles = [[self.mainDatabase unsavedAddedFiles] retain];
+    }
+
+    [self initRouting];
+    [self initClean];
     
 	return self;
 }
@@ -460,7 +466,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         [_unsavedAddedFiles release];
 	}
         
-	self.dataFileIndex = nil;
+	[_dataFileIndex release];
 	self.dataBaseDirPath = nil;
 	self.baseDirPath = nil;
 	
@@ -508,7 +514,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	BOOL b = NO;
 	
-//    [self.managedObjectContext.persistentStoreCoordinator lock];
+    [self.managedObjectContext.persistentStoreCoordinator lock];
 	@try {
         NSError* error = nil;
         if (!err) err = &error;
@@ -529,7 +535,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-//		[self.managedObjectContext.persistentStoreCoordinator unlock];
+		[self.managedObjectContext.persistentStoreCoordinator unlock];
 	}
 	
 	return b;
@@ -763,7 +769,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)albums {
     NSArray* albums = [self objectsForEntity:self.albumEntity];
     @try {
-        albums = [albums sortedArrayUsingComparator: ^(id a, id b) { // the risk here is that an album is deleted while the list is being sorted
+        albums = [albums sortedArrayUsingComparator: ^(id a, id b) {
             @try {
                 return [[a name] caseInsensitiveCompare:[b name]];
             } @catch (...) {
@@ -977,16 +983,26 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     {
 		thread.status = NSLocalizedString(@"Processing...", nil);
 		
-		size_t nTasks = MPProcessors();
+		size_t nTasks = 10;
 		size_t chunkSize = paths.count/nTasks;
 		if (chunkSize < 20) chunkSize = 20;
 		
 		NSArray* chunks = [paths splitArrayIntoArraysOfMinSize:chunkSize maxArrays:nTasks];
 		
 		NSOperationQueue* queue = [NSOperationQueue new];
+        NSUInteger nProcs = MPProcessors();
+        queue.maxConcurrentOperationCount = MAX(nProcs/2, 1);
 		for (NSArray* chunk in chunks)
 			[queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(_processFilesAtPaths_processChunk:) object:[NSArray arrayWithObjects: chunk, [NSNumber numberWithInt:mode], destDir, nil]] autorelease]]; // Warning! DestDir can be nil : at the end !
-		[queue waitUntilAllOperationsAreFinished];
+		
+        NSUInteger initialOpCount = queue.operationCount;
+        while (queue.operationCount) {
+            if (queue.operationCount != initialOpCount)
+                thread.progress = CGFloat(initialOpCount-queue.operationCount)/initialOpCount;
+            [NSThread sleepForTimeInterval:0.01];
+        }
+        
+        [queue waitUntilAllOperationsAreFinished];
 		[queue release];
 	}
     @catch (NSException* e)
@@ -1180,7 +1196,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		[thread enterOperationWithRange:thread.progress:0];
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
-        NSArray* addedImagesArray = [self objectsWithIDs:[[[self independentDatabase] addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX] valueForKey:@"objectID"]];
+        NSArray* addedImagesArray = [self objectsWithIDs:[self.independentDatabase addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX]];
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1841,6 +1857,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         // Reapply annotations from DICOMSR file
         for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
         
+        thread.status = NSLocalizedString(@"Synchronizing database...", nil);
+        thread.progress = -1;
+        
         [self.managedObjectContext save:NULL];
     }
     @catch (NSException* e)
@@ -1854,6 +1873,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
 	@try
     {
+        thread.status = NSLocalizedString(@"Distributing new data...", nil);
+
 		NSString* growlString = nil;
 		NSString* growlStringNewStudy = nil;
 		
@@ -1865,16 +1886,31 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                     [self performSelectorInBackground:@selector(_writeUnsavedAddedFilesPlistThread) withObject:nil];
                 }
             
+            // for NSNotifications we need the objects on the mainDatabase, however database synchronization may take a rather long time..
+            DicomDatabase* notificationsDatabase = self.mainDatabase? self.mainDatabase : self;
+            NSArray* mainAddedImagesArray = nil;
+            NSArray* mainCompleteImagesArray = nil;
+            NSDate* startDate = [NSDate date];
+            while (-[startDate timeIntervalSinceNow] < 20) { // wait for 20 seconds at max
+                mainAddedImagesArray = self.mainDatabase? [self.mainDatabase objectsWithIDs:addedImagesArray] : addedImagesArray;
+                mainCompleteImagesArray = self.mainDatabase? [self.mainDatabase objectsWithIDs:completeImagesArray] : completeImagesArray;
+                if (mainAddedImagesArray.count == addedImagesArray.count && mainCompleteImagesArray.count == completeImagesArray.count)
+                    break;
+                [NSThread sleepForTimeInterval:0.02];
+            }
+
+            if (mainAddedImagesArray.count != addedImagesArray.count && mainCompleteImagesArray.count != completeImagesArray.count)
+                NSLog(@"Warning: added %d|%d images, only %d|%d found in main database, looks like the main thread is much too busy", addedImagesArray.count, completeImagesArray.count, mainAddedImagesArray.count, mainCompleteImagesArray.count);
+            
             NSAutoreleasePool* pool2 = [NSAutoreleasePool new];
 			@try {
-				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:addedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
-				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:completeImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
-                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayNotification, self, userInfo, nil] waitUntilDone:NO];
-                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
-				if (postNotifications)
-                {
-                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBNotification, self, userInfo, nil] waitUntilDone:NO];
-                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBCompleteNotification, self, userInfo2, nil] waitUntilDone:NO];
+				NSDictionary* userInfo = [NSDictionary dictionaryWithObject:mainAddedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:mainCompleteImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
+                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayNotification, notificationsDatabase, userInfo, nil] waitUntilDone:NO];
+                [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayCompleteNotification, notificationsDatabase, userInfo2, nil] waitUntilDone:NO];
+				if (postNotifications) {
+                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBNotification, notificationsDatabase, userInfo, nil] waitUntilDone:NO];
+                    [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:OsirixAddToDBCompleteNotification, notificationsDatabase, userInfo2, nil] waitUntilDone:NO];
 				}
 			} @catch (NSException* e)
             {
@@ -2508,7 +2544,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
 		NSInteger importCount = [self importFilesFromIncomingDir];
 		
-		if (self == DicomDatabase.activeLocalDatabase)
+        DicomDatabase* theDatabase = self.mainDatabase? self.mainDatabase : self;
+		if (theDatabase == DicomDatabase.activeLocalDatabase)
 			[AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject:(importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil) waitUntilDone:NO];
 		
 	}

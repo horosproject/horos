@@ -26,6 +26,8 @@
 
 @interface DicomDatabase ()
 
+-(NSRecursiveLock*)cleanLock;
+
 +(void)_syncCleanTimer;
 
 @end
@@ -33,7 +35,11 @@
 @implementation DicomDatabase (Clean)
 
 -(void)initClean {
-	_cleanLock = [[NSRecursiveLock alloc] init];
+	if (!self.mainDatabase) {
+        _cleanLock = [[NSRecursiveLock alloc] init];
+    } else {
+        _cleanLock = [[self.mainDatabase cleanLock] retain];
+    }
 	[DicomDatabase _syncCleanTimer];
 }
 
@@ -45,6 +51,10 @@
 	_cleanLock = nil;
 	[temp unlock];
 	[temp release];
+}
+
+-(NSRecursiveLock*)cleanLock {
+    return _cleanLock;
 }
 
 +(void)_syncCleanTimer {
@@ -394,11 +404,11 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 		
 		unsigned long long free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024; // megabytes
 
-		if (_lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) { // not more often than every ten minutes, log about the disk's free space
+/*		if (_lastFreeSpace != free && ([NSDate timeIntervalSinceReferenceDate] - _lastFreeSpaceLogTime) > 60*10) { // not more often than every ten minutes, log about the disk's free space
 			_lastFreeSpace = free;
 			_lastFreeSpaceLogTime = [NSDate timeIntervalSinceReferenceDate];
 			NSLog(@"Info: database free space is %ld MB", (long)free);
-		}
+		}*/
 		
 		if (free >= freeMemoryRequested)
 			return;

@@ -8498,7 +8498,7 @@ static BOOL needToRezoom;
 		NSArray* xids = [NSPropertyListSerialization propertyListFromData:[pb propertyListForType:@"BrowserController.database.context.XIDs"] mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL];
 		NSMutableArray* items = [NSMutableArray array];
 		for (NSString* xid in xids)
-			[items addObject:[_database objectWithURI:[NSManagedObject UidForXid:xid]]];
+			[items addObject:[_database objectWithID:[NSManagedObject UidForXid:xid]]];
 		
         NSMutableArray* studies = [NSMutableArray array];
         for (NSManagedObject* object in items)

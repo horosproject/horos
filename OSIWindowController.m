@@ -30,7 +30,7 @@
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
 extern  BOOL USETOOLBARPANEL;
-extern  ToolbarPanelController  *toolbarPanel[ 10];
+extern  ToolbarPanelController  *toolbarPanel[10];
 extern int delayedTileWindows;
 
 static BOOL protectedReentryWindowDidResize = NO;
@@ -65,7 +65,6 @@ static BOOL protectedReentryWindowDidResize = NO;
 }
 
 -(void)observeManagedObjectContextObjectsDidChangeNotification:(NSNotification*)notification {
-	[self refreshDatabase:nil];
 }
 
 -(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
