@@ -98,6 +98,7 @@ static NSString* NotNil(NSString *s) {
 @synthesize session;
 @synthesize user;
 @synthesize parameters, GETParams;
+@synthesize independentDicomDatabase = independentDicomDatabase;
 
 -(WebPortalSession*)session {
 	if (!session)
@@ -134,6 +135,7 @@ static NSString* NotNil(NSString *s) {
 -(id)initWithAsyncSocket:(AsyncSocket*)newSocket forServer:(HTTPServer*)myServer {
 	self = [super initWithAsyncSocket:newSocket forServer:myServer];
 	sendLock = [[NSLock alloc] init];
+    independentDicomDatabase = [[self.portal.dicomDatabase independentDatabase] retain];
 	return self;
 }
 
@@ -149,6 +151,8 @@ static NSString* NotNil(NSString *s) {
 	[POSTfilename release];
 	
 	self.session = NULL;
+    
+    [independentDicomDatabase release];
 	
 	[super dealloc];
 }
@@ -509,7 +513,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	}
 	else
 	{
-		[self.portal.dicomDatabase.managedObjectContext lock];
+//		[self.portal.dicomDatabase.managedObjectContext lock];
 		BOOL lockReleased = NO;
 		@try {
 			if ([requestedPath isEqual:@"/"] || [requestedPath isEqual: @"/index"])
@@ -587,8 +591,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			response.statusCode = 500;
 			NSLog(@"Error: [WebPortalConnection httpResponseForMethod:URI:] %@", e);
 		} @finally {
-			if (!lockReleased)
-				[self.portal.dicomDatabase.managedObjectContext unlock];
+//			if (!lockReleased)
+//				[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
 	}
 	
@@ -742,7 +746,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						// Add study to specific study list for this user
 						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
-							NSArray *studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+							NSArray *studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
 							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);

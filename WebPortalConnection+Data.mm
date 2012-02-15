@@ -81,9 +81,10 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	
 	NSString* axidEntityName = [axid objectAtIndex:1];
     
-	N2ManagedDatabase* db = self.portal.dicomDatabase;
+	N2ManagedDatabase* db = nil;
 	if ([axidEntityName isEqualToString:@"User"])
 		db = self.portal.database;
+    else db = self.independentDicomDatabase;
 	
 	NSManagedObject* o = [db objectWithID:[NSManagedObject UidForXid:xid]];
 	
@@ -231,7 +232,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
         }	
         
         if ([parameters objectForKey:@"sortKey"])
-            if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+            if ([[[independentDicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
                 [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
         
         if (![self.session objectForKey:@"StudiesSortKey"])
@@ -474,7 +475,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[DCMPixLoadingLock lock];
 			
-			[self.portal.dicomDatabase lock];
+//			[self.portal.dicomDatabase lock];
 			
 			NSLog( @"generateMovie: start dcmpix reading");
 			
@@ -529,7 +530,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 N2LogExceptionWithStackTrace(e);
 			}
 			
-			[self.portal.dicomDatabase unlock];
+//			[self.portal.dicomDatabase unlock];
 			
 			[DCMPixLoadingLock unlock];
 						
@@ -651,11 +652,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: isiPhone], @"isiPhone", */fileURL, @"fileURL", fileName, @"fileName", outFile, @"outFile", parameters, @"parameters", dicomImageArray, @"dicomImageArray", nil];
 			
-			[self.portal.dicomDatabase unlock];	
+//			[self.portal.dicomDatabase unlock];	
 			
 			[self generateMovie: dict];
 			
-			[self.portal.dicomDatabase lock];	
+//			[self.portal.dicomDatabase lock];	
 
 			
 			data = [NSData dataWithContentsOfFile: outFile];
@@ -683,7 +684,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //		[self resetPOST];
 	
 	NSMutableArray* albums = [NSMutableArray array];
-	for (DicomAlbum* album in self.portal.dicomDatabase.albums) // TODO: badness here
+	for (DicomAlbum* album in independentDicomDatabase.albums)
     {
 		if (![[album valueForKey:@"name"] isEqualToString:NSLocalizedString(@"Database", nil)])
         {
@@ -812,7 +813,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[self.portal updateLogEntryForStudy:study withMessage:@"Browsing Study" forUser:user.name ip:asyncSocket.connectedHost];
 	
-	[self.portal.dicomDatabase.managedObjectContext lock];
+//	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSString* browse = [parameters objectForKey:@"browse"];
 		NSString* search = [parameters objectForKey:@"search"];
@@ -873,7 +874,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyHtml:] %@", e);
 	} @finally {
-		[self.portal.dicomDatabase.managedObjectContext unlock];
+//		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 		
 	response.templateString = [self.portal stringForPath:@"study.html"];
@@ -1230,7 +1231,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 -(void)processStudyListJson {
 	NSArray* studies = [self studyList_requestedStudies:NULL];
 	
-	[self.portal.dicomDatabase.managedObjectContext lock];
+//	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSMutableArray* r = [NSMutableArray array];
 		for (DicomStudy* study in studies) {
@@ -1256,7 +1257,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebPortalResponse processStudyListJson:] %@", e);
 	} @finally {
-		[self.portal.dicomDatabase.managedObjectContext unlock];
+//		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 }
 
@@ -1274,7 +1275,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException* e) { /* ignore */ }
 	
 	
-	[self.portal.dicomDatabase.managedObjectContext lock];
+//	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		NSMutableArray* jsonImagesArray = [NSMutableArray array];
 		for (DicomImage* image in imagesArray)
@@ -1285,14 +1286,14 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	@catch (NSException *e) {
 		NSLog( @"***** jsonImageListForImages exception: %@", e);
 	} @finally {
-		[self.portal.dicomDatabase.managedObjectContext unlock];
+//		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 }
 
 -(void)processAlbumsJson {
 	NSMutableArray* jsonAlbumsArray = [NSMutableArray array];
 	
-	for (DicomAlbum* album in [self.portal.dicomDatabase albums])
+	for (DicomAlbum* album in [independentDicomDatabase albums])
 		if (![album.name isEqualToString:NSLocalizedString(@"Database", nil)]) {
 			NSMutableDictionary* albumDictionary = [NSMutableDictionary dictionary];
 			
@@ -1316,7 +1317,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	NSMutableArray *jsonSeriesArray = [NSMutableArray array];
 	
-	[self.portal.dicomDatabase.managedObjectContext lock];
+//	[self.portal.dicomDatabase.managedObjectContext lock];
 	@try {
 		for (DicomSeries* s in [study imageSeries]) {
 			NSMutableDictionary* seriesDictionary = [NSMutableDictionary dictionary];
@@ -1334,7 +1335,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	} @catch (NSException *e) {
 		NSLog( @"******* jsonSeriesListForSeries exception: %@", e);
 	} @finally {
-		[self.portal.dicomDatabase.managedObjectContext unlock];
+//		[self.portal.dicomDatabase.managedObjectContext unlock];
 	}
 	
 	[response setDataWithString:[jsonSeriesArray JSONRepresentation]];
@@ -1387,7 +1388,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (studyUID)
 			predicate = [NSPredicate predicateWithFormat:@"studyInstanceUID == %@", studyUID];
 		
-		NSArray* studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:predicate];
+		NSArray* studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:predicate];
 		
 		if ([studies count] == 0)
 			NSLog( @"****** WADO Server : study not found");
@@ -1422,9 +1423,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
 			
-			[self.portal.dicomDatabase.managedObjectContext unlock];
+//			[self.portal.dicomDatabase.managedObjectContext unlock];
 			[BrowserController encryptFiles: [allImages valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
-			[self.portal.dicomDatabase.managedObjectContext lock];
+//			[self.portal.dicomDatabase.managedObjectContext lock];
 
 			self.response.data = [NSData dataWithContentsOfFile:destFile];
 			self.response.statusCode = 0;
@@ -1464,7 +1465,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString* useOrig = [[parameters objectForKey:@"useOrig"] lowercaseString];
 	
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	dbRequest.entity = [self.portal.dicomDatabase entityForName:@"Study"];
+	dbRequest.entity = independentDicomDatabase.studyEntity;
 	
 	@try {
 		NSMutableDictionary *imageCache = nil;
@@ -1490,7 +1491,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             if (studyUID)
 				predicate1 = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID];
 			
-			NSArray* studies = [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:predicate1];
+			NSArray* studies = [independentDicomDatabase objectsForEntity:independentDicomDatabase.studyEntity predicate:predicate1];
 			
 			if ([studies count] == 0)
 				NSLog( @"****** WADO Server : study not found");
@@ -1613,9 +1614,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: self.requestIsIOS], GenerateMovieIsIOSParamKey,*/ /*fileURL, @"fileURL",*/ fileName, GenerateMovieFileNameParamKey, outFile, GenerateMovieOutFileParamKey, parameters, @"parameters", dicomImageArray, GenerateMovieDicomImagesParamKey, [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
 					
-					[self.portal.dicomDatabase.managedObjectContext unlock];
+//					[independentDicomDatabase.managedObjectContext unlock];
 					[self generateMovie:dict];
-					[self.portal.dicomDatabase.managedObjectContext lock];
+//					[self.portal.dicomDatabase.managedObjectContext lock];
 					
 					self.response.data = [NSData dataWithContentsOfFile:outFile];
 				}
@@ -2040,9 +2041,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		[NSFileManager.defaultManager confirmDirectoryAtPath:srcFolder];
 		
-		[self.portal.dicomDatabase.managedObjectContext unlock];
+//		[self.portal.dicomDatabase.managedObjectContext unlock];
 		[BrowserController encryptFiles:[images valueForKey:@"completePath"] inZIPFile:destFile password: user.encryptedZIP.boolValue? user.password : NULL ];
-		[self.portal.dicomDatabase.managedObjectContext lock];
+//		[self.portal.dicomDatabase.managedObjectContext lock];
 
 		response.data = [NSData dataWithContentsOfFile:destFile];
 		

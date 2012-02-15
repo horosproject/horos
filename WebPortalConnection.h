@@ -16,7 +16,7 @@
 #import "HTTPConnection.h"
 #import "WebPortalUser.h"
 
-@class WebPortal, WebPortalServer, WebPortalSession, WebPortalResponse;
+@class WebPortal, WebPortalServer, WebPortalSession, WebPortalResponse, DicomDatabase;
 
 @interface WebPortalConnection : HTTPConnection
 {
@@ -36,7 +36,8 @@
 	BOOL postHeaderOK;
 	NSData *postBoundary;
 	NSString *POSTfilename;
-
+    
+    DicomDatabase* independentDicomDatabase;
 }
 
 -(CFHTTPMessageRef)request;
@@ -46,6 +47,7 @@
 @property(retain,readonly) WebPortalUser* user;
 @property(retain,readonly) NSDictionary* parameters;
 @property(retain,readonly) NSString* GETParams;
+@property(retain,readonly) DicomDatabase* independentDicomDatabase;
 
 @property(assign,readonly) WebPortalServer* server;
 @property(assign,readonly) WebPortal* portal;

@@ -171,7 +171,7 @@
 							
 							if ([filteredStudies count] > 0)
 							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:[filteredStudies valueForKey:@"objectID"]] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
+								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
 							}
 						}
 					}
@@ -193,8 +193,9 @@
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
-	[self.dicomDatabase.managedObjectContext lock];
+//	[self.dicomDatabase.managedObjectContext lock];
 	
+    DicomDatabase* independentDatabase = self.dicomDatabase.independentDatabase;
 	@try {
 		if (user)
 			message = [user stringByAppendingFormat:@": %@", message];
@@ -204,12 +205,13 @@
 		
 		// Search for same log entry during last 5 min
 		NSArray* logs = NULL;
-
+        
+        
         NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
-			logs = [self.dicomDatabase objectsForEntity:self.dicomDatabase.logEntryEntity predicate:predicate];
+        logs = [independentDatabase objectsForEntity:independentDatabase.logEntryEntity predicate:predicate];
 		
 		if (!logs.count) {
-			NSManagedObject* logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
+			NSManagedObject* logEntry = [independentDatabase newObjectForEntity:independentDatabase.logEntryEntity];
 			[logEntry setValue:[NSDate date] forKey:@"startTime"];
 			[logEntry setValue:[NSDate date] forKey:@"endTime"];
 			[logEntry setValue:@"Web" forKey:@"type"];
@@ -228,7 +230,7 @@
 	} @catch (NSException* e) {
 		NSLog( @"****** OsiriX HTTPConnection updateLogEntry exception : %@", e);
 	} @finally {
-		[self.dicomDatabase.managedObjectContext unlock];
+		[independentDatabase save];
 	}
 }
 
