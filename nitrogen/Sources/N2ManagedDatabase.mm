@@ -232,7 +232,7 @@
     if ([self.managedObjectContext hasChanges])
         [self save];
     [NSNotificationCenter.defaultCenter removeObserver:self];
-    [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
+    if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];
     self.mainDatabase = nil;
 	self.managedObjectContext = nil;
