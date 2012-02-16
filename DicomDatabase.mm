@@ -260,7 +260,7 @@ static NSMutableDictionary* databasesDictionary = nil;
 			for (DicomDatabase* dbi in [databasesDictionary allValues])
 				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator) {
 					// we must return a valid DicomDatabase with the specified context
-					DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c] autorelease];
+					DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
 					db.name = dbi.name;
 					return db;
 				}
