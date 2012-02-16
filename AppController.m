@@ -3872,9 +3872,16 @@ static BOOL initialized = NO;
 	NSURL *url;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( sender != self) verboseUpdateCheck = YES;
-	else verboseUpdateCheck = NO;
+	if( sender != self)
+        verboseUpdateCheck = YES;
+	else
+        verboseUpdateCheck = NO;
 	
+    BOOL verboseAfterCrash = NO;
+    
+    if( [sender isKindOfClass:[NSString class]] && [sender isEqualToString: @"crash"])
+        verboseAfterCrash = YES;
+    
 	if( [AppController hasMacOSXLeopard])
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else
@@ -3890,7 +3897,7 @@ static BOOL initialized = NO;
 		{
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
-				if (verboseUpdateCheck && [sender isEqualToString: @"crash"] == NO)
+				if (verboseUpdateCheck && verboseAfterCrash == NO)
 				{
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: NO];
 				}
@@ -3899,7 +3906,7 @@ static BOOL initialized = NO;
 			{
 				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates4"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
 				{
-                    if( [sender isEqualToString: @"crash"])
+                    if( verboseAfterCrash)
                         [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATECRASH" waitUntilDone: NO];
                     else
                         [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
