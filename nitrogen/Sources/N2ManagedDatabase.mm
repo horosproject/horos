@@ -58,6 +58,19 @@
     return NO;
 }
 
+-(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
+    [self lock];
+    @try {
+        return [super existingObjectWithID:objectID error:error];
+    } @catch (...) {
+        @throw;
+    } @finally {
+        [self unlock];
+    }
+    
+    return nil;
+}
+
 @end
 
 
@@ -173,7 +186,14 @@
     if (![NSThread isMainThread])
         [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
     else {
-        [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+        [self.managedObjectContext lock];
+        @try {
+            [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+        } @catch (NSException* e) {
+            N2LogExceptionWithStackTrace(e);
+        } @finally {
+            [self.managedObjectContext unlock];
+        }
     }
 }
 
@@ -297,13 +317,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [self.managedObjectContext.persistentStoreCoordinator lock];
+    [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext executeFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-        [self.managedObjectContext.persistentStoreCoordinator unlock];
+        [self.managedObjectContext unlock];
     }
     
     return nil;
@@ -324,13 +344,13 @@
 	req.entity = e;
 	req.predicate = p? p : [NSPredicate predicateWithValue:YES];
     
-    [self.managedObjectContext.persistentStoreCoordinator lock];
+    [self.managedObjectContext lock];
     @try {
         return [self.managedObjectContext countForFetchRequest:req error:err];
     } @catch (NSException* e) {
         N2LogException(e);
     } @finally {
-        [self.managedObjectContext.persistentStoreCoordinator unlock];
+        [self.managedObjectContext unlock];
     }
     
 	return 0;
@@ -351,6 +371,7 @@
 	
 	BOOL b = NO;
 	
+    [self.managedObjectContext lock];
     [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
         b = [self.managedObjectContext save:err];
@@ -359,6 +380,7 @@
             *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
     } @finally {
         [self.managedObjectContext.persistentStoreCoordinator unlock];
+        [self.managedObjectContext unlock];
     }
 	
 	return b;
