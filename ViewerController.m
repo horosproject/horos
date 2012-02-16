@@ -133,7 +133,6 @@ static NSString*	RevertToolbarItemIdentifier			= @"Revert.tif";
 static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tif";
 static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
 static NSString*	KeyImagesToolbarItemIdentifier		= @"keyImages";
-static NSString*	DeleteToolbarItemIdentifier			= @"trash.icns";
 static NSString*	TileWindowsToolbarItemIdentifier	= @"windows.tif";
 static NSString*	SUVToolbarItemIdentifier			= @"SUV.tif";
 static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tif";
@@ -144,6 +143,7 @@ static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
+static NSString*    WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
@@ -859,7 +859,10 @@ return YES;
 				[dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
 			else
 				[dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
-				
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
+                [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
+            
 			[state addObject: dict];
 		}
 	}
@@ -2521,6 +2524,62 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[AppController sharedAppController] tileWindows: nil];
 }
 
+- (IBAction) SetWindowsTiling:(NSPopUpButton*) menu
+{
+    int tag = [menu selectedTag];
+    int rows = tag / 10;
+    int columns = tag % 10;
+    
+    int displayedViewersCount = [ViewerController getDisplayed2DViewers].count;
+    
+    BOOL copyAutoTilingPreference = [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOTILING"];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"AUTOTILING"];
+    
+    if( displayedViewersCount > rows*columns)
+    {
+        while( [ViewerController getDisplayed2DViewers].count > rows*columns)
+        {
+            if( [[ViewerController getDisplayed2DViewers] lastObject] != self)
+                [[[[ViewerController getDisplayed2DViewers] lastObject] window] close];
+        }
+    }
+    
+    if( displayedViewersCount < rows*columns)
+    {
+        NSArray *seriesArray = [[BrowserController currentBrowser] childrenArray: [[imageView seriesObj] valueForKey:@"study"]];
+        
+        NSUInteger index = [seriesArray indexOfObject: [imageView seriesObj]];
+        
+        if( index == NSNotFound)
+            index = 0;
+        
+        for( int i = displayedViewersCount ; i < rows*columns; i++)
+        {
+            index++;
+            if( index >= seriesArray.count)
+                index = 0;
+            
+            ViewerController *newViewer = [[BrowserController currentBrowser] loadSeries: [seriesArray objectAtIndex: index] :nil :YES keyImagesOnly: NO];
+            
+            [newViewer showCurrentThumbnail: self];
+        }
+        
+        for( int i = 0; i < [[NSScreen screens] count]; i++) [toolbarPanel[ i] setToolbar: nil viewer: nil];
+        [[self window] makeKeyAndOrderFront: self];
+        [self refreshToolbar];
+        [self updateNavigator];
+    }
+    
+    if( delayedTileWindows)
+        [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+    delayedTileWindows = YES;
+    
+    [[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil] afterDelay: 0.1];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: copyAutoTilingPreference forKey: @"AUTOTILING"];
+}
+
 - (NSRect)windowWillUseStandardFrame:(NSWindow *)sender defaultFrame:(NSRect)defaultFrame
 {
 	NSRect currentFrame = [sender frame];
@@ -2739,7 +2798,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if( delayedTileWindows)
 			[NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
 		delayedTileWindows = YES;
-		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.1];
+		[[AppController sharedAppController] performSelector: @selector(tileWindows:) withObject:nil afterDelay: 0.3];
 	}
 	
 	[[NSCursor arrowCursor] set];
@@ -5049,16 +5108,7 @@ static ViewerController *draggedController = nil;
 	[self setToolbarReportIconForItem:toolbarItem];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(generateReport:)];
-    } 
-	else if ( [itemIdent isEqualToString: DeleteToolbarItemIdentifier])
-	{
-	[toolbarItem setLabel: NSLocalizedString(@"Delete", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"Delete", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"Delete this series from the study", nil)];
-	[toolbarItem setImage: [NSImage imageNamed: DeleteToolbarItemIdentifier]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(deleteSeries:)];
-    } 
+    }
 	
 	else if ([itemIdent isEqualToString: TileWindowsToolbarItemIdentifier]) {
 	
@@ -5252,6 +5302,18 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setMinSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	[toolbarItem setMaxSize:NSMakeSize(NSWidth([orientationView frame]), NSHeight([orientationView frame]))];
 	}
+    else if([itemIdent isEqualToString: WindowsTilingToolbarItemIdentifier])
+    {
+        // Set up the standard properties 
+        [toolbarItem setLabel: NSLocalizedString(@"Windows", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Windows Tiling", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Windows Tiling", nil)];
+        
+        // Use a custom view, a text field, for the search item 
+        [toolbarItem setView: windowsTiling];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
+	}
 	else if([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
 	 {
 	// Set up the standard properties 
@@ -5430,7 +5492,7 @@ static ViewerController *draggedController = nil;
     // If during the toolbar's initialization, no overriding values are found in the user defaults, or if the
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
-										TileWindowsToolbarItemIdentifier,
+                                        WindowsTilingToolbarItemIdentifier,
 										SerieToolbarItemIdentifier,
 										PatientToolbarItemIdentifier,
 										ToolsToolbarItemIdentifier,
@@ -5477,6 +5539,7 @@ static ViewerController *draggedController = nil;
 														FlipDataToolbarItemIdentifier,
 														DatabaseWindowToolbarItemIdentifier,
 														TileWindowsToolbarItemIdentifier,
+                                                        WindowsTilingToolbarItemIdentifier,
 														PlayToolbarItemIdentifier,
 														SpeedToolbarItemIdentifier,
 														MovieToolbarItemIdentifier,
@@ -5493,7 +5556,6 @@ static ViewerController *draggedController = nil;
 														iChatBroadCastToolbarItemIdentifier,
 														StatusToolbarItemIdentifier,
 														KeyImagesToolbarItemIdentifier,
-														DeleteToolbarItemIdentifier,
 														ReportToolbarItemIdentifier,
 														FlipVerticalToolbarItemIdentifier,
 														FlipHorizontalToolbarItemIdentifier,
@@ -5584,9 +5646,7 @@ return YES;
 		return NO;
     
     if ([self.database isReadOnly])
-        if ([toolbarItem.itemIdentifier isEqualToString:DeleteToolbarItemIdentifier] || 
-            [toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier]
-            )
+        if ([toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier])
             return NO;
 	
     BOOL enable = YES;
@@ -6377,6 +6437,8 @@ return YES;
 	
 	[AppController displayImportantNotice: self];
 	
+    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", 1, 1] forKey: @"LastWindowsTilingRowsColumns"];
+    
 	self = [super initWithWindowNibName:@"Viewer"];
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
@@ -15444,47 +15506,6 @@ int i,j,l;
 		
 		for( DCMPix *d in pixList[ maxMovieIndex-1])
 			[d setTransferFunction: tf];
-	}
-}
-
--(void) deleteSeries:(id) sender
-{	
-	int result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Series", nil), NSLocalizedString(@"Are you sure you want to delete this series?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
-	
-	if( result == NSAlertDefaultReturn)
-	{
-		NSManagedObject *o = [fileList[ curMovieIndex] objectAtIndex:[imageView curImage]];
-		NSManagedObject *s = [o valueForKey: @"series"];
-		NSManagedObject *seriesToLoad = nil;
-		
-		for( NSManagedObject *series in [[BrowserController currentBrowser] childrenArray: [s valueForKey:@"study"]])
-		{
-			if( series != s)
-			{
-				seriesToLoad = series;
-				break;
-			}
-		}
-		
-		NSMutableArray *objectsToDelete = [NSMutableArray array];
-		
-		for( int x = 0 ; x < maxMovieIndex; x++)
-			[objectsToDelete addObjectsFromArray: fileList[ x]];
-		
-		NSRect frame = [[self window] frame];
-		
-		[[BrowserController currentBrowser] delObjects: objectsToDelete];
-		
-		if( seriesToLoad)
-		{
-			ViewerController *v = [[BrowserController currentBrowser] loadSeries :seriesToLoad :nil :YES keyImagesOnly: displayOnlyKeyImages];
-			[[v window] setFrame: frame display: NO];
-			[v matrixPreviewSelectCurrentSeries];
-			[[AppController sharedAppController] checkAllWindowsAreVisible: v makeKey: YES];
-			[[v window] makeKeyAndOrderFront: v];
-			[v refreshToolbar];
-			[v updateNavigator];
-		}
 	}
 }
 

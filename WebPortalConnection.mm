@@ -180,15 +180,18 @@ static NSString* NotNil(NSString *s) {
 	return request;
 }
 
--(NSString*)portalAddress {
-	NSString* requestedHost = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
+-(NSString*)portalURL
+{
+    NSString* requestedHost = [(id)CFHTTPMessageCopyHeaderFieldValue(request, (CFStringRef)@"Host") autorelease];
 	if (!self.portal.usesSSL && [requestedHost hasSuffix:@":80"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-3)];
 	if (self.portal.usesSSL && [requestedHost hasSuffix:@":443"]) requestedHost = [requestedHost substringWithRange:NSMakeRange(0,requestedHost.length-4)];
-	return requestedHost? requestedHost : self.portal.addressWithPortUnlessDefault;
-}
-
--(NSString*)portalURL {
-	return [NSString stringWithFormat:@"%@://%@", self.portal.usesSSL? @"https" : @"http", self.portalAddress];
+    
+    if( requestedHost == nil)
+        return self.portal.URL;
+    else
+    {
+        return [NSString stringWithFormat:@"%@://%@", self.portal.usesSSL? @"https" : @"http", requestedHost];
+    }
 }
 
 NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int)
@@ -588,7 +591,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			else
 			if ([requestedPath isEqualToString:@"/admin/user"])
 				[self processAdminUserHtml];
-			else
+            else
+            if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin)
+                exit(0);
+            else
 				response.data = [self.portal dataForPath:requestedPath];
 			
 			if (!response.data.length && !response.statusCode)

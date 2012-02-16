@@ -62,7 +62,6 @@
 -(BOOL)requestIsIOS;
 -(BOOL)requestIsMacOS;
 
--(NSString*)portalAddress;
 -(NSString*)portalURL;
 -(NSString*)dicomCStorePortString;
 

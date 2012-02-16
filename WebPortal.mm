@@ -25,7 +25,7 @@
 #import "DDData.h"
 #import "DicomDatabase.h"
 #import "N2Debug.h"
-
+#import "CSMailMailClient.h"
 
 @interface WebPortalServer ()
 
@@ -145,6 +145,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
+    
+    
+    [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
 }
 #endif
 
@@ -540,24 +543,53 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return html;
 }
 
--(NSString*)addressWithPortUnlessDefault {
-	NSString* add = self.address;
-	if (![add contains:@":"]) {
-		BOOL isDefaultPort = NO;
-		if (!self.usesSSL && self.portNumber == 80) isDefaultPort = YES;
-		if (self.usesSSL && self.portNumber == 443) isDefaultPort = YES;
-		if (!isDefaultPort)
-			add = [add stringByAppendingFormat:@":%d", self.portNumber];
-	} else {
-		if (!self.usesSSL && [add hasSuffix:@":80"]) add = [add substringWithRange:NSMakeRange(0,add.length-3)];
-		if (self.usesSSL && [add hasSuffix:@":443"]) add = [add substringWithRange:NSMakeRange(0,add.length-4)];
-	}
-	
-	return add;
-}
-
--(NSString*)URL {
-	return [NSString stringWithFormat: @"%@://%@", self.usesSSL? @"https" : @"http", self.addressWithPortUnlessDefault];
+-(NSString*)URL // This is the public URL (see OSIWebPreferences) - it can be different of the real address
+{
+    NSString *add = self.address;
+    NSString *protocol = nil;
+    
+    //The user can "force" to have a different public address, compared to the 'real' address (usefull for port forwarding)
+    //Search if the protocol and port are specified
+    
+    if( [add hasPrefix: @"http://"])
+    {
+        protocol = @"http://";
+        add = [add substringFromIndex: protocol.length];
+    }
+    
+    if( [add hasPrefix: @"https://"])
+    {
+        protocol = @"https://";
+        add = [add substringFromIndex: protocol.length];
+    }
+    
+    if( protocol == nil)
+    {
+        if( self.usesSSL)
+            protocol = @"https://";
+        else
+            protocol = @"http://";
+    }
+    
+    if( ![add contains:@":"])
+    {
+        BOOL isDefaultPort = NO;
+        if ([protocol isEqualToString: @"http://"] && self.portNumber == 80) isDefaultPort = YES;
+        if ([protocol isEqualToString: @"https://"] && self.portNumber == 443) isDefaultPort = YES;
+        
+        if (!isDefaultPort)
+            add = [add stringByAppendingFormat:@":%d", self.portNumber];
+    }
+    else
+    {
+        if ([protocol isEqualToString: @"http://"] && [add hasSuffix:@":80"])
+            add = [add substringWithRange:NSMakeRange(0,add.length-3)];
+        
+        if ([protocol isEqualToString: @"https://"] && [add hasSuffix:@":443"])
+            add = [add substringWithRange:NSMakeRange(0,add.length-4)];
+    }
+    
+	return [NSString stringWithFormat: @"%@%@", protocol, add];
 }
 
 /*-(NSString*)URLForAddress:(NSString*)add {

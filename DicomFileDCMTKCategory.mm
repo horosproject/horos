@@ -724,6 +724,15 @@ extern NSRecursiveLock *PapyrusLock;
 			serieID = n;
 		}
 		
+        if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
+        {
+            NSString	*n;
+            
+            n = [[NSString alloc] initWithFormat:@"%@ %@", serieID , sopClassUID];
+            [serieID release];
+            serieID = n;
+        }
+        
 		//Segregate by TE  values
 		if( echoTime != nil && [self splitMultiEchoMR])
 		{
@@ -959,7 +968,11 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			if( [self combineProjectionSeriesMode] == 0)		// *******Combine all CR and DR Modality series in a study into one series
 			{
-				[dicomElements setObject:studyID forKey:@"seriesID"];
+                if( sopClassUID != nil && [[DCMAbstractSyntaxUID hiddenImageSyntaxes] containsObject: sopClassUID])
+                    [dicomElements setObject:serieID forKey:@"seriesID"];
+                else
+                    [dicomElements setObject:studyID forKey:@"seriesID"];
+                
 				[dicomElements setObject:[NSNumber numberWithLong: [serieID intValue] * 1000 + [imageID intValue]] forKey:@"imageID"];
 			}
 			else if( [self combineProjectionSeriesMode] == 1)	// *******Split all CR and DR Modality series in a study into one series

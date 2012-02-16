@@ -26,6 +26,7 @@ htt://www.pixelmed.com
 	NSString *_name;
 	NSString *_type;
 }
++ (NSArray*) allSupportedSyntaxes;
 
 + (NSString *)verificationClassUID;
 + (BOOL)isVerification:(NSString *)sopClassUID ;
@@ -69,7 +70,10 @@ htt://www.pixelmed.com
 + (NSString *)RTImageStorage;
 + (BOOL)isImageStorage:(NSString *)sopClassUID;
 + (NSArray *)imageSyntaxes;
++ (NSArray *)hiddenImageSyntaxes;
++ (BOOL) isHiddenImageStorage:(NSString *)sopClassUID;
 + (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID;
++ (NSArray*) supportedPrivateClasses;
 + (NSString *)mediaStorageDirectoryStorage;
 + (BOOL) isDirectory:(NSString *) sopClassUID;
 
@@ -80,8 +84,10 @@ htt://www.pixelmed.com
 + (NSString *)keyObjectSelectionDocumentStorage;
 + (BOOL) isKeyObjectDocument:(NSString *)sopClassUID;
 + (BOOL) isStructuredReport:(NSString *)sopClassUID;
++ (NSArray*) structuredReportSyntaxes;
 
 + (NSString *)grayscaleSoftcopyPresentationStateStorage;
++(NSArray*) presentationStateSyntaxes;
 + (BOOL) isPresentationState:(NSString *)sopClassUID;
 
 + (NSString *)twelveLeadECGStorage;
@@ -90,6 +96,7 @@ htt://www.pixelmed.com
 + (NSString *)hemodynamicWaveformStorage;
 + (NSString *)cardiacElectrophysiologyWaveformStorage;
 + (NSString *)basicVoiceStorage;
++ (NSArray*) waveformSyntaxes;
 + (BOOL) isWaveform:(NSString *)sopClassUID;
 
 + (NSString *)standaloneOverlayStorage;
@@ -106,6 +113,7 @@ htt://www.pixelmed.com
 + (NSString *)RTBrachyTreatmentRecordStorage;
 + (NSString *)RTTreatmentSummaryRecordStorage;
 + (BOOL)  isRadiotherapy:(NSString *)sopClassUID;
++(NSArray*) radiotherapySyntaxes;
 
 + (NSString *)MRSpectroscopyStorage;
 + (BOOL) isSpectroscopy:(NSString *)sopClassUID;

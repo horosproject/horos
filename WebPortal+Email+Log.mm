@@ -38,13 +38,17 @@
 	NSString *ts = [dict objectForKey: @"template"];
 	NSDictionary *messageHeaders = [dict objectForKey: @"headers"];
 	
-	NSAttributedString* m = [[[NSAttributedString alloc] initWithHTML:[ts dataUsingEncoding:NSUTF8StringEncoding] documentAttributes:NULL] autorelease]; // This function is NOT thread safe !
-	[[CSMailMailClient mailClient] deliverMessage:m headers:messageHeaders];
+	[[CSMailMailClient mailClient] deliverMessage:ts headers:messageHeaders];
 
 	[pool release];
 }
 
--(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate replyTo:(NSString*)replyto customText:(NSString*)customText
+-(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate customText:(NSString*)customText
+{
+    return [self sendNotificationsEmailsTo: users aboutStudies: filteredStudies predicate: predicate customText: customText from: nil];
+}
+
+-(BOOL)sendNotificationsEmailsTo:(NSArray*)users aboutStudies:(NSArray*)filteredStudies predicate:(NSString*)predicate customText:(NSString*)customText from:(WebPortalUser*) from
 {
 	NSString *fromEmailAddress = [[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"];
 	if (fromEmailAddress == nil)
@@ -55,6 +59,8 @@
 		
 		if (customText) [tokens setObject:customText forKey:@"customText"];
 		[tokens setObject:user forKey:@"Destination"];
+        if( from)
+            [tokens setObject:from forKey:@"FromUser"];
 		[tokens setObject:self.URL forKey:@"WebServerURL"];
 		[tokens setObject:filteredStudies forKey:@"Studies"];
 		if (predicate) [tokens setObject:predicate forKey:@"predicate"];
@@ -63,14 +69,11 @@
 		[WebPortalResponse mutableString:ts evaluateTokensWithDictionary:tokens context:NULL];
 		
 		NSString* emailSubject = NSLocalizedString(@"A new radiology exam is available for you", nil);
-		if (replyto)
-			emailSubject = [NSString stringWithFormat:NSLocalizedString(@"A new radiology exam is available for you, from %@", nil), replyto];
 		
 		NSMutableDictionary* messageHeaders = [NSMutableDictionary dictionary];
 		[messageHeaders setObject:user.email forKey:@"To"];
 		[messageHeaders setObject:fromEmailAddress forKey:@"Sender"];
 		[messageHeaders setObject:emailSubject forKey:@"Subject"];
-		if (replyto) [messageHeaders setObject:replyto forKey:@"ReplyTo"];
 		
 		// NSAttributedString initWithHTML is NOT thread-safe
 		[self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
@@ -171,7 +174,7 @@
 							
 							if ([filteredStudies count] > 0)
 							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] replyTo: nil customText: nil];
+								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] customText: nil];
 							}
 						}
 					}

@@ -123,9 +123,10 @@
 				}
 			}
 		}
-        
+    }    
         // Check for unique description
-        
+    for( int x = 0; x < [serverList count]; x++)
+    {
         NSString *description = [[serverList objectAtIndex: x] valueForKey: @"Description"];
         
         for( int i = 0; i < [serverList count]; i++)

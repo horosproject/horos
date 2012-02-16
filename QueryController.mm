@@ -1080,52 +1080,56 @@ extern "C"
 	NSArray *local_studyArrayCache = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
-	@try
-	{
-		NSError *error = nil;
-		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
-		NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
-		
-		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[request setPredicate: predicate];
-		
-		[context lock];
-		
-		@try
-		{
-			local_studyArrayCache = [context executeFetchRequest:request error: &error];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		[context unlock];
-		
-		@try
-		{
-			local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		
-		if( local_studyArrayCache && local_studyArrayInstanceUID)
-		{
-			if( [NSThread isMainThread])
-				[self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
-			else
-				[self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
-		}
-		else
-			NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
-	}
-	@catch (NSException * e)
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-	}
+    static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
+    @synchronized( kComputeStudyArrayInstanceUIDLock)
+    {
+        @try
+        {
+            NSError *error = nil;
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
+            
+            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [request setPredicate: predicate];
+            
+            [context lock];
+            
+            @try
+            {
+                local_studyArrayCache = [context executeFetchRequest:request error: &error];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            [context unlock];
+            
+            @try
+            {
+                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+            }
+            @catch (NSException * e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            if( local_studyArrayCache && local_studyArrayInstanceUID)
+            {
+                if( [NSThread isMainThread])
+                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+                else
+                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
+            }
+            else
+                NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
+        }
+        @catch (NSException * e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+    }
 	
 	afterDelayRefresh = NO;
 	
@@ -1542,7 +1546,6 @@ extern "C"
 		selectedServer = [sourcesTable selectedRow];
 	
 	atLeastOneSource = NO;
-	BOOL firstResults = YES;
 	
 	NSString *filterValue = [patientID stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	NSMutableArray *result = [NSMutableArray array];
@@ -1578,28 +1581,34 @@ extern "C"
     if( [notification object] == [queryManager rootNode] && temporaryCFindResultArray)
     {
         if( [[self window] isVisible] && [[NSDate date] timeIntervalSinceReferenceDate] - lastTemporaryCFindResultUpdate > 1)
-        {
-            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
-            
+        {            
             NSArray	*curResult = [[notification object] children];
             
             @synchronized( curResult)
             {
-                NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
-                
-                for( NSUInteger x = 0 ; x < [curResult count] ; x++)
+                if( firstServerRealtimeResults)
                 {
-                    int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                    [temporaryCFindResultArray removeAllObjects];
+                    [temporaryCFindResultArray addObjectsFromArray: curResult];
+                }
+                else if( [curResult count] < 4000)
+                {
+                    NSArray *uidArray = [temporaryCFindResultArray valueForKey: @"uid"];
                     
-                    if( index == -1) // not found
-                        [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
-                    else 
+                    for( NSUInteger x = 0 ; x < [curResult count] ; x++)
                     {
-                        if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
+                        int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                        
+                        if( index == -1) // not found
+                            [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
+                        else 
                         {
-                            if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                            if( [[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] && [[curResult objectAtIndex: x] valueForKey: @"numberImages"])
                             {
-                                [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                                if( [[[temporaryCFindResultArray objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[curResult objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                                {
+                                    [temporaryCFindResultArray replaceObjectAtIndex: index withObject: [curResult objectAtIndex: x]];
+                                }
                             }
                         }
                     }
@@ -1610,6 +1619,8 @@ extern "C"
                 
                 [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
             }
+            
+            lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
         }
     }
 }
@@ -1648,7 +1659,7 @@ extern "C"
 			selectedServer = [sourcesTable selectedRow];
 		
 		atLeastOneSource = NO;
-		BOOL firstResults = YES;
+		firstServerRealtimeResults = YES;
 		
         if( [NSThread isMainThread])
             [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
@@ -1951,9 +1962,9 @@ extern "C"
                         [self realtimeCFindResults: [NSNotification notificationWithName: @"realtimeCFindResults" object: [queryManager rootNode]]]; // If there are multiple sources
                     }
                     
-					if( firstResults)
+					if( firstServerRealtimeResults)
 					{
-						firstResults = NO;
+						firstServerRealtimeResults = NO;
 						[tempResultArray removeAllObjects];
 						[tempResultArray addObjectsFromArray: [queryManager queries]];
 					}
@@ -1996,6 +2007,8 @@ extern "C"
 		
 		if( [tempResultArray count])
 			[tempResultArray sortUsingDescriptors: [self sortArray]];
+        
+        firstServerRealtimeResults = YES;
 		
 	}
 	@catch (NSException * e) 
@@ -2902,20 +2915,22 @@ extern "C"
 			DCMTKQueryNode *object = [d objectForKey: @"query"];
 			
 			NSString *status = nil;
-			NSString *name = @"";
 			
 			if( [object isMemberOfClass:[DCMTKStudyQueryNode class]])
 			{
-				name = [object name];
-				
-				if( [array count] == 1) status = [NSString stringWithFormat: NSLocalizedString( @"%d study - %@", nil), [array count], name];
-				else status = [NSString stringWithFormat: NSLocalizedString( @"%d studies - %@", nil), [array count], name];
+				if( [array count] == 1) status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [array count]];
+				else status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [array count]];
+                
+                if( [object name])
+                    status = [status stringByAppendingFormat:@" - %@", [object name]];
 			}
 			
 			if( [object isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
-				name = [object theDescription];
-				status = [NSString stringWithFormat: NSLocalizedString( @"%d series - %@", nil), [array count], name];
+				status = [NSString stringWithFormat: NSLocalizedString( @"%d series", nil), [array count]];
+                
+                if( [object theDescription])
+                    status = [status stringByAppendingFormat:@" - %@", [object theDescription]];
 			}
 			
 			[NSThread currentThread].status = [status stringByReplacingOccurrencesOfString: @"^" withString: @" "];
@@ -3190,8 +3205,12 @@ extern "C"
                     searchType = searchAfter;
                     
                     date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours];
-                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
                     
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMQueryAllowFutureQuery"])
+                        between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    else
+                        between = [NSString stringWithFormat:@"%@.000-%@.000", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"], [[NSCalendarDate date] descriptionWithCalendarFormat: @"%H%M%S"]];
+                        
                     timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
                 }
                 else if( [sender selectedTag] >= 200 && [sender selectedTag] <= 300)
@@ -3201,7 +3220,11 @@ extern "C"
                     searchType = searchAfter;
                     
                     date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*min];
-                    between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    
+                    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"DICOMQueryAllowFutureQuery"])
+                        between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"]];
+                    else
+                        between = [NSString stringWithFormat:@"%@.000-%@.000", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"], [[NSCalendarDate date] descriptionWithCalendarFormat: @"%H%M%S"]];
                     
                     timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
                 }

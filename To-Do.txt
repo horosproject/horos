@@ -2,45 +2,46 @@
 - Hide/Show Columns DICOM QR (Columns header contextual menu)
 - Web Server: passwords are now stored only as hash strings (better security for users passwords)
 - Up to Date DICOM Dictionary
+- New 2D Viewer toolbar item : Windows Tiling : add or remove windows
+- WebPortal: option for direct SMTP support for emails
+- WebPortal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
+- More robust Crash Reporter tool
+
+- (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
 ------------------------------------------------------------------------------------------
+
 
 A:
 (OK) DB remote: black image (multi-load)
-- DB Remote: ROIs
+(OK)- DB Remote: ROIs
 - DB Remote: HD Free Space: delete entire DB?
-- Compress/Decompress: no thread info?
+(OK) Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling
-- Make sure autoclean works (also with delayed files removal)
-- CD : 
-	Should be read-only (drag & drop, import, delete, …, outlineview editcell..., 
-		toolbar: report (readonly), import, notification, addstudies, query, idisk get, (burn), delete, 
-		viewer toolbar: delete, (report: readonly...))
-		contextual menu nsoutline et nsmatrix
-		keystrokes: delete key, ...
-	(OK) iPod doesn't appear automatically
-	(OK) iPod eject button
-	(Change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries))
-- Reinsert banner 32/64 bits
+
+- Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
+
+Added features:
+- Access DICOM CD/DVD as a database
 
 ------------------------------------------------------------------------------------------
 
+- Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
-- 2D Viewer: Windows Tiling popup toolbar item
+- WebPortal: Burn option if the CD/DVD is installed
+- WebPortal: create albums and add/remove studies to static albums (admin)
+- WebPortal: for admin, consult network logs
+- Windows Tiling for 3D viewers (new level)
 - http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - Storage Commitment Service
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
-- At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 - When merging multiframe series we should recompute the instanceNumbers (currently, when merging 3 series, we end up with 1 1 1 2 2 2 3 3 3), sort info (location) is in PerFrameFunctionalGroupsSequence, or already in DicomImage
 - Delete Alias ROI?
 - CPR : adapt coloscopy path algo to CPR vessels
 - Option for Tiling Windows: always order from oldest study to ...
-- Web Server: Burn option if the CD/DVD is installed
-- Web Server: create albums and add studies to albums (admin)
-- Web Server: for admin, consult network logs
 - DICOM ECG
 - Two Steps DICOM Editing
 - Tool to create a new series from key images of a study

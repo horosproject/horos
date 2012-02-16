@@ -1362,18 +1362,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					}
 				}
 				
-				if (SOPClassUID != nil 
-				   && [DCMAbstractSyntaxUID isImageStorage: SOPClassUID] == NO 
-				   && [DCMAbstractSyntaxUID isRadiotherapy: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isStructuredReport: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isKeyObjectDocument: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isPresentationState: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isSupportedPrivateClasses: SOPClassUID] == NO
-				   && [DCMAbstractSyntaxUID isWaveform: SOPClassUID] == NO)
-				{
-					NSLog(@"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-					curDict = nil;
-				}
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
+                {
+                    if( SOPClassUID != nil 
+                       && [[DCMAbstractSyntaxUID allSupportedSyntaxes] containsObject: SOPClassUID] == NO)
+                    {
+                        NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
+                        curDict = nil;
+                    }
+                }
 				
 				if ([curDict objectForKey:@"SOPClassUID"] == nil && [[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == YES)
 				{

@@ -130,11 +130,18 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     
 	if (!title) title = &ignore;
 	
+    if ([parameters objectForKey:@"sortKey"])
+        if ([[[self.portal.dicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
+            [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
+    
+    if (![self.session objectForKey:@"StudiesSortKey"])
+        [self.session setObject:@"date" forKey:@"StudiesSortKey"];
+    
 	NSString* albumReq = [parameters objectForKey:@"album"];
 	if (albumReq.length)
     {
 		*title = [NSString stringWithFormat:NSLocalizedString(@"Album: %@", @"Web portal, study list, title format (%@ is album name)"), albumReq];
-		result = [WebPortalUser studiesForUser: user album:albumReq sortBy:[parameters objectForKey:@"sortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
+		result = [WebPortalUser studiesForUser: user album:albumReq sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
 	}
 	else
     {
@@ -231,13 +238,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             //browsePredicate = [NSPredicate predicateWithValue:YES];
         }	
         
-        if ([parameters objectForKey:@"sortKey"])
-            if ([[[self.independentDicomDatabase entityForName:@"Study"] attributesByName] objectForKey:[parameters objectForKey:@"sortKey"]])
-                [self.session setObject:[parameters objectForKey:@"sortKey"] forKey:@"StudiesSortKey"];
-        
-        if (![self.session objectForKey:@"StudiesSortKey"])
-            [self.session setObject:@"name" forKey:@"StudiesSortKey"];
-        
         result = [WebPortalUser studiesForUser: user predicate:browsePredicate sortBy:[self.session objectForKey:@"StudiesSortKey"] fetchLimit: fetchLimitPerPage fetchOffset: page*fetchLimitPerPage numberOfStudies: &numberOfStudies];
     }
     
@@ -303,7 +303,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)images {
-	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(300) maxSize:NSMakeSize(1024)];
+	[self getWidth:width height:height fromImagesArray:images minSize:NSMakeSize(300) maxSize:NSMakeSize( [[NSUserDefaults standardUserDefaults] floatForKey: @"WebServerMaxWidthForMovie"])];
 }
 
 -(void)getWidth:(CGFloat*)width height:(CGFloat*)height fromImagesArray:(NSArray*)imagesArray minSize:(NSSize)minSize maxSize:(NSSize)maxSize {
@@ -800,7 +800,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			}
 			
 			// Send the email
-			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL replyTo:user.email customText:[parameters objectForKey:@"message"]];
+			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL customText: [parameters objectForKey:@"message"] from: user];
 			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
 			
 			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
@@ -808,6 +808,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
 	}
 	
+    
 	[response.tokens setObject:[WebPortalProxy createWithObject:study transformer:DicomStudyTransformer.create] forKey:@"Study"];
 	[response.tokens setObject:[NSString stringWithFormat:NSLocalizedString(@"%@ - %@", @"Web Portal, study, title format (1st %@ is study.name, 2nd is study.studyName)"), study.name, study.studyName] forKey:@"PageTitle"];
 	
@@ -942,23 +943,24 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         NSString *webPortalDefaultTitle = [[NSUserDefaults standardUserDefaults] stringForKey: @"WebPortalTitle"];
                         if( webPortalDefaultTitle.length == 0)
                             webPortalDefaultTitle = NSLocalizedString(@"OsiriX Web Portal", @"Web Portal, general default title");
-                        [emailMessage appendString: webPortalDefaultTitle];
-                        [emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: @"\r\r"];
                         
-						[emailMessage appendString: NSLocalizedString( @"Username:\r\r", nil)];
+                        [emailMessage appendString: webPortalDefaultTitle];
+                        [emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: @"<br><br>"];
+                        
+						[emailMessage appendString: NSLocalizedString( @"Username:<br><br>", nil)];
 						[emailMessage appendString: u.name];
-						[emailMessage appendString: @"\r\r"];
-						[emailMessage appendString: NSLocalizedString( @"Password:\r\r", nil)];
+						[emailMessage appendString: @"<br><br>"];
+						[emailMessage appendString: NSLocalizedString( @"Password:<br><br>", nil)];
 						[emailMessage appendString: u.password];
-						[emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: @"\r\r"];
-                        [emailMessage appendString: NSLocalizedString( @"Login here:\r", nil)];
+						[emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: @"<br><br>"];
+                        [emailMessage appendString: NSLocalizedString( @"Login here:<br>", nil)];
                         [emailMessage appendString: self.portal.URL];
                         
 						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
 						
-						[[CSMailMailClient mailClient] deliverMessage: [[[NSAttributedString alloc] initWithString: emailMessage] autorelease] headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
+						[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
 						
 						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						
@@ -1394,9 +1396,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSLog( @"****** WADO Server : study not found");
 		
 		if ([studies count] > 1)
-			NSLog( @"****** WADO Server : more than 1 study with same uid");
+			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
 		
-		NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+        NSArray *allSeries = [NSArray array];
+        
+        for( DicomStudy *s in studies)
+            allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
 		
 		if (seriesUID)
 			allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
@@ -1497,9 +1502,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				NSLog( @"****** WADO Server : study not found");
 			
 			if ([studies count] > 1)
-				NSLog( @"****** WADO Server : more than 1 study with same uid");
+				NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
 			
-			NSArray *allSeries = [[[studies lastObject] valueForKey: @"series"] allObjects];
+            NSArray *allSeries = [NSArray array];
+            
+            for( DicomStudy *s in studies)
+                allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
 			
 			if (seriesUID)
 				allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];

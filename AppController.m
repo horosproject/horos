@@ -2840,27 +2840,33 @@ static BOOL initialized = NO;
 				//ww/wl
 				NSMutableDictionary *wlwwValues = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"WLWW3"] mutableCopy] autorelease];
 				NSDictionary *wwwl = [wlwwValues objectForKey:@"VR - Endoscopy"];
-				if (!wwwl) {
+				if (!wwwl)
+                {
 					[wlwwValues setObject:[NSArray arrayWithObjects:[NSNumber numberWithFloat:-300], [NSNumber numberWithFloat:700], nil] forKey:@"VR - Endoscopy"];
 					[[NSUserDefaults standardUserDefaults] setObject:wlwwValues forKey:@"WLWW3"];
 				}
 				
+                
 				// CREATE A TEMPORATY FILE DURING STARTUP
 				
 				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"Loading"];
 				
-				if ([[NSFileManager defaultManager] fileExistsAtPath:path])
-				{
-					int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
-					
-					if( result == NSAlertOtherReturn)
-					{
-						NEEDTOREBUILD = YES;
-						COMPLETEREBUILD = YES;
-					}
-					if( result == NSAlertAlternateReturn) [DCMPix setRunOsiriXInProtectedMode: YES];
-				}
-				
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+                {
+                    if( [[NSFileManager defaultManager] fileExistsAtPath: path])
+                    {
+                        int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), NSLocalizedString(@"Previous crash is maybe related to a corrupt database or corrupted images.\r\rShould I run OsiriX in Protected Mode (recommended) (no images displayed)? To allow you to delete the crashing/corrupted images/studies.\r\rOr Should I rebuild the local database? All albums, comments and status will be lost.", nil), NSLocalizedString(@"Continue normally",nil), NSLocalizedString(@"Protected Mode",nil), NSLocalizedString(@"Rebuild Database",nil));
+                        
+                        if( result == NSAlertOtherReturn)
+                        {
+                            NEEDTOREBUILD = YES;
+                            COMPLETEREBUILD = YES;
+                        }
+                        if( result == NSAlertAlternateReturn) [DCMPix setRunOsiriXInProtectedMode: YES];
+                    }
+                }
+                
 				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
                 [self checkForWordTemplates];
@@ -3097,16 +3103,29 @@ static BOOL initialized = NO;
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
-	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];
-	}
 	
 	#ifndef MACAPPSTORE
 	#ifndef OSIRIX_LIGHT
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"checkForUpdatesPlugins"])
 		[NSThread detachNewThreadSelector:@selector(checkForUpdates:) toTarget:pluginManager withObject:pluginManager];
 	
-	[NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+    
+    // If OsiriX crashed before...
+    NSString *OsiriXCrashed = @"/tmp/OsiriXCrashed";
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: OsiriXCrashed]) // Activate check for update !
+    {
+        [[NSFileManager defaultManager] removeItemAtPath: OsiriXCrashed error: nil];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates4"] == NO)
+        {
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+                [NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget: self withObject: @"crash"];
+        }
+    }
+    else [NSThread detachNewThreadSelector: @selector(checkForUpdates:) toTarget:self withObject: self];
+    
 	#endif
 	#endif
     
@@ -3318,14 +3337,17 @@ static BOOL initialized = NO;
 	
 	#ifndef OSIRIX_LIGHT
 	#ifndef MACAPPSTORE
-	@try
-	{
-		[[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
-	}
-	@catch (NSException *e)
-	{
-		NSLog( @"**** Exception ILCrashReporter: %@", e);
-	}
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
+    {
+        @try
+        {
+            [[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"**** Exception ILCrashReporter: %@", e);
+        }
+    }
 	#endif
 	#endif
 	
@@ -3669,6 +3691,17 @@ static BOOL initialized = NO;
 		NSRunAlertPanel( NSLocalizedString( @"No Internet connection", nil), NSLocalizedString( @"Unable to check latest version available.", nil), NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	
+    if( [msg isEqualToString: @"UPDATECRASH"])
+    {
+        NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), NSLocalizedString(@"OsiriX crashed... You are running an outdated version of OsiriX ! This bug is probably corrected in the last version !", nil), NSLocalizedString(@"OK",nil), nil, nil);
+        
+        #if __LP64__
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/login"]];
+        #else
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+        #endif
+    }
+    
 	if( [msg isEqualToString:@"UPDATE"])
 	{
 		#if __LP64__
@@ -3714,9 +3747,16 @@ static BOOL initialized = NO;
 	NSURL *url;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( sender != self) verboseUpdateCheck = YES;
-	else verboseUpdateCheck = NO;
+	if( sender != self)
+        verboseUpdateCheck = YES;
+	else
+        verboseUpdateCheck = NO;
 	
+    BOOL verboseAfterCrash = NO;
+    
+    if( [sender isKindOfClass:[NSString class]] && [sender isEqualToString: @"crash"])
+        verboseAfterCrash = YES;
+    
 	if( [AppController hasMacOSXLeopard])
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else
@@ -3732,7 +3772,7 @@ static BOOL initialized = NO;
 		{
 			if ([latestVersionNumber intValue] <= [currVersionNumber intValue])
 			{
-				if (verboseUpdateCheck)
+				if (verboseUpdateCheck && verboseAfterCrash == NO)
 				{
 					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPTODATE" waitUntilDone: NO];
 				}
@@ -3741,7 +3781,10 @@ static BOOL initialized = NO;
 			{
 				if( ([[NSUserDefaults standardUserDefaults] boolForKey: @"CheckOsiriXUpdates4"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) || verboseUpdateCheck == YES)
 				{
-					[self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
+                    if( verboseAfterCrash)
+                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATECRASH" waitUntilDone: NO];
+                    else
+                        [self performSelectorOnMainThread:@selector(displayUpdateMessage:) withObject:@"UPDATE" waitUntilDone: NO];
 				}
 			}
 		}
@@ -4245,20 +4288,20 @@ static BOOL initialized = NO;
 
 - (void) tileWindows:(id)sender
 {
-	long				i, x;
+	long i, x;
 	// Array of open Windows
-	NSArray				*winList = [NSApp windows];
+	NSArray *winList = [NSApp windows];
 	// array of viewers
-	NSMutableArray		*viewersList = [NSMutableArray array];
-	BOOL				origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
-	NSRect				screenRect =  screenFrame();
+	NSMutableArray *viewersList = [NSMutableArray array];
+	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
+	NSRect screenRect =  screenFrame();
 	// User default to keep studies segregated to separate screens
-	BOOL				keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
 //	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
 	// Array of arrays of viewers with same StudyUID
-	NSMutableArray		*studyList = [NSMutableArray array];
-	int					keyWindow = 0, numberOfMonitors;	
-	NSArray				*screens = [self viewerScreens];
+	NSMutableArray *studyList = [NSMutableArray array];
+	int keyWindow = 0, numberOfMonitors;	
+	NSArray *screens = [self viewerScreens];
 	
 //	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
 //	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
@@ -4718,6 +4761,8 @@ static BOOL initialized = NO;
 	else
 		NSLog(@"NO tiling");
 	
+    [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithFormat: @"%d%d", lastRows, lastColumns] forKey: @"LastWindowsTilingRowsColumns"];
+    
 	accumulateAnimations = NO;
 	if( [accumulateAnimationsArray count])
 	{

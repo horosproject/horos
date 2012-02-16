@@ -992,8 +992,11 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
 	[defaultValues setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
-    [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60
+    [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60 = 30 min 120*60 = 2 hours
     [defaultValues setObject:@"400" forKey:@"MaxNumberOfFramesForWebPortalMovies"];
+    [defaultValues setObject:@"880" forKey:@"WebServerMaxWidthForMovie"];
+    [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
+    [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

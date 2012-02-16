@@ -78,6 +78,7 @@
     
     NSTimeInterval                          lastTemporaryCFindResultUpdate;
     NSMutableArray                          *temporaryCFindResultArray;
+    BOOL                                    firstServerRealtimeResults;
     
     NSMutableArray                          *downloadedStudies;
     

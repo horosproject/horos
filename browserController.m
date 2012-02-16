@@ -138,6 +138,7 @@ static NSTimeInterval lastFreeSpaceLogTime = 0;
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
 
+
 #pragma deprecated(asciiString)
 NSString* asciiString(NSString* str)
 {
@@ -5064,7 +5065,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			else if( [DCMAbstractSyntaxUID isStructuredReport: [im valueForKeyPath: @"series.seriesSOPClassUID"]])
 			{
-                [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
+                [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix"];
 				
 				NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [[im valueForKey: @"completePath"] lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 				
@@ -5274,6 +5275,9 @@ static NSConditionLock *threadLock = nil;
 						[v setScaleValue: scale];
 						[v setRotation: rotation];
 						[v setOrigin: NSMakePoint( x, y)];
+                        
+                        if( [dict valueForKey: @"LastWindowsTilingRowsColumns"])
+                            [[NSUserDefaults standardUserDefaults] setObject: [dict valueForKey: @"LastWindowsTilingRowsColumns"] forKey: @"LastWindowsTilingRowsColumns"];
 					}
 				}
 				
@@ -7007,8 +7011,14 @@ static BOOL withReset = NO;
 		
 		if( studyObject)
 		{
-			int r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], nil], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
-			if( r == NSAlertDefaultReturn)
+			int r;
+			
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+                r = NSAlertDefaultReturn;
+            else
+                r = NSRunAlertPanel( NSLocalizedString(@"Corrupted files", nil), [NSString stringWithFormat:NSLocalizedString(@"A corrupted study crashed OsiriX:\r\r%@ / %@\r\rThis file will be deleted.\r\rYou can run OsiriX in Protected Mode (shift + option keys at startup) if you have more crashes.\r\rShould I delete this corrupted study? (Highly recommended)", nil), [studyObject valueForKey:@"name"], [studyObject valueForKey:@"studyName"], nil], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil);
+            
+            if( r == NSAlertDefaultReturn)
 			{
 				[context lock];
 				
@@ -7826,6 +7836,7 @@ static BOOL withReset = NO;
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action:@selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action:@selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil) action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
+    [contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed series", nil) action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action:@selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action:@selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action:@selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
@@ -7878,6 +7889,8 @@ static BOOL withReset = NO;
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Key Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Sub-Selection", nil)];
+	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
+    indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open Reparsed Series", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
@@ -9261,7 +9274,7 @@ static BOOL needToRezoom;
 		
 		if( [toOpenArray count] == 1)	// Just one thumbnail is selected
 		{
-			if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask)
+			if( ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSAlternateKeyMask) || openReparsedSeriesFlag)
 			{
 				NSArray			*singleSeries = [[toOpenArray objectAtIndex: 0] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
 				NSMutableArray	*splittedSeries = [NSMutableArray array];
@@ -9900,6 +9913,13 @@ static BOOL needToRezoom;
 	openSubSeriesFlag = YES;
 	[self viewerDICOM: sender];
 	openSubSeriesFlag = NO;
+}
+
+- (void) viewerReparsedSeries: (id) sender
+{
+    openReparsedSeriesFlag = YES;
+    [self viewerDICOM: sender];
+    openReparsedSeriesFlag = NO;
 }
 
 - (void) viewerDICOM: (id)sender
@@ -10632,7 +10652,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images", nil) action: @selector(viewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Images in 4D", nil) action: @selector(MovieViewerDICOM:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Sub-Selection", nil)  action:@selector(viewerSubSeriesDICOM:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Reparsed Series", nil)  action:@selector(viewerReparsedSeries:) keyEquivalent:@""] autorelease]];
+    [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Key Images", nil) action: @selector(viewerDICOMKeyImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs Images", nil) action: @selector(viewerDICOMROIsImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open ROIs and Key Images", nil) action: @selector(viewerKeyImagesAndROIsImages:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Open Merged Selection", nil) action: @selector(viewerDICOMMergeSelection:) keyEquivalent:@""] autorelease]];
@@ -11120,6 +11141,7 @@ static NSArray*	openSubSeriesArray = nil;
         
 //		[BrowserController tryLock:checkIncomingLock during: 120];
 		[BrowserController tryLock:_database during: 120];
+        [_database tryLock];
 //		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
 		
 	//	[BrowserController tryLock: decompressThreadRunning during: 120];
@@ -13198,7 +13220,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							}
 						}
 						
-						[[WebPortal defaultWebPortal] sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil replyTo: nil customText: self.customTextNotificationEmail];
+						[[WebPortal defaultWebPortal] sendNotificationsEmailsTo: destinationUsers aboutStudies: [self databaseSelection] predicate: nil customText: self.customTextNotificationEmail];
 					}
 				}
 				@catch( NSException *e)
@@ -16265,6 +16287,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( searchForCurrentPatient:) || 
 			[toolbarItem action] == @selector( viewerDICOM:) || 
 		    [toolbarItem action] == @selector( viewerSubSeriesDICOM:) || 
+            [toolbarItem action] == @selector( viewerReparsedSeries:) ||
 			[toolbarItem action] == @selector( MovieViewerDICOM:) || 
 			[toolbarItem action] == @selector( viewerDICOMMergeSelection:) || 
 			[toolbarItem action] == @selector( revealInFinder:) || 
