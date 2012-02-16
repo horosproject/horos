@@ -122,7 +122,7 @@
 	if (!samePatientArray.count)
 		return;
 	
-	NSLog( @" Autorouting: %@ - %@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], N2SingularPlural(samePatientArray.count, @"object", @"objects"));
+	NSLog( @" Autorouting: %@ - %@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], N2SingularPluralCount(samePatientArray.count, @"object", @"objects"));
 	
     NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"];
     [xp addEntriesFromDictionary:server];
@@ -203,7 +203,7 @@
 					}
             
             NSLog(@"______________________________________________");
-			NSLog(@" Autorouting Queue START: %@, %@", N2SingularPlural(routingSendQueues.count, @"list", @"lists"), N2SingularPlural(total, @"item", @"items"));
+			NSLog(@" Autorouting Queue START: %@, %@", N2SingularPluralCount(routingSendQueues.count, @"list", @"lists"), N2SingularPluralCount(total, @"item", @"items"));
 			
 			NSInteger sent = 0;
 			for (NSDictionary* copy in routingSendQueues) {
@@ -214,7 +214,7 @@
 				sent += objectsToSend.count;
 				
 				NSString* serverName = [copy objectForKey:@"server"];
-				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %@ to %@", nil), N2LocalizedSingularPlural(objectsToSend.count, @"file", @"files"), serverName];
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %@ to %@", nil), N2LocalizedSingularPluralCount(objectsToSend.count, @"file", @"files"), serverName];
 				
 				NSDictionary* server = nil;
 				for (NSDictionary* aServer in serversArray)
