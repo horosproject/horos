@@ -128,6 +128,8 @@
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni {
     if (![dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
         return NO;
+    if ([[DicomDatabase baseDirPathForPath:self.location] isEqualToString:[DicomDatabase baseDirPathForPath:dni.location]])
+        return YES;
     return [super isEqualToDataNodeIdentifier:dni];
 }
 

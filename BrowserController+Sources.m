@@ -182,7 +182,6 @@ enum {
 	NSInteger i = [self rowForDatabase:_database];
 	if (i == -1 && _database != [DicomDatabase defaultDatabase])
     {
-		[self rowForDatabase:_database];
 		NSDictionary* source = [NSDictionary dictionaryWithObjectsAndKeys: [_database.baseDirPath stringByDeletingLastPathComponent], @"Path", [_database.baseDirPath.stringByDeletingLastPathComponent.lastPathComponent stringByAppendingString:@" DB"], @"Description", nil];
 		[[NSUserDefaults standardUserDefaults] setObject:[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] arrayByAddingObject:source] forKey:@"localDatabasePaths"];
 		i = [self rowForDatabase:_database];
@@ -1044,7 +1043,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	MountedDatabaseNodeIdentifier* bs = [[self class] localDatabaseNodeIdentifierWithPath:path description:description dictionary:dictionary];
 	bs.devicePath = devicePath;
     bs.mountType = type;
-    bs.detected = YES;
+//  bs.detected = YES;
 	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if (scan) {
