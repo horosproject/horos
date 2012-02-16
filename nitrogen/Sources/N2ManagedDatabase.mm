@@ -173,7 +173,7 @@
 
 		} else {
             if (self.mainDatabase)
-                NSLog(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
+                NSLog(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
             [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
         }
         
@@ -231,7 +231,8 @@
 -(void)dealloc {
     if ([self.managedObjectContext hasChanges])
         [self save];
-    [NSNotificationCenter.defaultCenter removeObserver:self name:NSManagedObjectContextDidSaveNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];
     self.mainDatabase = nil;
 	self.managedObjectContext = nil;
