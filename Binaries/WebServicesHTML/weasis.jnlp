@@ -39,6 +39,8 @@
 		<property name="apple.laf.useScreenMenuBar" value="true" />
 		<!-- Optional parameter. Allows to get plug-ins translations -->
 		<property name="weasis.i18n" value="%X:Info.baseUrl%/weasis/bundle-i18n" />
+		<!-- Allows to get files in pack200 compression, only available from Weasis 1.1.2 -->
+		<property name="jnlp.packEnabled" value="true" />
 	</resources>
 	<application-desc main-class="org.weasis.launcher.WebstartLauncher">
 		<argument>$dicom:get -w %X:Info.baseUrl%/weasis.xml?%[IF:User%username=%U:User.name%&token=%U:X:Info.newToken%&%]IF:User%%Info.allParameters%</argument>

@@ -21885,9 +21885,23 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (NSArray *) databaseSelection
 {
-	NSMutableArray		*selectedItems			= [NSMutableArray array];
-	NSIndexSet			*selectedRowIndexes		= [databaseOutline selectedRowIndexes];
-	
+    NSMutableArray* selectedItems = [NSMutableArray array];
+
+	if ([self.window firstResponder] == oMatrix) {
+        for (NSCell* cell in [oMatrix selectedCells]) {
+            NSManagedObject* selectedItem = [[self matrixViewArray] objectAtIndex:[cell tag]];
+            
+            if ([selectedItem isKindOfClass:[DicomImage class]])
+                selectedItem = [(DicomImage*)selectedItem series];
+            
+            if (![selectedItems containsObject:selectedItem])
+                [selectedItems addObject:selectedItem];
+        }
+        
+        return selectedItems;
+    }
+    
+	NSIndexSet* selectedRowIndexes = [databaseOutline selectedRowIndexes];
 	for ( NSInteger index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{
 		if ([selectedRowIndexes containsIndex:index])
