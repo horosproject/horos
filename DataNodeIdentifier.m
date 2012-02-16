@@ -28,7 +28,7 @@
 @synthesize entered = _entered;
 
 -(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary {
-    if ((self = [super init])) {
+    if ((self = [self init])) {
         self.location = location;
         self.description = description;
         self.dictionary = dictionary;

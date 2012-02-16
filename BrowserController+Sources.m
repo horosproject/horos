@@ -89,7 +89,7 @@
 }
 
 enum {
-    MountTypeUndefined = 0,
+    MountTypeGeneric = 0,
     MountTypeIPod = 1
 };
 
@@ -679,7 +679,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 	if ([[result objectForKey:@"OpticalMediaType"] length]) // is CD/DVD or other optical media
 		@try {
-			[_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeUndefined]];
+			[_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeGeneric]];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         }
@@ -1041,9 +1041,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		scan = NO;
     }
 	
-	MountedDatabaseNodeIdentifier* bs = [self localDatabaseNodeIdentifierWithPath:path description:description dictionary:dictionary];
+	MountedDatabaseNodeIdentifier* bs = [[self class] localDatabaseNodeIdentifierWithPath:path description:description dictionary:dictionary];
 	bs.devicePath = devicePath;
     bs.mountType = type;
+    bs.detected = YES;
 	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
 	if (scan) {
