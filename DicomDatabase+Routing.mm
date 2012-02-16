@@ -22,6 +22,7 @@
 #import "NSThread+N2.h"
 #import "DCMTKStudyQueryNode.h"
 #import "ThreadsManager.h"
+#import "N2Stuff.h"
 
 
 @interface DicomDatabase ()
@@ -50,11 +51,15 @@
 -(void)deallocRouting {
 	NSRecursiveLock* temp;
 	
-	temp = _routingLock;
-	[temp lock]; // if currently routing, wait until finished
-	_routingLock = nil;
-	[temp unlock];
-	[temp release];
+    if (!self.mainDatabase) {
+        temp = _routingLock;
+        [temp lock]; // if currently routing, wait until finished
+        _routingLock = nil;
+        [temp unlock];
+        [temp release];
+    } else {
+        [_routingLock release];
+    }
 	
 	[_routingSendQueues release]; _routingSendQueues = nil;
 }
@@ -87,7 +92,7 @@
 -(void)initiateRoutingUnlessAlreadyRouting {
 	if ([_routingLock tryLock])
 		@try {
-			[self performSelectorInBackground:@selector(_routingThread) withObject:nil];
+			[self.independentDatabase performSelectorInBackground:@selector(_routingThread) withObject:nil];
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {
@@ -117,7 +122,7 @@
 	if (!samePatientArray.count)
 		return;
 	
-	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
+	NSLog( @" Autorouting: %@ - %@", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], N2SingularPlural(samePatientArray.count, @"object", @"objects"));
 	
     NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"];
     [xp addEntriesFromDictionary:server];
@@ -147,7 +152,11 @@
 		if ([[dict valueForKey: @"failureRetry"] intValue] > 0) {
 			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
 			@synchronized (_routingSendQueues) {
-				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
+				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: 
+                                                [NSMutableArray arrayWithArray:[samePatientArray valueForKey:@"objectID"]], @"objectIDs",
+                                                [server objectForKey:@"Description"], @"server", 
+                                                dict, @"routingRule", 
+                                                [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
 			}
 		}
 	}
@@ -183,27 +192,29 @@
 		}
 		
 		if (routingSendQueues.count) {
-			NSLog(@"______________________________________________");
-			NSLog(@" Autorouting Queue START: %d objects", routingSendQueues.count);
 			[ThreadsManager.defaultManager addThreadAndStart:thread];
 			
 			NSInteger total = 0;
 			for (NSDictionary *copy in routingSendQueues)
 				for (NSDictionary* aServer in serversArray)
 					if ([[aServer objectForKey:@"Description"] isEqualToString:[copy objectForKey:@"server"]]) {
-						total += [[copy objectForKey:@"objects"] count];
+						total += [[copy objectForKey:@"objectIDs"] count];
 						break;
 					}
+            
+            NSLog(@"______________________________________________");
+			NSLog(@" Autorouting Queue START: %@, %@", N2SingularPlural(routingSendQueues.count, @"list", @"lists"), N2SingularPlural(total, @"item", @"items"));
 			
 			NSInteger sent = 0;
-			for (NSDictionary *copy in routingSendQueues) {
-				NSArray* objectsToSend = [copy objectForKey:@"objects"];
+			for (NSDictionary* copy in routingSendQueues) {
+				NSArray* objectIDs = [copy objectForKey:@"objectIDs"];
+                NSArray* objectsToSend = [self objectsWithIDs:objectIDs];
 				
 				[thread enterOperationWithRange:1.0*sent/total:1.0*objectsToSend.count/total];
 				sent += objectsToSend.count;
 				
 				NSString* serverName = [copy objectForKey:@"server"];
-				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %d %@ to %@", nil), objectsToSend.count, (objectsToSend.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)), serverName];
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %@ to %@", nil), N2LocalizedSingularPlural(objectsToSend.count, @"file", @"files"), serverName];
 				
 				NSDictionary* server = nil;
 				for (NSDictionary* aServer in serversArray)
@@ -285,19 +296,26 @@
 		// are these images already in the queue, with same routingRule ?
 		for (NSDictionary* order in _routingSendQueues)
 			if ([routingRule isEqualToDictionary:[order valueForKey:@"routingRule"]]) {
-				NSArray* filesFromOrder = [[order valueForKey:@"objects"] valueForKey:@"completePath"];
+                NSMutableArray* orderObjectIDs = [order valueForKey:@"objectIDs"];
+                
+				NSArray* orderFilePaths = [[self objectsWithIDs:orderObjectIDs] valueForKey:@"completePath"];
 				
 				// are the files already in queue for same filter?
 				for (DicomImage* image in dicomImages)
-					if ([filesFromOrder containsObject:[image valueForKey:@"completePath"]])
-						[dicomImages removeObject: image];
+					if ([orderFilePaths containsObject:[image valueForKey:@"completePath"]])
+						[dicomImages removeObject:image];
 				
-				[[order valueForKey:@"objects"] addObjectsFromArray:dicomImages];
+				[orderObjectIDs addObjectsFromArray:[dicomImages valueForKey:@"objectID"]];
+                
 				[dicomImages removeAllObjects];
 			}
 		
 		if (dicomImages.count)
-			[_routingSendQueues addObject:[NSDictionary dictionaryWithObjectsAndKeys: dicomImages, @"objects", [routingRule objectForKey:@"server"], @"server", routingRule, @"routingRule", [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
+			[_routingSendQueues addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                           [NSMutableArray arrayWithArray:[dicomImages valueForKey:@"objectID"]], @"objectIDs",
+                                           [routingRule objectForKey:@"server"], @"server", 
+                                           routingRule, @"routingRule", 
+                                           [routingRule valueForKey:@"failureRetry"], @"failureRetry", nil]];
 	}
 }
 
