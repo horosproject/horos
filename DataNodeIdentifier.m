@@ -118,7 +118,7 @@
 @implementation LocalDatabaseNodeIdentifier
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path {
-    return [[[self class] localDatabaseNodeIdentifierWithPath:path description:nil dictionary:nil] autorelease];
+    return [[self class] localDatabaseNodeIdentifierWithPath:path description:nil dictionary:nil];
 }
 
 +(id)localDatabaseNodeIdentifierWithPath:(NSString*)path description:(NSString*)description dictionary:(NSDictionary*)dictionary {
