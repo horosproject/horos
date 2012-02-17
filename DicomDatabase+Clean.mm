@@ -46,11 +46,15 @@
 -(void)deallocClean {
 	NSRecursiveLock* temp;
 	
-	temp = _cleanLock;
-	[temp lock]; // if currently cleaning, wait until finished
-	_cleanLock = nil;
-	[temp unlock];
-	[temp release];
+    if (!self.mainDatabase) {
+        temp = _cleanLock;
+        [temp lock]; // if currently cleaning, wait until finished
+        _cleanLock = nil;
+        [temp unlock];
+        [temp release];
+    } else {
+        [_cleanLock release];
+    }
 }
 
 -(NSRecursiveLock*)cleanLock {

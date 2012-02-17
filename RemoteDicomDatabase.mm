@@ -751,6 +751,9 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 -(void)cleanOldStuff {
 }
 
+-(void)initiateCleanUnlessAlreadyCleaning {
+}
+
 
 #pragma mark Special
 

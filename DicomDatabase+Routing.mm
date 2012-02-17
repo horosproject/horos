@@ -92,7 +92,7 @@
 -(void)initiateRoutingUnlessAlreadyRouting {
 	if ([_routingLock tryLock])
 		@try {
-			[self.independentDatabase performSelectorInBackground:@selector(_routingThread) withObject:nil];
+			[self performSelectorInBackground:@selector(_routingThread) withObject:nil];
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {
@@ -171,7 +171,7 @@
 	@try {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Routing...", nil);
-		[self routing];
+		[self.independentDatabase routing];
 	} @catch (NSException * e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {

@@ -498,8 +498,12 @@ static DicomDatabase* activeLocalDatabase = nil;
         NSDictionary* userInfo = nil;
         
         NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
-        if (independentObjects)
-            userInfo = [NSDictionary dictionaryWithObject:[self objectsWithIDs:independentObjects] forKey:OsirixAddToDBNotificationImagesArray];
+        if (independentObjects) {
+            NSArray* selfObjects = [self objectsWithIDs:independentObjects];
+            if (selfObjects.count != independentObjects.count)
+                NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
+            userInfo = [NSDictionary dictionaryWithObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+        }
         
         [NSNotificationCenter.defaultCenter postNotificationName:notification.name object:self userInfo:userInfo];
     }
@@ -1056,7 +1060,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	@try
     {
         [ThreadsManager.defaultManager addThreadAndStart:[NSThread currentThread]];
-		[self processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
+		[self.independentDatabase processFilesAtPaths:[params objectForKey:@":"] intoDirAtPath:[params objectForKey:@"intoDirAtPath:"] mode:[[params objectForKey:@"mode:"] intValue]];
 	}
     @catch (NSException* e)
     {
@@ -1320,7 +1324,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
   //  NSLog(@"Add: %@", dicomFilesArray);
     
-//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
     [self cleanForFreeSpace];
     
@@ -1973,7 +1977,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		N2LogExceptionWithStackTrace(e);
     }
     
-  //  [pool release];
+    thread.status = NSLocalizedString(@"Cleaning up...", nil);
+    [pool release];
     
 	return [addedImageObjects valueForKey:@"objectID"];
 }
@@ -2563,7 +2568,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     {
 		NSThread* thread = [NSThread currentThread];
 		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
-		NSInteger importCount = [self importFilesFromIncomingDir];
+		NSInteger importCount = [self.independentDatabase importFilesFromIncomingDir];
+        thread.status = NSLocalizedString(@"Finishing...", nil);
+        thread.progress = -1;
 		
         DicomDatabase* theDatabase = self.mainDatabase? self.mainDatabase : self;
 		if (theDatabase == DicomDatabase.activeLocalDatabase)
@@ -2576,8 +2583,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
     @finally
     {
-        [_importFilesFromIncomingDirLock unlock];
 		[pool release];
+        [_importFilesFromIncomingDirLock unlock];
 	}
 }
 
@@ -2592,7 +2599,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		}
 		
 		@try {
-			[self.independentDatabase performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil]; // TODO: NSOperationQueues pls
+			[self performSelectorInBackground:@selector(importFilesFromIncomingDirThread) withObject:nil]; // TODO: NSOperationQueues pls
 		} @catch (NSException* e) {
 			N2LogExceptionWithStackTrace(e);
 		} @finally {

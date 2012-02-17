@@ -213,21 +213,21 @@
 }
 
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
-  //  if (![NSThread isMainThread])
-    //    [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
-//    else {
-  //      [self.managedObjectContext lock];
-//        [self.managedObjectContext.persistentStoreCoordinator lock];
+    if (![NSThread isMainThread])
+        [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
+    else {
+        [self.managedObjectContext lock];
+        [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 //            NSLog(@"Merged.");
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
-    //        [self.managedObjectContext.persistentStoreCoordinator unlock];
-      //      [self.managedObjectContext unlock];
+            [self.managedObjectContext.persistentStoreCoordinator unlock];
+            [self.managedObjectContext unlock];
         }
-//    }
+    }
 }
 
 -(void)lock {
@@ -262,8 +262,8 @@
 }
 
 -(void)dealloc {
-    if ([self.managedObjectContext hasChanges])
-        [self save];
+//    if ([self.managedObjectContext hasChanges])
+//        [self save];
     [NSNotificationCenter.defaultCenter removeObserver:self];
     if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];
