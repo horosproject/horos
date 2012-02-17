@@ -1320,7 +1320,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
   //  NSLog(@"Add: %@", dicomFilesArray);
     
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
     [self cleanForFreeSpace];
     
@@ -1965,14 +1965,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
             if (newStudy && growlStringNewStudy)
                 [self performSelectorOnMainThread:@selector(_growlNewStudy:) withObject:growlStringNewStudy waitUntilDone:NO];
         }
-	
+        
+        thread.status = NSLocalizedString(@"Done.", nil);
 	}
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
     }
     
-    [pool release];
+  //  [pool release];
     
 	return [addedImageObjects valueForKey:@"objectID"];
 }
