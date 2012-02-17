@@ -47,6 +47,7 @@
 }
 
 -(BOOL)save:(NSError**)error {
+    [self lock];
     [self.persistentStoreCoordinator lock];
     @try {
         return [super save:error];
@@ -54,6 +55,7 @@
         @throw;
     } @finally {
         [self.persistentStoreCoordinator unlock];
+        [self unlock];
     }
     
     return NO;
@@ -61,11 +63,13 @@
 
 -(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
     [self lock];
+    [self.persistentStoreCoordinator lock];
     @try {
         return [super existingObjectWithID:objectID error:error];
     } @catch (...) {
         @throw;
     } @finally {
+        [self.persistentStoreCoordinator unlock];
         [self unlock];
     }
     
@@ -209,19 +213,21 @@
 }
 
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
-    if (![NSThread isMainThread])
-        [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
-    else {
-        [self.managedObjectContext lock];
+  //  if (![NSThread isMainThread])
+    //    [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:n waitUntilDone:NO];
+//    else {
+  //      [self.managedObjectContext lock];
+//        [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 //            NSLog(@"Merged.");
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
-            [self.managedObjectContext unlock];
+    //        [self.managedObjectContext.persistentStoreCoordinator unlock];
+      //      [self.managedObjectContext unlock];
         }
-    }
+//    }
 }
 
 -(void)lock {
@@ -402,16 +408,12 @@
 	
 	BOOL b = NO;
 	
-    [self.managedObjectContext lock];
-    [self.managedObjectContext.persistentStoreCoordinator lock];
     @try {
         b = [self.managedObjectContext save:err];
     } @catch(NSException* e) {
         if (!*err)
             *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
     } @finally {
-        [self.managedObjectContext.persistentStoreCoordinator unlock];
-        [self.managedObjectContext unlock];
     }
 	
 	return b;

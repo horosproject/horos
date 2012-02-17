@@ -126,6 +126,7 @@
 	
     NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"threadStatus"];
     [xp addEntriesFromDictionary:server];
+    [xp setObject:self forKey:@"DicomDatabase"];
     
 	DCMTKStoreSCU* storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET: [NSUserDefaults defaultAETitle] 
 															  calledAET: [server objectForKey:@"AETitle"] 

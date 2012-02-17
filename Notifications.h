@@ -44,10 +44,11 @@ extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
 extern NSString* const OsirixAddToDBNotificationImagesArray;
 extern NSString* const OsirixAddToDBCompleteNotification;
-extern NSString* const OsirixAddToDBCompleteNotificationImagesArray;
+extern NSString* const OsirixAddToDBCompleteNotificationImagesArray __deprecated; // use OsirixAddToDBNotificationImagesArray
 extern NSString* const OsirixDicomDatabaseDidChangeContextNotification;
 extern NSString* const _O2AddToDBAnywayNotification;
 extern NSString* const _O2AddToDBAnywayCompleteNotification;
+extern NSString* const O2DatabaseInvalidateAlbumsCacheNotification;
 extern NSString* const OsirixDatabaseObjectsMayBecomeUnavailableNotification; // database objects may soon become invalid
 extern NSString* const OsirixNewStudySelectedNotification;
 extern NSString* const OsirixDidLoadNewObjectNotification;

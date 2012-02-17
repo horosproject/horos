@@ -280,7 +280,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 										filesToSend:[todo valueForKey: @"Files"]
 									 transferSyntax:[[todo objectForKey:@"TransferSyntax"] intValue] 
 										compression:1.0
-									extraParameters:nil] autorelease] run:self];
+									extraParameters:[NSDictionary dictionaryWithObject:self.independentDicomDatabase forKey:@"DicomDatabase"]] autorelease] run:self];
 	} @catch (NSException* e) {
 		NSLog(@"Error: [WebServiceConnection sendImagesToDicomNodeThread:] %@", e);
 	} @finally {

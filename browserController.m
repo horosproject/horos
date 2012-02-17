@@ -1012,7 +1012,7 @@ static NSConditionLock *threadLock = nil;
     if ([path isEqualToString:_database.baseDirPath])
 		return [_database independentContext:independentContext];
 
-	return [[DicomDatabase databaseAtPath:path] independentContext:independentContext];
+	return [[DicomDatabase existingDatabaseAtPath:path] independentContext:independentContext];
 }
 
 // ------------------
@@ -1253,7 +1253,7 @@ static NSConditionLock *threadLock = nil;
 
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseAddNotification:) name:_O2AddToDBAnywayNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:@"InvalidateAlbumsCache" object:_database];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:_database];
             
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
             

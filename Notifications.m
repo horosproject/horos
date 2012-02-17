@@ -43,11 +43,13 @@ NSString* const OsirixStudyAnnotationsChangedNotification = @"OsirixStudyAnnotat
 NSString* const OsirixGLFontChangeNotification = @"changeGLFontNotification";
 NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";
 NSString* const OsirixDicomDatabaseDidChangeContextNotification = @"OsirixDicomDatabaseDidChangeContextNotification";
-NSString* const OsirixAddToDBNotificationImagesArray = @"OsiriXAddToDBArray";
+#define OsiriXAddToDBArrayKey @"OsiriXAddToDBArray"
+NSString* const OsirixAddToDBNotificationImagesArray = OsiriXAddToDBArrayKey;
 NSString* const OsirixAddToDBCompleteNotification = @"OsirixAddToDBCompleteNotification";
-NSString* const OsirixAddToDBCompleteNotificationImagesArray = @"OsiriXAddToDBArray";
+NSString* const OsirixAddToDBCompleteNotificationImagesArray = OsiriXAddToDBArrayKey; // is deprecated in favor of OsirixAddToDBNotificationImagesArray
 NSString* const _O2AddToDBAnywayNotification = @"_O2AddToDBAnywayNotification";
 NSString* const _O2AddToDBAnywayCompleteNotification = @"_O2AddToDBAnywayCompleteNotification";
+NSString* const O2DatabaseInvalidateAlbumsCacheNotification = @"InvalidateAlbumsCache";
 NSString* const OsirixDatabaseObjectsMayBecomeUnavailableNotification = @"OsirixDatabaseObjectsMayBecomeUnavailableNotification";
 NSString* const OsirixNewStudySelectedNotification = @"NewStudySelectedNotification";
 NSString* const OsirixDidLoadNewObjectNotification = @"OsiriX Did Load New Object";

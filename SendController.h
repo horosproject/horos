@@ -15,6 +15,7 @@
 //Abstract class for generalized control of DICOM sending.
 
 #import <Cocoa/Cocoa.h>
+#import "DicomDatabase.h"
 
 enum TransferSyntaxCodes
 {

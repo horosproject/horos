@@ -299,6 +299,8 @@ static volatile int sendControllerObjects = 0;
 	if( [NSThread currentThread].isCancelled)
 		return;
 	
+    DicomDatabase* database = [DicomDatabase databaseForContext:[[samePatientArray objectAtIndex:0] managedObjectContext]];
+    
 	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
 		
 	if( sendROIs == NO)
@@ -331,6 +333,9 @@ static volatile int sendControllerObjects = 0;
 	NSString *hostname = [[self server] objectForKey:@"Address"];
 	NSString *destPort = [[self server] objectForKey:@"Port"];
 	
+    NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithDictionary:[self server]];
+    [xp setObject:database forKey:@"DicomDatabase"];
+    
 	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
 			calledAET:calledAET 
 			hostname:hostname 
@@ -338,7 +343,7 @@ static volatile int sendControllerObjects = 0;
 			filesToSend:files
 			transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
 			compression: 1.0
-			extraParameters:[self server]];
+			extraParameters:xp];
 	
 	@try
 	{
