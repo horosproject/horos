@@ -2605,8 +2605,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		} @finally {
 			[_importFilesFromIncomingDirLock unlock];
 		}
-	} else
-		NSLog(@"Warning: couldn't initiate import of incoming files");
+	}// else
+		//NSLog(@"Info: couldn't initiate import of incoming files because it is alrea"); // who cares about this, it's just that another thread is already importing
 }
 
 +(void)importFilesFromIncomingDirTimerCallback:(NSTimer*)timer {

@@ -381,7 +381,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		int progress = 0;
 		thread.progress = 0;
 		
-		[DicomDatabase.activeLocalDatabase performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+		[DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
 																	  paths, @"filesInput",
 																	  [NSNumber numberWithBool:YES], @"mountedVolume",
 																	  [NSNumber numberWithBool:YES], @"copyFiles",

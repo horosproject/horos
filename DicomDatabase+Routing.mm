@@ -98,7 +98,7 @@
 		} @finally {
 			[_routingLock unlock];
 		}
-	else NSLog(@"Warning: couldn't initiate routing");
+	//else NSLog(@"Warning: couldn't initiate routing"); // who cares
 }
 
 -(void)_routingErrorMessage:(NSDictionary*)dict {
