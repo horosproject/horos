@@ -174,7 +174,9 @@
 }
 
 -(NSArray*)addFilesInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX {
-    NSArray* r = [super addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+    NSArray* objectIDs = [super addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+    
+    NSArray* r = [self objectsWithIDs:objectIDs];
     
     NSMutableArray* filesToSend = [NSMutableArray arrayWithCapacity:r.count];
     for (NSInteger i = 0; i < r.count; ++i) {

@@ -288,7 +288,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	}
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %d %@...", nil), items.count, items.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil) ];
-	return [self addFilesInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
+	NSArray* objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
+    
+    return [self objectsWithIDs:objectIDs];
 }
 
 +(NSString*)_findDicomdirIn:(NSArray*)allpaths  {

@@ -1200,8 +1200,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		
 		[thread enterOperationWithRange:thread.progress:0];
+//        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
-        NSArray* addedImagesArray = [self objectsWithIDs:[self.independentDatabase addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX]];
+        NSArray* objectIDs = [self.independentDatabase addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+//        NSLog(@"after: %X", self.managedObjectContext);
+        NSArray* addedImagesArray = [self objectsWithIDs:objectIDs];
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1277,18 +1280,18 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
  album
  
  */
--(NSArray*)addFilesInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
-	NSMutableArray* addedImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
     
+	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
+    NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
+
+    BOOL newStudy = NO;
+
   //  NSLog(@"Add: %@", dicomFilesArray);
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
-    
-    NSMutableArray* modifiedStudiesArray = [NSMutableArray array];
-    NSMutableArray* completeImagesArray = [NSMutableArray arrayWithCapacity: [dicomFilesArray count]];
-    BOOL newStudy = NO;
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // It has to be done after the NSMutableArray autorelease: we will return it.
     
     [self cleanForFreeSpace];
     
@@ -1296,6 +1299,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	@try
     {
 		NSMutableArray* studiesArray = [[self objectsForEntity:self.studyEntity] mutableCopy];
+        NSMutableArray* modifiedStudiesArray = [NSMutableArray array];
 		
 		NSDate *defaultDate = [NSCalendarDate dateWithYear:1901 month:1 day:1 hour:0 minute:0 second:0 timeZone:nil];
 		
@@ -1578,7 +1582,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								// Does this image contain a valid image path? If not replace it, with the new one
 								if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
 								{
-									[addedImagesArray addObject: image];
+									[addedImageObjects addObject:image];
 									
 									if (local)	// Delete this file, it's already in the DB folder
 									{
@@ -1604,12 +1608,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							}
 							else
 							{
-								image = [NSEntityDescription insertNewObjectForEntityForName:@"Image" inManagedObjectContext:self.managedObjectContext];
-								
+								image = [self newObjectForEntity:self.imageEntity];
 								newObject = YES;
 							}
 							
-							[completeImagesArray addObject: image];
+							[completeAddedImageObjects addObject:image];
 							
 							if (newObject || inParseExistingObject)
 							{
@@ -1776,7 +1779,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 									}
 								}
 								
-								[addedImagesArray addObject: image];
+								[addedImageObjects addObject:image];
 								
 //								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
 //									[addedSeries addObject: seriesTable];
@@ -1853,16 +1856,19 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         [studiesArrayStudyInstanceUID release];
 		[studiesArray release];
 		
-        // Compute no of images in studies/series
-        for( NSManagedObject *study in modifiedStudiesArray) [study valueForKey:@"noFiles"];
-        
-        // Reapply annotations from DICOMSR file
-        for( DicomStudy *study in modifiedStudiesArray) [study reapplyAnnotationsFromDICOMSR];
+        for (DicomStudy* study in modifiedStudiesArray) {
+            // Compute no of images in studies/series
+            [study noFiles];
+            // Reapply annotations from DICOMSR file
+            [study reapplyAnnotationsFromDICOMSR];
+        }
         
         thread.status = NSLocalizedString(@"Synchronizing database...", nil);
         thread.progress = -1;
         
+  //      NSLog(@"saving...");
         [self.managedObjectContext save:NULL];
+//        NSLog(@"saved.");
     }
     @catch (NSException* e)
     {
@@ -1875,39 +1881,60 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
 	@try
     {
-        thread.status = NSLocalizedString(@"Distributing new data...", nil);
+        thread.status = NSLocalizedString(@"Distributing added information...", nil);
+        thread.progress = -1;
 
 		NSString* growlString = nil;
 		NSString* growlStringNewStudy = nil;
 		
 		@try
 		{
-            if (addedImagesArray.count)
-                @synchronized (_unsavedAddedFiles) {
-                    [_unsavedAddedFiles addObjectsFromArray:[addedImagesArray valueForKey:@"path"]];
-                    [self performSelectorInBackground:@selector(_writeUnsavedAddedFilesPlistThread) withObject:nil];
-                }
-            
             // for NSNotifications we need the objects on the mainDatabase, however database synchronization may take a rather long time..
             DicomDatabase* notificationsDatabase = self.mainDatabase? self.mainDatabase : self;
-            NSArray* mainAddedImagesArray = nil;
-            NSArray* mainCompleteImagesArray = nil;
-            NSDate* startDate = [NSDate date];
-            while (-[startDate timeIntervalSinceNow] < 20) { // wait for 20 seconds at max
-                mainAddedImagesArray = self.mainDatabase? [self.mainDatabase objectsWithIDs:addedImagesArray] : addedImagesArray;
-                mainCompleteImagesArray = self.mainDatabase? [self.mainDatabase objectsWithIDs:completeImagesArray] : completeImagesArray;
-                if (mainAddedImagesArray.count == addedImagesArray.count && mainCompleteImagesArray.count == completeImagesArray.count)
-                    break;
-                [NSThread sleepForTimeInterval:0.02];
-            }
+            NSArray* notifyAddedImagesArray = addedImageObjects;
+            NSArray* notifyCompleteImagesArray = completeAddedImageObjects;
+            if (self.mainDatabase) { // notifications must be sent with NSManagedObjects belonging to the mainDatabase, not to this independentDatabase
+                NSDate* startDate = [NSDate date];
+                while (-[startDate timeIntervalSinceNow] < 20) { // wait for 20 seconds at max
+/*                    NSDate* lstartDate = [NSDate date];
+                    
+                    BOOL locked = NO;
+                    while (!locked && -[lstartDate timeIntervalSinceNow] < 5)
+                        if ([self.mainDatabase tryLock])
+                            locked = YES;
+                        else [NSThread sleepForTimeInterval:0.001];
+                    if (!locked)*/
 
-            if (mainAddedImagesArray.count != addedImagesArray.count && mainCompleteImagesArray.count != completeImagesArray.count)
-                NSLog(@"Warning: added %d|%d images, only %d|%d found in main database, looks like the main thread is much too busy", addedImagesArray.count, completeImagesArray.count, mainAddedImagesArray.count, mainCompleteImagesArray.count);
+                    [self.mainDatabase lock];
+                    @try {
+                        notifyAddedImagesArray = [self.mainDatabase objectsWithIDs:addedImageObjects];
+                        notifyCompleteImagesArray = [self.mainDatabase objectsWithIDs:completeAddedImageObjects];
+                        if (notifyAddedImagesArray.count == addedImageObjects.count && notifyCompleteImagesArray.count == completeAddedImageObjects.count)
+                            break;
+//                        [self.mainDatabase save];
+                    } @catch (...) {
+                        // nothing
+                    } @finally {
+                        [self.mainDatabase unlock];
+                    }
+                    
+                    [NSThread sleepForTimeInterval:0.05];
+                }
+                
+                if (notifyAddedImagesArray.count)
+                    @synchronized (_unsavedAddedFiles) {
+                        [_unsavedAddedFiles addObjectsFromArray:[notifyAddedImagesArray valueForKey:@"path"]];
+                        [self performSelectorInBackground:@selector(_writeUnsavedAddedFilesPlistThread) withObject:nil];
+                    }
+
+                if (notifyAddedImagesArray.count != addedImageObjects.count && notifyCompleteImagesArray.count != completeAddedImageObjects.count)
+                    NSLog(@"Warning: added %d|%d images, only %d|%d found in main database, looks like the main thread is much too busy", addedImageObjects.count, completeAddedImageObjects.count, notifyAddedImagesArray.count, notifyCompleteImagesArray.count);
+            }
             
             NSAutoreleasePool* pool2 = [NSAutoreleasePool new];
 			@try {
-				NSDictionary* userInfo = [NSDictionary dictionaryWithObject:mainAddedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
-				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:mainCompleteImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
+				NSDictionary* userInfo = [NSDictionary dictionaryWithObject:notifyAddedImagesArray forKey:OsirixAddToDBNotificationImagesArray];
+				NSDictionary* userInfo2 = [NSDictionary dictionaryWithObject:notifyCompleteImagesArray forKey:OsirixAddToDBCompleteNotificationImagesArray];
                 [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayNotification, notificationsDatabase, userInfo, nil] waitUntilDone:NO];
                 [self performSelectorOnMainThread:@selector(_notify:) withObject:[NSArray arrayWithObjects:_O2AddToDBAnywayCompleteNotification, notificationsDatabase, userInfo2, nil] waitUntilDone:NO];
 				if (postNotifications) {
@@ -1923,14 +1950,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				
 			if (postNotifications)
             {
-				if ([addedImagesArray count] > 0)  // && generatedByOsiriX == NO)
+				if ([notifyAddedImagesArray count] > 0)  // && generatedByOsiriX == NO)
                 {
-					growlString = [NSString stringWithFormat: NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [addedImagesArray count]];
-					growlStringNewStudy = [NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
+					growlString = [NSString stringWithFormat:NSLocalizedString(@"Patient: %@\r%d images added to the database", nil), [[notifyAddedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [notifyAddedImagesArray count]];
+					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[notifyAddedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[notifyAddedImagesArray objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 				
 				if (self.isLocal)
-					[self applyRoutingRules:nil toImages:addedImagesArray];
+					[self applyRoutingRules:nil toImages:addedImageObjects];
 			}
 			
 		}
@@ -1957,7 +1984,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
     [pool release];
     
-	return addedImagesArray;
+	return [addedImageObjects valueForKey:@"objectID"];
 }
 
 -(void)_writeUnsavedAddedFilesPlistThread

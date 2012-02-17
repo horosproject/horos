@@ -16,6 +16,7 @@
 #import "NSMutableDictionary+N2.h"
 #import "N2Debug.h"
 
+//#import "DicomDatabase.h" // for debug purposes, REMOVE
 
 @interface N2ManagedDatabase ()
 
@@ -71,6 +72,18 @@
     return nil;
 }
 
+/*-(void)lock { // for debug purposes, REMOVE
+    [super lock];
+    if ([[DicomDatabase defaultDatabase] managedObjectContext] == self)
+        N2LogStackTrace(@"default database locked...");
+}
+
+-(void)unlock { // for debug purposes, REMOVE
+    if ([[DicomDatabase defaultDatabase] managedObjectContext] == self)
+        NSLog(@"default database unlocked.");
+    [super unlock];
+}*/
+
 @end
 
 
@@ -86,14 +99,27 @@
 
 -(void)setManagedObjectContext:(NSManagedObjectContext*)managedObjectContext {
 	if (managedObjectContext != _managedObjectContext) {
-		// the database's main databaseObjectContext doesn't retain the database
+        [self willChangeValueForKey:@"managedObjectContext"];
+
+        NSManagedObjectContext* prevManagedObjectContext = [_managedObjectContext retain];
+
+        [prevManagedObjectContext lock];
+        [managedObjectContext lock];
+		
+        // the database's main managedObjectContext doesn't retain the database
 		if ([managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
             ((N2ManagedObjectContext*)managedObjectContext).database = nil;
-		[self willChangeValueForKey:@"managedObjectContext"];
+        
 		[_managedObjectContext release];
 		_managedObjectContext = [managedObjectContext retain];
-		[self didChangeValueForKey:@"managedObjectContext"];
-	}
+        
+        [prevManagedObjectContext unlock];
+        [prevManagedObjectContext release];
+        
+        [managedObjectContext unlock];
+
+        [self didChangeValueForKey:@"managedObjectContext"];
+    }
 }
 
 -(NSManagedObjectModel*)managedObjectModel {
@@ -189,6 +215,7 @@
         [self.managedObjectContext lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+//            NSLog(@"Merged.");
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
@@ -279,10 +306,13 @@
     [self.managedObjectContext lock];
     @try {
         NSMutableArray* r = [NSMutableArray arrayWithCapacity:objectIDs.count];
-        for (id oid in objectIDs) {
-            id o = [self objectWithID:oid];
-            if (o) [r addObject:o];
-        }
+        for (id oid in objectIDs)
+            @try {
+                id o = [self objectWithID:oid];
+                if (o) [r addObject:o];
+            } @catch (NSException* e) {
+                // nothing, just look for other objects
+            }
         return r;
     } @catch (...) {
         @throw;
