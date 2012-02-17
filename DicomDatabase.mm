@@ -2152,7 +2152,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			if( succeed)
 			{
                 objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
-				
 				total += [copiedFiles count];
 			}
 			else
@@ -2161,8 +2160,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					[[NSFileManager defaultManager]removeItemAtPath: f error: nil];
 			}
 			
-			if( [objects count])
-			{
+			if( [objects count]) @try {
+                [self lock];
+                
+                objects = [self objectsWithIDs:objects];
+                
                 BrowserController* bc = [BrowserController currentBrowser];
                 
 				if( studySelected == NO)
@@ -2188,7 +2190,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						}
 					}
 				}
-			}
+			} @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            } @finally {
+                [self unlock];
+            }
 			
 			if( [NSThread currentThread].isCancelled)
 				break;

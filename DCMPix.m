@@ -8965,145 +8965,148 @@ END_CREATE_ROIS:
 - (void) getDataFromNSImage:(NSImage*) otherImage
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	int x, y;
-	
-	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
-	
-	NSImage *r = nil;
-	
-	if( [rep pixelsWide] > [otherImage size].width)
-		r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
-	else
-		r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
-	
-	[r lockFocus];
-	[[NSColor whiteColor] set];
-	NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
-	[otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
-	[r unlockFocus];
-	
-	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
-	
-	height = [TIFFRep pixelsHigh];
-	width = [TIFFRep pixelsWide];
-	
-	if( savedHeightInDB != 0 && savedHeightInDB != height)
-	{
-        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
-            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
-		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-		if( height > savedHeightInDB)
-			height = savedHeightInDB;
-	}
-	
-	if( savedWidthInDB != 0 && savedWidthInDB != width)
-	{
-        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
-            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
-		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-		if( width > savedWidthInDB)
-			width = savedWidthInDB;
-	}
+	@try {
+        int x, y;
+        
+        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
+        
+        NSImage *r = nil;
+        
+        if( [rep pixelsWide] > [otherImage size].width)
+            r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
+        else
+            r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
+        
+        [r lockFocus];
+        [[NSColor whiteColor] set];
+        NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
+        [otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
+        [r unlockFocus];
+        
+        NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
+        
+        height = [TIFFRep pixelsHigh];
+        width = [TIFFRep pixelsWide];
+        
+        if( savedHeightInDB != 0 && savedHeightInDB != height)
+        {
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
+            [imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            if( height > savedHeightInDB)
+                height = savedHeightInDB;
+        }
+        
+        if( savedWidthInDB != 0 && savedWidthInDB != width)
+        {
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
+            [imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            if( width > savedWidthInDB)
+                width = savedWidthInDB;
+        }
 
-	unsigned char *srcImage = [TIFFRep bitmapData];
-	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
-	
-	int totSize = height * width * 4;
-	if( fExternalOwnedImage)
-		argbImage =	(unsigned char*) fExternalOwnedImage;
-	else
-		argbImage = malloc( totSize);
-	
-	if( srcImage != nil && argbImage != nil)
-	{
-		switch( [TIFFRep bitsPerPixel])
-		{
-			case 8:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						srcPtr++;
-					}
-				}
-			break;
-				
-			case 32:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						*tmpPtr++ = 255;
-						*tmpPtr++ = *srcPtr++;
-						*tmpPtr++ = *srcPtr++;
-						*tmpPtr++ = *srcPtr++;
-						srcPtr++;
-					}
-				}
-			break;
-				
-			case 24:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						
-						*((short*)tmpPtr) = *((short*)srcPtr);
-						tmpPtr+=2;
-						srcPtr+=2;
-						
-						*tmpPtr++ = *srcPtr++;
-					}
-				}
-			break;
-				
-			case 48:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					}
-				}
-			break;
-				
-			default:
-				NSLog(@"Error - Unknow bitsPerPixel ...");
-			break;
-		}
-		
-		fImage = (float*) argbImage;
-		isRGB = YES;
-	}
-	
-	[TIFFRep release];
-	
-	[pool release];
+        unsigned char *srcImage = [TIFFRep bitmapData];
+        unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
+        
+        int totSize = height * width * 4;
+        if( fExternalOwnedImage)
+            argbImage =	(unsigned char*) fExternalOwnedImage;
+        else
+            argbImage = malloc( totSize);
+        
+        if( srcImage != nil && argbImage != nil)
+        {
+            switch( [TIFFRep bitsPerPixel])
+            {
+                case 8:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            *tmpPtr++ = *srcPtr;
+                            *tmpPtr++ = *srcPtr;
+                            *tmpPtr++ = *srcPtr;
+                            srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 32:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            *tmpPtr++ = 255;
+                            *tmpPtr++ = *srcPtr++;
+                            *tmpPtr++ = *srcPtr++;
+                            *tmpPtr++ = *srcPtr++;
+                            srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 24:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            
+                            *((short*)tmpPtr) = *((short*)srcPtr);
+                            tmpPtr+=2;
+                            srcPtr+=2;
+                            
+                            *tmpPtr++ = *srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 48:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                        }
+                    }
+                break;
+                    
+                default:
+                    NSLog(@"Error - Unknow bitsPerPixel ...");
+                break;
+            }
+            
+            fImage = (float*) argbImage;
+            isRGB = YES;
+        }
+        
+        [TIFFRep release];
+	} @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
 }
 
 - (void) getFrameFromMovie:(NSString*) extension
