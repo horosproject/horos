@@ -41,6 +41,7 @@ Added features:
 - WebPortal: Burn option if the CD/DVD is installed
 - WebPortal: create albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
+- WebPortal: ROIs, Key images series, ...
 - Windows Tiling for 3D viewers (new level)
 - http://code.google.com/p/exposure-render/
 - The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
