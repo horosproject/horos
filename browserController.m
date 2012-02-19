@@ -375,7 +375,7 @@ static volatile BOOL waitForRunningProcess = NO;
                 return [[a name] caseInsensitiveCompare:[b name]];
             } @catch (...) {
             }
-            return 0; // equal comparaison
+            return (NSComparisonResult) 0; // equal comparaison
         }];
     } @catch (NSException* e) {
         N2LogException(e);
