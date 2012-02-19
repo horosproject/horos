@@ -149,7 +149,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		NSUInteger maxLength = 1024; uint8_t buffer[maxLength];
 		NSInteger length = [_inputStream read:buffer maxLength:maxLength];
 		if (length > 0) {
-			DLog(@"%@ Read %d Bytes", self, length);
+			DLog(@"%@ Read %d Bytes", self, (int) length);
 			//			std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
 			//			for (int i = 0; i < length; ++i)
 			//				std::cerr << (int)buffer[i] << " ";
@@ -166,7 +166,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 			_hasSpaceAvailable = NO;
 			NSUInteger sentLength = [_outputStream write:(uint8_t*)[_outputBuffer bytes] maxLength:length];
 			if (sentLength != -1) {
-				DLog(@"%@ Sent %d Bytes", self, sentLength);
+				DLog(@"%@ Sent %d Bytes", self, (int) sentLength);
 				[_outputBuffer replaceBytesInRange:NSMakeRange(0,sentLength) withBytes:NULL length:0];
 			} else
 				DLog(@"%@ Send error: %@", self, [[_outputStream streamError] localizedDescription]);

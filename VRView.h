@@ -404,9 +404,9 @@ typedef char* VTKStereoVRView;
 //@property(readonly) short currentTool;
 #endif
 
-@property BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
-@property int projectionMode;
-@property double clippingRangeThickness;
+@property (nonatomic) BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
+@property (nonatomic) int projectionMode;
+@property (nonatomic) double clippingRangeThickness;
 @property float lowResLODFactor;
 @property long renderingMode;
 @property (readonly) NSArray* currentOpacityArray;

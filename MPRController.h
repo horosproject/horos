@@ -99,16 +99,16 @@
 	NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 }
 
-@property float clippingRangeThickness, dcmInterval, blendingPercentage;
-@property int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
-@property int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
-@property (retain) Point3D *mousePosition;
+@property (nonatomic) float clippingRangeThickness, dcmInterval, blendingPercentage;
+@property (nonatomic) int dcmmN, clippingRangeMode, mouseViewID, dcmFrom, dcmTo, dcmMode, dcmSeriesMode, dcmRotation, dcmRotationDirection, dcmNumberOfFrames, dcmQuality, dcmBatchNumberOfFrames;
+@property (nonatomic) int dcmFormat, curMovieIndex, maxMovieIndex, blendingMode;
+@property (nonatomic, retain) Point3D *mousePosition;
 @property (retain) NSArray *wlwwMenuItems;
 @property (retain) NSString *dcmSeriesName;
 @property (readonly) DCMPix *originalPix;
-@property float LOD, movieRate;
-@property BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
-@property (retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
+@property (nonatomic) float LOD, movieRate;
+@property (nonatomic) BOOL lowLOD, dcmSameIntervalAndThickness, displayMousePosition, blendingModeAvailable, dcmBatchReverse;
+@property (nonatomic, retain) NSColor *colorAxis1, *colorAxis2, *colorAxis3;
 @property (readonly) MPRDCMView *mprView1, *mprView2, *mprView3;
 @property (readonly) NSSplitView *horizontalSplit, *verticalSplit;
 

@@ -2290,7 +2290,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [samePatientArray count] == 0) return;
 	
-	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [samePatientArray count]);
+	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], (int) [samePatientArray count]);
 		
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
 																  calledAET: [server objectForKey:@"AETitle"] 
@@ -5092,7 +5092,7 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [toBeRemoved count] > 0)
 				{
-					NSLog(@"Will delete: %d studies", [toBeRemoved count]);
+					NSLog(@"Will delete: %d studies", (int) [toBeRemoved count]);
 					
 					Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 					[wait showWindow:self];
@@ -7155,7 +7155,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSManagedObject	*study = nil, *series = nil;
 		
-		NSLog(@"objects to delete : %d", [objectsToDelete count]);
+		NSLog(@"objects to delete : %d", (int) [objectsToDelete count]);
 		
 		for ( NSManagedObject *obj in objectsToDelete)
 		{
@@ -7350,7 +7350,7 @@ static NSConditionLock *threadLock = nil;
         
         if( cancelled == NO)
         {
-            NSLog( @"locked images: %d", [lockedImages count]);
+            NSLog( @"locked images: %d", (int) [lockedImages count]);
             
             // Try to find images that aren't stored in the local database
             
@@ -7364,7 +7364,7 @@ static NSConditionLock *threadLock = nil;
             [wait close];
             [wait release];
             
-            NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
+            NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
             
             if( [nonLocalImagesPath  count] > 0)
             {
@@ -8398,7 +8398,7 @@ static NSConditionLock *threadLock = nil;
 							
 							if( [seriesArray count] != 1)
 							{
-								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
+								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
 							}
 							else
 							{
@@ -15423,7 +15423,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[IncomingTimer invalidate];
 	[IncomingTimer release];
 	
-	NSLog( @"Listener check: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]);
+	NSLog( @"Listener check: %d", (int) [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]);
 	
 	IncomingTimer = [[NSTimer scheduledTimerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
 }
@@ -15442,14 +15442,14 @@ static NSArray*	openSubSeriesArray = nil;
             
             copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
             
-            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
             
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         }
 	
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		NSLog( @"---- save delete queue: %d objects", [copyArray count]);
+		NSLog( @"---- save delete queue: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
@@ -15472,7 +15472,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
         
-        NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+        NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
         
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
     }
@@ -15481,7 +15481,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		NSLog( @"delete Queue start: %d objects", [copyArray count]);
+		NSLog( @"delete Queue start: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
@@ -15626,7 +15626,7 @@ static NSArray*	openSubSeriesArray = nil;
          {
              NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
              
-             NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+             NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
              [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
              
              [deleteQueue lock];
@@ -16657,7 +16657,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		while( range.length > 0 && waitCompressionAbort == NO);
 		
 		if( range.length > 0 && waitCompressionAbort == NO)
-			NSLog( @"****** range.length != 0 : (%d, %d)", range.location, range.length);
+			NSLog( @"****** range.length != 0 : (%d, %d)", (int) range.location, (int) range.length);
 		
 		finished = NO;
 		do
@@ -17638,7 +17638,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
-		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
+		NSLog(@"Files from contextual menu: %d", (int) [filesToExport count]);
 	}
 	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	

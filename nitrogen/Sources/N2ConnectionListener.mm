@@ -124,7 +124,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		NSData *addr = [(NSData *)CFSocketCopyAddress(ipv4socket) autorelease];
 		memcpy(&addr4, [addr bytes], [addr length]);
 		port = ntohs(addr4.sin_port);
-		NSLog(@"Warning: listening on port %d", port);
+		NSLog(@"Warning: listening on port %d", (int) port);
 	}
 	
 	// set up the IPv6 endpoint

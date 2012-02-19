@@ -1416,7 +1416,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[vrPanel load3DState];
 		[vrPanel ApplyOpacityString:NSLocalizedString(@"Logarithmic Inverse Table", nil)];
 		
-		[[vrPanel view] setMode: 0];
+		[(VRView*) [vrPanel view] setMode: 0];
 		[[vrPanel view] coView:self];
 		float   iwl, iww;
 		[subtractedOriginalView getWLWW:&iwl :&iww];

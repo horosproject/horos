@@ -381,7 +381,7 @@ SecPolicySearchCreate:
 								keychain,              // SecKeychainRef importKeychain
 								&outItems);            // CFArrayRef *outItems
 	
-	NSLog(@"OSStatus: %i", err);
+	NSLog(@"OSStatus: %i", (int) err);
 	
 	NSLog(@"SecExternalFormat: %@", [DDKeychain stringForSecExternalFormat:inputFormat]);
 	NSLog(@"SecExternalItemType: %@", [DDKeychain stringForSecExternalItemType:itemType]);
