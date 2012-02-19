@@ -401,8 +401,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) sendSyncMessage:(short) inc;
 - (void) loadTextures;
 - (void)loadTexturesCompute;
-- (void) flipVertical:(id) sender;
-- (void) flipHorizontal:(id) sender;
+- (IBAction) flipVertical:(id) sender;
+- (IBAction) flipHorizontal:(id) sender;
 - (void) setFusion:(short) mode :(short) stacks;
 - (void) FindMinimumOpenGLCapabilities;
 - (NSPoint) rotatePoint:(NSPoint) a;

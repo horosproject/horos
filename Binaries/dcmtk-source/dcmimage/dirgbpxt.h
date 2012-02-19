@@ -91,7 +91,7 @@ class DiRGBPixelTemplate
                  const unsigned int planeSize,
                  const int bits)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer

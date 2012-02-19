@@ -163,7 +163,7 @@
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
-- (void) setModeIndex:(long) val;
+- (IBAction) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
 - (NSMutableArray*) pixList;
 - (NSMutableArray*) curPixList;

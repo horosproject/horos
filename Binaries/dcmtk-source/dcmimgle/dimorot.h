@@ -114,11 +114,11 @@ class DiMonoRotateTemplate
             if (this->Data != NULL)
             {
                 if (degree == 90)
-                    rotateRight(&pixel, &(this->Data));
+                    this->rotateRight(&pixel, &(this->Data));
                 else if (degree == 180)
-                    rotateTopDown(&pixel, &(this->Data));
+                    this->rotateTopDown(&pixel, &(this->Data));
                 else if (degree == 270)
-                    rotateLeft(&pixel, &(this->Data));
+                    this->rotateLeft(&pixel, &(this->Data));
             }
         }
     }

@@ -107,14 +107,14 @@ class DiColorFlipTemplate
                      const int horz,
                      const int vert)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             if (horz && vert)
-                flipHorzVert(pixel, this->Data);
+                this->flipHorzVert(pixel, this->Data);
             else if (horz)
-                flipHorz(pixel, this->Data);
+                this->flipHorz(pixel, this->Data);
             else if (vert)
-                flipVert(pixel, this->Data);
+                this->flipVert(pixel, this->Data);
         }
     }
 };

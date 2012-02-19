@@ -71,7 +71,7 @@
 - (void)setup:(id)sender;
 - (void)addDICOMDIRUsingDCMTK;
 - (void)addDicomdir;
-- (void)estimateFolderSize:(id)object;
+- (IBAction)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;
 //- (void)reloadData:(id)object;
 - (void)irisAnimation:(NSTimer*)object;

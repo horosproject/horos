@@ -79,10 +79,10 @@ class DiMonoInputPixelTemplate
             else if ((this->Modality != NULL) && this->Modality->hasRescaling())
             {
                 rescale(pixel, this->Modality->getRescaleSlope(), this->Modality->getRescaleIntercept());
-                determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
+                this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             } else {
                 rescale(pixel);                     // "copy" or reference pixel data
-                determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
+                this->determineMinMax(OFstatic_cast(T3, this->Modality->getMinValue()), OFstatic_cast(T3, this->Modality->getMaxValue()));
             }
         }
     }

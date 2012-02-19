@@ -6,6 +6,7 @@
 - WebPortal: option for direct SMTP support for emails
 - WebPortal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
 - More robust Crash Reporter tool
+- OsiriX is now compiled with Apple LLVM 3.1
 
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
