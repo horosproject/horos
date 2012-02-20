@@ -389,7 +389,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (context == LocalBrowserSourcesContext)
     {
-		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
+        NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"];
         // remove old items
 		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
         {
@@ -423,6 +423,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (context == RemoteBrowserSourcesContext)
     {
+        NSHost* currentHost = [NSHost currentHost];
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
 		// remove old items
 		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
@@ -437,26 +438,33 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// add new items
 		for (NSDictionary* d in a)
         {
-			NSString* dadd = [d valueForKey:@"Address"];
-            if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:[NSHost currentHost]]) // don't list self
-                continue;
-            DataNodeIdentifier* dni;
-			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
-			if (i == NSNotFound) {
-                dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
-                dni.entered = YES;
-				[_browser.sources addObject:dni];
-			} else {
-                dni = [_browser.sources.content objectAtIndex:i];
-                dni.entered = YES;
-                dni.description = [d objectForKey:@"Description"];
-				dni.dictionary = d;
-			}
+            [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+                // we're now in a background thread
+                NSString* dadd = [d valueForKey:@"Address"];
+                if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
+                    return;
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    // we're now back in the main thread
+                    DataNodeIdentifier* dni;
+                    NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:dadd];
+                    if (i == NSNotFound) {
+                        dni = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:dadd description:[d objectForKey:@"Description"] dictionary:d];
+                        dni.entered = YES;
+                        [_browser.sources addObject:dni];
+                    } else {
+                        dni = [_browser.sources.content objectAtIndex:i];
+                        dni.entered = YES;
+                        dni.description = [d objectForKey:@"Description"];
+                        dni.dictionary = d;
+                    }
+                }];
+            }];
 		}
 	}
 	
 	if (context == DicomBrowserSourcesContext)
     {
+        NSHost* currentHost = [NSHost currentHost];
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
 		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
 		for (NSDictionary* ai in a)
@@ -474,20 +482,26 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// add new items
 		for (NSString* aak in aa)
         {
-            if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:NULL] isEqualToHost:[NSHost currentHost]]) // don't list self
-                continue;
-            DataNodeIdentifier* dni;
-			NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
-			if (i == NSNotFound) {
-				dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
-                dni.entered = YES;
-                [_browser.sources addObject:dni];
-			} else {
-                dni = [_browser.sources.content objectAtIndex:i];
-                dni.entered = YES;
-				dni.dictionary = [aa objectForKey:aak];
-                dni.description = [dni.dictionary objectForKey:@"Description"];
-			}
+            [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+                // we're now in a background thread
+                if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:NULL] isEqualToHost:currentHost]) // don't list self
+                    return;
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    // we're now back in the main thread
+                    DataNodeIdentifier* dni;
+                    NSUInteger i = [[_browser.sources.content valueForKey:@"location"] indexOfObject:aak];
+                    if (i == NSNotFound) {
+                        dni = [DicomNodeIdentifier dicomNodeIdentifierWithLocation:aak description:[[aa objectForKey:aak] objectForKey:@"Description"] dictionary:[aa objectForKey:aak]];
+                        dni.entered = YES;
+                        [_browser.sources addObject:dni];
+                    } else {
+                        dni = [_browser.sources.content objectAtIndex:i];
+                        dni.entered = YES;
+                        dni.dictionary = [aa objectForKey:aak];
+                        dni.description = [dni.dictionary objectForKey:@"Description"];
+                    }
+                }];
+            }];
 		}
 	}
 	
@@ -539,66 +553,74 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
     NSValue* key = [NSValue valueWithPointer:service];
-    DataNodeIdentifier* source = [_bonjourSources objectForKey:key];
-	if (!source) return;
+    DataNodeIdentifier* source0 = [_bonjourSources objectForKey:key];
+	if (!source0) return;
     
-    NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
-    if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
-        if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
-            [_bonjourSources removeObjectForKey:key];
-            return; // it's me
-        }
-    
-	NSMutableArray* addresses = [NSMutableArray array];
-	for (NSData* address in service.addresses)
-    {
-        struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
-		if (sockAddr->sa_family == AF_INET)
-        {
-			struct sockaddr_in* sockAddrIn = (struct sockaddr_in*)sockAddr;
-			NSString* host = [NSString stringWithUTF8String:inet_ntoa(sockAddrIn->sin_addr)];
-			NSInteger port = ntohs(sockAddrIn->sin_port);
-			[addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
-		}
-        else if (sockAddr->sa_family == AF_INET6)
-        {
-			struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
-			char buffer[256];
-			const char* rv = inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, sizeof(buffer));
-			NSString* host = [NSString stringWithUTF8String:buffer];
-			NSInteger port = ntohs(sockAddrIn6->sin6_port);
-			[addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
-		}
-	}
-	
-	for (NSArray* address in addresses)
-    {
-		// NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
-		if (!source.location)
-			if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-				source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
-			else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
-	}
-	
-    NSUInteger i = [_browser.sources.content indexOfObject:source];
-    if (i != NSNotFound) // Already known
-        [_bonjourSources setObject:(source = [_browser.sources.content objectAtIndex:i]) forKey:key];
-    
-	if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
-		source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
-	else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
-		
-	if (source.location)
-    {
-		NSLog(@" -> Adding %@", source.location);
-		if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
-            ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
-			
-            source.detected = YES;
-            if (![_browser.sources.content containsObject:source])
-                [_browser.sources addObject:source];
-        }
-	}
+    [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+        // we're now in a background thread
+        NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
+        if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
+            if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
+                [_bonjourSources removeObjectForKey:key];
+                return; // it's me
+            }
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            // we're now back in the main thread
+            NSMutableArray* addresses = [NSMutableArray array];
+            for (NSData* address in service.addresses)
+            {
+                struct sockaddr* sockAddr = (struct sockaddr*)address.bytes;
+                if (sockAddr->sa_family == AF_INET)
+                {
+                    struct sockaddr_in* sockAddrIn = (struct sockaddr_in*)sockAddr;
+                    NSString* host = [NSString stringWithUTF8String:inet_ntoa(sockAddrIn->sin_addr)];
+                    NSInteger port = ntohs(sockAddrIn->sin_port);
+                    [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                }
+                else if (sockAddr->sa_family == AF_INET6)
+                {
+                    struct sockaddr_in6* sockAddrIn6 = (struct sockaddr_in6*)sockAddr;
+                    char buffer[256];
+                    const char* rv = inet_ntop(AF_INET6, &sockAddrIn6->sin6_addr, buffer, sizeof(buffer));
+                    NSString* host = [NSString stringWithUTF8String:buffer];
+                    NSInteger port = ntohs(sockAddrIn6->sin6_port);
+                    [addresses addObject:[NSArray arrayWithObjects: host, [NSNumber numberWithInteger:port], NULL]];
+                }
+            }
+            
+            DataNodeIdentifier* source = source0;
+            
+            for (NSArray* address in addresses)
+            {
+                // NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
+                if (!source.location)
+                    if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+                        source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
+                    else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+            }
+            
+            NSUInteger i = [_browser.sources.content indexOfObject:source];
+            if (i != NSNotFound) // Already known
+                [_bonjourSources setObject:(source = [_browser.sources.content objectAtIndex:i]) forKey:key];
+            
+            if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
+                source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
+            else source.dictionary = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
+            
+            if (source.location)
+            {
+                NSLog(@" -> Adding %@", source.location);
+                if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
+                    ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
+                    
+                    source.detected = YES;
+                    if (![_browser.sources.content containsObject:source])
+                        [_browser.sources addObject:source];
+                }
+            }
+        }];
+    }];
 }
 
 -(void)netService:(NSNetService*)service didNotResolve:(NSDictionary*)errorDict
