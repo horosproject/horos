@@ -430,6 +430,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     }
 	
 //    if (![[[BrowserController currentBrowser] sourceForDatabase:self] isBeingEjected]) {
+    if (!thread.isCancelled) {
         thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
         NSMutableArray* dicomSeries	= [NSMutableArray array];
         for (DicomImage* di in dicomImages)
@@ -442,6 +443,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
+    }
 //    }
 	
 	/*

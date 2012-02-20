@@ -987,11 +987,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             _scanThread = thread;
         }
         
+        DicomDatabase* database = [_database independentDatabase];
+        
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
 		[[ThreadsManager defaultManager] addThreadAndStart:thread];
-		[_database scanAtPath:self.devicePath];
 		
-		if (![[_database.independentDatabase objectsForEntity:_database.imageEntity] count])
+        [database scanAtPath:self.devicePath];
+		
+		if (![[database objectsForEntity:database.imageEntity] count])
         {
 			[[[BrowserController currentBrowser] sources] removeObject:self];
 			return;

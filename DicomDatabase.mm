@@ -2023,7 +2023,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
 			
-			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // fiveSeconds 
+			NSTimeInterval twentySeconds = [NSDate timeIntervalSinceReferenceDate] + 5; // actually fiveSeconds 
 			
 			for( ; i < [filesInput count] && twentySeconds > [NSDate timeIntervalSinceReferenceDate]; i++)
 			{
@@ -2043,9 +2043,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					
 					dstPath = [self uniquePathForNewDataFileWithExtension:extension];
 
-#define USECORESERVICESFORCOPY 1
-
-#ifdef USECORESERVICESFORCOPY
+//#define USECORESERVICESFORCOPY 1
+//
+//#ifdef USECORESERVICESFORCOPY
                     char *targetPath = nil;
                     OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
                     OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
@@ -2054,25 +2054,21 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                     {
                         NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
                     }
-#else
-                    NSError* err = nil;
-                    if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err] == NO)
-                    {
-                        NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
-                    }
-#endif
+//#else
+//                    NSError* err = nil;
+//                    if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err] == NO)
+//                    {
+//                        NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
+//                    }
+//#endif
                     else
                     {
 						if( [extension isEqualToString: @"dcm"] == NO)
 						{
-							DicomFile *dcmFile = [[[DicomFile alloc] init: dstPath] autorelease];
-							
-							if( [[[dcmFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
+							if([DicomFile isDICOMFile:dstPath])
 							{
 								NSString *newPathExtension = [[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension: @"dcm"];
-								
 								[[NSFileManager defaultManager] moveItemAtPath: dstPath toPath: newPathExtension error: nil];
-								
 								dstPath = newPathExtension;
 							}
 						}
@@ -2100,7 +2096,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						}
 						else
 						{
-							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
+							if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
 							{
 								// Pre-load for faster validating
 								NSData *d = [NSData dataWithContentsOfFile: srcPath];
