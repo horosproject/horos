@@ -232,15 +232,16 @@ static NSMutableDictionary* databasesDictionary = nil;
 +(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name {
 	path = [self baseDirPathForPath:path];
 	
+    DicomDatabase* database = nil;
 	@synchronized(databasesDictionary) {
-		DicomDatabase* database = [databasesDictionary objectForKey:path];
-		if (database) return database;
-		database = [[[[self class] alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
-		database.name = name;
-		return database;
-	}
+		database = [databasesDictionary objectForKey:path];
+    }
 	
-	return nil;
+	if (database) return database;
+	
+    database = [[[[self class] alloc] initWithPath:[self sqlFilePathForBasePath:path]] autorelease];
+	database.name = name;
+	return database;
 }
 
 +(DicomDatabase*)existingDatabaseAtPath:(NSString*)path {
