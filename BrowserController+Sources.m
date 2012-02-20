@@ -436,9 +436,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
 		}
 		// add new items
+        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
 		for (NSDictionary* d in a)
         {
-            [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+            [[queue retain] addOperationWithBlock:^{
                 // we're now in a background thread
                 NSString* dadd = [d valueForKey:@"Address"];
                 if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
@@ -458,6 +459,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         dni.dictionary = d;
                     }
                 }];
+                
+                [queue autorelease];
             }];
 		}
 	}
@@ -480,9 +483,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
 		}
 		// add new items
+        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
 		for (NSString* aak in aa)
         {
-            [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+            [[queue retain] addOperationWithBlock:^{
                 // we're now in a background thread
                 if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:NULL] isEqualToHost:currentHost]) // don't list self
                     return;
@@ -501,6 +505,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         dni.description = [dni.dictionary objectForKey:@"Description"];
                     }
                 }];
+                
+                [queue autorelease];
             }];
 		}
 	}
@@ -556,7 +562,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     DataNodeIdentifier* source0 = [_bonjourSources objectForKey:key];
 	if (!source0) return;
     
-    [[[[NSOperationQueue alloc] init] autorelease] addOperationWithBlock:^{
+    NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+    [[queue retain] addOperationWithBlock:^{
         // we're now in a background thread
         NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
         if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
@@ -620,6 +627,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
             }
         }];
+        
+        [queue autorelease];
     }];
 }
 
