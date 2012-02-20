@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2177</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSUserDefaultsController</string>
@@ -33,7 +33,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="939545339">
 			<object class="NSCustomObject" id="609968210">
 				<string key="NSClassName">OrthogonalMPRViewer</string>
@@ -50,14 +53,14 @@
 				<string key="NSWindowRect">{{94, 302}, {513, 790}}</string>
 				<int key="NSWTFlags">544735232</int>
 				<string key="NSWindowTitle">Orthogonal MPR</string>
-				<string key="NSWindowClass">NSWindow</string>
+				<string key="NSWindowClass">OSIWindow</string>
 				<object class="NSMutableString" key="NSViewClass">
 					<characters key="NS.bytes">View</characters>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{200, 200}</string>
 				<object class="NSView" key="NSWindowView" id="28206561">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="513474660">
@@ -69,6 +72,8 @@
 									<int key="NSvFlags">274</int>
 									<string key="NSFrameSize">{507, 254}</string>
 									<reference key="NSSuperview" ref="513474660"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="172849428"/>
 									<string key="NSClassName">OrthogonalMPRView</string>
 									<string key="NSExtension">NSOpenGLView</string>
 								</object>
@@ -77,6 +82,8 @@
 									<int key="NSvFlags">274</int>
 									<string key="NSFrame">{{0, 263}, {507, 254}}</string>
 									<reference key="NSSuperview" ref="513474660"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="838960345"/>
 									<string key="NSClassName">OrthogonalMPRView</string>
 									<string key="NSExtension">NSOpenGLView</string>
 								</object>
@@ -85,15 +92,22 @@
 									<int key="NSvFlags">274</int>
 									<string key="NSFrame">{{0, 526}, {507, 254}}</string>
 									<reference key="NSSuperview" ref="513474660"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSClassName">OrthogonalMPRView</string>
 									<string key="NSExtension">NSOpenGLView</string>
 								</object>
 							</array>
 							<string key="NSFrame">{{3, 10}, {507, 780}}</string>
 							<reference key="NSSuperview" ref="28206561"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="884098187"/>
 						</object>
 					</array>
 					<string key="NSFrameSize">{513, 790}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
+					<reference key="NSNextKeyView" ref="513474660"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMinSize">{200, 222}</string>
@@ -1725,30 +1739,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">133</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">originalView</string>
-						<reference key="source" ref="838553522"/>
-						<reference key="destination" ref="884098187"/>
-					</object>
-					<int key="connectionID">134</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">xReslicedView</string>
-						<reference key="source" ref="838553522"/>
-						<reference key="destination" ref="172849428"/>
-					</object>
-					<int key="connectionID">135</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">yReslicedView</string>
-						<reference key="source" ref="838553522"/>
-						<reference key="destination" ref="838960345"/>
-					</object>
-					<int key="connectionID">136</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">changeTool:</string>
 						<reference key="source" ref="609968210"/>
@@ -2109,52 +2099,28 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">340</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.afterExportMarkThemAsKeyImages</string>
-						<reference key="source" ref="789041528"/>
-						<reference key="destination" ref="91931421"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="789041528"/>
-							<reference key="NSDestination" ref="91931421"/>
-							<string key="NSLabel">value: values.afterExportMarkThemAsKeyImages</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.afterExportMarkThemAsKeyImages</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">originalView</string>
+						<reference key="source" ref="838553522"/>
+						<reference key="destination" ref="884098187"/>
 					</object>
-					<int key="connectionID">346</int>
+					<int key="connectionID">134</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.afterExportSendToDICOMNode</string>
-						<reference key="source" ref="1073286934"/>
-						<reference key="destination" ref="91931421"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1073286934"/>
-							<reference key="NSDestination" ref="91931421"/>
-							<string key="NSLabel">value: values.afterExportSendToDICOMNode</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.afterExportSendToDICOMNode</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">xReslicedView</string>
+						<reference key="source" ref="838553522"/>
+						<reference key="destination" ref="172849428"/>
 					</object>
-					<int key="connectionID">347</int>
+					<int key="connectionID">135</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.exportDCMIncludeAllViews</string>
-						<reference key="source" ref="928530777"/>
-						<reference key="destination" ref="91931421"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="928530777"/>
-							<reference key="NSDestination" ref="91931421"/>
-							<string key="NSLabel">value: values.exportDCMIncludeAllViews</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.exportDCMIncludeAllViews</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">yReslicedView</string>
+						<reference key="source" ref="838553522"/>
+						<reference key="destination" ref="838960345"/>
 					</object>
-					<int key="connectionID">351</int>
+					<int key="connectionID">136</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -2175,6 +2141,54 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">353</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.afterExportSendToDICOMNode</string>
+						<reference key="source" ref="1073286934"/>
+						<reference key="destination" ref="91931421"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1073286934"/>
+							<reference key="NSDestination" ref="91931421"/>
+							<string key="NSLabel">value: values.afterExportSendToDICOMNode</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.afterExportSendToDICOMNode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">347</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.afterExportMarkThemAsKeyImages</string>
+						<reference key="source" ref="789041528"/>
+						<reference key="destination" ref="91931421"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="789041528"/>
+							<reference key="NSDestination" ref="91931421"/>
+							<string key="NSLabel">value: values.afterExportMarkThemAsKeyImages</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.afterExportMarkThemAsKeyImages</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">346</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.exportDCMIncludeAllViews</string>
+						<reference key="source" ref="928530777"/>
+						<reference key="destination" ref="91931421"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="928530777"/>
+							<reference key="NSDestination" ref="91931421"/>
+							<string key="NSLabel">value: values.exportDCMIncludeAllViews</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.exportDCMIncludeAllViews</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">351</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3303,26 +3317,21 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">DCMView</string>
 					<string key="superclassName">NSOpenGLView</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="actualSize:">id</string>
 						<string key="alwaysSyncMenu:">id</string>
-						<string key="annotMenu:">id</string>
-						<string key="changeFont:">id</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
-						<string key="sliderAction:">id</string>
+						<string key="scaleToFit:">id</string>
 						<string key="sliderRGBFactor:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="actualSize:">
+							<string key="name">actualSize:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="alwaysSyncMenu:">
 							<string key="name">alwaysSyncMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="annotMenu:">
-							<string key="name">annotMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeFont:">
-							<string key="name">changeFont:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
@@ -3337,8 +3346,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">roiLoadFromXMLFiles:</string>
 							<string key="candidateClassName">NSArray</string>
 						</object>
-						<object class="IBActionInfo" key="sliderAction:">
-							<string key="name">sliderAction:</string>
+						<object class="IBActionInfo" key="scaleToFit:">
+							<string key="name">scaleToFit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="sliderRGBFactor:">
@@ -3370,13 +3379,28 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">N2OpenGLViewWithSplitsWindow</string>
+					<string key="superclassName">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/N2OpenGLViewWithSplitsWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">OSIWindow</string>
+					<string key="superclassName">N2OpenGLViewWithSplitsWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/OSIWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">OSIWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="applyShading:">id</string>
 						<string key="redo:">id</string>
 						<string key="undo:">id</string>
-						<string key="updateAutoAdjustPrinting:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="applyShading:">
@@ -3391,10 +3415,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">undo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="updateAutoAdjustPrinting:">
-							<string key="name">updateAutoAdjustPrinting:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
@@ -3405,33 +3425,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">OrthogonalMPRController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="blendingPropagate:">OrthogonalMPRView</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRView</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
-						<string key="fullWindowView:">id</string>
-						<string key="showViews:">id</string>
-						<string key="toggleDisplayResliceAxes:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="blendingPropagate:">
-							<string key="name">blendingPropagate:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
 							<string key="name">flipHorizontal:</string>
 							<string key="candidateClassName">id</string>
@@ -3440,22 +3437,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="fullWindowView:">
-							<string key="name">fullWindowView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showViews:">
-							<string key="name">showViews:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toggleDisplayResliceAxes:">
-							<string key="name">toggleDisplayResliceAxes:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="originalView">OrthogonalMPRView</string>
-						<string key="viewer">id</string>
 						<string key="xReslicedView">OrthogonalMPRView</string>
 						<string key="yReslicedView">OrthogonalMPRView</string>
 					</dictionary>
@@ -3463,10 +3447,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="originalView">
 							<string key="name">originalView</string>
 							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="viewer">
-							<string key="name">viewer</string>
-							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="xReslicedView">
 							<string key="name">xReslicedView</string>
@@ -3494,18 +3474,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">OrthogonalMPRViewer</string>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="MoviePlayStop:">id</string>
 						<string key="activateThickSlab:">id</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRView</string>
 						<string key="changeFromAndToBounds:">id</string>
 						<string key="changeTool:">id</string>
 						<string key="customizeViewerToolBar:">id</string>
 						<string key="endExportDICOMFileSettings:">id</string>
-						<string key="exportDICOMFile:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
 						<string key="resetImage:">id</string>
 						<string key="roiDeleteAll:">id</string>
 						<string key="setCurrentPosition:">id</string>
@@ -3514,25 +3487,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="setThickSlabMode:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="activateThickSlab:">
 							<string key="name">activateThickSlab:</string>
 							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
 						</object>
 						<object class="IBActionInfo" key="changeFromAndToBounds:">
 							<string key="name">changeFromAndToBounds:</string>
@@ -3548,18 +3505,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="endExportDICOMFileSettings:">
 							<string key="name">endExportDICOMFileSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="resetImage:">
@@ -3756,7 +3701,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<real value="1060" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
@@ -3765,8 +3710,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="Cross">{28, 28}</string>
 			<string key="Length">{28, 28}</string>
 			<string key="Move">{28, 28}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
 			<string key="Oval">{28, 28}</string>
 			<string key="Point">{28, 28}</string>

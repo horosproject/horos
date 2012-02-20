@@ -22,6 +22,7 @@
 #import "Notifications.h"
 #import "ROIWindow.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2OpenGLViewWithSplitsWindow.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -84,6 +85,9 @@ static float deg2rad = M_PI/180.0;
 		[[self window] setWindowController: self];
 		[[[self window] toolbar] setDelegate: self];
 		
+        [horizontalSplit setDelegate: self];
+        [verticalSplit setDelegate: self];
+        
 		originalPix = [pix lastObject];
 		
 		if( [originalPix isRGB])
@@ -360,11 +364,21 @@ static float deg2rad = M_PI/180.0;
 	[self setLOD: 1];
 }
 
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+    N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
+}
+
 -(void) applyViewsPosition
 {
     NSRect r;
     NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
+    NSDisableScreenUpdates();
+    
     switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MPR2DViewsPosition"])
     {
         case 0:
@@ -441,6 +455,8 @@ static float deg2rad = M_PI/180.0;
             [horizontalSplit adjustSubviews];
         break;
     }
+    
+    NSEnableScreenUpdates();
 }
 
 -(void) awakeFromNib

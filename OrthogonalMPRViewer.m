@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2OpenGLViewWithSplitsWindow.h"
 
 #import "DicomStudy.h"
 #import "DicomSeries.h"
@@ -554,8 +555,18 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 #pragma mark-
 #pragma mark NSSplitView Control
 
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+    N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
+}
+
 - (void) adjustSplitView
 {
+    NSDisableScreenUpdates();
+    
 	NSSize splitViewSize = [splitView frame].size;
 	float w,h;
 	if ([splitView isVertical])
@@ -579,6 +590,8 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	[splitView adjustSubviews];
 	[splitView setNeedsDisplay:YES];
 	[self updateToolbarItems];
+    
+    NSEnableScreenUpdates();
 }
 
 //- (void) turnSplitView

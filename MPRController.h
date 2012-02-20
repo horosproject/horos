@@ -20,7 +20,7 @@
 
 @class MPRDCMView;
 
-@interface MPRController : Window3DController <NSToolbarDelegate>
+@interface MPRController : Window3DController <NSToolbarDelegate, NSSplitViewDelegate>
 {
 	// To avoid the Cocoa bindings memory leak bug...
 	IBOutlet NSObjectController *ob;
