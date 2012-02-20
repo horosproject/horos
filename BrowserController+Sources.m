@@ -512,46 +512,46 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	}
 	
 	if (context == SearchBonjourNodesContext)
-    {
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
-        { // remove remote databases detected with bonjour
-			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
-                    dni.detected = NO;
-                    if (!dni.entered && [_browser.sources.content containsObject:dni])
-                        [_browser.sources removeObject:dni];
-                }
-		} else 
-        { // add remote databases detected with bonjour
-			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected && dni.location) {
-					dni.detected = YES;
-                    if (![_browser.sources.content containsObject:dni])
-                        [_browser.sources addObject:dni];
-                }
-		}
-	}
+		@synchronized (_bonjourSources) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) // add remote databases detected with bonjour
+            { // remove remote databases detected with bonjour
+                for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+                    if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && dni.detected) {
+                        dni.detected = NO;
+                        if (!dni.entered && [_browser.sources.content containsObject:dni])
+                            [_browser.sources removeObject:dni];
+                    }
+            } else 
+            { // add remote databases detected with bonjour
+                for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+                    if ([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && !dni.detected && dni.location) {
+                        dni.detected = YES;
+                        if (![_browser.sources.content containsObject:dni])
+                            [_browser.sources addObject:dni];
+                    }
+            }
+        }
 	
 	if (context == SearchDicomNodesContext)
-    {
-		if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
-        { // remove dicom nodes detected with bonjour
-			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
-                    dni.detected = NO;
-                    if (!dni.entered && [_browser.sources.content containsObject:dni])
-                        [_browser.sources removeObject:dni];
-                }
-		} else
-        { // add dicom nodes detected with bonjour
-			for (DataNodeIdentifier* dni in _bonjourSources.allValues)
-				if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected && dni.location) {
-					dni.detected = YES;
-                    if (![_browser.sources.content containsObject:dni])
-                        [_browser.sources addObject:dni];
-                }
-		}
-	}
+		@synchronized (_bonjourSources) {
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])
+            { // remove dicom nodes detected with bonjour
+                for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+                    if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.detected) {
+                        dni.detected = NO;
+                        if (!dni.entered && [_browser.sources.content containsObject:dni])
+                            [_browser.sources removeObject:dni];
+                    }
+            } else
+            { // add dicom nodes detected with bonjour
+                for (DataNodeIdentifier* dni in _bonjourSources.allValues)
+                    if ([dni isKindOfClass:[DicomNodeIdentifier class]] && !dni.detected && dni.location) {
+                        dni.detected = YES;
+                        if (![_browser.sources.content containsObject:dni])
+                            [_browser.sources addObject:dni];
+                    }
+            }
+        }
 	
 	// showhide bonjour sources
 }
@@ -559,7 +559,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
     NSValue* key = [NSValue valueWithPointer:service];
-    DataNodeIdentifier* source0 = [_bonjourSources objectForKey:key];
+    DataNodeIdentifier* source0 = nil;
+    @synchronized (_bonjourSources) {
+        source0 = [_bonjourSources objectForKey:key];
+    }
 	if (!source0) return;
     
     NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
@@ -568,7 +571,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
         if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
             if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
-                [_bonjourSources removeObjectForKey:key];
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    // we're now back in the main thread
+                    @synchronized (_bonjourSources) {
+                        [_bonjourSources removeObjectForKey:key];
+                    }
+                }];
                 return; // it's me
             }
         
@@ -609,7 +617,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             
             NSUInteger i = [_browser.sources.content indexOfObject:source];
             if (i != NSNotFound) // Already known
-                [_bonjourSources setObject:(source = [_browser.sources.content objectAtIndex:i]) forKey:key];
+                @synchronized (_bonjourSources) {
+                    [_bonjourSources setObject:(source = [_browser.sources.content objectAtIndex:i]) forKey:key];
+                }
             
             if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
                 source.dictionary = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
@@ -634,7 +644,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netService:(NSNetService*)service didNotResolve:(NSDictionary*)errorDict
 {
-	[_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
+    @synchronized (_bonjourSources) {
+        [_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
+    }
 }
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
@@ -648,8 +660,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 //    source.discovered = YES;
 //	source.service = service;
-	[_bonjourSources setObject:source forKey:[NSValue valueWithPointer:[service retain]]];
-	
+    @synchronized (_bonjourSources) {
+        [_bonjourSources setObject:source forKey:[NSValue valueWithPointer:[service retain]]];
+	}
+    
 	// resolve the address and port for this NSNetService
 	[service setDelegate:self];
 	[service resolveWithTimeout:5];
@@ -660,17 +674,22 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	NSLog(@"Bonjour service gone: %@", service);
 	
     NSValue* bsk = nil;
-    for (NSValue* ibsk in _bonjourSources) {
-        NSNetService* ibsks = [ibsk pointerValue];
-		if ([ibsks isEqual:service]) {
-			bsk = ibsk;
-            break;
-        }
-    }
-	if (!bsk)
-		return;
+    DataNodeIdentifier* dni;
     
-    DataNodeIdentifier* dni = [_bonjourSources objectForKey:bsk];
+    @synchronized (_bonjourSources) {
+        for (NSValue* ibsk in _bonjourSources) {
+            NSNetService* ibsks = [ibsk pointerValue];
+            if ([ibsks isEqual:service]) {
+                bsk = ibsk;
+                break;
+            }
+        }
+
+    	if (!bsk)
+            return;
+        
+        dni = [_bonjourSources objectForKey:bsk];
+    }
 	
     if (([dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) ||
         ([dni isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
@@ -685,7 +704,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		[_browser setDatabase:DicomDatabase.defaultDatabase];
 	
     [(id)[bsk pointerValue] release]; // release the NSNetService
-	[_bonjourSources removeObjectForKey:bsk];
+
+    @synchronized (_bonjourSources) {
+        [_bonjourSources removeObjectForKey:bsk];
+    }
 }
 
 -(void)_analyzeVolumeAtPath:(NSString*)path
