@@ -2396,21 +2396,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[[self window] setTitle: NSLocalizedString( @"No images", nil)];
 		else
 		{
-			NSDate *dob = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
-			NSString *windowTitle;
-			NSString *seriesName = [curImage valueForKeyPath:@"series.name"];
-            
-            if( seriesName == nil)
-                seriesName = @"";
-            
+			NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
+			NSString* windowTitle;
+			
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [NSUserDefaults formatDate: dob], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 				else
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			}	
-			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
+			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			
 			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
 				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
@@ -4138,18 +4134,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setTarget: self];
 				[cell setBordered: YES];
 				[cell setLineBreakMode: NSLineBreakByCharWrapping];
-				
-                NSString *modality = [curStudy valueForKey:@"modality"];
-				if( modality == nil) modality = @"OT";
                 
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 //				if( [name length] > 15) name = [name substringToIndex: 15];
-				
-                if( name == nil)
-                    name = @"";
-                
-                if( name.length == 0)
-                    name = modality;
                 
 				name = [name stringByTruncatingToLength: 34];
 				
@@ -4161,6 +4148,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( comment == nil) comment = @"";
 				
 				comment = [comment stringWithTruncatingToLength: 32];
+                
+                NSString	*modality = [curStudy valueForKey:@"modality"];
+				
+				if( modality == nil) modality = @"OT:";
 				
 				NSString *action;
 				if( [curStudy isHidden]) action = NSLocalizedString( @"Show Series", nil);
@@ -4201,12 +4192,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[cell setEnabled:YES];
 						
 						NSString *name = [curSeries valueForKey:@"name"];
-                        
-                        if( name == nil)
-                            name = @"";
-                        
-                        if( name.length == 0)
-                            name = modality;
                         
 						if( [name length] > 18)
 						{
@@ -4304,8 +4289,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 									}
 									else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 									
-									if (dcmPix)
-										[dcmPix release];
+									[dcmPix release];
 								}
 								@catch (NSException* e) {
 									N2LogExceptionWithStackTrace(e);
@@ -19729,23 +19713,6 @@ int i,j,l;
 	}
 	
 	[self computeInterval];
-}
-
--(void) reloadAnnotations
-{
-	[self checkEverythingLoaded];
-	
-	for( int x = 0; x < maxMovieIndex; x++)
-	{
-		for( int i = 0 ; i < [pixList[ x] count]; i++)
-		{
-			if( stopThreadLoadImage == NO)
-			{
-				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				[pix reloadAnnotations];
-			}
-		}
-	}
 }
 
 -(void) executeRevert
