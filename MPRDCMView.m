@@ -1438,9 +1438,16 @@ static	BOOL frameZoomed = NO;
 		{
 			if( frameZoomed == NO)
 			{
-				splitPosition[ 0] = [[windowController mprView1] frame].origin.y + [[windowController mprView1] frame].size.height;
-				splitPosition[ 1] = [[windowController mprView1] frame].origin.x + [[windowController mprView1] frame].size.width;
-				
+                if( [windowController.horizontalSplit isVertical])
+                    splitPosition[ 0] = [[windowController mprView2] frame].origin.x;
+				else
+                    splitPosition[ 0] = [[windowController mprView2] frame].origin.y;
+                
+                if( [windowController.verticalSplit isVertical])
+                    splitPosition[ 1] = [[windowController mprView3] frame].origin.x;
+				else
+                    splitPosition[ 1] = [[windowController mprView3] frame].origin.y;
+                
 				frameZoomed = YES;
 				switch( viewID)
 				{
@@ -1463,8 +1470,8 @@ static	BOOL frameZoomed = NO;
 			else
 			{
 				frameZoomed = NO;
+                [windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 				[windowController.horizontalSplit setPosition: splitPosition[ 0] ofDividerAtIndex: 0];
-				[windowController.verticalSplit setPosition: splitPosition[ 1] ofDividerAtIndex: 0];
 			}
 			
 			[self restoreCamera];
