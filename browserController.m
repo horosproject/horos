@@ -10530,9 +10530,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
 //		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
@@ -10778,6 +10775,10 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[wait showWindow:self];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:databaseOutline];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:databaseOutline];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:reportTemplatesListPopUpButton];
+    
 	@try
 	{
         [self.window safelySetUsesLightBottomGradient:YES];
@@ -16906,20 +16907,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 {
     NSMutableArray* selectedItems = [NSMutableArray array];
 
-//	if ([self.window firstResponder] == oMatrix) {
-//        for (NSCell* cell in [oMatrix selectedCells]) {
-//            NSManagedObject* selectedItem = [[self matrixViewArray] objectAtIndex:[cell tag]];
-//            
-//            if ([selectedItem isKindOfClass:[DicomImage class]])
-//                selectedItem = [(DicomImage*)selectedItem series];
-//            
-//            if (![selectedItems containsObject:selectedItem])
-//                [selectedItems addObject:selectedItem];
-//        }
-//        
-//        return selectedItems;
-//    }
-    
 	NSIndexSet* selectedRowIndexes = [databaseOutline selectedRowIndexes];
 	for ( NSInteger index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 	{

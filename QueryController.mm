@@ -1055,13 +1055,13 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	@synchronized( studyArrayInstanceUID)
+	@synchronized (studyArrayInstanceUID) // TODO: locking on an object which is deallocated and reset during the lock? this looks like a bug, but probably not as all the locks are done on the main thread (it seems  -- so this is useless..?)
 	{
 		[studyArrayInstanceUID release];
 		[studyArrayCache release];
 		
 		studyArrayInstanceUID = [[d objectForKey:@"studyArrayInstanceUID"] retain];
-		studyArrayCache = [[d objectForKey:@"studyArrayCache"] retain];
+		studyArrayCache = [[[[BrowserController currentBrowser] database] objectsWithIDs:[d objectForKey:@"studyArrayObjectIDs"]] retain];
 		
 		if( currentQueryController.DatabaseIsEdited == NO)
 			[currentQueryController.outlineView reloadData];
@@ -1085,42 +1085,27 @@ extern "C"
     {
         @try
         {
-            NSError *error = nil;
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
-            
-            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-            [request setPredicate: predicate];
-            
-            [context lock];
+            DicomDatabase* database = [[BrowserController currentBrowser] database];
+            if (![NSThread isMainThread])
+                database = [database independentDatabase];
             
             @try
             {
-                local_studyArrayCache = [context executeFetchRequest:request error: &error];
-            }
-            @catch (NSException * e)
-            {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-            }
-            
-            [context unlock];
-            
-            @try
-            {
+                local_studyArrayCache = [database objectsForEntity:database.studyEntity];
                 local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
             }
-            @catch (NSException * e)
+            @catch (NSException* e)
             {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
             }
+            
             
             if( local_studyArrayCache && local_studyArrayInstanceUID)
             {
                 if( [NSThread isMainThread])
-                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", [local_studyArrayCache valueForKey:@"objectID"], @"studyArrayObjectIDs", nil]];
                 else
-                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
+                    [self performSelectorOnMainThread: @selector(applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", [local_studyArrayCache valueForKey:@"objectID"], @"studyArrayObjectIDs", nil] waitUntilDone: NO];
             }
             else
                 NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
@@ -1147,9 +1132,9 @@ extern "C"
 			
 			NSArray *result = nil;
 			
-			if( studyArrayInstanceUID)
+			if (studyArrayInstanceUID)
 			{
-				@synchronized( studyArrayInstanceUID)
+				@synchronized (studyArrayInstanceUID)
 				{
 					NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
 					
@@ -1165,7 +1150,7 @@ extern "C"
 		}
 		@catch (NSException * e)
 		{
-			@synchronized( studyArrayInstanceUID)
+			@synchronized (studyArrayInstanceUID)
 			{
 				[studyArrayInstanceUID release];
 				studyArrayInstanceUID = nil;
