@@ -2138,10 +2138,9 @@ return YES;
 											ConvolutionViewToolbarItemIdentifier,
 											BackgroundColorViewToolbarItemIdentifier,
 											ClippingRangeViewToolbarItemIdentifier,
+                                            EngineToolbarItemIdentifier,
 											nil];
 		
-//		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"showGPUEngineRendering"])
-//			[a addObject: EngineToolbarItemIdentifier];
 			
 		return a;
 	}

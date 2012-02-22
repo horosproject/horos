@@ -14,7 +14,7 @@
 // PURPOSE.
 // =========================================================================
 #ifdef _STEREO_VISION_
-
+dddd
 
 #import "VRView+StereoVision.h"
 

@@ -450,7 +450,7 @@
 	if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f", wl, ww);
 	else sprintf(WLWWString, "WL: %0.f WW: %0.f", wl, ww);
 	textWLWW->SetInput( WLWWString);
-	textWLWW->SetScaledText( false);												//vtkviewPort
+	textWLWW->SetTextScaleModeToNone();												//vtkviewPort
 	textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 	textWLWW->GetPositionCoordinate()->SetValue( 0,0);
 //	aRenderer->AddActor2D(textWLWW);
@@ -460,7 +460,7 @@
 //		textX->SetInput( "X");
 //	else
 //		textX->SetInput( "");
-//	textX->SetScaledText( false);
+//	textX->SetTextScaleModeToNone();
 //	textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 //	textX->GetPositionCoordinate()->SetValue( 2., 2.);
 //	aRenderer->AddActor2D(textX);
@@ -469,7 +469,7 @@
 	{
 		oText[ i]= vtkTextActor::New();
 		oText[ i]->SetInput( "X");
-		oText[ i]->SetScaledText( false);
+		oText[ i]->SetTextScaleModeToNone();
 		oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 		oText[ i]->GetTextProperty()->SetFontSize( 16);
 		oText[ i]->GetTextProperty()->SetBold( true);
@@ -562,7 +562,7 @@
 
 	Line2DText = vtkTextActor::New();
 //	Line2DText->SetInput( "");
-//	Line2DText->SetScaledText( false);
+//	Line2DText->SetTextScaleModeToNone();
 //	Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 //	Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 //	Line2DText->GetTextProperty()->SetShadow( YES);

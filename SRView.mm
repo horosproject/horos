@@ -951,14 +951,6 @@ typedef struct _xyzArray
 }
 # pragma mark-
 
-
-- (void)rightMouseDown:(NSEvent *)theEvent
-{	
-	noWaitDialog = YES;
-	[self mouseDown:theEvent];
-	noWaitDialog = NO;
-}
-
 - (void) getOrientation: (float*) o 
 {
 	long			i, j;
@@ -1004,13 +996,15 @@ typedef struct _xyzArray
 }
 
 
-- (void)mouseDragged:(NSEvent *)theEvent{
-	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0)) {
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+	if (_dragInProgress == NO && ([theEvent deltaX] != 0 || [theEvent deltaY] != 0))
 			[self deleteMouseDownTimer];
-		}
+    
 	if (_dragInProgress == YES) return;
 	
-	if (_resizeFrame){
+	if (_resizeFrame)
+    {
 		NSRect	newFrame = [self frame];
 		NSRect	beforeFrame = [self frame];;
 		NSPoint mouseLoc = [theEvent locationInWindow];	//[self convertPoint: [theEvent locationInWindow] fromView:nil];
@@ -1097,7 +1091,8 @@ typedef struct _xyzArray
 	}	
 }
 
-- (void)rightMouseDragged:(NSEvent *)theEvent{
+- (void)rightMouseDragged:(NSEvent *)theEvent
+{
 	int shiftDown, controlDown;
 	float distance;
 	NSPoint		mouseLoc,  mouseLocPre;
@@ -1125,7 +1120,8 @@ typedef struct _xyzArray
 
 }
 
-- (void)mouseUp:(NSEvent *)theEvent{
+- (void)mouseUp:(NSEvent *)theEvent
+{
 	[self deleteMouseDownTimer];
 	
 	switch (_tool) {
@@ -1144,7 +1140,15 @@ typedef struct _xyzArray
 	[super mouseUp:theEvent];
 }
 
-- (void)rightMouseUp:(NSEvent *)theEvent{
+- (void)rightMouseDown:(NSEvent *)theEvent
+{	
+	noWaitDialog = YES;
+	[self mouseDown:theEvent];
+	noWaitDialog = NO;
+}
+
+- (void)rightMouseUp:(NSEvent *)theEvent
+{
 	NSPoint mouseLoc = [self convertPoint: [theEvent locationInWindow] fromView:nil];	
 	if (_tool == tZoom && ( projectionMode != 2)) {
 		int shiftDown = 0;
@@ -1152,7 +1156,6 @@ typedef struct _xyzArray
 		[self getInteractor]->SetEventInformation((int) mouseLoc.x, (int) mouseLoc.y, controlDown, shiftDown);
 		[self getInteractor]->InvokeEvent(vtkCommand::LeftButtonReleaseEvent, NULL);
 	}
-		
 }
 
 - (void)mouseDown:(NSEvent *)theEvent
@@ -2310,7 +2313,7 @@ typedef struct _xyzArray
 	*/	
 		textX = vtkTextActor::New();
 		textX->SetInput( "X");
-		textX->SetScaledText( false);
+		textX->SetTextScaleModeToNone();
 		textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 		textX->GetPositionCoordinate()->SetValue( 2., 2.);
 		aRenderer->AddActor2D(textX);
@@ -2319,7 +2322,7 @@ typedef struct _xyzArray
 		{
 			oText[ i]= vtkTextActor::New();
 			oText[ i]->SetInput( "X");
-			oText[ i]->SetScaledText( false);
+			oText[ i]->SetTextScaleModeToNone();
 			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 			oText[ i]->GetTextProperty()->SetFontSize( 16);
 			oText[ i]->GetTextProperty()->SetBold( true);

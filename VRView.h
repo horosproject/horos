@@ -82,7 +82,7 @@
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
 #include "vtkVolumeTextureMapper2D.h"
-#include "vtkVolumeTextureMapper3D.h"
+#include "vtkSmartVolumeMapper.h"
 #include "OsiriXFixedPointVolumeRayCastMapper.h"
 
 #include "vtkCellArray.h"
@@ -142,6 +142,7 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 
 typedef char* vtkRenderer;
 typedef char* vtkVolumeTextureMapper3D;
+typedef char* vtkSmartVolumeMapper;
 typedef char* vtkOrientationMarkerWidget;
 typedef char* vtkRegularPolygonSource;
 
@@ -205,7 +206,7 @@ typedef char* VTKStereoVRView;
 	vtkImageImport				*blendingReader;
 	
 	OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;
-	vtkVolumeTextureMapper3D	*blendingTextureMapper;
+	vtkSmartVolumeMapper	*blendingTextureMapper;
 	
 	vtkVolume					*blendingVolume;
 	vtkVolumeProperty			*blendingVolumeProperty;
@@ -283,7 +284,7 @@ typedef char* VTKStereoVRView;
 	// MAPPERS
 	
 	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;
-	vtkVolumeTextureMapper3D		*textureMapper;
+	vtkSmartVolumeMapper		*textureMapper;
 	
 	vtkVolume					*volume;
 	vtkVolumeProperty			*volumeProperty;

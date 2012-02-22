@@ -44,7 +44,7 @@
 #include "vtkOpenGLVolumeTextureMapper3D.h"
 #include "vtkPropAssembly.h"
 #include "vtkFixedPointRayCastImage.h"
-
+#include "vtkSmartVolumeMapper.h"
 #include "vtkSphereSource.h"
 #include "vtkAssemblyPath.h"
 
@@ -723,9 +723,11 @@ public:
 	{
 		BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
 		
+        NSLog( @"Engine ID: %d", engineID);
+        
 		switch( engineID)
 		{
-			case 0:		// RAY CAST
+			case 0:		// FIXED RAY CAST
 				if( volumeMapper == nil)
 				{
 					volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
@@ -736,38 +738,28 @@ public:
 				volume->SetMapper( volumeMapper);
 			break;
 			
-			case 1:		// TEXTURE
+			case 1:		// DefaultRenderMode
+            case 2:     // RayCastAndTextureRenderMode
+            case 3:     // RayCastRenderMode
+            case 4:     // TextureRenderMode
+            case 5:     // GPURenderMode
+            
 				if( textureMapper == nil)
 				{
-					textureMapper = vtkVolumeTextureMapper3D::New();
+					textureMapper = vtkSmartVolumeMapper::New();
+//                    textureMapper->SetFinalColorLevel( 1.0);
+//                    textureMapper->SetFinalColorWindow( 1.0);
 					textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
-					
-	//				if( volumeProperty->GetShade())
-	//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-	//				else
-	//					textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
 				}
+                
+                textureMapper->SetRequestedRenderMode( engineID - 1);
+                
 				volume->SetMapper( textureMapper);
 			break;
-			
-			case 2:		// BOTH
-				if( volumeMapper == nil)
-				{
-					volumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-					volumeMapper->SetInput((vtkDataSet *) reader->GetOutput());
-				}
-				volumeMapper->SetMinimumImageSampleDistance( LOD);
-				
-				if( textureMapper == nil)
-				{
-					textureMapper = vtkVolumeTextureMapper3D::New();
-					textureMapper->SetInput((vtkDataSet *) reader->GetOutput());
-					
-	//				if( volumeProperty->GetShade()) textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-	//				else textureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-				}
-				volume->SetMapper( textureMapper);
-			break;
+                
+            default:
+                NSLog( @"Unknown Engine");
+                break;
 		}
 		
 		[self setMode: renderingMode];	// VR or MIP ?
@@ -840,38 +832,24 @@ public:
 			blendingVolume->SetMapper( blendingVolumeMapper);
 		break;
 		
-		case 1:		// TEXTURE
-			if( blendingTextureMapper == nil)
-			{
-				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-				
-//				if( blendingVolumeProperty->GetShade())
-//					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-//				else
-//					blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			blendingVolume->SetMapper( blendingTextureMapper);
-		break;
-		
-		case 2:		// BOTH
-			if( blendingVolumeMapper == nil)
-			{
-				blendingVolumeMapper = OsiriXFixedPointVolumeRayCastMapper::New();
-				blendingVolumeMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-			}
-			blendingVolumeMapper->SetMinimumImageSampleDistance( LOD);
-			
-			if( blendingTextureMapper == nil)
-			{
-				blendingTextureMapper = vtkVolumeTextureMapper3D::New();
-				blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
-				
-//				if( blendingVolumeProperty->GetShade()) blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURESHADING"]);
-//				else blendingTextureMapper->SetMaximumNoOfSlices( [[NSUserDefaults standardUserDefaults] integerForKey: @"MAX3DTEXTURE"]);
-			}
-			blendingVolume->SetMapper( blendingTextureMapper);
-		break;
+        case 1:		// DefaultRenderMode
+        case 2:     // RayCastAndTextureRenderMode
+        case 3:     // RayCastRenderMode
+        case 4:     // TextureRenderMode
+        case 5:     // GPURenderMode
+            
+            if( blendingTextureMapper == nil)
+            {
+                blendingTextureMapper = vtkSmartVolumeMapper::New();
+                //                    blendingTextureMapper->SetFinalColorLevel( 1.0);
+                //                    blendingTextureMapper->SetFinalColorWindow( 1.0);
+                blendingTextureMapper->SetInput((vtkDataSet *) blendingReader->GetOutput());
+            }
+            
+            blendingTextureMapper->SetRequestedRenderMode( engineID - 1);
+            
+            blendingVolume->SetMapper( blendingTextureMapper);
+			break;
 	}
 	
 	[self setBlendingMode: renderingMode];
@@ -1043,14 +1021,15 @@ public:
 	if( [[sender selectedCell] tag] == 1) [self checkView: dcmBox :YES];
 	else [self checkView: dcmBox :NO];
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 )
-	{
-		[[dcmquality cellWithTag: 1] setEnabled: NO];
-		
-		if( [[dcmquality selectedCell] tag] == 1)
-			[dcmquality selectCellWithTag: 0];
-	}
-	else [[dcmquality cellWithTag: 1] setEnabled: YES];
+//	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 )
+//	{
+//		[[dcmquality cellWithTag: 1] setEnabled: NO];
+//		
+//		if( [[dcmquality selectedCell] tag] == 1)
+//			[dcmquality selectCellWithTag: 0];
+//	}
+//	else
+    [[dcmquality cellWithTag: 1] setEnabled: YES];
 }
 
 - (NSRect) centerRect: (NSRect) smallRect
@@ -1605,8 +1584,13 @@ public:
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[VRquality cellWithTag: 1] setEnabled: NO]; if( [[VRquality selectedCell] tag] == 1) [VRquality selectCellWithTag: 0];}
-	else [[VRquality cellWithTag: 1] setEnabled: YES];
+//	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1)
+//    {
+//        [[VRquality cellWithTag: 1] setEnabled: NO];
+//        if( [[VRquality selectedCell] tag] == 1) [VRquality selectCellWithTag: 0];
+//    }
+//	else
+        [[VRquality cellWithTag: 1] setEnabled: YES];
 	
 	[NSApp beginSheet: export3DVRWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:(void*) nil];
 }
@@ -1619,8 +1603,9 @@ public:
 		NSRunAlertPanel(NSLocalizedString(@"Not available", nil), NSLocalizedString(@"This function is not available for this window.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[quality cellWithTag: 1] setEnabled: NO]; if( [[quality selectedCell] tag] == 1) [quality selectCellWithTag: 0];}
-	else [[quality cellWithTag: 1] setEnabled: YES];
+//	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 1 ) { [[quality cellWithTag: 1] setEnabled: NO]; if( [[quality selectedCell] tag] == 1) [quality selectCellWithTag: 0];}
+//	else
+        [[quality cellWithTag: 1] setEnabled: YES];
 	
 //	if( [[[self window] windowController] movieFrames] > 1)
 	if( [controller movieFrames] > 1)
@@ -2205,20 +2190,6 @@ public:
     [super dealloc];
 }
 
-- (void)rightMouseDown:(NSEvent *)theEvent
-{
-	_hasChanged = YES;
-	[drawLock lock];
-	_contextualMenuActive = NO;
-	if (_rightMouseDownTimer)
-	{
-		[self deleteRightMouseDownTimer];
-	}
-	
-	[self mouseDown:theEvent];
-	[drawLock unlock];
-}
-
 - (void) timerUpdate:(id) sender
 {
 	if( ROIUPDATE == YES)
@@ -2227,57 +2198,57 @@ public:
 	ROIUPDATE = NO;
 }
 
-- (NSMenu *)defaultMenu
-{
-    NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
-	NSMenuItem *item;
-    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Levels", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:0];
-	[item setTag:0];
-	[item setImage:[NSImage imageNamed:@"WLWW"]];
-    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Move", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:1];
-	[item setTag:1];
-	[item setImage:[NSImage imageNamed:@"Move"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Zoom", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:2];
-	[item setTag:2];
-	[item setImage:[NSImage imageNamed:@"Zoom"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:3];
-	[item setTag:3];
-	[item setImage:[NSImage imageNamed:@"Rotate"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"3D Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:4];
-	[item setTag:7];
-	[item setImage:[NSImage imageNamed:@"3DRotate"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Camera Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:5];
-	[item setTag:18];
-	[item setImage:[NSImage imageNamed:@"3DRotateCamera"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Length", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:6];
-	[item setTag:5];
-	[item setImage:[NSImage imageNamed:@"Length"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Point", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:7];
-	[item setTag:16];
-	[item setImage:[NSImage imageNamed:@"Point"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Scissors", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:8];
-	[item setTag:17];
-	[item setImage:[NSImage imageNamed:@"3DCut"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Bone Removal", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:9];
-	[item setTag:21];
-	[item setImage:[NSImage imageNamed:@"bonesRemoval"]];
-	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Orientation", nil) action:nil keyEquivalent:@"" atIndex:10];
-		NSMenu *submenu = [[[NSMenu alloc] initWithTitle:@"Orientation"] autorelease];
-		NSMenuItem *subItem;
-		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Axial", nil) action:@selector(axView:) keyEquivalent:@"" atIndex:0];
-		[subItem setImage:[NSImage imageNamed:@"AxialSmall"]];
-		
-		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Coronal", nil) action:@selector(coView:) keyEquivalent:@"" atIndex:1];
-		[subItem setImage:[NSImage imageNamed:@"CorSmall"]];
-		
-		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Right Sagittal", nil) action:@selector(saView:) keyEquivalent:@"" atIndex:2];
-		[subItem setImage:[NSImage imageNamed:@"SagSmall"]];
-		
-		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Left Sagittal", nil) action:@selector(saViewOpposite:) keyEquivalent:@"" atIndex:3];
-		[subItem setImage:[NSImage imageNamed:@"SagSmallOpposite"]];
-	[item setSubmenu:submenu];
-    return theMenu;
-}
+//- (NSMenu *)defaultMenu
+//{
+//    NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
+//	NSMenuItem *item;
+//    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Levels", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:0];
+//	[item setTag:0];
+//	[item setImage:[NSImage imageNamed:@"WLWW"]];
+//    item = [theMenu insertItemWithTitle:NSLocalizedString(@"Move", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:1];
+//	[item setTag:1];
+//	[item setImage:[NSImage imageNamed:@"Move"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Zoom", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:2];
+//	[item setTag:2];
+//	[item setImage:[NSImage imageNamed:@"Zoom"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:3];
+//	[item setTag:3];
+//	[item setImage:[NSImage imageNamed:@"Rotate"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"3D Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:4];
+//	[item setTag:7];
+//	[item setImage:[NSImage imageNamed:@"3DRotate"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Camera Rotate", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:5];
+//	[item setTag:18];
+//	[item setImage:[NSImage imageNamed:@"3DRotateCamera"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Length", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:6];
+//	[item setTag:5];
+//	[item setImage:[NSImage imageNamed:@"Length"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Point", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:7];
+//	[item setTag:16];
+//	[item setImage:[NSImage imageNamed:@"Point"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Scissors", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:8];
+//	[item setTag:17];
+//	[item setImage:[NSImage imageNamed:@"3DCut"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Bone Removal", nil) action:@selector(setDefaultTool:) keyEquivalent:@"" atIndex:9];
+//	[item setTag:21];
+//	[item setImage:[NSImage imageNamed:@"bonesRemoval"]];
+//	item = [theMenu insertItemWithTitle:NSLocalizedString(@"Orientation", nil) action:nil keyEquivalent:@"" atIndex:10];
+//		NSMenu *submenu = [[[NSMenu alloc] initWithTitle:@"Orientation"] autorelease];
+//		NSMenuItem *subItem;
+//		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Axial", nil) action:@selector(axView:) keyEquivalent:@"" atIndex:0];
+//		[subItem setImage:[NSImage imageNamed:@"AxialSmall"]];
+//		
+//		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Coronal", nil) action:@selector(coView:) keyEquivalent:@"" atIndex:1];
+//		[subItem setImage:[NSImage imageNamed:@"CorSmall"]];
+//		
+//		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Right Sagittal", nil) action:@selector(saView:) keyEquivalent:@"" atIndex:2];
+//		[subItem setImage:[NSImage imageNamed:@"SagSmall"]];
+//		
+//		subItem =[submenu insertItemWithTitle:NSLocalizedString(@"Left Sagittal", nil) action:@selector(saViewOpposite:) keyEquivalent:@"" atIndex:3];
+//		[subItem setImage:[NSImage imageNamed:@"SagSmallOpposite"]];
+//	[item setSubmenu:submenu];
+//    return theMenu;
+//}
 
 - (float) blendingImageSampleDistance
 {
@@ -3463,6 +3434,19 @@ public:
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixVRCameraDidChangeNotification object:self  userInfo: nil];
 	}
+}
+
+- (void)rightMouseDown:(NSEvent *)theEvent
+{
+	_hasChanged = YES;
+	[drawLock lock];
+	_contextualMenuActive = NO;
+	if (_rightMouseDownTimer)
+		[self deleteRightMouseDownTimer];
+	
+	[self mouseDown:theEvent];
+    
+	[drawLock unlock];
 }
 
 - (void)rightMouseUp:(NSEvent *)theEvent
@@ -5387,11 +5371,6 @@ public:
 	
 	[splash setCancel:NO];
 	
-	if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 2)
-	{
-		volume->SetMapper(textureMapper);
-	}
-	
 	if( [splash aborted]) [self display];
 }
 
@@ -5416,25 +5395,6 @@ public:
 	// RAY CASTING SETTINGS
 	if( best)
 	{
-		// SWITCH TO RAY CASTING IF WE USE BOTH ENGINES
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] == 2)
-		{
-			double a[6];
-			
-			if( volume->GetMapper() != volumeMapper)
-			{
-				BOOL validBox = [VRView getCroppingBox: a :volume :croppingBox];
-				volume->SetMapper( volumeMapper);
-				if( validBox)
-				{
-					[self setCroppingBox: a];
-					
-					[VRView getCroppingBox: a :blendingVolume :croppingBox];
-					[self setBlendingCroppingBox: a];
-				}
-			}
-		}
-	
 		if( [[NSApp currentEvent] modifierFlags] & NSShiftKeyMask || projectionMode == 2)
 		{
 			if( volumeMapper) volumeMapper->SetMinimumImageSampleDistance( 1.0);
@@ -6283,7 +6243,7 @@ public:
 		if( ww < 50) sprintf(WLWWString, "WL: %0.4f WW: %0.4f ", wl, ww);
 		else sprintf(WLWWString, "WL: %0.f WW: %0.f ", wl, ww);
 		textWLWW->SetInput( WLWWString);
-		textWLWW->SetScaledText( false);												//vtkviewPort
+		textWLWW->SetTextScaleModeToNone();												//vtkviewPort
 		textWLWW->GetPositionCoordinate()->SetCoordinateSystemToDisplay();
 		int *wsize = [self renderWindow]->GetSize();
 		textWLWW->GetPositionCoordinate()->SetValue( 2., wsize[ 1]-15);
@@ -6296,7 +6256,7 @@ public:
 		{
 			textX = vtkTextActor::New();
 			textX->SetInput( "X ");
-			textX->SetScaledText( false);
+			textX->SetTextScaleModeToNone();
 			textX->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 			textX->GetPositionCoordinate()->SetValue( 2., 2.);
 			textX->GetTextProperty()->SetShadow(true);
@@ -6309,7 +6269,7 @@ public:
 		{
 			oText[ i] = vtkTextActor::New();
 			oText[ i]->SetInput( "X ");
-			oText[ i]->SetScaledText( false);
+			oText[ i]->SetTextScaleModeToNone();
 			oText[ i]->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
 			oText[ i]->GetTextProperty()->SetBold( true);
 			oText[ i]->GetTextProperty()->SetShadow(true);
@@ -6384,7 +6344,7 @@ public:
         
 		Oval2DText = vtkTextActor::New();
 		Oval2DText->SetInput( " ");
-		Oval2DText->SetScaledText( false);
+		Oval2DText->SetTextScaleModeToNone();
 		Oval2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 		Oval2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 		Oval2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
@@ -6416,7 +6376,7 @@ public:
 
 		Line2DText = vtkTextActor::New();
 		Line2DText->SetInput( " ");
-		Line2DText->SetScaledText( false);
+		Line2DText->SetTextScaleModeToNone();
 		Line2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
 		Line2DText->GetPositionCoordinate()->SetValue( 2., 2.);
 		Line2DText->GetTextProperty()->SetColor( 1.0, 1.0, 0.0);
@@ -8268,17 +8228,17 @@ public:
 	_rightMouseDownTimer = nil;
 }
 
-- (void) showMenu:(NSTimer*)theTimer
-{
-	_contextualMenuActive = YES;
-	NSEvent *event = (NSEvent *)[theTimer userInfo];
-	[self performSelectorOnMainThread:@selector(showMenuOnMainThread:) withObject:event waitUntilDone:YES];
-}
+//- (void) showMenu:(NSTimer*)theTimer
+//{
+//	_contextualMenuActive = YES;
+//	NSEvent *event = (NSEvent *)[theTimer userInfo];
+//	[self performSelectorOnMainThread:@selector(showMenuOnMainThread:) withObject:event waitUntilDone:YES];
+//}
 
-- (void)showMenuOnMainThread:(NSEvent *)event
-{
-	[NSMenu popUpContextMenu:[self defaultMenu] withEvent:event forView:self];
-}
+//- (void)showMenuOnMainThread:(NSEvent *)event
+//{
+//	[NSMenu popUpContextMenu:[self defaultMenu] withEvent:event forView:self];
+//}
 
 //part of Dragging Source Protocol
 - (NSDragOperation)draggingSourceOperationMaskForLocal:(BOOL)isLocal{
