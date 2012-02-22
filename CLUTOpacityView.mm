@@ -59,7 +59,7 @@
 
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 {
-	if( [notification object] == [vrView window])
+	if( [[notification object] windowController] == vrView)
 		windowWillClose = YES;
 }
 
