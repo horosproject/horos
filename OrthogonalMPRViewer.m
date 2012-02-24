@@ -184,9 +184,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	[[NSUserDefaults standardUserDefaults] setInteger:[thickSlabSlider intValue] forKey: @"stackThicknessOrthoMPR"];
 	
-	[curOpacityMenu release];
-	[curWLWWMenu release];
-	[curCLUTMenu release];
 	[viewer release];
 	[toolbar release];
 	[exportDCM release];

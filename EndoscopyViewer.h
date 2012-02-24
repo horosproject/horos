@@ -19,7 +19,7 @@
 #import "VRController.h"
 #import "EndoscopyVRController.h"
 #import "Camera.h"
-#import "OSIWindowController.h"
+#import "Window3DController.h"
 #import "FlyAssistant.h"
 
 @class OSIVoxel;
@@ -28,7 +28,7 @@
 */
 
 
-@interface EndoscopyViewer : OSIWindowController <NSToolbarDelegate, NSWindowDelegate, NSSplitViewDelegate>
+@interface EndoscopyViewer : Window3DController <NSToolbarDelegate, NSWindowDelegate, NSSplitViewDelegate>
 {
 	IBOutlet OrthogonalMPRController	*mprController;
 	IBOutlet EndoscopyVRController		*vrController;

@@ -6,9 +6,9 @@
 - WebPortal: option for direct SMTP support for emails
 - WebPortal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
 - More robust Crash Reporter tool
-- OsiriX is now compiled with Apple LLVM 3.1
 - VTK updated to version 5.8
 - ITK updated to version 4.1
+- Display & Tile multiple 3D Viewers (Windows menu)
 
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
@@ -68,11 +68,9 @@ Added features:
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
 - Save default order for albums
-- VTK 5.6 GPUVolumeRendering
 - VTK Crash : PowerCrust
 - DICOM Network: DICOM Authentication
 - Print images, containing ROIs
-- Option to include 3D viewers in Tile Window
 - ROI Manager (series level)
 - Hanging Protocols
 - Display current image in 3D plane

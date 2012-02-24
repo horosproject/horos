@@ -550,6 +550,8 @@ unsigned int dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_HangingProtocolStorage                                 "1.2.840.10008.5.1.4.38.1"
 
 // Private DCMTK UIDs
+#define UID_PhilipsPrivateXRayMFStorage                             "1.3.46.670589.7.8.1618510091"
+#define UID_SiemensCSAPrivateNonImageStorage                        "1.3.12.2.1107.5.9.1"
 
 // Private SOP Class UID used to shutdown external network applications
 #define UID_PrivateShutdownSOPClass                                "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"

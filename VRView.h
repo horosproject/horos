@@ -594,7 +594,6 @@ typedef char* VTKStereoVRView;
 
 //Menus
 - (void)deleteRightMouseDownTimer;
-- (void) showMenu:(NSTimer*)theTimer;
 
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;

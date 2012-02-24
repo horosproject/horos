@@ -565,6 +565,9 @@ extern int delayedTileWindows;
 
 -(id) initWithImage:(NSManagedObject*) image windowName:(NSString*) name viewer:(ViewerController*) v
 {
+    if( image == nil)
+        return nil;
+    
 	if (self = [super initWithWindowNibName: @"XMLViewer"])
 	{
 		[self setMagnetic: YES];

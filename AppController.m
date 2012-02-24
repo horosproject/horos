@@ -59,6 +59,7 @@
 #import "DicomImage.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "Window3DController.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -4411,41 +4412,12 @@ static BOOL initialized = NO;
     return YES;
 }
 
-- (void) tileWindows:(id)sender
+- (IBAction) tileWindows:(id)sender
 {
-	long i, x;
-	// Array of open Windows
-	NSArray *winList = [NSApp windows];
-	// array of viewers
-	NSMutableArray *viewersList = [NSMutableArray array];
-	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
-	NSRect screenRect =  screenFrame();
-	// User default to keep studies segregated to separate screens
-	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
-//	BOOL				strechWindows = [[NSUserDefaults standardUserDefaults] boolForKey: @"StrechWindows"];
-	// Array of arrays of viewers with same StudyUID
-	NSMutableArray *studyList = [NSMutableArray array];
-	int keyWindow = 0, numberOfMonitors;	
-	NSArray *screens = [self viewerScreens];
-	
-//	BOOL				fixedTiling = [[NSUserDefaults standardUserDefaults] boolForKey: @"FixedTiling"];
-//	int					fixedTilingRows = [[NSUserDefaults standardUserDefaults] integerForKey: @"FixedTilingRows"];
-//	int					fixedTilingColumns = [[NSUserDefaults standardUserDefaults] integerForKey: @"fixedTilingColumns"];
-	
-//	fixedTiling = YES;
-//	fixedTilingColumns = 2;
-//	fixedTilingRows = 2;
-	
-	delayedTileWindows = NO;
-	
-	numberOfMonitors = [screens count];
-	
-	[AppController checkForPreferencesUpdate: NO];
-	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
-	[AppController checkForPreferencesUpdate: YES];
-	
-	//get 2D viewer windows
-	for( NSWindow *win in winList)
+    NSMutableArray *viewersList = [NSMutableArray array];
+    
+    //get 2D viewer windows
+	for( NSWindow *win in [NSApp windows])
 	{
 		if( [[win windowController] isKindOfClass:[OSIWindowController class]] == YES)
 		{
@@ -4453,16 +4425,65 @@ static BOOL initialized = NO;
 			{
 				if( [[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO)
 					[viewersList addObject: [win windowController]];
+                
 				else if( [[win windowController] windowWillClose])
 				{
-	//				NSLog( @"*** [[win windowController] windowWillClose] ***");
-	//				[win performClose: self];
 				}
-					
-				if( [[viewersList lastObject] FullScreenON]) return;
+                
+				if( [[viewersList lastObject] FullScreenON])
+                    return;
 			}
 		}
 	}
+    
+    [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL];
+}
+
+- (IBAction) tile3DWindows:(id)sender
+{
+    NSMutableArray *viewersList = [NSMutableArray array];
+    
+    //get 2D viewer windows
+	for( NSWindow *win in [NSApp windows])
+	{
+		if( [[win windowController] isKindOfClass:[Window3DController class]] == YES)
+		{
+            if( [[win windowController] windowWillClose] == NO && [win isMiniaturized] == NO && [win isVisible] == YES)
+                [viewersList addObject: [win windowController]];
+            
+            else if( [[win windowController] windowWillClose])
+            {
+            }
+            
+            if( [[viewersList lastObject] FullScreenON])
+                return;
+		}
+	}
+    
+    [self tileWindows: sender windows: viewersList display2DViewerToolbar: NO];
+    
+    for( NSWindowController *win in viewersList)
+        [[win window] makeKeyAndOrderFront: self];
+}
+
+- (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar
+{
+	long i, x;
+	NSArray *winList = [NSApp windows];
+	
+	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
+	NSRect screenRect =  screenFrame();
+	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
+	NSMutableArray *studyList = [NSMutableArray array];
+	int keyWindow = 0, numberOfMonitors;	
+	NSArray *screens = [self viewerScreens];
+	
+	delayedTileWindows = NO;
+	numberOfMonitors = [screens count];
+	
+	[AppController checkForPreferencesUpdate: NO];
+	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
+	[AppController checkForPreferencesUpdate: YES];
 	
 	for( id obj in winList)
 		[obj retain];
@@ -4758,7 +4779,7 @@ static BOOL initialized = NO;
 		{
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
@@ -4781,7 +4802,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex:index];
 			NSRect frame = [screen visibleFrame];
 			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			frame.size.width /= viewersPerScreen;
@@ -4806,7 +4827,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
-			if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			if (monitorIndex < extraViewers) 
