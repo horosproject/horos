@@ -888,7 +888,7 @@ void createSwfMovie(NSArray* inputFiles, NSString* path) {
 	//	NSLog(@"compile ret:%d len:%d", res, len);
 	swf->add(action);
 	
-	const CGFloat ControllerHeight = 10, PlayPauseWidth = 0;
+	const CGFloat ControllerHeight = 14, PlayPauseWidth = 0;
 	const CGFloat ControllerPadTop = 1, ControllerPadBottom = 1;
 	const CGFloat MarkHeight = ControllerHeight-ControllerPadTop-ControllerPadBottom, MarkWidth = MarkHeight-2;
 	const CGFloat ControllerPadLeft = MarkWidth/2, ControllerPadRight = MarkWidth/2+PlayPauseWidth;
