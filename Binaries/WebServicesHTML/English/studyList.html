@@ -12,7 +12,7 @@
 		if (currentPage-1 > 0)
 			document.write("<a href=\"?"+parameters+"&page="+(currentPage-1)+"\">←</a>");
         
-		document.write(" "+(1+%Session.FetchLimitPerPage%*currentPage)+"-"+(200*currentPage+%Studies.count%)+" of "+%Session.NumberOfStudies%+" ");
+		document.write(" "+(1+%Session.FetchLimitPerPage%*currentPage)+"-"+(%Session.FetchLimitPerPage%*currentPage+%Studies.count%)+" of "+%Session.NumberOfStudies%+" ");
 		
 		if (currentPage+1 < numberOfPages-1)
 			document.write("<a href=\"?"+parameters+"&page="+(currentPage+1)+"\">→</a>");
