@@ -1,14 +1,15 @@
 - JPEG-LS support (through CharLS library)
-- Hide/Show Columns DICOM QR (Columns header contextual menu)
-- Web Server: passwords are now stored only as hash strings (better security for users passwords)
-- Up to Date DICOM Dictionary
-- New 2D Viewer toolbar item : Windows Tiling : add or remove windows
-- WebPortal: option for direct SMTP support for emails
-- WebPortal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
-- More robust Crash Reporter tool
 - VTK updated to version 5.8
 - ITK updated to version 4.1
+- DICOM : Up to Date DICOM Dictionary
+- Hide/Show Columns DICOM QR (Columns header contextual menu)
+- Web Portal: passwords are now stored only as hashed strings (better security for users passwords)
+- Web Portal: option for direct SMTP support for emails
+- Web Portal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
+- New 2D Viewer toolbar item : Windows Tiling : add or remove windows
 - Display & Tile multiple 3D Viewers (Windows menu)
+- More robust Crash Reporter tool
+- Misc bugs & GUI errors corrected
 
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
@@ -87,28 +88,6 @@ Added features:
 - Password DB in keychain
 - Preferences for Status menu in DB
 - Is it possible to place keyed images into a report automatically when generating a report?
-
-------------------------------------------------------------------------------------------------------------------------
-
-Cours
-- Basics:
-- dmg, export dicom cd, html export
-- web server
-
-------------------------------------------------------------------------------------------------------------------------
-
-for i in `ls -a | grep plugin`; do tempfile="`basename "$i" .plugin`.osirixplugin"; mv $i $tempfile; done;
-
-for i in `ls *.*`; do mv "$i" "$i"ppc; done
-
-for i in `ls *.a`; do lipo -create "$i" "$i"ppc -output "$i"final; done
-
-for i in `ls`; do ibtool "$i" --compile "$i"; done
-
-for i in `ls`; do lipo -remove ppc7400 "$i" -output "$i"; done
-
-
-make CFLAGS="-isysroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc64" LDFLAGS="-syslibroot /Developer/SDKs/MacOSX10.5.sdk -arch ppc64"
 
 ------------------------------------------------------------------------------------------------------------------------
 
