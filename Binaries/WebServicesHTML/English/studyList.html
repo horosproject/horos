@@ -4,86 +4,22 @@
 </div>
 
 <script type="text/javascript" language="javascript">
-    function printPagesHTML( numberOfPages, currentPage, parameters)
-    {
-        if( numberOfPages > 1)
-        {
-            document.write("Pages:  ");
-            
-            var i=0;
-            var previous=0;
-            previous = currentPage-1;
-            if( currentPage == 0) document.write("<<  ");
-            else document.write("<b><a href='?"+parameters+"&page="+previous+"'><<  </a></b>");
-            
-            var start = 1;
-            var end = numberOfPages+1;
-            
-            if( end - start > 10)
-            {
-                start = currentPage - 3;
-                end = currentPage + 6;
-            }
-            
-            if( start < 1)
-            {
-                end += (-start+1);
-                if( end > numberOfPages+1)
-                end = numberOfPages+1;
-                
-                start = 1;
-            }
-            
-            if( end > numberOfPages+1)
-            {
-                start -= end - numberOfPages;
-                if( start < 1)
-                start = 1;
-                
-                end = numberOfPages+1;
-            }
-            
-            if( start == 2)
-            start = 1;
-            
-            if( end == numberOfPages)
-            end = numberOfPages+1;
-            
-            if( start != 1)
-            {
-                var p = 1;
-                
-                if( 1 == currentPage+1) document.write("<b><u>"+p+"</u></b>  ");
-                else document.write("<a href='?"+parameters+"&page="+0+"'>"+1+"</a>  ");
-                
-                document.write("  ...  ");
-            }
-            
-            for (i=start;i<end;i++)
-            {
-                var page = i-1;
-                if( i == currentPage+1) document.write("<b><u>"+i+"</u></b>  ");
-                else document.write("<a href='?"+parameters+"&page="+page+"'>"+i+"</a>  ");
-            }
-            
-            if( end != numberOfPages+1)
-            {
-                document.write("  ...  ");
-                
-                var p = 0;
-                
-                p = numberOfPages;
-                pp = p-1;
-                
-                if( numberOfPages == currentPage+1) document.write("<b><u>"+p+"</u></b>  ");
-                else document.write("<a href='?"+parameters+"&page="+pp+"'>"+p+"</a>  ");
-            }
-            
-            var next=0;
-            next = currentPage+1;
-            if( next >= numberOfPages) document.write("  >>");
-            else document.write("<b><a href='?"+parameters+"&page="+next+"'>  >></a></b>");
-        }
+    function printPagesHTML( numberOfPages, currentPage, parameters) {
+		if (currentPage > 0)
+			document.write("<a href=\"?"+parameters+"&page="+0+"\">⇤</a>");
+		if (currentPage-2 > 0)
+			document.write("<a href=\"?"+parameters+"&page="+(currentPage-2)+"\">⇇</a>");
+		if (currentPage-1 > 0)
+			document.write("<a href=\"?"+parameters+"&page="+(currentPage-1)+"\">←</a>");
+        
+		document.write(" "+(1+%Session.FetchLimitPerPage%*currentPage)+"-"+(200*currentPage+%Studies.count%)+" of "+%Session.NumberOfStudies%+" ");
+		
+		if (currentPage+1 < numberOfPages-1)
+			document.write("<a href=\"?"+parameters+"&page="+(currentPage+1)+"\">→</a>");
+		if (currentPage+2 < numberOfPages-1)
+			document.write("<a href=\"?"+parameters+"&page="+(currentPage+2)+"\">⇉</a>");
+		if (currentPage < numberOfPages-1)
+			document.write("<a href=\"?"+parameters+"&page="+(numberOfPages-1)+"\">⇥</a>");
 	}
 </script>
 
@@ -93,20 +29,21 @@
 
 	<div>
         %[IF:Studies.count%
-        
-        %LOCNUM:Session.NumberOfStudies% Studies Found<br>
-        
-        <script type="text/javascript">
-            printPagesHTML( %Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
-        </script>
-        <br>
-        
         <div class="noleftmargin">
-			<div class="smaller right gray">
-				Sorted by:
-				<a %[IF:Session.StudiesSortKey=="name"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="name"% href="?%Info.getParameters(sortKey=name)%">name</a>,
-				<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>
-			</div>
+			<table class="wide smaller gray">
+				<tr>
+					<td class="">
+						<script type="text/javascript">
+							printPagesHTML(%Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
+						</script>
+					</td>
+					<td class="right">
+						Sorted by:
+						<a %[IF:Session.StudiesSortKey=="name"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="name"% href="?%Info.getParameters(sortKey=name)%">name</a>,
+						<a %[IF:Session.StudiesSortKey=="date"%class="CurrentSortKey"%]IF:Session.StudiesSortKey=="date"% href="?%Info.getParameters(sortKey=date)%">date</a>
+					</td>
+				</tr>
+			</table>
 			<table class="wide separated fat">
 				%[FOREACH:Studies:Study%
 					<tr class="li%Study_Index2%">	
@@ -152,10 +89,12 @@
 					</tr>
 				%]FOREACH:Studies:Study%
 			</table>
+			<div class="gray smaller wide noleftmargin separated">
+				<script type="text/javascript">
+					printPagesHTML(%Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
+				</script>
+			</div>
 		</div>
-		<script type="text/javascript">
-            printPagesHTML( %Session.NumberOfPages%, %Session.Page%, "%Info.getParameters(page=)%");
-        </script>
 		%ELSE:Studies.count%
 		This list is empty.
 		%]IF:Studies.count%

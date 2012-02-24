@@ -251,6 +251,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     else
         [self.session setObject: [NSNumber numberWithInt: 1 + (numberOfStudies/fetchLimitPerPage)] forKey:@"NumberOfPages"];
     
+    [self.session setObject: [NSNumber numberWithInt:fetchLimitPerPage] forKey:@"FetchLimitPerPage"];
+    
 	return result;
 }
 
