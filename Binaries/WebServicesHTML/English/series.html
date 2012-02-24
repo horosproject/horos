@@ -26,7 +26,12 @@
 								<param name="wmode" value="transparent" />
 								<embed src="/movie.swf?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" wmode="transparent" allowScriptAccess="always" id="series_SWF" />
 							</object>
-							<div class="smaller">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
+							<div class="smaller" id="flashwarning">Viewing this series requires <a href="http://get.adobe.com/flashplayer/">Adobe Flash Player</a></div>
+							<script src="/flash_detect_min.js" type="text/javascript"></script>
+							<script type="text/javascript">
+								if (FlashDetect.installed)
+									document.getElementById("flashwarning").style.display = "none";
+							</script>
 						%ELSE:Info.proposeFlash%
 							<object style="z-index:100" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
 								<param name="src" value="/image.jpg?xid=%Series.XID%&previewForMovie=true" />

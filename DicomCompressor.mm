@@ -50,6 +50,9 @@ const NSUInteger MaxFilesPassedToDecompress = 200;
 		while ([task isRunning]) [NSThread sleepForTimeInterval:0.01];
 		
 		[task release];
+        
+        if ([[NSThread currentThread] isCancelled])
+            return;
 	}
 }
 
