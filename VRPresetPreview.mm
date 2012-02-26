@@ -582,9 +582,11 @@
     return error;
 }
 
-- (void) setEngine: (long) engineID
+- (void) setEngine: (int) newEngine
 {
-	[self setEngine: engineID showWait:NO];
+    engine = newEngine;
+    
+	[self setEngine: engine showWait:NO];
 }
 
 - (void) dealloc

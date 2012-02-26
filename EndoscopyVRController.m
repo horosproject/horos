@@ -202,14 +202,6 @@
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled: NO];
 	
-	[[enginePopup menu] setAutoenablesItems : NO];
-	//[[[enginePopup menu] itemAtIndex: 3] setEnabled: NO];
-	[[[enginePopup menu] itemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]+1] setState:NSOnState]; // texture mapping
-//	NSLog(@"[[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] : %d", [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]);
-	//[self updateEngine];
-	
-	//[view updateScissorStateButtons];
-	
     return self;
 }
 

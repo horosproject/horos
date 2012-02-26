@@ -49,6 +49,7 @@
 #ifndef MACAPPSTORE
 #import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>
+#import "VRView.h"
 #endif
 #endif
 #import "PluginManagerController.h"
@@ -60,6 +61,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "Window3DController.h"
+
 
 #include <OpenGL/OpenGL.h>
 
@@ -2560,6 +2562,7 @@ static NSDate *lastWarningDate = nil;
 	
 	#ifndef OSIRIX_LIGHT
 	[IChatTheatreDelegate sharedDelegate];
+    [VRView testGraphicBoard];
 	#endif
 	
 	return self;
@@ -3824,7 +3827,7 @@ static BOOL initialized = NO;
         #if __LP64__
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/login"]];
         #else
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com"]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Downloads.html"]];
         #endif
     }
     

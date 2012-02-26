@@ -193,11 +193,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
 }
 
--(void) LODsliderAction:(id) sender
-{
-    [view setLOD:[sender floatValue]];
-}
-
 - (void) windowDidLoad
 {
 //    [self setupToolbar];
@@ -285,6 +280,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			[view movieChangeSource: (float*) [volumeData[ curMovieIndex] bytes]];
 		}
 	}
+    
+    
+    
 }
 
 - (void) movieRateSliderAction:(id) sender
@@ -513,9 +511,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			
 	style = [m retain];
 	_renderingMode = [renderingMode retain];
-	// BY DEFAULT TURN OFF OPENGL ENGINE !
-	[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
-	
+    
 	for( i = 0; i < 100; i++) undodata[ i] = nil;
 	
 	curMovieIndex = 0;
@@ -729,12 +725,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[moviePosSlider setEnabled: NO];
 	[moviePlayStop setEnabled: NO];
 	
-//	[[enginePopup menu] setAutoenablesItems : NO];
-//	[[[enginePopup menu] itemAtIndex: 3] setEnabled: NO];
-	[[[enginePopup menu] itemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]+1] setState:NSOnState];
-	
-	[self updateEngine];
-	
 	[view updateScissorStateButtons];
 	
 	for(int m=0; m<maxMovieIndex; m++)
@@ -764,7 +754,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	{
 		[view setRotate: YES];
 		[view setLOD: 1.0];
-		[LODSlider setIntValue: 1];
 	}
 	
 	appliedConvolutionFilters = [[NSMutableArray alloc] initWithCapacity:0];
@@ -773,23 +762,16 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	{
 		NSLog( @"presets start");
 		presetPreviewArray = [[NSMutableArray alloc] initWithCapacity:0];
-		if(presetPreview1)[presetPreviewArray addObject:presetPreview1];
-		if(presetPreview2)[presetPreviewArray addObject:presetPreview2];
-		if(presetPreview3)[presetPreviewArray addObject:presetPreview3];
-		if(presetPreview4)[presetPreviewArray addObject:presetPreview4];
-		if(presetPreview5)[presetPreviewArray addObject:presetPreview5];
-		if(presetPreview6)[presetPreviewArray addObject:presetPreview6];
-		if(presetPreview7)[presetPreviewArray addObject:presetPreview7];
-		if(presetPreview8)[presetPreviewArray addObject:presetPreview8];
-		if(presetPreview9)[presetPreviewArray addObject:presetPreview9];
+		if(presetPreview1) [presetPreviewArray addObject:presetPreview1];
+		if(presetPreview2) [presetPreviewArray addObject:presetPreview2];
+		if(presetPreview3) [presetPreviewArray addObject:presetPreview3];
+		if(presetPreview4) [presetPreviewArray addObject:presetPreview4];
+		if(presetPreview5) [presetPreviewArray addObject:presetPreview5];
+		if(presetPreview6) [presetPreviewArray addObject:presetPreview6];
+		if(presetPreview7) [presetPreviewArray addObject:presetPreview7];
+		if(presetPreview8) [presetPreviewArray addObject:presetPreview8];
+		if(presetPreview9) [presetPreviewArray addObject:presetPreview9];
 		
-		int ii;
-		for (ii=0; ii<[presetPreviewArray count]; ii++)
-		{
-			[[presetPreviewArray objectAtIndex:ii] setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
-			[[presetPreviewArray objectAtIndex:ii] setData8:[view data8]];
-			[[presetPreviewArray objectAtIndex:ii] setVolumeMapper:[view volumeMapper]];
-		}
 		
 		presetNameArray = [[NSMutableArray alloc] initWithCapacity:0];
 		if(presetName1) [presetNameArray addObject:presetName1];
@@ -806,6 +788,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	}
 	[nc addObserver:self selector:@selector(windowWillCloseNotification:) name:NSWindowWillCloseNotification object:nil];
 	[nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
+    [nc addObserver:self selector:@selector(windowWillMoveNotification:) name:NSWindowWillMoveNotification object:nil];
 	
     if( [style isEqualToString:@"panel"])
 	{
@@ -892,14 +875,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( [viewer2D postprocessed]) dict = nil;
 		
 	[view set3DStateDictionary:dict];
-		
-	for (i=0; i<[presetPreviewArray count]; i++)
-	{
-		[[presetPreviewArray objectAtIndex:i] set3DStateDictionary:dict];
-		[[presetPreviewArray objectAtIndex:i] setLOD:1.0];
-		[[presetPreviewArray objectAtIndex:i] setVolumeMapper:[view volumeMapper]];
-	}
-	
+    
 	BOOL has16bitCLUT = NO;
 	
 	if( [dict objectForKey:@"CLUTName"])
@@ -952,12 +928,12 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[view getShadingValues: &ambient :&diffuse :&specular :&specularpower];
 	[shadingValues setStringValue: [NSString stringWithFormat: NSLocalizedString( @"Ambient: %2.1f\nDiffuse: %2.1f\nSpecular :%2.1f-%2.1f", nil), ambient, diffuse, specular, specularpower]];
 	
-	if(!dict && [_renderingMode isEqualToString:@"VR"])
-	{
-		firstTimeDisplayed = YES;
-		[self centerPresetsPanel];
-		[self showPresetsPanel];
-	}
+//	if(!dict && [_renderingMode isEqualToString:@"VR"])
+//	{
+//		firstTimeDisplayed = YES;
+//		[self centerPresetsPanel];
+//		[self showPresetsPanel];
+//	}
 }
 
 - (void) applyScissor : (NSArray*) object
@@ -1517,31 +1493,6 @@ return YES;
 	}
 }
 
-
-
-- (void) updateEngine
-{
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"])
-	{
-		case 0:	// RAY CAST
-			[LODSlider setEnabled: YES];
-			[[modeMatrix cellWithTag:1] setEnabled: YES];
-		break;
-		
-		case 1:	// TEXTURE
-			[LODSlider setEnabled: NO];
-			[[modeMatrix cellWithTag:1] setEnabled: NO];
-			[self setModeIndex: 0];
-		break;
-		
-		case 2:
-			[LODSlider setEnabled: NO];
-			[[modeMatrix cellWithTag:1] setEnabled: NO];
-			[self setModeIndex: 0];
-		break;
-	}
-}
-
 - (NSString *)renderingMode{
 	return _renderingMode;
 }
@@ -1557,16 +1508,6 @@ return YES;
 
 - (IBAction) setModeIndex:(long) val
 {
-	if( val == 1)	// MIP -> Turn Off Texture Mapping
-	{
-		if ([[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"] != 0)
-		{
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];
-			[enginePopup selectItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"MAPPERMODEVR"]+1];
-			[self setEngine: self];
-		}
-	}
-	
 	[modeMatrix selectCellWithTag: val];
 	[self setMode: modeMatrix];
 }
@@ -1596,27 +1537,6 @@ return YES;
 		[shadingCheck setEnabled : YES];
 	}
 
-}
-
-- (IBAction) setEngine:(id) sender
-{
-	long i;
-	
-	for( i = 0 ; i < [[enginePopup menu] numberOfItems]; i++)
-	{
-		[[[enginePopup menu] itemAtIndex: i] setState: NSOffState];
-	}
-	
-	[[enginePopup selectedItem] setState: NSOnState];
-
-//	[view movieChangeSource: (float*) [volumeData[ curMovieIndex] bytes]];
-
-	[view setEngine: [[enginePopup selectedItem] tag]];
-	[view setBlendingEngine: [[enginePopup selectedItem] tag]];
-	
-//	[[NSUserDefaults standardUserDefaults] setInteger: [[enginePopup selectedItem] tag] forKey: @"MAPPERMODEVR"];
-	
-	[self updateEngine];
 }
 
 - (IBAction) AddOpacity:(id) sender
@@ -3677,6 +3597,18 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 
 - (void)showPresetsPanel;
 {
+    if( panelInstantiated == NO)
+    {
+        panelInstantiated = YES;
+        
+        for( id presetPreview in presetPreviewArray)
+        {
+            [presetPreview setPixSource:pixList[0] :(float*) [volumeData[0] bytes]];
+            [presetPreview setData8: [view data8]];
+            [presetPreview setMapper: [view mapper]];
+        }
+    }
+    
 	presetPageNumber = 0;
 	[self updatePresetsGroupPopUpButton];
 	

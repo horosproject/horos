@@ -1,3 +1,4 @@
+- GP-GPU Rendering for Volume Rendering and MIP : up to 10 times faster than CPU !
 - JPEG-LS support (through CharLS library)
 - VTK updated to version 5.8
 - ITK updated to version 4.1
@@ -93,9 +94,9 @@ Added features:
 
 // Release
 - X Bundle Version
-- X Localizations strings:
+- Localizations strings:
 genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
-- X Check if OsiriX Lite works...
+- Check if OsiriX Lite works...
 - Check up-to-date zip packages in Binaries folder
 - Check non-debug lib for KDU & Papyrus in 64-bit
 - Check weasis permissions: everyone: read only
