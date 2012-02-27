@@ -1987,6 +1987,7 @@ return YES;
 												PresetsPanelToolbarItemIdentifier,
 												LODToolbarItemIdentifier,
 												CaptureToolbarItemIdentifier,
+                                                EngineToolbarItemIdentifier,
 												CroppingToolbarItemIdentifier,
 												OrientationToolbarItemIdentifier,
 												ShadingToolbarItemIdentifier,
