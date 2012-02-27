@@ -801,7 +801,7 @@ public:
 				[self allocateGPUMapper];
                 
                 LOD = 1.0;
-                lowResLODFactor = 1.1;
+                lowResLODFactor = 1.2;
             break;
                 
             default:

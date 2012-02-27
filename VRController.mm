@@ -2084,6 +2084,7 @@ return YES;
 											RevertToolbarItemIdentifier,
 											ExportToolbarItemIdentifier,
 											BlendingToolbarItemIdentifier,
+                                            EngineToolbarItemIdentifier,
 											nil];
 }
 

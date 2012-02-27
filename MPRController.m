@@ -174,6 +174,7 @@ static float deg2rad = M_PI/180.0;
 		[[hiddenVRController window] orderBack: self];
 		[[hiddenVRController window] orderOut: self];
 		
+        hiddenVRController.view.engine = 0; // CPU Engine !
 		[hiddenVRController load3DState];
 		
 		hiddenVRView = [hiddenVRController view];

@@ -35,7 +35,7 @@ static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Ide
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
 static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.tif";
-//static NSString*	EngineToolbarItemIdentifier				= @"Engine";
+static NSString*	EngineToolbarItemIdentifier				= @"Engine";
 static NSString*	CroppingToolbarItemIdentifier			= @"Cropping.icns";
 static NSString*	WLWW3DToolbarItemIdentifier				= @"WLWW3D";
 static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
@@ -911,18 +911,18 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(flyThruControllerInit:)];	
     }
-//	else if ([itemIdent isEqualToString: EngineToolbarItemIdentifier])
-//	{
-//		 // Set up the standard properties 
-//		[toolbarItem setLabel: NSLocalizedString(@"Engine",nil)];
-//		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
-//		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
-//		
-//		// Use a custom view, a text field, for the search item 
-//		[toolbarItem setView: engineView];
-//		[toolbarItem setMinSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
-//		[toolbarItem setMaxSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
-//    }
+	else if ([itemIdent isEqualToString: EngineToolbarItemIdentifier])
+	{
+		 // Set up the standard properties 
+		[toolbarItem setLabel: NSLocalizedString(@"Engine",nil)];
+		[toolbarItem setPaletteLabel: NSLocalizedString(@"Engine",nil)];
+		[toolbarItem setToolTip: NSLocalizedString(@"Engine",nil)];
+		
+		// Use a custom view, a text field, for the search item 
+		[toolbarItem setView: engineView];
+		[toolbarItem setMinSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
+		[toolbarItem setMaxSize:NSMakeSize(NSWidth([engineView frame]), NSHeight([engineView frame]))];
+    }
 	else if ([itemIdent isEqualToString: CroppingToolbarItemIdentifier])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Crop",nil)];
@@ -1055,7 +1055,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 											endoMPRToolsToolbarItemIdentifier,
 											FlyThruToolbarItemIdentifier,
 											//CenterlineToolbarItemIdentifier,
-											//EngineToolbarItemIdentifier,
+											EngineToolbarItemIdentifier,
 											//CroppingToolbarItemIdentifier,
 											WLWW3DToolbarItemIdentifier,
 											WLWW2DToolbarItemIdentifier,
