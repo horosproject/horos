@@ -45,7 +45,7 @@
 	
 	if( [httpResponse statusCode] >= 300)
 	{
-		NSLog( @"***** WADO http status code error: %d", [httpResponse statusCode]);
+		NSLog( @"***** WADO http status code error: %d", (int) [httpResponse statusCode]);
 		NSLog( @"***** WADO URL : %@", connection);
 		
 		if( firstWadoErrorDisplayed == NO)
@@ -147,7 +147,7 @@
 	if( [urlToDownload count])
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSLog( @"------ WADO downloading : %d files", [urlToDownload count]);
+		NSLog( @"------ WADO downloading : %d files", (int) [urlToDownload count]);
 		
 		firstWadoErrorDisplayed = NO;
 		
@@ -246,7 +246,7 @@
 		if( aborted)
 			NSLog( @"------ WADO downloading ABORTED");
 		else
-			NSLog( @"------ WADO downloading : %d files - finished", [urlToDownload count]);
+			NSLog( @"------ WADO downloading : %d files - finished", (int) [urlToDownload count]);
 	}	
 }
 

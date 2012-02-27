@@ -37,7 +37,7 @@
 
 -(id)initWithTags:(NSArray*)shownDcmTags values:(NSArray*)values nibName:(NSString*)nibName {
 	self = [super initWithWindowNibName:nibName];
-	self.window; // load
+	[self window]; // load
 	
 	self.anonymizationViewController = [[[AnonymizationViewController alloc] initWithTags:shownDcmTags values:values] autorelease];
 	self.anonymizationViewController.view.frame = containerView.bounds;

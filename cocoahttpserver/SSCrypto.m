@@ -1117,7 +1117,7 @@
 	unsigned long check = RSA_check_key(privateRSA);
 	if (check != 1)
 	{
-		NSLog(@"RSA_check_key() failed with result %d!", check);
+		NSLog(@"RSA_check_key() failed with result %d!", (int) check);
 		return nil;
 	}			
 

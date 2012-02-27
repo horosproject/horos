@@ -24,7 +24,7 @@
 #import "NSThread+N2.h"
 
 
-@interface DicomDatabase ()
+@interface DicomDatabase (Private)
 
 -(NSRecursiveLock*)cleanLock;
 

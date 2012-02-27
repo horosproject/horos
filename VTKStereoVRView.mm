@@ -113,7 +113,7 @@ static NSRecursiveLock *drawLock = nil;
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
-{
+{ssss
 	[superVRView rightMouseDown:theEvent];
 }
 

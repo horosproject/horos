@@ -114,11 +114,11 @@ class DiMonoFlipTemplate
             if (this->Data != NULL)
             {
                 if (horz && vert)
-                    flipHorzVert(&pixel, &this->Data);
+                    this->flipHorzVert(&pixel, &this->Data);
                 else if (horz)
-                    flipHorz(&pixel, &this->Data);
+                    this->flipHorz(&pixel, &this->Data);
                 else if (vert)
-                    flipVert(&pixel, &this->Data);
+                    this->flipVert(&pixel, &this->Data);
             }
         }
     }

@@ -38,7 +38,7 @@
 	
 	if (studies.count != 1)
     {
-		NSLog(@"Warning: Study request with \"patientUID == %@ AND studyInstanceUID == %@\" returned %d objects", self.patientUID, self.studyInstanceUID, studies.count);
+		NSLog(@"Warning: Study request with \"patientUID == %@ AND studyInstanceUID == %@\" returned %d objects", self.patientUID, self.studyInstanceUID, (int) studies.count);
 		return NULL;
 	}
 	

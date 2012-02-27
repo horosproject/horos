@@ -130,7 +130,7 @@ class DiMonoScaleTemplate
             {
                 const T value = OFstatic_cast(T, OFstatic_cast(double, DicomImageClass::maxval(bits)) *
                     OFstatic_cast(double, pvalue) / OFstatic_cast(double, DicomImageClass::maxval(WIDTH_OF_PVALUES)));
-                scaleData(&pixel, &this->Data, interpolate, value);
+                this->scaleData(&pixel, &this->Data, interpolate, value);
              }
         }
     }

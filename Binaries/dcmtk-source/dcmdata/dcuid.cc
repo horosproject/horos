@@ -490,6 +490,8 @@ const char* dcmAllStorageSOPClassUIDs[] =
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
     UID_XRayRadiationDoseSR,
+    UID_SiemensCSAPrivateNonImageStorage,
+    UID_PhilipsPrivateXRayMFStorage,
     NULL
 };
 
@@ -592,6 +594,8 @@ const char* dcmLongSCUStorageSOPClassUIDs[] =
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
     UID_XRayRadiationDoseSR,
+    UID_PhilipsPrivateXRayMFStorage,
+    UID_SiemensCSAPrivateNonImageStorage,
     NULL
 };
 

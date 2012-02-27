@@ -16,13 +16,13 @@
 #import "ViewerController.h"
 #import "OrthogonalMPRController.h"
 #import "OrthogonalMPRView.h"
-#import "OSIWindowController.h"
+#import "Window3DController.h"
 
 @class DICOMExport;
 
 /** \brief  Window Controller for Orthogonal MPR */
 
-@interface OrthogonalMPRViewer : OSIWindowController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
+@interface OrthogonalMPRViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	ViewerController					*viewer;
 
@@ -48,12 +48,6 @@
 	DICOMExport							*exportDCM;
 	
     IBOutlet NSView						*WLWWView;
-    IBOutlet NSPopUpButton				*wlwwPopup;
-	IBOutlet NSPopUpButton				*clutPopup;
-	IBOutlet NSPopUpButton				*OpacityPopup;
-
-	NSString							*curWLWWMenu, *curCLUTMenu, *curOpacityMenu;
-	
 	NSData								*transferFunction;	//For opacity
 	
 	// 4D

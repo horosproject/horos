@@ -1517,7 +1517,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (IBAction)createDatabase: (id)sender { // deprecated
+- (IBAction)createDatabase:(id)sender __deprecated { // deprecated
 	N2LogDeprecatedCall();
 //	if( ![database isLocal])
 //	{
@@ -2068,8 +2068,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(IBAction)ReBuildDatabase:(id)sender // __deprecated
-{
+-(IBAction)ReBuildDatabase:(id)sender { // __deprecated
 	[self initiateRebuildDatabase:NO];
 }
 

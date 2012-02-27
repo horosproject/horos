@@ -107,14 +107,14 @@ class DiColorRotateTemplate
     inline void rotate(const T *pixel[3],
                        const int degree)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             if (degree == 90)
-                rotateRight(pixel, this->Data);
+                this->rotateRight(pixel, this->Data);
             else if (degree == 180)
-                rotateTopDown(pixel, this->Data);
+                this->rotateTopDown(pixel, this->Data);
             else  if (degree == 270)
-                rotateLeft(pixel, this->Data);
+                this->rotateLeft(pixel, this->Data);
         }
     }
 };

@@ -15,11 +15,11 @@
 #import <Cocoa/Cocoa.h>
 #import "OrthogonalMPRPETCTController.h"
 #import "KFSplitView.h"
-#import "OSIWindowController.h"
+#import "Window3DController.h"
 
 /** \brief Window Controller for PET-CT fusion display */
 
-@interface OrthogonalMPRPETCTViewer : OSIWindowController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
+@interface OrthogonalMPRPETCTViewer : Window3DController <NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
 	ViewerController							*viewer, *blendingViewerController;
 	
@@ -51,12 +51,7 @@
 	DICOMExport								*exportDCM;
 	
     IBOutlet NSView							*WLWWView;
-    IBOutlet NSPopUpButton					*wlwwPopup;
-    IBOutlet NSPopUpButton					*clutPopup;
-	IBOutlet NSPopUpButton					*OpacityPopup;
 	IBOutlet NSPopUpButton					*blendingModePopup;
-	
-	NSString								*curWLWWMenu, *curCLUTMenu, *curOpacityMenu;	//*curConvMenu;
 	
 	NSData									*transferFunction;	//For opacity
 	

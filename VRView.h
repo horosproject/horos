@@ -82,7 +82,8 @@
 #include "vtkAnnotatedCubeActor.h"
 #include "vtkOrientationMarkerWidget.h"
 #include "vtkVolumeTextureMapper2D.h"
-#include "vtkVolumeTextureMapper3D.h"
+#include "vtkSmartVolumeMapper.h"
+#include "vtkGPUVolumeRayCastMapper.h"
 #include "OsiriXFixedPointVolumeRayCastMapper.h"
 
 #include "vtkCellArray.h"
@@ -121,6 +122,7 @@ typedef char* vtkOutlineFilter;
 typedef char* vtkLineWidget;
 
 typedef char* vtkTextActor;
+typedef char* vtkVolumeMapper;
 typedef char* vtkVolumeRayCastMapper;
 typedef char* vtkFixedPointVolumeRayCastMapper;
 typedef char* OsiriXFixedPointVolumeRayCastMapper;
@@ -142,6 +144,8 @@ typedef char* vtkVolumeRayCastCompositeFunction;
 
 typedef char* vtkRenderer;
 typedef char* vtkVolumeTextureMapper3D;
+typedef char* vtkSmartVolumeMapper;
+typedef char* vtkGPUVolumeRayCastMapper;
 typedef char* vtkOrientationMarkerWidget;
 typedef char* vtkRegularPolygonSource;
 
@@ -192,6 +196,8 @@ typedef char* VTKStereoVRView;
 	BOOL						rotate, flyto;
 	int							incFlyTo;
 	
+    int                         engine;
+    
 	float						flyToDestination[ 3];
 
 	int							projectionMode;
@@ -205,7 +211,7 @@ typedef char* VTKStereoVRView;
 	vtkImageImport				*blendingReader;
 	
 	OsiriXFixedPointVolumeRayCastMapper *blendingVolumeMapper;
-	vtkVolumeTextureMapper3D	*blendingTextureMapper;
+	vtkGPUVolumeRayCastMapper	*blendingTextureMapper;
 	
 	vtkVolume					*blendingVolume;
 	vtkVolumeProperty			*blendingVolumeProperty;
@@ -257,7 +263,7 @@ typedef char* VTKStereoVRView;
 
     short					currentTool;
 	float					wl, ww;
-	float					LOD, lowResLODFactor;
+	float					LOD, lowResLODFactor, lodDisplayed;
 	float					cosines[ 9];
 	float					blendingcosines[ 9];
 	double					table[257][3];
@@ -283,7 +289,7 @@ typedef char* VTKStereoVRView;
 	// MAPPERS
 	
 	OsiriXFixedPointVolumeRayCastMapper *volumeMapper;
-	vtkVolumeTextureMapper3D		*textureMapper;
+	vtkGPUVolumeRayCastMapper		*textureMapper;
 	
 	vtkVolume					*volume;
 	vtkVolumeProperty			*volumeProperty;
@@ -382,7 +388,7 @@ typedef char* VTKStereoVRView;
 	BOOL			bestRenderingWasGenerated;
 	float superSampling;
 	BOOL dontResetImage, keep3DRotateCentered;
-	int fullDepthMode;
+	int fullDepthMode, fullDepthEngineCopy;
 	
 #ifdef _STEREO_VISION_
 	//Added SilvanWidmer 10-08-09
@@ -404,15 +410,17 @@ typedef char* VTKStereoVRView;
 //@property(readonly) short currentTool;
 #endif
 
-@property BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
-@property int projectionMode;
-@property double clippingRangeThickness;
-@property float lowResLODFactor;
+@property (nonatomic) BOOL dontUseAutoCropping, clipRangeActivated, keep3DRotateCentered, dontResetImage, bestRenderingMode;
+@property (nonatomic) int projectionMode;
+@property (nonatomic) double clippingRangeThickness;
+@property float lowResLODFactor, lodDisplayed;
 @property long renderingMode;
+@property int engine;
 @property (readonly) NSArray* currentOpacityArray;
 @property (retain) DICOMExport *exportDCM;
 @property (retain) NSString *dcmSeriesString;
 
++ (void) testGraphicBoard;
 + (BOOL) getCroppingBox:(double*) a :(vtkVolume *) volume :(vtkBoxWidget*) croppingBox;
 + (void) setCroppingBox:(double*) a :(vtkVolume *) volume;
 - (void) setBlendingCroppingBox:(double*) a;
@@ -491,7 +499,7 @@ typedef char* VTKStereoVRView;
 - (void)activateShading:(BOOL)on;
 - (IBAction) switchShading:(id) sender;
 - (long) shading;
-- (void) setEngine: (long) engineID;
+- (void) setEngine: (int) engineID;
 - (void) setProjectionMode: (int) mode;
 - (IBAction) resetImage:(id) sender;
 - (void) saView:(id) sender;
@@ -577,6 +585,8 @@ typedef char* VTKStereoVRView;
 - (NSPoint) windowCenter;
 - (double) getClippingRangeThicknessInMm;
 - (void) setLODLow:(BOOL) l;
+- (void) allocateGPUMapper;
+- (void) allocateCPUMapper;
 
 // export
 - (void) sendMail:(id) sender;
@@ -593,7 +603,6 @@ typedef char* VTKStereoVRView;
 
 //Menus
 - (void)deleteRightMouseDownTimer;
-- (void) showMenu:(NSTimer*)theTimer;
 
 -(BOOL)actionForHotKey:(NSString *)hotKey;
 - (void)setAdvancedCLUT:(NSMutableDictionary*)clut lowResolution:(BOOL)lowRes;
@@ -603,8 +612,8 @@ typedef char* VTKStereoVRView;
 - (void)setController:(VRController*)aController;
 - (BOOL)isRGB;
 
-- (OsiriXFixedPointVolumeRayCastMapper*)volumeMapper;
-- (void)setVolumeMapper:(OsiriXFixedPointVolumeRayCastMapper*)aVolumeMapper;
+- (vtkVolumeMapper*) mapper;
+- (void)setMapper: (vtkVolumeMapper*) mapper;
 - (vtkVolume*)volume;
 - (void)setVolume:(vtkVolume*)aVolume;
 - (char*)data8;

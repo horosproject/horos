@@ -95,7 +95,7 @@ class DiARGBPixelTemplate
                  const unsigned int planeSize,
                  const int bits)
     {                                             // not very much optimized, but no one really uses ARGB !!
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             register T2 value;
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));

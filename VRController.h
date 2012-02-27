@@ -41,7 +41,6 @@
 
 @interface VRController : Window3DController <NSWindowDelegate, NSToolbarDelegate>
 {
-    IBOutlet NSSlider       *LODSlider;
 	IBOutlet VRView			*view;
 	
 	NSString				*style;
@@ -55,7 +54,6 @@
 	IBOutlet NSMatrix		*modeMatrix;
 	
 	IBOutlet NSMatrix		*toolsMatrix;
-	IBOutlet NSPopUpButton  *enginePopup;
 		
 	IBOutlet NSWindow       *shadingEditWindow;
 	IBOutlet NSWindow       *growingRegionWindow;
@@ -132,6 +130,7 @@
 	NSMutableArray			*presetPreviewArray;
 	NSMutableArray			*presetNameArray;
 	int						presetPageNumber, presetPageMax, presetPageMin;
+    BOOL                    panelInstantiated;
 	IBOutlet NSButton		*nextPresetPageButton, *previousPresetPageButton;
 	IBOutlet NSTextField	*numberOfPresetInGroupTextField;
 
@@ -163,14 +162,13 @@
 - (IBAction) applyConvolution:(id) sender;
 - (IBAction) setOrientation:(id) sender;
 - (NSString*) style;
-- (void) setModeIndex:(long) val;
+- (IBAction) setModeIndex:(long) val;
 - (IBAction) setMode:(id)sender;
 - (NSMutableArray*) pixList;
 - (NSMutableArray*) curPixList;
 - (void) load3DState;
 - (void) updateBlendingImage;
 - (ViewerController*) blendingController;
-- (void) LODsliderAction:(id) sender;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC;
 - (id) initWithPix:(NSMutableArray*) pix :(NSArray*) f :(NSData*) vData :(ViewerController*) bC :(ViewerController*) vC style:(NSString*) m mode:(NSString*) renderingMode;
 - (void) setupToolbar;
@@ -193,8 +191,6 @@
 - (short)curMovieIndex;
 - (BOOL)is4D;
 - (IBAction) editShadingValues:(id) sender;
-- (IBAction) setEngine:(id) sender;
-- (void) updateEngine;
 - (void) prepareUndo;
 - (VRView*) view;
 - (void) applyScissor : (NSArray*) object;

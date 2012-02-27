@@ -191,7 +191,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	dstBuf.width = srcbuf.width = width;
 	dstBuf.rowBytes = srcbuf.rowBytes = width;
 	err = vImageErode_Planar8( &srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
-	if( err) NSLog(@"%d", err);
+	if( err) NSLog(@"%d", (int) err);
 	memcpy(buffer,dstBuf.data,width*height);
 	free( dstBuf.data);
 	free( kernel);
@@ -218,7 +218,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 	dstBuf.width = srcbuf.width = width;
 	dstBuf.rowBytes = srcbuf.rowBytes = width;
 	err = vImageDilate_Planar8(&srcbuf, &dstBuf, 0, 0, kernel, structuringElementRadius, structuringElementRadius, kvImageDoNotTile);
-	if(err) NSLog(@"%d", err);
+	if(err) NSLog(@"%d", (int) err);
 	
 	memcpy(buffer, dstBuf.data, width*height);
 	free(dstBuf.data);
@@ -321,7 +321,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 		dstBuf.rowBytes = srcbuf.rowBytes = width * sizeof(float);
 
 		err = vImageConvolve_PlanarF( &srcbuf, &dstBuf, 0, 0, 0, kernel, structuringElementSize, structuringElementSize, 0, kvImageEdgeExtend);
-		if( err) NSLog(@"convolve error : %d", err);
+		if( err) NSLog(@"convolve error : %d", (int)err);
 		memcpy(buffer,dstBuf.data,width * height * sizeof(float));
 		free(dstBuf.data);
 	}
@@ -343,7 +343,7 @@ void draw_filled_circle(unsigned char *buf, int width, unsigned char val)
 		dstBuf.rowBytes = srcbuf.rowBytes = width * sizeof(float);
 
 		err = vImageConvolve_PlanarF( &srcbuf, &dstBuf, 0, 0, 0, kernel, kernelSize, kernelSize, 0, kvImageEdgeExtend);
-		if( err) NSLog(@"convolve error : %d", err);
+		if( err) NSLog(@"convolve error : %d", (int) err);
 		memcpy(buffer,dstBuf.data,width * height * sizeof(float));
 		free(dstBuf.data);
 	}

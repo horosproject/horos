@@ -241,6 +241,10 @@ a.back:before {
 	margin: 2px 0 2px 20px;
 }
 
+#content > div > div.noleftmargin {
+	margin: 2px 0 2px 0;
+}
+
 #content > div > .title {
 	margin: 10px 0 10px 0;
 	font-size: 13pt;

@@ -75,7 +75,9 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	/***/
 	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
 	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
-	static NSString *PhilipsPrivateXRayMFStorage = @"1.3.46.670589.7.8.1618510091";
+    /***/
+	static NSString *PhilipsPrivatePrefixStorage = @"1.3.46.670589"; // Prefix
+    static NSString *SiemensCSAPrivateNonImageStorage = @"1.3.12.2.1107.5.9.1";
 	/***/
 	static NSString *XrayAngiographicBiplaneImageStorage = @"1.2.840.10008.5.1.4.1.1.12.3";
 	/***/
@@ -224,7 +226,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
     if( allSupportedSyntaxes == nil)
     {
         allSupportedSyntaxes = [NSMutableArray array];
-
+        
         [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID imageSyntaxes]];
         [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID radiotherapySyntaxes]];
         [allSupportedSyntaxes addObjectsFromArray: [DCMAbstractSyntaxUID structuredReportSyntaxes]];
@@ -480,7 +482,6 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			EnhancedXRFImageStorage,
 			XRay3DAngiographicImageStorage,
 			XRay3DCraniofacialImageStorage,
-			PhilipsPrivateXRayMFStorage,
 			nil];
 		
 		@try 
@@ -589,14 +590,20 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (NSArray*) supportedPrivateClasses
 {
-    // Dont forget to add them to PapyFiles3.c PapyFileOpen
-    
-    return [NSArray arrayWithObjects: @"1.3.46.670589", MRSpectroscopyStorage, RawDataStorage, nil];
+    return [NSArray arrayWithObjects: MRSpectroscopyStorage, RawDataStorage, PhilipsPrivatePrefixStorage, SiemensCSAPrivateNonImageStorage, nil];
 }
 
 + (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID
 {
-	return sopClassUID != nil && [[DCMAbstractSyntaxUID supportedPrivateClasses] containsObject: sopClassUID];
+    if( sopClassUID != nil)
+    {
+        for( NSString *s in [DCMAbstractSyntaxUID supportedPrivateClasses])
+        {
+            if( [sopClassUID hasPrefix: s])
+                return YES;
+        }
+    }
+	return NO; 
 }
 
 		// Waveforms ...

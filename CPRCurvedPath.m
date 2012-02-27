@@ -254,7 +254,7 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     NSInteger insertIndex;
     
     if ([_nodes count] < 2) {
-        NSLog(@"Warning, CPRCurvedPath trying to insert a node into a path that on has %d nodes", [_nodes count]);
+        NSLog(@"Warning, CPRCurvedPath trying to insert a node into a path that on has %d nodes", (int) [_nodes count]);
         return -1;
     }
     

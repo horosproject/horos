@@ -103,7 +103,7 @@ class DiPalettePixelTemplate
     void convert(const T1 *pixel,
                  DiLookupTable *palette[3])
     {                                                                // can be optimized if necessary !
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             register const T1 *p = pixel;
             register T2 value = 0;

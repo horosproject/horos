@@ -67,6 +67,7 @@
 
 #pragma mark N2XMLRPCConnectionDelegate
 
+// this method is implemented because the original XMLRPC interface wasn't case-sensitive with XMLRPC method names; anyway we'd still need to implement isSelectorAvailableToXMLRPC:
 -(NSString*)selectorStringForXMLRPCRequestMethodName:(NSString*)selName {
     selName = [selName lowercaseString];
 	if ([selName isEqualToString:@"killosirix"])
@@ -356,6 +357,8 @@
     DicomDatabase* idatabase = [self.database independentDatabase];
     
     NSArray* iobjects = [idatabase objectsForEntity:entityName predicate:[NSPredicate predicateWithFormat:request] error:error];
+    
+//  NSLog(@"FindObject %@ ||| %@ ||| %@ ||| %d", entityName, request, command, (int)iobjects.count);
     
     if (error && *error)
         ReturnWithErrorValue((*error).code);

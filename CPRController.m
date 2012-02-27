@@ -33,6 +33,7 @@
 #import "CPRGenerator.h"
 #import "CPRUnsignedInt16ImageRep.h"
 #import "CPRMPRDCMView.h"
+#import "N2OpenGLViewWithSplitsWindow.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -475,6 +476,10 @@ static float deg2rad = M_PI / 180.0;
 {
 	NSScreen *s = [viewer2D get3DViewerScreen: viewer2D];
 	
+    [horizontalSplit1 setDelegate: self];
+    [horizontalSplit2 setDelegate: self];
+    [verticalSplit setDelegate: self];
+    
 	if( [s frame].size.height > [s frame].size.width)
 	{
 		[horizontalSplit1 setVertical: NO];
@@ -485,6 +490,14 @@ static float deg2rad = M_PI / 180.0;
 	[shadingsPresetsController setWindowController: self];
 	[shadingCheck setAction:@selector(switchShading:)];
 	[shadingCheck setTarget:self];
+}
+
+-(void)splitViewWillResizeSubviews:(NSNotification *)notification
+{
+    N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
+	
+	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
+		[window disableUpdatesUntilFlush];
 }
 
 - (void) dealloc

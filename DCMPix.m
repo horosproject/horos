@@ -6535,7 +6535,7 @@ END_CREATE_ROIS:
         [PapyrusLock unlock];
         [purgeCacheLock unlock];
     }
-    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 10 secs : purgeCacheLock condition: %d", [purgeCacheLock condition]);
+    else NSLog( @"****** failed to acquire lock on purgeCacheLock during 10 secs : purgeCacheLock condition: %d", (int) [purgeCacheLock condition]);
 }
 
 - (void) clearCachedDCMFrameworkFiles

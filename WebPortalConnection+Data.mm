@@ -253,6 +253,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
     else
         [self.session setObject: [NSNumber numberWithInt: 1 + (numberOfStudies/fetchLimitPerPage)] forKey:@"NumberOfPages"];
     
+    [self.session setObject: [NSNumber numberWithInt:fetchLimitPerPage] forKey:@"FetchLimitPerPage"];
+    
 	return result;
 }
 
@@ -1396,7 +1398,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSLog( @"****** WADO Server : study not found");
 		
 		if ([studies count] > 1)
-			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
+			NSLog( @"****** WADO Server : more than 1 study with same uid : %d", (int) studies.count);
 		
         NSArray *allSeries = [NSArray array];
         
@@ -1502,7 +1504,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				NSLog( @"****** WADO Server : study not found");
 			
 			if ([studies count] > 1)
-				NSLog( @"****** WADO Server : more than 1 study with same uid : %d", studies.count);
+				NSLog( @"****** WADO Server : more than 1 study with same uid : %d", (int) studies.count);
 			
             NSArray *allSeries = [NSArray array];
             

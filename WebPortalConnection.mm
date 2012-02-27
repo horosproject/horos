@@ -159,6 +159,8 @@ static NSString* NotNil(NSString *s) {
 	
 	self.session = NULL;
     
+    if ([_independentDicomDatabase.managedObjectContext hasChanges])
+        [_independentDicomDatabase save];
     [_independentDicomDatabase release];
 	
 	[super dealloc];

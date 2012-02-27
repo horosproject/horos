@@ -96,7 +96,7 @@ class DiYBRPixelTemplate
                  const int bits,
                  const OFBool rgb)
     {
-        if (Init(pixel))
+        if (this->Init(pixel))
         {
             const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'

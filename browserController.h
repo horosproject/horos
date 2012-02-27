@@ -424,14 +424,13 @@ extern NSString* O2AlbumDragType;
 - (IBAction) customIntervalNow:(id) sender;
 - (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
-- (IBAction) createDatabase:(id) sender __deprecated; // this seems to be unused
+- (IBAction)createDatabase:(id)sender __deprecated; // this seems to be unused
 - (void) checkReportsDICOMSRConsistency __deprecated;
 - (void) openDatabaseIn:(NSString*) a Bonjour:(BOOL) isBonjour __deprecated;
 - (void) openDatabaseIn: (NSString*)a Bonjour: (BOOL)isBonjour refresh: (BOOL) refresh __deprecated;
 - (void) browserPrepareForClose;
 - (IBAction) endReBuildDatabase:(id) sender;
-- (IBAction) ReBuildDatabase:(id) sender __deprecated
-;
+- (IBAction) ReBuildDatabase:(id) sender __deprecated;
 - (IBAction) ReBuildDatabaseSheet: (id)sender;
 - (void) previewSliderAction:(id) sender;
 - (void) addHelpMenu;

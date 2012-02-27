@@ -58,7 +58,7 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 - (IBAction) redo:(id) sender;
 - (IBAction) undo:(id) sender;
 
-- (void) applyShading:(id) sender;
+- (IBAction) applyShading:(id) sender;
 - (void) updateAutoAdjustPrinting: (id) sender;
 
 #pragma mark-

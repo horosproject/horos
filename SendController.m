@@ -86,7 +86,7 @@ static volatile int sendControllerObjects = 0;
 {
 	if (self = [super initWithWindowNibName:@"Send"])
 	{
-		NSLog( @"SendController initWithFiles");
+		NSLog( @"SendController initWithFiles: %d files", (int) files.count);
 		
 		sendControllerObjects++;
 		

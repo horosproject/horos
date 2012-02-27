@@ -3289,6 +3289,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 {
 	if( mode != m)
 	{
+        if( [NSEvent pressedMouseButtons] != 0 && (mode == ROI_drawing || mode == ROI_selectedModify))
+            NSLog( @"*** change ROI mode during modification?");
+        
 		mode = m;
 		[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:self userInfo: nil];
 	}

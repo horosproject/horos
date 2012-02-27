@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11C74</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
-		<string key="IBDocument.AppKitVersion">1138.23</string>
-		<string key="IBDocument.HIToolboxVersion">567.00</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1938</string>
+			<string key="NS.object.0">2177</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSColorWell</string>
@@ -59,11 +59,11 @@
 				<string key="NSWindowRect">{{196, 67}, {730, 443}}</string>
 				<int key="NSWTFlags">805306368</int>
 				<string key="NSWindowTitle">MPR</string>
-				<string key="NSWindowClass">NSWindow</string>
+				<string key="NSWindowClass">OSIWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="345868235">
@@ -79,6 +79,7 @@
 											<int key="NSvFlags">274</int>
 											<string key="NSFrameSize">{337, 209}</string>
 											<reference key="NSSuperview" ref="843978156"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="390045821"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
@@ -87,12 +88,14 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{0, 218}, {337, 225}}</string>
 											<reference key="NSSuperview" ref="843978156"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="429309286"/>
 											<string key="NSClassName">MPRDCMView</string>
 										</object>
 									</array>
 									<string key="NSFrameSize">{337, 443}</string>
 									<reference key="NSSuperview" ref="345868235"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="494401297"/>
 								</object>
 								<object class="NSCustomView" id="429309286">
@@ -100,16 +103,21 @@
 									<int key="NSvFlags">274</int>
 									<string key="NSFrame">{{346, 0}, {385, 443}}</string>
 									<reference key="NSSuperview" ref="345868235"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView"/>
 									<string key="NSClassName">MPRDCMView</string>
 								</object>
 							</array>
 							<string key="NSFrameSize">{731, 443}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="843978156"/>
 							<bool key="NSIsVertical">YES</bool>
 						</object>
 					</array>
 					<string key="NSFrameSize">{730, 443}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="345868235"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -117,7 +125,7 @@
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSBox" id="636187167">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">14</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSView" id="729797186">
@@ -129,7 +137,6 @@
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{9, 12}, {104, 25}}</string>
 								<reference key="NSSuperview" ref="729797186"/>
-								<reference key="NSWindow"/>
 								<string key="NSReuseIdentifierKey">_NS:1766</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSegmentedCell" key="NSCell" id="57224358">
@@ -177,13 +184,10 @@
 						</array>
 						<string key="NSFrameSize">{123, 44}</string>
 						<reference key="NSSuperview" ref="636187167"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="384509075"/>
 					</object>
 				</array>
 				<string key="NSFrameSize">{123, 44}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="729797186"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
@@ -10133,6 +10137,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="actualSize:">id</string>
 						<string key="alwaysSyncMenu:">id</string>
+						<string key="flipHorizontal:">id</string>
+						<string key="flipVertical:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
 						<string key="scaleToFit:">id</string>
 						<string key="sliderRGBFactor:">id</string>
@@ -10144,6 +10150,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="alwaysSyncMenu:">
 							<string key="name">alwaysSyncMenu:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="flipHorizontal:">
+							<string key="name">flipHorizontal:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="flipVertical:">
+							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">
@@ -10339,6 +10353,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">N2OpenGLViewWithSplitsWindow</string>
+					<string key="superclassName">NSWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/N2OpenGLViewWithSplitsWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">NFHUDPopUpButton</string>
 					<string key="superclassName">NSPopUpButton</string>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -10355,13 +10377,26 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
+					<string key="className">OSIWindow</string>
+					<string key="superclassName">N2OpenGLViewWithSplitsWindow</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/OSIWindow.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">OSIWindowController</string>
 					<string key="superclassName">NSWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="applyShading:">id</string>
 						<string key="redo:">id</string>
 						<string key="undo:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="applyShading:">
+							<string key="name">applyShading:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="redo:">
 							<string key="name">redo:</string>
 							<string key="candidateClassName">id</string>
@@ -10586,8 +10621,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="3DRotateCamera">{28, 28}</string>
 			<string key="Length">{28, 28}</string>
 			<string key="Move">{28, 28}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSRefreshFreestandingTemplate">{14, 14}</string>
 			<string key="NSSwitch">{15, 15}</string>
 			<string key="Propagate">{32, 32}</string>

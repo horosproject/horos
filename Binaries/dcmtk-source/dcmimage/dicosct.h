@@ -116,8 +116,8 @@ class DiColorScaleTemplate
     inline void scale(const T *pixel[3],
                       const int interpolate)
     {
-        if (Init(pixel))
-            scaleData(pixel, this->Data, interpolate);
+        if (this->Init(pixel))
+            this->scaleData(pixel, this->Data, interpolate);
     }
 };
 

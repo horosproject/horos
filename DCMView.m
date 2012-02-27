@@ -4512,6 +4512,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	float reverseScrollWheel;
 	
+    if( [NSEvent pressedMouseButtons])
+        return;
+    
 	if( curImage < 0) return;
 	if( !drawing) return;
 	if( [[self window] isVisible] == NO) return;

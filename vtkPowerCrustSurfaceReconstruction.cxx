@@ -881,7 +881,7 @@ int correct_orientation(double*,double*,double*,double*,double*);
 int random() { return rand(); }
 void srandom(int s) { srand(s); }
 
-/* TJH: these were put here to allow compiling under windows, getting problems on other OS's now
+ TJH: these were put here to allow compiling under windows, getting problems on other OS's now
 #define popen _popen
 #define pclose _pclose*/
 //========rand48.h=============================================================
@@ -5345,7 +5345,7 @@ void *visit_hull(simplex *root, visit_func *visit)
         if(DFILE)
             fprintf(DFILE,"---------------------\n"); 
         print_triang(a,DFILE, &print_neighbor_full);
-        /* TJH exit(1);*/ /*OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!")); 
+        // TJH exit(1);*/ /*OSIRIX_ASSERT((long) (pcFALSE,"adjacency failure!")); 
         return 0; 
     }  
 }*/   

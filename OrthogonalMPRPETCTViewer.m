@@ -270,8 +270,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self forKeyPath: @"values.exportDCMIncludeAllViews"];
 	
 	[transferFunction release];
-	[curCLUTMenu release];
-	[curWLWWMenu release];
+    
 	[pixList release];
 	[blendingViewerController release];
 	[viewer release];
