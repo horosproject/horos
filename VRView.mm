@@ -727,7 +727,7 @@ public:
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vram)
     {
-        if( vram >= 512)
+        if( vram >= 512 && [AppController hasMacOSXLion])
         {
             //GPU Rendering in full screen
             
@@ -6061,7 +6061,11 @@ public:
 					
 				if( blendingVolumeMapper) blendingVolumeMapper->Delete();
 				blendingVolumeMapper = nil;
-				if( blendingTextureMapper) blendingTextureMapper->Delete();
+				if( blendingTextureMapper)
+                {
+                    blendingTextureMapper->ReleaseGraphicsResources( aRenderer->GetRenderWindow());
+                    blendingTextureMapper->Delete();
+                }
 				blendingTextureMapper = nil;
 				
 				[self setBlendingEngine: self.engine showWait: NO];
