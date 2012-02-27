@@ -329,6 +329,9 @@ typedef char* VTKStereoVRView;
     NSPoint                     Oval2DCenter, WorldOval2DCenter;
     double                      Oval2DRadius;
     
+    double                      Oval2DSampleDistance;
+    int                         Oval2DPixZBufferOrigin[2];
+    
 	BOOL						clamping;
 	
 	DICOMExport					*exportDCM;

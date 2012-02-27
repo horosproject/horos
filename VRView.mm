@@ -2606,11 +2606,25 @@ public:
                 
                 float *pixels = [self imageInFullDepthWidth: &width height: &height isRGB: &rgb];
                 
+                Oval2DPixZBufferOrigin[ 0] = Oval2DPixZBufferOrigin[ 1] = 0;
+                volumeMapper->GetRayCastImage()->GetImageOrigin( Oval2DPixZBufferOrigin);
+                Oval2DSampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
+                Oval2DPixZBufferOrigin[ 0] *= Oval2DSampleDistance;
+                Oval2DPixZBufferOrigin[ 1] *= Oval2DSampleDistance;
+                
                 if( rgb == NO)
                 {
                     [Oval2DPix release];
                      Oval2DPix = [[DCMPix alloc] initWithData: pixels :32 :width :height :1 :1 :0 :0 :0 :NO];
+                    
+//                    #ifdef NDEBUG
+//                    #else
+//                    [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/VR.tiff" error: nil];
+//                    [[[Oval2DPix image] TIFFRepresentation] writeToFile: @"/tmp/VR.tiff" atomically: YES];   
+//                    #endif
                 }
+                
+                
                 [self endRenderImageWithBestQuality];
                 
                 [self restoreFullDepthCapture];
@@ -2627,18 +2641,13 @@ public:
         {
             ROI *circle = [[ROI alloc] initWithType: tOval :1 :1 :NSMakePoint(0,0)];
             
-            double sampleDistance = volumeMapper->GetRayCastImage()->GetImageSampleDistance();
-            
-            int zbufferOrigin[2];
-            volumeMapper->GetRayCastImage()->GetZBufferOrigin( zbufferOrigin);
-            
             NSPoint center = Oval2DCenter;
             float radius = Oval2DRadius;
             
-            center.x -= zbufferOrigin[0];   center.y -= zbufferOrigin[1];
-            center.x /= sampleDistance; center.y /= sampleDistance;
+            center.x -= Oval2DPixZBufferOrigin[0];   center.y -= Oval2DPixZBufferOrigin[1];
+            center.x /= Oval2DSampleDistance; center.y /= Oval2DSampleDistance;
             
-            radius /= sampleDistance;
+            radius /= Oval2DSampleDistance;
             
             [circle setROIRect: NSMakeRect( center.x ,
                                            Oval2DPix.pheight - center.y,
@@ -2649,11 +2658,18 @@ public:
             
             [Oval2DPix computeROI: circle :&rmean :&rtotal :&rdev :&rmin :&rmax];
             
+//#ifdef NDEBUG
+//#else
+//             [Oval2DPix fillROI: circle : 1000 :-2000 :2000 :NO];
+//            [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/VR.tiff" error: nil];
+//            [[[Oval2DPix image] TIFFRepresentation] writeToFile: @"/tmp/VR.tiff" atomically: YES];   
+//#endif
+            
             Oval2DText->GetPositionCoordinate()->SetCoordinateSystemToViewport();
             
-#define OVAL2DTEXTHEIGHT 35
+            #define OVAL2DTEXTHEIGHT 35
             
-            if( Oval2DCenter.y/sampleDistance > Oval2DPix.pheight/2)
+            if( Oval2DCenter.y/Oval2DSampleDistance > Oval2DPix.pheight/2)
                 Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x-Oval2DRadius, Oval2DCenter.y-Oval2DRadius - OVAL2DTEXTHEIGHT);
             else
                 Oval2DText->GetPositionCoordinate()->SetValue( Oval2DCenter.x-Oval2DRadius, Oval2DCenter.y+Oval2DRadius + 5);
