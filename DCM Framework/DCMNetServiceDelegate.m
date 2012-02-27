@@ -46,6 +46,10 @@ static NSMutableArray *cachedServersArray = nil;
 	{
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
+        
+        if (!cachedServersArray)
+            cachedServersArray = [[NSMutableArray alloc] init];
+        
 		[self update];
 	}
 	return self;
@@ -235,7 +239,7 @@ static NSMutableArray *cachedServersArray = nil;
 				}
 			}
 			
-			if( cached == NO || cachedServersArray == nil)
+			if( cached == NO)
 			{
 				serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 				
@@ -374,8 +378,8 @@ static NSMutableArray *cachedServersArray = nil;
 					}
 				}
 				
-				[cachedServersArray release];
-				cachedServersArray = [[NSMutableArray arrayWithArray: serversArray] retain];
+                [cachedServersArray removeAllObjects];
+                [cachedServersArray addObjectsFromArray:serversArray];
 			}
 			else serversArray = [NSMutableArray arrayWithArray: cachedServersArray];
 			
