@@ -732,7 +732,7 @@ public:
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
             
             if( MPProcessors() > 8) // Prefer CPU...
-                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // gpu
+                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
             else
                 [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
         }
