@@ -1462,7 +1462,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			
 			if (singleProcess)
 			{
-				DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
+				/*DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
 				
 				if ([database tryLock])
 				{
@@ -1477,7 +1477,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					@finally {
                         [database unlock];
                     }
-				}
+				}*/
 								
 				@try
 				{
@@ -1512,7 +1512,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
-                    DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
+                    /*DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
 
 					if ([database tryLock])
 					{
@@ -1527,7 +1527,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                         @finally {
                             [database unlock];
                         }
-					}
+					}*/
                     
                     if( [[DicomDatabase defaultDatabase] isLocal] == NO)
                         NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
