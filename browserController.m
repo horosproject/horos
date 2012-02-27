@@ -2653,7 +2653,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObjectContext *context = self.managedObjectContext;
 	
 	[context retain];
-//	[context lock];
+	[context lock];
 	error = nil;
 	[outlineViewArray release];
 	
@@ -2784,7 +2784,7 @@ static NSConditionLock *threadLock = nil;
 	
 	outlineViewArray = [outlineViewArray retain];
 	
-//	[context unlock];
+	[context unlock];
 	[context release];
 	
 	[databaseOutline reloadData];
@@ -4700,7 +4700,7 @@ static NSConditionLock *threadLock = nil;
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
-//	[context lock];
+	[context lock];
 	
 	@try 
 	{
@@ -4826,7 +4826,7 @@ static NSConditionLock *threadLock = nil;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-//	[context unlock];
+	[context unlock];
 	
 	// doesn't work with NSPopupButtonCell	
 	//	if ([outlineView isEqual:databaseOutline])
