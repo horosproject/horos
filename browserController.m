@@ -2543,7 +2543,6 @@ static NSConditionLock *threadLock = nil;
 		NSLog( @"******* We HAVE TO be in main thread !");
 	
 	NSError				*error =nil;
-	NSFetchRequest		*request = [[[NSFetchRequest alloc] init] autorelease];
 	NSPredicate			*predicate = nil, *subPredicate = nil;
 	NSString			*description = [NSString string];
 	NSIndexSet			*selectedRowIndexes =  [databaseOutline selectedRowIndexes];
@@ -2559,10 +2558,6 @@ static NSConditionLock *threadLock = nil;
 			[previousObjects addObject: [databaseOutline itemAtRow: index]];
 		index = [selectedRowIndexes indexGreaterThanIndex:index];
 	}
-	
-	[request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-	
-	predicate = nil;
 	
 //	if( displayEmptyDatabase) // TODO: shu
 //		predicate = [NSPredicate predicateWithValue:NO];
@@ -2647,33 +2642,15 @@ static NSConditionLock *threadLock = nil;
 	
     if( predicate == nil)
         predicate = [NSPredicate predicateWithValue: YES];
-    
-	[request setPredicate: predicate];
 	
-	NSManagedObjectContext *context = self.managedObjectContext;
-	
-	[context retain];
-	[context lock];
+	[_database lock];
 	error = nil;
 	[outlineViewArray release];
 	
 	@try
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && (searchType == 7 || searchType == 0) && [_searchString length] > 0)
-		{
-			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
-			else
-			{
-				[request setPredicate: [NSPredicate predicateWithValue: YES]];
-				outlineViewArray = [context executeFetchRequest: request error: &error];
-				outlineViewArray = [outlineViewArray filteredArrayUsingPredicate: predicate];
-			}
-		}
-		else
-		{
-			if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate: predicate];
-			else outlineViewArray = [context executeFetchRequest:request error: &error];
-		}
+        if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate:predicate];
+        else outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
 		
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
@@ -2684,13 +2661,11 @@ static NSConditionLock *threadLock = nil;
 				[_albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]];
 		}
 	}
-	
 	@catch( NSException *ne)
 	{
         N2LogExceptionWithStackTrace(ne);
 		
-		[request setPredicate: [NSPredicate predicateWithValue: NO]];
-		outlineViewArray = [context executeFetchRequest:request error:&error];
+		outlineViewArray = [NSArray array];
 		
 		exception = [ne description];
 	}
@@ -2725,9 +2700,9 @@ static NSConditionLock *threadLock = nil;
 				for( id obj in outlineViewArray)
 				{
 					@try {
-                        [request setPredicate: [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]]];
+                        NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]];
                         
-                        for( id patientStudy in [[context executeFetchRequest: request error: &error] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
+                        for( id patientStudy in [[_database objectsForEntity:_database.studyEntity predicate:predicate] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
                         {
                             if( [copyOutlineViewArray containsObject: patientStudy] == NO && patientStudy != nil)
                             {
@@ -2748,17 +2723,12 @@ static NSConditionLock *threadLock = nil;
 			else
 			{
 				NSMutableArray	*patientPredicateArray = [NSMutableArray array];
-				
-				for( id obj in outlineViewArray)
-				{
-					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:  @"(patientID == %@)", [obj valueForKey:@"patientID"]]];
-				}
-				
-				[request setPredicate: [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray]];
-				error = nil;
+				for (id obj in outlineViewArray)
+					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:@"(patientID == %@)", [obj valueForKey:@"patientID"]]];
+				predicate = [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray];
 				[originalOutlineViewArray release];
 				originalOutlineViewArray = [outlineViewArray retain];
-				outlineViewArray = [[context executeFetchRequest:request error:&error] sortedArrayUsingDescriptors: sortDescriptors];
+				outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:predicate] sortedArrayUsingDescriptors:sortDescriptors];
 			}
 		}
 		@catch( NSException *ne)
@@ -2784,8 +2754,7 @@ static NSConditionLock *threadLock = nil;
 	
 	outlineViewArray = [outlineViewArray retain];
 	
-	[context unlock];
-	[context release];
+	[_database unlock];
 	
 	[databaseOutline reloadData];
 	
