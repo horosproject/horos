@@ -727,11 +727,11 @@ public:
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vram)
     {
-        if( vram >= 512 && [AppController hasMacOSXLion])
+        if( vram >= 1000 && [AppController hasMacOSXLion])
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
             
-            if( MPProcessors() > 8) // Prefer CPU...
+            if( MPProcessors() > 12)
                 [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
             else
                 [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
