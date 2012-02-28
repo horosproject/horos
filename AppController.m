@@ -3521,21 +3521,21 @@ static BOOL initialized = NO;
     [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"UseOpenJpegForJPEG2000"];
     [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"useDCMTKForJP2K"];
     
-	if( [AppController hasMacOSXSnowLeopard] == NO)
+	if( [AppController hasMacOSXLion] == NO)
 	{
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"encryptForExport"];
 		
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoSnowLeopardWarning"] == NO)
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideNoLionWarning"] == NO)
 		{
 			NSAlert* alert = [[NSAlert new] autorelease];
 			[alert setMessageText: NSLocalizedString( @"Mac OS Version", nil)];
-			[alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.6 or higher, for better performances, more features and more stability.", nil)];
+			[alert setInformativeText: NSLocalizedString( @"You should upgrade to MacOS 10.7 or higher, for better performances, more features and more stability.", nil)];
 			[alert setShowsSuppressionButton:YES ];
 			[alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
 			[alert runModal];
 			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoSnowLeopardWarning"];
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideNoLionWarning"];
 		}
 	}
 	

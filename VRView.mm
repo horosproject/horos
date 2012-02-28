@@ -730,10 +730,12 @@ public:
     {
         if( vram >= 512 && [AppController hasMacOSXLion])
         {
-            //GPU Rendering in full screen
-            
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
+            
+            if( MPProcessors() > 8) // Prefer CPU...
+                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
+            else
+                [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
         }
         else
         {
@@ -802,7 +804,7 @@ public:
 				[self allocateGPUMapper];
                 
                 LOD = 1.0;
-                lowResLODFactor = 1.1;
+                lowResLODFactor = 1.2;
             break;
                 
             default:
@@ -851,6 +853,12 @@ public:
 
 - (void) setEngine: (long) newEngine showWait:(BOOL) showWait
 {
+    if( newEngine != 0 && [AppController hasMacOSXLion] == NO)
+    {
+        NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil),  NSLocalizedString( @"GPU Rendering requires MacOS 10.7 or higher.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+        newEngine = 0;
+    }
+    
     [self willChangeValueForKey: @"engine"];
     engine = newEngine;
     [self didChangeValueForKey: @"engine"];
@@ -6011,6 +6019,23 @@ public:
 	{
 		www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 		[www start];
+        
+        if( 0.9 * [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] < dst8.rowBytes * dst8.height)
+        {
+            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)  name: @"result"];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideVRAMAlert"] == NO)
+            {
+                NSAlert* alert = [[NSAlert new] autorelease];
+                [alert setMessageText: NSLocalizedString( @"Warning!", nil)];
+                [alert setInformativeText: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)];
+                [alert setShowsSuppressionButton:YES ];
+                [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
+                [alert runModal];
+                if ([[alert suppressionButton] state] == NSOnState)
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideVRAMAlert"];
+            }
+        }
 	}
 	
 	@try

@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2177</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSColorWell</string>
@@ -37,7 +37,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="369641766">
 			<object class="NSCustomObject" id="558133940">
 				<string key="NSClassName">EndoscopyViewer</string>
@@ -63,7 +66,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="361393435">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="533661285">
@@ -79,6 +82,8 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{300, 300}</string>
 											<reference key="NSSuperview" ref="843930590"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="481567407"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
 										</object>
@@ -87,12 +92,16 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{309, 0}, {300, 300}}</string>
 											<reference key="NSSuperview" ref="843930590"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="120052299"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
 										</object>
 									</array>
 									<string key="NSFrameSize">{609, 300}</string>
 									<reference key="NSSuperview" ref="533661285"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="459277205"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
 								<object class="NSSplitView" id="120052299">
@@ -104,6 +113,8 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{300, 300}</string>
 											<reference key="NSSuperview" ref="120052299"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="954620390"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
 										</object>
@@ -112,22 +123,31 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{309, 0}, {300, 300}}</string>
 											<reference key="NSSuperview" ref="120052299"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<string key="NSClassName">EndoscopyVRView</string>
 											<string key="NSExtension">NSView</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{0, 309}, {609, 300}}</string>
 									<reference key="NSSuperview" ref="533661285"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="1880684"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
 							</array>
 							<string key="NSFrame">{{5, 6}, {609, 609}}</string>
 							<reference key="NSSuperview" ref="361393435"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="843930590"/>
 						</object>
 					</array>
-					<string key="NSFrame">{{1, 9}, {619, 615}}</string>
+					<string key="NSFrameSize">{619, 615}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
+					<reference key="NSNextKeyView" ref="533661285"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -505,126 +525,6 @@
 				</object>
 				<string key="NSExtension">NSResponder</string>
 			</object>
-			<object class="NSCustomView" id="647851254">
-				<nil key="NSNextResponder"/>
-				<int key="NSvFlags">256</int>
-				<array class="NSMutableArray" key="NSSubviews">
-					<object class="NSCustomView" id="708256072">
-						<reference key="NSNextResponder" ref="647851254"/>
-						<int key="NSvFlags">256</int>
-						<array class="NSMutableArray" key="NSSubviews">
-							<object class="NSPopUpButton" id="302940532">
-								<reference key="NSNextResponder" ref="708256072"/>
-								<int key="NSvFlags">256</int>
-								<string key="NSFrame">{{4, 0}, {50, 34}}</string>
-								<reference key="NSSuperview" ref="708256072"/>
-								<int key="NSTag">-1</int>
-								<bool key="NSEnabled">YES</bool>
-								<object class="NSPopUpButtonCell" key="NSCell" id="717312740">
-									<int key="NSCellFlags">-2076049856</int>
-									<int key="NSCellFlags2">1024</int>
-									<object class="NSFont" key="NSSupport" id="236954416">
-										<string key="NSName">LucidaGrande</string>
-										<double key="NSSize">13</double>
-										<int key="NSfFlags">1044</int>
-									</object>
-									<reference key="NSControlView" ref="302940532"/>
-									<int key="NSButtonFlags">113262847</int>
-									<int key="NSButtonFlags2">2</int>
-									<string key="NSAlternateContents"/>
-									<object class="NSMutableString" key="NSKeyEquivalent">
-										<characters key="NS.bytes"/>
-									</object>
-									<int key="NSPeriodicDelay">400</int>
-									<int key="NSPeriodicInterval">75</int>
-									<object class="NSMenuItem" key="NSMenuItem" id="709963574">
-										<reference key="NSMenu" ref="348571138"/>
-										<bool key="NSIsHidden">YES</bool>
-										<string key="NSTitle"/>
-										<string key="NSKeyEquiv"/>
-										<int key="NSKeyEquivModMask">1048576</int>
-										<int key="NSMnemonicLoc">2147483647</int>
-										<object class="NSCustomResource" key="NSImage">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">3D</string>
-										</object>
-										<object class="NSCustomResource" key="NSOnImage" id="165762829">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">NSMenuCheckmark</string>
-										</object>
-										<object class="NSCustomResource" key="NSMixedImage" id="470405614">
-											<string key="NSClassName">NSImage</string>
-											<string key="NSResourceName">NSMenuMixedState</string>
-										</object>
-										<string key="NSAction">_popUpItemAction:</string>
-										<reference key="NSTarget" ref="717312740"/>
-									</object>
-									<bool key="NSMenuItemRespectAlignment">YES</bool>
-									<object class="NSMenu" key="NSMenu" id="348571138">
-										<object class="NSMutableString" key="NSTitle">
-											<characters key="NS.bytes">OtherViews</characters>
-										</object>
-										<array class="NSMutableArray" key="NSMenuItems">
-											<reference ref="709963574"/>
-											<object class="NSMenuItem" id="933224310">
-												<reference key="NSMenu" ref="348571138"/>
-												<string key="NSTitle">Ray Cast (CPU)</string>
-												<string key="NSKeyEquiv"/>
-												<int key="NSKeyEquivModMask">1048576</int>
-												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
-												<string key="NSAction">_popUpItemAction:</string>
-												<reference key="NSTarget" ref="717312740"/>
-											</object>
-											<object class="NSMenuItem" id="63661742">
-												<reference key="NSMenu" ref="348571138"/>
-												<string key="NSTitle">3D Texture (GPU)</string>
-												<string key="NSKeyEquiv"/>
-												<int key="NSKeyEquivModMask">1048576</int>
-												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
-												<string key="NSAction">_popUpItemAction:</string>
-												<int key="NSTag">1</int>
-												<reference key="NSTarget" ref="717312740"/>
-											</object>
-											<object class="NSMenuItem" id="402080508">
-												<reference key="NSMenu" ref="348571138"/>
-												<string key="NSTitle">Both: Ray Cast + 3D Texture</string>
-												<string key="NSKeyEquiv"/>
-												<int key="NSKeyEquivModMask">1048576</int>
-												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
-												<string key="NSAction">_popUpItemAction:</string>
-												<int key="NSTag">2</int>
-												<reference key="NSTarget" ref="717312740"/>
-											</object>
-										</array>
-									</object>
-									<bool key="NSPullDown">YES</bool>
-									<int key="NSPreferredEdge">3</int>
-									<bool key="NSUsesItemFromMenu">YES</bool>
-									<bool key="NSAltersState">YES</bool>
-									<int key="NSArrowPosition">2</int>
-								</object>
-							</object>
-						</array>
-						<string key="NSFrameSize">{58, 36}</string>
-						<reference key="NSSuperview" ref="647851254"/>
-						<object class="NSMutableString" key="NSClassName">
-							<characters key="NS.bytes">NSView</characters>
-						</object>
-						<string key="NSExtension">NSResponder</string>
-					</object>
-				</array>
-				<string key="NSFrameSize">{58, 36}</string>
-				<object class="NSMutableString" key="NSClassName">
-					<characters key="NS.bytes">NSView</characters>
-				</object>
-				<string key="NSExtension">NSResponder</string>
-			</object>
 			<object class="NSCustomView" id="51199162">
 				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
@@ -664,8 +564,14 @@
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<reference key="NSOnImage" ref="165762829"/>
-								<reference key="NSMixedImage" ref="470405614"/>
+								<object class="NSCustomResource" key="NSOnImage" id="497500287">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">NSMenuCheckmark</string>
+								</object>
+								<object class="NSCustomResource" key="NSMixedImage" id="135760992">
+									<string key="NSClassName">NSImage</string>
+									<string key="NSResourceName">NSMenuMixedState</string>
+								</object>
 								<string key="NSAction">_popUpItemAction:</string>
 								<reference key="NSTarget" ref="195277361"/>
 							</object>
@@ -682,8 +588,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="195277361"/>
 									</object>
@@ -693,8 +599,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="195277361"/>
 									</object>
@@ -736,8 +642,8 @@
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<reference key="NSOnImage" ref="165762829"/>
-								<reference key="NSMixedImage" ref="470405614"/>
+								<reference key="NSOnImage" ref="497500287"/>
+								<reference key="NSMixedImage" ref="135760992"/>
 								<string key="NSAction">_popUpItemAction:</string>
 								<reference key="NSTarget" ref="492157148"/>
 							</object>
@@ -754,8 +660,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="492157148"/>
 									</object>
@@ -765,8 +671,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="492157148"/>
 									</object>
@@ -848,8 +754,8 @@
 								<string key="NSKeyEquiv"/>
 								<int key="NSKeyEquivModMask">1048576</int>
 								<int key="NSMnemonicLoc">2147483647</int>
-								<reference key="NSOnImage" ref="165762829"/>
-								<reference key="NSMixedImage" ref="470405614"/>
+								<reference key="NSOnImage" ref="497500287"/>
+								<reference key="NSMixedImage" ref="135760992"/>
 								<string key="NSAction">_popUpItemAction:</string>
 								<reference key="NSTarget" ref="879441545"/>
 							</object>
@@ -866,8 +772,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="879441545"/>
 									</object>
@@ -877,8 +783,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="879441545"/>
 									</object>
@@ -949,8 +855,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="410899774"/>
 									</object>
@@ -967,8 +873,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="410899774"/>
 											</object>
@@ -978,8 +884,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="410899774"/>
 											</object>
@@ -1021,8 +927,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="602680569"/>
 									</object>
@@ -1039,8 +945,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="602680569"/>
 											</object>
@@ -1050,8 +956,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="602680569"/>
 											</object>
@@ -1141,8 +1047,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="537387152"/>
 									</object>
@@ -1159,8 +1065,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="537387152"/>
 											</object>
@@ -1170,8 +1076,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="537387152"/>
 											</object>
@@ -1223,8 +1129,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="1029179500"/>
 									</object>
@@ -1241,8 +1147,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="1029179500"/>
 											</object>
@@ -1252,8 +1158,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="1029179500"/>
 											</object>
@@ -1295,8 +1201,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="794722291"/>
 									</object>
@@ -1313,8 +1219,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="794722291"/>
 											</object>
@@ -1324,8 +1230,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="794722291"/>
 											</object>
@@ -1415,8 +1321,8 @@
 										<string key="NSKeyEquiv"/>
 										<int key="NSKeyEquivModMask">1048576</int>
 										<int key="NSMnemonicLoc">2147483647</int>
-										<reference key="NSOnImage" ref="165762829"/>
-										<reference key="NSMixedImage" ref="470405614"/>
+										<reference key="NSOnImage" ref="497500287"/>
+										<reference key="NSMixedImage" ref="135760992"/>
 										<string key="NSAction">_popUpItemAction:</string>
 										<reference key="NSTarget" ref="966522070"/>
 									</object>
@@ -1433,8 +1339,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="966522070"/>
 											</object>
@@ -1444,8 +1350,8 @@
 												<string key="NSKeyEquiv"/>
 												<int key="NSKeyEquivModMask">1048576</int>
 												<int key="NSMnemonicLoc">2147483647</int>
-												<reference key="NSOnImage" ref="165762829"/>
-												<reference key="NSMixedImage" ref="470405614"/>
+												<reference key="NSOnImage" ref="497500287"/>
+												<reference key="NSMixedImage" ref="135760992"/>
 												<string key="NSAction">_popUpItemAction:</string>
 												<reference key="NSTarget" ref="966522070"/>
 											</object>
@@ -1540,7 +1446,11 @@
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">272629760</int>
 								<string key="NSContents">Point Radius</string>
-								<reference key="NSSupport" ref="236954416"/>
+								<object class="NSFont" key="NSSupport" id="236954416">
+									<string key="NSName">LucidaGrande</string>
+									<double key="NSSize">13</double>
+									<int key="NSfFlags">1044</int>
+								</object>
 								<reference key="NSControlView" ref="38952613"/>
 								<reference key="NSBackgroundColor" ref="262339783"/>
 								<reference key="NSTextColor" ref="292154196"/>
@@ -1619,7 +1529,7 @@
 					</array>
 					<string key="NSFrameSize">{263, 117}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{263, 109}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1854,7 +1764,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{358, 170}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{131.131, 27}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1962,7 +1872,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="312827162">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="437710069">
@@ -1974,6 +1884,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{-2, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="674663486"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="61325696">
 									<int key="NSCellFlags">67239424</int>
@@ -1994,9 +1906,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{0, 4}, {117, 16}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="1027957901"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="567557935">
-									<int key="NSCellFlags">67239424</int>
+									<int key="NSCellFlags">67501824</int>
 									<int key="NSCellFlags2">262144</int>
 									<object class="NSMutableString" key="NSContents">
 										<characters key="NS.bytes"/>
@@ -2018,6 +1932,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{50, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="544387571">
 									<int key="NSCellFlags">67239424</int>
@@ -2032,6 +1948,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{117, 33}</string>
 						<reference key="NSSuperview" ref="312827162"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="699610813"/>
 						<object class="NSMutableString" key="NSClassName">
 							<characters key="NS.bytes">NSView</characters>
 						</object>
@@ -2039,6 +1957,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{117, 33}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView" ref="437710069"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
 			</object>
@@ -2326,8 +2247,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<int key="NSState">1</int>
-									<reference key="NSOnImage" ref="165762829"/>
-									<reference key="NSMixedImage" ref="470405614"/>
+									<reference key="NSOnImage" ref="497500287"/>
+									<reference key="NSMixedImage" ref="135760992"/>
 									<string key="NSAction">_popUpItemAction:</string>
 									<reference key="NSTarget" ref="878391196"/>
 								</object>
@@ -2344,8 +2265,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="165762829"/>
-											<reference key="NSMixedImage" ref="470405614"/>
+											<reference key="NSOnImage" ref="497500287"/>
+											<reference key="NSMixedImage" ref="135760992"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="878391196"/>
 										</object>
@@ -2355,8 +2276,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSKeyEquiv"/>
 											<int key="NSKeyEquivModMask">1048576</int>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="165762829"/>
-											<reference key="NSMixedImage" ref="470405614"/>
+											<reference key="NSOnImage" ref="497500287"/>
+											<reference key="NSMixedImage" ref="135760992"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="878391196"/>
 										</object>
@@ -2676,7 +2597,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{328, 201}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 132}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2803,7 +2724,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{218, 63}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 78}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3437,7 +3358,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{543, 96}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">PathAssistantPanel</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3659,15 +3580,87 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{371, 139}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1280, 1002}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
-			<object class="NSView" id="944373510">
-				<nil key="NSNextResponder"/>
+			<object class="NSCustomView" id="879131380">
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
-				<string key="NSFrameSize">{125, 1}</string>
+				<array class="NSMutableArray" key="NSSubviews">
+					<object class="NSMatrix" id="525277034">
+						<reference key="NSNextResponder" ref="879131380"/>
+						<int key="NSvFlags">256</int>
+						<string key="NSFrame">{{2, 2}, {57, 32}}</string>
+						<reference key="NSSuperview" ref="879131380"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView"/>
+						<bool key="NSEnabled">YES</bool>
+						<int key="NSNumRows">2</int>
+						<int key="NSNumCols">1</int>
+						<array class="NSMutableArray" key="NSCells">
+							<object class="NSButtonCell" id="21668065">
+								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags2">131072</int>
+								<string key="NSContents">CPU</string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="525277034"/>
+								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags2">0</int>
+								<reference key="NSAlternateImage" ref="498409925"/>
+								<string key="NSAlternateContents"/>
+								<object class="NSMutableString" key="NSKeyEquivalent" id="395456231">
+									<characters key="NS.bytes"/>
+								</object>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+							<object class="NSButtonCell" id="21451369">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">131072</int>
+								<string key="NSContents">GPU</string>
+								<reference key="NSSupport" ref="26"/>
+								<reference key="NSControlView" ref="525277034"/>
+								<int key="NSTag">1</int>
+								<int key="NSButtonFlags">1211912703</int>
+								<int key="NSButtonFlags2">0</int>
+								<reference key="NSAlternateImage" ref="498409925"/>
+								<string key="NSAlternateContents"/>
+								<reference key="NSKeyEquivalent" ref="395456231"/>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</array>
+						<string key="NSCellSize">{57, 15}</string>
+						<string key="NSIntercellSpacing">{4, 2}</string>
+						<int key="NSMatrixFlags">1143472128</int>
+						<string key="NSCellClass">NSActionCell</string>
+						<object class="NSButtonCell" key="NSProtoCell" id="612575136">
+							<int key="NSCellFlags">67239424</int>
+							<int key="NSCellFlags2">0</int>
+							<string key="NSContents">Radio</string>
+							<reference key="NSSupport" ref="236954416"/>
+							<int key="NSButtonFlags">1211912703</int>
+							<int key="NSButtonFlags2">0</int>
+							<reference key="NSAlternateImage" ref="498409925"/>
+							<int key="NSPeriodicDelay">400</int>
+							<int key="NSPeriodicInterval">75</int>
+						</object>
+						<reference key="NSSelectedCell" ref="21668065"/>
+						<reference key="NSBackgroundColor" ref="262339783"/>
+						<reference key="NSCellBackgroundColor" ref="6056268"/>
+						<reference key="NSFont" ref="236954416"/>
+					</object>
+				</array>
+				<string key="NSFrameSize">{59, 36}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView" ref="525277034"/>
+				<object class="NSMutableString" key="NSClassName">
+					<characters key="NS.bytes">NSView</characters>
+				</object>
+				<string key="NSExtension">NSResponder</string>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -3682,51 +3675,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">originalView</string>
-						<reference key="source" ref="802504733"/>
-						<reference key="destination" ref="459277205"/>
-					</object>
-					<int key="connectionID">14</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">xReslicedView</string>
-						<reference key="source" ref="802504733"/>
-						<reference key="destination" ref="481567407"/>
-					</object>
-					<int key="connectionID">15</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">yReslicedView</string>
-						<reference key="source" ref="802504733"/>
-						<reference key="destination" ref="1880684"/>
-					</object>
-					<int key="connectionID">16</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">viewer</string>
-						<reference key="source" ref="802504733"/>
-						<reference key="destination" ref="558133940"/>
-					</object>
-					<int key="connectionID">17</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">window</string>
 						<reference key="source" ref="558133940"/>
 						<reference key="destination" ref="45396160"/>
 					</object>
 					<int key="connectionID">21</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="45396160"/>
-						<reference key="destination" ref="558133940"/>
-					</object>
-					<int key="connectionID">22</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3743,22 +3696,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="120052299"/>
 					</object>
 					<int key="connectionID">37</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="843930590"/>
-						<reference key="destination" ref="558133940"/>
-					</object>
-					<int key="connectionID">38</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="120052299"/>
-						<reference key="destination" ref="558133940"/>
-					</object>
-					<int key="connectionID">39</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3810,14 +3747,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">engineView</string>
-						<reference key="source" ref="558133940"/>
-						<reference key="destination" ref="647851254"/>
-					</object>
-					<int key="connectionID">89</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">WLWW3DView</string>
 						<reference key="source" ref="558133940"/>
 						<reference key="destination" ref="51199162"/>
@@ -3850,70 +3779,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DInfoPanel</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="60309754"/>
-					</object>
-					<int key="connectionID">207</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DRadiusSlider</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="495460814"/>
-					</object>
-					<int key="connectionID">208</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DColorWell</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="137744285"/>
-					</object>
-					<int key="connectionID">209</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DPropagateToAll</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="116384409"/>
-					</object>
-					<int key="connectionID">210</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">point3DSetDefault</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="558448914"/>
-					</object>
-					<int key="connectionID">211</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">exportDCMWindow</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="621571952"/>
-					</object>
-					<int key="connectionID">273</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">endDCMExportSettings:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="496358540"/>
-					</object>
-					<int key="connectionID">277</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchShading:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="204500713"/>
-					</object>
-					<int key="connectionID">285</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">shadingView</string>
 						<reference key="source" ref="558133940"/>
 						<reference key="destination" ref="505233243"/>
@@ -3927,38 +3792,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="312827162"/>
 					</object>
 					<int key="connectionID">316</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBPropagate3DPointsSettings:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="116384409"/>
-					</object>
-					<int key="connectionID">317</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">save3DPointsDefaultProperties:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="558448914"/>
-					</object>
-					<int key="connectionID">318</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBSetSelected3DPointRadius:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="495460814"/>
-					</object>
-					<int key="connectionID">319</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">IBSetSelected3DPointColor:</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="137744285"/>
-					</object>
-					<int key="connectionID">320</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -3985,278 +3818,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">329</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">dcmSeriesName</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="1033742695"/>
-					</object>
-					<int key="connectionID">358</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">endDCMExportSettings:</string>
 						<reference key="source" ref="558133940"/>
 						<reference key="destination" ref="369415325"/>
 					</object>
 					<int key="connectionID">359</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">editable: enableEditing</string>
-						<reference key="source" ref="815511910"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector" id="412299643">
-							<reference key="NSSource" ref="815511910"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">editable: enableEditing</string>
-							<string key="NSBinding">editable</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">428</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="815511910"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="815511910"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<reference key="NSPreviousConnector" ref="412299643"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">429</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">add:</string>
-						<reference key="source" ref="213980449"/>
-						<reference key="destination" ref="861694505"/>
-					</object>
-					<int key="connectionID">430</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">remove:</string>
-						<reference key="source" ref="213980449"/>
-						<reference key="destination" ref="93677592"/>
-					</object>
-					<int key="connectionID">431</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="885613565"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="885613565"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">432</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="719625057"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="719625057"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">434</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="535591513"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="535591513"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">435</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="679623929"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="679623929"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">436</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="428793640"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="428793640"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">437</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.name</string>
-						<reference key="source" ref="815511910"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="815511910"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.name</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.name</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">440</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentValues: arrangedObjects.name</string>
-						<reference key="source" ref="900507422"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector" id="498292155">
-							<reference key="NSSource" ref="900507422"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">contentValues: arrangedObjects.name</string>
-							<string key="NSBinding">contentValues</string>
-							<string key="NSKeyPath">arrangedObjects.name</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">445</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: selectionIndex</string>
-						<reference key="source" ref="900507422"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="900507422"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">selectedIndex: selectionIndex</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">selectionIndex</string>
-							<reference key="NSPreviousConnector" ref="498292155"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">447</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.ambient</string>
-						<reference key="source" ref="719625057"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="719625057"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.ambient</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.ambient</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">448</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.diffuse</string>
-						<reference key="source" ref="535591513"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="535591513"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.diffuse</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.diffuse</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">449</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.specular</string>
-						<reference key="source" ref="679623929"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="679623929"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.specular</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.specular</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">450</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.specularPower</string>
-						<reference key="source" ref="428793640"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="428793640"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.specularPower</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.specularPower</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">451</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentArray: values.shadingsPresets</string>
-						<reference key="source" ref="213980449"/>
-						<reference key="destination" ref="747970072"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="213980449"/>
-							<reference key="NSDestination" ref="747970072"/>
-							<string key="NSLabel">contentArray: values.shadingsPresets</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">values.shadingsPresets</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">454</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -4268,579 +3835,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">enginePopup</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="302940532"/>
-					</object>
-					<int key="connectionID">467</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">engineView</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="647851254"/>
-					</object>
-					<int key="connectionID">468</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">shadingView</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="505233243"/>
-					</object>
-					<int key="connectionID">470</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">shadingCheck</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="204500713"/>
-					</object>
-					<int key="connectionID">471</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">shadingPanel</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="257811198"/>
-					</object>
-					<int key="connectionID">472</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">shadingsPresetsController</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="213980449"/>
-					</object>
-					<int key="connectionID">473</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">shadingValues</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="5009252"/>
-					</object>
-					<int key="connectionID">474</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">window</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="45396160"/>
-					</object>
-					<int key="connectionID">475</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">view</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="954620390"/>
-					</object>
-					<int key="connectionID">476</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setEngine:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="302940532"/>
-					</object>
-					<int key="connectionID">478</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">ApplyWLWW:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="990961990"/>
-					</object>
-					<int key="connectionID">479</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">ApplyCLUT:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="98135382"/>
-					</object>
-					<int key="connectionID">480</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">ApplyOpacity:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="247238937"/>
-					</object>
-					<int key="connectionID">481</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">editShadingValues:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="272724793"/>
-					</object>
-					<int key="connectionID">482</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">LODsliderAction:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="674663486"/>
-					</object>
-					<int key="connectionID">483</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">LODSlider</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="674663486"/>
-					</object>
-					<int key="connectionID">484</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">LODView</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="312827162"/>
-					</object>
-					<int key="connectionID">485</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">toolsView</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="144079199"/>
-					</object>
-					<int key="connectionID">486</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">toolsMatrix</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="960576406"/>
-					</object>
-					<int key="connectionID">487</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">controller</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="872277816"/>
-					</object>
-					<int key="connectionID">488</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">dcmExportMode</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="182071576"/>
-					</object>
-					<int key="connectionID">489</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">clutOpacityDrawer</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="303206359"/>
-					</object>
-					<int key="connectionID">491</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">clutOpacityView</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="580772164"/>
-					</object>
-					<int key="connectionID">493</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">contentView</string>
-						<reference key="source" ref="303206359"/>
-						<reference key="destination" ref="580772164"/>
-					</object>
-					<int key="connectionID">494</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="303206359"/>
-						<reference key="destination" ref="872277816"/>
-					</object>
-					<int key="connectionID">495</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">parentWindow</string>
-						<reference key="source" ref="303206359"/>
-						<reference key="destination" ref="45396160"/>
-					</object>
-					<int key="connectionID">496</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">vrView</string>
-						<reference key="source" ref="580772164"/>
-						<reference key="destination" ref="954620390"/>
-					</object>
-					<int key="connectionID">497</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">save:</string>
-						<reference key="source" ref="580772164"/>
-						<reference key="destination" ref="845038993"/>
-					</object>
-					<int key="connectionID">504</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">clutSavedName</string>
-						<reference key="source" ref="580772164"/>
-						<reference key="destination" ref="602004871"/>
-					</object>
-					<int key="connectionID">505</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">chooseNameAndSaveWindow</string>
-						<reference key="source" ref="580772164"/>
-						<reference key="destination" ref="142614699"/>
-					</object>
-					<int key="connectionID">506</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">save:</string>
-						<reference key="source" ref="580772164"/>
-						<reference key="destination" ref="175267193"/>
-					</object>
-					<int key="connectionID">507</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">clutOpacityView</string>
-						<reference key="source" ref="954620390"/>
-						<reference key="destination" ref="580772164"/>
-					</object>
-					<int key="connectionID">508</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">clutPopup</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="98135382"/>
-					</object>
-					<int key="connectionID">509</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">OpacityPopup</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="247238937"/>
-					</object>
-					<int key="connectionID">510</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">wlwwPopup</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="990961990"/>
-					</object>
-					<int key="connectionID">511</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.ambient</string>
-						<reference key="source" ref="69721813"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="69721813"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.ambient</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.ambient</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">590</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.diffuse</string>
-						<reference key="source" ref="532410058"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="532410058"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.diffuse</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.diffuse</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">592</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.specularPower</string>
-						<reference key="source" ref="108589188"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="108589188"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.specularPower</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.specularPower</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">596</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: canRemove</string>
-						<reference key="source" ref="93677592"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="93677592"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: canRemove</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">canRemove</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">609</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: enableEditing</string>
-						<reference key="source" ref="66347962"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="66347962"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: enableEditing</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">612</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="719625057"/>
-					</object>
-					<int key="connectionID">617</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="535591513"/>
-					</object>
-					<int key="connectionID">618</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="679623929"/>
-					</object>
-					<int key="connectionID">619</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="428793640"/>
-					</object>
-					<int key="connectionID">620</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="69721813"/>
-					</object>
-					<int key="connectionID">621</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="214194572"/>
-					</object>
-					<int key="connectionID">622</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="208321049"/>
-					</object>
-					<int key="connectionID">623</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">applyShading:</string>
-						<reference key="source" ref="872277816"/>
-						<reference key="destination" ref="108589188"/>
-					</object>
-					<int key="connectionID">624</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.specular</string>
-						<reference key="source" ref="208321049"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="208321049"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">value: selection.specular</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.specular</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">625</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="676689397"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="676689397"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">627</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="208321049"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="208321049"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">629</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="69721813"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="69721813"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">634</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="214194572"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="214194572"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">635</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: enableEditing</string>
-						<reference key="source" ref="108589188"/>
-						<reference key="destination" ref="213980449"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="108589188"/>
-							<reference key="NSDestination" ref="213980449"/>
-							<string key="NSLabel">enabled: enableEditing</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">enableEditing</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">637</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">assistantSettingPanel</string>
 						<reference key="source" ref="558133940"/>
 						<reference key="destination" ref="675049977"/>
 					</object>
 					<int key="connectionID">712</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeIntegerValueFrom:</string>
-						<reference key="source" ref="233056492"/>
-						<reference key="destination" ref="811106438"/>
-					</object>
-					<int key="connectionID">746</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeIntegerValueFrom:</string>
-						<reference key="source" ref="811106438"/>
-						<reference key="destination" ref="233056492"/>
-					</object>
-					<int key="connectionID">747</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeFloatValueFrom:</string>
-						<reference key="source" ref="1068093948"/>
-						<reference key="destination" ref="235028889"/>
-					</object>
-					<int key="connectionID">754</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeFloatValueFrom:</string>
-						<reference key="source" ref="235028889"/>
-						<reference key="destination" ref="1068093948"/>
-					</object>
-					<int key="connectionID">755</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeFloatValueFrom:</string>
-						<reference key="source" ref="292268424"/>
-						<reference key="destination" ref="752839356"/>
-					</object>
-					<int key="connectionID">756</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">takeFloatValueFrom:</string>
-						<reference key="source" ref="752839356"/>
-						<reference key="destination" ref="292268424"/>
-					</object>
-					<int key="connectionID">757</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -5027,6 +4026,976 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">817</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">engineView</string>
+						<reference key="source" ref="558133940"/>
+						<reference key="destination" ref="879131380"/>
+					</object>
+					<int key="connectionID">829</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="45396160"/>
+						<reference key="destination" ref="558133940"/>
+					</object>
+					<int key="connectionID">22</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">originalView</string>
+						<reference key="source" ref="802504733"/>
+						<reference key="destination" ref="459277205"/>
+					</object>
+					<int key="connectionID">14</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">xReslicedView</string>
+						<reference key="source" ref="802504733"/>
+						<reference key="destination" ref="481567407"/>
+					</object>
+					<int key="connectionID">15</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">yReslicedView</string>
+						<reference key="source" ref="802504733"/>
+						<reference key="destination" ref="1880684"/>
+					</object>
+					<int key="connectionID">16</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">viewer</string>
+						<reference key="source" ref="802504733"/>
+						<reference key="destination" ref="558133940"/>
+					</object>
+					<int key="connectionID">17</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DInfoPanel</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="60309754"/>
+					</object>
+					<int key="connectionID">207</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DRadiusSlider</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="495460814"/>
+					</object>
+					<int key="connectionID">208</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DColorWell</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="137744285"/>
+					</object>
+					<int key="connectionID">209</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DPropagateToAll</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="116384409"/>
+					</object>
+					<int key="connectionID">210</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">point3DSetDefault</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="558448914"/>
+					</object>
+					<int key="connectionID">211</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">exportDCMWindow</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="621571952"/>
+					</object>
+					<int key="connectionID">273</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">endDCMExportSettings:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="496358540"/>
+					</object>
+					<int key="connectionID">277</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">switchShading:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="204500713"/>
+					</object>
+					<int key="connectionID">285</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBPropagate3DPointsSettings:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="116384409"/>
+					</object>
+					<int key="connectionID">317</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">save3DPointsDefaultProperties:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="558448914"/>
+					</object>
+					<int key="connectionID">318</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBSetSelected3DPointRadius:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="495460814"/>
+					</object>
+					<int key="connectionID">319</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">IBSetSelected3DPointColor:</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="137744285"/>
+					</object>
+					<int key="connectionID">320</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">dcmSeriesName</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="1033742695"/>
+					</object>
+					<int key="connectionID">358</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">controller</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="872277816"/>
+					</object>
+					<int key="connectionID">488</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">dcmExportMode</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="182071576"/>
+					</object>
+					<int key="connectionID">489</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">clutOpacityView</string>
+						<reference key="source" ref="954620390"/>
+						<reference key="destination" ref="580772164"/>
+					</object>
+					<int key="connectionID">508</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="843930590"/>
+						<reference key="destination" ref="558133940"/>
+					</object>
+					<int key="connectionID">38</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="120052299"/>
+						<reference key="destination" ref="558133940"/>
+					</object>
+					<int key="connectionID">39</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: view.lodDisplayed</string>
+						<reference key="source" ref="674663486"/>
+						<reference key="destination" ref="872277816"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="674663486"/>
+							<reference key="NSDestination" ref="872277816"/>
+							<string key="NSLabel">value: view.lodDisplayed</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">view.lodDisplayed</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">823</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">add:</string>
+						<reference key="source" ref="213980449"/>
+						<reference key="destination" ref="861694505"/>
+					</object>
+					<int key="connectionID">430</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">remove:</string>
+						<reference key="source" ref="213980449"/>
+						<reference key="destination" ref="93677592"/>
+					</object>
+					<int key="connectionID">431</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: values.shadingsPresets</string>
+						<reference key="source" ref="213980449"/>
+						<reference key="destination" ref="747970072"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="213980449"/>
+							<reference key="NSDestination" ref="747970072"/>
+							<string key="NSLabel">contentArray: values.shadingsPresets</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">values.shadingsPresets</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">454</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="679623929"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="679623929"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">436</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.specular</string>
+						<reference key="source" ref="679623929"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="679623929"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.specular</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.specular</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">450</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentValues: arrangedObjects.name</string>
+						<reference key="source" ref="900507422"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector" id="498292155">
+							<reference key="NSSource" ref="900507422"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">contentValues: arrangedObjects.name</string>
+							<string key="NSBinding">contentValues</string>
+							<string key="NSKeyPath">arrangedObjects.name</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">445</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedIndex: selectionIndex</string>
+						<reference key="source" ref="900507422"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="900507422"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">selectedIndex: selectionIndex</string>
+							<string key="NSBinding">selectedIndex</string>
+							<string key="NSKeyPath">selectionIndex</string>
+							<reference key="NSPreviousConnector" ref="498292155"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">447</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="428793640"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="428793640"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">437</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.specularPower</string>
+						<reference key="source" ref="428793640"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="428793640"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.specularPower</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.specularPower</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">451</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="719625057"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="719625057"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">434</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.ambient</string>
+						<reference key="source" ref="719625057"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="719625057"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.ambient</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.ambient</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">448</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="885613565"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="885613565"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">432</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="535591513"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="535591513"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">435</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.diffuse</string>
+						<reference key="source" ref="535591513"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="535591513"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.diffuse</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.diffuse</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">449</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: canRemove</string>
+						<reference key="source" ref="93677592"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="93677592"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: canRemove</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">canRemove</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">609</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">editable: enableEditing</string>
+						<reference key="source" ref="815511910"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector" id="412299643">
+							<reference key="NSSource" ref="815511910"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">editable: enableEditing</string>
+							<string key="NSBinding">editable</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">428</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="815511910"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="815511910"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<reference key="NSPreviousConnector" ref="412299643"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">429</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.name</string>
+						<reference key="source" ref="815511910"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="815511910"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.name</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.name</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">440</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">shadingView</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="505233243"/>
+					</object>
+					<int key="connectionID">470</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">shadingCheck</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="204500713"/>
+					</object>
+					<int key="connectionID">471</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">shadingPanel</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="257811198"/>
+					</object>
+					<int key="connectionID">472</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">shadingsPresetsController</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="213980449"/>
+					</object>
+					<int key="connectionID">473</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">shadingValues</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="5009252"/>
+					</object>
+					<int key="connectionID">474</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">window</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="45396160"/>
+					</object>
+					<int key="connectionID">475</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">view</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="954620390"/>
+					</object>
+					<int key="connectionID">476</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">ApplyWLWW:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="990961990"/>
+					</object>
+					<int key="connectionID">479</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">ApplyCLUT:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="98135382"/>
+					</object>
+					<int key="connectionID">480</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">ApplyOpacity:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="247238937"/>
+					</object>
+					<int key="connectionID">481</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">editShadingValues:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="272724793"/>
+					</object>
+					<int key="connectionID">482</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">LODView</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="312827162"/>
+					</object>
+					<int key="connectionID">485</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">toolsView</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="144079199"/>
+					</object>
+					<int key="connectionID">486</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">toolsMatrix</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="960576406"/>
+					</object>
+					<int key="connectionID">487</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">clutOpacityDrawer</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="303206359"/>
+					</object>
+					<int key="connectionID">491</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">clutOpacityView</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="580772164"/>
+					</object>
+					<int key="connectionID">493</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">clutPopup</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="98135382"/>
+					</object>
+					<int key="connectionID">509</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">OpacityPopup</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="247238937"/>
+					</object>
+					<int key="connectionID">510</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">wlwwPopup</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="990961990"/>
+					</object>
+					<int key="connectionID">511</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="719625057"/>
+					</object>
+					<int key="connectionID">617</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="535591513"/>
+					</object>
+					<int key="connectionID">618</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="679623929"/>
+					</object>
+					<int key="connectionID">619</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="428793640"/>
+					</object>
+					<int key="connectionID">620</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="69721813"/>
+					</object>
+					<int key="connectionID">621</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="214194572"/>
+					</object>
+					<int key="connectionID">622</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="208321049"/>
+					</object>
+					<int key="connectionID">623</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">applyShading:</string>
+						<reference key="source" ref="872277816"/>
+						<reference key="destination" ref="108589188"/>
+					</object>
+					<int key="connectionID">624</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">contentView</string>
+						<reference key="source" ref="303206359"/>
+						<reference key="destination" ref="580772164"/>
+					</object>
+					<int key="connectionID">494</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="303206359"/>
+						<reference key="destination" ref="872277816"/>
+					</object>
+					<int key="connectionID">495</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">parentWindow</string>
+						<reference key="source" ref="303206359"/>
+						<reference key="destination" ref="45396160"/>
+					</object>
+					<int key="connectionID">496</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">vrView</string>
+						<reference key="source" ref="580772164"/>
+						<reference key="destination" ref="954620390"/>
+					</object>
+					<int key="connectionID">497</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">save:</string>
+						<reference key="source" ref="580772164"/>
+						<reference key="destination" ref="845038993"/>
+					</object>
+					<int key="connectionID">504</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">clutSavedName</string>
+						<reference key="source" ref="580772164"/>
+						<reference key="destination" ref="602004871"/>
+					</object>
+					<int key="connectionID">505</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">chooseNameAndSaveWindow</string>
+						<reference key="source" ref="580772164"/>
+						<reference key="destination" ref="142614699"/>
+					</object>
+					<int key="connectionID">506</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">save:</string>
+						<reference key="source" ref="580772164"/>
+						<reference key="destination" ref="175267193"/>
+					</object>
+					<int key="connectionID">507</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="214194572"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="214194572"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">635</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.specularPower</string>
+						<reference key="source" ref="108589188"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="108589188"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.specularPower</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.specularPower</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">596</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="108589188"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="108589188"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">637</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.specular</string>
+						<reference key="source" ref="208321049"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="208321049"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.specular</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.specular</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">625</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="208321049"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="208321049"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">629</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.ambient</string>
+						<reference key="source" ref="69721813"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="69721813"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.ambient</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.ambient</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">590</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="69721813"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="69721813"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">634</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: enableEditing</string>
+						<reference key="source" ref="676689397"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="676689397"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">enabled: enableEditing</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">627</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.diffuse</string>
+						<reference key="source" ref="532410058"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="532410058"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: selection.diffuse</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.diffuse</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">592</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: enableEditing</string>
+						<reference key="source" ref="66347962"/>
+						<reference key="destination" ref="213980449"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="66347962"/>
+							<reference key="NSDestination" ref="213980449"/>
+							<string key="NSLabel">value: enableEditing</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">enableEditing</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">612</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeIntegerValueFrom:</string>
+						<reference key="source" ref="811106438"/>
+						<reference key="destination" ref="233056492"/>
+					</object>
+					<int key="connectionID">747</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeFloatValueFrom:</string>
+						<reference key="source" ref="1068093948"/>
+						<reference key="destination" ref="235028889"/>
+					</object>
+					<int key="connectionID">754</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeFloatValueFrom:</string>
+						<reference key="source" ref="752839356"/>
+						<reference key="destination" ref="292268424"/>
+					</object>
+					<int key="connectionID">757</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeIntegerValueFrom:</string>
+						<reference key="source" ref="233056492"/>
+						<reference key="destination" ref="811106438"/>
+					</object>
+					<int key="connectionID">746</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeFloatValueFrom:</string>
+						<reference key="source" ref="235028889"/>
+						<reference key="destination" ref="1068093948"/>
+					</object>
+					<int key="connectionID">755</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">takeFloatValueFrom:</string>
+						<reference key="source" ref="292268424"/>
+						<reference key="destination" ref="752839356"/>
+					</object>
+					<int key="connectionID">756</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.PATH_ASSISTANT_USES_SCROLLWHEEL</string>
 						<reference key="source" ref="1064288645"/>
@@ -5041,6 +5010,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">821</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: view.engine</string>
+						<reference key="source" ref="525277034"/>
+						<reference key="destination" ref="872277816"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="525277034"/>
+							<reference key="NSDestination" ref="872277816"/>
+							<string key="NSLabel">selectedTag: view.engine</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">view.engine</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">831</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5268,31 +5253,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">68</int>
 						<reference key="object" ref="684944329"/>
 						<reference key="parent" ref="1038780683"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">81</int>
-						<reference key="object" ref="647851254"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="708256072"/>
-						</array>
-						<reference key="parent" ref="0"/>
-						<string key="objectName">Engine</string>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">82</int>
-						<reference key="object" ref="708256072"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="302940532"/>
-						</array>
-						<reference key="parent" ref="647851254"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">83</int>
-						<reference key="object" ref="302940532"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="717312740"/>
-						</array>
-						<reference key="parent" ref="708256072"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">106</int>
@@ -5904,14 +5864,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="parent" ref="105888571"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">513</int>
-						<reference key="object" ref="717312740"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="348571138"/>
-						</array>
-						<reference key="parent" ref="302940532"/>
-					</object>
-					<object class="IBObjectRecord">
 						<int key="objectID">514</int>
 						<reference key="object" ref="195277361"/>
 						<array class="NSMutableArray" key="children">
@@ -6180,37 +6132,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="objectID">565</int>
 						<reference key="object" ref="478613715"/>
 						<reference key="parent" ref="182071576"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">84</int>
-						<reference key="object" ref="348571138"/>
-						<array class="NSMutableArray" key="children">
-							<reference ref="933224310"/>
-							<reference ref="709963574"/>
-							<reference ref="402080508"/>
-							<reference ref="63661742"/>
-						</array>
-						<reference key="parent" ref="717312740"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">88</int>
-						<reference key="object" ref="933224310"/>
-						<reference key="parent" ref="348571138"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">87</int>
-						<reference key="object" ref="709963574"/>
-						<reference key="parent" ref="348571138"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">86</int>
-						<reference key="object" ref="402080508"/>
-						<reference key="parent" ref="348571138"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">85</int>
-						<reference key="object" ref="63661742"/>
-						<reference key="parent" ref="348571138"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">108</int>
@@ -7003,9 +6924,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="parent" ref="1064288645"/>
 					</object>
 					<object class="IBObjectRecord">
-						<int key="objectID">410</int>
-						<reference key="object" ref="944373510"/>
+						<int key="objectID">824</int>
+						<reference key="object" ref="879131380"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="525277034"/>
+						</array>
 						<reference key="parent" ref="0"/>
+						<string key="objectName">Engine</string>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">825</int>
+						<reference key="object" ref="525277034"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="21668065"/>
+							<reference ref="21451369"/>
+							<reference ref="612575136"/>
+						</array>
+						<reference key="parent" ref="879131380"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">826</int>
+						<reference key="object" ref="21668065"/>
+						<reference key="parent" ref="525277034"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">827</int>
+						<reference key="object" ref="21451369"/>
+						<reference key="parent" ref="525277034"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">828</int>
+						<reference key="object" ref="612575136"/>
+						<reference key="parent" ref="525277034"/>
 					</object>
 				</array>
 			</object>
@@ -7184,7 +7134,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="408.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="409.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="41.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="410.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="411.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="422.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="423.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7204,7 +7153,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="501.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="502.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="503.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="513.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="514.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="515.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="516.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -7390,25 +7338,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="807.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="808.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="809.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="81.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="810.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="811.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="818.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="819.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="82.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="83.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="84.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="85.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="86.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="87.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
-				<string key="88.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="824.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="825.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="826.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="827.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="828.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			</dictionary>
 			<dictionary class="NSMutableDictionary" key="unlocalizedProperties"/>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">821</int>
+			<int key="maxID">831</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -7416,7 +7361,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">CLUTOpacityView</string>
 					<string key="superclassName">NSView</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="chooseNameAndSave:">id</string>
 						<string key="computeHistogram:">id</string>
 						<string key="copy:">id</string>
 						<string key="cut:">id</string>
@@ -7436,10 +7380,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="undo:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="chooseNameAndSave:">
-							<string key="name">chooseNameAndSave:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="computeHistogram:">
 							<string key="name">computeHistogram:</string>
 							<string key="candidateClassName">id</string>
@@ -7536,20 +7476,17 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">ColorTransferView</string>
 					<string key="superclassName">NSView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="renderButton:">id</string>
-						<string key="selectPicker:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="renderButton:">
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">renderButton:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">renderButton:</string>
+						<object class="IBActionInfo" key="NS.object.0">
 							<string key="name">renderButton:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="selectPicker:">
-							<string key="name">selectPicker:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
+					</object>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="pick">NSColorWell</string>
 						<string key="position">NSTextField</string>
@@ -7581,28 +7518,21 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">DCMView</string>
 					<string key="superclassName">NSOpenGLView</string>
 					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="actualSize:">id</string>
 						<string key="alwaysSyncMenu:">id</string>
-						<string key="annotMenu:">id</string>
-						<string key="changeFont:">id</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
-						<string key="resetImagePresentationState:">id</string>
-						<string key="resetSeriesPresentationState:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
-						<string key="sliderAction:">id</string>
+						<string key="scaleToFit:">id</string>
 						<string key="sliderRGBFactor:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="actualSize:">
+							<string key="name">actualSize:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="alwaysSyncMenu:">
 							<string key="name">alwaysSyncMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="annotMenu:">
-							<string key="name">annotMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeFont:">
-							<string key="name">changeFont:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
@@ -7613,20 +7543,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetImagePresentationState:">
-							<string key="name">resetImagePresentationState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="resetSeriesPresentationState:">
-							<string key="name">resetSeriesPresentationState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">
 							<string key="name">roiLoadFromXMLFiles:</string>
 							<string key="candidateClassName">NSArray</string>
 						</object>
-						<object class="IBActionInfo" key="sliderAction:">
-							<string key="name">sliderAction:</string>
+						<object class="IBActionInfo" key="scaleToFit:">
+							<string key="name">scaleToFit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="sliderRGBFactor:">
@@ -7650,31 +7572,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">EndoscopyVRController</string>
 					<string key="superclassName">VRController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">applyShading:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">applyShading:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="shadingPanel">NSPanel</string>
-						<string key="shadingsPresetsController">NSArrayController</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="shadingPanel">
-							<string key="name">shadingPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingsPresetsController">
-							<string key="name">shadingsPresetsController</string>
-							<string key="candidateClassName">NSArrayController</string>
-						</object>
-					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/EndoscopyVRController.h</string>
@@ -7690,15 +7587,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">EndoscopyViewer</string>
-					<string key="superclassName">OSIWindowController</string>
+					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="Apply2DCLUT:">id</string>
-						<string key="ApplyWLWW:">id</string>
 						<string key="applyNewSettingForFlyAssistant:">id</string>
 						<string key="change2DTool:">id</string>
 						<string key="change3DTool:">id</string>
 						<string key="endDCMExportSettings:">id</string>
-						<string key="exportDICOMFile:">id</string>
 						<string key="lockCameraOrFocusOnPath:">id</string>
 						<string key="lookBackwards:">id</string>
 						<string key="pathAssistantBasicModeButtonAction:">id</string>
@@ -7712,14 +7606,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="showingAssistantSettings:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="Apply2DCLUT:">
-							<string key="name">Apply2DCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="applyNewSettingForFlyAssistant:">
 							<string key="name">applyNewSettingForFlyAssistant:</string>
 							<string key="candidateClassName">id</string>
@@ -7734,10 +7620,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
 							<string key="name">endDCMExportSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="lockCameraOrFocusOnPath:">
@@ -7961,7 +7843,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="applyShading:">id</string>
 						<string key="redo:">id</string>
 						<string key="undo:">id</string>
-						<string key="updateAutoAdjustPrinting:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="applyShading:">
@@ -7974,10 +7855,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="undo:">
 							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateAutoAdjustPrinting:">
-							<string key="name">updateAutoAdjustPrinting:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -8020,33 +7897,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="className">OrthogonalMPRController</string>
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="blendingPropagate:">OrthogonalMPRView</string>
-						<string key="blendingPropagateOriginal:">OrthogonalMPRView</string>
-						<string key="blendingPropagateX:">OrthogonalMPRView</string>
-						<string key="blendingPropagateY:">OrthogonalMPRView</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
-						<string key="fullWindowView:">id</string>
-						<string key="showViews:">id</string>
-						<string key="toggleDisplayResliceAxes:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="blendingPropagate:">
-							<string key="name">blendingPropagate:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateOriginal:">
-							<string key="name">blendingPropagateOriginal:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateX:">
-							<string key="name">blendingPropagateX:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBActionInfo" key="blendingPropagateY:">
-							<string key="name">blendingPropagateY:</string>
-							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
 						<object class="IBActionInfo" key="flipHorizontal:">
 							<string key="name">flipHorizontal:</string>
 							<string key="candidateClassName">id</string>
@@ -8055,22 +7909,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">flipVertical:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="fullWindowView:">
-							<string key="name">fullWindowView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showViews:">
-							<string key="name">showViews:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="toggleDisplayResliceAxes:">
-							<string key="name">toggleDisplayResliceAxes:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="originalView">OrthogonalMPRView</string>
-						<string key="viewer">id</string>
 						<string key="xReslicedView">OrthogonalMPRView</string>
 						<string key="yReslicedView">OrthogonalMPRView</string>
 					</dictionary>
@@ -8078,10 +7919,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="originalView">
 							<string key="name">originalView</string>
 							<string key="candidateClassName">OrthogonalMPRView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="viewer">
-							<string key="name">viewer</string>
-							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="xReslicedView">
 							<string key="name">xReslicedView</string>
@@ -8126,34 +7963,21 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="ApplyGeometrieSettings:">id</string>
-						<string key="ApplyWLWW:">id</string>
-						<string key="LODsliderAction:">id</string>
-						<string key="MoviePlayStop:">id</string>
 						<string key="applyConvolution:">id</string>
 						<string key="applyShading:">id</string>
-						<string key="blendingSlider:">id</string>
 						<string key="close3DSettingsSavePanel:">id</string>
 						<string key="displayPresetsForSelectedGroup:">id</string>
 						<string key="editGrowingRegion:">id</string>
 						<string key="editShadingValues:">id</string>
 						<string key="enable3DSettingsSaveButton:">id</string>
 						<string key="endEditGrowingRegion:">id</string>
-						<string key="export2iPhoto:">id</string>
-						<string key="exportJPEG:">id</string>
-						<string key="exportTIFF:">id</string>
-						<string key="findShadingPreset:">id</string>
 						<string key="flyThruControllerInit:">id</string>
 						<string key="load3DSettings:">id</string>
-						<string key="loadAdvancedCLUTOpacity:">id</string>
-						<string key="moviePosSliderAction:">id</string>
-						<string key="movieRateSliderAction:">id</string>
 						<string key="nextPresetPage:">id</string>
 						<string key="previousPresetPage:">id</string>
 						<string key="roiGetManager:">id</string>
 						<string key="save3DSettings:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setDefaultTool:">id</string>
-						<string key="setEngine:">id</string>
 						<string key="setMode:">id</string>
 						<string key="setOrientation:">id</string>
 						<string key="show3DSettingsNewGroupTextField:">id</string>
@@ -8166,28 +7990,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">ApplyGeometrieSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="ApplyWLWW:">
-							<string key="name">ApplyWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="LODsliderAction:">
-							<string key="name">LODsliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="MoviePlayStop:">
-							<string key="name">MoviePlayStop:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="applyConvolution:">
 							<string key="name">applyConvolution:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="applyShading:">
 							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="blendingSlider:">
-							<string key="name">blendingSlider:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="close3DSettingsSavePanel:">
@@ -8214,40 +8022,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">endEditGrowingRegion:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="export2iPhoto:">
-							<string key="name">export2iPhoto:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportJPEG:">
-							<string key="name">exportJPEG:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportTIFF:">
-							<string key="name">exportTIFF:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="findShadingPreset:">
-							<string key="name">findShadingPreset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="flyThruControllerInit:">
 							<string key="name">flyThruControllerInit:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="load3DSettings:">
 							<string key="name">load3DSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="loadAdvancedCLUTOpacity:">
-							<string key="name">loadAdvancedCLUTOpacity:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="moviePosSliderAction:">
-							<string key="name">moviePosSliderAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="movieRateSliderAction:">
-							<string key="name">movieRateSliderAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="nextPresetPage:">
@@ -8266,16 +8046,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">save3DSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setDefaultTool:">
 							<string key="name">setDefaultTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setEngine:">
-							<string key="name">setEngine:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setMode:">
@@ -8308,7 +8080,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="BlendingView">NSView</string>
 						<string key="CLUTEditorsView">NSView</string>
 						<string key="ClippingRangeView">NSView</string>
-						<string key="LODSlider">NSSlider</string>
 						<string key="LODView">NSView</string>
 						<string key="OrientationsView">NSView</string>
 						<string key="VRGeometrieSettingsWindow">NSWindow</string>
@@ -8321,7 +8092,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="convolutionView">NSView</string>
 						<string key="distanceValue">NSTextField</string>
 						<string key="editDeleteValue">NSWindow</string>
-						<string key="enginePopup">NSPopUpButton</string>
 						<string key="engineView">NSView</string>
 						<string key="eyeDistance">NSTextField</string>
 						<string key="growingRegionWindow">NSWindow</string>
@@ -8410,10 +8180,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">ClippingRangeView</string>
 							<string key="candidateClassName">NSView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="LODSlider">
-							<string key="name">LODSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="LODView">
 							<string key="name">LODView</string>
 							<string key="candidateClassName">NSView</string>
@@ -8461,10 +8227,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBToOneOutletInfo" key="editDeleteValue">
 							<string key="name">editDeleteValue</string>
 							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="enginePopup">
-							<string key="name">enginePopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="engineView">
 							<string key="name">engineView</string>
@@ -8782,32 +8544,18 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="IBSetSelected3DPointColor:">id</string>
 						<string key="IBSetSelected3DPointRadius:">id</string>
 						<string key="SwitchStereoMode:">id</string>
-						<string key="axView:">id</string>
-						<string key="bestRendering:">id</string>
 						<string key="changeColor:">id</string>
 						<string key="changeColorWith:">NSColor</string>
-						<string key="coView:">id</string>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="endQuicktimeSettings:">id</string>
 						<string key="endQuicktimeVRSettings:">id</string>
-						<string key="export2iPhoto:">id</string>
-						<string key="exportDICOMFile:">id</string>
-						<string key="exportJPEG:">id</string>
 						<string key="exportQuicktime:">id</string>
-						<string key="exportTIFF:">id</string>
 						<string key="invertedSides:">id</string>
-						<string key="resetAutorotate:">id</string>
 						<string key="resetImage:">id</string>
-						<string key="saView:">id</string>
-						<string key="saViewOpposite:">id</string>
 						<string key="save3DPointsDefaultProperties:">id</string>
 						<string key="scissorStateButtons:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setCurrentdcmExport:">id</string>
 						<string key="setRenderMode:">id</string>
-						<string key="showCropCube:">id</string>
-						<string key="squareView:">id</string>
-						<string key="switchOrientationWidget:">id</string>
 						<string key="switchShading:">id</string>
 						<string key="switchToSeriesRadio:">id</string>
 					</dictionary>
@@ -8828,14 +8576,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">SwitchStereoMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="axView:">
-							<string key="name">axView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="bestRendering:">
-							<string key="name">bestRendering:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="changeColor:">
 							<string key="name">changeColor:</string>
 							<string key="candidateClassName">id</string>
@@ -8843,10 +8583,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="IBActionInfo" key="changeColorWith:">
 							<string key="name">changeColorWith:</string>
 							<string key="candidateClassName">NSColor</string>
-						</object>
-						<object class="IBActionInfo" key="coView:">
-							<string key="name">coView:</string>
-							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="endDCMExportSettings:">
 							<string key="name">endDCMExportSettings:</string>
@@ -8860,44 +8596,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">endQuicktimeVRSettings:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="export2iPhoto:">
-							<string key="name">export2iPhoto:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportDICOMFile:">
-							<string key="name">exportDICOMFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportJPEG:">
-							<string key="name">exportJPEG:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="exportQuicktime:">
 							<string key="name">exportQuicktime:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportTIFF:">
-							<string key="name">exportTIFF:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="invertedSides:">
 							<string key="name">invertedSides:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetAutorotate:">
-							<string key="name">resetAutorotate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="resetImage:">
 							<string key="name">resetImage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saView:">
-							<string key="name">saView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="saViewOpposite:">
-							<string key="name">saViewOpposite:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="save3DPointsDefaultProperties:">
@@ -8908,28 +8616,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">scissorStateButtons:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setCurrentdcmExport:">
 							<string key="name">setCurrentdcmExport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setRenderMode:">
 							<string key="name">setRenderMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showCropCube:">
-							<string key="name">showCropCube:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="squareView:">
-							<string key="name">squareView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchOrientationWidget:">
-							<string key="name">switchOrientationWidget:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="switchShading:">
@@ -9103,8 +8795,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="superclassName">OSIWindowController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="AddCLUT:">id</string>
-						<string key="ApplyCLUT:">id</string>
-						<string key="ApplyOpacity:">id</string>
 						<string key="SetWLWW:">id</string>
 						<string key="clutAction:">id</string>
 						<string key="endCLUT:">id</string>
@@ -9112,20 +8802,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="endOpacity:">id</string>
 						<string key="endSetWLWW:">id</string>
 						<string key="fullScreenMenu:">id</string>
-						<string key="print:">id</string>
 						<string key="updateSetWLWW:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="AddCLUT:">
 							<string key="name">AddCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyCLUT:">
-							<string key="name">ApplyCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ApplyOpacity:">
-							<string key="name">ApplyOpacity:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="SetWLWW:">
@@ -9154,10 +8835,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="fullScreenMenu:">
 							<string key="name">fullScreenMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="print:">
-							<string key="name">print:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updateSetWLWW:">
@@ -9282,12 +8959,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<real value="1060" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="3D">{19, 19}</string>
 			<string key="3DRotate">{28, 28}</string>
 			<string key="3DRotateCamera">{28, 28}</string>
 			<string key="Angle">{28, 28}</string>
@@ -9295,8 +8971,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="FlyThru">{32, 32}</string>
 			<string key="Length">{28, 28}</string>
 			<string key="Move">{28, 28}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
 			<string key="Oval">{28, 28}</string>
 			<string key="Point">{28, 28}</string>
