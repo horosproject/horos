@@ -283,7 +283,12 @@ static float deg2rad = M_PI/180.0;
 	
     NSDisableScreenUpdates();
     
-	id view = [[self window] firstResponder];
+    NSWindow *win = [self window];
+    
+    if( FullScreenOn)
+        win = FullScreenWindow;
+    
+	id view = [win firstResponder];
 	
 	[mprView1 camera].forceUpdate = YES;
 	[mprView2 camera].forceUpdate = YES;
@@ -1852,11 +1857,16 @@ static float deg2rad = M_PI/180.0;
 {
 	MPRDCMView *v = nil;
 	
-	if( [[self window] firstResponder] == mprView1)
+    NSWindow *win = [self window];
+    
+    if( FullScreenOn)
+        win = FullScreenWindow;
+    
+	if( [win firstResponder] == mprView1)
 		v = mprView1;
-	if( [[self window] firstResponder] == mprView2)
+	if( [win firstResponder] == mprView2)
 		v = mprView2;
-	if( [[self window] firstResponder] == mprView3)
+	if( [win firstResponder] == mprView3)
 		v = mprView3;
 	
 	if( v == nil) v = mprView3;
