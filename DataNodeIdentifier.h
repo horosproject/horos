@@ -48,6 +48,7 @@ typedef NSInteger DataNodeIdentifierType;*/
 -(id)initWithLocation:(NSString*)location description:(NSString*)description dictionary:(NSDictionary*)dictionary;
 
 -(BOOL)isEqualToDataNodeIdentifier:(DataNodeIdentifier*)dni;
+-(BOOL)isEqualToDictionary:(NSDictionary*)d;
 -(NSComparisonResult)compare:(DataNodeIdentifier*)other;
 
 -(DicomDatabase*)database;

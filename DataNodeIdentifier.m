@@ -56,6 +56,10 @@
 	return [self.location isEqualToString:dni.location];
 }
 
+-(BOOL)isEqualToDictionary:(NSDictionary*)d {
+    return [self.dictionary isEqual:d];
+}
+
 +(CGFloat)sortValueForDataNodeIdentifier:(DataNodeIdentifier*)dni {
     if ([dni isKindOfClass:[LocalDatabaseNodeIdentifier class]])
         return 10;
@@ -258,6 +262,12 @@
         return YES;
     
     return NO;
+}
+
+-(BOOL)isEqualToDictionary:(NSDictionary*)d {
+    if ([super isEqualToDictionary:d])
+        return YES;
+    return [self.location isEqual:[[self class] locationWithAddress:[d objectForKey:@"Address"] port:[[d objectForKey:@"Port"] intValue] aet:[d objectForKey:@"AETitle"]]];
 }
 
 +(NSString*)location:(NSString*)location toAddress:(NSString**)address port:(NSInteger*)port aet:(NSString**)aet {

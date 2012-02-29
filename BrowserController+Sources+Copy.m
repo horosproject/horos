@@ -247,7 +247,7 @@
         if ([destination isKindOfClass:[DicomNodeIdentifier class]]) { // local OsiriX to remote DICOM
 				NSArray* r = [DCMNetServiceDelegate DICOMServersListSendOnly:YES QROnly:NO];
 				for (int i = 0; i < r.count; ++i)
-					if ([[r objectAtIndex:i] isEqual:destination.dictionary])
+					if ([destination isEqualToDictionary:[r objectAtIndex:i]])
 						[[NSUserDefaults standardUserDefaults] setInteger:i forKey:@"lastSendServer"];
 				[self selectServer:dicomImages];
 				return YES;
