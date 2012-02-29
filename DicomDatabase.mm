@@ -2005,12 +2005,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)copyFilesThread:(NSDictionary*)dict
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	//	[autoroutingInProgress lock];
 	
 	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
-	NSArray *filesInput = [dict objectForKey: @"filesInput"];
+	NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
 	
 	int total = 0;
 	
@@ -2019,7 +2019,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         if ([[NSThread currentThread] isCancelled]) break;
 
 		NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
-		
+        
 		@try
 		{
 			NSMutableArray *copiedFiles = [NSMutableArray array];
@@ -2030,6 +2030,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount(filesInput.count-i, @"file left", @"files left");
+                [NSThread currentThread].progress = float(i)/filesInput.count;
+
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
 				if( [[dict objectForKey: @"copyFiles"] boolValue])
@@ -2049,7 +2052,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //#ifdef USECORESERVICESFORCOPY
                     char *targetPath = nil;
                     OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                    OSStatus err = FSPathCopyObjectSync( [srcPath UTF8String], [[dstPath stringByDeletingLastPathComponent] UTF8String], (CFStringRef) [dstPath lastPathComponent], &targetPath, options);
+                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[dstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[dstPath lastPathComponent], &targetPath, options);
 
                     if( err != 0)
                     {
@@ -2129,11 +2132,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						else
 							[NSThread currentThread].status =  NSLocalizedString( @"Indexing the files...", nil);
 					}
-				}
-				else
-				{
-					[NSThread currentThread].status = [NSString stringWithFormat: @"%d %@ left", [filesInput count]-i, i==1? NSLocalizedString( @"file", nil) : NSLocalizedString( @"files", nil) ];
-					[NSThread currentThread].progress = (float) (i+1) / [filesInput count];
 				}
 			}
 			

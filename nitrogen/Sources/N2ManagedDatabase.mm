@@ -222,11 +222,15 @@
 }
 
 -(void)mergeChangesFromContextDidSaveNotification:(NSNotification*)n {
+    NSManagedObjectContext* moc = [[self class] _mocFromContextDidSaveNotification:n];
+
+    if (self.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
+        return;
+    
     if (![NSThread isMainThread]) {
-        NSManagedObjectContext* moc = [[self class] _mocFromContextDidSaveNotification:n];
         if (moc) {
             NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:n.userInfo];
-            if (userInfo) [userInfo setObject:moc forKey:@"MOC"]; // we need to retain the moc or it will be released before the mainThread processes this
+            if (userInfo) [userInfo setObject:moc forKey:@"MOC"]; // we need to retain the moc or it may be released before the mainThread processes this // TODO: do we?
             [self performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:[NSNotification notificationWithName:n.name object:n.object userInfo:userInfo] waitUntilDone:NO];
         }
     } else {
@@ -234,7 +238,6 @@
         [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
-//            NSLog(@"Merged.");
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
