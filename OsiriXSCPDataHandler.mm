@@ -1339,7 +1339,7 @@ extern NSManagedObjectContext *staticContext;
 
 - (OFCondition)prepareFindForDataSet: (DcmDataset *) dataset
 {
-	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
@@ -1574,7 +1574,7 @@ extern NSManagedObjectContext *staticContext;
 	OFCondition cond = EC_IllegalParameter;
 	@try 
 	{
-		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 		NSError *error = nil;
 		NSEntityDescription *entity;
 		NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;

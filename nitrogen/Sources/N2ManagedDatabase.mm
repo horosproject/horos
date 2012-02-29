@@ -43,7 +43,7 @@
 //    [self save:NULL];
 	self.database = nil;
 	[super dealloc];
-	[NSNotificationCenter.defaultCenter removeObserver:self]; // Apple bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
+	[NSNotificationCenter.defaultCenter removeObserver:self]; // some bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
 }
 
 -(BOOL)save:(NSError**)error {

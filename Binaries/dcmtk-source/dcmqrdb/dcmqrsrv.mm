@@ -1481,9 +1481,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								
 				@try
 				{
-					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
-										
-					[staticContext retain];
+					staticContext = [[NSManagedObjectContext alloc] init];
+                    staticContext.undoManager = nil;
+                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
 					@try
 					{
 						/* don't spawn a sub-process to handle the association */
@@ -1532,8 +1532,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     if( [[DicomDatabase defaultDatabase] isLocal] == NO)
                         NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
                     
-					staticContext = [[BrowserController currentBrowser] defaultManagerObjectContextIndependentContext: YES];
-					[staticContext retain];
+					staticContext = [[NSManagedObjectContext alloc] init];
+                    staticContext.undoManager = nil;
+                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
 //					[staticContext lock]; //Try to avoid deadlock
 					
 					@try
