@@ -12,25 +12,26 @@
      PURPOSE.
 =========================================================================*/
 
-#define FETCHNUMBER 30
+//#define FETCHNUMBER 30
 
 #import "OsiriXSCPDataHandler.h"
+#import "ForkedInterface.h"
 #import "DicomFile.h"
 #import "DicomFileDCMTKCategory.h"
 #import "browserController.h"
 #import "AppController.h"
-#import "DicomImage.h"
-#import "DicomStudy.h"
-#import "DicomSeries.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
+#import "DicomImage.h"
 #import "N2Debug.h"
 
 #include "dctk.h"
 
 char currentDestinationMoveAET[ 60] = "";
 
-extern NSManagedObjectContext *staticContext;
+//extern NSManagedObjectContext *staticContext;
+
+extern ChildForkedInterface* CurrentChildForkedInterface;
 
 @implementation OsiriXSCPDataHandler
 
@@ -38,8 +39,6 @@ extern NSManagedObjectContext *staticContext;
 
 - (void)dealloc
 {
-	context = 0L;
-	
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 	free( moveArray);
 	moveArray = nil;
@@ -62,10 +61,10 @@ extern NSManagedObjectContext *staticContext;
 
 - (id)init
 {
-	if (self = [super init])
-	{
+	if ((self = [super init])) {
 	}
-	return self;
+	
+    return self;
 }
 
 + (id)allocRequestDataHandler
@@ -750,7 +749,7 @@ extern NSManagedObjectContext *staticContext;
 	return compoundPredicate;
 }
 
-- (const char*) encodeString: (NSString*) str image: (NSManagedObject*) image
+- (const char*) encodeString: (NSString*) str image: (ChildForkedObject*) image
 {
 	if( str == nil)
 		return nil;
@@ -798,11 +797,11 @@ extern NSManagedObjectContext *staticContext;
 	return a;
 }
 
-- (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
+- (void)studyDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
 	{
-		NSManagedObject *image = [[[[fetchedObject valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject];
+		ChildForkedObject* image = [[[[fetchedObject valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject];
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -937,11 +936,11 @@ extern NSManagedObjectContext *staticContext;
 	}
 }
 
-- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
+- (void)seriesDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
 	{
-		NSManagedObject *image = [[fetchedObject valueForKey: @"images"] anyObject];
+		ChildForkedObject *image = [[fetchedObject valueForKey: @"images"] anyObject];
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -1061,7 +1060,7 @@ extern NSManagedObjectContext *staticContext;
 				
 					BOOL SC = NO, SR = NO;
 					
-					NSManagedObject *study = [fetchedObject valueForKeyPath:@"study"];
+					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"study"];
 					
 					for( NSString *m in [[study valueForKeyPath:@"modality"] allObjects])
 					{
@@ -1099,7 +1098,7 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_NumberOfStudyRelatedSeries)
 				{
-					NSManagedObject *study = [fetchedObject valueForKeyPath:@"study"];
+					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"study"];
 					
 					int numberInstances = [[study valueForKeyPath:@"series"] count];
 					char value[10];
@@ -1122,11 +1121,11 @@ extern NSManagedObjectContext *staticContext;
 	}
 }
 
-- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset
+- (void)imageDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
 {
 	@try
 	{
-		NSManagedObject *image = fetchedObject;
+		ChildForkedObject *image = fetchedObject;
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -1274,7 +1273,7 @@ extern NSManagedObjectContext *staticContext;
 				
 					BOOL SC = NO, SR = NO;
 					
-					NSManagedObject *study = [fetchedObject valueForKeyPath:@"series.study"];
+					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"series.study"];
 					
 					for( NSString *m in [[study valueForKeyPath:@"series.modality"] allObjects])
 					{
@@ -1312,7 +1311,7 @@ extern NSManagedObjectContext *staticContext;
 				}
 				else if( key == DCM_NumberOfStudyRelatedSeries)
 				{
-					NSManagedObject *study = [fetchedObject valueForKeyPath:@"series.study"];
+					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"series.study"];
 					
 					int numberInstances = [[study valueForKeyPath:@"series"] count];
 					char value[10];
@@ -1339,12 +1338,11 @@ extern NSManagedObjectContext *staticContext;
 
 - (OFCondition)prepareFindForDataSet: (DcmDataset *) dataset
 {
-	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
-	NSError *error = nil;
-	NSEntityDescription *entity;
+//	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
+	NSString* entityName = nil;
 	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
 	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+//	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
@@ -1365,102 +1363,49 @@ extern NSManagedObjectContext *staticContext;
 	}
 	
 	if (strcmp(sType, "STUDY") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Study"];
+		entityName = @"Study";
 	else if (strcmp(sType, "SERIES") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Series"];
+		entityName = @"Series";
 	else if (strcmp(sType, "IMAGE") == 0) 
-		entity = [[model entitiesByName] objectForKey:@"Image"];
-	else 
-		entity = nil;
+		entityName = @"Image";
 	
-	if (entity)
+    [findArray release]; findArray = nil;
+
+	if (entityName)
 	{
-		[request setEntity: entity];
-		[request setPredicate: predicate];
-					
-		error = nil;
-		
-		context = staticContext;
-		[context lock];
-		
-		[findArray release];
-		findArray = [NSArray array];
+		findArray = [[NSMutableArray alloc] init];
         
 		@try
 		{
-			if( seriesLevelPredicate) // First find at series level, then move to image level
-			{
-				NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
-				
-				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-				[seriesRequest setPredicate: seriesLevelPredicate];
-				
-                NSArray *newObjects = nil;
-                NSArray *allSeries = [NSArray array];
-                
-                [seriesRequest setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
-                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
-                }
-                while( [newObjects count]);
-                
-				for( id series in allSeries)
-					findArray = [findArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-				
-				findArray = [findArray filteredArrayUsingPredicate: predicate];
+			if (seriesLevelPredicate) // First find at series level, then move to image level
+            {
+				for (ChildForkedObject* series in [CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:@"Series" predicate:seriesLevelPredicate keys:nil])
+                    [findArray addObjectsFromArray:[[series valueForKey:@"images"] allObjects]];
+                [findArray filterUsingPredicate:predicate];
 			}
 			else
             {
-                NSArray *newObjects = nil;
-               
-                [request setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: request error: &error];
-                    findArray = [findArray arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
-                }
-                while( [newObjects count]);
+				[findArray addObjectsFromArray:[CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:entityName predicate:predicate keys:nil]];
 			}
             
-			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
-				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+			if (strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+				[findArray filterUsingPredicate:compressedSOPInstancePredicate];
 			
-			if( strcmp(sType, "IMAGE") == 0)
-				findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+			if (strcmp(sType, "IMAGE") == 0)
+                [findArray sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"instanceNumber" ascending:YES]]];
 			
-			if( strcmp(sType, "SERIES") == 0)
-			  findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
-			
-			[findArray retain];
+			if (strcmp(sType, "SERIES") == 0)
+                [findArray sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending:YES]]];
+
+            cond = EC_Normal;
+        }
+		@catch (NSException* e) {
+			N2LogExceptionWithStackTrace(e);
+            cond = EC_IllegalParameter;
 		}
-		@catch (NSException * e)
-		{
-			NSLog( @"prepareFindForDataSet exception");
-			NSLog( @"%@", [e description]);
-		}
-		
-		[context unlock];
-		
-		if (error)
-		{
-			[findArray release];
-			findArray = nil;
-			cond = EC_IllegalParameter;
-		}
-		else
-			cond = EC_Normal;
 	}
 	else
 	{
-		[findArray release];
-		findArray = nil;
-		
 		cond = EC_IllegalParameter;
 	}
 	
@@ -1499,7 +1444,7 @@ extern NSManagedObjectContext *staticContext;
 		strcat( fromTo, currentDestinationMoveAET);
 	}
 	
-	for( NSManagedObject *object in mArray)
+	for(ChildForkedObject* object in mArray)
 	{
 		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
 		{
@@ -1574,95 +1519,45 @@ extern NSManagedObjectContext *staticContext;
 	OFCondition cond = EC_IllegalParameter;
 	@try 
 	{
-		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
-		NSError *error = nil;
-		NSEntityDescription *entity;
+//		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
+//		NSError *error = nil;
+        NSString* entityName;
 		NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
 		NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
-		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+//		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 		const char *sType;
 		dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 		
-		if (strcmp(sType, "STUDY") == 0) 
-			entity = [[model entitiesByName] objectForKey:@"Study"];
-		else if (strcmp(sType, "SERIES") == 0) 
-			entity = [[model entitiesByName] objectForKey:@"Series"];
-		else if (strcmp(sType, "IMAGE") == 0) 
-			entity = [[model entitiesByName] objectForKey:@"Image"];
-		else 
-			entity = nil;
+        if (strcmp(sType, "STUDY") == 0) 
+            entityName = @"Study";
+        else if (strcmp(sType, "SERIES") == 0) 
+            entityName = @"Series";
+        else if (strcmp(sType, "IMAGE") == 0) 
+            entityName = @"Image";
 		
-		[request setEntity: entity];
-		[request setPredicate: predicate];
-		
-		error = nil;
-		
-		context = staticContext;
-		[context lock];
-		
-		NSArray *array = [NSArray array];
+		NSMutableArray* array = [NSMutableArray array];
 		
 		@try
 		{
-			if( seriesLevelPredicate) // First find at series level, then move to image level
+			if (seriesLevelPredicate) // First find at series level, then move to image level
 			{
-				NSFetchRequest *seriesRequest = [[[NSFetchRequest alloc] init] autorelease];
-				
-				[seriesRequest setEntity: [[model entitiesByName] objectForKey:@"Series"]];
-				[seriesRequest setPredicate: seriesLevelPredicate];
-				
-                
-                NSArray *newObjects = nil;
-                NSArray *allSeries = [NSArray array];
-                
-                [seriesRequest setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: seriesRequest error: &error];
-                    allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
-                }
-                while( [newObjects count]);
-				
-				for( id series in allSeries)
-					array = [array arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
-				
-				array = [array filteredArrayUsingPredicate: predicate];
+				for (ChildForkedObject* series in [CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:@"Series" predicate:seriesLevelPredicate keys:nil])
+                    [array addObjectsFromArray:[[series valueForKey:@"images"] allObjects]];
+                [array filterUsingPredicate:predicate];
 			}
 			else
             {
-                NSArray *newObjects = nil;
-                
-                [request setFetchLimit: FETCHNUMBER];
-                do
-                {
-                    newObjects = [context executeFetchRequest: request error: &error];
-                    array = [array arrayByAddingObjectsFromArray: newObjects];
-                    
-                    [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
-                }
-                while( [newObjects count]);
+				[array addObjectsFromArray:[CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:entityName predicate:predicate keys:nil]];
 			}
 			
-			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
-				array = [array filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+			if (strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
+				[findArray filterUsingPredicate:compressedSOPInstancePredicate];
 			
-			if( [array count] == 0)
+			if ([array count] == 0)
 			{
 				// not found !!!!
 			}
 			
-			if (error)
-			{
-				for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
-				free( moveArray);
-				moveArray = nil;
-				moveArraySize = 0;
-				
-				cond = EC_IllegalParameter;
-			}
-			else
 			{
 				NSEnumerator *enumerator = [array objectEnumerator];
 				id moveEntity;
@@ -1701,11 +1596,6 @@ extern NSManagedObjectContext *staticContext;
 			NSLog( @"%@", [e description]);
 			NSLog( @"%@", [predicate description]);
 		}
-        
-		[context unlock];
-		context = 0L;
-		
-		// TO AVOID DEADLOCK
 		
 		BOOL fileExist = YES;
 		char dir[ 1024];
@@ -1747,8 +1637,6 @@ extern NSManagedObjectContext *staticContext;
 {
 	id item;
 	
-	[context lock];
-	
 	@try
 	{
 		if (item = [findEnumerator nextObject])
@@ -1769,9 +1657,6 @@ extern NSManagedObjectContext *staticContext;
 		}
 		else
 		{
-			[context unlock];
-			context = nil;
-			
 			*isComplete = YES;
 		}
 	}
@@ -1780,8 +1665,6 @@ extern NSManagedObjectContext *staticContext;
 	{
 		NSLog( @"******* nextFindObject exception : %@", e);
 	}
-	
-	[context unlock];
 	
 	return EC_Normal;
 }
