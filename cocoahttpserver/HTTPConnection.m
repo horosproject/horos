@@ -1567,6 +1567,12 @@ static NSMutableArray *recentNonces;
 		[settings setObject:(NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL
 					 forKey:(NSString *)kCFStreamSSLLevel];
 		
+        [settings setObject:[NSNumber numberWithBool:YES]
+                     forKey:(NSString *)kCFStreamSSLValidatesCertificateChain];
+        
+        [settings setObject:[NSNumber numberWithBool:YES]
+                     forKey:(NSString *)kCFStreamSSLIsServer];
+        
 		[asyncSocket startTLS:settings];
 	}
 	
