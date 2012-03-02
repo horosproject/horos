@@ -41,6 +41,7 @@ Added features:
 ------------------------------------------------------------------------------------------
 
 - Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
+- Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - WebPortal: Burn option if the CD/DVD is installed
