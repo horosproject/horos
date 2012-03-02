@@ -1983,7 +1983,17 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	else if( moveCenter)
 	{
 		windowController.lowLOD = YES;
-		[vrView setWindowCenter: [self convertPoint: [theEvent locationInWindow] fromView: nil]];
+        
+        NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil];
+        
+        if( yFlipped)
+            point.y = self.frame.size.height - point.y;
+        
+        if( xFlipped)
+            point.x = self.frame.size.width - point.x;
+        
+		[vrView setWindowCenter: point];
+        
 		[self updateViewMPR];
 		
 		[NSObject cancelPreviousPerformRequestsWithTarget: windowController selector:@selector( delayedFullLODRendering:) object: nil];
