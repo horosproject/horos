@@ -114,6 +114,8 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 		fclose (commPipe);
 	}
     
+    [[NSFileManager defaultManager] removeItemAtPath: [[[NSFileManager defaultManager] currentDirectoryPath] stringByAppendingPathComponent: @"1"] error: nil];
+    
 	return noErr;
 }
 
