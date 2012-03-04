@@ -9385,7 +9385,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( offset) *offset = ioffset;
 				if( isSigned) *isSigned = iisSigned;
 				
-				data = calloc( 1, *width * *height * *spp * *bpp/8);
+				data = calloc( 1, (1+*width) * (1+*height) * *spp * *bpp/8);
 			}
 			else
 			{
