@@ -15534,7 +15534,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	//    [self.window makeKeyAndOrderFront:nil];
 	
 	#ifdef EXPORTTOOLBARITEM
-	dd
 	NSLog(@"************** WARNING EXPORTTOOLBARITEM ACTIVATED");
 	for( id s in [self toolbarAllowedItemIdentifiers: toolbar])
 	{

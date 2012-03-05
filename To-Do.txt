@@ -1,17 +1,3 @@
-- GP-GPU Rendering for Volume Rendering and MIP : up to 10 times faster than CPU !
-- JPEG-LS support (through CharLS library)
-- VTK updated to version 5.8
-- ITK updated to version 4.1
-- DICOM : Up to Date DICOM Dictionary
-- Hide/Show Columns DICOM QR (Columns header contextual menu)
-- Web Portal: passwords are now stored only as hashed strings (better security for users passwords)
-- Web Portal: option for direct SMTP support for emails
-- Web Portal: protocol and port in Public Web URL can be specified and different from real URL (address forwarding support)
-- New 2D Viewer toolbar item : Windows Tiling : add or remove windows
-- Display & Tile multiple 3D Viewers (Windows menu)
-- More robust Crash Reporter tool
-- Misc bugs & GUI errors corrected
-
 - (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
 
 ------------------------------------------------------------------------------------------
@@ -32,6 +18,7 @@ Added features:
 ------------------------------------------------------------------------------------------
 
 - Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
+- Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups (for sharing)
 - WebPortal: Burn option if the CD/DVD is installed
@@ -82,24 +69,3 @@ Added features:
 - Is it possible to place keyed images into a report automatically when generating a report?
 
 ------------------------------------------------------------------------------------------------------------------------
-
-// Release
-- X Bundle Version
-- Localizations strings:
-genstrings *.m *.mm *.h cocoahttpserver/*.m cocoahttpserver/*.h AYDicomPrint/*.m AYDicomPrint/*.mm nitrogen/*.m nitrogen/*.mm nitrogen/*.h Preference\ Panes/OSIWebSharingPreferencePane/*.* Preference\ Panes/OSIViewerPreferencePane/*.* Preference\ Panes/OSIPETPreferencePane/*.* Preference\ Panes/OSILocationsPreferencePane/*.* Preference\ Panes/OSIListenerPreferencePane/*.* Preference\ Panes/OSIHotKeysPreferencePane/*.* Preference\ Panes/OSIHangingPreferencePane/*.* Preference\ Panes/OSIGeneralPreferencePane/*.* Preference\ Panes/OSIDatabasePreferencePane/*.* Preference\ Panes/OSICustomImageAnnotations/*.* Preference\ Panes/OSICDPreferencePane/*.* Preference\ Panes/OSIAutoroutingPreferencePane/*.* Preference\ Panes/OSI3DPreferencePane/*.* Preference\ Panes/AYDicomPrintPreferencePane/*.* -macRoman
-- Check if OsiriX Lite works...
-- Check up-to-date zip packages in Binaries folder
-- Check non-debug lib for KDU & Papyrus in 64-bit
-- Check weasis permissions: everyone: read only
-- Localization: check if smart album editor is correctly displayed; Check  CLUT, Opacity, WLWW menus in 2D Menu (Search for itemWithTitle:); Check Export DICOM 2D Viewer (Spanish)
-- Test DB migration from previous version
-- OsiriX Lite Upload
-- QuickLook
-- Update plugins
-- For international version, compile nib files (for i in `ls`; do ibtool "$i" --compile "$i"; done)
-- For international version, manually resign
-- codesign -vvv /Applications/OsiriX.app
-- 64bitExtension : upload osirix-viewer.com
-- 64bitExtension : Kagi Blurb AND in products list for CD/DVD backup AND in pixmeo MySQL DB (Constants, Products) web site
-- Update Downloads.html
-- Update versionLeopard.xml

@@ -144,6 +144,7 @@ static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
 static NSString*    WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
+static NSString*    AnnotationsToolbarItemIdentifier   = @"Annotations";
 static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
@@ -5298,6 +5299,18 @@ static ViewerController *draggedController = nil;
         [toolbarItem setMinSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
         [toolbarItem setMaxSize:NSMakeSize(NSWidth([windowsTiling frame]), NSHeight([windowsTiling frame]))];
 	}
+    else if([itemIdent isEqualToString: AnnotationsToolbarItemIdentifier])
+    {
+        // Set up the standard properties 
+        [toolbarItem setLabel: NSLocalizedString(@"Annotations", nil)];
+        [toolbarItem setPaletteLabel: NSLocalizedString(@"Annotations", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Annotations", nil)];
+        
+        // Use a custom view, a text field, for the search item 
+        [toolbarItem setView: annotations];
+        [toolbarItem setMinSize:NSMakeSize(NSWidth([annotations frame]), NSHeight([annotations frame]))];
+        [toolbarItem setMaxSize:NSMakeSize(NSWidth([annotations frame]), NSHeight([annotations frame]))];
+	}
 	else if([itemIdent isEqualToString: ShutterToolbarItemIdentifier])
 	 {
 	// Set up the standard properties 
@@ -5477,7 +5490,7 @@ static ViewerController *draggedController = nil;
     // user chooses to revert to the default items this set will be used 
     return [NSArray arrayWithObjects:	DatabaseWindowToolbarItemIdentifier,
                                         WindowsTilingToolbarItemIdentifier,
-										SerieToolbarItemIdentifier,
+										AnnotationsToolbarItemIdentifier,
 										PatientToolbarItemIdentifier,
 										ToolsToolbarItemIdentifier,
 										WLWWToolbarItemIdentifier,
@@ -5491,7 +5504,6 @@ static ViewerController *draggedController = nil;
 										PlayToolbarItemIdentifier,
 										SpeedToolbarItemIdentifier,
 										VRPanelToolbarItemIdentifier,
-										iChatBroadCastToolbarItemIdentifier,
 										XMLToolbarItemIdentifier,
 										nil];
 }
@@ -5524,6 +5536,7 @@ static ViewerController *draggedController = nil;
 														DatabaseWindowToolbarItemIdentifier,
 														TileWindowsToolbarItemIdentifier,
                                                         WindowsTilingToolbarItemIdentifier,
+                                                        AnnotationsToolbarItemIdentifier,
 														PlayToolbarItemIdentifier,
 														SpeedToolbarItemIdentifier,
 														MovieToolbarItemIdentifier,

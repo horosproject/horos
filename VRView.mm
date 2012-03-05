@@ -728,11 +728,11 @@ public:
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vram)
     {
-        if( vram >= 512 && [AppController hasMacOSXLion])
+        if( vram >= 1000 && [AppController hasMacOSXLion])
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
             
-            if( MPProcessors() > 8) // Prefer CPU...
+            if( MPProcessors() > 12)
                 [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
             else
                 [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
@@ -857,6 +857,18 @@ public:
     {
         NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil),  NSLocalizedString( @"GPU Rendering requires MacOS 10.7 or higher.", nil), NSLocalizedString( @"OK", nil), nil, nil);
         newEngine = 0;
+    }
+    
+    if( newEngine == 1)
+    {
+        long vram = [VTKView VRAMSizeForDisplayID: [[[[[self window] screen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]];
+        
+        vram /= 1024*1024;
+        
+        if( vram < 512)
+        {
+            NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), [NSString stringWithFormat: NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), vram], NSLocalizedString( @"OK", nil), nil, nil);
+        }
     }
     
     [self willChangeValueForKey: @"engine"];

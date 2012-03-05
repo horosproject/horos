@@ -5142,6 +5142,11 @@ END_CREATE_ROIS:
 		if( [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue] > 0)
 			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameDelay"] floatValue];
 	}
+    if (!cineRate && [dcmObject attributeValueWithName:@"FrameTime"])
+	{
+		if( [[dcmObject attributeValueWithName:@"FrameTime"] floatValue] > 0)
+			cineRate = 1000. / [[dcmObject attributeValueWithName:@"FrameTime"] floatValue];	
+	}
 	if (!cineRate && [dcmObject attributeValueWithName:@"FrameTimeVector"])
 	{
 		if( [[dcmObject attributeValueWithName:@"FrameTimeVector"] floatValue] > 0)
@@ -6828,6 +6833,16 @@ END_CREATE_ROIS:
 		}
 	}
 	
+    if(!cineRate)
+	{
+		val = Papy3GetElement (theGroupP, papFrameTimeGr, &nbVal, &elemType);
+		if ( val && val->a && validAPointer( elemType))
+		{
+			if( atof( val->a) > 0)
+				cineRate = 1000./atof( val->a);
+		}
+	}
+    
 	if(!cineRate)
 	{
 		val = Papy3GetElement (theGroupP, papFrameTimeVectorGr, &nbVal, &elemType);
