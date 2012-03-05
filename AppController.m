@@ -715,8 +715,6 @@ static NSDate *lastWarningDate = nil;
 
 @interface AppController ()
 
-@property(retain) NSConnection* connection;
-
 +(void)checkForWordTemplates;
 
 @end
@@ -725,7 +723,6 @@ static NSDate *lastWarningDate = nil;
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
-@synthesize connection = _connection;
 
 - (void) pause { // __deprecated
 	[[[BrowserController currentBrowser] database] lock]; // was checkIncomingLock
@@ -2427,15 +2424,11 @@ static NSDate *lastWarningDate = nil;
 	[NSApp terminate: sender];
 }
 
-+(NSString*)privateForkedInterfaceName {
-    return [NSString stringWithFormat:@"OsiriX_%@_ForkedInterface", NSUserName()];
-}
-
 - (id)init
 {
 	self = [super init];
 	OsiriX = appController = self;
-    
+	
     [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
     
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
@@ -3345,7 +3338,7 @@ static BOOL initialized = NO;
 	{
 		
 	}
-    
+	
 	#ifndef OSIRIX_LIGHT
 	#ifndef MACAPPSTORE
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)

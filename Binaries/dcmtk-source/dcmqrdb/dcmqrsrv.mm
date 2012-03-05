@@ -33,9 +33,8 @@
 
 #import "browserController.h"
 #import "ThreadsManager.h"
-#import "NSThread+N2.h"
 #import "DicomDatabase.h"
-#import "ForkedInterface.h"
+#import "NSThread+N2.h"
 #import "AppController.h"
 #import "N2Debug.h"
 
@@ -54,8 +53,6 @@
 #include <signal.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-ChildForkedInterface* CurrentChildForkedInterface = nil;
 
 @interface ContextCleaner : NSObject
 {
@@ -163,7 +160,7 @@ extern "C"
 	}
 }
 
-//NSManagedObjectContext *staticContext = nil;
+NSManagedObjectContext *staticContext = nil;
 
 
 static char *last(char *p, int c)
@@ -1484,9 +1481,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								
 				@try
 				{
-//					staticContext = [[NSManagedObjectContext alloc] init];
-//                    staticContext.undoManager = nil;
-//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+					staticContext = [[NSManagedObjectContext alloc] init];
+                    staticContext.undoManager = nil;
+                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
 					@try
 					{
 						/* don't spawn a sub-process to handle the association */
@@ -1497,8 +1494,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
-//					[staticContext release];
-//					staticContext = nil;
+					[staticContext release];
+					staticContext = nil;
 				}
 				@catch( NSException *e)
 				{
@@ -1535,17 +1532,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     if( [[DicomDatabase defaultDatabase] isLocal] == NO)
                         NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
                     
-//					staticContext = [[NSManagedObjectContext alloc] init];
-//                    staticContext.undoManager = nil;
-//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+					staticContext = [[NSManagedObjectContext alloc] init];
+                    staticContext.undoManager = nil;
+                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+//					[staticContext lock]; //Try to avoid deadlock
 					
 					@try
 					{
                         [DCMNetServiceDelegate DICOMServersList];
 						
-                        NSPipe* child2parent = [[NSPipe alloc] init];
-                        NSPipe* parent2child = [[NSPipe alloc] init];
-                        
 						/* spawn a sub-process to handle the association */
 						pid = (int)(fork());
 						if (pid < 0)
@@ -1557,11 +1552,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else if (pid > 0)
 						{
-                            // child process makes database requests to parent process through the child2parent and parent2child pipes; this thread takes care of handling these requests
-                            [NSThread detachNewThreadSelector:@selector(childProcessAssistantThread:) toTarget:[[[ParentForkedInterface alloc] init] autorelease] withObject:[NSArray arrayWithObjects: [NSNumber numberWithInt:pid], child2parent, parent2child, nil]];
-							
-                            // Display a thread in the ThreadsManager for this pid
-							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector(waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
+							// Display a thread in the ThreadsManager for this pid
+							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
 							t.name = NSLocalizedString( @"DICOM Services...", nil);
 							if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
@@ -1578,12 +1570,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else
 						{
-                            /*int i = 1; // activate this bit if you need to debug the child process
-                            while (i) {
-                                NSLog(@"Test");
-                                [NSThread sleepForTimeInterval:1];
-                            }*/
-                            
 							lockFile();
 							
 							// We are not interested to see crash report for the child process.
@@ -1598,10 +1584,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							signal(SIGBUS , silent_exit_on_sig);
 							
 							// Child
-
-                            CurrentChildForkedInterface = [[ChildForkedInterface alloc] initWithC2PPipe:child2parent P2CPipe:parent2child];
-							
-                            @try
+							@try
 							{
 								try
 								{
@@ -1618,9 +1601,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                                 N2LogExceptionWithStackTrace(e);
 							}
 							
-                            [CurrentChildForkedInterface informParentThatChildIsDone];
-                            [CurrentChildForkedInterface release]; CurrentChildForkedInterface = nil; // is this necessary? we're exit()ing next...
-
 							unlockFile();
 							
 							char dir[ 1024];
@@ -1630,17 +1610,15 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							/* the child process is done so exit */
 							_Exit(3);	//to avoid spin_lock
 						}
-                        
-                        [child2parent release];
-                        [parent2child release];
 					}
 					@catch( NSException *e)
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
 					
-//					[staticContext release];
-//					staticContext = nil;
+//					[staticContext unlock];
+					[staticContext release];
+					staticContext = nil;
 				}
 			}
 		}

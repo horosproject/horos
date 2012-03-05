@@ -44,11 +44,11 @@ typedef struct
 
 @interface OsiriXSCPDataHandler : NSObject
 {
-	NSMutableArray *findArray;
+	NSArray *findArray;
 	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
 	NSString *callingAET;
-//	NSManagedObjectContext *context;
+	NSManagedObjectContext *context;
 	
 	int numberMoving;
 	

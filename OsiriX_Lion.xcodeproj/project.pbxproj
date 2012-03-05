@@ -417,9 +417,6 @@
 		71353C541469260B00359CAB /* NSDate+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71353C501469260B00359CAB /* NSDate+N2.mm */; };
 		713A00391467E2DC00194120 /* DicomDir.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A00371467E2DC00194120 /* DicomDir.h */; };
 		713A003A1467E2DC00194120 /* DicomDir.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A00381467E2DC00194120 /* DicomDir.mm */; };
-		713C200414FF6392002701DA /* ForkedInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 713C200214FF6391002701DA /* ForkedInterface.h */; };
-		713C200514FF6392002701DA /* ForkedInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 713C200214FF6391002701DA /* ForkedInterface.h */; };
-		713C200614FF6392002701DA /* ForkedInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713C200314FF6391002701DA /* ForkedInterface.mm */; };
 		714943D214D3008B008BCC08 /* NSHost+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 714943D014D3008B008BCC08 /* NSHost+N2.h */; };
 		714943D314D3008B008BCC08 /* NSHost+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 714943D014D3008B008BCC08 /* NSHost+N2.h */; };
 		714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 714943D114D3008B008BCC08 /* NSHost+N2.mm */; };
@@ -8658,8 +8655,6 @@
 		71353C501469260B00359CAB /* NSDate+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSDate+N2.mm"; path = "nitrogen/Sources/NSDate+N2.mm"; sourceTree = "<group>"; };
 		713A00371467E2DC00194120 /* DicomDir.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DicomDir.h; sourceTree = "<group>"; };
 		713A00381467E2DC00194120 /* DicomDir.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDir.mm; sourceTree = "<group>"; };
-		713C200214FF6391002701DA /* ForkedInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForkedInterface.h; sourceTree = "<group>"; };
-		713C200314FF6391002701DA /* ForkedInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ForkedInterface.mm; sourceTree = "<group>"; };
 		714943D014D3008B008BCC08 /* NSHost+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSHost+N2.h"; path = "nitrogen/Sources/NSHost+N2.h"; sourceTree = "<group>"; };
 		714943D114D3008B008BCC08 /* NSHost+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSHost+N2.mm"; path = "nitrogen/Sources/NSHost+N2.mm"; sourceTree = "<group>"; };
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
@@ -16335,8 +16330,6 @@
 				ABB7A43606343BFF00AD1777 /* Query */,
 				BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */,
 				BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */,
-				713C200214FF6391002701DA /* ForkedInterface.h */,
-				713C200314FF6391002701DA /* ForkedInterface.mm */,
 				BFBCD8A509E4C2E40078ABB6 /* DCMTKServiceClassUser.h */,
 				BFBCD8A609E4C2E40078ABB6 /* DCMTKServiceClassUser.mm */,
 				BF7A837E09B8D1C10051F091 /* DCMTKStoreSCU.h */,
@@ -25467,7 +25460,6 @@
 				CEBD93A714F1ADDB000DA1FE /* zutil.h in Headers */,
 				CEB5B19014F552000043457F /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
 				CEB5B19214F552140043457F /* VTKView.h in Headers */,
-				713C200414FF6392002701DA /* ForkedInterface.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26091,7 +26083,6 @@
 				AB451834149F464B006674BF /* publictypes.h in Headers */,
 				714943D314D3008B008BCC08 /* NSHost+N2.h in Headers */,
 				7154B81014ED5402000EF7E4 /* N2Stuff.h in Headers */,
-				713C200514FF6392002701DA /* ForkedInterface.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28516,7 +28507,6 @@
 				AB451861149F47C0006674BF /* djrparam.cc in Sources */,
 				714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */,
 				843DE35E14D0385D00878891 /* SMTPClient.m in Sources */,
-				713C200614FF6392002701DA /* ForkedInterface.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

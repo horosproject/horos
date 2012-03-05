@@ -570,13 +570,11 @@
  Method: Retrieve
 
  Parameters:
- serverName:
- retrieveMode:
+ serverName: 
  filterValue: 
  filterKey:
 
  Example: osirix://?methodName=retrieve&serverName=Minipacs&filterKey=PatientID&filterValue=296228
- Example: {serverName: "Minipacs", filterKey: @"PatientID", filterValue: "296228"}
 
  Response: {error: "0"}
  */

@@ -38,7 +38,6 @@
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "CIADICOMField.h"
-#import "N2Stuff.h"
 
 #include "osconfig.h"
 #include "mdfconen.h"
@@ -2673,8 +2672,13 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
-                t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
-				if ([selectedItems count] > 1)
+				
+				if( [selectedItems count] == 1)
+					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [selectedItems count]];
+				else
+					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
+				
+				if( [selectedItems count] > 1)
 					t.progress = 0;
 				
 				t.supportsCancel = YES;

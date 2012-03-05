@@ -130,8 +130,6 @@ extern AppController* OsiriX;
 	
 	int								lastColumns, lastRows, lastCount;
 //	NSMutableArray					*viewersAddresses;
-    
-    NSConnection*                   _connection; // communication betweeen OsiriX and forked processes
 }
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
@@ -144,8 +142,6 @@ extern AppController* OsiriX;
 + (BOOL) hasMacOSXLion;
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
-
-+(NSString*)privateForkedInterfaceName;
 
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
