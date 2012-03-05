@@ -5408,13 +5408,21 @@ void connect(simplex *s) {
             if (sf->peak.vert) continue;                
         } else do {
             xb = xf;
-            xf = op_simp(sf,sb)->vert;
-            sb = sf;
-            sf = op_vert(sb,xb)->simp;
+            neighbor *n = op_simp(sf,sb);
+            if( n)
+            {
+                xf = n->vert;
+                sb = sf;
+                sf = op_vert(sb,xb)->simp;
+            }
+            else break;
         } while (sf->peak.vert);
 
         sn->simp = sf;
-        op_vert(sf,xf)->simp = s;
+        
+        neighbor *o = op_vert(sf,xf);
+        if( o)
+            o->simp = s;
 
         connect(sf);
     }
