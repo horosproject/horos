@@ -23,6 +23,7 @@
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
 #import "DicomImage.h"
+#import "DicomDatabase.h"
 #import "N2Debug.h"
 
 #include "dctk.h"
@@ -70,6 +71,16 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 + (id)allocRequestDataHandler
 {
 	return [[OsiriXSCPDataHandler alloc] init];
+}
+
+-(NSArray*)itemsForEntity:(NSString*)entity predicate:(NSPredicate*)predicate {
+    if (CurrentChildForkedInterface)
+        return [CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:entity predicate:predicate keys:nil];
+    
+    DicomDatabase* database = [DicomDatabase defaultDatabase];
+    if (![NSThread isMainThread]) database = [database independentDatabase];
+    
+    return [database objectsForEntity:entity predicate:predicate];
 }
 
 -(NSTimeInterval) endOfDay:(NSCalendarDate *)day
@@ -749,7 +760,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 	return compoundPredicate;
 }
 
-- (const char*) encodeString: (NSString*) str image: (ChildForkedObject*) image
+- (const char*) encodeString: (NSString*) str image: (id) image // image is either a NSManagedObject or a ChildForkedObject
 {
 	if( str == nil)
 		return nil;
@@ -797,11 +808,11 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 	return a;
 }
 
-- (void)studyDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
+- (void)studyDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset // fetchedObject is either a NSManagedObject or a ChildForkedObject
 {
 	@try
 	{
-		ChildForkedObject* image = [[[[fetchedObject valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject];
+		id image = [[[[fetchedObject valueForKey: @"series"] anyObject] valueForKey: @"images"] anyObject]; // is either a NSManagedObject or a ChildForkedObject
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -936,11 +947,11 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 	}
 }
 
-- (void)seriesDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
+- (void)seriesDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset // fetchedObject is either a NSManagedObject or a ChildForkedObject
 {
 	@try
 	{
-		ChildForkedObject *image = [[fetchedObject valueForKey: @"images"] anyObject];
+		id image = [[fetchedObject valueForKey: @"images"] anyObject]; // is either a NSManagedObject or a ChildForkedObject
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -1056,12 +1067,13 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 				}
 				else if( key == DCM_ModalitiesInStudy && [fetchedObject valueForKeyPath:@"study.modality"])
 				{
-					NSMutableArray *modalities = [NSMutableArray array];
+					NSMutableArray *modalities = [NSMutableArray arrayWithObject:[fetchedObject valueForKeyPath:@"study.modality"]];
 				
-					BOOL SC = NO, SR = NO;
+					/*BOOL SC = NO, SR = NO;
 					
-					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"study"];
+					id study = [fetchedObject valueForKeyPath:@"study"]; // is either a NSManagedObject or a ChildForkedObject
 					
+                    NSLog(@"(%@ %@) modality: %@", [study className], study, [study valueForKeyPath:@"modality"]);
 					for( NSString *m in [[study valueForKeyPath:@"modality"] allObjects])
 					{
 						if( [modalities containsString: m] == NO)
@@ -1073,7 +1085,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 					}
 					
 					if( SC) [modalities addObject: @"SC"];
-					if( SR) [modalities addObject: @"SR"];
+					if( SR) [modalities addObject: @"SR"];*/
 				
 					dataset->putAndInsertString(DCM_ModalitiesInStudy, [[modalities componentsJoinedByString:@"\\"] cStringUsingEncoding:NSISOLatin1StringEncoding]);
 				}
@@ -1098,7 +1110,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 				}
 				else if( key == DCM_NumberOfStudyRelatedSeries)
 				{
-					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"study"];
+					id study = [fetchedObject valueForKeyPath:@"study"]; // is either a NSManagedObject or a ChildForkedObject
 					
 					int numberInstances = [[study valueForKeyPath:@"series"] count];
 					char value[10];
@@ -1121,11 +1133,11 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 	}
 }
 
-- (void)imageDatasetForFetchedObject:(ChildForkedObject*)fetchedObject dataset:(DcmDataset *)dataset
+- (void)imageDatasetForFetchedObject:(id)fetchedObject dataset:(DcmDataset *)dataset // fetchedObject is either a NSManagedObject or a ChildForkedObject
 {
 	@try
 	{
-		ChildForkedObject *image = fetchedObject;
+		id image = fetchedObject; // is either a NSManagedObject or a ChildForkedObject
 		
 		for( NSString *keyString in [findTemplate allKeys])
 		{
@@ -1273,7 +1285,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 				
 					BOOL SC = NO, SR = NO;
 					
-					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"series.study"];
+					id study = [fetchedObject valueForKeyPath:@"series.study"]; // is either a NSManagedObject or a ChildForkedObject
 					
 					for( NSString *m in [[study valueForKeyPath:@"series.modality"] allObjects])
 					{
@@ -1311,7 +1323,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 				}
 				else if( key == DCM_NumberOfStudyRelatedSeries)
 				{
-					ChildForkedObject* study = [fetchedObject valueForKeyPath:@"series.study"];
+					id study = [fetchedObject valueForKeyPath:@"series.study"]; // is either a NSManagedObject or a ChildForkedObject
 					
 					int numberInstances = [[study valueForKeyPath:@"series"] count];
 					char value[10];
@@ -1350,6 +1362,12 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 	[findTemplate release];
 	findTemplate = [[NSMutableDictionary alloc] init];
 	
+/*    int i = 1; // activate this bit if you need to debug the child process
+    while (i) {
+        NSLog(@"Test");
+        [NSThread sleepForTimeInterval:1];
+    }*/
+    
 //	dataset->print(COUT);
 	
 	int elemCount = (int)(dataset->card());
@@ -1379,13 +1397,13 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 		{
 			if (seriesLevelPredicate) // First find at series level, then move to image level
             {
-				for (ChildForkedObject* series in [CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:@"Series" predicate:seriesLevelPredicate keys:nil])
+				for (id series in [self itemsForEntity:@"Series" predicate:seriesLevelPredicate]) // is either a NSManagedObject or a ChildForkedObject
                     [findArray addObjectsFromArray:[[series valueForKey:@"images"] allObjects]];
                 [findArray filterUsingPredicate:predicate];
 			}
 			else
             {
-				[findArray addObjectsFromArray:[CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:entityName predicate:predicate keys:nil]];
+				[findArray addObjectsFromArray:[self itemsForEntity:entityName predicate:predicate]];
 			}
             
 			if (strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
@@ -1444,7 +1462,7 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 		strcat( fromTo, currentDestinationMoveAET);
 	}
 	
-	for(ChildForkedObject* object in mArray)
+	for(id object in mArray) // is either a NSManagedObject or a ChildForkedObject
 	{
 		if( [[object valueForKey:@"type"] isEqualToString: @"Series"])
 		{
@@ -1541,13 +1559,13 @@ extern ChildForkedInterface* CurrentChildForkedInterface;
 		{
 			if (seriesLevelPredicate) // First find at series level, then move to image level
 			{
-				for (ChildForkedObject* series in [CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:@"Series" predicate:seriesLevelPredicate keys:nil])
+				for (id series in [self itemsForEntity:@"Series" predicate:seriesLevelPredicate]) // is either a NSManagedObject or a ChildForkedObject
                     [array addObjectsFromArray:[[series valueForKey:@"images"] allObjects]];
                 [array filterUsingPredicate:predicate];
 			}
 			else
             {
-				[array addObjectsFromArray:[CurrentChildForkedInterface defaultDatabaseItemsWithEntityName:entityName predicate:predicate keys:nil]];
+				[array addObjectsFromArray:[self itemsForEntity:entityName predicate:predicate]];
 			}
 			
 			if (strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)

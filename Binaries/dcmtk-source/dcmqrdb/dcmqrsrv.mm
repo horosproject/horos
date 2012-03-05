@@ -1543,8 +1543,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					{
                         [DCMNetServiceDelegate DICOMServersList];
 						
-                        NSPipe* child2parent = [NSPipe pipe];
-                        NSPipe* parent2child = [NSPipe pipe];
+                        NSPipe* child2parent = [[NSPipe alloc] init];
+                        NSPipe* parent2child = [[NSPipe alloc] init];
                         
 						/* spawn a sub-process to handle the association */
 						pid = (int)(fork());
@@ -1584,8 +1584,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                                 [NSThread sleepForTimeInterval:1];
                             }*/
                             
-                            CurrentChildForkedInterface = [[ChildForkedInterface alloc] initWithC2PPipe:child2parent P2CPipe:parent2child];
-                            
 							lockFile();
 							
 							// We are not interested to see crash report for the child process.
@@ -1600,7 +1598,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							signal(SIGBUS , silent_exit_on_sig);
 							
 							// Child
-							@try
+
+                            CurrentChildForkedInterface = [[ChildForkedInterface alloc] initWithC2PPipe:child2parent P2CPipe:parent2child];
+							
+                            @try
 							{
 								try
 								{
@@ -1617,18 +1618,21 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                                 N2LogExceptionWithStackTrace(e);
 							}
 							
+                            [CurrentChildForkedInterface informParentThatChildIsDone];
+                            [CurrentChildForkedInterface release]; CurrentChildForkedInterface = nil; // is this necessary? we're exit()ing next...
+
 							unlockFile();
 							
 							char dir[ 1024];
 							sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
 							unlink( dir);
-                            
-                            [CurrentChildForkedInterface sendDone];
-                            [CurrentChildForkedInterface release]; CurrentChildForkedInterface = nil; // is this necessary? we're exit()ing next...
 							
 							/* the child process is done so exit */
 							_Exit(3);	//to avoid spin_lock
 						}
+                        
+                        [child2parent release];
+                        [parent2child release];
 					}
 					@catch( NSException *e)
 					{

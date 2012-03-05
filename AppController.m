@@ -47,7 +47,6 @@
 #import <objc/runtime.h>
 #import "NSPanel+N2.h"
 #ifndef OSIRIX_LIGHT
-#import "ForkedInterface.h"
 #ifndef MACAPPSTORE
 #import "Reports.h"
 #import <ILCrashReporter/ILCrashReporter.h>

@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+@class DicomDatabase;
+
 @interface ParentForkedInterface : NSObject {
-    
+    DicomDatabase* _idd;
 }
 
 @end
@@ -27,7 +29,7 @@
 
 -(ChildForkedObject*)defaultDatabaseItemWithID:(NSString*)objectIdUriString keys:(NSArray*)keys;
 -(NSArray*)defaultDatabaseItemsWithEntityName:(NSString*)entityName predicate:(NSPredicate*)predicate keys:(NSArray*)keys;
--(void)sendDone;
+-(void)informParentThatChildIsDone;
 
 @end
 
