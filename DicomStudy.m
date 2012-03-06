@@ -623,9 +623,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) modalities
 {
-	if( cachedModalites)
+	if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
 		return cachedModalites;
-	
+    
+    [cachedModalites release];
+    
 	NSString *m = nil;
 	
 	[[self managedObjectContext] lock];
@@ -674,6 +676,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	
 	[cachedModalites release];
 	cachedModalites = [m retain];
+    _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
 	
 	[[self managedObjectContext] unlock];
 	
@@ -1121,13 +1124,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	int sum = 0;
 	
-	if( cachedRawNoFiles)
+	if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
 		return cachedRawNoFiles;
+    
+    [cachedRawNoFiles release];
 	
     [self.managedObjectContext lock];
 	@try  {
 		for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
 			sum += [[s valueForKey: @"rawNoFiles"] intValue];
+        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
 	}
 	@catch (NSException * e) 
 	{

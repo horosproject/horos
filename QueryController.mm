@@ -63,7 +63,8 @@ static NSString *InstitutionName = @"InstitutionName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
-static NSArray *studyArrayInstanceUID = nil, *studyArrayCache = nil;
+static NSMutableArray* studyArrayInstanceUID = [[NSMutableArray alloc] init];
+static NSArray* studyArrayCache = nil;
 static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
@@ -1056,12 +1057,12 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	@synchronized (studyArrayInstanceUID) // TODO: locking on an object which is deallocated and reset during the lock? this looks like a bug, but probably not as all the locks are done on the main thread (it seems  -- so this is useless..?)
+	@synchronized (studyArrayInstanceUID)
 	{
-		[studyArrayInstanceUID release];
+        [studyArrayInstanceUID removeAllObjects];
+		[studyArrayInstanceUID addObjectsFromArray:[d objectForKey:@"studyArrayInstanceUID"]];
+        
 		[studyArrayCache release];
-		
-		studyArrayInstanceUID = [[d objectForKey:@"studyArrayInstanceUID"] retain];
 		studyArrayCache = [[[[BrowserController currentBrowser] database] objectsWithIDs:[d objectForKey:@"studyArrayObjectIDs"]] retain];
 		
 		if( currentQueryController.DatabaseIsEdited == NO)
@@ -1128,24 +1129,18 @@ extern "C"
 	{
 		@try
 		{
-			if( studyArrayInstanceUID == nil)
-				[self computeStudyArrayInstanceUID: nil];
-			
 			NSArray *result = nil;
 			
-			if (studyArrayInstanceUID)
-			{
-				@synchronized (studyArrayInstanceUID)
-				{
-					NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
-					
-					if( index == NSNotFound) result = [NSArray array];
-					else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
-				}
-			}
-			else
-				NSLog( @"----- localStudy computeStudyArrayInstanceUID == nil");
+            @synchronized (studyArrayInstanceUID)
+            {
+                if (studyArrayInstanceUID.count == 0)
+                    [self computeStudyArrayInstanceUID: nil];
 
+                NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+                
+                if( index == NSNotFound) result = [NSArray array];
+                else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+            }
 			
 			return result;
 		}
@@ -1153,10 +1148,8 @@ extern "C"
 		{
 			@synchronized (studyArrayInstanceUID)
 			{
-				[studyArrayInstanceUID release];
-				studyArrayInstanceUID = nil;
+				[studyArrayInstanceUID removeAllObjects];
 			}
-			return nil;
 		}
 	}
 	
