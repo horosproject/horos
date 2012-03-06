@@ -200,7 +200,7 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 //	if (rc == 0)
 //		NSLog(@"\tself.rc = 0, zombies arising..?");
 	
-	@synchronized(databasesDictionary) {
+	@synchronized (databasesDictionary) {
 		if (rc == 1 && [databasesDictionary keyForObject:self]) {
 //			NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
 
@@ -209,10 +209,18 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 			if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
 //				NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
 					id key = [databasesDictionary keyForObject:self];
-					if (key) [databasesDictionary removeObjectForKey:key];
+                if (key) {
+                    [[self class] performSelectorOnMainThread:@selector(_mainthreadDatabasesDictionaryRemoveObjectForKey:) withObject:key waitUntilDone:NO];
+                }
 			}
 		}
 	}
+}
+
++(void)_mainthreadDatabasesDictionaryRemoveObjectForKey:(id)key {
+    @synchronized (databasesDictionary) {
+        [databasesDictionary removeObjectForKey:key];
+    }
 }
 
 //-(id)retain {
@@ -243,6 +251,8 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 	@synchronized(databasesDictionary) {
         return [databasesDictionary objectForKey:[self baseDirPathForPath:path]];
     }
+    
+    return nil;
 }
 
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
