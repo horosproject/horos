@@ -167,10 +167,10 @@ static DicomDatabase* defaultDatabase = nil;
 	return defaultDatabase;
 }
 
-static NSMutableDictionary* databasesDictionary = nil;
+static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] init];
 
 +(NSArray*)allDatabases {
-	@synchronized(databasesDictionary) {
+	@synchronized (databasesDictionary) {
 		return [[[databasesDictionary allValues] copy] autorelease];
 	}
 	
@@ -178,13 +178,8 @@ static NSMutableDictionary* databasesDictionary = nil;
 }
 
 +(void)knowAbout:(DicomDatabase*)db {
-	@synchronized(self) {
-		if (!databasesDictionary)
-			databasesDictionary = [[NSMutableDictionary alloc] init];
-	}
-	
 	if (db && db.baseDirPath)
-		@synchronized(databasesDictionary) {
+		@synchronized (databasesDictionary) {
 			if (![[databasesDictionary allValues] containsObject:db] && ![databasesDictionary objectForKey:db.baseDirPath])
 				[databasesDictionary setObject:db forKey:db.baseDirPath];
 		}
@@ -245,7 +240,9 @@ static NSMutableDictionary* databasesDictionary = nil;
 }
 
 +(DicomDatabase*)existingDatabaseAtPath:(NSString*)path {
-    return [databasesDictionary objectForKey:[self baseDirPathForPath:path]];
+	@synchronized(databasesDictionary) {
+        return [databasesDictionary objectForKey:[self baseDirPathForPath:path]];
+    }
 }
 
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated

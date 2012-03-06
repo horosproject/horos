@@ -30,7 +30,7 @@
 	N2ManagedDatabase* _database;
 }
 
-@property(retain) N2ManagedDatabase* database;
+@property(assign) N2ManagedDatabase* database;
 
 @end
 
@@ -106,21 +106,17 @@
         [self willChangeValueForKey:@"managedObjectContext"];
 
         NSManagedObjectContext* prevManagedObjectContext = [_managedObjectContext retain];
-
         [prevManagedObjectContext lock];
-        [managedObjectContext lock];
-		
-        // the database's main managedObjectContext doesn't retain the database
-		if ([managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
-            ((N2ManagedObjectContext*)managedObjectContext).database = nil;
-        
-		[_managedObjectContext release];
+
+        [_managedObjectContext release];
 		_managedObjectContext = [managedObjectContext retain];
+
+        // the database's main managedObjectContext must not retain the database
+		if ([_managedObjectContext isKindOfClass:[N2ManagedObjectContext class]])
+            ((N2ManagedObjectContext*)_managedObjectContext).database = nil;
         
         [prevManagedObjectContext unlock];
         [prevManagedObjectContext release];
-        
-        [managedObjectContext unlock];
 
         [self didChangeValueForKey:@"managedObjectContext"];
     }
@@ -284,7 +280,7 @@
     [NSNotificationCenter.defaultCenter removeObserver:self];
     if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];
-    self.mainDatabase = nil;
+    [self.mainDatabase release];
 	self.managedObjectContext = nil;
 	self.sqlFilePath = nil;
 //	[writeLock release];
