@@ -392,6 +392,10 @@ int executeProcess(int argc, char *argv[])
 				}
 				[aMovie release];
 			}
+            else
+            {
+                NSLog( @"***** no movie file:%@", path);
+            }
 		}
 	}
 	
