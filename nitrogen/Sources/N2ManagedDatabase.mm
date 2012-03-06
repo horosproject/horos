@@ -280,8 +280,8 @@
     [NSNotificationCenter.defaultCenter removeObserver:self];
     if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];
-    [self.mainDatabase release];
-	self.managedObjectContext = nil;
+    self.mainDatabase = nil;
+	[_managedObjectContext release];
 	self.sqlFilePath = nil;
 //	[writeLock release];
 	[super dealloc];
