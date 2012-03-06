@@ -2920,16 +2920,13 @@ static NSConditionLock *threadLock = nil;
 
 - (void)delayedRefreshAlbums
 {
-    N2LogStackTrace(@"delayedRefreshAlbums");
-	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_computeNumberOfStudiesForAlbumsThread) object:nil];
-	[self performSelector:@selector(_computeNumberOfStudiesForAlbumsThread) withObject:nil afterDelay:20];
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(refreshAlbums) object:nil];
+	[self performSelector:@selector(refreshAlbums) withObject:nil afterDelay:20];
 }
 
 - (void)refreshAlbums
 {
-    N2LogStackTrace(@"refreshAlbums");
-    NSLog(@"refreshAlbums");
-	[NSThread detachNewThreadSelector: @selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+	[NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
 }
 
 - (void)refreshDatabase: (id)sender
