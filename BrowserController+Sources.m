@@ -569,16 +569,16 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [[queue retain] addOperationWithBlock:^{
         // we're now in a background thread
         NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
-        if ([host isEqualToHost:[NSHost currentHost]]) // it's from this machine, but is it from this instance of OsiriX ?
-            if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) {
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    // we're now back in the main thread
-                    @synchronized (_bonjourSources) {
-                        [_bonjourSources removeObjectForKey:key];
-                    }
-                }];
-                return; // it's me
-            }
+        if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) // it's from this machine, but is it from this instance of OsiriX ?
+        { // [host isEqualToHost:[NSHost currentHost]
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                // we're now back in the main thread
+                @synchronized (_bonjourSources) {
+                    [_bonjourSources removeObjectForKey:key];
+                }
+            }];
+            return; // it's me
+        }
         
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
             // we're now back in the main thread
