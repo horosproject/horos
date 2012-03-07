@@ -53,13 +53,11 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 @property(readonly,retain) N2MutableUInteger* dataFileIndex;
 @property(readonly,retain) NSRecursiveLock* processFilesLock;
 @property(readonly,retain) NSRecursiveLock* importFilesFromIncomingDirLock;
-@property(readwrite,retain) NSMutableArray* unsavedAddedFiles;
 
 +(NSString*)sqlFilePathForBasePath:(NSString*)basePath;
 -(void)modifyDefaultAlbums;
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
--(NSString*)unsavedAddedFilesPlistPath;
 +(NSArray*)allDatabases;
 
 @end
@@ -68,15 +66,6 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 
 +(void)initializeDicomDatabaseClass {
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey options:NSKeyValueObservingOptionInitial context:[DicomDatabase class]];
-    [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(_saveUnsavedAddedFilesTimerCallback:) userInfo:NULL repeats:YES];
-}
-
-+(void)_saveUnsavedAddedFilesTimerCallback:(NSTimer*)timer {
-	for (DicomDatabase* dbi in [self allDatabases])
-		@synchronized (dbi.unsavedAddedFiles) {
-            if (dbi.unsavedAddedFiles.count)
-                [dbi save];
-        }
 }
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
@@ -318,7 +307,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 @synthesize baseDirPath = _baseDirPath, dataBaseDirPath = _dataBaseDirPath, dataFileIndex = _dataFileIndex, name = _name, timeOfLastModification = _timeOfLastModification;
 @synthesize isReadOnly = _isReadOnly;
-@synthesize unsavedAddedFiles = _unsavedAddedFiles;
 @synthesize processFilesLock = _processFilesLock;
 @synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
 
@@ -377,7 +365,6 @@ static DicomDatabase* activeLocalDatabase = nil;
         _dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
         _processFilesLock = [[NSRecursiveLock alloc] init];
         _importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
-        _unsavedAddedFiles = [[NSMutableArray alloc] init];
         
         // create dirs if necessary
         [NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
@@ -393,22 +380,6 @@ static DicomDatabase* activeLocalDatabase = nil;
         
         if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
             [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:self.unsavedAddedFilesPlistPath]) {
-            NSMutableArray* unsavedAddedFiles = [NSMutableArray arrayWithContentsOfFile:self.unsavedAddedFilesPlistPath];
-            
-            for (int i = 1; i < unsavedAddedFiles.count; ++i)
-                if ([[unsavedAddedFiles objectAtIndex:i] isEqualToString:[unsavedAddedFiles objectAtIndex:i-1]])
-                    [unsavedAddedFiles removeObjectAtIndex:i];
-            
-            NSLog(@"Warning: some files (%d) were added but OsiriX didn't get to save their indexes into the DB file, moving them back to incoming...", unsavedAddedFiles.count);
-            
-            NSString* incomingDirPath = self.incomingDirPath;
-            for (NSString* path in unsavedAddedFiles)
-                [[NSFileManager defaultManager] moveItemAtPath:[DicomImage completePathForLocalPath:path directory:self.dataBaseDirPath] toPath:[incomingDirPath stringByAppendingPathComponent:path] error:NULL];
-            
-            [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
-        }
         
         // report templates
 #ifndef MACAPPSTORE
@@ -444,7 +415,6 @@ static DicomDatabase* activeLocalDatabase = nil;
         _dataFileIndex = [[self.mainDatabase dataFileIndex] retain];
         _processFilesLock = [[self.mainDatabase processFilesLock] retain];
         _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
-        _unsavedAddedFiles = [[self.mainDatabase unsavedAddedFiles] retain];
         
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
@@ -488,10 +458,6 @@ static DicomDatabase* activeLocalDatabase = nil;
         }
     }
     
-    @synchronized (_unsavedAddedFiles) {
-        [_unsavedAddedFiles release];
-	}
-        
 	[_dataFileIndex release];
 	self.dataBaseDirPath = nil;
 	self.baseDirPath = nil;
@@ -564,12 +530,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         NSError* error = nil;
         if (!err) err = &error;
         
-        @synchronized (_unsavedAddedFiles) {
-            b = [super save:err];
-            
-            [_unsavedAddedFiles removeAllObjects];
-            [[NSFileManager defaultManager] removeItemAtPath:self.unsavedAddedFilesPlistPath error:NULL];
-        }
+        b = [super save:err];
         
         if (*err)
             NSLog(@"DicomDatabase save error: %@", *err);
@@ -671,10 +632,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSString*)loadingFilePath {
 	return [self.baseDirPath stringByAppendingPathComponent:@"Loading"];
-}
-
--(NSString*)unsavedAddedFilesPlistPath {
-	return [self.baseDirPath stringByAppendingPathComponent:@"UnaddedFilesIndex.plist"];
 }
 
 -(const char*)baseDirPathC {
@@ -1930,12 +1887,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		@try
 		{
-            if (addedImageObjects.count)
-                @synchronized (_unsavedAddedFiles) {
-                    [_unsavedAddedFiles addObjectsFromArray:[addedImageObjects valueForKey:@"path"]];
-                    [self performSelectorInBackground:@selector(_writeUnsavedAddedFilesPlistThread) withObject:nil];
-                }
-            
             NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
                 [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
@@ -1989,20 +1940,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     [pool release];
     
 	return [addedImageObjects valueForKey:@"objectID"];
-}
-
--(void)_writeUnsavedAddedFilesPlistThread
-{
-    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    @try {
-        @synchronized (_unsavedAddedFiles) {
-            [_unsavedAddedFiles writeToFile:self.unsavedAddedFilesPlistPath atomically:YES];
-        }
-    } @catch (NSException* e) {
-        N2LogExceptionWithStackTrace(e);
-    } @finally {
-        [pool release];
-    }
 }
 
 -(void)_notify:(NSArray*)args

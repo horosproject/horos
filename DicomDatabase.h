@@ -35,7 +35,6 @@ extern NSString* const OsirixDataDirName;
 	BOOL _isFileSystemFreeSizeLimitReached;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 	NSTimeInterval _timeOfLastModification;
-    NSMutableArray* _unsavedAddedFiles;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
     BOOL _isReadOnly;
 	// +Routing
