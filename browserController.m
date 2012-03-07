@@ -3465,29 +3465,15 @@ static NSConditionLock *threadLock = nil;
 				
 				[self matrixInit: matrixViewArray.count];
 				
-				BOOL imageLevel = NO;
 				NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
-				if( [files count] > 1)
-				{
-					if( [[files objectAtIndex: 0] valueForKey:@"series"] == [[files objectAtIndex: 1] valueForKey:@"series"]) imageLevel = YES;
-				}
-				
-				if( imageLevel == NO)
-				{
-					for( NSManagedObject *obj in files)
-					{
-						[previewPixThumbnails addObject: notFoundImage];
-					}
-				}
-				else
-				{
-					for( unsigned int i = 0; i < [files count];i++) [previewPixThumbnails addObject: notFoundImage];
-				}
+				BOOL imageLevel = [item isKindOfClass:[DicomSeries class]];
+                
+                for (unsigned int i = 0; i < [files count]; i++) [previewPixThumbnails addObject:notFoundImage];
 				
 				[[self managedObjectContext] unlock];
 				
 				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", previewPixThumbnails, @"previewPixThumbnails", previewPix, @"previewPix", nil];
-				[NSThread detachNewThreadSelector: @selector( matrixLoadIcons:) toTarget: self withObject: dict];
+				[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 				
 				if( previousItem == item)
 					[oMatrix selectCellWithTag: cellId];
@@ -7149,7 +7135,8 @@ static BOOL withReset = NO;
 	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
 	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
 	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
-	
+	BOOL                            imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
+    
 	@try
 	{
 		for( int i = 0; i < filesPaths.count; i++)
@@ -7183,6 +7170,19 @@ static BOOL withReset = NO;
 			if( dcmPix == nil)
 				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:![_database isLocal] imageObj: [files objectAtIndex: i]];
 			
+            if (!imageLevel) {
+                NSData* dbThmb = [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];
+                if (dbThmb) {
+                    NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
+                    NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
+                    [dbIma addRepresentation:rep];
+                    [ipreviewPix addObject: dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]];
+                    [ipreviewPixThumbnails replaceObjectAtIndex:i withObject:dbIma];
+                    continue;
+                }
+            }
+
+            
 			if( dcmPix)
 			{
 				if( thumbnail == notFoundImage)
