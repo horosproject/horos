@@ -568,9 +568,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
     [[queue retain] addOperationWithBlock:^{
         // we're now in a background thread
-        NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
-        if ([service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]) // it's from this machine, but is it from this instance of OsiriX ?
-        { // [host isEqualToHost:[NSHost currentHost]
+        
+        NSDictionary* dict = nil;
+        if (![service.domain isEqualToString:@"_osirixdb._tcp."])
+            dict = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
+        else dict = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
+        //NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
+        /*[service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]*/
+        if ([[dict objectForKey:@"AETitle"] isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]]) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 // we're now back in the main thread
                 @synchronized (_bonjourSources) {
