@@ -3476,11 +3476,7 @@ static NSConditionLock *threadLock = nil;
 				{
 					for( NSManagedObject *obj in files)
 					{
-						NSImage *thumbnail = [[[NSImage alloc] initWithData: [obj valueForKeyPath:@"series.thumbnail"]] autorelease];
-	//					NSImage *thumbnail = decompressJPEG2000( [[obj valueForKeyPath:@"series.thumbnail"] bytes], [[obj valueForKeyPath:@"series.thumbnail"] length]);
-						if( thumbnail == nil) thumbnail = notFoundImage;
-						
-						[previewPixThumbnails addObject: thumbnail];
+						[previewPixThumbnails addObject: notFoundImage];
 					}
 				}
 				else
