@@ -644,11 +644,12 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	// context[0] state
 	// context[1] number of files in response
-	// context[2] size of file
-	// context[3] temporary file path
-	// context[4] output stream to temporary file
-	// context[5] total size written te tomporary file
-	// context[6] size of filename
+	// context[2] number of files done handling
+	// context[3] size of file
+	// context[4] temporary file path
+	// context[5] output stream to temporary file
+	// context[6] total size written to temporary file
+	// context[7] size of filename
 	
 	while (data.length > readSize) {
 		// DLog(@"_handleData_fetchDataForImage state %d", state.unsignedIntegerValue);
@@ -659,6 +660,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 					[data getBytes:&big range:NSMakeRange(readSize, 4)];
 					unsigned int n = NSSwapBigIntToHost(big);
 					[context addObject:[NSNumber numberWithUnsignedInt:n]]; // [1]
+					[context addObject:[N2MutableUInteger mutableUIntegerWithUInteger:0]]; // [2]
 					//DLog(@"RDD receiving %d files", n);
 					readSize += 4;
 					state.unsignedIntegerValue = 1;
@@ -669,24 +671,24 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 					unsigned int big;
 					[data getBytes:&big range:NSMakeRange(readSize, 4)];
 					unsigned int l = NSSwapBigIntToHost(big);
-					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [2]
+					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [3]
 					//DLog(@"RDD next file is %d bytes", l);
 					
 					NSString* path = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
-					[context addObject:path]; // [3]
+					[context addObject:path]; // [4]
 					NSOutputStream* stream = [NSOutputStream outputStreamToFileAtPath:path append:NO];
 					[stream open];
-					[context addObject:stream]; // [4]
-					[context addObject:[N2MutableUInteger mutableUIntegerWithUInteger:0]]; // [5]
+					[context addObject:stream]; // [5]
+					[context addObject:[N2MutableUInteger mutableUIntegerWithUInteger:0]]; // [6]
 					
 					readSize += 4;
 					state.unsignedIntegerValue = 2;
 				} else return readSize;
 			} break;
 			case 2: { // expecting file data, its length is in context
-				unsigned int l = [[context objectAtIndex:2] unsignedIntValue];
-				NSOutputStream* stream = [context objectAtIndex:4];
-				N2MutableUInteger* streamSize = [context objectAtIndex:5];
+				unsigned int l = [[context objectAtIndex:3] unsignedIntValue];
+				NSOutputStream* stream = [context objectAtIndex:5];
+				N2MutableUInteger* streamSize = [context objectAtIndex:6];
 				unsigned int ll = MIN(data.length-readSize, l-streamSize.unsignedIntegerValue);
 				while (ll > 0) {
 					NSInteger w = [stream write:(const uint8_t*)data.bytes+readSize maxLength:ll];
@@ -705,33 +707,38 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 					unsigned int big;
 					[data getBytes:&big range:NSMakeRange(readSize, 4)];
 					unsigned int l = NSSwapBigIntToHost(big);
-					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [6]
+					[context addObject:[NSNumber numberWithUnsignedInt:l]]; // [7]
 					//DLog(@"RDD next path is %d bytes", l);
 					readSize += 4;
 					state.unsignedIntegerValue = 4;
 				} else return readSize;
 			} break;
 			case 4: {
-				unsigned int pathSize = [[context objectAtIndex:6] unsignedIntValue];
+				unsigned int pathSize = [[context objectAtIndex:7] unsignedIntValue];
 				if (data.length-readSize >= pathSize) {
 					NSString* path = [NSString stringWithUTF8String:(char*)data.bytes+readSize];
 					readSize += pathSize;
 					//DLog(@"RDD path is %@", path);
+					[context removeLastObject]; // rm [7]
 					[context removeLastObject]; // rm [6]
+					[[context objectAtIndex:5] close];
 					[context removeLastObject]; // rm [5]
-					[[context objectAtIndex:4] close];
-					[context removeLastObject]; // rm [4]
 					
 					if ([NSFileManager.defaultManager fileExistsAtPath:path]) {
 						NSLog(@"Notice: strange, we seem to have redownloaded a remote image (%@)", path);
 						[NSFileManager.defaultManager removeItemAtPath:path error:NULL];
 					}
 					
-					[NSFileManager.defaultManager moveItemAtPath:[context objectAtIndex:3] toPath:path error:NULL];
+					[NSFileManager.defaultManager moveItemAtPath:[context objectAtIndex:4] toPath:path error:NULL];
 					
+					[context removeLastObject]; // rm [4]
 					[context removeLastObject]; // rm [3]
-					[context removeLastObject]; // rm [2]
 					state.unsignedIntegerValue = 1;
+                    
+                    N2MutableUInteger* counter = [context objectAtIndex:2];
+                    [counter increment];
+                    if (counter.unsignedIntegerValue == [[context objectAtIndex:1] unsignedIntegerValue])
+                        [connection close];
 				} else return readSize;
 			} break;
 		}
