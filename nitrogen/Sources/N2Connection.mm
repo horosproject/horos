@@ -57,28 +57,14 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 }
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag {
-	NSConditionLock* conditionLock = [[NSConditionLock alloc] initWithCondition:0]; 
-	NSMutableArray* io = [NSMutableArray arrayWithObjects: conditionLock, [NSThread currentThread], request, address, [NSNumber numberWithInteger:port], [NSNumber numberWithBool:tlsFlag], nil];
-	
-	NSThread* thread = [[NSThread alloc] initWithTarget:self selector:@selector(sendSynchronousRequestThread:) object:io];
-	[thread start];
-	[conditionLock lockWhenCondition:1];
-	[conditionLock unlock];
-	[conditionLock release];
-	[thread release];
-	
-	id response = io.count? [io lastObject] : nil;
-	if ([response isKindOfClass:[NSException class]])
-		@throw response;
-    
-	return response;
+	return [self sendSynchronousRequest:request toAddress:address port:port tls:tlsFlag dataHandlerTarget:nil selector:nil context:nil];
 } 
 
-+(void)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
-	[self sendSynchronousRequest:request toAddress:address port:port tls:NO dataHandlerTarget:target selector:selector context:context];
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context {
+	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO dataHandlerTarget:target selector:selector context:context];
 }
 
-+(void)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context  {
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context  {
 	if (!request) request = [NSData data];
 	
 	NSConditionLock* conditionLock = [[NSConditionLock alloc] initWithCondition:0]; 
@@ -97,6 +83,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[conditionLock unlock];
 	[conditionLock release];
 	[thread release];
+    
+    id response = io.count? [io lastObject] : nil;
+	if ([response isKindOfClass:[NSException class]])
+		@throw response;
+	return response;
 }
 
 +(void)sendSynchronousRequestThread:(NSMutableArray*)io {
@@ -104,16 +95,17 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	NSConditionLock* conditionLock = [io objectAtIndex:0];
 	NSThread* motherThread = [io objectAtIndex:1];
 	
+    /* This part is being removed because this is not the place to limit the number of simultaneous connections. This is a general-purpose class that is supposed to be used by many parts of OsiriX and plugins. It's the classes that use this that must limit the number of simultaneous requests.
 #define MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS 10
     static MPSemaphoreID semaphoreId = 0;
     @synchronized(self) {
         if (!semaphoreId) {
-            /*NSStatus err =*/ MPCreateSemaphore(MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, &semaphoreId);
+            MPCreateSemaphore(MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, &semaphoreId);
         }
     }
     
     if (semaphoreId)
-        MPWaitOnSemaphore(semaphoreId, kDurationForever);
+        MPWaitOnSemaphore(semaphoreId, kDurationForever);*/
 	N2Connection* c = nil;
 	@try {
 		NSData* request = [io objectAtIndex:2]; 
@@ -149,8 +141,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		[io addObject:e];
 	} @finally {
 		[c release];
-        if (semaphoreId)
-            MPSignalSemaphore(semaphoreId);
+        /*if (semaphoreId)
+            MPSignalSemaphore(semaphoreId);*/
 		[pool release];
 		[conditionLock lockWhenCondition:0];
 		[conditionLock unlockWithCondition:1];

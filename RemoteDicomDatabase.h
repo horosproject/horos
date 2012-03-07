@@ -25,6 +25,7 @@
 	NSRecursiveLock* _updateLock;
 	NSTimer* _updateTimer;
 	NSTimeInterval _timestamp;
+    MPSemaphoreID _connectionsSemaphoreId;
 }
 
 @property(readonly,retain) NSString* address;

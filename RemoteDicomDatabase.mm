@@ -104,7 +104,9 @@
 	self = [super initWithPath:path];
 	_baseBaseDirPath = [path retain];
 	_updateLock = [[NSRecursiveLock alloc] init];
-	
+#define MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS 10
+    MPCreateSemaphore(MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS, &_connectionsSemaphoreId);
+
 	self.host = host;
 	self.address = host.address;
 	self.port = port;
@@ -131,6 +133,8 @@
 	[temp unlock];
 	[temp release];
 	
+    MPDeleteSemaphore(_connectionsSemaphoreId);
+    
 	self.address = nil;
 	self.host = nil;
 	
@@ -221,6 +225,25 @@
 
 #pragma mark Communication
 
+-(NSData*)synchronousRequest:(NSData*)request dataHandlerTarget:(id)target selector:(SEL)sel context:(void*)context {
+    OSStatus waitOnSemaphoreStatus = 0;
+    if (_connectionsSemaphoreId)
+        waitOnSemaphoreStatus = MPWaitOnSemaphore(_connectionsSemaphoreId, kDurationForever); // this limits the number of simultaneous connections to this remote database
+    @try {
+        return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:target selector:sel context:context];
+    } @catch (...) {
+        @throw;
+    } @finally {
+        if (_connectionsSemaphoreId && waitOnSemaphoreStatus == noErr)
+            MPSignalSemaphore(_connectionsSemaphoreId);
+    }
+    return nil;
+}
+
+-(NSData*)synchronousRequest:(NSData*)request {
+    return [self synchronousRequest:request dataHandlerTarget:nil selector:nil context:nil];
+}
+
 +(void)_data:(NSMutableData*)data appendInt:(unsigned int)i {
 	unsigned int big = NSSwapHostIntToBig(i);
 	[data appendBytes:&big length:4];
@@ -238,14 +261,14 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding] autorelease];
 }
 
 -(BOOL)fetchIsPasswordProtected {
 	NSMutableData* request = [NSMutableData dataWithBytes:"ISPWD" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
@@ -254,7 +277,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 -(BOOL)fetchIsRightPassword:(NSString*)password {
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:password];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
@@ -262,7 +285,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 
 -(unsigned int)fetchDatabaseIndexSize {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBSIZ" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes));
@@ -302,7 +325,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	
 	NSData* request = [NSMutableData dataWithBytes:"DATAB" length:6];
 	NSArray* context = [NSArray arrayWithObjects: thread, [NSNumber numberWithUnsignedInteger:databaseIndexSize], fileStream, [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
-	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
+	[self synchronousRequest:request dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDatabaseIndex:context:) context:context];
 	
 	[fileStream close];
 	[thread exitOperation];
@@ -339,7 +362,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 
 -(NSTimeInterval)fetchDatabaseTimestamp {
 	NSMutableData* request = [NSMutableData dataWithBytes:"VERSI" length:6];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
 	return NSSwapBigDoubleToHost(*((NSSwappedDouble*)response.bytes));
@@ -448,7 +471,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	NSData* pathData = [path dataUsingEncoding:NSUnicodeStringEncoding];
 	[RemoteDicomDatabase _data:request appendInt:pathData.length];
 	[request appendData:pathData];
-	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	NSData* response = [self synchronousRequest:request];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUnicodeStringEncoding] autorelease];
 }
@@ -458,7 +481,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	[RemoteDicomDatabase _data:request appendStringUTF8:object.objectID.URIRepresentation.absoluteString];
 	[RemoteDicomDatabase _data:request appendStringUTF8: [value isKindOfClass:[NSNumber class]]? [value stringValue] : value];
 	[RemoteDicomDatabase _data:request appendStringUTF8:key];
-	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	[self synchronousRequest:request];
 	_timestamp = [self fetchDatabaseTimestamp];
 }
 
@@ -480,7 +503,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableData* request = [NSMutableData dataWithBytes:command length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:params.description];
 	
-	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	[self synchronousRequest:request];
 	
 	_timestamp = [self fetchDatabaseTimestamp];
 }
@@ -525,7 +548,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
 				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
 				
-				[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+				[self synchronousRequest:request];
                 
 				[request setLength:6+count.length];
 				[filesInRequest removeAllObjects];
@@ -600,7 +623,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 
     NSInteger retries;
     for (retries = 0; retries < 5; ++retries) {
-        [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
+        [self synchronousRequest:request dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
         if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
             break;
         [NSThread sleepForTimeInterval:0.005*retries];
@@ -722,7 +745,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[RemoteDicomDatabase _data:request appendInt:data.length];
 	[request appendData:data];
 	
-	return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	return [self synchronousRequest:request];
 }
 
 -(void)storeScuImages:(NSArray*)dicomImages toDestinationAETitle:(NSString*)aet address:(NSString*)address port:(NSInteger)port transferSyntax:(int)exsTransferSyntax {
@@ -742,7 +765,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	for (NSString* path in imagePaths)
 		[RemoteDicomDatabase _data:request appendStringUTF8:path];
 	
-	[N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port];
+	[self synchronousRequest:request];
 }
 
 -(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {

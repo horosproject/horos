@@ -208,7 +208,7 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 				
 			if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1) {
 //				NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
-					id key = [databasesDictionary keyForObject:self];
+                id key = [databasesDictionary keyForObject:self];
                 if (key) {
                     [[self class] performSelectorOnMainThread:@selector(_mainthreadDatabasesDictionaryRemoveObjectForKey:) withObject:key waitUntilDone:NO];
                 }
