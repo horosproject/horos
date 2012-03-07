@@ -626,7 +626,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
 		return cachedModalites;
     
-    [cachedModalites release];
+    [cachedModalites release]; cachedModalites = nil;
     
 	NSString *m = nil;
 	
@@ -674,7 +674,6 @@ static NSRecursiveLock *dbModifyLock = nil;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
-	[cachedModalites release];
 	cachedModalites = [m retain];
     _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
 	
@@ -1127,7 +1126,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
 		return cachedRawNoFiles;
     
-    [cachedRawNoFiles release];
+    [cachedRawNoFiles release]; cachedRawNoFiles = nil;
 	
     [self.managedObjectContext lock];
 	@try  {
