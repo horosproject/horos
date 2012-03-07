@@ -2879,7 +2879,10 @@ return YES;
 }
 
 - (IBAction)save3DSettings:(id)sender;
-{	
+{
+    if( panelInstantiated == NO)
+        [self showPresetsPanel];
+    
 	NSMutableDictionary *presetDictionary = [self getCurrent3DSettings];
 		
 	if([[sender className] isEqualToString:@"NSMenuItem"])
@@ -3642,11 +3645,12 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 - (void)updatePresetInfoPanel;
 {	
 	if( [selectedPresetPreview index] < 0) NSLog( @" ******** [selectedPresetPreview index] < 0");
-
+    if( selectedPresetPreview == nil) return;
+    
 	NSDictionary *presetDictionary = [[self find3DSettingsForGroupName:[presetsGroupPopUpButton titleOfSelectedItem]] objectAtIndex:[selectedPresetPreview index]];
 	
 	[infoNameTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Name: %@", nil), [presetDictionary objectForKey:@"name"]]];
-		
+	
 	if([[presetDictionary objectForKey:@"advancedCLUT"] boolValue])
 	{
 		[infoCLUTTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"CLUT: %@ (16-bit)", nil), [presetDictionary objectForKey:@"CLUT"]]];
@@ -3662,7 +3666,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		[infoShadingsTextField setStringValue:NSLocalizedString(@"Shadings: Off", nil)];
 	else
 		[infoShadingsTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Shadings: %@", nil), [presetDictionary objectForKey:@"shading"]]];
-
+    
 	[infoWLWWTextField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"WL: %.0f WW: %.0f", nil), [[presetDictionary objectForKey:@"wl"] floatValue], [[presetDictionary objectForKey:@"ww"] floatValue]]];
 	
 	NSMutableString *convolutionFiltersString = [NSMutableString stringWithString:@""];
