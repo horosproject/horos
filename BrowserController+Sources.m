@@ -569,12 +569,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [[queue retain] addOperationWithBlock:^{
         // we're now in a background thread
         
+        NSLog(@"--- %@ -------- %@", service, [service hostName]);
+        
         NSDictionary* dict = nil;
         if (![service.domain isEqualToString:@"_osirixdb._tcp."])
             dict = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
         else dict = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
-        //NSHost* host = [NSHost hostWithAddressOrName:service.hostName];
-        /*[service isEqual:[[BonjourPublisher currentPublisher] netService]] || [service isEqual:[[AppController sharedAppController] dicomBonjourPublisher]]*/
+        NSLog(@"dict: %@", dict);
+        
         if ([[dict objectForKey:@"AETitle"] isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]]) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 // we're now back in the main thread
@@ -632,7 +634,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             
             if (source.location)
             {
-                NSLog(@" -> Adding %@", source.location);
+         //       NSLog(@" -> Adding %@", source.location);
                 if (([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotSearchForBonjourServices"]) || 
                     ([source isKindOfClass:[DicomNodeIdentifier class]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"searchDICOMBonjour"])) {
                     
@@ -656,8 +658,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceBrowser:(NSNetServiceBrowser*)nsb didFindService:(NSNetService*)service moreComing:(BOOL)moreComing
 {
-	NSLog(@"Bonjour service found: %@", service);
-	
+	//NSLog(@"Bonjour service found: %@", service);
+
 	DataNodeIdentifier* source;
 	if (nsb == _nsbOsirix)
 		source = [RemoteDatabaseNodeIdentifier remoteDatabaseNodeIdentifierWithLocation:nil description:service.name dictionary:nil];
