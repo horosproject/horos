@@ -1460,25 +1460,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					ASC_dumpParameters(assoc->params, COUT);
 			}
 			
+            // TODO: OsiriX originally did [[[BrowserController currentBrowser] localManagedObjectContext] save:nil], but what for?
+            
 			if (singleProcess)
 			{
-				/*DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
-				
-				if ([database tryLock])
-				{
-					@try
-					{
-						[database save:nil];
-					}
-					@catch (NSException * e)
-					{
-                        N2LogExceptionWithStackTrace(e);
-					}
-					@finally {
-                        [database unlock];
-                    }
-				}*/
-								
 				@try
 				{
 					staticContext = [[NSManagedObjectContext alloc] init];
@@ -1512,31 +1497,10 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
-                    /*DicomDatabase* database = [[[DicomDatabase activeLocalDatabase] retain] autorelease];
-
-					if ([database tryLock])
-					{
-						@try
-						{
-							[database save:nil];
-						}
-						@catch (NSException * e)
-						{
-                            N2LogExceptionWithStackTrace(e);
-						}
-                        @finally {
-                            [database unlock];
-                        }
-					}*/
-                    
-                    if( [[DicomDatabase defaultDatabase] isLocal] == NO)
-                        NSLog( @"******* Warning [[DicomDatabase defaultDatabase] isLocal] == NO for DICOM-SCP. It's not supported.");
-                    
 					staticContext = [[NSManagedObjectContext alloc] init];
                     staticContext.undoManager = nil;
                     staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
-//					[staticContext lock]; //Try to avoid deadlock
-					
+                    
 					@try
 					{
                         [DCMNetServiceDelegate DICOMServersList];
