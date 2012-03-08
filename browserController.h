@@ -254,6 +254,7 @@ extern NSString* O2AlbumDragType;
     IBOutlet NSButton *banner;
     
     N2MutableUInteger* _currentPreviewContext;
+    BOOL willInvalidatePreviewImage, hasInvalidPreviewImage;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

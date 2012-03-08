@@ -6305,6 +6305,28 @@ static BOOL withReset = NO;
 	return returnPix;
 }
 
+-(void)invalidatePreviewImage:(int)i afterDelay:(NSTimeInterval)delay {
+//    if (!willInvalidatePreviewImage && !hasInvalidPreviewImage) {
+        willInvalidatePreviewImage = YES;
+        [self performSelector:@selector(_invalidatePreviewImageNow:) withObject:[NSNumber numberWithInt:i] afterDelay:delay];
+        NSLog(@"Will invalidate in %.1f seconds", (float)delay);
+//    }
+}
+
+-(void)_invalidatePreviewImageNow:(NSNumber*)i {
+    NSLog(@"Invalidating");
+    hasInvalidPreviewImage = YES; willInvalidatePreviewImage = NO;
+    [previewPix replaceObjectAtIndex:i.intValue withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
+    if ([[oMatrix selectedCell] tag] == [i intValue])
+        [imageView setIndexWithReset:i.intValue :YES];
+}
+
+-(void)cancelPreviewImageInvalidationForImage:(int)i {
+    NSLog(@"Canceling invalidation");
+	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_invalidatePreviewImageNow:) object:[NSNumber numberWithInt:i]];
+    hasInvalidPreviewImage = willInvalidatePreviewImage = NO;
+}
+
 - (void) previewSliderAction:(id) sender
 {
 	BOOL	animate = NO;
@@ -6336,10 +6358,7 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-                if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) {
-                    [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
-                    [imageView setIndexWithReset:[cell tag] :YES];
-                }
+                [self invalidatePreviewImage:[cell tag] afterDelay:0.5];
                 [queue addOperationWithBlock:^{ // do the loading in a background thread
                     //Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
                     DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
@@ -6349,6 +6368,8 @@ static BOOL withReset = NO;
                     if (dcmPix)
                         [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
                             if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
+                                [self cancelPreviewImageInvalidationForImage:[cell tag]];
+                                
                                 float wl, ww;
                                 [imageView getWLWW:&wl:&ww];
                                 
@@ -6389,10 +6410,7 @@ static BOOL withReset = NO;
 						
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
-                            if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) {
-                                [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
-                                [imageView setIndexWithReset:[cell tag] :YES];
-                            }
+                            [self invalidatePreviewImage:[cell tag] afterDelay:0.5];
                             [queue addOperationWithBlock:^{ // do the loading in a background thread
                                 DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
                                 if( dcmPix == nil)
@@ -6401,8 +6419,9 @@ static BOOL withReset = NO;
                                 if (dcmPix)
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
                                         if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
+                                            [self cancelPreviewImageInvalidationForImage:[cell tag]];
+                                                                                        
                                             float   wl, ww;
-                                            
                                             [imageView getWLWW:&wl :&ww];
                                             
                                             DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
@@ -6441,10 +6460,7 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-                            if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) { // te
-                                [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
-                                [imageView setIndexWithReset:[cell tag] :YES];
-                            }
+                            [self invalidatePreviewImage:[cell tag] afterDelay:0.5];
                             [queue addOperationWithBlock:^{ // do the loading in a background thread
                                 DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
                                 if (dcmPix == nil)
@@ -6453,8 +6469,9 @@ static BOOL withReset = NO;
                                 if (dcmPix)
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
                                         if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
-                                            float   wl, ww;
+                                            [self cancelPreviewImageInvalidationForImage:[cell tag]];
                                             
+                                            float   wl, ww;
                                             [imageView getWLWW:&wl :&ww];
                                             
                                             DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
