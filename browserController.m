@@ -7698,6 +7698,7 @@ static BOOL withReset = NO;
             N2LogExceptionWithStackTrace(e);
 		}
 		
+        [self.managedObjectContext save:NULL];
 		[self.managedObjectContext unlock];
 		
 		[self outlineViewRefresh];
@@ -11637,7 +11638,6 @@ static NSArray*	openSubSeriesArray = nil;
 
 		[folders removeDuplicatedStrings];
 		
-		[_database lock];
 		@try 
 		{
 			for( NSString *f in folders)
@@ -11646,8 +11646,10 @@ static NSArray*	openSubSeriesArray = nil;
 				
 				if( [[fileAttributes objectForKey: NSFileType] isEqualToString: NSFileTypeDirectory]) 
 				{
-					if( [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4)	// check if this folder is empty, and delete it if necessary
-					{
+					NSDate* dirCreationDate = [fileAttributes objectForKey:NSFileCreationDate];
+                    if ((!dirCreationDate || -[dirCreationDate timeIntervalSinceNow] > 120) // if it has been created at least 2 minutes ago (or if we don't know)
+                        && [[fileAttributes objectForKey: NSFileReferenceCount] intValue] < 4) // if it contains less than 3 files
+					{ // check if this folder is empty, and delete it if necessary
 						int numberOfValidFiles = 0;
 						for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: f error: nil])
 						{
@@ -11670,8 +11672,6 @@ static NSArray*	openSubSeriesArray = nil;
 		{
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[_database unlock];
 		
 		NSLog(@"delete Queue end");
 	}
