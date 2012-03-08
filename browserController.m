@@ -3472,7 +3472,7 @@ static NSConditionLock *threadLock = nil;
 				
 				[[self managedObjectContext] unlock];
 				
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: files, @"files", [files valueForKey:@"completePath"], @"filesPaths",[NSNumber numberWithBool: imageLevel], @"imageLevel", previewPixThumbnails, @"previewPixThumbnails", previewPix, @"previewPix", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", nil];
 				[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 				
 				if( previousItem == item)
@@ -6576,7 +6576,7 @@ static BOOL withReset = NO;
 
 -(void) matrixInit:(long) noOfImages
 {	
-	setDCMDone = NO;
+    setDCMDone = NO;
 	loadPreviewIndex = 0;
 	
 	[previewPix release];
@@ -7127,106 +7127,89 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
+-(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context  {
+    if ([NSThread isMainThread]) {
+        if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
+            [previewPix addObject:pix];
+            [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
+            [self matrixDisplayIcons:nil];
+        }
+    } else {
+        NSMutableDictionary* set = [NSMutableDictionary dictionary];
+        [set setObject:pix forKey:@"Pix"];
+        [set setObject:thumb forKey:@"Thumb"];
+        [set setObject:[NSNumber numberWithInt:index] forKey:@"Index"];
+        [set setObject:context forKey:@"Context"];
+        [self performSelectorOnMainThread:@selector(_matrixLoadIconsSet:) withObject:set waitUntilDone:NO];
+    }
+}
+
+-(void)_matrixLoadIconsSet:(NSDictionary*)dict {
+    [self _matrixLoadIconsSetPix:[dict objectForKey:@"Pix"] thumbnail:[dict objectForKey:@"Thumb"] index:[[dict objectForKey:@"Index"] intValue] context:[dict objectForKey:@"Context"]];
+}
+
 - (void)matrixLoadIcons: (NSDictionary*)dict
 {
-	NSAutoreleasePool               *pool = [[NSAutoreleasePool alloc] init];
-	long							subGroupCount = 1, position = 0;
-	NSArray							*files = [dict valueForKey: @"files"];
-	NSArray							*filesPaths = [dict valueForKey: @"filesPaths"];
-	NSMutableArray					*ipreviewPixThumbnails = [dict valueForKey: @"previewPixThumbnails"];
-	NSMutableArray					*ipreviewPix = [dict valueForKey: @"previewPix"];
-	BOOL                            imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
-    
-	@try
-	{
-		for( int i = 0; i < filesPaths.count; i++)
-		{
-			NSImage	*thumbnail = nil;
-			
-			thumbnail = [ipreviewPixThumbnails objectAtIndex: i];
-			
-			int frame = 0;
-			if( [[[files objectAtIndex: i] valueForKey: @"numberOfFrames"] intValue] > 1) frame = [[[files objectAtIndex: i] valueForKey:@"numberOfFrames"] intValue]/2;
-			/*else { // file contains only 1 image, we use the DicomImage thumbnail
-                NSImage* thumbnail = [(DicomImage*)[files objectAtIndex:i] thumbnail];
-                if (thumbnail) {
-                    [ipreviewPixThumbnails replaceObjectAtIndex:i withObject:thumbnail];
-                    [ipreviewPix addObject:thumbnail];
-                    continue;
-                }
-            }*/
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+
+    @try {
+        NSArray* objectIDs = [dict valueForKey: @"objectIDs"];
+        BOOL imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
+        id database = [dict valueForKey:@"DicomDatabase"];
+        id context = [dict valueForKey:@"Context"];
+        
+        DicomDatabase* idatabase = [database independentDatabase];
+        NSArray* objs = [idatabase objectsWithIDs:objectIDs];
+
+        for (int i = 0; i < objs.count; i++) {
+            if (context != previewPix)
+                break; // changing the database selection makes previewPix change value
             
-			if( [[files objectAtIndex: i] valueForKey: @"frameID"]) frame = [[[files objectAtIndex: i] valueForKey:@"frameID"] intValue];
-			
-			DCMPix *dcmPix = [[self getDCMPixFromViewerIfAvailable: [filesPaths objectAtIndex:i] frameNumber: frame] retain];
-			
-           /* if (!dcmPix && [[[files objectAtIndex:i] valueForKey:@"numberOfFrames"] intValue] <= 1) {
-                thumbnail = [(DicomImage*)[files objectAtIndex:i] thumbnailIfAlreadyAvailable];
-                if (thumbnail) {
-                    dcmPix = [[DCMPix alloc] ];
-                }
-            }*/
+            DicomImage* image = [objs objectAtIndex:i];
             
-			if( dcmPix == nil)
-				dcmPix = [[DCMPix alloc] initWithPath: [filesPaths objectAtIndex:i] :position :subGroupCount :nil :frame :0 isBonjour:![_database isLocal] imageObj: [files objectAtIndex: i]];
-			
+            int frame = 0;
+            if (image.numberOfFrames.intValue > 1)
+                frame = image.numberOfFrames.intValue/2;
+            if (image.frameID) frame = image.frameID.intValue;
+            
+            DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
+            if (dcmPix == nil)
+                dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:image] autorelease];
+            
             if (!imageLevel) {
-                NSData* dbThmb = [[files objectAtIndex:i] valueForKeyPath:@"series.thumbnail"];
+                NSData* dbThmb = image.series.thumbnail;
                 if (dbThmb) {
                     NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
                     NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                     [dbIma addRepresentation:rep];
-                    [ipreviewPix addObject: dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]];
-                    [ipreviewPixThumbnails replaceObjectAtIndex:i withObject:dbIma];
+                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
                     continue;
                 }
             }
 
-            
-			if( dcmPix)
-			{
-				if( thumbnail == notFoundImage)
-				{
-					if( [DCMAbstractSyntaxUID isStructuredReport: [[files objectAtIndex: i] valueForKeyPath: @"series.seriesSOPClassUID"]])
-					{
-						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: [NSImage imageNamed: @"pdf.tif"]];
-					}
-					else
-					{
-                        thumbnail = [dcmPix generateThumbnailImageWithWW: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowWidth"] floatValue] WL: [[[files objectAtIndex: i] valueForKeyPath: @"series.windowLevel"] floatValue]];
-						[dcmPix revert: NO];	// <- Kill the raw data
-						
-						if( thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-						
-						[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
-					}
-				}
-				
-				[ipreviewPix addObject: dcmPix];
-				[dcmPix release];
-				
-				if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-					i = [filesPaths count];
-			}
-			else
-			{
-				dcmPix = [[DCMPix alloc] myinitEmpty];
-				[ipreviewPix addObject: dcmPix];
-				[ipreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
-				[dcmPix release];
-			}
-		}
-		
-		if(previewPix != ipreviewPix || ipreviewPixThumbnails != previewPixThumbnails)
-			[self performSelectorOnMainThread:@selector( matrixDisplayIcons:) withObject:nil waitUntilDone: NO];
-	}
-	
-	@catch( NSException *ne)
-	{
-        N2LogExceptionWithStackTrace(ne);
-	}
-	
-    [pool release];
+            if (dcmPix) {
+                if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
+                } else {
+                    NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
+                    [dcmPix revert:NO];	// <- Kill the raw data
+                    if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
+                }
+            } else {
+                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+            }
+        }
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
+}
+
+-(void)_matrixDisplayIconsIfDatabaseIs:(DicomDatabase*)db {
+    if (db == _database)
+        [self matrixDisplayIcons:nil];
 }
 
 - (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
