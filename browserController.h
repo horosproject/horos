@@ -82,7 +82,7 @@ extern NSString* O2AlbumDragType;
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, /**IncomingTimer,*/ *matrixDisplayIcons, *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer;
+    NSTimer                 *timer, /**IncomingTimer,*/ /**matrixDisplayIcons,*/ *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     

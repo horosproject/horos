@@ -6606,7 +6606,8 @@ static BOOL withReset = NO;
     
 	[imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
 	
-	[self matrixDisplayIcons: self];
+    [oMatrix setNeedsDisplay:YES];
+	//[self matrixDisplayIcons: self];
 }
 
 - (void) matrixNewIcon:(long) index: (NSManagedObject*)curFile
@@ -7127,25 +7128,25 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
--(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context  {
-    if ([NSThread isMainThread]) {
+-(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context {
+//    if ([NSThread isMainThread]) {
         if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
             [previewPix addObject:pix];
         }
-    } else {
+/*    } else {
         NSMutableDictionary* set = [NSMutableDictionary dictionary];
         [set setObject:pix forKey:@"Pix"];
         [set setObject:thumb forKey:@"Thumb"];
         [set setObject:[NSNumber numberWithInt:index] forKey:@"Index"];
         [set setObject:context forKey:@"Context"];
         [self performSelectorOnMainThread:@selector(_matrixLoadIconsSet:) withObject:set waitUntilDone:NO];
-    }
+    }*/
 }
 
--(void)_matrixLoadIconsSet:(NSDictionary*)dict {
+/*-(void)_matrixLoadIconsSet:(NSDictionary*)dict {
     [self _matrixLoadIconsSetPix:[dict objectForKey:@"Pix"] thumbnail:[dict objectForKey:@"Thumb"] index:[[dict objectForKey:@"Index"] intValue] context:[dict objectForKey:@"Context"]];
-}
+}*/
 
 - (void)matrixLoadIcons: (NSDictionary*)dict
 {
@@ -7206,11 +7207,6 @@ static BOOL withReset = NO;
     } @finally {
         [pool release];
     }
-}
-
--(void)_matrixDisplayIconsIfDatabaseIs:(DicomDatabase*)db {
-    if (db == _database)
-        [self matrixDisplayIcons:nil];
 }
 
 - (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
@@ -10455,7 +10451,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		
 		loadPreviewIndex = 0;
-		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
+//		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
 		
 //		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
 		
