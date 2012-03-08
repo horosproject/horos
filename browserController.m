@@ -11206,6 +11206,12 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (void)keyDown:(NSEvent *)event
 {
+    NSResponder* firstResponder = [[self window] firstResponder];
+    if (firstResponder == albumTable || firstResponder == _sourcesTableView || firstResponder == _activityTableView) {
+        [super keyDown:event];
+        return;
+    }
+
     if( [[event characters] length] == 0) return;
     
     unichar c = [[event characters] characterAtIndex:0];
