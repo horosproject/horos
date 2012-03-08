@@ -231,7 +231,7 @@
 	if (_database.isLocal)
     {
 		if ([destination isKindOfClass:[LocalDatabaseNodeIdentifier class]]) { // local OsiriX to local OsiriX
-				NSThread* thread = [[[NSThread alloc] initWithTarget:self.database selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
+				NSThread* thread = [[[NSThread alloc] initWithTarget:self selector:@selector(copyImagesToLocalBrowserSourceThread:) object:[NSArray arrayWithObjects: dicomImages, destination, _database, NULL]] autorelease];
 				thread.name = NSLocalizedString(@"Copying images...", nil);
                 thread.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart:thread];
