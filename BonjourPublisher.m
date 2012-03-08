@@ -22,6 +22,7 @@
 #import "NSUserDefaultsController+N2.h"
 #import "N2Debug.h"
 #import "DicomDatabase.h"
+#import "AppController.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -221,6 +222,7 @@ extern const char *GetPrivateIP();
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
 		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
 		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+        [params setObject:[AppController UID] forKey: @"UID"]; 
 		
 		if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
 		{
@@ -248,6 +250,8 @@ extern const char *GetPrivateIP();
 		if ([key isEqualToString:@"AETitle"])
 			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
 		else if ([key isEqualToString:@"port"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else if ([key isEqualToString:@"UID"])
 			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
 		else [d setObject:data forKey:key];
 	}

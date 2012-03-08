@@ -143,6 +143,8 @@ extern AppController* OsiriX;
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
 
++(NSString*)UID;
+
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 

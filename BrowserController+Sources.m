@@ -442,8 +442,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             [[queue retain] addOperationWithBlock:^{
                 // we're now in a background thread
                 NSString* dadd = [d valueForKey:@"Address"];
-                if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
-                    return;
+                if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) { // don't list self
+                    return;}
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     // we're now back in the main thread
                     DataNodeIdentifier* dni;
@@ -488,7 +488,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         {
             [[queue retain] addOperationWithBlock:^{
                 // we're now in a background thread
-                if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:NULL] isEqualToHost:currentHost]) // don't list self
+                NSString* aet = nil;
+                if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
                     return;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     // we're now back in the main thread
@@ -569,15 +570,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [[queue retain] addOperationWithBlock:^{
         // we're now in a background thread
         
-        NSLog(@"--- %@ -------- %@", service, [service hostName]);
-        
         NSDictionary* dict = nil;
         if (![service.domain isEqualToString:@"_osirixdb._tcp."])
             dict = [BonjourPublisher dictionaryFromXTRecordData:service.TXTRecordData];
         else dict = [DCMNetServiceDelegate DICOMNodeInfoFromTXTRecordData:service.TXTRecordData];
-        NSLog(@"dict: %@", dict);
         
-        if ([[dict objectForKey:@"AETitle"] isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"]]) {
+        if ([[dict objectForKey:@"UID"] isEqualToString:[AppController UID]]) {
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 // we're now back in the main thread
                 @synchronized (_bonjourSources) {

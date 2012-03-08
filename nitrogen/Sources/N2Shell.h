@@ -24,6 +24,7 @@
 +(NSString*)hostname;
 +(NSString*)ip;
 +(NSString*)mac;
++(NSString*)serialNumber;
 +(int)userId __deprecated; // getuid()
 
 @end

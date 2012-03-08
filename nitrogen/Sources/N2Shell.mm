@@ -14,6 +14,7 @@
 
 
 #import "N2Shell.h"
+#import <IOKit/IOTypes.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 
@@ -155,6 +156,17 @@
 	 
 	 
 	 */
+}
+
++(NSString*)serialNumber {
+    io_service_t platformExpert = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"));
+    if (platformExpert) {
+        NSString* serialNumber = [(NSString*)IORegistryEntryCreateCFProperty(platformExpert, CFSTR(kIOPlatformSerialNumberKey), kCFAllocatorDefault, 0) autorelease];
+        IOObjectRelease(platformExpert);
+        return serialNumber;
+    }
+    
+    return nil;
 }
 
 +(int)userId {

@@ -1677,6 +1677,10 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
++(NSString*)UID {
+    return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
+}
+
 - (void) startDICOMBonjour:(NSTimer*) t
 {
 	NSLog( @"startDICOMBonjour");
@@ -1690,6 +1694,7 @@ static NSDate *lastWarningDate = nil;
 		[dict setValue: description forKey: @"serverDescription"];
 	
 	[dict setValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"]; 
+	[dict setValue:[AppController UID] forKey: @"UID"]; 
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"])
 		[dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesnt support NSNumber
