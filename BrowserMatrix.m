@@ -336,7 +336,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 		[NSEvent stopPeriodicEvents];
 	}
 	
-	[self sendAction];
+//	[self sendAction];
 	
 	[self.window makeFirstResponder: self];
 }

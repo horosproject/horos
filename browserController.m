@@ -96,6 +96,7 @@
 #import "NSManagedObject+N2.h"
 #import "DICOMExport.h"
 #import "PrettyCell.h"
+#import "N2MutableUInteger.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -6317,8 +6318,12 @@ static BOOL withReset = NO;
 			if( [cell tag] >= [matrixViewArray count]) return;
 			
 			NSManagedObject* aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
-            [_currentPreviewObject release];
-            _currentPreviewObject = [aFile retain];
+            
+            NSUInteger previewContext;
+            @synchronized (_currentPreviewContext) {
+                [_currentPreviewContext increment];
+                previewContext = [_currentPreviewContext unsignedIntegerValue];
+            }
             
             NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
             
@@ -6331,6 +6336,10 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
+                if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) {
+                    [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
+                    [imageView setIndexWithReset:[cell tag] :YES];
+                }
                 [queue addOperationWithBlock:^{ // do the loading in a background thread
                     //Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
                     DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
@@ -6339,7 +6348,7 @@ static BOOL withReset = NO;
                     [dcmPix CheckLoad];
                     if (dcmPix)
                         [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
-                            if (_currentPreviewObject == aFile) {
+                            if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
                                 float wl, ww;
                                 [imageView getWLWW:&wl:&ww];
                                 
@@ -6380,6 +6389,10 @@ static BOOL withReset = NO;
 						
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
+                            if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) {
+                                [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
+                                [imageView setIndexWithReset:[cell tag] :YES];
+                            }
                             [queue addOperationWithBlock:^{ // do the loading in a background thread
                                 DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
                                 if( dcmPix == nil)
@@ -6387,7 +6400,7 @@ static BOOL withReset = NO;
                                 [dcmPix CheckLoad];
                                 if (dcmPix)
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
-                                        if (_currentPreviewObject == aFile) {
+                                        if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
                                             float   wl, ww;
                                             
                                             [imageView getWLWW:&wl :&ww];
@@ -6428,6 +6441,10 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
+                            if (![[previewPix objectAtIndex: [cell tag]] isLoaded]) { // te
+                                [previewPix replaceObjectAtIndex:[cell tag] withObject:[[[DCMPix alloc] myinitEmpty] autorelease]];
+                                [imageView setIndexWithReset:[cell tag] :YES];
+                            }
                             [queue addOperationWithBlock:^{ // do the loading in a background thread
                                 DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
                                 if (dcmPix == nil)
@@ -6435,7 +6452,7 @@ static BOOL withReset = NO;
                                 [dcmPix CheckLoad];
                                 if (dcmPix)
                                     [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
-                                        if (_currentPreviewObject == aFile) {
+                                        if (previewContext == [_currentPreviewContext unsignedIntegerValue]) {
                                             float   wl, ww;
                                             
                                             [imageView getWLWW:&wl :&ww];
@@ -7160,6 +7177,8 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+    [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+
     @try {
         NSArray* objectIDs = [dict valueForKey: @"objectIDs"];
         BOOL imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
@@ -7207,9 +7226,9 @@ static BOOL withReset = NO;
             } else {
                 [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
-        }
 
-        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+        }
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
@@ -10364,6 +10383,8 @@ static NSArray*	openSubSeriesArray = nil;
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;
 		
+        _currentPreviewContext = [[N2MutableUInteger alloc] init];
+        
 		[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 		[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 		

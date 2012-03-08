@@ -27,6 +27,7 @@
 @class StructuredReportController,BrowserMatrix;
 @class PluginManagerController,WaitRendering, Wait, ActivityWindowController;
 @class WebPortalUser;
+@class N2MutableUInteger;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -252,7 +253,7 @@ extern NSString* O2AlbumDragType;
     IBOutlet NSSplitView *bannerSplit;
     IBOutlet NSButton *banner;
     
-    NSManagedObject* _currentPreviewObject;
+    N2MutableUInteger* _currentPreviewContext;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
