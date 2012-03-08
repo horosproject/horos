@@ -7152,6 +7152,8 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
+    [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+
     @try {
         NSArray* objectIDs = [dict valueForKey: @"objectIDs"];
         BOOL imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
@@ -7199,9 +7201,9 @@ static BOOL withReset = NO;
             } else {
                 [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
-        }
 
-        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+        }
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
