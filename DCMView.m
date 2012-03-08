@@ -2398,7 +2398,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
-
 	
 	[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 }

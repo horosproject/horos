@@ -6316,7 +6316,12 @@ static BOOL withReset = NO;
 		{
 			if( [cell tag] >= [matrixViewArray count]) return;
 			
-			NSManagedObject   *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+			NSManagedObject* aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
+            [_currentPreviewObject release];
+            _currentPreviewObject = [aFile retain];
+            
+            NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+            
 			if ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && 
 					 [[[aFile valueForKey:@"images"] allObjects] count] == 1 && 
 					 [[[[[aFile valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1) // multi frame image that is directly selected
@@ -6326,26 +6331,26 @@ static BOOL withReset = NO;
 				noOfImages = [[image valueForKey:@"numberOfFrames"] intValue];
 				animate = YES;
 				
-				DCMPix *dcmPix = nil;
-				
-				//Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
-				dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
-				
-				if( dcmPix == nil)
-					dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:image];
-				
-				if( dcmPix)
-				{
-					float   wl, ww;
-					
-					[imageView getWLWW:&wl :&ww];
-					
-					[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-					
-					[dcmPix release];
-					
-					[imageView setIndex:[cell tag]];
-				}
+                [queue addOperationWithBlock:^{ // do the loading in a background thread
+                    //Is this image already displayed on the front most 2D viewers? -> take the dcmpix from there
+                    DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [image valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
+                    if (dcmPix == nil)
+                        dcmPix = [[DCMPix alloc] initWithPath: [image valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[image valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:image];
+                    [dcmPix CheckLoad];
+                    if (dcmPix)
+                        [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
+                            if (_currentPreviewObject == aFile) {
+                                float wl, ww;
+                                [imageView getWLWW:&wl:&ww];
+                                
+                                [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                
+                                [imageView setIndex:[cell tag]];
+                            }
+
+                        [dcmPix release];
+                    }];
+                }];
 			}
 			else if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"] || ([[aFile valueForKey:@"type"] isEqualToString:@"Series"] && [[[aFile valueForKey:@"images"] allObjects] count] > 1))
 			{
@@ -6375,42 +6380,44 @@ static BOOL withReset = NO;
 						
 						if( [[[imageView curDCM] sourceFile] isEqualToString: [[images objectAtIndex: [animationSlider intValue]] valueForKey:@"completePath"]] == NO || [[imageObj valueForKey: @"frameID"] intValue] != [[[imageView imageObj] valueForKey: @"frameID"] intValue])
 						{
-							DCMPix *dcmPix = nil;
-							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
-							
-							if( dcmPix == nil)
-								dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: imageObj];
-							
-							if( dcmPix)
-							{
-								float   wl, ww;
-								
-								[imageView getWLWW:&wl :&ww];
-								
-								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-								
-								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-								[dcmPix release];
-								
-								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
-								else [imageView setIndex:[cell tag]];
-								
-								@try
-								{
-									for( DCMPix *p in previewPix)
-									{
-										if( p != dcmPix)
-										{
-											[p kill8bitsImage];
-											[p revert: NO];
-										}
-									}
-								}
-								@catch (NSException *e) {}
-								
-								[previousDcmPix release];
-							}
+                            [queue addOperationWithBlock:^{ // do the loading in a background thread
+                                DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [imageObj valueForKey:@"completePath"] frameNumber: [[imageObj valueForKey: @"frameID"] intValue]] retain];
+                                if( dcmPix == nil)
+                                    dcmPix = [[DCMPix alloc] initWithPath: [imageObj valueForKey:@"completePath"] :[animationSlider intValue] :[images count] :nil :[[imageObj valueForKey: @"frameID"] intValue] :[[imageObj valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj: imageObj];
+                                [dcmPix CheckLoad];
+                                if (dcmPix)
+                                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
+                                        if (_currentPreviewObject == aFile) {
+                                            float   wl, ww;
+                                            
+                                            [imageView getWLWW:&wl :&ww];
+                                            
+                                            DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+                                            
+                                            [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                            
+                                            if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
+                                            else [imageView setIndex:[cell tag]];
+                                            
+                                            @try
+                                            {
+                                                for( DCMPix *p in previewPix)
+                                                {
+                                                    if( p != dcmPix)
+                                                    {
+                                                        [p kill8bitsImage];
+                                                        [p revert: NO];
+                                                    }
+                                                }
+                                            }
+                                            @catch (NSException *e) {}
+                                            
+                                            [previousDcmPix release];
+                                        }
+                                        
+                                        [dcmPix release];
+                                    }];
+                            }];
 						}
 					}
 					else if( noOfImages > 1)	// It's a multi-frame single image
@@ -6421,43 +6428,44 @@ static BOOL withReset = NO;
 						   || [[imageView curDCM] frameNo] != [animationSlider intValue]
 						   || [[imageView curDCM] serieNo] != [[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue])
 						{
-							DCMPix *dcmPix = nil;
-							
-							dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
-							
-							if( dcmPix == nil)
-								dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:[images objectAtIndex: 0]];
-							
-							if( dcmPix)
-							{
-								float   wl, ww;
-								
-								[imageView getWLWW:&wl :&ww];
-								
-								DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
-								
-								[previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
-								[dcmPix release];
-								
-								if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
-								else [imageView setIndex:[cell tag]];
-								
-								@try
-								{
-									for( DCMPix *p in previewPix)
-									{
-										if( p != dcmPix)
-										{
-											[p kill8bitsImage];
-											[p revert: NO];
-										}
-									}
-								}
-								@catch (NSException *e) {}
-								
-								[previousDcmPix release];
-							}
-						}
+                            [queue addOperationWithBlock:^{ // do the loading in a background thread
+                                DCMPix* dcmPix = [[self getDCMPixFromViewerIfAvailable: [[images objectAtIndex: 0] valueForKey:@"completePath"] frameNumber: [animationSlider intValue]] retain];
+                                if (dcmPix == nil)
+                                    dcmPix = [[DCMPix alloc] initWithPath: [[images objectAtIndex: 0] valueForKey:@"completePath"] :[animationSlider intValue] :noOfImages :nil :[animationSlider intValue] :[[[images objectAtIndex: 0] valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:[images objectAtIndex: 0]];
+                                [dcmPix CheckLoad];
+                                if (dcmPix)
+                                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{ // get back on the main thread
+                                        if (_currentPreviewObject == aFile) {
+                                            float   wl, ww;
+                                            
+                                            [imageView getWLWW:&wl :&ww];
+                                            
+                                            DCMPix *previousDcmPix = [[previewPix objectAtIndex: [cell tag]] retain];	// To allow the cached system in DCMPix to avoid reloading
+                                            
+                                            [previewPix replaceObjectAtIndex:[cell tag] withObject:(id) dcmPix];
+                                            
+                                            if( withReset) [imageView setIndexWithReset:[cell tag] :YES];
+                                            else [imageView setIndex:[cell tag]];
+                                            
+                                            @try
+                                            {
+                                                for( DCMPix *p in previewPix)
+                                                {
+                                                    if( p != dcmPix)
+                                                    {
+                                                        [p kill8bitsImage];
+                                                        [p revert: NO];
+                                                    }
+                                                }
+                                            }
+                                            @catch (NSException *e) {}
+                                            
+                                            [previousDcmPix release];
+                                        }
+                                        [dcmPix release];
+                                    }];
+                            }];
+                        }
 					}
 				}
 			}

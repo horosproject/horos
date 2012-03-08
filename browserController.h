@@ -251,6 +251,8 @@ extern NSString* O2AlbumDragType;
     
     IBOutlet NSSplitView *bannerSplit;
     IBOutlet NSButton *banner;
+    
+    NSManagedObject* _currentPreviewObject;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
