@@ -3472,7 +3472,7 @@ static NSConditionLock *threadLock = nil;
 				
 				[[self managedObjectContext] unlock];
 				
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", nil];
+				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
 				[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 				
 				if( previousItem == item)
@@ -7130,9 +7130,8 @@ static BOOL withReset = NO;
 -(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context  {
     if ([NSThread isMainThread]) {
         if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
-            [previewPix addObject:pix];
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
-            [self matrixDisplayIcons:nil];
+            [previewPix addObject:pix];
         }
     } else {
         NSMutableDictionary* set = [NSMutableDictionary dictionary];
@@ -7200,6 +7199,8 @@ static BOOL withReset = NO;
                 [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
         }
+
+        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
