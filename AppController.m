@@ -2190,7 +2190,7 @@ static NSDate *lastWarningDate = nil;
 						if( succeeded == NO)
 						{
 							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[[[[BrowserController currentBrowser] database] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
+							[dbRequest setEntity: [[[BrowserController currentBrowser] database] seriesEntity]];
 							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
 							
 							NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];

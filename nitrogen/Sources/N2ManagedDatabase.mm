@@ -76,17 +76,21 @@
     return nil;
 }
 
-/*-(void)lock { // for debug purposes, REMOVE
+/*
+ http://developer.apple.com/DOCUMENTATION/Cocoa/Conceptual/CoreData/Articles/cdMultiThreading.html#//apple_ref/doc/uid/TP40003385-SW2
+ "If you lock (or successfully tryLock) a context, that context must be retained until
+ you invoke unlock. If you don’t properly retain a context in a multi-threaded environment, you may cause a deadlock."
+ */
+
+-(void)lock {
+    [self retain];
     [super lock];
-    if ([[DicomDatabase defaultDatabase] managedObjectContext] == self)
-        N2LogStackTrace(@"default database locked...");
 }
 
--(void)unlock { // for debug purposes, REMOVE
-    if ([[DicomDatabase defaultDatabase] managedObjectContext] == self)
-        NSLog(@"default database unlocked.");
+-(void)unlock {
     [super unlock];
-}*/
+    [self release];
+}
 
 @end
 

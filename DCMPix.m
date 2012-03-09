@@ -4680,7 +4680,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		goto END_CREATE_ROIS;
 	}
 	
-	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContextIndependentContext:YES];
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	request.entity = [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc];	

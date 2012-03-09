@@ -33,6 +33,7 @@
 #import "N2Debug.h"
 #import "NSImage+N2.h"
 #import "DicomDir.h"
+#import "DicomDatabase.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -134,9 +135,11 @@
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
-		files = [theFiles mutableCopy];
-		dbObjects = [managedObjects mutableCopy];
-		originalDbObjects = [managedObjects mutableCopy];
+        idatabase = [[[DicomDatabase databaseForContext:[[managedObjects objectAtIndex:0] managedObjectContext]] independentDatabase] retain];
+        
+		files = [theFiles mutableCopy]; // file paths
+		dbObjects = [idatabase objectsWithIDs:managedObjects]; // managedObjects in idatabase
+		originalDbObjects = [dbObjects mutableCopy];
 		
 		[files removeDuplicatedStringsInSyncWithThisArray: dbObjects];
 		
@@ -144,9 +147,9 @@
 		id patient = nil;
 		_multiplePatients = NO;
 		
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		[idatabase lock];
 		
-		for (managedObject in managedObjects)
+		for (managedObject in dbObjects)
 		{
 			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
@@ -160,7 +163,7 @@
 			patient = newPatient;
 		}
 		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		[idatabase unlock];
 		
 		burning = NO;
 		
@@ -193,6 +196,8 @@
 	[originalDbObjects release];
 	[cdName release];
 	[password release];
+    
+    [idatabase release];
 	
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
@@ -967,7 +972,7 @@
             
 			NSMutableArray *studies = [NSMutableArray array];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			[idatabase lock];
 			
 			for( NSManagedObject *im in dbObjects)
 			{
@@ -999,7 +1004,7 @@
 				}
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[idatabase unlock];
 		}
 	}
 	

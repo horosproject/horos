@@ -533,7 +533,7 @@ extern const char *GetPrivateIP();
 							NSLog( @"******* unknown order: %@", order);
 							
 						NSArray *objects = [BrowserController addFiles: savedFiles
-															toContext: [[BrowserController currentBrowser] localManagedObjectContext]
+															toContext: [[BrowserController currentBrowser] localManagedObjectContextIndependentContext:YES]
 															toDatabase: [BrowserController currentBrowser]
 															onlyDICOM: NO 
 														notifyAddedFiles: YES

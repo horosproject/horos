@@ -3217,7 +3217,7 @@ static NSConditionLock *threadLock = nil;
 {
 	NSManagedObject *aFile = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[_database lock];
 	
 	if( [[aFile valueForKey:@"type"] isEqualToString:@"Study"])
 		aFile = [[aFile valueForKey:@"series"] anyObject];
@@ -3225,7 +3225,7 @@ static NSConditionLock *threadLock = nil;
 	if( [[aFile valueForKey:@"type"] isEqualToString:@"Series"])
 		aFile = [[aFile valueForKey:@"images"] anyObject];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[_database unlock];
 	
 	return aFile;
 }
