@@ -6860,7 +6860,7 @@ static BOOL withReset = NO;
 //	if( bonjourDownloading) return;
 	if( _database == nil) return;
 	if( [[AppController sharedAppController] isSessionInactive] || waitForRunningProcess) return;
-	
+    
 	@try
 	{
 		if( [previewPix count])
@@ -7133,6 +7133,7 @@ static BOOL withReset = NO;
         if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
             [previewPix addObject:pix];
+            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
         }
 /*    } else {
         NSMutableDictionary* set = [NSMutableDictionary dictionary];
@@ -7151,7 +7152,7 @@ static BOOL withReset = NO;
 - (void)matrixLoadIcons: (NSDictionary*)dict
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
+    
     [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
 
     @try {
@@ -7201,8 +7202,6 @@ static BOOL withReset = NO;
             } else {
                 [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
-
-            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
         }
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
