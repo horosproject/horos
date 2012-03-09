@@ -232,13 +232,20 @@
     else if (_connectionsSemaphoreId)
         waitOnSemaphoreStatus = MPWaitOnSemaphore(_connectionsSemaphoreId, kDurationForever); // this limits the number of simultaneous connections to this remote database
     @try {
-        return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:target selector:sel context:context];
-    } @catch (...) {
-        @throw;
+        NSInteger retries;
+        for (retries = 0; retries < 5; ++retries)
+            @try {
+                return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:target selector:sel context:context];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+                [NSThread sleepForTimeInterval:0.005*retries*retries];
+            }
+    } @catch (NSException* e) {
     } @finally {
         if (_connectionsSemaphoreId && waitOnSemaphoreStatus == noErr)
             MPSignalSemaphore(_connectionsSemaphoreId);
     }
+    
     return nil;
 }
 
@@ -576,8 +583,10 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	NSMutableArray* localPaths = [NSMutableArray array];
 	NSMutableArray* remotePaths = [NSMutableArray array];
 	
+    [self lock];
 	NSArray* images = [image.series.images.allObjects sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]]]; // TODO: sort after preferences
-	NSInteger size = 0, i = [images indexOfObject:image];
+	[self unlock];
+    NSInteger size = 0, i = [images indexOfObject:image];
 	
 	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
 	
@@ -623,17 +632,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* context = [NSMutableArray arrayWithObjects: [N2MutableUInteger mutableUIntegerWithUInteger:0], nil];
 
-    NSInteger retries;
-    for (retries = 0; retries < 5; ++retries) {
-        [self synchronousRequest:request urgent:(maxFiles<=1) dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
-        if ([NSFileManager.defaultManager fileExistsAtPath:localPath])
-            break;
-        [NSThread sleepForTimeInterval:0.005*retries];
-    }
-    
-	if (![NSFileManager.defaultManager fileExistsAtPath:localPath])
-        NSLog(@"Error: we tried %d times and weren't able to fetch the remote image", retries);
-    else if (retries > 0) NSLog(@"Warning: we had to try %d times in order to successfully fetch a remote image", retries+1);
+    [self synchronousRequest:request urgent:(maxFiles<=1) dataHandlerTarget:self selector:@selector(_connection:handleData_fetchDataForImage:context:) context:context];
     
     return localPath;
 }

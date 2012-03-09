@@ -318,12 +318,10 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	
 	if (stream == _inputStream && event == NSStreamEventHasBytesAvailable) {
 		// DLog(@"%@ has bytes available", self);
-		NSUInteger readSizeForThisEvent = 0;
+		//NSUInteger readSizeForThisEvent = 0;
+        NSUInteger maxLength = _maximumReadSizePerEvent? _maximumReadSizePerEvent : 8192; // was 2048 but bigger buffer = less iterations
+        uint8_t buffer[maxLength];
 		while (/*!_maximumReadSizePerEvent || readSizeForThisEvent < _maximumReadSizePerEvent*/1) {
-			NSUInteger maxLength = _maximumReadSizePerEvent? _maximumReadSizePerEvent : 8192; // was 2048 but bigger buffer = less iterations
-	//		if (_maximumReadSizePerEvent && maxLength > _maximumReadSizePerEvent-readSizeForThisEvent)
-	//			maxLength = _maximumReadSizePerEvent-readSizeForThisEvent;
-			uint8_t buffer[maxLength];
 			NSInteger length = [_inputStream read:buffer maxLength:maxLength];
 			
 			if (length > 0) {
@@ -332,16 +330,13 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 				//				for (int i = 0; i < length; ++i)
 				//					std::cerr << (int)buffer[i] << " ";
 				//				std::cerr << std::endl;
-				readSizeForThisEvent += length;
+//				readSizeForThisEvent += length;
 				[_inputBuffer appendBytes:buffer length:length];
 			} else
 				break;
 			
 			[self handleData:_inputBuffer];
 		}
-		
-		/*if (readSizeForThisEvent == _maximumReadSizePerEvent)
-			[self performSelector:@selector(streamHandleEvent:) withObject:[NSArray arrayWithObjects:stream, [NSNumber numberWithUnsignedInteger:event], nil] afterDelay:0];*/
 	}
 	
 	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable) {
