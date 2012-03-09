@@ -106,10 +106,10 @@
 }
 
 -(void)willDisplayCell:(PrettyCell*)cell {    
-    static NSColor* gray = nil;
+    /*static NSColor* gray = nil;
     if (!gray) gray = [[NSColor colorWithDeviceWhite:0.4 alpha:1] retain];
     
-    /*if (!self.available) { // TODO: this 
+    if (!self.available) { // TODO: this should only be enabled once we periodically verify every node's availability through DICOM ECHO or dummy TCP connections.. but is it worth it? won't that overload the network/servers for too little gain?
         cell.textColor = gray;
     }*/
     

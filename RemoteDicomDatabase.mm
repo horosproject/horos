@@ -87,7 +87,7 @@
 }
 
 -(NSString*)name {
-	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), self.host.name];
+	return _name? _name : [NSString stringWithFormat:NSLocalizedString(@"OsiriX database at %@", nil), (self.host.name? self.host.name : self.address)];
 }
 
 -(id)initWithLocation:(NSString*)location {

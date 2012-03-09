@@ -98,32 +98,38 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[super dealloc]; 
 }
 
+/*-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}*/
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
 	if (context == ThreadModalForWindowControllerObservationContext) {
-		if ([keyPath isEqual:NSThreadProgressKey]) {
-			[self.progressIndicator setIndeterminate: self.thread.progress < 0];	
-			if (self.thread.progress >= 0)
-				[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-		}
-        
-        if ([NSThread isMainThread]) {
-            if ([keyPath isEqual:NSThreadProgressKey])
-                [self.progressIndicator display];
-            if ([keyPath isEqual:NSThreadNameKey])
-                [self.titleField display];
-            if ([keyPath isEqual:NSThreadStatusKey])
-                [self.statusField display];
-            if ([keyPath isEqual:NSThreadProgressDetailsKey])
-                [self.progressDetailsField display];
-            if ([keyPath isEqual:NSThreadSupportsCancelKey])
-                [self.cancelButton display];
-            if ([keyPath isEqual:NSThreadIsCancelledKey])
-                [self.cancelButton display];
-        }
-        
-        return;
+		/*if (![NSThread isMainThread])
+            [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
+        else {*/
+            if ([keyPath isEqual:NSThreadProgressKey]) {
+                [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
+                if (self.thread.progress >= 0)
+                    [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+            }
+            
+            if ([NSThread isMainThread]) {
+                if ([keyPath isEqual:NSThreadProgressKey])
+                    [self.progressIndicator display];
+                if ([keyPath isEqual:NSThreadNameKey])
+                    [self.titleField display];
+                if ([keyPath isEqual:NSThreadStatusKey])
+                    [self.statusField display];
+                if ([keyPath isEqual:NSThreadProgressDetailsKey])
+                    [self.progressDetailsField display];
+                if ([keyPath isEqual:NSThreadSupportsCancelKey])
+                    [self.cancelButton display];
+                if ([keyPath isEqual:NSThreadIsCancelledKey])
+                    [self.cancelButton display];
+            }
+        /*}*/ return;
 	}
-        
+    
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
 
