@@ -500,8 +500,10 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         
         char *calledAETitle = NULL;
         
-        if( assoc && assoc->params && assoc->params->DULparams.calledAPTitle)
-            calledAETitle = assoc->params->DULparams.calledAPTitle;
+        if( assoc && assoc->params && assoc->params->DULparams.respondingAPTitle[ 0])
+            calledAETitle = assoc->params->DULparams.respondingAPTitle;
+        else if( assoc && assoc->params && assoc->params->DULparams.callingAPTitle[ 0])
+            calledAETitle = assoc->params->DULparams.callingAPTitle;
         
         /* execute final callback */
         callback(callbackData, &progress, request, 

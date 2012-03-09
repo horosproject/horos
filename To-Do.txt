@@ -1,5 +1,4 @@
-- (alr available in 4.0) At launch, block until the database /Volume is available, with a dialog "The default database volume (%@) is not available. OsiriX is waiting for it to be mounted. This dialog will automatically go away when that volume becomes available." (Quit, Switch to ~/Documents/OsiriX Data)
-
+- PITTARD : default window level 3D sequence
 ------------------------------------------------------------------------------------------
 
 
@@ -32,7 +31,6 @@ Added features:
 - DICOM ECG (Ginkgo CADx)
 - Two Steps DICOM Editing
 - Tool to create a new series from key images+-images with ROIs of a study
-
 - Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
