@@ -1929,20 +1929,46 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 		
-		for ( NSDictionary *routingRule in autoroutingRules)
-		{			
-			@try
-			{
-				if( [[routingRule objectForKey:@"filterType"] intValue] == 0)
-					[self smartAlbumPredicateString: [routingRule objectForKey: @"filter"]];
-			}
-			
-			@catch( NSException *ne)
-			{
-				NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\rSee Routing Preferences.", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"]], nil, nil, nil);
-				[AppController printStackTrace: ne];
-			}
-		}
+        NSManagedObjectContext *context = self.managedObjectContext;
+		
+		[context lock];
+        
+        // Take a study for the test
+		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		[dbRequest setFetchLimit: 1];
+        
+		NSError *error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+        
+        if( studiesArray.count > 0)
+        {
+            NSArray *images = [[[studiesArray objectAtIndex: 0] images] allObjects];
+            
+            for( NSDictionary *routingRule in autoroutingRules)
+            {			
+                @try
+                {
+                    if( [[routingRule objectForKey:@"filterType"] intValue] == 0)
+                    {
+                        NSPredicate *predicate = [self smartAlbumPredicateString: [routingRule objectForKey: @"filter"]];
+                        
+                        // Test it on the first study...
+                        [images filteredArrayUsingPredicate: predicate];
+                    }
+                }
+                
+                @catch( NSException *ne)
+                {
+                    NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"], [ne description]], nil, nil, nil);
+                    
+                    [AppController printStackTrace: ne];
+                }
+            }
+        }
+        
+		[context unlock];
 	}
 	#endif
 }
