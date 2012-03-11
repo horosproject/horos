@@ -7958,10 +7958,8 @@ static NSConditionLock *threadLock = nil;
 {
 	[self outlineViewRefresh];
 	
-	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
-	{
+	if( [[databaseOutline sortDescriptors] count] > 0 && [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
 		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
-	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
