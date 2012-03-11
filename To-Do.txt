@@ -1,8 +1,3 @@
-An instance 0xb15ac00 of class EndoscopyVRView was deallocated while key value observers were still registered with it. Observation info was leaked, and may even become mistakenly attached to some other object. Set a breakpoint on NSKVODeallocateBreak to stop here in the debugger. Here's the current observation info:
-<NSKeyValueObservationInfo 0x7f29640> (
-<NSKeyValueObservance 0x7f30270: Observer: 0x7f30600, Key path: engine, Options: <New: NO, Old: NO, Prior: NO> Context: 0x0, Property: 0x7f30250>
-<NSKeyValueObservance 0x7f2ee10: Observer: 0x7f28c80, Key path: lodDisplayed, Options: <New: NO, Old: NO, Prior: NO> Context: 0x0, Property: 0x7f2f7a0>
-)
 
 ------------------------------------------------------------------------------------------
 

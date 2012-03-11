@@ -2543,7 +2543,7 @@ public:
 
 - (double) getResolution
 {
-	if( aCamera && aCamera->GetParallelProjection())
+	if( aCamera && aCamera->GetParallelProjection() && factor > 0)
 	{
 		double point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
 		
