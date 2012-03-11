@@ -12021,11 +12021,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
         if( [image valueForKey:@"windowWidth"]) ww = [[image valueForKey:@"windowWidth"] floatValue];
         else if( !onlyImage && [series valueForKey:@"windowWidth"]) ww = [[series valueForKey:@"windowWidth"] floatValue];
-        else if( ![self is2DViewer]) ww = curWW;
+        else if( ![self is2DViewer])
+            ww = curWW;
         
         if( [image valueForKey:@"windowLevel"]) wl = [[image valueForKey:@"windowLevel"] floatValue];
         else if( !onlyImage && [series valueForKey:@"windowLevel"]) wl= [[series valueForKey:@"windowLevel"] floatValue];
-        else if( ![self is2DViewer]) wl = curWL;
+        else if( ![self is2DViewer])
+            wl = curWL;
 		
 		if( ww == 0)
 		{
