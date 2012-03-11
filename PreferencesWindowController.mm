@@ -303,7 +303,8 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[[NSUserDefaults standardUserDefaults] synchronize];
-	[self release];
+    
+	[self autorelease];
 }
 
 -(BOOL)isUnlocked {

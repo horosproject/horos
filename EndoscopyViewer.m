@@ -744,7 +744,7 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	[topSplitView setDelegate:nil];	
 	[bottomSplitView setDelegate:nil];
 	
-	[self release];
+	[self autorelease];
 }
 
 #pragma mark-

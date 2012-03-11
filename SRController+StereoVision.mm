@@ -93,7 +93,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
     [[self window] setDelegate:nil];
     
-    [self release];
+    [self autorelease];
 }
 
 -(IBAction) ApplySettings:(id) sender

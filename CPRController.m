@@ -3273,7 +3273,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		[ob setContent: nil];	// To allow the dealloc of CPRController ! otherwise memory leak
 		
-		[self release];
+		[self autorelease];
 	}
 }
 

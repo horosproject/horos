@@ -163,7 +163,7 @@
 		[w close];
 	}
 
-	[self release];
+	[self autorelease];
 }
 
 - (IBAction) showWindow:(id)sender

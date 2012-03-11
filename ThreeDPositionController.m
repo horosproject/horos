@@ -236,7 +236,8 @@ static ThreeDPositionController *nav = nil;
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[[self window] orderOut:self];
-	[self release];
+    
+	[self autorelease];
 }
 
 - (void)dealloc

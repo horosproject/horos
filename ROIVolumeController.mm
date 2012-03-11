@@ -99,7 +99,8 @@
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
     [[self window] setDelegate:nil];
-    [self release];
+    
+    [self autorelease];
 }
 
 - (ROI*) roi

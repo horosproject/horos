@@ -2778,7 +2778,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	[self release];
+	[self autorelease];
 	
 	numberOf2DViewer--;
 	if( numberOf2DViewer == 0)

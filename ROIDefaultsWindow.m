@@ -109,7 +109,7 @@
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[self release];
+	[self autorelease];
 }
 
 - (IBAction)setDefaultName: (id)sender

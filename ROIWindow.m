@@ -241,7 +241,7 @@
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:curROI userInfo: nil];
 	
-	[self release];
+	[self autorelease];
 }
 
 - (void) setAllMatchingROIsToSameParamsAs: (ROI*) iROI withNewName: (NSString*) newName

@@ -146,7 +146,7 @@
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	[self release];
+	[self autorelease];
 }
 
 -(ROI*) curROI {return curROI;}

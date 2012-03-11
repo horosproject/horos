@@ -590,7 +590,7 @@
 	burning = NO;
 	runBurnAnimation = NO;
 	
-	[self release];
+	[self autorelease];
 }
 
 - (BOOL)windowShouldClose:(id)sender
