@@ -310,67 +310,73 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 //	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 	//#endif
 	
-	if (event == NSStreamEventOpenCompleted)
-		if (++_handleOpenCompleted == 2) {
-			[self setStatus:N2ConnectionStatusOk];
-			//			[self trySendingDataNow];
-		}
-	
-	if (stream == _inputStream && event == NSStreamEventHasBytesAvailable) {
-		// DLog(@"%@ has bytes available", self);
-		//NSUInteger readSizeForThisEvent = 0;
-        NSUInteger maxLength = _maximumReadSizePerEvent? _maximumReadSizePerEvent : 8192; // was 2048 but bigger buffer = less iterations
-        uint8_t buffer[maxLength];
-		while (/*!_maximumReadSizePerEvent || readSizeForThisEvent < _maximumReadSizePerEvent*/1) {
-			NSInteger length = [_inputStream read:buffer maxLength:maxLength];
-			
-			if (length > 0) {
-				// DLog(@"%@ Read %d Bytes", self, (int)length);
-				//				std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
-				//				for (int i = 0; i < length; ++i)
-				//					std::cerr << (int)buffer[i] << " ";
-				//				std::cerr << std::endl;
-//				readSizeForThisEvent += length;
-				[_inputBuffer appendBytes:buffer length:length];
-			} else
-				break;
-			
-			[self handleData:_inputBuffer];
-		}
-	}
-	
-	if (stream == _outputStream && event == NSStreamEventHasSpaceAvailable) {
-		++_handleHasSpaceAvailable;
-        if (self.closeOnNextSpaceAvailable)
+    switch (event) {
+            
+        case NSStreamEventOpenCompleted: {
+            if (++_handleOpenCompleted == 2)
+                [self setStatus:N2ConnectionStatusOk];
+        } break;
+            
+        case NSStreamEventHasBytesAvailable: {
+            // DLog(@"%@ has bytes available", self);
+            NSUInteger maxLength = _maximumReadSizePerEvent? _maximumReadSizePerEvent : 8192; // was 2048 but bigger buffer = less iterations
+            uint8_t buffer[maxLength];
+            NSInteger length;
+            do {
+                if ((length = [_inputStream read:buffer maxLength:maxLength]) > 0) {
+                    // DLog(@"%@ Read %d Bytes", self, (int)length);
+//                  std::cerr << [[NSString stringWithFormat:@"%@ Read %d Bytes", self, length] UTF8String] << ": ";
+//                     for (int i = 0; i < length; ++i)
+//                      std::cerr << (int)buffer[i] << " ";
+//                  std::cerr << std::endl;
+//                  readSizeForThisEvent += length;
+                    [_inputBuffer appendBytes:buffer length:length];
+                    @try {
+                        [self handleData:_inputBuffer];
+                    } @catch (NSException* e) {
+                        N2LogExceptionWithStackTrace(e);
+                    }
+                } else {
+                    if (length < 0) {
+                        NSLog(@"Warning: [NSInputStream read:maxLength:] returned %d", (int)length);
+                        [self performSelector:@selector(close) withObject:nil afterDelay:0];
+                    }
+                }
+            } while (length > 0);
+        } break;
+            
+        case NSStreamEventHasSpaceAvailable: {
+            ++_handleHasSpaceAvailable;
+            if (self.closeOnNextSpaceAvailable)
+                [self performSelector:@selector(close) withObject:nil afterDelay:0];
+            else {
+                if ([_outputBuffer length])
+                    [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
+            }
+        } break;
+            
+        case NSStreamEventEndEncountered: {
+            [stream close];
+            if ([self closeOnRemoteClose])
+                [self performSelector:@selector(close) withObject:nil afterDelay:0];
+        } break;
+            
+        case NSStreamEventErrorOccurred: {
+            self.error = stream.streamError;
+            NSLog(@"Stream error: %@ %@", self.error, self.error.userInfo);
             [self performSelector:@selector(close) withObject:nil afterDelay:0];
-        else {
-            if ([_outputBuffer length])
-                [self performSelector:@selector(trySendingDataNow) withObject:nil afterDelay:0];
-        }
+        } break;
+            
+        default: {
+            NSLog(@"Warning: unhandled N2Connection event %d", (int)event);
+        } break;
     }
-	
-	if (event == NSStreamEventEndEncountered) {
-		[stream close];
-        if ([self closeOnRemoteClose])
-            [self performSelector:@selector(close) withObject:nil afterDelay:0];
-    }
-	
-	if (event == NSStreamEventErrorOccurred) {
-        self.error = stream.streamError;
-		NSLog(@"Stream error: %@ %@", self.error, self.error.userInfo);
-		[self close];
-	}
-}
-
--(void)streamHandleEvent:(NSArray*)io {
-	[self stream:[io objectAtIndex:0] handleEvent:[[io objectAtIndex:1] unsignedIntegerValue]];
 }
 
 -(void)writeData:(NSData*)data {
 	[_outputBuffer appendData:data];
 	if (self.status == N2ConnectionStatusOk)	
 		[self trySendingDataNow];
-	// the output buffer is sent every 0.01 seconds - that's quick enough, otherwise [self transferData:nil];
 }
 
 -(NSInteger)availableSize {
@@ -396,17 +402,6 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	
 	return range.length;
 }
-
-
-/*
- -(NSString*)host2ipv6:(NSString*)host {
- 
- }
- 
- +(BOOL)host:(NSString*)host1 isEqualToHost:(NSString*)host2 {
- return [[self host2ipv6:host1] isEqual:[self host2ipv6:host2]];
- }
- */
 
 @end
 
