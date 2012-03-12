@@ -1,3 +1,4 @@
+- Series Switch: re-apply image tiling according to Protocols
 
 ------------------------------------------------------------------------------------------
 
