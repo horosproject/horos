@@ -1,4 +1,7 @@
 - Series Switch: re-apply image tiling according to Protocols
+- QR: short timeout (auto-repeat)
+- RGB support for MIP & MPR
+- Plugin Download: download only 1 plugin at a time
 
 ------------------------------------------------------------------------------------------
 
@@ -25,6 +28,8 @@ Added features:
 
 ------------------------------------------------------------------------------------------
 
+
+- ExportROIs plugin: add Length
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching
 - CPR : adapt coloscopy path algo to CPR vessels
