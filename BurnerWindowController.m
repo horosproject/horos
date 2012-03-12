@@ -138,7 +138,7 @@
         idatabase = [[[DicomDatabase databaseForContext:[[managedObjects objectAtIndex:0] managedObjectContext]] independentDatabase] retain];
         
 		files = [theFiles mutableCopy]; // file paths
-		dbObjects = [idatabase objectsWithIDs:managedObjects]; // managedObjects in idatabase
+		dbObjects = [[idatabase objectsWithIDs:managedObjects] mutableCopy]; // managedObjects in idatabase
 		originalDbObjects = [dbObjects mutableCopy];
 		
 		[files removeDuplicatedStringsInSyncWithThisArray: dbObjects];
@@ -600,7 +600,7 @@
 	burning = NO;
 	runBurnAnimation = NO;
 	
-	[self release];
+	[self autorelease];
 }
 
 - (BOOL)windowShouldClose:(id)sender

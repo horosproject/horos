@@ -641,7 +641,7 @@ extern int delayedTileWindows;
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	[self release];
+	[self autorelease];
 }
 
 - (id) scanThrough: (id) main forString: (NSString*) s

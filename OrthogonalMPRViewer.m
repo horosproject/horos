@@ -535,7 +535,8 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	
 	[splitView setDelegate: nil];
     [[self window] setDelegate:nil];
-    [self release];
+    
+    [self autorelease];
 }
 
 - (void) windowDidLoad

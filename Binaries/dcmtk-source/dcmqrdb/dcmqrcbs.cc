@@ -238,7 +238,8 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
     /* in */
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,       /* being received into */ 
+    char *imageFileName,
+    char *calledAETitle, /* being received into */ 
     DcmDataset **imageDataSet, /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
@@ -259,13 +260,13 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
         if (!options_.ignoreStoreData_ && rsp->DimseStatus == STATUS_Success) {
             if ((imageDataSet)&&(*imageDataSet))
 			{
-                if( req && dcmff && req->MoveOriginatorApplicationEntityTitle)
+                if( calledAETitle)
                 {
                     DcmMetaInfo *metaInfo = dcmff->getMetaInfo();
                     if( metaInfo)
-                        metaInfo->putAndInsertString( DCM_SourceApplicationEntityTitle, req->MoveOriginatorApplicationEntityTitle);
+                        metaInfo->putAndInsertString( DCM_SourceApplicationEntityTitle, calledAETitle);
                 }
-                
+
 				writeToFile(dcmff, fileName, rsp);
             }
             if (rsp->DimseStatus == STATUS_Success)

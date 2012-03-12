@@ -1543,6 +1543,9 @@ public:
 
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower
 {
+    if( volumeProperty == nil)
+        return;
+    
 	volumeProperty->SetAmbient(ambient);
 	volumeProperty->SetDiffuse(diffuse);
 	volumeProperty->SetSpecular(specular);
@@ -1551,6 +1554,9 @@ public:
 
 - (void) getShadingValues:(float*) ambient :(float*) diffuse :(float*) specular :(float*) specularpower
 {
+    if( volumeProperty == nil)
+        return;
+    
 	*ambient = volumeProperty->GetAmbient();
 	*diffuse = volumeProperty->GetDiffuse();
 	*specular = volumeProperty->GetSpecular();
@@ -1559,6 +1565,9 @@ public:
 
 -(long) shading
 {
+    if( volumeProperty == nil)
+        return 0;
+    
 	return volumeProperty->GetShade();
 }
 
@@ -2535,7 +2544,7 @@ public:
 
 - (double) getResolution
 {
-	if( aCamera && aCamera->GetParallelProjection())
+	if( aCamera && aCamera->GetParallelProjection() && factor > 0)
 	{
 		double point1[ 4] = { 0, 0, 0, 0}, point2[ 4] = { 1, 0, 0, 0};
 		
@@ -5297,7 +5306,8 @@ public:
 -(void) setOpacity:(NSArray*) array
 {
 	if( fullDepthMode) return;
-
+    if( opacityTransferFunction == nil) return;
+    
 	long		i;
 	NSPoint		pt;
 	float		start, end;
@@ -5352,7 +5362,9 @@ public:
 -(void) setCLUT:( unsigned char*) r : (unsigned char*) g : (unsigned char*) b
 {
 	if( fullDepthMode) return;
-	
+	if( colorTransferFunction == nil) return;
+    if( volumeProperty == nil) return;
+    
 	advancedCLUT = NO;
 	if(appliedCurves)
 	{
@@ -5417,6 +5429,9 @@ public:
 
 - (void) setWLWW:(float) iwl :(float) iww
 {
+    if( colorTransferFunction == nil)
+        return;
+    
 	if( iwl == 0 && iww == 0)
 	{
 		iwl = [[pixList objectAtIndex:0] fullwl];
@@ -7279,6 +7294,9 @@ public:
 
 - (void) setVtkCamera:(vtkCamera*)aVtkCamera;
 {
+    if( aCamera == nil)
+        return;
+    
 	double pos[3], focal[3], vUp[3], parallelScale;
 	aVtkCamera->GetPosition(pos);
 	aVtkCamera->GetFocalPoint(focal);

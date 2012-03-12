@@ -59,7 +59,7 @@
 
 - (void)windowWillCloseNotification:(NSNotification*)notification;
 {
-	if( [notification object] == [vrView window]) // TODO: 
+	if( [notification object] == vrViewWindow)
 		windowWillClose = YES;
 }
 
@@ -146,6 +146,8 @@
 
 - (void)computeHistogram;
 {
+    vrViewWindow = [vrView window];
+    
 	vImage_Buffer buffer;
 	buffer.data = volumePointer;
 	buffer.height = 1;

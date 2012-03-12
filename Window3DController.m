@@ -758,6 +758,10 @@ static float oldsetww, oldsetwl;
 #pragma mark-
 #pragma mark Common Full Screen Functions
 
+- (void) fullWindowView: (id) sender
+{
+}
+
 - (void) offFullScreen
 {
 	if (FullScreenOn)

@@ -3050,9 +3050,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) setPixelSpacingX :(double) s
 {
-	if( isnan( s) || s < 0 || s > 1000)
+	if( isnan( s) || s < 0.00001 || s > 1000)
+    {
 		NSLog( @"***** setPixelSpacingX with value : %lf", s);
-	
+        s = 1;
+	}
+    
 	[self CheckLoad];
 	pixelSpacingX = s;
 	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;
@@ -3060,9 +3063,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (void) setPixelSpacingY :(double) s
 {
-	if( isnan( s) || s < 0 || s > 1000)
+	if( isnan( s) || s < 0.00001 || s > 1000)
+    {
 		NSLog( @"***** setPixelSpacingY with value : %lf", s);
-	
+        s = 1;
+    }
+    
 	[self CheckLoad];
 	pixelSpacingY = s;
 	if( pixelSpacingX) pixelRatio = pixelSpacingY / pixelSpacingX;

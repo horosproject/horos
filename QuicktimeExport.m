@@ -355,6 +355,9 @@
 	
 	[aMovie writeToFile: @"/tmp/QTExportOsiriX64bits-Movie" withAttributes: attributes];
 	
+    if( aMovie == nil)
+        NSLog( @"****** aMovie == nil - QuicktimeExport getExportSettings");
+    
 	NSString	*tempComponentPath = [NSString stringWithString:@"/tmp/QTExportOsiriX64bits-Component"];
 	[[NSFileManager defaultManager] removeFileAtPath: tempComponentPath handler: nil];
 	[component writeToFile: tempComponentPath atomically: YES];
@@ -571,16 +574,13 @@
 					component = [exportTypes objectAtIndex: [type indexOfSelectedItem]];
 				}
 				
-				if( exportSettings)
-				{
-					[self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
-					
-					if( openIt)
-					{
-						NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-						[ws openFile:fileName];
-					}
-				}
+                [self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
+                
+                if( openIt)
+                {
+                    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+                    [ws openFile:fileName];
+                }
 			}
 		}
 		

@@ -94,6 +94,7 @@ public:
         T_DIMSE_StoreProgress *progress,
         T_DIMSE_C_StoreRQ *req,
         char *imageFileName,
+        char *calledAETitle,
         DcmDataset **imageDataSet,
         T_DIMSE_C_StoreRSP *rsp,
         DcmDataset **stDetail);

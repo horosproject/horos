@@ -167,6 +167,6 @@ PURPOSE.
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
-	[self release];
+	[self autorelease];
 }
 @end

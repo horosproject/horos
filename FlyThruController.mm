@@ -113,7 +113,8 @@
 	}
 	
 	[[self window] setDelegate:nil];
-	[self release];
+    
+	[self autorelease];
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification

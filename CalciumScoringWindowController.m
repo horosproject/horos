@@ -110,7 +110,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[self release];
+	[self autorelease];
 }
 
 -(void) CloseViewerNotification:(NSNotification*) note

@@ -87,7 +87,7 @@
 #include "dimse.h"		/* always include the module header */
 #include "cond.h"
 #include "dcostrmf.h"    /* for class DcmOutputFileStream */
-
+#include "dcmetinf.h"
 
 /* Global flag to enable/disable workaround code for some buggy Store SCUs
  * in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
@@ -350,7 +350,7 @@ privateProviderCallback(void *callbackData, unsigned int bytes)
     ctx->progress->callbackCount++;
     if (ctx->callback) {
         ctx->callback(ctx->callbackData, ctx->progress, ctx->request, 
-	    ctx->imageFileName, ctx->imageDataSet, ctx->response,
+	    ctx->imageFileName, NULL, ctx->imageDataSet, ctx->response,
 	    ctx->statusDetail);
     }
 }
@@ -426,7 +426,7 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
         callbackCtx.callback = callback;
 	/* execute initial callback */
 	callback(callbackData, &progress, request, 
-	    (char*)imageFileName, imageDataSet,
+	    (char*)imageFileName, NULL, imageDataSet,
 	    &response, &statusDetail);
     } else {
         privCallback = NULL;
@@ -493,13 +493,22 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
     }
    
     /* execute final callback (user does not have to provide callback) */
-    if (callback) {
+    if (callback)
+    {
         progress.state = DIMSE_StoreEnd;
-	progress.callbackCount++;
-	/* execute final callback */
-	callback(callbackData, &progress, request, 
-	    (char*)imageFileName, imageDataSet,
-	    &response, &statusDetail);
+        progress.callbackCount++;
+        
+        char *calledAETitle = NULL;
+        
+        if( assoc && assoc->params && assoc->params->DULparams.respondingAPTitle[ 0])
+            calledAETitle = assoc->params->DULparams.respondingAPTitle;
+        else if( assoc && assoc->params && assoc->params->DULparams.callingAPTitle[ 0])
+            calledAETitle = assoc->params->DULparams.callingAPTitle;
+        
+        /* execute final callback */
+        callback(callbackData, &progress, request, 
+                 (char*)imageFileName, calledAETitle, imageDataSet,
+                 &response, &statusDetail);
     }
     
     /* send a C-STORE-RSP message over the network to the other DICOM application */

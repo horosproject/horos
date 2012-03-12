@@ -796,20 +796,46 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 		
-		for ( NSDictionary *routingRule in autoroutingRules)
-		{			
-			@try
-			{
-				if( [[routingRule objectForKey:@"filterType"] intValue] == 0)
-					[self smartAlbumPredicateString: [routingRule objectForKey: @"filter"]];
-			}
-			
-			@catch( NSException *ne)
-			{
-				NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\rSee Routing Preferences.", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"]], nil, nil, nil);
-				N2LogExceptionWithStackTrace(ne);
-			}
-		}
+        NSManagedObjectContext *context = self.managedObjectContext;
+		
+		[context lock];
+        
+        // Take a study for the test
+		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+		[dbRequest setFetchLimit: 1];
+        
+		NSError *error = nil;
+		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+        
+        if( studiesArray.count > 0)
+        {
+            NSArray *images = [[[studiesArray objectAtIndex: 0] images] allObjects];
+            
+            for( NSDictionary *routingRule in autoroutingRules)
+            {			
+                @try
+                {
+                    if( [[routingRule objectForKey:@"filterType"] intValue] == 0)
+                    {
+                        NSPredicate *predicate = [self smartAlbumPredicateString: [routingRule objectForKey: @"filter"]];
+                        
+                        // Test it on the first study...
+                        [images filteredArrayUsingPredicate: predicate];
+                    }
+                }
+                
+                @catch( NSException *ne)
+                {
+                    NSRunAlertPanel( NSLocalizedString(@"Routing Filter Error", nil),  [NSString stringWithFormat: NSLocalizedString(@"Syntax error in this routing filter: %@\r\r%@\r\r%@", nil), [routingRule objectForKey:@"name"], [routingRule objectForKey:@"filter"], [ne description]], nil, nil, nil);
+                    
+                    [AppController printStackTrace: ne];
+                }
+            }
+        }
+        
+		[context unlock];
 	}
 	#endif
 }
@@ -4590,10 +4616,8 @@ static NSConditionLock *threadLock = nil;
 {
 	[self outlineViewRefresh];
 	
-	if( [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
-	{
+	if( [[databaseOutline sortDescriptors] count] > 0 && [[[[databaseOutline sortDescriptors] objectAtIndex: 0] key] isEqualToString:@"name"] == NO)
 		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
-	}
 	
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
@@ -16787,9 +16811,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
-					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s, s, s, s];
 				else
-					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s];
+					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name

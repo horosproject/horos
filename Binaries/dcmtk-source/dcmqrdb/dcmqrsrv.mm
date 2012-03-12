@@ -47,7 +47,7 @@
 #include "dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
 #include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
-
+#include "dcmetinf.h"
 #import "dcmqrdbq.h"
 
 #include <signal.h>
@@ -221,13 +221,14 @@ static void storeCallback(
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
     char *imageFileName,       /* being received into */
+    char *calledAETitle,
     DcmDataset **imageDataSet, /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **stDetail)
 {
   DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-  context->callbackHandler(progress, req, imageFileName, imageDataSet, rsp, stDetail);
+  context->callbackHandler(progress, req, imageFileName, calledAETitle, imageDataSet, rsp, stDetail);
 }
 
 

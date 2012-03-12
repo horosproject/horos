@@ -197,11 +197,15 @@
 		[yReslicedView setPixList : yReslicedDCMPixList :originalDCMFilesList];
 		
 //		// WLWW
-		float wl, ww;
-		[originalView getWLWW:&wl :&ww];
-		[xReslicedView adjustWLWW:wl :ww];
-		[yReslicedView adjustWLWW:wl :ww];
-		
+		float wl = 0, ww = 0;
+        [originalView getWLWW:&wl :&ww];
+        
+        if( wl != 0 && ww != 0)
+        { 
+            [xReslicedView adjustWLWW:wl :ww];
+            [yReslicedView adjustWLWW:wl :ww];
+		}
+        
 		// move cross on the other views
 		[xReslicedView setCrossPositionX:x+0.5];
 		[yReslicedView setCrossPositionX:y+0.5];

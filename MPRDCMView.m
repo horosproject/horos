@@ -429,8 +429,11 @@ static	BOOL frameZoomed = NO;
 			if( !moveCenter)
 			{
 				resolution = [vrView getResolution] * [vrView imageSampleDistance];
-				[pix setPixelSpacingX: resolution];
-				[pix setPixelSpacingY: resolution];
+                if( resolution > 0)
+                {
+                    [pix setPixelSpacingX: resolution];
+                    [pix setPixelSpacingY: resolution];
+                }
 			}
 			
 			[pix setOrientation: orientation];

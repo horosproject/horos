@@ -335,7 +335,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
     [[self window] setDelegate:nil];
     
-    [self release];
+    [self autorelease];
 }
 
 //-(NSMatrix*) toolsMatrix

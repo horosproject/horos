@@ -70,7 +70,7 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[self release];
+	[self autorelease];
 }
 
 - (NSPoint) startingPoint

@@ -823,7 +823,7 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[yReslicedSplitView setDelegate:nil];
 	[modalitySplitView setDelegate:nil];
 	
-	[self release];
+	[self autorelease];
 }
 
 - (void) windowDidLoad

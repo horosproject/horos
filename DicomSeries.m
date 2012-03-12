@@ -314,6 +314,17 @@
 						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
 						[dcmPix CheckLoad];
 						
+                        //Set the default series level window-width&level
+                        
+                        if( image.series.windowWidth == nil && image.series.windowLevel == nil)
+                        {
+                            if( dcmPix.ww != 0 && dcmPix.wl != 0)
+                            {
+                                image.series.windowWidth = [NSNumber numberWithFloat: dcmPix.ww];
+                                image.series.windowLevel = [NSNumber numberWithFloat: dcmPix.wl];
+                            }
+                        }
+                        
 						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
 						
 						if (!dcmPix.notAbleToLoadImage)

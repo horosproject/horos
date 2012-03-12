@@ -2780,7 +2780,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		}
 	}
 	
-	[self release];
+	[self autorelease];
 	
 	numberOf2DViewer--;
 	if( numberOf2DViewer == 0)
@@ -19211,6 +19211,9 @@ int i,j,l;
 		
 	viewer = [[OrthogonalMPRViewer alloc] initWithPixList:pixList[0] :fileList[0] :volumeData[0] :self :nil];
 	
+    float sww = imageView.curWW;
+    float swl = imageView.curWL;
+    
 	NSString *c;
 	
 	if( backCurCLUTMenu) c = backCurCLUTMenu;
@@ -19231,6 +19234,8 @@ int i,j,l;
 	
 	[viewer ApplyOpacityString: curOpacityMenu];
 	
+    [viewer setWLWW: swl :sww];
+    
 	return viewer;
 }
 

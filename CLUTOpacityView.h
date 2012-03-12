@@ -47,6 +47,7 @@
 	IBOutlet NSWindow *chooseNameAndSaveWindow;
 	IBOutlet NSTextField *clutSavedName;
 	
+    NSWindow *vrViewWindow;
 	IBOutlet VRView *vrView;
 	BOOL vrViewLowResolution;
 	BOOL didResizeVRVIew;
