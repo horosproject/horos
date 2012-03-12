@@ -69,7 +69,7 @@
 {
 	if( [note object] == curROI)
 	{
-		[self release];
+		[[self window] close];
 	}
 }
 
@@ -77,7 +77,6 @@
 {
 	if( [note object] == [curROI pix])
 	{
-		
 		[plot setNeedsDisplay: YES];
 	}
 }

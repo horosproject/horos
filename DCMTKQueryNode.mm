@@ -1250,7 +1250,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[lock unlock];
 	[lock release];
 	[dict release];
-	[self release];
+	[self autorelease];
 	
 	[pool release];
 }
@@ -1286,7 +1286,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[lock unlock];
 	[lock release];
 	[dict release];
-	[self release];
+	[self autorelease];
 	
 	[pool release];
 }

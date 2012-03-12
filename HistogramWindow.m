@@ -35,7 +35,7 @@
 {
 	if( [note object] == curROI)
 	{
-		[self release];
+		[[self window] close];
 	}
 }
 
@@ -43,7 +43,6 @@
 {
 	if( [note object] == [curROI pix])
 	{
-		
 		[self changeBin: binSlider];
 	}
 }

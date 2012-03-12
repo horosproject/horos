@@ -157,7 +157,7 @@ static volatile int sendControllerObjects = 0;
 {
 	[_lock lock];
 	[_lock unlock];
-	[self release];
+	[self autorelease];
 }
 
 - (NSString *)numberFiles{
@@ -251,17 +251,17 @@ static volatile int sendControllerObjects = 0;
 			if( files2Send)
 				[self sendToNode: [self server] objects: objectsToSend];
 			else
-				[self release];
+				[self autorelease];
 		}
 		else
 		{
 			NSRunAlertPanel(NSLocalizedString(@"DICOM Send",nil),NSLocalizedString( @"There are no files of selected type to send.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 			
-			[self release];
+			[self autorelease];
 		}
 	}
 	else // Cancel
-		[self release];
+		[self autorelease];
 }
 
 - (void) sendToNode: (NSDictionary*) node objects:(NSArray*) objects
