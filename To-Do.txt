@@ -1,7 +1,6 @@
 - Series Switch: re-apply image tiling according to Protocols
 - QR: short timeout (auto-repeat)
 - RGB support for MIP & MPR
-- Plugin Download: download only 1 plugin at a time
 
 ------------------------------------------------------------------------------------------
 

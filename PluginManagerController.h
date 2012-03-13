@@ -42,10 +42,12 @@
 	IBOutlet WebView *webView;
 	NSArray *pluginsListURLs;
 	IBOutlet NSPopUpButton *pluginsListPopUp;
-	NSString *downloadURL, *downloadedFilePath;
+	NSString *downloadURL;
 	IBOutlet NSButton *downloadButton;
 	IBOutlet NSTextField *statusTextField;
 	IBOutlet NSProgressIndicator *statusProgressIndicator;
+    
+    NSMutableDictionary *downloadingPlugins;
 }
 
 - (NSMutableArray*)plugins;
