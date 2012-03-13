@@ -6887,44 +6887,43 @@ static BOOL withReset = NO;
     
 	@try
 	{
-		if( [previewPix count])
-		{
-			if( loadPreviewIndex < [previewPix count])
-			{
-				long i;
-				for( i = loadPreviewIndex; i < [previewPix count]; i++)
-				{
-                    NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
-					NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
-					
-					if( [cell isEnabled] == NO)
-					{
-						if( i < [previewPix count])
-						{
-							if( [previewPix objectAtIndex: i] != nil)
-							{
-								if( i < [matrixViewArray count])
-								{
-									[self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
-								}
-							}
-						}
-					}
-				}
-				
-				if( [oMatrix selectedCell] == 0)
-				{
-					if( [matrixViewArray count] > 0)
-						[oMatrix selectCellWithTag: 0];
-				}
-				
-				if( loadPreviewIndex == 0)
-					[self initAnimationSlider];
-				
-				loadPreviewIndex = i;
-			}
-		}
-		else [self initAnimationSlider];
+        if (loadPreviewIndex == 0)
+            [self initAnimationSlider];
+        
+        if (loadPreviewIndex < [previewPix count])
+        {
+            long i;
+            for( i = 0; i < [previewPix count]; i++)
+            {
+                NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
+                NSButtonCell* cell = [oMatrix cellAtRow:i/cols column:i%cols];
+                
+                if( [cell isEnabled] == NO)
+                {
+                    if( i < [previewPix count])
+                    {
+                        if( [previewPix objectAtIndex: i] != nil)
+                        {
+                            if( i < [matrixViewArray count])
+                            {
+                                [self matrixNewIcon:i :[matrixViewArray objectAtIndex: i]];
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if( [oMatrix selectedCell] == 0)
+            {
+                if( [matrixViewArray count] > 0)
+                    [oMatrix selectCellWithTag: 0];
+            }
+            
+            if( loadPreviewIndex == 0)
+                [self initAnimationSlider];
+            
+            loadPreviewIndex = i;
+        }
 	}
 	
 	@catch( NSException *ne)
@@ -7152,21 +7151,18 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
--(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context must:(BOOL)must {
+-(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context {
 //    if ([NSThread isMainThread]) {
         if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
             [previewPix addObject:pix];
-            if (must) {
-                _timeIntervalOfLastLoadIconsDisplayIcons = [NSDate timeIntervalSinceReferenceDate];
+            // only do it on a delayed basis
+            NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+            if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5) {
+                _timeIntervalOfLastLoadIconsDisplayIcons = now;
                 [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
-            } else { // only do it on a delayed basis
-                NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-                if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5) {
-                    _timeIntervalOfLastLoadIconsDisplayIcons = now;
-                    [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
-                }
             }
+           // }
         }
 /*    } else {
         NSMutableDictionary* set = [NSMutableDictionary dictionary];
@@ -7218,26 +7214,26 @@ static BOOL withReset = NO;
                     NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
                     NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                     [dbIma addRepresentation:rep];
-                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context must:NO];
+                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
                     continue;
                 }
             }
 
             if (dcmPix) {
                 if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context must:NO];
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
                 } else {
                     NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
                     [dcmPix revert:NO];	// <- Kill the raw data
                     if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context must:NO];
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
                 }
             } else {
-                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context must:NO];
+                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
-
-            [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context must:YES];
         }
+
+        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
