@@ -139,7 +139,7 @@
 	[imagePaths removeDuplicatedStringsInSyncWithThisArray:dicomImages];
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
-	DicomDatabase* dstDatabase = [DicomDatabase databaseAtPath:destination.location name:destination.description];
+	DicomDatabase* idatabase = [[DicomDatabase databaseAtPath:destination.location name:destination.description] independentDatabase];
 	
 	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Fetching %d %@...", nil), dicomImages.count, (dicomImages.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
 	NSMutableArray* dstPaths = [NSMutableArray array];
@@ -153,7 +153,7 @@
             if (srcPath)
             {
                 NSString* ext = [DicomFile isDICOMFile:srcPath]? @"dcm" : srcPath.pathExtension;
-                NSString* dstPath = [dstDatabase uniquePathForNewDataFileWithExtension:ext];
+                NSString* dstPath = [idatabase uniquePathForNewDataFileWithExtension:ext];
                 
                 if ([[NSFileManager defaultManager] moveItemAtPath:srcPath toPath:dstPath error:NULL])
                     [dstPaths addObject:dstPath];
@@ -171,7 +171,7 @@
 	
 	thread.status = NSLocalizedString(@"Indexing files...", nil);
 	thread.progress = -1;
-	[dstDatabase addFilesAtPaths:dstPaths];
+	[idatabase addFilesAtPaths:dstPaths];
 	
 	[pool release];
 }

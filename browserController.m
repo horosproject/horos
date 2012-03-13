@@ -11101,7 +11101,6 @@ static NSArray*	openSubSeriesArray = nil;
         
 //		[BrowserController tryLock:checkIncomingLock during: 120];
 		[BrowserController tryLock:_database during: 120];
-        [_database tryLock];
 //		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
 		
 	//	[BrowserController tryLock: decompressThreadRunning during: 120];

@@ -414,8 +414,14 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 		_sqlFileName = [[path lastPathComponent] retain];
         NSString* oldSqlFilePath = [_sqlFilePath autorelease];
 		_sqlFilePath = [path retain];
+        
+        NSManagedObjectContext* ocontext = self.managedObjectContext;
+        [ocontext lock];
+        [context lock];
 		self.managedObjectContext = context;
-		
+		[context unlock];
+        [ocontext unlock];
+        
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixAddToDBNotification object:self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:_O2AddToDBAnywayNotification object:self];
 		[[NSNotificationCenter defaultCenter] postNotificationName:OsirixDicomDatabaseDidChangeContextNotification object:self];
