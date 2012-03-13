@@ -28,7 +28,7 @@ enum N2ConnectionStatus {
 <NSStreamDelegate>
 #endif
 {
-	NSString* _address;
+	id _address;
 	NSInteger _port;
 	NSInputStream* _inputStream;
 	NSOutputStream* _outputStream;
@@ -50,16 +50,16 @@ enum N2ConnectionStatus {
 @property(readonly,retain) NSError* error;
 
 // non-tls
-+(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port;
-+(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context; // -(NSInteger)connection:(N2Connection*)connection dummyDataHandler:(NSData*)data context:(void*)context
--(id)initWithAddress:(NSString*)address port:(NSInteger)port;
--(id)initWithAddress:(NSString*)address port:(NSInteger)port is:(NSInputStream*)is os:(NSOutputStream*)os;
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(id)address port:(NSInteger)port;
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(id)address port:(NSInteger)port dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context; // -(NSInteger)connection:(N2Connection*)connection dummyDataHandler:(NSData*)data context:(void*)context
+-(id)initWithAddress:(id)address port:(NSInteger)port;
+-(id)initWithAddress:(id)address port:(NSInteger)port is:(NSInputStream*)is os:(NSOutputStream*)os;
 
 // generic
-+(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag;
-+(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context; // -(NSInteger)connection:(N2Connection*)connection dummyDataHandler:(NSData*)data context:(void*)context
--(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag;
--(id)initWithAddress:(NSString*)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os;
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(id)address port:(NSInteger)port tls:(BOOL)tlsFlag;
++(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(id)address port:(NSInteger)port tls:(BOOL)tlsFlag dataHandlerTarget:(id)target selector:(SEL)selector context:(void*)context; // -(NSInteger)connection:(N2Connection*)connection dummyDataHandler:(NSData*)data context:(void*)context
+-(id)initWithAddress:(id)address port:(NSInteger)port tls:(BOOL)tlsFlag;
+-(id)initWithAddress:(id)address port:(NSInteger)port tls:(BOOL)tlsFlag is:(NSInputStream*)is os:(NSOutputStream*)os;
 
 -(void)reconnect;
 -(void)close;
@@ -69,7 +69,7 @@ enum N2ConnectionStatus {
 -(void)startTLS;
 -(BOOL)isSecure;
 
--(void)reconnectToAddress:(NSString*)address port:(NSInteger)port;
+-(void)reconnectToAddress:(id)address port:(NSInteger)port;
 
 -(void)writeData:(NSData*)data;
 -(void)handleData:(NSMutableData*)data; // overload on subclasses

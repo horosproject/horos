@@ -235,7 +235,7 @@
         NSInteger retries;
         for (retries = 0; retries < 5; ++retries)
             @try {
-                return [N2Connection sendSynchronousRequest:request toAddress:self.address port:self.port dataHandlerTarget:target selector:sel context:context];
+                return [N2Connection sendSynchronousRequest:request toAddress:self.host port:self.port dataHandlerTarget:target selector:sel context:context];
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
                 [NSThread sleepForTimeInterval:0.005*retries*retries];

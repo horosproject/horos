@@ -17,6 +17,7 @@
 #import "N2Connection.h"
 #import "N2Debug.h"
 #import "NSThread+N2.h"
+#import "NSHost+N2.h"
 #include <math.h>
 #include <algorithm>
 #include <iostream>
@@ -44,7 +45,6 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 
 @implementation N2Connection
 
-@synthesize address = _address;
 @synthesize status = _status;
 @synthesize maximumReadSizePerEvent = _maximumReadSizePerEvent;
 @synthesize closeOnRemoteClose = _closeOnRemoteClose;
@@ -182,8 +182,13 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	return self;
 }
 
+-(NSString*)address {
+    if ([_address isKindOfClass:[NSString class]])
+        return _address;
+    return [(NSHost*)_address address];
+}
 
--(void)reconnectToAddress:(NSString*)address port:(NSInteger)port {
+-(void)reconnectToAddress:(id)address port:(NSInteger)port {
 	[_address release];
 	_address = [address retain];
 	_port = port;
@@ -205,8 +210,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	[_inputBuffer setLength:0];
 	[_outputBuffer setLength:0];
 	
+    NSHost* host = [_address isKindOfClass:[NSHost class]]? _address : [NSHost hostWithAddressOrName:_address];
+    
 	[self setStatus:N2ConnectionStatusConnecting];
-	[NSStream getStreamsToHost:[NSHost hostWithName:_address] port:_port inputStream:&_inputStream outputStream:&_outputStream];
+    
+	[NSStream getStreamsToHost:host port:_port inputStream:&_inputStream outputStream:&_outputStream];
 	[_inputStream retain]; [_outputStream retain];
 	
 	[self open];
@@ -216,7 +224,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	_tlsFlag = YES;
 	NSMutableDictionary* settings = [NSMutableDictionary dictionary];
 	[settings setObject:NSStreamSocketSecurityLevelNegotiatedSSL forKey:(NSString*)kCFStreamSSLLevel];
-	[settings setObject:_address forKey:(NSString*)kCFStreamSSLPeerName];
+	[settings setObject:self.address forKey:(NSString*)kCFStreamSSLPeerName];
 	[_inputStream setProperty:settings forKey:(NSString*)kCFStreamPropertySSLSettings];
 	[_outputStream setProperty:settings forKey:(NSString*)kCFStreamPropertySSLSettings];
 	[_inputStream open];
