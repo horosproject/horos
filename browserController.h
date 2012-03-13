@@ -251,6 +251,8 @@ extern NSString* O2AlbumDragType;
     
     IBOutlet NSSplitView *bannerSplit;
     IBOutlet NSButton *banner;
+    
+    NSTimeInterval _timeIntervalOfLastLoadIconsDisplayIcons;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

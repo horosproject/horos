@@ -7152,12 +7152,21 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
--(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context {
+-(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context must:(BOOL)must {
 //    if ([NSThread isMainThread]) {
         if (context == previewPix) { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
             [previewPix addObject:pix];
-            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+            if (must) {
+                _timeIntervalOfLastLoadIconsDisplayIcons = [NSDate timeIntervalSinceReferenceDate];
+                [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+            } else { // only do it on a delayed basis
+                NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+                if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5) {
+                    _timeIntervalOfLastLoadIconsDisplayIcons = now;
+                    [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+                }
+            }
         }
 /*    } else {
         NSMutableDictionary* set = [NSMutableDictionary dictionary];
@@ -7209,23 +7218,25 @@ static BOOL withReset = NO;
                     NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
                     NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                     [dbIma addRepresentation:rep];
-                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
+                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context must:NO];
                     continue;
                 }
             }
 
             if (dcmPix) {
                 if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context must:NO];
                 } else {
                     NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
                     [dcmPix revert:NO];	// <- Kill the raw data
                     if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
+                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context must:NO];
                 }
             } else {
-                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context must:NO];
             }
+
+            [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context must:YES];
         }
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
