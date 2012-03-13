@@ -6887,9 +6887,6 @@ static BOOL withReset = NO;
     
 	@try
 	{
-        if (loadPreviewIndex == 0)
-            [self initAnimationSlider];
-        
         if (loadPreviewIndex < [previewPix count])
         {
             long i;
