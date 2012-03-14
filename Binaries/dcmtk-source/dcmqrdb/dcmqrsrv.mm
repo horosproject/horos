@@ -65,7 +65,12 @@
 + (void) waitUnlockFileWithPID: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
+    
+    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] lock];
+    
+    // Father
+    [NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
+    
 	BOOL fileExist = YES;
 	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
 	char dir[ 1024];
@@ -101,6 +106,8 @@
 	}
 	
 	unlink( dir);
+    
+    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] unlock];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
@@ -1461,8 +1468,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					ASC_dumpParameters(assoc->params, COUT);
 			}
 			
-            // TODO: OsiriX originally did [[[BrowserController currentBrowser] localManagedObjectContext] save:nil], but what for?
-            
 			if (singleProcess)
 			{
 				@try
@@ -1500,7 +1505,13 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 				{
 					staticContext = [[NSManagedObjectContext alloc] init];
                     staticContext.undoManager = nil;
-                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+                    
+//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+                    
+                    NSManagedObjectModel *model = [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] managedObjectModel];
+                    
+                    staticContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
+                    [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[DicomDatabase defaultDatabase] sqlFilePath]] options: nil error: nil];
                     
 					@try
 					{
@@ -1517,6 +1528,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else if (pid > 0)
 						{
+                            [NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", nil]];
+                            
 							// Display a thread in the ThreadsManager for this pid
 							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
 							t.name = NSLocalizedString( @"DICOM Services...", nil);
@@ -1524,10 +1537,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];
 							
-							// Father
-							[NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
 							
-							[NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", nil]];
 							
 //							NSString *str = getErrorMessage();
 //							if( str)
@@ -1580,7 +1590,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
-					
+                    
 //					[staticContext unlock];
 					[staticContext release];
 					staticContext = nil;
