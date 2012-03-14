@@ -190,8 +190,8 @@
             NSString* tpath = [self localPathForImage:image];
             [[NSFileManager defaultManager] removeItemAtPath:tpath error:NULL];
             [[NSFileManager defaultManager] moveItemAtPath:path toPath:tpath error:NULL];
-            path = image.pathString = tpath;
-            image.pathNumber = nil;
+            path = /*image.pathString =*/ tpath;
+           // image.pathNumber = nil;
             // [image clearCompletePathCache]; useless
         } 
         
