@@ -69,7 +69,7 @@
     [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] lock];
     
     // Father
-    [NSThread sleepForTimeInterval: 0.2]; // To allow the creation of lock_process file with corresponding pid
+    [NSThread sleepForTimeInterval: 0.3]; // To allow the creation of lock_process file with corresponding pid
     
 	BOOL fileExist = YES;
 	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
@@ -1506,12 +1506,12 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					staticContext = [[NSManagedObjectContext alloc] init];
                     staticContext.undoManager = nil;
                     
-//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
-                    
                     NSManagedObjectModel *model = [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] managedObjectModel];
                     
                     staticContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
                     [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[DicomDatabase defaultDatabase] sqlFilePath]] options: nil error: nil];
+                    
+                    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] lock];
                     
 					@try
 					{
@@ -1529,6 +1529,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						else if (pid > 0)
 						{
                             [NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", nil]];
+                            
+                            [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] unlock];
                             
 							// Display a thread in the ThreadsManager for this pid
 							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
