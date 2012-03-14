@@ -8,6 +8,7 @@ A:
 - DB Remote: ROIs - create, see, delete, sync
 - DB Remote: HD Free Space: delete entire DB?
 - MainMenu.xib : menus, subSampling, banner
+- If CD direct reading : display "Opening…" dialog when opening a 2D Viewer
 
 - Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 

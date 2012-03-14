@@ -535,7 +535,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		[html replaceCharactersInRange:NSMakeRange(range.location, rangeEnd.location+rangeEnd.length-range.location) withString:N2NonNullString([self stringForPath:replaceFilepath])];
 	}
 	
-	return html;
+	return [html autorelease];
 }
 
 -(NSString*)URL // This is the public URL (see OSIWebPreferences) - it can be different of the real address
