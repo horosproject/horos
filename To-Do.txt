@@ -5,20 +5,9 @@
 ------------------------------------------------------------------------------------------
 
 A:
-(OK) DB remote: black image (multi-load)
-(OK)- DB Remote: ROIs
+- DB Remote: ROIs - create, see, delete, sync
 - DB Remote: HD Free Space: delete entire DB?
-(OK) Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling, banner
-(OK) Make sure autoclean works (also with delayed files removal)
-(OK)- CD (read-only DBs in general) : 
-(OK)	Should be read-only (drag & drop (OK), import (OK), delete (OK), …, outlineview editcell..., 
-(OK)		toolbar: report (OK), import (OK), notification (OK), addstudies(OK), query(OK), idisk get(OK), burn(OK), delete(OK), 
-(OK)		viewer toolbar: delete (OK), (report: OK))
-(OK)		contextual menu nsoutline et nsmatrix
-(OK)		keystrokes: delete key, ...
-(OK) iPod doesn't appear automatically
-(OK) iPod eject button
 
 - Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 
@@ -26,7 +15,6 @@ Added features:
 - Access DICOM CD/DVD as a database
 
 ------------------------------------------------------------------------------------------
-
 
 - ExportROIs plugin: add Length
 - Storage Commitment Service
@@ -38,9 +26,9 @@ Added features:
 - Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
-- WebPortal: Groups (for sharing)
+- WebPortal: Groups of users (for sharing)
 - WebPortal: Burn option if the CD/DVD is installed
-- WebPortal: create albums and add/remove studies to static albums (admin)
+- WebPortal: create/delete albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
 - WebPortal: ROIs, Key images series, ...
 - http://code.google.com/p/exposure-render/
