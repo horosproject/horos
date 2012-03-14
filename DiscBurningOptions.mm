@@ -36,7 +36,7 @@
 	DiscBurningOptions* copy = [[[self class] allocWithZone:zone] init];
 	if( copy == nil) return nil;
 	copy.anonymize = self.anonymize;
-	copy.anonymizationTags = [self.anonymizationTags copyWithZone:zone];
+	copy.anonymizationTags = [[self.anonymizationTags copyWithZone:zone] autorelease];
 	copy.includeWeasis = self.includeWeasis;
 	copy.includeOsirixLite = self.includeOsirixLite;
 	copy.includeHTMLQT = self.includeHTMLQT;
@@ -47,7 +47,7 @@
 	copy.compressJPEGNotJPEG2000 = self.compressJPEGNotJPEG2000;
 	copy.zip = self.zip;
 	copy.zipEncrypt = self.zipEncrypt;
-	copy.zipEncryptPassword = [self.zipEncryptPassword copyWithZone:zone];
+	copy.zipEncryptPassword = [[self.zipEncryptPassword copyWithZone:zone] autorelease];
 	
 	return copy;
 }

@@ -281,7 +281,7 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
             return dbp;
     }
         
-    return [[[self class] alloc] initWithPath:path context:c];
+    return [[[[self class] alloc] initWithPath:path context:c] autorelease];
     
 //	[NSException raise:NSGenericException format:@"Unidentified database context"];
 //  return nil;

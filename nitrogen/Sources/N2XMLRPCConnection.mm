@@ -88,17 +88,22 @@
 	NSData* content = [(NSData*)CFHTTPMessageCopyBody(request) autorelease];
 	
 	if (contentLength && [content length] < [contentLength intValue])
+    {
+        CFRelease(request);
 		return;
-	
+	}
+    
 	NSString* version = [(NSString*)CFHTTPMessageCopyVersion(request) autorelease];
     if (!version) {
         [self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, kCFHTTPVersion1_0)];
+        CFRelease(request);
         return;
     }
 	
     NSString* method = [(NSString*)CFHTTPMessageCopyRequestMethod(request) autorelease];
     if (!method) {
         [self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, (CFStringRef)version)];
+        CFRelease(request);
         return;
     }
 	
