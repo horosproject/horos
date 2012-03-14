@@ -46,3 +46,13 @@
 }
 
 @end
+
+@implementation NSMutableArray (N2)
+
+-(void)addUniqueObjectsFromArray:(NSArray*)array {
+    for (id obj in array)
+        if (![self containsObject:obj])
+            [self addObject:obj];
+}
+
+@end

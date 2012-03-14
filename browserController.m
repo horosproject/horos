@@ -8408,7 +8408,7 @@ static BOOL needToRezoom;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	if (![_database isLocal])
-		[(RemoteDicomDatabase*)_database uploadFilesAtPaths:files generatedByOsiriX:NO];
+		[(RemoteDicomDatabase*)_database uploadFilesAtPaths:files imageObjects:nil generatedByOsiriX:NO];
 	
 	[pool release];
 }
@@ -8418,7 +8418,7 @@ static BOOL needToRezoom;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
 	if (![_database isLocal])
-		[(RemoteDicomDatabase*)_database uploadFilesAtPaths:files generatedByOsiriX:YES];
+		[(RemoteDicomDatabase*)_database uploadFilesAtPaths:files imageObjects:nil generatedByOsiriX:YES];
 	
 	[pool release];
 }

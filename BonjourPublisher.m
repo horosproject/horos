@@ -22,6 +22,7 @@
 #import "NSUserDefaultsController+N2.h"
 #import "N2Debug.h"
 #import "DicomDatabase.h"
+#import "DicomImage.h"
 #import "AppController.h"
 
 // imports required for socket initialization
@@ -541,7 +542,13 @@ extern const char *GetPrivateIP();
 														dbFolder: [[BrowserController currentBrowser] documentsDirectory]
 													generatedByOsiriX: generatedByOsiriX];
 						
-						representationToSend = nil;
+						representationToSend = [NSMutableData data];
+                        unsigned int temp = NSSwapHostIntToBig([objects count]);
+                        [representationToSend appendBytes:&temp length:4];
+                        for (DicomImage* image in objects) {
+                            unsigned int temp = NSSwapHostIntToBig(image.pathNumber.intValue);
+                            [representationToSend appendBytes:&temp length:4];
+                        }
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"NEWMS" length: 6]]) // New Messaging System
 					{

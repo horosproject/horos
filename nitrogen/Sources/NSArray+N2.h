@@ -21,3 +21,10 @@
 -(NSArray*)splitArrayIntoChunksOfMinSize:(NSUInteger)chunkSize maxChunks:(NSUInteger)maxChunks;
 
 @end
+
+
+@interface NSMutableArray (N2)
+
+-(void)addUniqueObjectsFromArray:(NSArray*)array;
+
+@end

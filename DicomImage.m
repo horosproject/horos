@@ -872,7 +872,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
-	if( completePathCache && download == NO)
+    if( completePathCache && download == NO)
 		return completePathCache;
     
 	DicomDatabase* db = nil;

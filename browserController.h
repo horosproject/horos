@@ -403,7 +403,7 @@ extern NSString* O2AlbumDragType;
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key;
 - (void) setupToolbar;
 - (void) addAlbumsFile: (NSString*) file;
-- (void) sendFilesToCurrentBonjourDB: (NSArray*) files;
+- (void) sendFilesToCurrentBonjourDB: (NSArray*) files __deprecated;
 - (NSString*) getDatabaseFolderFor: (NSString*) path __deprecated;
 - (NSString*) getDatabaseIndexFileFor: (NSString*) path __deprecated;
 - (IBAction) copyToDBFolder: (id) sender;

@@ -105,9 +105,12 @@
 	DataNodeIdentifier* destination = [io objectAtIndex:1];
 	
 	NSMutableArray* imagePaths = [NSMutableArray array];
+	NSMutableArray* imagePathsObjs = [NSMutableArray array];
 	for (DicomImage* image in dicomImages)
-		if (![imagePaths containsObject:image.completePath])
+		if (![imagePaths containsObject:image.completePath]) {
 			[imagePaths addObject:image.completePath];
+            [imagePathsObjs addObject:image];
+        }
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
 	RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
@@ -116,7 +119,7 @@
 	
     @try
     {
-        [dstDatabase uploadFilesAtPaths:imagePaths];
+        [dstDatabase uploadFilesAtPaths:imagePaths imageObjects:nil];
 	} @catch (NSException* e)
     {
         thread.status = NSLocalizedString(@"Error: destination is unavailable", nil);

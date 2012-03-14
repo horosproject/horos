@@ -183,6 +183,7 @@
     NSArray* r = [self objectsWithIDs:objectIDs];
     
     NSMutableArray* filesToSend = [NSMutableArray arrayWithCapacity:r.count];
+    NSMutableArray* filesToSendObjectIDs = [NSMutableArray arrayWithCapacity:r.count];
     for (NSInteger i = 0; i < r.count; ++i) {
         DicomImage* image = [r objectAtIndex:i];
         NSString* path = image.completePath;
@@ -196,10 +197,11 @@
         } 
         
         [filesToSend addObject:path];
+        [filesToSendObjectIDs addObject:image.objectID];
     }
     
     if (filesToSend.count)
-        [self performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, [NSNumber numberWithBool:generatedByOsiriX], nil]];
+        [self performSelectorInBackground:@selector(_uploadFilesAtPathsGeneratedByOsiriX:) withObject:[NSArray arrayWithObjects:filesToSend, filesToSendObjectIDs, [NSNumber numberWithBool:generatedByOsiriX], nil]];
     
     return r;
 }
@@ -208,14 +210,15 @@
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try {
         NSArray* paths = [io objectAtIndex:0];
-        BOOL byOsiriX = [[io objectAtIndex:1] boolValue];
+        NSArray* objIDs = [io objectAtIndex:1];
+        BOOL byOsiriX = [[io objectAtIndex:2] boolValue];
         
         NSThread* thread = [NSThread currentThread];
         thread.name = NSLocalizedString(@"Remote DICOM add...", @"name of thread that sends dicom files to the remote database after local addFiles");
         thread.status = NSLocalizedString(@"Sending data...", nil);
         [[ThreadsManager defaultManager] addThreadAndStart:thread];
         
-        [self uploadFilesAtPaths:paths generatedByOsiriX:byOsiriX];
+        [self uploadFilesAtPaths:paths imageObjects:[self objectsWithIDs:objIDs] generatedByOsiriX:byOsiriX];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
@@ -532,11 +535,21 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[self _studies:dicomStudies album:dicomAlbum action:RemoteDicomDatabaseStudiesAlbumActionRemove];
 }
 
--(void)uploadFilesAtPaths:(NSArray*)paths {
-	return [self uploadFilesAtPaths:paths generatedByOsiriX:NO];
+-(void)uploadFilesAtPaths:(NSArray*)paths imageObjects:(NSArray*)images {
+	return [self uploadFilesAtPaths:paths imageObjects:images generatedByOsiriX:NO];
 }
 
--(void)uploadFilesAtPaths:(NSArray*)paths generatedByOsiriX:(BOOL)generatedByOsiriX {
++(BOOL)data:(NSMutableData*)data readInteger:(unsigned int*)valp {
+    if (data.length < 4)
+        return NO;
+    unsigned int big;
+    [data getBytes:&big range:NSMakeRange(0,4)];
+    [data replaceBytesInRange:NSMakeRange(0,4) withBytes:nil length:0];
+    *valp = NSSwapBigIntToHost(big);
+    return YES;
+}
+
+-(void)uploadFilesAtPaths:(NSArray*)paths imageObjects:(NSArray*)images generatedByOsiriX:(BOOL)generatedByOsiriX {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
 	@try {
@@ -547,12 +560,15 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 		NSMutableData* request = [NSMutableData dataWithBytes: generatedByOsiriX? "SENDG" : "SENDD" length:6];
 		[RemoteDicomDatabase _data:request appendInt:paths.count];
 		NSMutableArray* filesInRequest = [NSMutableArray array];
+		NSMutableArray* dbObjsInRequest = images? [NSMutableArray array] : nil;
 		
 		for (NSInteger i = 0; i < paths.count; ++i) {
 			NSString* path = [paths objectAtIndex:i];
 			thread.progress = 1.0*(i-filesInRequest.count/2)/paths.count;
 			
 			[filesInRequest addObject:path];
+			[dbObjsInRequest addObject:[images objectAtIndex:i]];
+            
 			NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
 			[RemoteDicomDatabase _data:request appendInt:fileData.length];
 			[request appendData:fileData];
@@ -563,15 +579,32 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 				[RemoteDicomDatabase _data:count appendInt:filesInRequest.count];
 				[request replaceBytesInRange:NSMakeRange(6,count.length) withBytes:count.bytes length:count.length];
 				
-				[self synchronousRequest:request urgent:YES];
+				NSMutableData* response = [[self synchronousRequest:request urgent:YES] mutableCopy];
+                if (dbObjsInRequest.count && response.length) {
+					unsigned int count;
+                    if ([[self class] data:response readInteger:&count])
+                        if (count == dbObjsInRequest.count) {
+                            [self lock];
+                            for (unsigned int i = 0; i < count; ++i) {
+                                unsigned int number;
+                                if ([[self class] data:response readInteger:&number])
+                                    [[dbObjsInRequest objectAtIndex:i] setValue:[NSNumber numberWithUnsignedInt:number] forKey:@"pathNumber"];
+                                else break;
+                            }
+                            [self unlock];
+                        }
+                }
                 
 				[request setLength:6+count.length];
 				[filesInRequest removeAllObjects];
+				[dbObjsInRequest removeAllObjects];
 			}
             
             if (thread.isCancelled)
                 break;
 		}
+        
+        if (images) [self save];
 	} @catch (...) {
 		@throw;
 	} @finally {
@@ -619,7 +652,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 			}
 		}
 		
-		if (size >= maxFiles*512*512*2)
+		if (maxFiles == 1 || size >= maxFiles*512*512*2)
 			break;
 	}
 	
