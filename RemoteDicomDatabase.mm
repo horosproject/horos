@@ -218,7 +218,9 @@
         thread.status = NSLocalizedString(@"Sending data...", nil);
         [[ThreadsManager defaultManager] addThreadAndStart:thread];
         
-        [self uploadFilesAtPaths:paths imageObjects:[self objectsWithIDs:objIDs] generatedByOsiriX:byOsiriX];
+        NSArray* images = [self objectsWithIDs:objIDs];
+        [self uploadFilesAtPaths:paths imageObjects:images generatedByOsiriX:byOsiriX];
+        
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
@@ -587,8 +589,10 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
                             [self lock];
                             for (unsigned int i = 0; i < count; ++i) {
                                 unsigned int number;
-                                if ([[self class] data:response readInteger:&number])
-                                    [[dbObjsInRequest objectAtIndex:i] setValue:[NSNumber numberWithUnsignedInt:number] forKey:@"pathNumber"];
+                                if ([[self class] data:response readInteger:&number]) {
+                                    DicomImage* image = [dbObjsInRequest objectAtIndex:i];
+                                    [image setValue:[NSNumber numberWithUnsignedInt:number] forKey:@"pathNumber"];
+                                }
                                 else break;
                             }
                             [self unlock];

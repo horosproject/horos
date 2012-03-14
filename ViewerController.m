@@ -11362,14 +11362,8 @@ short				matrix[25];
 				}
 			}
 			
-			[BrowserController addFiles: allDICOMSR
-							  toContext: [[[BrowserController currentBrowser] database] managedObjectContext]
-							 toDatabase: [BrowserController currentBrowser]
-							  onlyDICOM: YES 
-					   notifyAddedFiles: YES
-					parseExistingObject: YES
-							   dbFolder: [[[BrowserController currentBrowser] database] dataDirPath]
-					  generatedByOsiriX: YES];
+            if (allDICOMSR.count)
+                [database addFilesAtPaths:allDICOMSR postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
 		}
 		@catch ( NSException *e)
 		{

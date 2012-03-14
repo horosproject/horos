@@ -904,6 +904,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
             if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
                 return temp;
             
+            [completePathCache release]; completePathCache = nil;
 			if( download)
 				completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
 			else
