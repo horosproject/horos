@@ -3497,6 +3497,8 @@ static BOOL initialized = NO;
             if( [d valueForKey: @"crashReporterToAddress"])
                 reportAddr = [d valueForKey: @"crashReporterToAddress"];
             
+            reporter.automaticReport = [d boolForKey: @"crashReporterAutomaticReport"];
+            
             [reporter launchReporterForCompany: @"OsiriX Developers" reportAddr: reportAddr];
         }
         @catch (NSException *e)
