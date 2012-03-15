@@ -66,7 +66,9 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] lock];
+    NSPersistentStoreCoordinator *dbLock = [dict valueForKey: @"dbStoreCoordinator"];
+    
+    [dbLock lock];
     
     // Father
     [NSThread sleepForTimeInterval: 0.3]; // To allow the creation of lock_process file with corresponding pid
@@ -75,7 +77,10 @@
 	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
 	char dir[ 1024];
 	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
-	
+
+#define TIMEOUT 1200 // 1200*100000 = 120 secs
+#define DBTIMEOUT 400 // = 40 secs
+    
 	do
 	{
 		FILE * pFile = fopen (dir,"r");
@@ -89,8 +94,13 @@
             
             usleep( 100000);
             inc++;
+        
+        if( inc >= DBTIMEOUT)
+        {
+            [dbLock unlock];
+            dbLock = nil;
+        }
 	}
-#define TIMEOUT 1200 // 1200*100000 = 120 secs
 	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
 	
 	if( inc >= TIMEOUT)
@@ -107,7 +117,8 @@
 	
 	unlink( dir);
     
-    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] unlock];
+    [dbLock unlock];
+    dbLock = nil;
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
@@ -1503,18 +1514,23 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
+                    NSPersistentStoreCoordinator *dbStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+                    
 					staticContext = [[NSManagedObjectContext alloc] init];
                     staticContext.undoManager = nil;
                     
-                    NSManagedObjectModel *model = [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] managedObjectModel];
+                    [[DicomDatabase defaultDatabase] save]; // We have to save the sql file: the forked process "sees" only the file, not the store or the context.
+                    
+                    [dbStoreCoordinator lock];
+                    
+                    NSManagedObjectModel *model = [dbStoreCoordinator managedObjectModel];
                     
                     staticContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
                     [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[DicomDatabase defaultDatabase] sqlFilePath]] options: nil error: nil];
                     
-                    [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] lock];
-                    
 					@try
 					{
+                        // To update the AETitle list : required for C-MOVE SCP
                         [DCMNetServiceDelegate DICOMServersList];
 						
 						/* spawn a sub-process to handle the association */
@@ -1528,9 +1544,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else if (pid > 0)
 						{
-                            [NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", nil]];
+                            [NSThread detachNewThreadSelector: @selector(waitUnlockFileWithPID:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: pid], @"pid", [NSValue valueWithPointer:assoc], @"assoc", dbStoreCoordinator, @"dbStoreCoordinator", nil]];
                             
-                            [[[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator] unlock];
+                            [dbStoreCoordinator unlock];
                             
 							// Display a thread in the ThreadsManager for this pid
 							NSThread *t = [[[NSThread alloc] initWithTarget: [AppController sharedAppController] selector:@selector( waitForPID:) object: [NSNumber numberWithInt: pid]] autorelease];
@@ -1538,12 +1554,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 							if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
 								t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
 							[[ThreadsManager defaultManager] addThreadAndStart: t];
-							
-							
-							
-//							NSString *str = getErrorMessage();
-//							if( str)
-//								[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
 						}
 						else
 						{
