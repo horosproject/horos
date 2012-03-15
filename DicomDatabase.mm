@@ -1310,6 +1310,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		NSDate* today = [NSDate date];
 		NSString* dataDirPath = self.dataDirPath;
+        NSString* dataDirPrefix = [self.baseDirPath stringByAppendingString:@"/"];
 		NSString* reportsDirPath = self.reportsDirPath;
 		NSString* errorsDirPath = self.errorsDirPath;
 		int combineProjectionSeries = [[NSUserDefaults standardUserDefaults] boolForKey:@"combineProjectionSeries"], combineProjectionSeriesMode = [[NSUserDefaults standardUserDefaults] boolForKey: @"combineProjectionSeriesMode"];
@@ -1562,7 +1563,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						/*********** Find image object *************/
 						
 						BOOL local = NO;
-						if (dataDirPath && [newFile hasPrefix: dataDirPath])
+						if (dataDirPrefix && [newFile hasPrefix:dataDirPrefix])
 							local = YES;
 						
 						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];

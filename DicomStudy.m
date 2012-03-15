@@ -1743,7 +1743,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 			{
 				NSArray *o = [NSUnarchiver unarchiveObjectWithData: [SRAnnotation roiFromDICOM: [[found lastObject] valueForKey: @"completePathResolved"]]];
 				[r addObjectsFromArray: o];
-				
+                
 				[SRAnnotation archiveROIsAsDICOM: r toPath: [[found lastObject] valueForKey: @"completePathResolved"] forImage: image];
 			}
 		}

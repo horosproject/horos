@@ -905,7 +905,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 return temp;
             
             [completePathCache release]; completePathCache = nil;
-			if( download)
+			if (download)
 				completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
 			else
                 completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
