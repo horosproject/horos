@@ -595,7 +595,9 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
                                 unsigned int number;
                                 if ([[self class] data:response readInteger:&number]) {
                                     DicomImage* image = [dbObjsInRequest objectAtIndex:i];
-                                    [image setValue:[NSNumber numberWithUnsignedInt:number] forKey:@"pathNumber"];
+                                    [image setValue:[NSString stringWithFormat:@"%d.dcm", number] forKey:@"path"];
+                                    [image setValue:[NSNumber numberWithBool:YES] forKey:@"inDatabaseFolder"];
+
                                 }
                                 else break;
                             }
