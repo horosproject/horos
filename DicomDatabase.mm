@@ -2251,10 +2251,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				}
 				continue;
 			}
-			
-            if (![ThreadsManager.defaultManager.threads containsObject:thread])
-				[ThreadsManager.defaultManager addThreadAndStart:thread];
-			
             
 			BOOL isAlias = NO;
 			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
@@ -2383,6 +2379,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
             
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
+            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && ![ThreadsManager.defaultManager.threads containsObject:thread])
+				[ThreadsManager.defaultManager addThreadAndStart:thread];
+
 		}
 		
 		if (twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
