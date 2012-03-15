@@ -34,6 +34,10 @@
 + (NSMenu*) fusionPluginsMenu;
 + (NSArray*) fusionPlugins;
 
++ (void) startProtectForCrashWithFilter: (id) filter;
++ (void) startProtectForCrashWithPath: (NSString*) path;
++ (void) endProtectForCrash;
+
 #ifdef OSIRIX_VIEWER
 
 + (NSString*) pathResolved:(NSString*) inPath;

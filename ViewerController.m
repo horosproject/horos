@@ -7698,6 +7698,8 @@ return YES;
 	
 	[imageView stopROIEditingForce: YES];
 	
+    [PluginManager startProtectForCrashWithFilter: filter];
+    
 	NSLog( @"executeFilter");
 	
 	@try
@@ -7706,6 +7708,8 @@ return YES;
 		if( result)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+            [PluginManager endProtectForCrash];
+            
 			return;
 		}
 	}
@@ -7713,6 +7717,8 @@ return YES;
 	{
 		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+        [PluginManager endProtectForCrash];
+        
 		return;
 	}
 	
@@ -7722,6 +7728,8 @@ return YES;
 		if( result)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil), nil, nil, nil);
+            [PluginManager endProtectForCrash];
+            
 			return;
 		}
 	}
@@ -7731,6 +7739,8 @@ return YES;
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
 	
+    [PluginManager endProtectForCrash];
+    
 	[imageView roiSet];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
