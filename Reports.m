@@ -554,24 +554,24 @@ static id aedesc_to_id(AEDesc *desc)
     if (![[NSFileManager defaultManager] fileExistsAtPath:templatePath])
         return NO;
     
-	NSMutableString* source = [NSMutableString stringWithCapacity:1000];
-    [source appendString:@"on run argv\n"];
-    [source appendString:@"  set dataSourceFileUnix to (item 1 of argv)\n"];
-	[source appendString:@"  set outFilePathUnix to (item 2 of argv)\n"];
-	[source appendString:@"  set templatePathUnix to (item 3 of argv)\n"];
-	[source appendString:@"  set dataSourceFile to POSIX file dataSourceFileUnix\n"];
-    [source appendString:@"  set outFilePath to POSIX file outFilePathUnix\n"];
-    [source appendString:@"  set templatePath to POSIX file templatePathUnix\n"];
-    [source appendString:@"  tell application \"Microsoft Word\"\n"];
-	[source appendString:@"    open templatePath\n"];
-	[source appendString:@"    open data source data merge of document 1 name dataSourceFile\n"];
-	[source appendString:@"    set myMerge to data merge of document 1\n"];
-	[source appendString:@"    set destination of myMerge to send to new document\n"];
-	[source appendString:@"    execute data merge myMerge\n"];
-	[source appendString:@"    save as document 1 file name (outFilePath as string)\n"];
-	[source appendString:@"    close document 2 saving no\n"]; // close the non-merged file
-	[source appendString:@"  end tell\n"];
-    [source appendString:@"end run\n"];
+	NSString* source =
+    @"on run argv\n"
+    @"  set dataSourceFileUnix to (item 1 of argv)\n"
+	@"  set outFilePathUnix to (item 2 of argv)\n"
+	@"  set templatePathUnix to (item 3 of argv)\n"
+	@"  set dataSourceFile to POSIX file dataSourceFileUnix\n"
+    @"  set outFilePath to POSIX file outFilePathUnix\n"
+    @"  set templatePath to POSIX file templatePathUnix\n"
+    @"  tell application \"Microsoft Word\"\n"
+    @"    open templatePath\n"
+    @"    open data source data merge of document 1 name dataSourceFile\n"
+    @"    set myMerge to data merge of document 1\n"
+    @"    set destination of myMerge to send to new document\n"
+    @"    execute data merge myMerge\n"
+    @"    save as document 1 file name (outFilePath as string)\n"
+    @"    close document 2 saving no\n" // close the non-merged file
+    @"  end tell\n"
+    @"end run\n";
 	
 //	NSLog(@"%@", source);
     
@@ -591,21 +591,7 @@ static id aedesc_to_id(AEDesc *desc)
 }
 
 #pragma mark -
-#pragma mark Pages.app
-
-- (NSString*)generatePagesReportScriptUsingTemplate:(NSString*)aTemplate completeFilePath:(NSString*)aFilePath;
-{
-	NSMutableString *script = [NSMutableString stringWithCapacity:1000];
-	
-	[script appendString:[NSString stringWithFormat:@"set theSaveName to \"%@\"\n", [self HFSPathFromPOSIXPath: aFilePath]]];
-	[script appendString:@"tell application \"Pages\"\n"];
-	[script appendString:[NSString stringWithFormat:@"set myDocument to make new document with properties {template name:\"%@\"}\n", aTemplate]];
-	[script appendString:@"close myDocument saving in theSaveName\n"];
-	[script appendString:@"end tell\n"];
-	
-	return script;
-}
-
+#pragma mark OpenDocument
 
 - (BOOL) createNewOpenDocumentReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 {
@@ -671,32 +657,34 @@ static id aedesc_to_id(AEDesc *desc)
 	return YES;
 }
 
+#pragma mark -
+#pragma mark Pages.app
+
 - (BOOL)createNewPagesReportForStudy:(NSManagedObject*)aStudy toDestinationPath:(NSString*)aPath;
 {	
 	// create the Pages file, using the template (not filling the patient's data yet)
 	
-	NSString *tempPath;
-
-	// Applescript doesnt support UTF-8 encoding
-
-	tempPath = [aPath stringByDeletingLastPathComponent];
-	tempPath = [tempPath stringByAppendingPathComponent: @"pagesTempReport"];
-	tempPath = [tempPath stringByAppendingPathExtension: [aPath pathExtension]];
+	[[NSFileManager defaultManager] removeItemAtPath:aPath error:NULL];
+    
+	// Applescript doesnt support UTF-8 encoding... but it should be ok if the accents are in the passed arguments
+    NSString* source = 
+    @"on run argv\n"
+    @"  set templateName to (item 1 of argv)\n"
+	@"  set tempPathUnix to (item 2 of argv)\n"
+    @"  set tempPath to POSIX file tempPathUnix\n"
+    @"  tell application \"Pages\"\n"
+    @"    set myDocument to make new document with properties {template name: templateName}\n"
+    @"    close myDocument saving in tempPath\n"
+	@"  end tell\n"
+    @"end run\n";
+    @try {
+        [[self class] _runAppleScript:source withArguments:[NSArray arrayWithObjects: templateName, aPath, nil]];
+    } @catch (NSException* e) {
+        NSLog(@"Exception: %@", e.reason);
+        return NO;
+    }
 	
-	[[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
-	
-	NSString *creationScript = [self generatePagesReportScriptUsingTemplate:templateName completeFilePath: tempPath];
-	[self runScript: creationScript];
-	
-	if( aPath)
-	{
-		[[NSFileManager defaultManager] removeItemAtPath: aPath error: nil];
-		[[NSFileManager defaultManager] moveItemAtPath: tempPath toPath: aPath error: nil];
-	}
-	
-	BOOL isDirectory;
-	if( [[NSFileManager defaultManager] fileExistsAtPath: aPath isDirectory: &isDirectory] == NO)
-	{
+	if ([[NSFileManager defaultManager] fileExistsAtPath:aPath] == NO) {
 		NSRunCriticalAlertPanel( NSLocalizedString( @"Pages", nil),  NSLocalizedString(@"Failed to create the report with Pages.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 	}
 	
