@@ -12486,6 +12486,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				case UnreadHotKeyAction:
 				case ReviewedHotKeyAction:
 				case DictatedHotKeyAction:
+                case ValidatedHotKeyAction:
 					if( [self is2DViewer] == YES)
 					{
 						[[self windowController] setStatusValue: key - EmptyHotKeyAction];
