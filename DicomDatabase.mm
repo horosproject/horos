@@ -2443,6 +2443,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     @finally
     {
 		[_importFilesFromIncomingDirLock unlock];
+        [thread exitOperation];
+        [OsiriX unsetReceivingIcon];
 	}
 	
 #ifndef OSIRIX_LIGHT
@@ -2458,10 +2460,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         }
 	}
 #endif
-	
-	[OsiriX unsetReceivingIcon];
 
-	[thread exitOperation];
 	return addedFilesCount;
 }
 
