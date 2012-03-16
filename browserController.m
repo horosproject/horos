@@ -7202,49 +7202,51 @@ static BOOL withReset = NO;
         DicomDatabase* idatabase = [database independentDatabase];
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
 
-        for (int i = 0; i < objs.count; i++) {
-            if (context != previewPix)
-                break; // changing the database selection makes previewPix change value
-            
-            DicomImage* image = [objs objectAtIndex:i];
-            
-            int frame = 0;
-            if (image.numberOfFrames.intValue > 1)
-                frame = image.numberOfFrames.intValue/2;
-            if (image.frameID) frame = image.frameID.intValue;
-            
-            DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
-            if (dcmPix == nil) {
-                [database lock];
-                dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:[database objectWithID:image.objectID]] autorelease];
-                [database unlock];
-            }
-            
-            if (!imageLevel) {
-                NSData* dbThmb = image.series.thumbnail;
-                if (dbThmb) {
-                    NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
-                    NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
-                    [dbIma addRepresentation:rep];
-                    [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
-                    continue;
+        for (int i = 0; i < objectIDs.count; i++)
+            @try {
+                if (context != previewPix)
+                    break; // changing the database selection makes previewPix change value
+                
+                DicomImage* image = [idatabase objectWithID:[objectIDs objectAtIndex:i]];
+                if (!image) break; // the objects don't exist anymore, the selection has very likely changed after this call
+                
+                int frame = 0;
+                if (image.numberOfFrames.intValue > 1)
+                    frame = image.numberOfFrames.intValue/2;
+                if (image.frameID) frame = image.frameID.intValue;
+                
+                DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
+                if (dcmPix == nil) {
+                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:[database objectWithID:image.objectID]] autorelease];
                 }
-            }
+                
+                if (!imageLevel) {
+                    NSData* dbThmb = image.series.thumbnail;
+                    if (dbThmb) {
+                        NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
+                        NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
+                        [dbIma addRepresentation:rep];
+                        [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
+                        continue;
+                    }
+                }
 
-            if (dcmPix) {
-                if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
+                if (dcmPix) {
+                    if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
+                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
+                    } else {
+                        NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
+                        [dcmPix revert:NO];	// <- Kill the raw data
+                        if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
+                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
+                    }
                 } else {
-                    NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
-                    [dcmPix revert:NO];	// <- Kill the raw data
-                    if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-                    [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
+                    [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
                 }
-            } else {
-                [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+                break;
             }
-        }
-        
         [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);

@@ -808,7 +808,7 @@ extern "C"
         NSIndexSet* indices = [outlineView selectedRowIndexes];
         BOOL extendingSelection = NO;
         
-        [[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
+     //   [[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
         
         @try 
         {
@@ -833,7 +833,7 @@ extern "C"
             N2LogExceptionWithStackTrace(e);
         }
         
-        [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
+    //    [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
         
         if( extendingSelection)
         {
