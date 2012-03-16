@@ -355,7 +355,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     [DicomDatabase knowAbout:self]; // retains self
     
 	self = [super initWithPath:sqlFilePath context:c mainDatabase:mainDbReference];
-	
+    
 	// post-init
 	
     if (!mainDbReference) // is main (not independent)
@@ -450,12 +450,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     } else {
         [_importFilesFromIncomingDirLock release];
         [_processFilesLock release];
-        if (self.mainDatabase) {
-            [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:_O2AddToDBAnywayNotification object:self];
-            [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:_O2AddToDBAnywayCompleteNotification object:self];
-            [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:OsirixAddToDBNotification object:self];
-            [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:OsirixAddToDBCompleteNotification object:self];
-        }
+        [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:nil object:self];
     }
     
 	[_dataFileIndex release];

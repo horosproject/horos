@@ -95,8 +95,8 @@
  /*   if (lockhist.count) NSLog(@"WARNING: releasing locked %@", lockhist);
     if (lockhist) [lockhist release];*/
 	self.database = nil;
-	[super dealloc];
 	[NSNotificationCenter.defaultCenter removeObserver:self]; // some bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
+	[super dealloc];
 }
 
 -(BOOL)save:(NSError**)error {
