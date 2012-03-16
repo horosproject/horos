@@ -7207,8 +7207,11 @@ static BOOL withReset = NO;
             if (image.frameID) frame = image.frameID.intValue;
             
             DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
-            if (dcmPix == nil)
-                dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:image] autorelease];
+            if (dcmPix == nil) {
+                [database lock];
+                dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:[database objectWithID:image.objectID]] autorelease];
+                [database unlock];
+            }
             
             if (!imageLevel) {
                 NSData* dbThmb = image.series.thumbnail;
@@ -7234,7 +7237,7 @@ static BOOL withReset = NO;
                 [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
             }
         }
-
+        
         [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
