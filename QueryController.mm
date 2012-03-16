@@ -827,6 +827,11 @@ extern "C"
                     else NSBeep();
                 } 
             }
+
+            if( extendingSelection)
+            {
+                [[BrowserController currentBrowser] delItem: nil];
+            }
         }
         @catch (NSException * e) 
         {
@@ -834,11 +839,6 @@ extern "C"
         }
         
     //    [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
-        
-        if( extendingSelection)
-        {
-            [[BrowserController currentBrowser] delItem: nil];
-        }
     }
 }
 
