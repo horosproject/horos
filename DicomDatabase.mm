@@ -2197,8 +2197,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1]; // For next release...
 		// NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath];
 		
-		[OsiriX setReceivingIcon];
-		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
         
 		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
@@ -2370,8 +2368,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
             
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
-            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && ![ThreadsManager.defaultManager.threads containsObject:thread])
+            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && ![ThreadsManager.defaultManager.threads containsObject:thread]) {
 				[ThreadsManager.defaultManager addThreadAndStart:thread];
+                [OsiriX setReceivingIcon];
+            }
 
 		}
 		
