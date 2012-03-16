@@ -994,7 +994,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		NSOperationQueue* queue = [NSOperationQueue new];
         NSUInteger nProcs = MPProcessors();
-        queue.maxConcurrentOperationCount = MAX(nProcs/2, 1);
+        queue.maxConcurrentOperationCount = MAX(nProcs-1, 1);
 		for (NSArray* chunk in chunks)
 			[queue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(_processFilesAtPaths_processChunk:) object:[NSArray arrayWithObjects: chunk, [NSNumber numberWithInt:mode], destDir, nil]] autorelease]]; // Warning! DestDir can be nil : at the end !
 		
