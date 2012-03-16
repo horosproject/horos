@@ -66,6 +66,9 @@
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    // Father
+    [NSThread sleepForTimeInterval: 0.3]; // To allow the creation of lock_process file with corresponding pid
+    
     NSPersistentStoreCoordinator *dbLock = [dict valueForKey: @"dbStoreCoordinator"];
     
     [dbLock lock];
@@ -73,13 +76,14 @@
     // Father
     [NSThread sleepForTimeInterval: 0.3]; // To allow the creation of lock_process file with corresponding pid
     
+    
 	BOOL fileExist = YES;
 	int pid = [[dict valueForKey: @"pid"] intValue], inc = 0, rc = pid, state;
 	char dir[ 1024];
 	sprintf( dir, "%s-%d", "/tmp/lock_process", pid);
 
-#define TIMEOUT 1200 // 1200*100000 = 120 secs
-#define DBTIMEOUT 400 // = 40 secs
+    #define TIMEOUT 1200 // 1200*100000 = 120 secs
+    #define DBTIMEOUT 400 // = 40 secs
     
 	do
 	{
@@ -101,7 +105,7 @@
             dbLock = nil;
         }
 	}
-	while( fileExist == YES && inc < TIMEOUT && rc >= 0);
+    while( fileExist == YES && inc < TIMEOUT && rc >= 0);
 	
 	if( inc >= TIMEOUT)
 	{
@@ -120,6 +124,9 @@
     [dbLock unlock];
     dbLock = nil;
 	
+    [dbLock unlock];
+    dbLock = nil;
+    
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 	{
 		NSString *str = [NSString stringWithContentsOfFile: @"/tmp/error_message"];
@@ -239,14 +246,15 @@ static void storeCallback(
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
     char *imageFileName,       /* being received into */
-    char *calledAETitle,
+    char *sourceAETitle,
+    char *destinationAETitle,
     DcmDataset **imageDataSet, /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **stDetail)
 {
   DcmQueryRetrieveStoreContext *context = OFstatic_cast(DcmQueryRetrieveStoreContext *, callbackData);
-  context->callbackHandler(progress, req, imageFileName, calledAETitle, imageDataSet, rsp, stDetail);
+  context->callbackHandler(progress, req, imageFileName, sourceAETitle, destinationAETitle, imageDataSet, rsp, stDetail);
 }
 
 
@@ -1603,7 +1611,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                         N2LogExceptionWithStackTrace(e);
 					}
                     
-//					[staticContext unlock];
 					[staticContext release];
 					staticContext = nil;
 				}

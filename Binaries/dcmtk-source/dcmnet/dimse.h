@@ -712,7 +712,8 @@ typedef void (*DIMSE_StoreProviderCallback)(
     T_DIMSE_StoreProgress *progress,	/* progress state */
     T_DIMSE_C_StoreRQ *request,		/* original store request */
     char *imageFileName,
-    char *calledAETitle,
+    char *sourceAETitle,
+    char *destinationAETitle,
     DcmDataset **imageDataSet, /* being received into */
     /* in/out */
     T_DIMSE_C_StoreRSP *response, 	/* final store response */

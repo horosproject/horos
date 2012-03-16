@@ -42,7 +42,7 @@
 	copy.includeHTMLQT = self.includeHTMLQT;
 	copy.includeReports = self.includeReports;
 	copy.includeAuxiliaryDir = self.includeAuxiliaryDir;
-	copy.auxiliaryDirPath = [self.auxiliaryDirPath copyWithZone:zone];
+	copy.auxiliaryDirPath = [[self.auxiliaryDirPath copyWithZone:zone] autorelease];
 	copy.compression = self.compression;
 	copy.compressJPEGNotJPEG2000 = self.compressJPEGNotJPEG2000;
 	copy.zip = self.zip;

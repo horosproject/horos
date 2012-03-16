@@ -3326,7 +3326,7 @@ static BOOL initialized = NO;
 	}
 	
 	BOOL dialog = NO;
-	
+    
 	if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/"] == NO)
 		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/" attributes: nil];
 	
@@ -3356,7 +3356,33 @@ static BOOL initialized = NO;
     {
         @try
         {
-            [[ILCrashReporter defaultReporter] launchReporterForCompany:@"OsiriX Developers" reportAddr:@"crash@osirix-viewer.com"];
+            ILCrashReporter *reporter = [ILCrashReporter defaultReporter];
+            
+            NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
+            
+            if( [d valueForKey: @"crashReporterSMTPServer"])
+                reporter.SMTPServer = [d valueForKey: @"crashReporterSMTPServer"];
+            
+            if( [d valueForKey: @"crashReporterSMTPUsername"])
+                reporter.SMTPUsername = [d valueForKey: @"crashReporterSMTPUsername"];
+            
+            if( [d valueForKey: @"crashReporterSMTPPassword"])
+                reporter.SMTPPassword = [d valueForKey: @"crashReporterSMTPPassword"];
+            
+            if( [d valueForKey: @"crashReporterSMTPPort"])
+                reporter.SMTPPort = [d integerForKey: @"crashReporterSMTPPort"];
+            
+            if( [d valueForKey: @"crashReporterFromAddress"])
+                reporter.fromAddress = [d valueForKey: @"crashReporterFromAddress"];
+            
+            NSString *reportAddr = @"crash@osirix-viewer.com";
+            
+            if( [d valueForKey: @"crashReporterToAddress"])
+                reportAddr = [d valueForKey: @"crashReporterToAddress"];
+            
+            reporter.automaticReport = [d boolForKey: @"crashReporterAutomaticReport"];
+            
+            [reporter launchReporterForCompany: @"OsiriX Developers" reportAddr: reportAddr];
         }
         @catch (NSException *e)
         {

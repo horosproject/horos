@@ -1,12 +1,16 @@
+- Series Switch: re-apply image tiling according to Protocols
+- QR: short timeout (auto-repeat)
+- RGB support for MIP & MPR
 
 ------------------------------------------------------------------------------------------
 
 A:
-(OK) DB remote: black image (multi-load)
-(OK)- DB Remote: ROIs
+- DB Remote: ROIs - create, see, delete, sync
 - DB Remote: HD Free Space: delete entire DB?
-(OK) Compress/Decompress: no thread info?
 - MainMenu.xib : menus, subSampling, banner
+- If CD direct reading : display "Opening…" dialog when opening a 2D Viewer
+- Continuously flashing Activity…
+- CD: when automatically copy the files. OsiriX should automatically select the study in the DB, when the first images are available.
 
 - Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 
@@ -15,6 +19,7 @@ Added features:
 
 ------------------------------------------------------------------------------------------
 
+- ExportROIs plugin: add Length
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching
 - CPR : adapt coloscopy path algo to CPR vessels
@@ -24,9 +29,9 @@ Added features:
 - Bug, at leas in AOVO's branch: in 32 bits, the sheet that allows users to select part of the series is opened more than once if the series is too big for 32bit and keeps receiving images, and only one sheed can be dismissed, and you must forcequit to continue using OsiriX
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
-- WebPortal: Groups (for sharing)
+- WebPortal: Groups of users (for sharing)
 - WebPortal: Burn option if the CD/DVD is installed
-- WebPortal: create albums and add/remove studies to static albums (admin)
+- WebPortal: create/delete albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
 - WebPortal: ROIs, Key images series, ...
 - http://code.google.com/p/exposure-render/

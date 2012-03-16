@@ -2401,7 +2401,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 {
 					@try
                     {
+                        [PluginManager startProtectForCrashWithFilter: filter];
 						[filter processFiles: filesArray];
+                        [PluginManager endProtectForCrash];
 					}
                     @catch (NSException* e)
                     {

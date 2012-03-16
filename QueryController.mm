@@ -3423,7 +3423,7 @@ extern "C"
     if( [[outlineView autosaveName] length] == 0)
     {
         NSArray *cols = [[NSUserDefaults standardUserDefaults] arrayForKey: @"QueryControllerTableColumns"];
-        NSMenu *tableHeaderContextMenu = [[NSMenu alloc] initWithTitle:@""];
+        NSMenu *tableHeaderContextMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
         [[outlineView headerView] setMenu:tableHeaderContextMenu];
         NSArray *tableColumns = [NSArray arrayWithArray:[outlineView tableColumns]]; // clone array so compiles/runs on 10.5
         NSEnumerator *enumerator = [tableColumns objectEnumerator];

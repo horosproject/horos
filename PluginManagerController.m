@@ -67,6 +67,8 @@ static NSDate *CachedPluginsListDate = nil;
 {
 	self = [super initWithWindowNibName:@"PluginManager"];
 	
+    downloadingPlugins = [[NSMutableDictionary dictionary] retain];
+    
 	plugins = [[NSMutableArray arrayWithArray:[PluginManager pluginsList]] retain];
 	
 	pluginsListURLs = [[NSArray arrayWithObjects:PLUGIN_LIST_URL, PLUGIN_LIST_ALT_URL, nil] retain];
@@ -78,8 +80,6 @@ static NSDate *CachedPluginsListDate = nil;
 	
 	[statusTextField setHidden:YES];
 	[statusProgressIndicator setHidden:YES];
-	downloadedFilePath = @"";
-	[downloadedFilePath retain];
 	
 	// deactivate the back/forward options in the webView's contextual menu
 	[[webView backForwardList] setCapacity:0];
@@ -97,7 +97,7 @@ static NSDate *CachedPluginsListDate = nil;
 	[plugins release];
 	[pluginsListURLs release];
 	[downloadURL release];
-	[downloadedFilePath release];
+    [downloadingPlugins release];
 	
 	[super dealloc];
 }
@@ -397,9 +397,19 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 
 - (IBAction)download:(id)sender;
 {
-	NSURLDownload *download = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self];
-	downloadedFilePath = [[NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]] retain];
-	[download setDestination:downloadedFilePath allowOverwrite:YES];
+    NSString *downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    
+    if( [downloadingPlugins objectForKey: downloadedFilePath])
+        NSLog( @"---- Already downloading...");
+    
+    else
+    {
+        NSURLDownload *download = [[[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self] autorelease];
+        
+        [download setDestination: downloadedFilePath allowOverwrite:YES];
+        
+        [downloadingPlugins setObject: download forKey: downloadedFilePath];
+    }
 }
 
 - (void)downloadDidBegin:(NSURLDownload *)download
@@ -415,16 +425,37 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusTextField setStringValue:NSLocalizedString(@"Plugin downloaded", nil)];
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
-	[self installDownloadedPluginAtPath:downloadedFilePath];
-	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
+    
+    NSArray *paths = [downloadingPlugins allKeysForObject: download];
+    
+    if( paths.count == 1)
+    {
+        [self installDownloadedPluginAtPath: [paths lastObject]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
+        
+        [downloadingPlugins removeObjectForKey: [paths lastObject]];
+    }
+    else
+        NSLog( @"***** downloadDidFinish path for download?");
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error
 {
 	[statusTextField setHidden:NO];
-	[statusTextField setStringValue:[NSString stringWithFormat:@"%@ (%@)",NSLocalizedString(@"Download failed", nil), [error localizedDescription]]];
+	[statusTextField setStringValue:NSLocalizedString(@"Download failed", nil)];
+     
+    NSRunCriticalAlertPanel( NSLocalizedString(@"Download failed", nil), [error localizedDescription], NSLocalizedString(@"OK", nil), nil, nil);
+    
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
+    
+    NSArray *paths = [downloadingPlugins allKeysForObject: download];
+    
+    if( paths.count == 1)
+        [downloadingPlugins removeObjectForKey: [paths lastObject]];
+    else
+        NSLog( @"***** download didFailWithError path for download?");
 }
 
 #pragma mark install

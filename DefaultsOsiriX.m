@@ -1094,6 +1094,7 @@ static NSHost *currentHost = nil;
 						@".",	//UnreadHotKeyAction
 						@"/",	//ReviewedHotKeyAction
 						@"\\",	//DictatedHotKeyAction
+                        @"",	//ValidatedHotKeyAction
 						@"y",	//OrthoMPRCrossTool
 						nil];						
 	

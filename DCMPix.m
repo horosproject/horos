@@ -9275,6 +9275,9 @@ END_CREATE_ROIS:
 			if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:[srcFile pathExtension]]))
 			{
 				PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
+                
+                [PluginManager startProtectForCrashWithFilter: decoder];
+                
 				fImage = [decoder checkLoadAtPath:srcFile];
 				//NSLog(@"decoder width %d", [decoder width]);
 				width = [[decoder width] intValue];
@@ -9285,6 +9288,7 @@ END_CREATE_ROIS:
 				isRGB = [decoder isRGB];			
 				[decoder release];					
 				
+                [PluginManager endProtectForCrash];
 			}
 			else
 #endif

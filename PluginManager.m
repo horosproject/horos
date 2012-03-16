@@ -37,6 +37,37 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 @synthesize downloadQueue;
 
++ (void) startProtectForCrashWithFilter: (id) filter
+{
+//    *(long*)0 = 0xDEADBEEF;
+    
+    for( NSBundle *bundle in [pluginsBundleDictionnary allValues])
+    {
+        if( [NSStringFromClass( [filter class]) isEqualToString: NSStringFromClass( [bundle principalClass])])
+        {
+            [PluginManager startProtectForCrashWithPath: [bundle bundlePath]];
+           
+//            *(long*)0 = 0xDEADBEEF;
+            
+            return;
+        }
+    }
+    
+    NSLog( @"***** unknown plugin - startProtectForCrashWithFilter - %@", NSStringFromClass( [filter principalClass]));
+}
+
++ (void) startProtectForCrashWithPath: (NSString*) path
+{
+    // Match with AppController, ILCrashReporter
+    [path writeToFile: @"/tmp/PluginCrashed" atomically: YES encoding: NSUTF8StringEncoding error: nil];
+}
+
++ (void) endProtectForCrash
+{
+    // Match with AppController, ILCrashReporter
+    [[NSFileManager defaultManager] removeItemAtPath: @"/tmp/PluginCrashed" error: nil];
+}
+
 + (int) compareVersion: (NSString *) v1 withVersion: (NSString *) v2
 {
 	@try
@@ -488,10 +519,9 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
             
             @try
             {
-                NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent:name]];
-                NSString *pluginCrash = [documentsDirectory() stringByAppendingPathComponent:@"/Plugin_Loading"];
+                NSString *pathResolved = [PluginManager pathResolved: [path stringByAppendingPathComponent: name]];
                 
-                [pathResolved writeToFile: pluginCrash atomically: YES encoding: NSUTF8StringEncoding error: nil];
+                [PluginManager startProtectForCrashWithPath: pathResolved];
                 
                 NSBundle *plugin = [NSBundle bundleWithPath: pathResolved];
                 
@@ -565,7 +595,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                     }
                 }
                 
-                [[NSFileManager defaultManager] removeItemAtPath: pluginCrash error: nil];
+                [PluginManager endProtectForCrash];
             }
             @catch( NSException *e)
             {
@@ -639,7 +669,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
             
-            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed during last startup", nil), [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), [pluginCrashPath lastPathComponent]], NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil);
+            int result = NSRunInformationalAlertPanel(NSLocalizedString(@"OsiriX crashed", nil), [NSString stringWithFormat: NSLocalizedString(@"Previous crash is maybe related to a plugin.\r\rShould I remove this plugin (%@)?", nil), [pluginCrashPath lastPathComponent]], NSLocalizedString(@"Delete Plugin",nil), NSLocalizedString(@"Continue",nil), nil);
             
             if( result == NSAlertDefaultReturn) // Delete Plugin
             {

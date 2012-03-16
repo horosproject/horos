@@ -3845,6 +3845,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		fileType = [[NSString stringWithString:@"IMAGE"] retain];
 		
 		PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
+        
+        [PluginManager startProtectForCrashWithFilter: decoder];
+        
 		float *fImage = [decoder checkLoadAtPath:filePath];
 		width = [[decoder width] floatValue];
 		height = [[decoder height] floatValue];
@@ -3919,6 +3922,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 		[decoder release];
 		free(fImage);
+        
+        [PluginManager endProtectForCrash];
+        
 		return 0;				
 	}
 	#endif

@@ -4443,8 +4443,15 @@ static NSConditionLock *threadLock = nil;
 			if( plugin)
 			{
 				PluginFilter* filter = [[plugin principalClass] filter];
-				return [filter reportDateForStudy: item];
-				//return [filter report: item action: @"dateReport"];
+                
+                [PluginManager startProtectForCrashWithFilter: filter];
+                
+				id returnValue = [filter reportDateForStudy: item];
+                
+				[PluginManager endProtectForCrash];
+                
+                return returnValue;
+                //return [filter report: item action: @"dateReport"];
 			}
 			return nil;
 		}
@@ -15086,7 +15093,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 					if( plugin)
 					{
 						PluginFilter* filter = [[plugin principalClass] filter];
+                        
+                        [PluginManager startProtectForCrashWithFilter: filter];
 						[filter deleteReportForStudy: studySelected];
+                        [PluginManager endProtectForCrash];
+                        
 						//[filter report: studySelected action: @"deleteReport"];
 					}
 					else
@@ -15164,11 +15175,17 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 //					[checkBonjourUpToDateThreadLock lock];
 					
+                    
+                    
 					@try 
 					{
 						NSLog(@"generate report with plugin");
 						PluginFilter* filter = [[plugin principalClass] filter];
+                        
+                        [PluginManager startProtectForCrashWithFilter: filter];
 						[filter createReportForStudy: studySelected];
+                        [PluginManager endProtectForCrash];
+                        
 						NSLog(@"end generate report with plugin");
 						//[filter report: studySelected action: @"openReport"];
 					}
@@ -16565,22 +16582,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (void)executeFilterFromString: (NSString*)name
 {
-	long result;
     id filter = [[PluginManager plugins] objectForKey:name];
 	
-	if (filter==nil)
+	if( filter == nil)
 	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 		return;
 	}
 	
-	result = [filter prepareFilter: nil];
-	[filter filterImage:name];
-	NSLog(@"executeFilter %@", [filter description]);
-	if( result)	{
-		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
-		return;
+    [PluginManager startProtectForCrashWithFilter: filter];
+    
+	long result = [filter prepareFilter: nil];
+	[filter filterImage: name];
+    
+	if( result)
+    {
+		NSRunAlertPanel( NSLocalizedString( @"Plugins Error", nil), NSLocalizedString( @"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
+    
+    [PluginManager endProtectForCrash];
 }
 
 - (void)executeFilterDB: (id)sender

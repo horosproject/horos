@@ -4901,11 +4901,11 @@ static ViewerController *draggedController = nil;
 {
 	return draggedController;
 }
+
 + (void) setDraggedController:(ViewerController *) controller
 {
 	draggedController = controller;
 }
-
 
 #pragma mark-
 #pragma mark 4. toolbox space
@@ -4918,9 +4918,13 @@ static ViewerController *draggedController = nil;
 - (IBAction) switchCobbAngle:(id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool: ![[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"] forKey: @"displayCobbAngle"];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ROITEXTIFSELECTED"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"displayCobbAngle"] == YES)
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"ROITEXTIFSELECTED"]; // To display the Cobbs value -> show all ROIs information
 }
 
-- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
+- (NSToolbarItem *) toolbar: (NSToolbar *)toolbar itemForItemIdentifier: (NSString *) itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted
+{
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
@@ -7724,6 +7728,8 @@ return YES;
 	
 	[imageView stopROIEditingForce: YES];
 	
+    [PluginManager startProtectForCrashWithFilter: filter];
+    
 	NSLog( @"executeFilter");
 	
 	@try
@@ -7732,6 +7738,8 @@ return YES;
 		if( result)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+            [PluginManager endProtectForCrash];
+            
 			return;
 		}
 	}
@@ -7739,6 +7747,8 @@ return YES;
 	{
 		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
+        [PluginManager endProtectForCrash];
+        
 		return;
 	}
 	
@@ -7748,6 +7758,8 @@ return YES;
 		if( result)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot apply the selected plugin.", nil), nil, nil, nil);
+            [PluginManager endProtectForCrash];
+            
 			return;
 		}
 	}
@@ -7757,6 +7769,8 @@ return YES;
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
 	
+    [PluginManager endProtectForCrash];
+    
 	[imageView roiSet];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixRecomputeROINotification object:self userInfo: nil];
