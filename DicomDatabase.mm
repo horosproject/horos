@@ -1952,11 +1952,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
 	//	[autoroutingInProgress lock];
-	
+    NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+    [queue setMaxConcurrentOperationCount:1];
+    
 	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
+    BOOL* studySelectedP = &studySelected;
 	NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
 	
-	int total = 0;
+//	int total = 0;
 	
 	for( int i = 0; i < [filesInput count];)
 	{
@@ -2054,86 +2057,74 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					}
 				}
 				
-				if( [NSThread currentThread].isCancelled)
+				if ([NSThread currentThread].isCancelled)
 					break;
-				
-				if( i == [filesInput count]-1 || twentySeconds <= [NSDate timeIntervalSinceReferenceDate])
-				{
-					if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"])
-					{
-						if( i == [filesInput count]-1)
-							[NSThread currentThread].progress = -1;
-						
-						[NSThread currentThread].status =  NSLocalizedString( @"Validating the files...", nil);
-					}
-					else
-					{
-						if( i == [filesInput count]-1)
-						{
-							[NSThread currentThread].progress = 1;
-							[NSThread currentThread].status =  NSLocalizedString( @"Done. Finishing...", nil);
-						}
-						else
-							[NSThread currentThread].status =  NSLocalizedString( @"Indexing the files...", nil);
-					}
-				}
 			}
 			
-			BOOL succeed = YES;
-			
+            [queue addOperationWithBlock:^{
+                NSThread* thread = [NSThread currentThread];
+                thread.name = NSLocalizedString(@"Adding copied files...", nil);
+                [[ThreadsManager defaultManager] addThreadAndStart:thread];
+                
+                BOOL succeed = YES;
+                
 #ifndef OSIRIX_LIGHT
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
-				succeed = [DicomDatabase testFiles: copiedFiles];
+                thread.status = NSLocalizedString(@"Validating the files...", nil);
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"validateFilesBeforeImporting"] && [[dict objectForKey: @"mountedVolume"] boolValue] == NO) // mountedVolume : it's too slow to test the files now from a CD
+                    succeed = [DicomDatabase testFiles: copiedFiles];
 #endif
-			
-			NSArray *objects = nil;
-			
-			if( succeed)
-			{
-                objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
-				total += [copiedFiles count];
-			}
-			else
-			{
-				for( NSString * f in copiedFiles)
-					[[NSFileManager defaultManager]removeItemAtPath: f error: nil];
-			}
-			
-			if( [objects count]) @try {
-                [self lock];
                 
-                objects = [self objectsWithIDs:objects];
+                NSArray *objects = nil;
                 
-                BrowserController* bc = [BrowserController currentBrowser];
+                if( succeed){
+                    thread.status = NSLocalizedString(@"Indexing the files...", nil);
+                    objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
+//                    total += [copiedFiles count];
+                }
+                else
+                {
+                    for( NSString * f in copiedFiles)
+                        [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
+                }
                 
-				if( studySelected == NO)
-				{
-					if( [[dict objectForKey: @"selectStudy"] boolValue])
-						[bc performSelectorOnMainThread: @selector( selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
-					
-					studySelected = YES;
-				}
-				
-				if (bc.database == self && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
-				{
-					NSManagedObject *album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
-					
-					if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
-					{
-						NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-						
-						for( NSManagedObject *object in objects)
-						{
-							[studies addObject: [object valueForKeyPath:@"series.study"]];
-							[[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
-						}
-					}
-				}
-			} @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
-            } @finally {
-                [self unlock];
-            }
+                if( [objects count]) @try {
+                    [self lock];
+                    
+                    objects = [self objectsWithIDs:objects];
+                    
+                    BrowserController* bc = [BrowserController currentBrowser];
+                    
+                    if( studySelected == NO)
+                    {
+                        if( [[dict objectForKey: @"selectStudy"] boolValue])
+                            [bc performSelectorOnMainThread: @selector(selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+                        
+                        *studySelectedP = YES;
+                    }
+                    
+                    if (bc.database == self && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
+                    {
+                        NSManagedObject *album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
+                        
+                        if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+                        {
+                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                            
+                            for( NSManagedObject *object in objects)
+                            {
+                                [studies addObject: [object valueForKeyPath:@"series.study"]];
+                                [[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                            }
+                        }
+                    }
+                } @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                } @finally {
+                    [self unlock];
+                }
+                
+                [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
+            }];
 			
 			if( [NSThread currentThread].isCancelled)
 				break;

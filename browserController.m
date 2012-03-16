@@ -11221,6 +11221,8 @@ static NSArray*	openSubSeriesArray = nil;
 			if( r == NSAlertDefaultReturn)
 				return NO;
 		}
+        
+        // AppController will cancel these threads and give them 10 secs to finish... then kill them
 	}
 	
 	if( [SendController sendControllerObjects] > 0)

@@ -2429,7 +2429,7 @@ static NSDate *lastWarningDate = nil;
     NSTimeInterval t = [NSDate timeIntervalSinceReferenceDate];
     while ([[[ThreadsManager defaultManager] threads] count] && [NSDate timeIntervalSinceReferenceDate]-t < 10) // give declared background threads 10 secs to cancel
         [NSThread sleepForTimeInterval:0.05];
-	
+    
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	[NSApp terminate: sender];
