@@ -10592,7 +10592,7 @@ static NSArray*	openSubSeriesArray = nil;
                 
                 [menu addItem: [NSMenuItem separatorItem]];
                 
-                if (row > 1) { // index 0 is database, cannot be removed. Negative index = click on empty table (not on a particular item)
+                if (row > 0) { // index 0 is database, cannot be removed. Negative index = click on empty table (not on a particular item)
                     item = [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Delete Album", nil) action:@selector(removeAlbum:) keyEquivalent:@""] autorelease];
                     [item setTarget:self];
                     [menu addItem:item];
