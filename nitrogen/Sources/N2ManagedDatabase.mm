@@ -346,8 +346,8 @@
 }
 
 -(void)dealloc {
-//    if ([self.managedObjectContext hasChanges])
-//        [self save];
+    if ([self.managedObjectContext hasChanges])
+        [self save];
     [NSNotificationCenter.defaultCenter removeObserver:self];
     if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
 //	[self.managedObjectContext reset];

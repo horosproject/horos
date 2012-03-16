@@ -1624,9 +1624,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: /*[NSNumber numberWithBool: self.requestIsIOS], GenerateMovieIsIOSParamKey,*/ /*fileURL, @"fileURL",*/ fileName, GenerateMovieFileNameParamKey, outFile, GenerateMovieOutFileParamKey, parameters, @"parameters", dicomImageArray, GenerateMovieDicomImagesParamKey, [NSNumber numberWithInt: rows], @"rows", [NSNumber numberWithInt: columns], @"columns", nil];
 					
-//					[independentDicomDatabase.managedObjectContext unlock];
 					[self generateMovie:dict];
-//					[self.portal.dicomDatabase.managedObjectContext lock];
 					
 					self.response.data = [NSData dataWithContentsOfFile:outFile];
 				}

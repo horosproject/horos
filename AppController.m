@@ -5199,7 +5199,8 @@ static NSMutableDictionary* _receivingDict = nil;
 			else [setCount increment];
 		} else {
 			if (setCount) {
-				[setCount decrement];
+                if (setCount.unsignedIntegerValue > 0)
+                    [setCount decrement];
 				if (!setCount.unsignedIntegerValue)
 					[_receivingDict removeObjectForKey:threadValue];
 			}

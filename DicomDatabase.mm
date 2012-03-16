@@ -2157,7 +2157,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSThread* thread = [NSThread currentThread];
 	BOOL listenerCompressionSettings = [[NSUserDefaults standardUserDefaults] integerForKey: @"ListenerCompressionSettings"];
 	NSUInteger addedFilesCount = 0;
-	
+	BOOL activityFeedbackShown = NO;
+    
 	[thread enterOperation];
 	thread.status = NSLocalizedString(@"Listing files...", nil);
 	
@@ -2363,9 +2364,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
             
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
-            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && ![ThreadsManager.defaultManager.threads containsObject:thread]) {
+            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && !activityFeedbackShown) {
 				[ThreadsManager.defaultManager addThreadAndStart:thread];
                 [OsiriX setReceivingIcon];
+                activityFeedbackShown = YES;
             }
 
 		}
@@ -2440,8 +2442,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     @finally
     {
 		[_importFilesFromIncomingDirLock unlock];
-        [thread exitOperation];
-        [OsiriX unsetReceivingIcon];
+        if (activityFeedbackShown) {
+            [thread exitOperation];
+            [OsiriX unsetReceivingIcon];
+        }
 	}
 	
 #ifndef OSIRIX_LIGHT
