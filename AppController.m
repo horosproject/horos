@@ -2418,11 +2418,17 @@ static NSDate *lastWarningDate = nil;
 	
 	for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
-	
+    
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] release];
 	[[QueryController currentAutoQueryController] release];
-	#endif
+    #endif
+	
+    for (NSThread* thread in [[ThreadsManager defaultManager] threads])
+        [thread cancel];
+    NSTimeInterval t = [NSDate timeIntervalSinceReferenceDate];
+    while ([[[ThreadsManager defaultManager] threads] count] && [NSDate timeIntervalSinceReferenceDate]-t < 10) // give declared background threads 10 secs to cancel
+        [NSThread sleepForTimeInterval:0.05];
 	
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
