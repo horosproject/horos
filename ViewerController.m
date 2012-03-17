@@ -94,6 +94,7 @@
 #import "Notifications.h"
 #import "OSIEnvironment+Private.h"
 #import "NSString+N2.h"
+#import "WindowLayoutManager.h"
 
 int delayedTileWindows = NO;
 
@@ -3084,10 +3085,17 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	if( [[self window] isVisible])
 	{
-		if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
-		{
-			[[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand:NO];
-		}
+        @try
+        {
+            if( fileList[ curMovieIndex] && [[[[fileList[ curMovieIndex] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == NO)
+            {
+                [[BrowserController currentBrowser] findAndSelectFile: nil image:[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] shouldExpand:NO];
+            }
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
 	}
 	
 	[self SetSyncButtonBehavior: self];
@@ -6731,9 +6739,6 @@ return YES;
 				[imageView becomeFirstResponder];
 			}
 			
-		//	if( previousColumns != 1 || previousRows != 1)
-		//		[self setImageRows: 1 columns: 1];
-
 			[imageView mouseUp: [[NSApplication sharedApplication] currentEvent]];
 			
 			if( pixList)
@@ -7138,16 +7143,56 @@ return YES;
 					NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 					[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 					
-				//	if( previousColumns != 1 || previousRows != 1)
-				//		[self setImageRows: previousRows columns: previousColumns];
-
 					if( previousColumns != 1 || previousRows != 1)
 					{
 						[imageView release];
 						imageView = [[[seriesView imageViews] objectAtIndex:0] retain];
 						[imageView becomeFirstResponder];
 					}
-						
+                    
+                    // Apply saved images tiling or default protocol
+                    
+                    DicomStudy *study = [[images objectAtIndex: 0] valueForKeyPath: @"series.study"];
+                    DicomStudy *series = [[images objectAtIndex: 0] valueForKey: @"series"];
+                    
+                    int newColumns = previousColumns;
+                    int newRows = previousRows;
+                    
+                    // default protocol
+                    [[WindowLayoutManager sharedWindowLayoutManager] setCurrentHangingProtocolForModality:[study valueForKey:@"modality"] description:[study valueForKey:@"studyName"]];
+                    
+                    NSDictionary *currentHangingProtocol = [[WindowLayoutManager sharedWindowLayoutManager] currentHangingProtocol];
+                    
+                    if( currentHangingProtocol)
+                    {
+                        newColumns = [[currentHangingProtocol valueForKey: @"Image Columns"] intValue];
+                        newRows = [[currentHangingProtocol valueForKey: @"Image Rows"] intValue];
+                    }
+                    
+                    // is there a windows state?
+                    
+                    if( [study valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
+                    {
+                        NSArray *viewers = [NSPropertyListSerialization propertyListFromData: [study valueForKey:@"windowsState"] mutabilityOption: NSPropertyListImmutable format: nil errorDescription: nil];
+                        
+                        for( NSDictionary *dict in viewers)
+                        {
+                            NSString *studyUID = [dict valueForKey:@"studyInstanceUID"];
+                            NSString *seriesUID = [dict valueForKey:@"seriesInstanceUID"];
+                            
+                            if( [studyUID isEqualToString: [study valueForKey: @"studyInstanceUID"]] && [seriesUID isEqualToString: [series valueForKey: @"seriesInstanceUID"]])
+                            {
+                                newRows = [[dict valueForKey:@"rows"] intValue];
+                                newColumns = [[dict valueForKey:@"columns"] intValue];
+                            }
+                        }
+                    }
+                    
+                    if( newRows != previousRows || newColumns != previousColumns)
+                        [self setImageRows: newRows columns: newColumns];
+                    
+                    // **
+                    
 					[self setCurWLWWMenu: [DCMView findWLWWPreset: [imageView curWL] :[imageView curWW] :[imageView curDCM]]];
 					
 					nonVolumicDataWarningDisplayed = NO;
