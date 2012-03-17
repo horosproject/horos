@@ -14220,7 +14220,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		downloadingOsiriXIcon = [[NSImage imageNamed:@"OsirixDownload.icns"] retain];
 		standardOsiriXIcon = [[NSImage imageNamed:@"Osirix.icns"] retain];
-		
+        
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
 		
 		reportFilesToCheck = [[NSMutableDictionary dictionary] retain];
