@@ -18556,7 +18556,7 @@ int i,j,l;
 	
 	NSLog( @"volume computation done");
 	
-	if( pts)
+	if( pts && [*pts count] > 0)
 	{
 		NSLog( @"number of points: %d", (int) [*pts count]);
 		
@@ -18582,6 +18582,11 @@ int i,j,l;
 			}
 		}
 	}
+    else
+    {
+        if( error) *error = NSLocalizedString( @"No points found to compute the volume.", nil);
+        return 0;
+    }
 	
 	if( data)
 	{
