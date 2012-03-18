@@ -30222,6 +30222,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30243,6 +30244,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30264,13 +30266,14 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -30308,6 +30311,7 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30503,6 +30507,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30532,6 +30537,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30558,6 +30564,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
@@ -30595,6 +30602,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -30775,7 +30783,8 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
-				STRIP_STYLE = all;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30881,6 +30890,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -30915,6 +30925,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31077,7 +31088,8 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
-				STRIP_STYLE = all;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment 64-bit";
 		};
@@ -31164,6 +31176,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31198,6 +31211,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31219,6 +31233,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -31238,6 +31253,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -31257,6 +31273,7 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
@@ -31321,6 +31338,7 @@
 					3DconnexionClient,
 				);
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -31389,6 +31407,7 @@
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
@@ -31460,6 +31479,7 @@
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 			};
@@ -31491,6 +31511,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31519,6 +31540,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31547,6 +31569,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31581,6 +31604,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
