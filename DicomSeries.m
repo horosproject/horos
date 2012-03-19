@@ -294,7 +294,7 @@
 					if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
 					{
 						thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
-						thumbnailData = [thumbnail TIFFRepresentation];
+						thumbnailData = [[thumbnail TIFFRepresentation] retain];
 					}
 					else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
 					{
@@ -306,7 +306,7 @@
 						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
 						[thumbnail unlockFocus];
 						
-						thumbnailData = [thumbnail TIFFRepresentation];
+						thumbnailData = [[thumbnail TIFFRepresentation] retain];
 					}
 					else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
 					{
@@ -327,14 +327,14 @@
 						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
 						
 						if (!dcmPix.notAbleToLoadImage)
-							thumbnailData = [thumbnail JPEGRepresentationWithQuality:0.3];
+							thumbnailData = [[thumbnail JPEGRepresentationWithQuality:0.3] retain];
 						
 						[dcmPix release];
 					}
 					else
 					{
 						thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-						thumbnailData = [thumbnail TIFFRepresentation];
+						thumbnailData = [[thumbnail TIFFRepresentation] retain];
 					}
 					
 					[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
@@ -355,7 +355,7 @@
 		[pool release];
 	}
 	
-	return thumbnailData;
+	return [thumbnailData autorelease];
 }
 
 - (NSString*) modalities
