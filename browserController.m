@@ -6899,7 +6899,7 @@ static BOOL withReset = NO;
     
 	@try
 	{
-        if (loadPreviewIndex < [previewPix count])
+        if ([previewPix count] && loadPreviewIndex < [previewPix count])
         {
             long i;
             for( i = 0; i < [previewPix count]; i++)
@@ -7202,7 +7202,7 @@ static BOOL withReset = NO;
         DicomDatabase* idatabase = [database independentDatabase];
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
 
-        for (int i = 0; i < objectIDs.count; i++)
+        for (int i = 0; i < objectIDs.count; i++) {
             @try {
                 if (context != previewPix)
                     break; // changing the database selection makes previewPix change value
@@ -7233,20 +7233,22 @@ static BOOL withReset = NO;
 
                 if (dcmPix) {
                     if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
-                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed: @"pdf.tif"] index:i context:context];
+                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[NSImage imageNamed:@"pdf.tif"] index:i context:context];
                     } else {
                         NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
                         [dcmPix revert:NO];	// <- Kill the raw data
                         if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
                         [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
                     }
-                } else {
-                    [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+                    continue;
                 }
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
-                break;
             }
+            
+            // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
+            [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+        }
         [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
