@@ -3473,37 +3473,41 @@ static NSConditionLock *threadLock = nil;
 			
 			if( refreshMatrix)
 			{
+                NSArray* files = nil;
+                long cellId = 0;
+                BOOL imageLevel = NO;
 				[[self managedObjectContext] lock];
+				@try {
+                    [animationSlider setEnabled:NO];
+                    [animationSlider setMaxValue:0];
+                    [animationSlider setNumberOfTickMarks:1];
+                    [animationSlider setIntValue:0];
+                    
+                    [matrixViewArray release];
+                    
+                    if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
+                        [[[item valueForKey:@"images"] allObjects] count] == 1 && 
+                        [[[[[item valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
+                        matrixViewArray = [[NSArray arrayWithObject:item] retain];
+                    else
+                        matrixViewArray = [[self childrenArray: item] retain];
+                    
+                    if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
+                    else [oMatrix selectCellWithTag: 0];
+                    
+                    [self matrixInit: matrixViewArray.count];
+                    
+                    files = [self imagesArray: item preferredObject:oFirstForFirst];
+                    imageLevel = [item isKindOfClass:[DicomSeries class]];
+                    
+                    for (unsigned int i = 0; i < [files count]; i++) [previewPixThumbnails addObject:notFoundImage];
+                } @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                } @finally {
+                    [[self managedObjectContext] unlock];
+                }
 				
-				[animationSlider setEnabled:NO];
-				[animationSlider setMaxValue:0];
-				[animationSlider setNumberOfTickMarks:1];
-				[animationSlider setIntValue:0];
-				
-				[matrixViewArray release];
-				
-				if ([[item valueForKey:@"type"] isEqualToString:@"Series"] && 
-					[[[item valueForKey:@"images"] allObjects] count] == 1 && 
-					[[[[[item valueForKey:@"images"] allObjects] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] > 1)
-					matrixViewArray = [[NSArray arrayWithObject:item] retain];
-				else
-					matrixViewArray = [[self childrenArray: item] retain];
-				
-				long cellId = 0;
-				
-				if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
-				else [oMatrix selectCellWithTag: 0];
-				
-				[self matrixInit: matrixViewArray.count];
-				
-				NSArray	*files = [self imagesArray: item preferredObject:oFirstForFirst];
-				BOOL imageLevel = [item isKindOfClass:[DicomSeries class]];
-                
-                for (unsigned int i = 0; i < [files count]; i++) [previewPixThumbnails addObject:notFoundImage];
-				
-				[[self managedObjectContext] unlock];
-				
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
+				NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
 				[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
 				
 				if( previousItem == item)
