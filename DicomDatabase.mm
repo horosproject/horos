@@ -2132,6 +2132,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[pool2 release];
 	}
 	
+    if (queue.operationCount) {
+        [NSThread currentThread].status = NSLocalizedString(@"Waiting for subtasks to complete...", nil);
+        while (queue.operationCount)
+            [NSThread sleepForTimeInterval:0.05];
+    }
+    
 	//	[autoroutingInProgress unlock];
 	
 	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
