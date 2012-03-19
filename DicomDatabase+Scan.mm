@@ -393,11 +393,15 @@ static NSString* _dcmElementKey(DcmElement* element) {
                                                                                         [NSNumber numberWithBool: YES], @"selectStudy",
                                                                                     NULL]];
             
+            [ThreadsManager.defaultManager removeThread:cft];
             [ThreadsManager.defaultManager addThreadAndStart:thread];
         }];
         
-        while (copyFilesThread.isExecuting)
+        while (copyFilesThread.isExecuting) {
+            if (thread.isCancelled && !copyFilesThread.isCancelled)
+                [copyFilesThread cancel];
             [NSThread sleepForTimeInterval:0.01];
+        }
         
 		/*for (NSString* frompath in paths) {
 			NSString* topath = nil;
