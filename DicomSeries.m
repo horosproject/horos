@@ -261,7 +261,7 @@
 
 -(NSData*)thumbnail
 {
-	NSData *thumbnailData = [self primitiveValueForKey:@"thumbnail"];
+	NSData *thumbnailData = [[self primitiveValueForKey:@"thumbnail"] retain];
 	
 	if( !thumbnailData)
 	{
