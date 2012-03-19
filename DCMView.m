@@ -1608,7 +1608,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
 		
 		// Image Level
-		if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+		if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
 			[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
 		else
 			[[self imageObj] setValue: nil forKey:@"yFlipped"];
@@ -1626,17 +1626,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	xFlipped = v;
 	
 	if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
-	{
-		[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-		
-		// Image Level
-		if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-			[[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-		else
-			[[self imageObj] setValue: nil forKey:@"xFlipped"];
-		
-		[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
-	}
+    {
+        [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+        
+        // Image Level
+        if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+            [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+        else
+            [[self imageObj] setValue: nil forKey:@"xFlipped"];
+        
+        [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
+    }
 	
 	[self updateTilingViews];
 	

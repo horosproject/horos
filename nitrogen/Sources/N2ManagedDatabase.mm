@@ -116,13 +116,13 @@
 
 -(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
     [self lock];
-    [self.persistentStoreCoordinator lock];
+//    [self.persistentStoreCoordinator lock];
     @try {
         return [super existingObjectWithID:objectID error:error];
     } @catch (...) {
         @throw;
     } @finally {
-        [self.persistentStoreCoordinator unlock];
+//        [self.persistentStoreCoordinator unlock];
         [self unlock];
     }
     

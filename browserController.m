@@ -3572,7 +3572,6 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSManagedObjectContext	*context = self.managedObjectContext;
 
-		[context retain];
 		[context lock];
 		
 		if( [seriesArray count])
@@ -3632,7 +3631,6 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[context unlock];
-		[context release];
 	}
 }
 
@@ -6616,38 +6614,40 @@ static BOOL withReset = NO;
 
 -(void) matrixInit:(long) noOfImages
 {	
-    setDCMDone = NO;
-	loadPreviewIndex = 0;
-	
-	[previewPix release];
-	[previewPixThumbnails release];
-	
-	previewPix = [[NSMutableArray alloc] initWithCapacity:0];
-	previewPixThumbnails = [[NSMutableArray alloc] initWithCapacity:0];
-	
-//	if( COLUMN == 0) NSLog(@"COLUMN = 0, ERROR");
-	
-    [self previewMatrixScrollViewFrameDidChange:nil];
-    NSInteger rows, columns; [oMatrix getNumberOfRows:&rows columns:&columns];
-	
-	for( long i=0; i < rows*columns; i++)
-	{
-		NSButtonCell* cell = [oMatrix cellAtRow:i/columns column:i%columns];
-		cell.tag = i;
-		[cell setTransparent:(i>=noOfImages)];
-		[cell setEnabled:NO];
-		[cell setFont:[NSFont systemFontOfSize:9]];
-		cell.title = NSLocalizedString(@"loading...", nil);
-		cell.image = nil;
-		cell.bezelStyle = NSShadowlessSquareBezelStyle;
-	}
-	
-//	[oMatrix sizeToCells];
-    
-	[imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
-	
-    [oMatrix setNeedsDisplay:YES];
-	//[self matrixDisplayIcons: self];
+    @synchronized(self) {
+        setDCMDone = NO;
+        loadPreviewIndex = 0;
+        
+        [previewPix release]; previewPix = nil;
+        [previewPixThumbnails release]; previewPixThumbnails = nil;
+        
+        previewPix = [[NSMutableArray alloc] initWithCapacity:0];
+        previewPixThumbnails = [[NSMutableArray alloc] initWithCapacity:0];
+        
+    //	if( COLUMN == 0) NSLog(@"COLUMN = 0, ERROR");
+        
+        [self previewMatrixScrollViewFrameDidChange:nil];
+        NSInteger rows, columns; [oMatrix getNumberOfRows:&rows columns:&columns];
+        
+        for( long i=0; i < rows*columns; i++)
+        {
+            NSButtonCell* cell = [oMatrix cellAtRow:i/columns column:i%columns];
+            cell.tag = i;
+            [cell setTransparent:(i>=noOfImages)];
+            [cell setEnabled:NO];
+            [cell setFont:[NSFont systemFontOfSize:9]];
+            cell.title = NSLocalizedString(@"loading...", nil);
+            cell.image = nil;
+            cell.bezelStyle = NSShadowlessSquareBezelStyle;
+        }
+        
+    //	[oMatrix sizeToCells];
+        
+        [imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
+        
+        [oMatrix setNeedsDisplay:YES];
+        //[self matrixDisplayIcons: self];
+    }
 }
 
 - (void) matrixNewIcon:(long) index: (NSManagedObject*)curFile
