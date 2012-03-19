@@ -53,3 +53,12 @@ extern NSString* const NSThreadProgressDetailsKey;
 extern NSString* const NSThreadSubthreadsAwareProgressKey;
 -(CGFloat)subthreadsAwareProgress;
 @end
+
+@interface N2BlockThread : NSThread {
+    void (^_block) ();
+}
+
+-(id)initWithBlock:(void(^)())block;
++(id)startedThreadWithBlock:(void(^)())block;
+
+@end

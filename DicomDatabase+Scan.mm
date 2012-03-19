@@ -24,6 +24,7 @@
 #import "MutableArrayCategory.h"
 #import "BrowserController.h"
 #import "DCMPix.h"
+#import "ThreadsManager.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -368,27 +369,36 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
 	}
 	
+    NSThread* copyFilesThread = nil;
 	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
-		NSString* previousThreadName = [[thread.name retain] autorelease];
-        thread.name = NSLocalizedString(@"Copying files from media...", nil);
-		thread.supportsCancel = YES;
+		copyFilesThread = [N2BlockThread startedThreadWithBlock:^{
+            NSThread* cft = [NSThread currentThread];
+            cft.name = NSLocalizedString(@"Importing images from media...", nil);
+            cft.supportsCancel = YES;
+            [ThreadsManager.defaultManager removeThread:thread];
+            [ThreadsManager.defaultManager addThreadAndStart:cft];
+            
+            NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+            [paths removeDuplicatedStrings];
+            
+            int progress = 0;
+            thread.progress = 0;
+            
+            [DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:)
+                                                                        withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                        paths, @"filesInput",
+                                                                                        [NSNumber numberWithBool:YES], @"mountedVolume",
+                                                                                        [NSNumber numberWithBool:YES], @"copyFiles",
+                                                                                        [NSNumber numberWithBool: YES], @"addToAlbum",
+                                                                                        [NSNumber numberWithBool: YES], @"selectStudy",
+                                                                                    NULL]];
+            
+            [ThreadsManager.defaultManager addThreadAndStart:thread];
+        }];
         
-//		DicomDatabase* db = [DicomDatabase activeLocalDatabase];
-		
-		NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
-		[paths removeDuplicatedStrings];
-		
-		int progress = 0;
-		thread.progress = 0;
-		
-		[DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-																	  paths, @"filesInput",
-																	  [NSNumber numberWithBool:YES], @"mountedVolume",
-																	  [NSNumber numberWithBool:YES], @"copyFiles",
-                                                                      [NSNumber numberWithBool: YES], @"addToAlbum",
-                                                                      [NSNumber numberWithBool: YES], @"selectStudy",
-																	  NULL]];
-	
+        while (copyFilesThread.isExecuting)
+            [NSThread sleepForTimeInterval:0.01];
+        
 		/*for (NSString* frompath in paths) {
 			NSString* topath = nil;
 			int i = 0;
@@ -400,10 +410,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
 			thread.progress = CGFloat(++progress)/paths.count;
 		}*/
-        
-        thread.name = previousThreadName;
 		
-		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![thread isCancelled]) {
+		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
 			thread.status = NSLocalizedString(@"Ejecting...", nil);
 			thread.progress = -1;
 			

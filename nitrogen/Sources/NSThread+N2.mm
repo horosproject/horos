@@ -14,6 +14,7 @@
 
 
 #import "NSThread+N2.h"
+#import "N2Debug.h"
 //#import "NSException+N2.h"
 
 @implementation NSThread (N2)
@@ -343,3 +344,33 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 }
 
 @end
+
+@implementation N2BlockThread
+
+-(id)initWithBlock:(void(^)())block {
+    if ((self = [super init])) {
+        _block = block;
+    }
+    
+    return self;
+}
+
++(id)startedThreadWithBlock:(void(^)())block {
+    N2BlockThread* bt = [[[self class] alloc] initWithBlock:block];
+    [bt start];
+    return [bt autorelease];
+}
+
+-(void)main {
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        _block();
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
+}
+
+@end
+
