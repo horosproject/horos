@@ -3059,7 +3059,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	
 		// ** Finish the rebuild
         
-		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@ %@...", @"Adding (count) (file/files)"), [NSNumberFormatter localizedStringFromNumber: [NSNumber numberWithInt: filesArray.count] numberStyle: NSNumberFormatterDecimalStyle], (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
+		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@...", @"rebuild database thread status: Adding %@ (%@ = '120 files')"), N2LocalizedSingularPluralCount(filesArray.count, @"file", @"files")];
 		[self addFilesAtPaths:filesArray postNotifications:NO];
 		
 		NSLog(@"End Rebuild");

@@ -372,5 +372,9 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
     }
 }
 
+-(void)dealloc {
+    [super dealloc];
+}
+
 @end
 
