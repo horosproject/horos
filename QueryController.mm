@@ -1082,8 +1082,6 @@ extern "C"
         @try
         {
             DicomDatabase* database = [[BrowserController currentBrowser] database];
-            if (![NSThread isMainThread])
-                database = [database independentDatabase];
             
             @try
             {
@@ -1104,7 +1102,7 @@ extern "C"
                     [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
                 
                     [studyArrayCache release];
-                    studyArrayCache = [[database objectsWithIDs: [local_studyArrayCache valueForKey:@"objectID"]] retain];
+                    studyArrayCache = [local_studyArrayCache retain];
                 }
                 
                 if( [NSThread isMainThread])
