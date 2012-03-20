@@ -1104,7 +1104,7 @@ extern "C"
                     [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
                 
                     [studyArrayCache release];
-                    studyArrayCache = [[[[BrowserController currentBrowser] database] objectsWithIDs: [local_studyArrayCache valueForKey:@"objectID"]] retain];
+                    studyArrayCache = [[database objectsWithIDs: [local_studyArrayCache valueForKey:@"objectID"]] retain];
                 }
                 
                 if( [NSThread isMainThread])
