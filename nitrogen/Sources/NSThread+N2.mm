@@ -346,7 +346,7 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 
 -(id)initWithBlock:(void(^)())block {
     if ((self = [super init])) {
-        _block = block;
+        _block = [block copy];
     }
     
     return self;
@@ -370,6 +370,7 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
 }
 
 -(void)dealloc {
+    [_block release];
     [super dealloc];
 }
 

@@ -17,6 +17,7 @@
 
 @interface ThreadModalForWindowController : NSWindowController {
 	NSThread* _thread;
+    id _retainedThreadDictionary;
 	NSWindow* _docWindow;
 	NSProgressIndicator* _progressIndicator;
 	NSButton* _cancelButton;

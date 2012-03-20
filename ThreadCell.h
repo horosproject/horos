@@ -22,6 +22,7 @@
 	ThreadsManager* _manager;
 	NSButton* _cancelButton;
 	NSThread* _thread;
+    id _retainedThreadDictionary;
 	NSTableView* _view;
 }
 

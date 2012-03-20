@@ -436,10 +436,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
 		}
 		// add new items
-        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
+//        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
 		for (NSDictionary* d in a)
         {
-            [[queue retain] addOperationWithBlock:^{
+            [N2BlockThread startedThreadWithBlock:^{
                 // we're now in a background thread
                 NSString* dadd = [d valueForKey:@"Address"];
                 if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) { // don't list self
@@ -459,8 +459,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         dni.dictionary = d;
                     }
                 }];
-                
-                [queue autorelease];
             }];
 		}
 	}
@@ -483,10 +481,9 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
 		}
 		// add new items
-        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
 		for (NSString* aak in aa)
         {
-            [[queue retain] addOperationWithBlock:^{
+            [N2BlockThread startedThreadWithBlock:^{
                 // we're now in a background thread
                 NSString* aet = nil;
                 if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
@@ -506,8 +503,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                         dni.description = [dni.dictionary objectForKey:@"Description"];
                     }
                 }];
-                
-                [queue autorelease];
             }];
 		}
 	}
@@ -566,8 +561,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     }
 	if (!source0) return;
     
-    NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
-    [[queue retain] addOperationWithBlock:^{
+    [N2BlockThread startedThreadWithBlock:^{
         // we're now in a background thread
         
         NSDictionary* dict = nil;
@@ -642,8 +636,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 }
             }
         }];
-        
-        [queue autorelease];
     }];
 }
 
