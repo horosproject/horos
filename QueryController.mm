@@ -1059,12 +1059,6 @@ extern "C"
 	
 	@synchronized (studyArrayInstanceUID)
 	{
-        [studyArrayInstanceUID removeAllObjects];
-		[studyArrayInstanceUID addObjectsFromArray:[d objectForKey:@"studyArrayInstanceUID"]];
-        
-		[studyArrayCache release];
-		studyArrayCache = [[[[BrowserController currentBrowser] database] objectsWithIDs:[d objectForKey:@"studyArrayObjectIDs"]] retain];
-		
 		if( currentQueryController.DatabaseIsEdited == NO)
 			[currentQueryController.outlineView reloadData];
 			
@@ -1104,10 +1098,19 @@ extern "C"
             
             if( local_studyArrayCache && local_studyArrayInstanceUID)
             {
+                @synchronized (studyArrayInstanceUID)
+                {
+                    [studyArrayInstanceUID removeAllObjects];
+                    [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
+                
+                    [studyArrayCache release];
+                    studyArrayCache = [[[[BrowserController currentBrowser] database] objectsWithIDs: [local_studyArrayCache valueForKey:@"objectID"]] retain];
+                }
+                
                 if( [NSThread isMainThread])
-                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", [local_studyArrayCache valueForKey:@"objectID"], @"studyArrayObjectIDs", nil]];
+                    [self applyNewStudyArray: nil];
                 else
-                    [self performSelectorOnMainThread: @selector(applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", [local_studyArrayCache valueForKey:@"objectID"], @"studyArrayObjectIDs", nil] waitUntilDone: NO];
+                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: nil waitUntilDone: NO];
             }
             else
                 NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
