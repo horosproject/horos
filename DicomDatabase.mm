@@ -42,6 +42,7 @@
 #import "DataNodeIdentifier.h"
 #import "NSThread+N2.h"
 #import "N2Stuff.h"
+#import "ThreadModalForWindowController.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -403,7 +404,15 @@ static DicomDatabase* activeLocalDatabase = nil;
 #endif
 
         [self checkForHtmlTemplates];
-
+        
+        NSString* saveThreadName = [NSThread.currentThread name];
+        NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
+        ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
+        [self rebuild:YES];
+        [tmfwc invalidate];
+        [tmfwc release];
+        NSThread.currentThread.name = saveThreadName;
+            
         if (isNewFile)
             [self addDefaultAlbums];
         [self modifyDefaultAlbums];

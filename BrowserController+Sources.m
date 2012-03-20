@@ -439,7 +439,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 //        NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
 		for (NSDictionary* d in a)
         {
-            [N2BlockThread startedThreadWithBlock:^{
+            [NSThread performBlockInBackground:^{
                 // we're now in a background thread
                 NSString* dadd = [d valueForKey:@"Address"];
                 if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) { // don't list self
@@ -483,7 +483,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// add new items
 		for (NSString* aak in aa)
         {
-            [N2BlockThread startedThreadWithBlock:^{
+            [NSThread performBlockInBackground:^{
                 // we're now in a background thread
                 NSString* aet = nil;
                 if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
@@ -561,7 +561,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     }
 	if (!source0) return;
     
-    [N2BlockThread startedThreadWithBlock:^{
+    [NSThread performBlockInBackground:^{
         // we're now in a background thread
         
         NSDictionary* dict = nil;

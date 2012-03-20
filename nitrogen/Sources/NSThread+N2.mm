@@ -17,7 +17,21 @@
 #import "N2Debug.h"
 //#import "NSException+N2.h"
 
+@interface N2BlockThread : NSThread {
+    void (^_block) ();
+}
+
+-(id)initWithBlock:(void(^)())block;
+
+@end
+
 @implementation NSThread (N2)
+
++(NSThread*)performBlockInBackground:(void(^)())block {
+    N2BlockThread* bt = [[N2BlockThread alloc] initWithBlock:block];
+    [bt start];
+    return [bt autorelease];
+}
 
 -(NSComparisonResult)compare:(id)obj {
 	//NSException *e = [NSException exceptionWithName: @"NSThread compare" reason: @"compare:" userInfo: nil];	
@@ -188,6 +202,9 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 		return;
 	if (self.isCancelled)
 		return;
+    
+    if ([self isMainThread])
+        return;
 	
 	if (supportsCancel == self.supportsCancel)
 		return;
@@ -350,12 +367,6 @@ NSString* const NSThreadProgressDetailsKey = @"progressDetails";
     }
     
     return self;
-}
-
-+(id)startedThreadWithBlock:(void(^)())block {
-    N2BlockThread* bt = [[[self class] alloc] initWithBlock:block];
-    [bt start];
-    return [bt autorelease];
 }
 
 -(void)main {

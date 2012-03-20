@@ -17,6 +17,8 @@
 
 @interface NSThread (N2)
 
++(NSThread*)performBlockInBackground:(void(^)())block;
+
 extern NSString* const NSThreadNameKey;
 
 extern NSString* const NSThreadUniqueIdKey;
@@ -52,13 +54,6 @@ extern NSString* const NSThreadProgressDetailsKey;
 
 extern NSString* const NSThreadSubthreadsAwareProgressKey;
 -(CGFloat)subthreadsAwareProgress;
-@end
-
-@interface N2BlockThread : NSThread {
-    void (^_block) ();
-}
-
--(id)initWithBlock:(void(^)())block;
-+(id)startedThreadWithBlock:(void(^)())block;
 
 @end
+

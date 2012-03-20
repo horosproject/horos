@@ -17,6 +17,7 @@
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
 #import "N2Debug.h"
+#import "NSTextView+N2.h"
 
 
 NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowController";
@@ -30,6 +31,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 @synthesize cancelButton = _cancelButton;
 @synthesize titleField = _titleField;
 @synthesize statusField = _statusField;
+@synthesize statusFieldScroll = _statusFieldScroll;
 @synthesize progressDetailsField = _progressDetailsField;
 
 -(id)initWithThread:(NSThread*)thread window:(NSWindow*)docWindow {
@@ -59,7 +61,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	
     [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
 //  [self.window bind:@"title" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
-    [self.statusField bind:@"value" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
+    [self.statusField bind:@"string" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	[self.cancelButton bind:@"hidden2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
@@ -70,6 +72,9 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread addObserver:self forKeyPath:NSThreadProgressDetailsKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+    
+    if (!self.docWindow)
+        [NSApp activateIgnoringOtherApps:YES];
 }
 
 -(void)sheetDidEndOnMainThread:(NSWindow*)sheet
@@ -104,7 +109,56 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }*/
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
+-(void)repositionViews {
+    CGFloat p = 0;
+    NSRect frame;
+    
+    if (!self.cancelButton.isHidden) {
+        p += 20;
+        frame = self.cancelButton.frame;
+        frame.origin.y = p;
+        [self.cancelButton setFrame:frame];
+        p += frame.size.height;
+    }
+    
+    p += 20;
+    frame = self.progressIndicator.frame;
+    frame.origin.y = p;
+    [self.progressIndicator setFrame:frame];
+    p += frame.size.height;
+    
+    if (self.statusField.string.length) {
+        p += 10;
+        frame = self.statusFieldScroll.frame;
+        frame.size.height = [self.statusField optimalSizeForWidth:frame.size.width].height;
+        frame.origin.y = p;
+        [self.statusFieldScroll setFrame:frame];
+        p += frame.size.height;
+    }
+    
+    if (self.titleField.stringValue.length) {
+        p += 8;
+        frame = self.titleField.frame;
+        frame.origin.y = p;
+        [self.titleField setFrame:frame];
+        p += frame.size.height;
+    }
+
+    p += 20;
+    
+    frame = [self.window frame];
+    NSRect contentRect = [self.window contentRectForFrameRect:frame];
+    contentRect.origin.y += contentRect.size.height-p;
+    contentRect.size.height = p;
+    frame = [self.window frameRectForContentRect:contentRect];
+    [self.window setFrame:frame display:YES animate:YES];
+}
+
+-(NSFont*)smallSystemFont {
+    return [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]];
+}
+
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context {
 	if (context == ThreadModalForWindowControllerObservationContext) {
 		/*if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
@@ -118,17 +172,26 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             if ([NSThread isMainThread]) {
                 if ([keyPath isEqual:NSThreadProgressKey])
                     [self.progressIndicator display];
-                if ([keyPath isEqual:NSThreadNameKey])
+                if ([keyPath isEqual:NSThreadNameKey]) {
+                    self.titleField.stringValue = obj.name? obj.name : @"";
                     [self.titleField display];
-                if ([keyPath isEqual:NSThreadStatusKey])
+                }
+                if ([keyPath isEqual:NSThreadStatusKey]) {
+                    self.statusField.string = obj.status? obj.status : @"";
                     [self.statusField display];
-                if ([keyPath isEqual:NSThreadProgressDetailsKey])
+                }
+                if ([keyPath isEqual:NSThreadProgressDetailsKey]) {
+                    self.progressDetailsField.stringValue = obj.progressDetails? obj.progressDetails : @"";
                     [self.progressDetailsField display];
-                if ([keyPath isEqual:NSThreadSupportsCancelKey])
+                }
+                if ([keyPath isEqual:NSThreadSupportsCancelKey] && [keyPath isEqual:NSThreadIsCancelledKey]) {
+                    [self.cancelButton setHidden: obj.supportsCancel && !obj.isCancelled];
                     [self.cancelButton display];
-                if ([keyPath isEqual:NSThreadIsCancelledKey])
-                    [self.cancelButton display];
+                }
+                
+                [self repositionViews];
             }
+        
         /*}*/ return;
 	}
     

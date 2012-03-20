@@ -371,7 +371,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	
     NSThread* copyFilesThread = nil;
 	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
-		copyFilesThread = [N2BlockThread startedThreadWithBlock:^{
+		copyFilesThread = [NSThread performBlockInBackground:^{
             NSThread* cft = [NSThread currentThread];
             cft.name = NSLocalizedString(@"Importing images from media...", nil);
             cft.supportsCancel = YES;
