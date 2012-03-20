@@ -39,6 +39,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
+    _isValid = YES;
     _lastDisplayedStatus = -1;
     [(_retainedThreadDictionary = thread.threadDictionary) retain];
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
@@ -106,10 +107,6 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[super dealloc]; 
 }
 
-/*-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
-    [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
-}*/
-
 -(void)repositionViews {
     CGFloat p = 0;
     NSRect frame;
@@ -147,6 +144,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
     p += 20;
     
+    
     frame = [self.window frame];
     NSRect contentRect = [self.window contentRectForFrameRect:frame];
     contentRect.origin.y += contentRect.size.height-p;
@@ -155,17 +153,21 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     [self.window setFrame:frame display:YES animate:YES];
 }
 
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+    if (_isValid)
+        [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}
+
 -(NSFont*)smallSystemFont {
     return [NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]];
 }
 
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context {
 	if (context == ThreadModalForWindowControllerObservationContext) {
-		/*if (![NSThread isMainThread])
+		if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
-        else {*/
-            
-        CGFloat previousProgress = self.progressIndicator.doubleValue;
+        else {
+            CGFloat previousProgress = self.progressIndicator.doubleValue;
             if ([keyPath isEqual:NSThreadProgressKey]) {
                 [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
                 if (self.thread.progress >= 0)
@@ -199,7 +201,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                 [self repositionViews];
             }
         
-        /*}*/ return;
+        } return;
 	}
     
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
@@ -209,6 +211,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	DLog(@"[ThreadModalForWindowController invalidate]");
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:_thread];
 	[self.thread.threadDictionary removeObjectForKey:NSThreadModalForWindowControllerKey];
+    
+    _isValid = NO;
     
 	if ([NSThread isMainThread]) 
 		[NSApp endSheet:self.window];

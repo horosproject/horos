@@ -405,7 +405,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 
         [self checkForHtmlTemplates];
         
-        if (isNewFile) {
+        if (isNewFile && [NSThread isMainThread]) {
             NSString* saveThreadName = [NSThread.currentThread name];
             NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
             ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
