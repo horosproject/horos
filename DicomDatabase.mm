@@ -2207,6 +2207,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			NSString *originalPath = srcPath;
 			NSString *lastPathComponent = [srcPath lastPathComponent];
 			
+            if( thread.isCancelled)
+                continue;
+            
 			if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
 			{
 				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
@@ -2416,7 +2419,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
 			
 			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
-			NSArray* addedFiles = [self addFilesAtPaths:filesArray]; // don't use the values in the returned array without having locked the database!
+            
+			NSArray* addedFiles = nil;
+            if( thread.isCancelled == NO)
+                addedFiles = [self addFilesAtPaths:filesArray]; // don't use the values in the returned array without having locked the database!
+            
             addedFilesCount = addedFiles.count;
 			
 			if (!addedFiles) // Add failed.... Keep these files: move them back to the INCOMING folder and try again later....
