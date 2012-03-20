@@ -265,9 +265,6 @@ NSString* const NSThreadSubthreadsAwareProgressKey = @"subthreadsAwareProgress";
 //    	return nil;
     
 	@synchronized (self.threadDictionary) {
-		if (progress == self.progress)
-			return;
-
 		[self willChangeValueForKey:NSThreadProgressKey];
 		[self willChangeValueForKey:NSThreadSubthreadsAwareProgressKey];
 		[self.threadDictionary setObject:[NSNumber numberWithFloat:progress] forKey:NSThreadProgressKey];

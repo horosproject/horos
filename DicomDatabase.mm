@@ -1079,6 +1079,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, @"file", @"files")];
     
     //#define RANDOMFILES
 #ifdef RANDOMFILES
@@ -1192,7 +1193,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		// Find all current studies
 		
 		
-		[thread enterOperationWithRange:thread.progress:0];
+		[thread enterOperationIgnoringLowerLevels];
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, @"file", @"files")];
 //        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
         NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
@@ -2418,8 +2420,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 }
 			}
 			
-			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %d %@...", @"Adding (count) (file/files)"), filesArray.count, (filesArray.count == 1 ? NSLocalizedString(@"file",nil) : NSLocalizedString(@"files",nil))];
-            
+			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Processing %@...", nil), N2LocalizedSingularPluralCount(filesArray.count, @"file", @"files")];
+			
 			NSArray* addedFiles = nil;
             if( thread.isCancelled == NO)
                 addedFiles = [self addFilesAtPaths:filesArray]; // don't use the values in the returned array without having locked the database!
