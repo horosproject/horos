@@ -39,6 +39,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
+    _lastDisplayedStatus = -1;
     [(_retainedThreadDictionary = thread.threadDictionary) retain];
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
     
@@ -163,6 +164,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 		/*if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
         else {*/
+            
+        CGFloat previousProgress = self.progressIndicator.doubleValue;
             if ([keyPath isEqual:NSThreadProgressKey]) {
                 [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
                 if (self.thread.progress >= 0)
@@ -171,7 +174,11 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             
             if ([NSThread isMainThread]) {
                 if ([keyPath isEqual:NSThreadProgressKey])
-                    [self.progressIndicator display];
+                    if (fabs(_lastDisplayedStatus-self.progressIndicator.doubleValue) > 0.01) {
+                        _lastDisplayedStatus = self.progressIndicator.doubleValue;
+                        [self.progressIndicator display];
+                    }
+                
                 if ([keyPath isEqual:NSThreadNameKey]) {
                     self.titleField.stringValue = obj.name? obj.name : @"";
                     [self.titleField display];
@@ -244,3 +251,16 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 @end
 
 
+
+@interface MainThreadActiveWindow : NSWindow
+
+@end
+
+@implementation MainThreadActiveWindow
+
+-(BOOL)isKeyWindow {
+    BOOL cond = [[(ThreadModalForWindowController*)self.windowController thread] isMainThread] ;//&& [NSApp isActive];
+    return cond? YES : [super isKeyWindow];
+}
+
+@end

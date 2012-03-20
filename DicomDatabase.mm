@@ -405,14 +405,16 @@ static DicomDatabase* activeLocalDatabase = nil;
 
         [self checkForHtmlTemplates];
         
-        NSString* saveThreadName = [NSThread.currentThread name];
-        NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
-        ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
-        [self rebuild:YES];
-        [tmfwc invalidate];
-        [tmfwc release];
-        NSThread.currentThread.name = saveThreadName;
-            
+        if (isNewFile) {
+            NSString* saveThreadName = [NSThread.currentThread name];
+            NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
+            ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
+            [self rebuild:YES];
+            [tmfwc invalidate];
+            [tmfwc release];
+            NSThread.currentThread.name = saveThreadName;
+        }
+        
         if (isNewFile)
             [self addDefaultAlbums];
         [self modifyDefaultAlbums];
@@ -1088,7 +1090,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, @"file", @"files")];
     
     //#define RANDOMFILES
 #ifdef RANDOMFILES
@@ -1106,6 +1107,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSString* tempDirPath = self.tempDirPath;
 	
 	[thread enterOperation];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, @"file", @"files")];
 	
     NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
 	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex)
@@ -1287,6 +1289,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, @"file", @"files")];
     
 	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
