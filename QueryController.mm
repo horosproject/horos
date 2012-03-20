@@ -2673,7 +2673,7 @@ extern "C"
 				
 				if( showGUI)
 				{
-					[NSThread sleepForTimeInterval: 0.4];
+					[NSThread sleepForTimeInterval: 0.2];
 				
 					[wait close];
 					[wait release];
