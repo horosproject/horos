@@ -1557,7 +1557,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     staticContext.undoManager = nil;
                     NSManagedObjectModel *model = [[[[BrowserController currentBrowser] defaultManagerObjectContext] persistentStoreCoordinator] managedObjectModel];
                     
-                    staticContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
+                    staticContext.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
                     [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[BrowserController currentBrowser] localDatabasePath]] options: nil error: nil];
                     
 					[staticContext retain];
