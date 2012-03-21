@@ -2263,6 +2263,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			BOOL isAlias = NO;
 			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
 			
+            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && !activityFeedbackShown) {
+				[ThreadsManager.defaultManager addThreadAndStart:thread];
+                [OsiriX setReceivingIcon];
+                activityFeedbackShown = YES;
+            }
+            
 			// Is it a real file? Is it writable (transfer done)?
 			//					if ([[NSFileManager defaultManager] isWritableFileAtPath:srcPath] == YES)	<- Problems with CD : read-only files, but valid files
 			{
@@ -2387,11 +2393,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
             
             thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
-            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && !activityFeedbackShown) {
-				[ThreadsManager.defaultManager addThreadAndStart:thread];
-                [OsiriX setReceivingIcon];
-                activityFeedbackShown = YES;
-            }
 		}
 		
 		if (twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
