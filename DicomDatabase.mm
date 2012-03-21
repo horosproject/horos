@@ -2215,15 +2215,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
         NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
         
-		while( (pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
+		while((pathname = [enumer nextObject]) && [filesArray count] < maxNumberOfFiles && ([NSDate timeIntervalSinceReferenceDate]-startTime < ([[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"]*3)) ) // don't let them wait more than (incomingdelay*3) seconds
 		{
-			NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
+			if (thread.isCancelled)
+                return 0;
+            
+            NSString *srcPath = [self.incomingDirPath stringByAppendingPathComponent:pathname];
 			NSString *originalPath = srcPath;
 			NSString *lastPathComponent = [srcPath lastPathComponent];
 			
-            if( thread.isCancelled)
-                continue;
-            
 			if ([[lastPathComponent uppercaseString] hasSuffix:@".DS_STORE"])
 			{
 				[[NSFileManager defaultManager] removeItemAtPath: srcPath error: nil];
@@ -2392,7 +2392,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 [OsiriX setReceivingIcon];
                 activityFeedbackShown = YES;
             }
-
 		}
 		
 		if (twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)

@@ -75,8 +75,10 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
     
-    if (!self.docWindow)
+    if (!self.docWindow && [NSThread isMainThread]) {
         [NSApp activateIgnoringOtherApps:YES];
+        [self.window makeKeyAndOrderFront:self];
+    }
 }
 
 -(void)sheetDidEndOnMainThread:(NSWindow*)sheet
@@ -262,9 +264,9 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 @implementation MainThreadActiveWindow
 
--(BOOL)isKeyWindow {
+/*-(BOOL)isKeyWindow {
     BOOL cond = [[(ThreadModalForWindowController*)self.windowController thread] isMainThread] ;//&& [NSApp isActive];
     return cond? YES : [super isKeyWindow];
-}
+}*/
 
 @end
