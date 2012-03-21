@@ -1533,7 +1533,7 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     
                     NSManagedObjectModel *model = [dbStoreCoordinator managedObjectModel];
                     
-                    staticContext.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model];
+                    staticContext.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
                     [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[DicomDatabase defaultDatabase] sqlFilePath]] options: nil error: nil];
                     
 					@try
