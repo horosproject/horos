@@ -1560,8 +1560,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     staticContext.persistentStoreCoordinator = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
                     [staticContext.persistentStoreCoordinator addPersistentStoreWithType: NSSQLiteStoreType configuration: nil URL: [NSURL fileURLWithPath: [[BrowserController currentBrowser] localDatabasePath]] options: nil error: nil];
                     
-					[staticContext retain];
-					
 					@try
 					{
                         // To update the AETitle list : required for C-MOVE SCP
