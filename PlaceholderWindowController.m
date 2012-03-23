@@ -50,7 +50,7 @@
 
 - (void)windowWillClose:(NSNotification *)notification{
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	[self release];
+	[self autorelease];
 }
 
 - (void)closeAllWindows:(NSNotification *)note{

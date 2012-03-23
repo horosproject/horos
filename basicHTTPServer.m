@@ -148,7 +148,7 @@
 		[requests removeAllObjects];
         [requests release];
         requests = nil;
-        [self release];
+        [self autorelease];
 		
         // This last line removes the implicit retain the basicHTTPConnection
         // has on itself, given by the HTTPServer when it abandoned the
