@@ -2386,7 +2386,20 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 	
-	[[BrowserController currentBrowser] subSelectFilesAndFoldersToAdd: filenames];
+    // exclude --LoadPlugin arguments
+    NSMutableArray* passedFilenames = [NSMutableArray array];
+    NSArray* args = [[NSProcessInfo processInfo] arguments];
+    for (NSString* path in filenames) {
+        BOOL isLoadPlugin = NO;
+        for (NSInteger i = 0; !isLoadPlugin && i < args.count-1; ++i)
+            if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"])
+                if ([[args objectAtIndex:i+1] isEqualToString:path])
+                    isLoadPlugin = YES;
+        if (!isLoadPlugin)
+            [passedFilenames addObject:path];
+    }
+
+	[[BrowserController currentBrowser] subSelectFilesAndFoldersToAdd: passedFilenames];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
