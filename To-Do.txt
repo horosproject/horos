@@ -1,7 +1,5 @@
-- Series Switch: re-apply image tiling according to Protocols
 - QR: short timeout (auto-repeat)
 - RGB support for MIP & MPR
-
 ------------------------------------------------------------------------------------------
 
 A:

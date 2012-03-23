@@ -5413,7 +5413,12 @@ void connect(simplex *s) {
             {
                 xf = n->vert;
                 sb = sf;
-                sf = op_vert(sb,xb)->simp;
+                
+                neighbor *ov = op_vert(sb,xb);
+                if( ov)
+                    sf = ov->simp;
+                else
+                    break;
             }
             else break;
         } while (sf->peak.vert);

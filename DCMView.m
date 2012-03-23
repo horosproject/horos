@@ -5788,44 +5788,51 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
-			//set value for Series Object Presentation State
-			if( curDCM.SUVConverted == NO)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				
-				// Image Level
-				if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-				{
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				}
-				else
-				{
-					[[self imageObj] setValue: nil forKey:@"windowWidth"];
-					[[self imageObj] setValue: nil forKey:@"windowLevel"];
-				}
-			}
-			else
-			{
-				if( [self is2DViewer] == YES)
-				{
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-					
-					// Image Level
-					if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-					{
-						[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-						[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-					}
-					else
-					{
-						[[self imageObj] setValue: nil forKey:@"windowWidth"];
-						[[self imageObj] setValue: nil forKey:@"windowLevel"];
-					}
-				}
-			}
+            @try
+            {
+                //set value for Series Object Presentation State
+                if( curDCM.SUVConverted == NO)
+                {
+                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    
+                    // Image Level
+                    if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                    {
+                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    }
+                    else
+                    {
+                        [[self imageObj] setValue: nil forKey:@"windowWidth"];
+                        [[self imageObj] setValue: nil forKey:@"windowLevel"];
+                    }
+                }
+                else
+                {
+                    if( [self is2DViewer] == YES)
+                    {
+                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+                        
+                        // Image Level
+                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                        {
+                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+                        }
+                        else
+                        {
+                            [[self imageObj] setValue: nil forKey:@"windowWidth"];
+                            [[self imageObj] setValue: nil forKey:@"windowLevel"];
+                        }
+                    }
+                }
+            }
+            @catch (NSException *e)
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
 			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}

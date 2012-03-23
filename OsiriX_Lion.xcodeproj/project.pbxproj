@@ -30379,6 +30379,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30399,6 +30400,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30419,13 +30421,13 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "OsiriX Launcher";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
 		7E76BEC1085757B60073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -30463,6 +30465,7 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30503,7 +30506,6 @@
 		7E76BEC7085757B70073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -30606,7 +30608,8 @@
 		7E76BED9085757B70073649A /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -30633,7 +30636,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -30655,6 +30657,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
@@ -30662,10 +30665,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -30684,6 +30683,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30691,7 +30691,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -30710,13 +30709,13 @@
 					AppKit,
 				);
 				PRODUCT_NAME = OsiriXAPI;
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
 		AB724FF40ADE6ECB00A212A0 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -30747,6 +30746,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -30782,7 +30782,8 @@
 		CE5314AA0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -30798,6 +30799,7 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx10.6;
 			};
 			name = "Deployment 32-bit";
@@ -30805,7 +30807,6 @@
 		CE5314AB0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -30878,10 +30879,6 @@
 		CE5314AD0C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -30924,7 +30921,8 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
-				STRIP_STYLE = all;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -30999,7 +30997,6 @@
 		CE5314B20C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -31030,6 +31027,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31038,7 +31036,6 @@
 		CE5314B40C717C3000A2B75F /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -31064,6 +31061,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31072,7 +31070,8 @@
 		CE5314B50C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -31088,6 +31087,7 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx10.6;
 				WARNING_CFLAGS = "";
 			};
@@ -31096,10 +31096,6 @@
 		CE5314B60C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -31177,10 +31173,6 @@
 		CE5314B80C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				BUILD_VARIANTS = normal;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -31223,7 +31215,8 @@
 				PRODUCT_NAME = OsiriX;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SECTORDER_FLAGS = "";
-				STRIP_STYLE = all;
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = debugging;
 			};
 			name = "Deployment 64-bit";
 		};
@@ -31277,7 +31270,7 @@
 		CE5314BD0C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -31310,6 +31303,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = Decompress;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31318,7 +31312,7 @@
 		CE5314BF0C717C3000A2B75F /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -31344,6 +31338,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};
@@ -31352,10 +31347,6 @@
 		CE9CED840C75BD8D00752D4B /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
@@ -31365,16 +31356,13 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
 		CE9CED860C75BD8D00752D4B /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
@@ -31384,16 +31372,13 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 32-bit";
 		};
 		CE9CED870C75BD8D00752D4B /* Deployment 64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					x86_64,
-					i386,
-				);
 				GCC_ALTIVEC_EXTENSIONS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INSTALL_PATH = /usr/local/lib;
@@ -31403,13 +31388,13 @@
 					"\"$(SRCROOT)/Binaries/KDU SDK\"",
 				);
 				PRODUCT_NAME = "DCM StaticLibrary";
+				SKIP_INSTALL = YES;
 			};
 			name = "Deployment 64-bit";
 		};
 		CEC70A1A10A5C844008935EA /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -31466,13 +31451,13 @@
 					3DconnexionClient,
 				);
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 			};
 			name = Development;
 		};
 		CEC70A1C10A5C844008935EA /* Deployment 32-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -31533,6 +31518,7 @@
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
 				STRIP_STYLE = debugging;
 			};
@@ -31603,6 +31589,7 @@
 				);
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = NO;
 				PRODUCT_NAME = "OsiriX Lite";
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				STRIP_STYLE = debugging;
 			};
@@ -31634,6 +31621,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31662,6 +31650,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31690,6 +31679,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = "32-bit shell";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -31698,7 +31688,6 @@
 		CEDF6DCE0B46FE99008B45B8 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_LOCATION = NO;
@@ -31724,6 +31713,7 @@
 					AppKit,
 				);
 				PRODUCT_NAME = DICOMPrint;
+				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				ZERO_LINK = NO;
 			};

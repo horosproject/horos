@@ -2128,7 +2128,11 @@ static NSDate *lastWarningDate = nil;
 					{
 						@try
 						{
-							[urlParameters setObject: [[param substringFromIndex: separatorRange.location+1] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString: @"'\""]] forKey: [param substringToIndex: separatorRange.location]];
+                            NSString* value = [param substringFromIndex:separatorRange.location+1];
+                            unichar c = [value characterAtIndex:0];
+                            if ((c == '"' || c == '\'') && [value characterAtIndex:value.length-1] == c)
+                                value = [value substringWithRange:NSMakeRange(1,value.length-2)];
+							[urlParameters setObject:value forKey:[param substringToIndex: separatorRange.location]];
 						}
 						@catch (NSException * e)
 						{

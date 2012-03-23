@@ -2099,7 +2099,8 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(IBAction)ReBuildDatabase:(id)sender { // __deprecated
+-(IBAction)ReBuildDatabase:(id)sender
+{ // __deprecated
 	[self initiateRebuildDatabase:NO];
 }
 
