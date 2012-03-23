@@ -346,7 +346,7 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 
 -(void)_cleanForFreeSpaceWarningDidEnd:(NSWindow*)sheet returnCode:(int)returnCode contextInfo:(void*)contextInfo {
     _showingCleanForFreeSpaceWarning = NO;
-    [self release];
+    [self autorelease];
 }
 
 -(void)cleanForFreeSpace {

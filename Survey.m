@@ -25,7 +25,7 @@
 {
 	NSLog( @"Survey closing");
 	
-	[self release];
+	[self autorelease];
 }
 
 //-(IBAction) done : (id) sender

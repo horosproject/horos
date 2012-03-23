@@ -82,7 +82,7 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[self release];
+	[self autorelease];
 }
 
 -(void) closeViewerNotification:(NSNotification*) note

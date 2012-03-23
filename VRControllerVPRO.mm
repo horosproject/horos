@@ -753,7 +753,7 @@ static NSString*	ModeToolbarItemIdentifier			= @"Mode";
 	
     [[self window] setDelegate:nil];
     
-    [self release];
+    [self autorelease];
 }
 
 -(NSMatrix*) toolsMatrix

@@ -640,7 +640,7 @@ static NSString*	MailToolbarItemIdentifier		= @"Mail.icns";
 
     [[self window] setDelegate:nil];
     
-    [self release];
+    [self autorelease];
 }
 
 -(DCMView*) originalView { return originalView;}
