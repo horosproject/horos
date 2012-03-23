@@ -2199,10 +2199,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		listenerCompressionSettings = 0;
 #endif
 		
-		BOOL twoStepsIndexing = [[NSUserDefaults standardUserDefaults] boolForKey:@"twoStepsIndexing"];
-		NSMutableArray* twoStepsIndexingArrayFrom = [NSMutableArray array];
-		NSMutableArray* twoStepsIndexingArrayTo = [NSMutableArray array];
-		
 		[AppController createNoIndexDirectoryIfNecessary:self.dataDirPath];
 		
 		int maxNumberOfFiles = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxNumberOfFilesForCheckIncoming"];
@@ -2263,7 +2259,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			BOOL isAlias = NO;
 			srcPath = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:srcPath resolved:&isAlias];
 			
-            if ((filesArray.count || twoStepsIndexingArrayFrom.count) && !activityFeedbackShown) {
+            if ((filesArray.count) && !activityFeedbackShown) {
 				[ThreadsManager.defaultManager addThreadAndStart:thread];
                 [OsiriX setReceivingIcon];
                 activityFeedbackShown = YES;
@@ -2339,40 +2335,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							
 							if (isAlias)
 							{
-								if (twoStepsIndexing)
-								{
-									NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
-									
-									result = [[NSFileManager defaultManager] copyPath:srcPath toPath: stepsPath handler:nil];
-									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
-									
-									if (result)
-									{
-										[twoStepsIndexingArrayFrom addObject: stepsPath];
-										[twoStepsIndexingArrayTo addObject: dstPath];
-									}
-								}
-								else
-								{
 									result = [[NSFileManager defaultManager] copyPath:srcPath toPath: dstPath handler:nil];
 									[[NSFileManager defaultManager] removeFileAtPath:originalPath handler:nil];
-								}
 							}
 							else
 							{
-								if (twoStepsIndexing)
-								{
-									NSString *stepsPath = [self.toBeIndexedDirPath stringByAppendingPathComponent: [dstPath lastPathComponent]];
-									
-									result = [[NSFileManager defaultManager] movePath:srcPath toPath: stepsPath handler:nil];
-									
-									if (result)
-									{
-										[twoStepsIndexingArrayFrom addObject: stepsPath];
-										[twoStepsIndexingArrayTo addObject: dstPath];
-									}
-								}
-								else
 									result = [[NSFileManager defaultManager] movePath:srcPath toPath: dstPath handler:nil];
 							}
 							
@@ -2392,23 +2359,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				}
 			}
             
-            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count+twoStepsIndexingArrayFrom.count)];
+            if( filesArray.count % 20 == 0)
+                thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
 		}
 		
-		if (twoStepsIndexing == YES && [twoStepsIndexingArrayFrom count] > 0)
-		{
-//				[database unlock];
-			
-			for( int i = 0 ; i < [twoStepsIndexingArrayFrom count] ; i++)
-			{
-				[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayTo objectAtIndex: i]  error: nil];
-				[[NSFileManager defaultManager] moveItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i] toPath: [twoStepsIndexingArrayTo objectAtIndex: i] error: nil];
-				[[NSFileManager defaultManager] removeItemAtPath: [twoStepsIndexingArrayFrom objectAtIndex: i]  error: nil];
-			}
-			
-//				[database lock];
-		}
-		
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+        
 		if ([filesArray count] > 0)
 		{
 //				if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"ANONYMIZELISTENER"] == YES)
