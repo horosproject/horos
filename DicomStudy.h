@@ -75,10 +75,10 @@
 - (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSString*) roiPathForImage: (DicomImage*) image;
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
-- (NSManagedObject *) roiSRSeries;
-- (NSManagedObject *) reportSRSeries;
+- (DicomSeries *) roiSRSeries;
+- (DicomSeries *) reportSRSeries;
 - (DicomImage*) reportImage;
-- (NSManagedObject *) annotationsSRImage;
+- (DicomImage *) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
 - (BOOL) isHidden;

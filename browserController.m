@@ -8658,6 +8658,7 @@ static BOOL needToRezoom;
 			if (([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask) || ([self computeEnoughMemory: toOpenArray : nil] == NO) || openSubSeriesFlag == YES)
 			{
 				toOpenArray = [self openSubSeries: toOpenArray];
+                if (!toOpenArray) return nil;
 			}
 		}
 		
@@ -10180,32 +10181,37 @@ static NSArray*	openSubSeriesArray = nil;
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subInterval"];
 	
-	[NSApp beginSheet: subSeriesWindow
-	   modalForWindow: [NSApp mainWindow]
-		modalDelegate: nil
-	   didEndSelector: nil
-		  contextInfo: nil];
+    if (!subSeriesWindowIsOn) {
+        subSeriesWindowIsOn = YES;
+        [NSApp beginSheet: subSeriesWindow
+           modalForWindow: [NSApp mainWindow]
+            modalDelegate: nil
+           didEndSelector: nil
+              contextInfo: nil];
 	
-	[self checkMemory: self];
+        [self checkMemory: self];
 	
-	int result = [NSApp runModalForWindow: subSeriesWindow];
-	[subSeriesWindow makeFirstResponder: nil];
+        int result = [NSApp runModalForWindow: subSeriesWindow];
+        [subSeriesWindow makeFirstResponder: nil];
 	
-	[NSApp endSheet: subSeriesWindow];
-	[subSeriesWindow orderOut: self];
+        [NSApp endSheet: subSeriesWindow];
+        [subSeriesWindow orderOut: self];
 	
-	[[waitOpeningWindow window] orderBack: self];
+        [[waitOpeningWindow window] orderBack: self];
 	
-	NSArray *returnedArray = nil;
-	
-	if( result == NSRunStoppedResponse)
-		returnedArray = [self produceNewArray: toOpenArray];
-	
-	[openSubSeriesArray release];
-	
-	[[NSUserDefaults standardUserDefaults] setInteger: copySortSeriesBySliceLocation forKey: @"sortSeriesBySliceLocation"];
-	
-	return returnedArray;
+        NSArray *returnedArray = nil;
+        
+        if( result == NSRunStoppedResponse)
+            returnedArray = [self produceNewArray: toOpenArray];
+        
+        [openSubSeriesArray release];
+        
+        [[NSUserDefaults standardUserDefaults] setInteger: copySortSeriesBySliceLocation forKey: @"sortSeriesBySliceLocation"];
+
+        return returnedArray;
+    }
+    
+    return nil;
 }
 
 

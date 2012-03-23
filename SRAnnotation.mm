@@ -20,6 +20,7 @@
 #import "DicomFile.h"
 #import <OsiriX/DCMCalendarDate.h>
 #import "DicomStudy.h"
+#import "DicomSeries.h"
 #import "N2Debug.h"
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */

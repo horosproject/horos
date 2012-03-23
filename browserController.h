@@ -253,6 +253,8 @@ extern NSString* O2AlbumDragType;
     IBOutlet NSButton *banner;
     
     NSTimeInterval _timeIntervalOfLastLoadIconsDisplayIcons;
+    
+    BOOL subSeriesWindowIsOn;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
