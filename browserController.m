@@ -2316,6 +2316,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [samePatientArray count] == 0) return;
 	
+    NSLog( @"*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
 	NSLog( @" Autorouting: %@ - %d objects", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], (int) [samePatientArray count]);
 		
 	DCMTKStoreSCU *storeSCU = [[DCMTKStoreSCU alloc]	initWithCallingAET: [NSUserDefaults defaultAETitle] 
@@ -2347,13 +2348,14 @@ static NSConditionLock *threadLock = nil;
 		{
 			[autoroutingQueue lock];
 			
-			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
+			NSLog( @"Autorouting for %@ : failure count: %d", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [[dict valueForKey: @"failureRetry"] intValue]);
 			
-			[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: samePatientArray, @"objects", [server objectForKey:@"Description"], @"server", dict, @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
+			[autoroutingQueueArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithArray: samePatientArray], @"objects", [server objectForKey:@"Description"], @"server", [dict valueForKey:@"routingRule"], @"routingRule", [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
 			[autoroutingQueue unlock];
 		}
 	}
-		
+    NSLog( @"*-*-*-*-*-*-*-*-*-*-*-*-*-*-*");
+    
 	[storeSCU release];
 	storeSCU = nil;
 }
