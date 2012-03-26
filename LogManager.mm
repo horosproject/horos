@@ -16,6 +16,7 @@
 #import "browserController.h"
 #import "DICOMToNSString.h"
 #import "DicomFile.h"
+#import "Notifications.h"
 
 static LogManager *currentLogManager = nil;
 
@@ -218,6 +219,8 @@ static LogManager *currentLogManager = nil;
 											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
 											
 										[_currentLogs removeObjectForKey: uid];
+                                        
+                                        [[NSNotificationCenter defaultCenter] postNotificationName: OsiriXLogEvent object: logEntry userInfo: nil];
 									}
 									
 									if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)

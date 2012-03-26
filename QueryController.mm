@@ -1715,7 +1715,7 @@ extern "C"
                             case 8:     currentQueryKey = customDICOMField;     break;
                         }
                         
-                        if( currentQueryKey == customDICOMField)
+                        if( currentQueryKey == customDICOMField && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_customDICOMField"])
                         {
                             CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
                             
@@ -1745,7 +1745,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == PatientName)
+                        else if( currentQueryKey == PatientName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
                         {
                             if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                             {
@@ -1767,7 +1767,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == ReferringPhysician)
+                        else if( currentQueryKey == ReferringPhysician && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_referring_physician"])
                         {
                             if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                             {
@@ -1786,7 +1786,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == InstitutionName)
+                        else if( currentQueryKey == InstitutionName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_institution"])
                         {
                             if( showError && [[searchInstitutionName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                             {
@@ -1805,7 +1805,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == PatientBirthDate)
+                        else if( currentQueryKey == PatientBirthDate && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_birthdate"])
                         {
                             if( [birthdateFilterMatrix selectedTag] == 0)
                                 [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
@@ -1818,7 +1818,7 @@ extern "C"
                             
                             queryItem = YES;
                         }
-                        else if( currentQueryKey == PatientID)
+                        else if( currentQueryKey == PatientID && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                         {
                             NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                             
@@ -1828,7 +1828,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == AccessionNumber)
+                        else if( currentQueryKey == AccessionNumber && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
                         {
                             NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                             
@@ -1838,7 +1838,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == StudyDescription)
+                        else if( currentQueryKey == StudyDescription && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_description"])
                         {
                             if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                             {
@@ -1857,7 +1857,7 @@ extern "C"
                                 queryItem = YES;
                             }
                         }
-                        else if( currentQueryKey == Comments)
+                        else if( currentQueryKey == Comments && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
                         {
                             if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                             {
@@ -1906,39 +1906,46 @@ extern "C"
 					// if filter is empty and there is no date the query may be prolonged and fail. Ask first. Don't run if cancelled
 					else
 					{
-						BOOL doit = NO;
-						
-						if( showError)
-						{
-							if( atLeastOneSource == NO)
-							{
-								NSString *alertSuppress = @"No parameters query";
-								NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-								if ([defaults boolForKey:alertSuppress])
-								{
-									doit = YES;
-								}
-								else
-								{
-									NSAlert* alert = [[NSAlert new] autorelease];
-									[alert setMessageText: NSLocalizedString(@"Query", nil)];
-									[alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
-									[alert setShowsSuppressionButton:YES ];
-									[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-									[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-									
-									if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-									
-									if ([[alert suppressionButton] state] == NSOnState)
-									{
-										[defaults setBool:YES forKey:alertSuppress];
-									}
-								}
-							}
-							else doit = YES;
+                        BOOL doit = NO;
+                        
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_blank_query"] == NO)
+                        {
+                            NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), NSLocalizedString(@"No query parameters provided. Blank query is not allowed.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                        }
+						else
+                        {
+                            if( showError)
+                            {
+                                if( atLeastOneSource == NO)
+                                {
+                                    NSString *alertSuppress = @"No parameters query";
+                                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                                    if ([defaults boolForKey:alertSuppress])
+                                    {
+                                        doit = YES;
+                                    }
+                                    else
+                                    {
+                                        NSAlert* alert = [[NSAlert new] autorelease];
+                                        [alert setMessageText: NSLocalizedString(@"Query", nil)];
+                                        [alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+                                        [alert setShowsSuppressionButton:YES ];
+                                        [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+                                        [alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+                                        
+                                        if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+                                        
+                                        if ([[alert suppressionButton] state] == NSOnState)
+                                        {
+                                            [defaults setBool:YES forKey:alertSuppress];
+                                        }
+                                    }
+                                }
+                                else doit = YES;
+                            }
+                            else doit = YES;
 						}
-						else doit = YES;
-						
+                        
 						if( doit)
 						{
 							[self performQuery: [NSNumber numberWithBool: showError]];

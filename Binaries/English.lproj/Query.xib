@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11D50</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
 		<string key="IBDocument.HIToolboxVersion">568.00</string>
@@ -89,7 +89,7 @@
 										<object class="NSTableView" id="289314417">
 											<reference key="NSNextResponder" ref="896535216"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrameSize">{1242, 452}</string>
+											<string key="NSFrameSize">{1242, 441}</string>
 											<reference key="NSSuperview" ref="896535216"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="643837582"/>
@@ -103,10 +103,13 @@
 												<reference key="NSNextKeyView" ref="896535216"/>
 												<reference key="NSTableView" ref="289314417"/>
 											</object>
-											<object class="_NSCornerView" key="NSCornerView">
-												<nil key="NSNextResponder"/>
+											<object class="_NSCornerView" key="NSCornerView" id="474978207">
+												<reference key="NSNextResponder" ref="225972883"/>
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{-22, 0}, {12, 17}}</string>
+												<reference key="NSSuperview" ref="225972883"/>
+												<reference key="NSWindow"/>
+												<reference key="NSNextKeyView" ref="241117316"/>
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="404969052">
@@ -682,7 +685,7 @@
 											<int key="NSTableViewGroupRowStyle">1</int>
 										</object>
 									</array>
-									<string key="NSFrame">{{1, 17}, {893, 452}}</string>
+									<string key="NSFrame">{{1, 17}, {893, 441}}</string>
 									<reference key="NSSuperview" ref="225972883"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="289314417"/>
@@ -729,16 +732,18 @@
 									<reference key="NSBGColor" ref="574050674"/>
 									<int key="NScvFlags">4</int>
 								</object>
+								<reference ref="474978207"/>
 							</array>
 							<string key="NSFrame">{{7, 38}, {895, 470}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="241117316"/>
+							<reference key="NSNextKeyView" ref="474978207"/>
 							<int key="NSsFlags">133810</int>
 							<reference key="NSVScroller" ref="311767854"/>
 							<reference key="NSHScroller" ref="643837582"/>
 							<reference key="NSContentView" ref="896535216"/>
 							<reference key="NSHeaderClipView" ref="241117316"/>
+							<reference key="NSCornerView" ref="474978207"/>
 							<bytes key="NSScrollAmts">AAAAAAAAAABBmAAAQZgAAA</bytes>
 						</object>
 						<object class="NSTextField" id="162008091">
@@ -1334,7 +1339,7 @@
 														<object class="NSTableView" id="275723918">
 															<reference key="NSNextResponder" ref="463711519"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{428, 167}</string>
+															<string key="NSFrameSize">{428, 156}</string>
 															<reference key="NSSuperview" ref="463711519"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="630420956"/>
@@ -1484,7 +1489,7 @@
 															<int key="NSTableViewGroupRowStyle">1</int>
 														</object>
 													</array>
-													<string key="NSFrame">{{1, 1}, {349, 167}}</string>
+													<string key="NSFrame">{{1, 1}, {349, 156}}</string>
 													<reference key="NSSuperview" ref="898135777"/>
 													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="275723918"/>
@@ -2165,7 +2170,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="1058755297"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="552563627">
 																	<int key="NSCellFlags">343014976</int>
@@ -2236,7 +2241,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="791800993"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="188963538">
 																	<int key="NSCellFlags">343014976</int>
@@ -2456,7 +2461,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">268</int>
 																<string key="NSFrame">{{428, 8}, {71, 17}}</string>
 																<reference key="NSSuperview" ref="538660984"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSTextFieldCell" key="NSCell" id="99554115">
 																	<int key="NSCellFlags">68288064</int>
@@ -2487,7 +2492,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="1013112809"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="260617898">
 																	<int key="NSCellFlags">343014976</int>
@@ -2556,7 +2561,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="572748542"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="254076394">
 																	<int key="NSCellFlags">343014976</int>
@@ -2625,7 +2630,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="178544796"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="1054329266">
 																	<int key="NSCellFlags">343014976</int>
@@ -2694,7 +2699,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">266</int>
 																<string key="NSFrame">{{89, 5}, {357, 22}}</string>
 																<reference key="NSSuperview" ref="1018901234"/>
-																<reference key="NSNextKeyView" ref="1066080745"/>
+																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSSearchFieldCell" key="NSCell" id="387744036">
 																	<int key="NSCellFlags">343014976</int>
@@ -3425,7 +3430,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="645620780"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMinSize">{911, 522}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">QR</string>
@@ -3654,7 +3659,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 					<string key="NSFrameSize">{317, 162}</string>
 					<reference key="NSNextKeyView" ref="936151260"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -3970,7 +3975,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<string key="NSFrameSize">{474, 297}</string>
 					<reference key="NSNextKeyView" ref="513748587"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -4437,6 +4442,86 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 					<int key="connectionID">815</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_study_date</string>
+						<reference key="source" ref="300640267"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="300640267"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_study_date</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_study_date</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1070</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_modality</string>
+						<reference key="source" ref="557816121"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="557816121"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_modality</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_modality</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1069</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_id</string>
+						<reference key="source" ref="880814670"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="880814670"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_id</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_id</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1078</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_name</string>
+						<reference key="source" ref="304106775"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="304106775"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_name</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_name</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1079</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_birthdate</string>
+						<reference key="source" ref="489602805"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="489602805"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_birthdate</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_birthdate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1075</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">dataSource</string>
 						<reference key="source" ref="275723918"/>
@@ -4575,6 +4660,22 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						</object>
 					</object>
 					<int key="connectionID">713</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_accession_number</string>
+						<reference key="source" ref="199910809"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="199910809"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_accession_number</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_accession_number</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1077</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4751,6 +4852,22 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_description</string>
+						<reference key="source" ref="666660680"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="666660680"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_description</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_description</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1074</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: autoRefreshQueryResults</string>
 						<reference key="source" ref="213012663"/>
 						<reference key="destination" ref="934212155"/>
@@ -4780,6 +4897,22 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						</object>
 					</object>
 					<int key="connectionID">915</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_referring_physician</string>
+						<reference key="source" ref="142493312"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="142493312"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_referring_physician</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_referring_physician</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1073</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4841,6 +4974,54 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						</object>
 					</object>
 					<int key="connectionID">948</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_comments</string>
+						<reference key="source" ref="247228646"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="247228646"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_comments</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_comments</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1072</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_institution</string>
+						<reference key="source" ref="726029173"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="726029173"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_institution</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_institution</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1071</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.allow_qr_birthdate</string>
+						<reference key="source" ref="472018790"/>
+						<reference key="destination" ref="524337109"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="472018790"/>
+							<reference key="NSDestination" ref="524337109"/>
+							<string key="NSLabel">enabled: values.allow_qr_birthdate</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.allow_qr_birthdate</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1076</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -6931,7 +7112,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1068</int>
+			<int key="maxID">1079</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
