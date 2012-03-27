@@ -850,7 +850,8 @@ SecPolicySearchCreate:
 + (NSArray*)KeychainAccessCertificateChainForIdentity:(SecIdentityRef)identity;
 {
 	OSStatus status;
-		
+    NSArray *returnedValue = nil;
+    
 	if(identity)
 	{		
 		SecCertificateRef certificateRef = NULL;
@@ -881,7 +882,7 @@ SecPolicySearchCreate:
 							{
 								NSArray *certificatesChain = [NSArray arrayWithArray:(NSArray*)certChain];
 								CFRelease(certChain);
-								return certificatesChain;
+								returnedValue = certificatesChain;
 							}
 							else NSLog(@"SecTrustGetResult : error : %@", [DDKeychain stringForError:status]);
 						}
@@ -899,7 +900,7 @@ SecPolicySearchCreate:
 			CFRelease(certificateRef);
 		}
 	}
-	return NULL;
+	return returnedValue;
 }
 
 + (void)KeychainAccessExportCertificateForIdentity:(SecIdentityRef)identity toPath:(NSString*)path;
