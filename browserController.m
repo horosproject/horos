@@ -96,6 +96,7 @@
 #import "NSManagedObject+N2.h"
 #import "DICOMExport.h"
 #import "PrettyCell.h"
+#import "N2Stuff.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -11829,7 +11830,7 @@ static NSArray*	openSubSeriesArray = nil;
             
             NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
             t.name = NSLocalizedString( @"Deleting files...", nil);
-            t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [deleteQueueArray count]];
+            t.status = N2LocalizedSingularPluralCount(deleteQueueArray.count, @"file", @"files");
             t.progress = 0;
             t.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
