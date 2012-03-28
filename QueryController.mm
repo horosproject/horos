@@ -63,8 +63,7 @@ static NSString *InstitutionName = @"InstitutionName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
-static NSMutableArray* studyArrayInstanceUID = [[NSMutableArray alloc] init];
-static NSArray* studyArrayCache = nil;
+static NSMutableArray *studyArrayInstanceUID = [[NSMutableArray alloc] init], *studyArrayID = [[NSMutableArray alloc] init];
 static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
@@ -1073,7 +1072,7 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSArray *local_studyArrayCache = nil;
+	NSArray *local_studyArrayID = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
     static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
@@ -1081,30 +1080,40 @@ extern "C"
     {
         @try
         {
-            DicomDatabase* database = [[BrowserController currentBrowser] database];
-            [database lock];
+            NSManagedObjectContext *independentContext = [[[BrowserController currentBrowser] database] independentContext];
+            
+            [independentContext lock];
+            
             @try
             {
-                local_studyArrayCache = [database objectsForEntity:database.studyEntity];
-                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
+                NSError *error = nil;
+                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                
+                request.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext: independentContext];
+                request.predicate = [NSPredicate predicateWithValue: YES];
+                
+                NSArray *result = [independentContext executeFetchRequest:request error: &error];
+                
+                local_studyArrayID = [result valueForKey: @"objectID"];
+                local_studyArrayInstanceUID = [result valueForKey:@"studyInstanceUID"];
             }
             @catch (NSException* e)
             {
                 N2LogExceptionWithStackTrace(e);
             }
             @finally {
-                [database unlock];
+                [independentContext unlock];
             }
             
-            if( local_studyArrayCache && local_studyArrayInstanceUID)
+            if( local_studyArrayID && local_studyArrayInstanceUID)
             {
                 @synchronized (studyArrayInstanceUID)
                 {
                     [studyArrayInstanceUID removeAllObjects];
                     [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
                 
-                    [studyArrayCache release];
-                    studyArrayCache = [local_studyArrayCache retain];
+                    [studyArrayID removeAllObjects];
+                    [studyArrayID addObjectsFromArray: local_studyArrayID];
                 }
                 
                 if( [NSThread isMainThread])
@@ -1142,7 +1151,10 @@ extern "C"
                 NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
                 
                 if( index == NSNotFound) result = [NSArray array];
-                else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
+                else
+                {
+                    result = [NSArray arrayWithObject: [[[BrowserController currentBrowser] database] objectWithID: [studyArrayID objectAtIndex: index]]];
+                }
             }
 			
 			return result;
