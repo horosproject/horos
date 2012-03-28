@@ -1,4 +1,4 @@
-- QR: short timeout (auto-repeat)
+- WADO Retrieve logs?
 - RGB support for MIP & MPR
 ------------------------------------------------------------------------------------------
 
