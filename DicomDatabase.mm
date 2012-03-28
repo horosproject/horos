@@ -345,13 +345,15 @@ static DicomDatabase* activeLocalDatabase = nil;
 	
 	NSString* sqlFilePath = [DicomDatabase sqlFilePathForBasePath:p];
 	BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
-	
+
 	// init and register
 	
 	self.baseDirPath = p;
 	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
 	if (!_dataBaseDirPath) _dataBaseDirPath = p; // TODO: what if this path is not mounted?
 	[_dataBaseDirPath retain];
+    
+    BOOL isNewDb = ![NSFileManager.defaultManager fileExistsAtPath:[self dataDirPath]];
 	
     [DicomDatabase knowAbout:self]; // retains self
     
@@ -405,10 +407,11 @@ static DicomDatabase* activeLocalDatabase = nil;
 
         [self checkForHtmlTemplates];
         
-        if (isNewFile && [NSThread isMainThread]) {
+        if (isNewFile && [NSThread isMainThread] && ![p hasPrefix:@"/tmp/"] && !isNewDb) {
             NSString* saveThreadName = [NSThread.currentThread name];
             NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
             ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
+            [tmfwc.window center];
             [self rebuild:YES];
             [tmfwc invalidate];
             [tmfwc release];

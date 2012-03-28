@@ -2883,7 +2883,6 @@ static BOOL initialized = NO;
 				// CREATE A TEMPORATY FILE DURING STARTUP
 				
 				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"Loading"];
-				
                 
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
                 {
@@ -2900,7 +2899,7 @@ static BOOL initialized = NO;
                     }
                 }
                 
-				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
+                [path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
                 [self checkForWordTemplates];
 				[AppController checkForPagesTemplate];

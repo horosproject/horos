@@ -178,7 +178,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             
             if ([NSThread isMainThread]) {
                 if ([keyPath isEqual:NSThreadProgressKey])
-                    if (fabs(_lastDisplayedStatus-self.progressIndicator.doubleValue) > 0.01) {
+                    if (fabs(_lastDisplayedStatus-self.progressIndicator.doubleValue) > 1.0/self.progressIndicator.frame.size.width) {
                         _lastDisplayedStatus = self.progressIndicator.doubleValue;
                         [self.progressIndicator display];
                     }
