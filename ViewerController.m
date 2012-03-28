@@ -7480,7 +7480,6 @@ return YES;
     [NSThread currentThread].name = @"Load Image Data";
     
 	[ThreadLoadImageLock lock];
-	
 	@try 
 	{
 		ThreadLoadImage = YES;
@@ -7537,7 +7536,7 @@ return YES;
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
 						
-						[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+						[NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: d];
 					}
 					
 					[subLoadingThread lockWhenCondition: 0];
@@ -7569,7 +7568,6 @@ return YES;
 			ThreadLoadImage = NO;
 			loadingThread = nil;
 			[pool release];
-			[ThreadLoadImageLock unlock];
 			return;
 		}
 		
@@ -7579,8 +7577,9 @@ return YES;
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[ThreadLoadImageLock unlock];
+	@finally {
+        [ThreadLoadImageLock unlock];
+    }
 
 #pragma mark modality dependant code, once images are already displayed in 2D viewer
 	if( stopThreadLoadImage == NO)

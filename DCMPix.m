@@ -12762,40 +12762,47 @@ END_CREATE_ROIS:
 							}
 							else if([type isEqualToString:@"DB"])
 							{
-								NSString *fieldName = [field objectForKey:@"field"];
-								NSString *level = [field objectForKey:@"level"];
-								if([level isEqualToString:@"image"])
-								{
-									value = [imageObj valueForKey:fieldName];
-								}
-								else if([level isEqualToString:@"series"])
-								{
-									value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
-								}
-								else if([level isEqualToString:@"study"])
-								{
-									value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
-									
-									if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
-								}
-								
-								if(value==nil) value = @"-";
-								else contentForLine = YES;
-								
-								if( [value isKindOfClass: [NSDate class]])
-								{
-//									value = [value description];
-									
-									if([fieldName isEqualToString:@"dateOfBirth"])
-										value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
-									else
-										value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
-								}
-								else
-								{
-									value = [value description];
-									if( [value length] == 0) value = @"-";
-								}
+								[imageObj.managedObjectContext lock];
+                                @try {
+                                    NSString *fieldName = [field objectForKey:@"field"];
+                                    NSString *level = [field objectForKey:@"level"];
+                                    if([level isEqualToString:@"image"])
+                                    {
+                                        value = [imageObj valueForKey:fieldName];
+                                    }
+                                    else if([level isEqualToString:@"series"])
+                                    {
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+                                    }
+                                    else if([level isEqualToString:@"study"])
+                                    {
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+                                        
+                                        if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
+                                    }
+                                    
+                                    if(value==nil) value = @"-";
+                                    else contentForLine = YES;
+                                    
+                                    if( [value isKindOfClass: [NSDate class]])
+                                    {
+    //									value = [value description];
+                                        
+                                        if([fieldName isEqualToString:@"dateOfBirth"])
+                                            value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
+                                        else
+                                            value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
+                                    }
+                                    else
+                                    {
+                                        value = [value description];
+                                        if( [value length] == 0) value = @"-";
+                                    }
+                                } @catch (...) {
+                                    @throw;
+                                } @finally {
+                                    [imageObj.managedObjectContext unlock];
+                                }
 							}
 							else if([type isEqualToString:@"Special"])
 							{

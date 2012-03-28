@@ -1082,7 +1082,7 @@ extern "C"
         @try
         {
             DicomDatabase* database = [[BrowserController currentBrowser] database];
-            
+            [database lock];
             @try
             {
                 local_studyArrayCache = [database objectsForEntity:database.studyEntity];
@@ -1091,6 +1091,9 @@ extern "C"
             @catch (NSException* e)
             {
                 N2LogExceptionWithStackTrace(e);
+            }
+            @finally {
+                [database unlock];
             }
             
             if( local_studyArrayCache && local_studyArrayInstanceUID)
@@ -1107,7 +1110,7 @@ extern "C"
                 if( [NSThread isMainThread])
                     [self applyNewStudyArray: nil];
                 else
-                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: nil waitUntilDone: NO];
+                    [self performSelectorOnMainThread:@selector(applyNewStudyArray:) withObject: nil waitUntilDone: NO];
             }
             else
                 NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
