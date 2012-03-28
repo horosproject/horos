@@ -3,13 +3,8 @@
 ------------------------------------------------------------------------------------------
 
 A:
-(OK) - DB Remote: ROIs - create, see, delete, sync
-(OK) - DB Remote: HD Free Space: delete entire DB?
 - MainMenu.xib : menus, subSampling, banner (this is a reminder, not a bug)
-(OK) - If CD direct reading : display "Opening…" dialog when opening a 2D Viewer
-(OK) - Continuously flashing Activity…
-(OK) - CD: when automatically copy the files. OsiriX should automatically select the study in the DB, when the first images are available.
-(OK) - Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
+- Crashing QueryController computeStudyInstanceUID
 
 Added features:
 - Access DICOM CD/DVD as a database
