@@ -1851,13 +1851,20 @@ typedef struct _xyzArray
 {
 	if( isoExtractor[ actor])
 	{
-		aRenderer->RemoveActor( iso[ actor]);
-		
-		isoExtractor[ actor]->Delete();
-		isoNormals[ actor]->Delete();
-		isoMapper[ actor]->Delete();
-		iso[ actor]->Delete();
-		
+        if( iso[ actor]) aRenderer->RemoveActor( iso[ actor]);
+        
+		if( isoExtractor[ actor]) isoExtractor[ actor]->Delete();
+        isoExtractor[ actor] = nil;
+        
+        if( isoNormals[ actor]) isoNormals[ actor]->Delete();
+		isoNormals[ actor] = nil;
+        
+        if( isoMapper[ actor]) isoMapper[ actor]->Delete();
+		isoMapper[ actor] = nil;
+        
+        if( iso[ actor])  iso[ actor]->Delete();
+		iso[ actor] = nil;
+        
 		if( isoSmoother[ actor]) isoSmoother[ actor]->Delete();
 		isoSmoother[ actor] = nil;
 		
@@ -1874,11 +1881,19 @@ typedef struct _xyzArray
 	{
 		aRenderer->RemoveActor( Biso[ actor]);
 		
-		BisoExtractor[ actor]->Delete();
-		BisoNormals[ actor]->Delete();
-		BisoMapper[ actor]->Delete();
-		Biso[ actor]->Delete();
-		if(BisoSmoother[ actor]) BisoSmoother[ actor]->Delete();
+		if( BisoExtractor[ actor]) BisoExtractor[ actor]->Delete();
+        BisoExtractor[ actor] = nil;
+        
+		if( BisoNormals[ actor]) BisoNormals[ actor]->Delete();
+        BisoNormals[ actor] = nil;
+        
+		if( BisoMapper[ actor]) BisoMapper[ actor]->Delete();
+		BisoMapper[ actor] = nil;
+        
+        if( Biso[ actor]) Biso[ actor]->Delete();
+        Biso[ actor] = nil;
+        
+		if( BisoSmoother[ actor]) BisoSmoother[ actor]->Delete();
 		BisoSmoother[ actor] = nil;
 		
 		if(BisoDeci[ actor]) BisoDeci[ actor]->Delete();
