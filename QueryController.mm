@@ -1093,7 +1093,6 @@ extern "C"
                 N2LogExceptionWithStackTrace(e);
             }
             
-            
             if( local_studyArrayCache && local_studyArrayInstanceUID)
             {
                 @synchronized (studyArrayInstanceUID)
