@@ -7,10 +7,9 @@ A:
 - DB Remote: HD Free Space: delete entire DB?
 - MainMenu.xib : menus, subSampling, banner
 - If CD direct reading : display "Opening…" dialog when opening a 2D Viewer
-- Continuously flashing Activity…
-- CD: when automatically copy the files. OsiriX should automatically select the study in the DB, when the first images are available.
-
-- Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
+(OK) - Continuously flashing Activity…
+(OK) - CD: when automatically copy the files. OsiriX should automatically select the study in the DB, when the first images are available.
+(OK) - Optimization for CD: change preview and matrixview to use thumbnails and load images only when needed (based on DicomStudy/DicomSeries)
 
 Added features:
 - Access DICOM CD/DVD as a database
