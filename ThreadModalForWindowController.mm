@@ -47,7 +47,9 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
 	[NSApp beginSheet:self.window modalForWindow:self.docWindow modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-    
+    if (!self.docWindow)
+        [self.window center];
+        
 	[self retain];
 
 	return self;	
@@ -136,15 +138,17 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         p += frame.size.height;
     }
     
-    if (self.titleField.stringValue.length) {
+    if (self.titleField.stringValue.length && ![self.thread isMainThread]) {
         p += 8;
         frame = self.titleField.frame;
         frame.origin.y = p;
         [self.titleField setFrame:frame];
+        [self.titleField setHidden:NO];
         p += frame.size.height;
-    }
+    } else
+        [self.titleField setHidden:YES];
 
-    p += 20;
+    p += 18;
     
     
     frame = [self.window frame];
@@ -184,6 +188,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                     }
                 
                 if ([keyPath isEqual:NSThreadNameKey]) {
+                    self.window.title = obj.name? obj.name : NSLocalizedString(@"Task Progress", nil);
                     self.titleField.stringValue = obj.name? obj.name : @"";
                     [self.titleField display];
                 }

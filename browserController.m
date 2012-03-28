@@ -8529,7 +8529,8 @@ static BOOL needToRezoom;
 
 - (BOOL)computeEnoughMemory: (NSArray*)toOpenArray: (unsigned long*)requiredMem
 {
-	BOOL enoughMemory = YES;
+	NSThread* thread = [NSThread currentThread];
+    BOOL enoughMemory = YES;
 	unsigned long long mem = 0, memBlock = 0;
 	unsigned char* testPtr[ 800];
 	
@@ -8554,11 +8555,16 @@ static BOOL needToRezoom;
 			}
 			else
 			{
-				for( curFile in loadList)
+                [thread enterOperation];
+                thread.status = NSLocalizedString(@"Evaluating amount of memory needed...", nil);
+                for (NSUInteger i = 0; i < loadList.count; ++i)
 				{
+                    thread.progress = 1.0*i/loadList.count;
+                    curFile = [loadList objectAtIndex:i];
 					mem += ([[curFile valueForKey:@"width"] intValue] +1) * ([[curFile valueForKey:@"height"] intValue] +1);
 					memBlock += ([[curFile valueForKey:@"width"] intValue]) * ([[curFile valueForKey:@"height"] intValue]);
 				}
+                [thread exitOperation];
 			}
 			
 			memBlock *= sizeof(float);
@@ -8621,6 +8627,13 @@ static BOOL needToRezoom;
 	ViewerController	*movieController = nil;
 	ViewerController	*createdViewer = viewer;
 	
+    ThreadModalForWindowController* wait = nil;
+    [[NSThread currentThread] enterOperation];
+    if ([self.database hasPotentiallySlowDataAccess]) {
+        NSThread.currentThread.name = NSLocalizedString(@"Loading series data...", nil);
+        wait = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
+    }
+    
 	@try
 	{
 		// NS_DURING (1) keyImages
@@ -9074,6 +9087,11 @@ static BOOL needToRezoom;
         N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel( NSLocalizedString(@"Opening Error", nil), [NSString stringWithFormat: NSLocalizedString(@"Opening Error : %@\r\r%@", nil), e, [AppController printStackTrace: e]] , nil, nil, nil);
 	}
+    @finally {
+        [wait invalidate];
+        [wait release];
+        [[NSThread currentThread] exitOperation];
+    }
 	
 	free( memBlockSize);
 	

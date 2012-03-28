@@ -36,7 +36,7 @@ extern NSString* const OsirixDataDirName;
 	NSTimeInterval _timeOfLastIsFileSystemFreeSizeLimitReachedVerification;
 	NSTimeInterval _timeOfLastModification;
 	char baseDirPathC[4096], incomingDirPathC[4096], tempDirPathC[4096]; // these paths are used from the DICOM listener
-    BOOL _isReadOnly;
+    BOOL _isReadOnly, _hasPotentiallySlowDataAccess;
 	// +Routing
 	NSMutableArray* _routingSendQueues;
 	NSRecursiveLock* _routingLock;
@@ -64,6 +64,7 @@ extern NSString* const OsirixDataDirName;
 @property(readwrite,retain,nonatomic) NSString* name;
 @property(readwrite) NSTimeInterval timeOfLastModification;
 @property BOOL isReadOnly;
+@property BOOL hasPotentiallySlowDataAccess;
 
 -(BOOL)isLocal;
 

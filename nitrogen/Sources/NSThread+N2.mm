@@ -128,12 +128,14 @@ static NSString* const NSThreadSubRangeKey = @"subRange";
 }
 
 static NSString* const SuperThreadProgressKey = @"SuperThreadProgress";
+static NSString* const SuperThreadNameKey = @"SuperThreadName";
 
 -(void)enterOperation {
 	@synchronized (self.threadDictionary) {
         NSNumber* n = [NSNumber numberWithFloat:self.progress];
 		[self.stackArray addObject:[NSMutableDictionary dictionary]];
         [self.currentOperationDictionary setObject:n forKey:SuperThreadProgressKey];
+        if (self.name) [self.currentOperationDictionary setObject:self.name forKey:SuperThreadNameKey];
 		self.progress = -1;
 	}
 }
@@ -161,8 +163,12 @@ static NSString* const SuperThreadProgressKey = @"SuperThreadProgress";
 		if (self.stackArray.count > 1) {
             [self willChangeValueForKey:NSThreadStatusKey];
 			NSNumber* temp = [[[self.currentOperationDictionary objectForKey:SuperThreadProgressKey] retain] autorelease];
+			NSString* name = [[[self.currentOperationDictionary objectForKey:SuperThreadNameKey] retain] autorelease];
+            
             [self.stackArray removeLastObject];
             [self didChangeValueForKey:NSThreadStatusKey];
+            
+            self.name = name;
             if (temp) self.progress = temp.floatValue;
             else self.progress = 1;
         }

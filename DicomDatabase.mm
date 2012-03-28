@@ -310,6 +310,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 @synthesize isReadOnly = _isReadOnly;
 @synthesize processFilesLock = _processFilesLock;
 @synthesize importFilesFromIncomingDirLock = _importFilesFromIncomingDirLock;
+@synthesize hasPotentiallySlowDataAccess = _hasPotentiallySlowDataAccess;
 
 -(DataNodeIdentifier*)dataNodeIdentifier {
     return [LocalDatabaseNodeIdentifier localDatabaseNodeIdentifierWithPath:self.baseDirPath];
@@ -408,14 +409,13 @@ static DicomDatabase* activeLocalDatabase = nil;
         [self checkForHtmlTemplates];
         
         if (isNewFile && [NSThread isMainThread] && ![p hasPrefix:@"/tmp/"] && !isNewDb) {
-            NSString* saveThreadName = [NSThread.currentThread name];
+            [NSThread.currentThread enterOperation];
             NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
             ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
-            [tmfwc.window center];
             [self rebuild:YES];
             [tmfwc invalidate];
             [tmfwc release];
-            NSThread.currentThread.name = saveThreadName;
+            [NSThread.currentThread exitOperation];
         }
         
         if (isNewFile)
@@ -429,6 +429,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         _dataFileIndex = [[self.mainDatabase dataFileIndex] retain];
         _processFilesLock = [[self.mainDatabase processFilesLock] retain];
         _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
+        _hasPotentiallySlowDataAccess = [self.mainDatabase hasPotentiallySlowDataAccess];
         
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
