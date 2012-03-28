@@ -25,7 +25,7 @@
 #import "N2Stuff.h"
 
 
-@interface DicomDatabase ()
+@interface DicomDatabase (RoutingPrivate)
 
 -(NSMutableArray*)routingSendQueues;
 -(NSRecursiveLock*)routingLock;

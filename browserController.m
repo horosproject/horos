@@ -1127,8 +1127,8 @@ static NSConditionLock *threadLock = nil;
 		for( int i = 0; i < [filenames count]; i++)
 		{
 			NSString *aPath = [filenames objectAtIndex:i];
-			if([[aPath pathExtension] isEqualToString:@"osirixplugin"])
-				[pluginsArray addObject:aPath];
+			if ([[aPath pathExtension] isEqualToString:@"osirixplugin"])
+                [pluginsArray addObject:aPath];
 		}
 		
 		[filenamesWithoutPlugins removeObjectsInArray: pluginsArray];
@@ -1548,7 +1548,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (IBAction)createDatabase:(id)sender __deprecated { // deprecated
+- (IBAction)createDatabase:(id)sender { // deprecated
 	N2LogDeprecatedCall();
 //	if( ![database isLocal])
 //	{
@@ -2099,8 +2099,7 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
--(IBAction)ReBuildDatabase:(id)sender
-{ // __deprecated
+-(IBAction)ReBuildDatabase:(id)sender { // __deprecated
 	[self initiateRebuildDatabase:NO];
 }
 

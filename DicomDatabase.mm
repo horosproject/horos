@@ -1964,8 +1964,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
     [queue setMaxConcurrentOperationCount:1];
     
-	BOOL first = YES, studySelected = NO, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
-    BOOL* studySelectedP = &studySelected;
+	BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
+    __block BOOL studySelected = NO;
 	NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
 	
 //	int total = 0;
@@ -2096,40 +2096,37 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                         [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
                 }
                 
-                if( [objects count]) @try {
-                    [self lock];
-                    
-                    objects = [self objectsWithIDs:objects];
-                    
-                    BrowserController* bc = [BrowserController currentBrowser];
-                    
-                    if( studySelected == NO)
-                    {
-                        if( [[dict objectForKey: @"selectStudy"] boolValue])
-                            [bc performSelectorOnMainThread: @selector(selectThisStudy:) withObject: [[objects objectAtIndex: 0] valueForKeyPath: @"series.study"] waitUntilDone: NO];
+                if ([objects count]) {
+                    @try {
+                        BrowserController* bc = [BrowserController currentBrowser];
+                        DicomDatabase* mdatabase = self.mainDatabase? self.mainDatabase : self;
+                        NSArray* mobjects = [mdatabase objectsWithIDs:objects];
                         
-                        *studySelectedP = YES;
-                    }
-                    
-                    if (bc.database == self && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
-                    {
-                        NSManagedObject *album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
+                        if (studySelected == NO) {
+                            studySelected = YES;
+                            if ([[dict objectForKey:@"selectStudy"] boolValue])
+                                [bc performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath: @"series.study"] waitUntilDone:NO];
+                        }
                         
-                        if ([[album valueForKey:@"smartAlbum"] boolValue] == NO)
+                        if (bc.database == mdatabase && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
                         {
-                            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                            DicomAlbum* album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
                             
-                            for( NSManagedObject *object in objects)
+                            if (album.smartAlbum.boolValue == NO)
                             {
-                                [studies addObject: [object valueForKeyPath:@"series.study"]];
-                                [[object valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                                NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                                
+                                for (NSManagedObject* mobject in mobjects)
+                                {
+                                    [studies addObject: [mobject valueForKeyPath:@"series.study"]];
+                                    [[mobject valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                                }
                             }
                         }
+                    } @catch (NSException* e) {
+                        N2LogExceptionWithStackTrace(e);
+                    } @finally {
                     }
-                } @catch (NSException* e) {
-                    N2LogExceptionWithStackTrace(e);
-                } @finally {
-                    [self unlock];
                 }
                 
                 [[ThreadsManager defaultManager] removeThread:thread]; // NSOperationQueue threads don't finish after ablock execution, they're recycled
