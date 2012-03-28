@@ -1764,12 +1764,24 @@ static NSConditionLock *threadLock = nil;
 	return [self saveDatabase:path context:self.managedObjectContext];
 }
 
-- (void) selectThisStudy: (id)study
+- (void) selectThisStudy: (NSManagedObject*)study
 {
-	[self outlineViewRefresh];
+    if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
+        [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
+    
+    [self outlineViewRefresh];
 	
-	[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
-	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    NSInteger index = [databaseOutline rowForItem:study];
+    if (index == -1 && albumTable.selectedRow > 0) {
+        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
+        [self outlineViewRefresh];
+        index = [databaseOutline rowForItem:study];
+    }
+    
+    if (index != -1) {
+        [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex:index] byExtendingSelection: NO];
+        [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    }
 }
 
 - (void) copyFilesThread: (NSDictionary*) dict
