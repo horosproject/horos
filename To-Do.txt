@@ -4,7 +4,7 @@
 
 A:
 - MainMenu.xib : menus, subSampling, banner (this is a reminder, not a bug)
-- Crashing QueryController computeStudyInstanceUID
+- Crashing QueryController computeStudyInstanceUID - resolved?
 
 Added features:
 - Access DICOM CD/DVD as a database
