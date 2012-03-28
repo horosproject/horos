@@ -888,7 +888,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"UseKDUForJPEG2000"];
 	[defaultValues setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
 	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
-	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
 	[defaultValues setObject: @"0" forKey: @"recomputePatientUID"];
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];

@@ -25,6 +25,7 @@
 #import "BrowserController.h"
 #import "DCMPix.h"
 #import "ThreadsManager.h"
+#import "DiscMountedAskTheUserDialogController.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -312,162 +313,187 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	[BrowserController.currentBrowser askForZIPPassword:[args objectAtIndex:0] destination:[args objectAtIndex:1]];
 }
 
+-(void)_askUserDiscDataCopyOrBrowse:(NSArray*)a {
+    NSString* path = [a objectAtIndex:0];
+    NSInteger count = [[a objectAtIndex:1] integerValue];
+    NSInteger* mode = (NSInteger*)[[a objectAtIndex:2] pointerValue];
+    
+    DiscMountedAskTheUserDialogController* dialog = [[DiscMountedAskTheUserDialogController alloc] initWithMountedPath:path dicomFilesCount:count];
+    [dialog.window center];
+    
+    [NSApp runModalForWindow:dialog.window];
+    
+    *mode = dialog.choice;
+    
+    [dialog release];
+    
+}
+
 -(void)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
-	
-	NSArray* dicomImages = [NSMutableArray array];
+	@try {
+        NSArray* dicomImages = [NSMutableArray array];
 
-	thread.status = NSLocalizedString(@"Scanning directories...", nil);
-	NSMutableArray* allpaths = [[[path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]] mutableCopy] autorelease];
-	
-	// first read the DICOMDIR file
-	if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
-		thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
-		NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
-		if (dicomdirPath) {
-			NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
-			thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
-			dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
-		}
-		
-	//	NSLog(@"DICOMDIR referenced %d images: %@", dicomImages.count, [dicomImages valueForKey:@"completePath"]);
-	}
-	
-	if ((![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"])) {
-		NSMutableArray* dicomFilePaths = [NSMutableArray array];
-		
-		thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
-		thread.supportsCancel = YES;
-		for (NSInteger i = 0; i < allpaths.count; ++i) {
-			thread.progress = 1.0*i/allpaths.count;
-			NSString* path = [allpaths objectAtIndex:i];
-			
-			if ([DicomFile isDICOMFile:path]) {
-				[dicomFilePaths addObject:path];
-			} else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
-				[thread enterOperation];
-				thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
-
-				// unzip file to a temporary place and add the files to allpaths
-				[NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
-				NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
-				[NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
-				
-				if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
-					[self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
-				}
-				
-				[self scanAtPath:tempPath isVolume:NO];
-				[thread exitOperation];
-			}
-			
-			if (thread.isCancelled)
-				return;
-		}
-		
-		dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
-	}
-	
-    NSThread* copyFilesThread = nil;
-	if ([NSUserDefaults.standardUserDefaults boolForKey:@"MOUNT"] && dicomImages.count) { // copy into database on mount
-		copyFilesThread = [NSThread performBlockInBackground:^{
-            NSThread* cft = [NSThread currentThread];
-            cft.name = NSLocalizedString(@"Importing images from media...", nil);
-            cft.supportsCancel = YES;
-            [ThreadsManager.defaultManager removeThread:thread];
-            [ThreadsManager.defaultManager addThreadAndStart:cft];
-            
-            NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
-            [paths removeDuplicatedStrings];
-            
-            int progress = 0;
-            thread.progress = 0;
-            
-            [DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:)
-                                                                        withObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                                        paths, @"filesInput",
-                                                                                        [NSNumber numberWithBool:YES], @"mountedVolume",
-                                                                                        [NSNumber numberWithBool:YES], @"copyFiles",
-                                                                                        [NSNumber numberWithBool: YES], @"addToAlbum",
-                                                                                        [NSNumber numberWithBool: YES], @"selectStudy",
-                                                                                    NULL]];
-            
-            [ThreadsManager.defaultManager removeThread:cft];
-            [ThreadsManager.defaultManager addThreadAndStart:thread];
-        }];
+        thread.status = NSLocalizedString(@"Scanning directories...", nil);
+        NSMutableArray* allpaths = [[[path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]] mutableCopy] autorelease];
         
-        while (copyFilesThread.isExecuting) {
-            if (thread.isCancelled && !copyFilesThread.isCancelled)
-                [copyFilesThread cancel];
-            [NSThread sleepForTimeInterval:0.01];
+        // first read the DICOMDIR file
+        if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
+            thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
+            NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
+            if (dicomdirPath) {
+                NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
+                thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
+                dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
+            }
+            
+        //	NSLog(@"DICOMDIR referenced %d images: %@", dicomImages.count, [dicomImages valueForKey:@"completePath"]);
         }
         
-		/*for (NSString* frompath in paths) {
-			NSString* topath = nil;
-			int i = 0;
-			do {
-				topath = [db.incomingDirPath stringByAppendingPathComponent:[frompath lastPathComponent]];
-			} while ([NSFileManager.defaultManager fileExistsAtPath:topath]);
-			
-			[NSFileManager.defaultManager copyItemAtPath:frompath toPath:topath error:NULL];
-
-			thread.progress = CGFloat(++progress)/paths.count;
-		}*/
-		
-		if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
-			thread.status = NSLocalizedString(@"Ejecting...", nil);
-			thread.progress = -1;
-			
-            [DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
+        if ((![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"])) {
+            NSMutableArray* dicomFilePaths = [NSMutableArray array];
             
-            int attempts = 0;
-            BOOL success = NO;
-            while( success == NO)
-            {
-                success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
-                if( success == NO)
-                {
-                    attempts++;
-                    if( attempts < 5)
-                    {
-                        [NSThread sleepForTimeInterval: 1.0];
+            thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
+            thread.supportsCancel = YES;
+            for (NSInteger i = 0; i < allpaths.count; ++i) {
+                thread.progress = 1.0*i/allpaths.count;
+                NSString* path = [allpaths objectAtIndex:i];
+                
+                if ([DicomFile isDICOMFile:path]) {
+                    [dicomFilePaths addObject:path];
+                } else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
+                    [thread enterOperation];
+                    thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
+
+                    // unzip file to a temporary place and add the files to allpaths
+                    [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+                    NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
+                    [NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
+                    
+                    if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
+                        [self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
                     }
-                    else success = YES;
+                    
+                    [self scanAtPath:tempPath isVolume:NO];
+                    [thread exitOperation];
                 }
+                
+                if (thread.isCancelled)
+                    return;
             }
-			
-			return;
-		}
-    }
-	
-//    if (![[[BrowserController currentBrowser] sourceForDatabase:self] isBeingEjected]) {
-    if (!thread.isCancelled) {
-        thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
-        NSMutableArray* dicomSeries	= [NSMutableArray array];
-        for (DicomImage* di in dicomImages)
-            if (![dicomSeries containsObject:di.series])
-                [dicomSeries addObject:di.series];
-        for (NSInteger i = 0; i < dicomSeries.count; ++i)
-            @try {
-                thread.progress = 1.0*i/dicomSeries.count;
-                [[dicomSeries objectAtIndex:i] thumbnail];
-            } @catch (NSException* e) {
-                N2LogExceptionWithStackTrace(e);
+            
+            dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
+        }
+        
+        if (!dicomImages.count)
+            return;
+        
+        NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
+        if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
+            [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
+        
+        if (mode == 1) { // copy into database on mount
+            NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
+                NSThread* cft = [NSThread currentThread];
+                cft.name = NSLocalizedString(@"Importing images from media...", nil);
+                cft.supportsCancel = YES;
+                [ThreadsManager.defaultManager removeThread:thread];
+                [ThreadsManager.defaultManager addThreadAndStart:cft];
+                
+                NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+                [paths removeDuplicatedStrings];
+                
+                int progress = 0;
+                thread.progress = 0;
+                
+                [DicomDatabase.activeLocalDatabase.independentDatabase performSelector:@selector(copyFilesThread:)
+                                                                            withObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                                            paths, @"filesInput",
+                                                                                            [NSNumber numberWithBool:YES], @"mountedVolume",
+                                                                                            [NSNumber numberWithBool:YES], @"copyFiles",
+                                                                                            [NSNumber numberWithBool: YES], @"addToAlbum",
+                                                                                            [NSNumber numberWithBool: YES], @"selectStudy",
+                                                                                        NULL]];
+                
+                [ThreadsManager.defaultManager removeThread:cft];
+                [ThreadsManager.defaultManager addThreadAndStart:thread];
+            }];
+            
+            while (copyFilesThread.isExecuting) {
+                if (thread.isCancelled && !copyFilesThread.isCancelled)
+                    [copyFilesThread cancel];
+                [NSThread sleepForTimeInterval:0.01];
             }
+            
+            /*for (NSString* frompath in paths) {
+                NSString* topath = nil;
+                int i = 0;
+                do {
+                    topath = [db.incomingDirPath stringByAppendingPathComponent:[frompath lastPathComponent]];
+                } while ([NSFileManager.defaultManager fileExistsAtPath:topath]);
+                
+                [NSFileManager.defaultManager copyItemAtPath:frompath toPath:topath error:NULL];
+
+                thread.progress = CGFloat(++progress)/paths.count;
+            }*/
+            
+            if (isVolume && [NSUserDefaults.standardUserDefaults boolForKey:@"CDDVDEjectAfterAutoCopy"] && ![copyFilesThread isCancelled]) {
+                thread.status = NSLocalizedString(@"Ejecting...", nil);
+                thread.progress = -1;
+                
+                [DCMPix purgeCachedDictionaries]; // <- This is very important to 'unlink' all opened files, otherwise MacOS will display the famous 'The disk is in use and could not be ejected'
+                
+                int attempts = 0;
+                BOOL success = NO;
+                while( success == NO)
+                {
+                    success = [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath:  path];
+                    if( success == NO)
+                    {
+                        attempts++;
+                        if( attempts < 5)
+                        {
+                            [NSThread sleepForTimeInterval: 1.0];
+                        }
+                        else success = YES;
+                    }
+                }
+                
+                return;
+            }
+        }
+        
+    //    if (![[[BrowserController currentBrowser] sourceForDatabase:self] isBeingEjected]) {
+        if (!thread.isCancelled) {
+            thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
+            NSMutableArray* dicomSeries	= [NSMutableArray array];
+            for (DicomImage* di in dicomImages)
+                if (![dicomSeries containsObject:di.series])
+                    [dicomSeries addObject:di.series];
+            for (NSInteger i = 0; i < dicomSeries.count; ++i)
+                @try {
+                    thread.progress = 1.0*i/dicomSeries.count;
+                    [[dicomSeries objectAtIndex:i] thumbnail];
+                } @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                }
+        }
+    //    }
+        
+        /*
+        
+        
+        for (int i = 0; i < 200; ++i) {
+            thread.status = [NSString stringWithFormat:@"Iteration %d.", i];
+            [NSThread sleepForTimeInterval:0.1];
+        }
+        */
+    } @catch (NSException* e) {
+        @throw;
+    } @finally {
+        [thread exitOperation];
     }
-//    }
-	
-	/*
-	
-	
-	for (int i = 0; i < 200; ++i) {
-		thread.status = [NSString stringWithFormat:@"Iteration %d.", i];
-		[NSThread sleepForTimeInterval:0.1];
-	}
-	*/
-	
-	[thread exitOperation];
 }
 
 -(void)scanAtPath:(NSString*)path {

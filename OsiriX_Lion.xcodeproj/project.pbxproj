@@ -421,6 +421,12 @@
 		714943D314D3008B008BCC08 /* NSHost+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 714943D014D3008B008BCC08 /* NSHost+N2.h */; };
 		714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 714943D114D3008B008BCC08 /* NSHost+N2.mm */; };
 		714943D514D3008B008BCC08 /* NSHost+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 714943D114D3008B008BCC08 /* NSHost+N2.mm */; };
+		71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */; };
+		71512E9D15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */; };
+		71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
+		71512E9F1523552400B87012 /* DiscMountedAskTheUserDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = 71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */; };
+		71512EA01523552700B87012 /* DiscMountedAskTheUserDialogController.h in Headers */ = {isa = PBXBuildFile; fileRef = 71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */; };
+		71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		7154B81014ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		7E0B3A4A0675273500908593 /* DCM Framework_Prefix.pch in Resources */ = {isa = PBXBuildFile; fileRef = 7E0B3A12067526A600908593 /* DCM Framework_Prefix.pch */; };
@@ -8657,6 +8663,9 @@
 		713A00381467E2DC00194120 /* DicomDir.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DicomDir.mm; sourceTree = "<group>"; };
 		714943D014D3008B008BCC08 /* NSHost+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSHost+N2.h"; path = "nitrogen/Sources/NSHost+N2.h"; sourceTree = "<group>"; };
 		714943D114D3008B008BCC08 /* NSHost+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSHost+N2.mm"; path = "nitrogen/Sources/NSHost+N2.mm"; sourceTree = "<group>"; };
+		71512E98152349E500B87012 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/DiscMountedAskTheUserDialog.xib; sourceTree = "<group>"; };
+		71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscMountedAskTheUserDialogController.h; sourceTree = "<group>"; };
+		71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscMountedAskTheUserDialogController.m; sourceTree = "<group>"; };
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
@@ -17832,6 +17841,9 @@
 				CEB98C5B1335085D0083F3FD /* OSICDPreferencePanePref.xib */,
 				CEB98C5D1335085D0083F3FD /* OSICDPreferencePanePref.h */,
 				CEB98C5E1335085D0083F3FD /* OSICDPreferencePanePref.m */,
+				71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */,
+				71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */,
+				71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */,
 			);
 			name = OSICDPreferencePanePref;
 			sourceTree = "<group>";
@@ -25460,6 +25472,7 @@
 				CEBD93A714F1ADDB000DA1FE /* zutil.h in Headers */,
 				CEB5B19014F552000043457F /* OsiriXFixedPointVolumeRayCastMapper.h in Headers */,
 				CEB5B19214F552140043457F /* VTKView.h in Headers */,
+				71512E9D15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26083,6 +26096,7 @@
 				AB451834149F464B006674BF /* publictypes.h in Headers */,
 				714943D314D3008B008BCC08 /* NSHost+N2.h in Headers */,
 				7154B81014ED5402000EF7E4 /* N2Stuff.h in Headers */,
+				71512EA01523552700B87012 /* DiscMountedAskTheUserDialogController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26786,6 +26800,7 @@
 				CEBD8DCF14F1ADDA000DA1FE /* vtkImageStencilIterator.txx in Resources */,
 				CEBD919014F1ADDB000DA1FE /* vtkSparseArray.txx in Resources */,
 				CEBD928C14F1ADDB000DA1FE /* vtkTypedArray.txx in Resources */,
+				71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27166,6 +27181,7 @@
 				8404169014CF195800242C63 /* Tiling3x3.pdf in Resources */,
 				84CE7CA714D84F87008CA119 /* Tiling1x4.pdf in Resources */,
 				84CE7CA914D84F87008CA119 /* Tiling2x4.pdf in Resources */,
+				71512E9F1523552400B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28507,6 +28523,7 @@
 				AB451861149F47C0006674BF /* djrparam.cc in Sources */,
 				714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */,
 				843DE35E14D0385D00878891 /* SMTPClient.m in Sources */,
+				71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29748,6 +29765,7 @@
 				71353C541469260B00359CAB /* NSDate+N2.mm in Sources */,
 				7128FD7A1487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */,
 				714943D514D3008B008BCC08 /* NSHost+N2.mm in Sources */,
+				71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29882,6 +29900,14 @@
 				59BDF105117EE61E007F1F2C /* English */,
 			);
 			name = PreferencesWindow.xib;
+			sourceTree = "<group>";
+		};
+		71512E97152349E500B87012 /* DiscMountedAskTheUserDialog.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				71512E98152349E500B87012 /* English */,
+			);
+			name = DiscMountedAskTheUserDialog.xib;
 			sourceTree = "<group>";
 		};
 		8459A7250F5D63EF00146B28 /* VREmpty.xib */ = {
