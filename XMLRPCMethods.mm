@@ -798,7 +798,8 @@
 -(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
     NSXMLDocument* doc = _doc? _doc : [[[NSXMLDocument alloc] initWithXMLString:[N2XMLRPC requestWithMethodName:methodName arguments:params] options:0 error:NULL] autorelease];
     
-    NSMutableDictionary* notificationObject = [NSMutableDictionary dictionaryWithObjectsAndKeys: methodName, @"MethodName", params, @"Parameters", doc, @"NSXMLDocument", [NSNumber numberWithBool:NO], @"Processed", self.address, @"peerAddress", nil];
+    NSMutableDictionary* notificationObject = [[params mutableCopy] autorelease];
+    [notificationObject addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys: methodName, @"MethodName", methodName, @"methodName", doc, @"NSXMLDocument", self.address, @"peerAddress", nil]];
     [[NSNotificationCenter defaultCenter] postNotificationName:OsirixXMLRPCMessageNotification object:notificationObject];
     
     if ([[notificationObject valueForKey:@"Processed"] boolValue] || [notificationObject valueForKey:@"Response"] || [notificationObject valueForKey:@"NSXMLDocumentResponse"]) { // request processed, most probably by a plugin
