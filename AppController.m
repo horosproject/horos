@@ -3564,33 +3564,22 @@ static BOOL initialized = NO;
 	#ifndef MACAPPSTORE
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"doNotUseGrowl"] == NO)
 	{
-		[GrowlApplicationBridge setGrowlDelegate:self];
-		
-		if( [GrowlApplicationBridge isGrowlInstalled] == NO)
-		{
-			NSString *alertSuppress = @"growl info";
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-			{
-				dialog = YES;
-				
-				NSAlert* alert = [[NSAlert new] autorelease];
-				[alert setMessageText: NSLocalizedString(@"Growl !", nil)];
-				[alert setInformativeText: NSLocalizedString(@"Did you know that OsiriX supports Growl? An amazing notification system for MacOS. You can download it for free on Internet.", nil)];
-				[alert setShowsSuppressionButton:YES ];
-				[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-				[alert addButtonWithTitle: NSLocalizedString(@"Download Growl", nil)];
-				
-				if( [alert runModal] == NSAlertFirstButtonReturn)
-				{
-					
-				}
-				else
-					[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://growl.info"]];
-				
-				if ([[alert suppressionButton] state] == NSOnState)
-					[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
-			}
-		}
+        // If Growl crashed before...
+        NSString *GrowlCrashed = @"/tmp/OsiriXGrowlCrashed";
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: GrowlCrashed])
+        {
+            [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"doNotUseGrowl"];
+            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
+        }
+        else 
+        {
+            [GrowlCrashed writeToFile: GrowlCrashed atomically: YES encoding: NSUTF8StringEncoding error: nil];
+            
+            [GrowlApplicationBridge setGrowlDelegate: self];
+            
+            [[NSFileManager defaultManager] removeItemAtPath: GrowlCrashed error: nil];
+        }
 	}
 	#endif
 	#endif

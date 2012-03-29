@@ -1560,7 +1560,6 @@
 		ABC47B5A0C031397001CEA21 /* BrowserMatrix.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC47B580C031397001CEA21 /* BrowserMatrix.m */; };
 		ABCA5BA40625FC1100637E73 /* OpacityTransferView.h in Headers */ = {isa = PBXBuildFile; fileRef = ABCA5BA20625FC1100637E73 /* OpacityTransferView.h */; };
 		ABCA5BA50625FC1100637E73 /* OpacityTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABCA5BA30625FC1100637E73 /* OpacityTransferView.m */; };
-		ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		ABD1A8700619E68B00C5B670 /* ROIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = ABD1A86E0619E68B00C5B670 /* ROIWindow.h */; };
 		ABD1A8710619E68B00C5B670 /* ROIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = ABD1A86F0619E68B00C5B670 /* ROIWindow.m */; };
 		ABD559FE0AEE146900108895 /* SagSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F50AEE146900108895 /* SagSmall.tif */; };
@@ -2780,6 +2779,7 @@
 		CE28086C0B6B76730093E9D3 /* CalciumScoringWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */; };
 		CE286C120964196C001A4573 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE286C100964196C001A4573 /* Localizable.strings */; };
 		CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CE289B020D00ADBA004F0A93 /* Mail.scpt */; };
+		CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
 		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
@@ -2828,7 +2828,6 @@
 		CE40ED540D86D54D007C6D49 /* ThreeDPositionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE40ED520D86D54D007C6D49 /* ThreeDPositionController.m */; };
 		CE40ED590D86D634007C6D49 /* 3DPosition.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE40ED570D86D634007C6D49 /* 3DPosition.xib */; };
 		CE438F420CB621DF006AAFD9 /* DotMacKit.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CEFE60580979B1DB00891EA9 /* DotMacKit.framework */; };
-		CE438F4D0CB621EC006AAFD9 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABDF6E2D0BE0904D00793094 /* Growl.framework */; };
 		CE443F371165D1B60034BF18 /* jaricom.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1409B6828200545F5E /* jaricom.c */; };
 		CE443F381165D1B60034BF18 /* jcapimin.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1509B6828200545F5E /* jcapimin.c */; };
 		CE443F391165D1B60034BF18 /* jcapistd.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C1609B6828200545F5E /* jcapistd.c */; };
@@ -8318,7 +8317,6 @@
 			files = (
 				59F1A515104BA8AE009E3215 /* OsiriXAPI.framework in Copy Frameworks */,
 				CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in Copy Frameworks */,
-				CE438F4D0CB621EC006AAFD9 /* Growl.framework in Copy Frameworks */,
 				CE438F420CB621DF006AAFD9 /* DotMacKit.framework in Copy Frameworks */,
 				CE9A04440C7DBC060007809F /* libxerces-c.27.dylib in Copy Frameworks */,
 				84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */,
@@ -9284,7 +9282,6 @@
 		ABDE6E1606398E3400F0C5DD /* uvcode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uvcode.h; sourceTree = "<group>"; };
 		ABDEBD51063D6938005B99B4 /* add.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = add.tif; sourceTree = "<group>"; };
 		ABDEBD52063D6938005B99B4 /* minus.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = minus.tif; sourceTree = "<group>"; };
-		ABDF6E2D0BE0904D00793094 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		ABE0D6930CDB1A4400F0494B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/iChatHelper.xib; sourceTree = "<group>"; };
 		ABE0D69B0CDB1B9E00F0494B /* browse2OsiriX_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = browse2OsiriX_small.png; sourceTree = "<group>"; };
 		ABE0D69C0CDB1B9E00F0494B /* iChatIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iChatIcon.png; sourceTree = "<group>"; };
@@ -10285,6 +10282,7 @@
 		CE2808640B6B76730093E9D3 /* CalciumScoringWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CalciumScoringWindowController.m; sourceTree = "<group>"; };
 		CE286C110964196C001A4573 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = Binaries/English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
+		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2C82E20C708B310093C162 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
@@ -14122,7 +14120,6 @@
 				BFBF3AA309B681F500545F5E /* libxml2.dylib in Frameworks */,
 				BFBF3AA409B681F500545F5E /* libz.dylib in Frameworks */,
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
-				ABD00CB90D37B468006B914E /* Growl.framework in Frameworks */,
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
 				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
@@ -14251,6 +14248,7 @@
 				CEB7E9E414F31458001C64EA /* libITKBioCell-4.1.a in Frameworks */,
 				CEB7E9E514F31458001C64EA /* libITKBiasCorrection-4.1.a in Frameworks */,
 				CEB5B18E14F5507F0043457F /* libvtkOsiriX.a in Frameworks */,
+				CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14428,8 +14426,8 @@
 			children = (
 				A97E19EE0CDF55E50065EE29 /* 3DconnexionClient.framework */,
 				CEFE60580979B1DB00891EA9 /* DotMacKit.framework */,
-				ABDF6E2D0BE0904D00793094 /* Growl.framework */,
 				ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */,
+				CE2BE05D1524344D00AE6156 /* Growl.framework */,
 				CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */,
 				CE6693C60AF551210073D923 /* libxerces-c.27.dylib */,
 				CE8D057D0FD8505000165DDE /* OsiriX.framework */,
