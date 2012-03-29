@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "WebPortalConnection+Data.h"
+#import "WebPortal+Email+Log.h"
 #import "WebPortalResponse.h"
 #import "DicomAlbum.h"
 #import "DicomDatabase.h"
@@ -1452,7 +1453,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				[NSFileManager.defaultManager removeItemAtPath:srcFolder error:nil];
 			if (destFile)
 				[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
-				
+            
+            for( DicomStudy *s in studies)
+                [self.portal updateLogEntryForStudy:s withMessage: @"WADO Send" forUser:user.name ip:asyncSocket.connectedHost];
+            
 			return;
 		}
 	}

@@ -1715,7 +1715,7 @@ extern "C"
                             case 8:     currentQueryKey = customDICOMField;     break;
                         }
                         
-                        if( currentQueryKey == customDICOMField && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_customDICOMField"])
+                        if( currentQueryKey == customDICOMField && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_custom_dicom_field"])
                         {
                             CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
                             
