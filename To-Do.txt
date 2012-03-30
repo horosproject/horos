@@ -1,9 +1,9 @@
 - RGB support for MIP & MPR
+- WL/WW bug with 3D series with default WL/WW at image level
 ------------------------------------------------------------------------------------------
 
 A:
 - MainMenu.xib : menus, subSampling, banner (this is a reminder, not a bug)
-- WL/WW bug with 3D series with default WL/WW at image level
 
 Added features:
 - Access DICOM CD/DVD as a database
