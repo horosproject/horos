@@ -3,7 +3,7 @@
 
 A:
 - MainMenu.xib : menus, subSampling, banner (this is a reminder, not a bug)
-- Crashing QueryController computeStudyInstanceUID - resolved?
+- WL/WW bug with 3D series with default WL/WW at image level
 
 Added features:
 - Access DICOM CD/DVD as a database
