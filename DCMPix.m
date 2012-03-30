@@ -12762,7 +12762,6 @@ END_CREATE_ROIS:
 							}
 							else if([type isEqualToString:@"DB"])
 							{
-								[imageObj.managedObjectContext lock];
                                 @try {
                                     NSString *fieldName = [field objectForKey:@"field"];
                                     NSString *level = [field objectForKey:@"level"];
@@ -12800,8 +12799,6 @@ END_CREATE_ROIS:
                                     }
                                 } @catch (...) {
                                     @throw;
-                                } @finally {
-                                    [imageObj.managedObjectContext unlock];
                                 }
 							}
 							else if([type isEqualToString:@"Special"])
