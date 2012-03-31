@@ -156,7 +156,7 @@
 				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: 
                                                 [NSMutableArray arrayWithArray:[samePatientArray valueForKey:@"objectID"]], @"objectIDs",
                                                 [server objectForKey:@"Description"], @"server", 
-                                                dict, @"routingRule", 
+                                                [dict valueForKey:@"routingRule"], @"routingRule", 
                                                 [NSNumber numberWithInt: [[dict valueForKey:@"failureRetry"] intValue]-1], @"failureRetry", nil]];
 			}
 		}
