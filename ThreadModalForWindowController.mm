@@ -87,7 +87,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 {
 	[sheet orderOut:self];
 //	[NSApp endSheet:sheet];
-	[self release];
+	[self autorelease];
 }
 
 -(void)sheetDidEnd:(NSWindow*)sheet returnCode:(NSInteger)returnCode contextInfo:(void*)contextInfo {
