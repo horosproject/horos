@@ -1231,7 +1231,12 @@ static NSConditionLock *threadLock = nil;
 								
                                 [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
                                 
-								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                                if( newObject)
+                                {
+                                    [seriesTable setValue: nil forKey: @"windowWidth"];
+                                    [seriesTable setValue: nil forKey: @"windowLevel"];
+								}
+                                [seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
 								[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
                                 [study setValue:[study valueForKey:@"modalities"] forKey:@"modality"];
 								[seriesTable setValue: nil forKey:@"thumbnail"];
