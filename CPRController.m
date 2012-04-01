@@ -112,18 +112,20 @@ static float deg2rad = M_PI / 180.0;
 		viewer2D = viewer;
 		
 		self = [super initWithWindowNibName:@"CPR"];
-		
-		[[self window] setWindowController: self];
-		[[[self window] toolbar] setDelegate: self];
-		
+				
 		originalPix = [pix lastObject];
 		
 		if( [originalPix isRGB])
 		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+			NSRunCriticalAlertPanel( NSLocalizedString(@"RGB",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
+            [self release];
+            
 			return nil;
 		}
 		
+        [[self window] setWindowController: self];
+		[[[self window] toolbar] setDelegate: self];
+        
 		pixList[0] = pix;
 		filesList[0] = files;
 		volumeData[0] = volume;

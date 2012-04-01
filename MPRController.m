@@ -90,12 +90,6 @@ static float deg2rad = M_PI/180.0;
         
 		originalPix = [pix lastObject];
 		
-		if( [originalPix isRGB])
-		{
-			NSRunCriticalAlertPanel( NSLocalizedString(@"Slice interval",nil), NSLocalizedString( @"RGB images are not supported.",nil), NSLocalizedString(@"OK",nil), nil, nil);
-			return nil;
-		}
-		
 		pixList[0] = pix;
 		filesList[0] = files;
 		volumeData[0] = volume;

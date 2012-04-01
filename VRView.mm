@@ -6703,6 +6703,9 @@ public:
     if( engine != 0)
         self.engine = 0; // Switch to CPU !
     
+    if( firstObject.isRGB)
+        return;
+    
 	if( volumeMapper)
 	{
 		volumeMapper->SetIntermixIntersectingGeometry( 0);
@@ -6815,7 +6818,7 @@ public:
             *w = size[0];
             *h = size[1];
             
-            if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2)		// MIP
+            if( firstObject.isRGB == NO && ( renderingMode == 1 || renderingMode == 3 || renderingMode == 2))		// MIP
             {
                 unsigned short *destPtr, *destFixedPtr;
                 
