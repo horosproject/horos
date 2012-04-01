@@ -19337,7 +19337,7 @@ int i,j,l;
 	}
 	else
 	{
-		if( [self isDataVolumicIn4D: YES] == NO || [[imageView curDCM] isRGB] == YES)
+		if( [self isDataVolumicIn4D: YES] == NO) // || [[imageView curDCM] isRGB] == YES)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"MPR", nil), NSLocalizedString(@"MPR requires volumic data and BW images.", nil), nil, nil, nil);
 			return;
