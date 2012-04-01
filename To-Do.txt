@@ -1,5 +1,6 @@
 - RGB support for MIP & MPR
 - WL/WW bug with 3D series with default WL/WW at image level
+- Brain Vol : 3D MPR ?
 ------------------------------------------------------------------------------------------
 
 A:
