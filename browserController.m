@@ -20182,6 +20182,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	
+    if ([item isKindOfClass:[DicomSeries class]])
+        item = [item objectForKey:@"study"];
+    
 	if( item)
 	{
 		if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
