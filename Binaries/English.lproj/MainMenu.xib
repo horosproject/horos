@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11D50</string>
+		<string key="IBDocument.SystemVersion">11D50b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
 		<string key="IBDocument.AppKitVersion">1138.32</string>
 		<string key="IBDocument.HIToolboxVersion">568.00</string>
@@ -8474,7 +8474,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="600825701">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">288</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="706317537">
@@ -8482,7 +8482,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{420, 226}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="632510945"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -8507,7 +8506,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{420, 194}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="596289082"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="574826010">
@@ -8546,7 +8544,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 											</set>
 											<string key="NSFrame">{{12, 71}, {32, 32}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="791307794"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSImageCell" key="NSCell" id="285409558">
@@ -8576,7 +8573,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 											</set>
 											<string key="NSFrame">{{414, 71}, {32, 32}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="75759050"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSImageCell" key="NSCell" id="674834051">
@@ -8595,7 +8591,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{-2, 49}, {460, 34}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="316593182"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="42314684">
@@ -8618,7 +8613,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{64, 6}, {328, 32}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
-											<reference key="NSWindow"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="542622968">
 												<int key="NSCellFlags">-2080244224</int>
@@ -8640,7 +8634,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 											<int key="NSvFlags">264</int>
 											<string key="NSFrame">{{92, 87}, {272, 17}}</string>
 											<reference key="NSSuperview" ref="89870278"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="460601434"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="570056454">
@@ -8656,13 +8649,11 @@ T3NpcmlYIDY0LWJpdDo</string>
 									</array>
 									<string key="NSFrame">{{2, 2}, {457, 109}}</string>
 									<reference key="NSSuperview" ref="269255512"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="64064552"/>
 								</object>
 							</array>
 							<string key="NSFrame">{{42, 5}, {461, 113}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="89870278"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -8687,7 +8678,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{120, 238}, {296, 16}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="336518723"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSliderCell" key="NSCell" id="1068649222">
@@ -8713,7 +8703,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{15, 240}, {61, 14}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="545676702"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="852211937">
@@ -8731,7 +8720,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{120, 208}, {296, 16}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="756155847"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSliderCell" key="NSCell" id="543647935">
@@ -8757,7 +8745,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{15, 216}, {61, 14}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1061449937"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="915683005">
@@ -8775,7 +8762,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{15, 169}, {61, 14}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="302786235"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="901342322">
@@ -8793,7 +8779,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{120, 196}, {296, 16}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="725427843"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -8821,7 +8806,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{81, 239}, {31, 15}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1056682101"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="136120113">
@@ -8840,7 +8824,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{81, 215}, {31, 15}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="706317537"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="45639903">
@@ -8859,7 +8842,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{15, 194}, {61, 14}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1014982369"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="680964829">
@@ -8877,7 +8859,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{81, 193}, {31, 15}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="762828198"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="628458555">
@@ -8896,7 +8877,6 @@ T3NpcmlYIDY0LWJpdDo</string>
 							<int key="NSvFlags">264</int>
 							<string key="NSFrame">{{81, 130}, {420, 52}}</string>
 							<reference key="NSSuperview" ref="600825701"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="269255512"/>
 							<bool key="NSEnabled">YES</bool>
 							<int key="NSNumRows">3</int>
@@ -9070,8 +9050,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{537, 273}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="247091263"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -22949,6 +22927,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="setFixedTilingRows:">id</string>
 						<string key="showPreferencePanel:">id</string>
 						<string key="tile3DWindows:">id</string>
+						<string key="tileWindows:">id</string>
 						<string key="updateViews:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -23014,6 +22993,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 						<object class="IBActionInfo" key="tile3DWindows:">
 							<string key="name">tile3DWindows:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="tileWindows:">
+							<string key="name">tileWindows:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="updateViews:">
@@ -24502,7 +24485,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">OrthogonalMPRPETCTViewer</string>
-					<string key="superclassName">OSIWindowController</string>
+					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="blendingMode:">id</string>
 						<string key="changeBlendingFactor:">id</string>
@@ -24549,7 +24532,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="CTController">OrthogonalMPRPETCTController</string>
-						<string key="OpacityPopup">NSPopUpButton</string>
 						<string key="PETCTController">OrthogonalMPRPETCTController</string>
 						<string key="PETController">OrthogonalMPRPETCTController</string>
 						<string key="WLWWView">NSView</string>
@@ -24557,7 +24539,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="blendingPercentage">NSTextField</string>
 						<string key="blendingSlider">NSSlider</string>
 						<string key="blendingToolView">NSView</string>
-						<string key="clutPopup">NSPopUpButton</string>
 						<string key="dcmBox">NSBox</string>
 						<string key="dcmCountTextField">NSTextField</string>
 						<string key="dcmExportWindow">NSWindow</string>
@@ -24579,7 +24560,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="originalSplitView">KFSplitView</string>
 						<string key="toolsMatrix">NSMatrix</string>
 						<string key="toolsView">NSView</string>
-						<string key="wlwwPopup">NSPopUpButton</string>
 						<string key="xReslicedSplitView">KFSplitView</string>
 						<string key="yReslicedSplitView">KFSplitView</string>
 					</dictionary>
@@ -24587,10 +24567,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="CTController">
 							<string key="name">CTController</string>
 							<string key="candidateClassName">OrthogonalMPRPETCTController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="OpacityPopup">
-							<string key="name">OpacityPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="PETCTController">
 							<string key="name">PETCTController</string>
@@ -24619,10 +24595,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="blendingToolView">
 							<string key="name">blendingToolView</string>
 							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutPopup">
-							<string key="name">clutPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="dcmBox">
 							<string key="name">dcmBox</string>
@@ -24708,10 +24680,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">toolsView</string>
 							<string key="candidateClassName">NSView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="wlwwPopup">
-							<string key="name">wlwwPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="xReslicedSplitView">
 							<string key="name">xReslicedSplitView</string>
 							<string key="candidateClassName">KFSplitView</string>
@@ -24736,7 +24704,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">OrthogonalMPRViewer</string>
-					<string key="superclassName">OSIWindowController</string>
+					<string key="superclassName">Window3DController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="activateThickSlab:">id</string>
 						<string key="changeFromAndToBounds:">id</string>
@@ -24797,10 +24765,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						</object>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="OpacityPopup">NSPopUpButton</string>
 						<string key="ThickSlabView">NSView</string>
 						<string key="WLWWView">NSView</string>
-						<string key="clutPopup">NSPopUpButton</string>
 						<string key="controller">OrthogonalMPRController</string>
 						<string key="dcmBox">NSBox</string>
 						<string key="dcmCountTextField">NSTextField</string>
@@ -24826,13 +24792,8 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="thickSlabTextField">NSTextField</string>
 						<string key="toolsMatrix">NSMatrix</string>
 						<string key="toolsView">NSView</string>
-						<string key="wlwwPopup">NSPopUpButton</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="OpacityPopup">
-							<string key="name">OpacityPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="ThickSlabView">
 							<string key="name">ThickSlabView</string>
 							<string key="candidateClassName">NSView</string>
@@ -24840,10 +24801,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="WLWWView">
 							<string key="name">WLWWView</string>
 							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutPopup">
-							<string key="name">clutPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="controller">
 							<string key="name">controller</string>
@@ -24944,10 +24901,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="toolsView">
 							<string key="name">toolsView</string>
 							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wlwwPopup">
-							<string key="name">wlwwPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 					</dictionary>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
@@ -25673,7 +25626,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="roiGetManager:">id</string>
 						<string key="save3DSettings:">id</string>
 						<string key="setDefaultTool:">id</string>
-						<string key="setEngine:">id</string>
 						<string key="setMode:">id</string>
 						<string key="setOrientation:">id</string>
 						<string key="show3DSettingsNewGroupTextField:">id</string>
@@ -25746,10 +25698,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">setDefaultTool:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="setEngine:">
-							<string key="name">setEngine:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="setMode:">
 							<string key="name">setMode:</string>
 							<string key="candidateClassName">id</string>
@@ -25780,7 +25728,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="BlendingView">NSView</string>
 						<string key="CLUTEditorsView">NSView</string>
 						<string key="ClippingRangeView">NSView</string>
-						<string key="LODSlider">NSSlider</string>
 						<string key="LODView">NSView</string>
 						<string key="OrientationsView">NSView</string>
 						<string key="VRGeometrieSettingsWindow">NSWindow</string>
@@ -25793,7 +25740,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="convolutionView">NSView</string>
 						<string key="distanceValue">NSTextField</string>
 						<string key="editDeleteValue">NSWindow</string>
-						<string key="enginePopup">NSPopUpButton</string>
 						<string key="engineView">NSView</string>
 						<string key="eyeDistance">NSTextField</string>
 						<string key="growingRegionWindow">NSWindow</string>
@@ -25882,10 +25828,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 							<string key="name">ClippingRangeView</string>
 							<string key="candidateClassName">NSView</string>
 						</object>
-						<object class="IBToOneOutletInfo" key="LODSlider">
-							<string key="name">LODSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
 						<object class="IBToOneOutletInfo" key="LODView">
 							<string key="name">LODView</string>
 							<string key="candidateClassName">NSView</string>
@@ -25933,10 +25875,6 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="editDeleteValue">
 							<string key="name">editDeleteValue</string>
 							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="enginePopup">
-							<string key="name">enginePopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="engineView">
 							<string key="name">engineView</string>
@@ -27077,6 +27015,7 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<string key="addConvWindow">NSWindow</string>
 						<string key="addOpacityWindow">NSWindow</string>
 						<string key="addWLWWWindow">NSWindow</string>
+						<string key="annotations">NSView</string>
 						<string key="blendingPercentage">NSTextField</string>
 						<string key="blendingPlugins">NSPopUpButton</string>
 						<string key="blendingPopupMenu">NSPopUpButton</string>
@@ -27329,6 +27268,10 @@ IHRvIHN3aXRjaCB0byBQYXB5cnVzIGZyYW1ld29yayBmb3IgdGhlIHJlYnVpbGQuA</string>
 						<object class="IBToOneOutletInfo" key="addWLWWWindow">
 							<string key="name">addWLWWWindow</string>
 							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="annotations">
+							<string key="name">annotations</string>
+							<string key="candidateClassName">NSView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="blendingPercentage">
 							<string key="name">blendingPercentage</string>
