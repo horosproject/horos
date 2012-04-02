@@ -30918,7 +30918,6 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					Binaries,
-					../osirix,
 					"$(SRCROOT)/Binaries",
 				);
 				FRAMEWORK_VERSION = A;
@@ -31212,7 +31211,6 @@
 					"$(SYSTEM_LIBRARY_DIR)/Frameworks",
 					"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks",
 					Binaries,
-					../osirix,
 					"$(SRCROOT)/Binaries",
 				);
 				FRAMEWORK_VERSION = A;

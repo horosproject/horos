@@ -269,7 +269,7 @@
 					
 					if( [toBeRemoved count] > 0)
 					{
-						NSLog(@"Will delete: %d studies", [toBeRemoved count]);
+						NSLog(@"Will delete: %d studies", (int) [toBeRemoved count]);
 						
 //						Wait *wait = [[Wait alloc] initWithString: NSLocalizedString(@"Database Auto-Cleaning...", nil)];
 //						[wait showWindow:self];

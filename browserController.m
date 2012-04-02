@@ -1549,35 +1549,6 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (IBAction)createDatabase:(id)sender { // deprecated
-	N2LogDeprecatedCall();
-//	if( ![database isLocal])
-//	{
-//		NSRunInformationalAlertPanel( NSLocalizedString(@"Database", nil), NSLocalizedString(@"Cannot create a SQL Index file for a distant database.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-//		return;
-//	}
-//	
-//	NSSavePanel		*sPanel		= [NSSavePanel savePanel];
-//	
-//	[sPanel setRequiredFileType:@"sql"];
-//	
-//	if ([sPanel runModalForDirectory:[self documentsDirectory] file:NSLocalizedString(@"Database.sql", nil)] == NSFileHandlingPanelOKButton)
-//	{
-//		if( [currentDatabasePath isEqualToString: [sPanel filename]] == NO && [sPanel filename] != nil)
-//		{
-//			[self waitForRunningProcesses];
-//			
-//			[database save:NULL];
-//			
-//			[currentDatabasePath release];
-//			currentDatabasePath = [[sPanel filename] retain];
-//			
-//			[self loadDatabase: currentDatabaseDirPath];
-//			[database save:NULL];
-//		}
-//	}*/
-}
-
 -(IBAction) createDatabaseFolder:(id) sender
 {
 	NSOpenPanel		*oPanel		= [NSOpenPanel openPanel];
@@ -2110,10 +2081,6 @@ static NSConditionLock *threadLock = nil;
 				break;
 		}
 	}
-}
-
--(IBAction)ReBuildDatabase:(id)sender { // __deprecated
-	[self initiateRebuildDatabase:NO];
 }
 
 - (IBAction) ReBuildDatabaseSheet: (id)sender
@@ -3830,7 +3797,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSManagedObject	*study = nil, *series = nil;
 		
-		NSLog(@"objects to delete : %d", [objectsToDelete count]);
+		NSLog(@"objects to delete : %d", (int) [objectsToDelete count]);
 		
 		for ( NSManagedObject *obj in objectsToDelete)
 		{
@@ -4027,7 +3994,7 @@ static NSConditionLock *threadLock = nil;
         
         if( cancelled == NO)
         {
-            NSLog( @"locked images: %d", [lockedImages count]);
+            NSLog( @"locked images: %d", (int) [lockedImages count]);
             
             // Try to find images that aren't stored in the local database
             
@@ -4041,7 +4008,7 @@ static NSConditionLock *threadLock = nil;
             [wait close];
             [wait release];
             
-            NSLog(@"non-local images : %d", [nonLocalImagesPath count]);
+            NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
             
             if( [nonLocalImagesPath  count] > 0)
             {
@@ -5172,7 +5139,7 @@ static NSConditionLock *threadLock = nil;
 							
 							if( [seriesArray count] != 1)
 							{
-								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, [seriesArray count]);
+								NSLog( @"****** number of series corresponding to these UID (%@) is not unique?: %d", curSeriesUID, (int) [seriesArray count]);
 							}
 							else
 							{
@@ -11653,14 +11620,14 @@ static NSArray*	openSubSeriesArray = nil;
             
             copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
             
-            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+            NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
             
             [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         }
 	
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		NSLog( @"---- save delete queue: %d objects", [copyArray count]);
+		NSLog( @"---- save delete queue: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
@@ -11683,7 +11650,7 @@ static NSArray*	openSubSeriesArray = nil;
         
         copyArray = [copyArray arrayByAddingObjectsFromArray: oldQueue];
         
-        NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+        NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
         
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
     }
@@ -11692,7 +11659,7 @@ static NSArray*	openSubSeriesArray = nil;
 	{
 		NSMutableArray *folders = [NSMutableArray array];
 		
-		NSLog( @"delete Queue start: %d objects", [copyArray count]);
+		NSLog( @"delete Queue start: %d objects", (int) [copyArray count]);
 		
         [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
         [copyArray writeToFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] atomically: YES];
@@ -11833,7 +11800,7 @@ static NSArray*	openSubSeriesArray = nil;
          {
              NSArray *oldQueue = [NSArray arrayWithContentsOfFile: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"]];
              
-             NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", [oldQueue count]);
+             NSLog( @"---- old Delete Queue List found (%d files) add it to current queue.", (int) [oldQueue count]);
              [[NSFileManager defaultManager] removeItemAtPath: [[self documentsDirectory] stringByAppendingPathComponent: @"DeleteQueueFile.plist"] error: nil];
              
              [deleteQueue lock];
@@ -12937,7 +12904,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 	{
 		filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export];
-		NSLog(@"Files from contextual menu: %d", [filesToExport count]);
+		NSLog(@"Files from contextual menu: %d", (int) [filesToExport count]);
 	}
 	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export];
 	
