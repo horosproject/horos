@@ -10194,9 +10194,11 @@ static NSArray*	openSubSeriesArray = nil;
 	
         [NSApp endSheet: subSeriesWindow];
         [subSeriesWindow orderOut: self];
-	
+        
         [[waitOpeningWindow window] orderBack: self];
-	
+        
+        subSeriesWindowIsOn = NO;
+        
         NSArray *returnedArray = nil;
         
         if( result == NSRunStoppedResponse)
