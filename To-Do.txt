@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------------
 
 A:
-- MainMenu.xib : subSampling, banner (this is a reminder, not a bug)
+- MainMenu.xib : subSampling (this is a reminder, not a bug)
 
 Added features:
 - Access DICOM CD/DVD as a database
