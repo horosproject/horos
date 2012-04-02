@@ -7454,7 +7454,7 @@ static BOOL withReset = NO;
     if( noReentry)
     {
         noReentry = 0;
-        [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
+        [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
         noReentry = 1;
     }
 }
@@ -10995,7 +10995,8 @@ static NSArray*	openSubSeriesArray = nil;
     [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
     #endif
     
-    [bannerSplit setPosition: banner.image.size.height+3 ofDividerAtIndex: 0];
+    
+    [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
 
 	#ifdef __LP64__
 	NSRect f = [subSeriesWindow frame];
@@ -11033,7 +11034,7 @@ static NSArray*	openSubSeriesArray = nil;
 - (void) installBanner: (NSImage*) bannerImage
 {
     [banner setImage: bannerImage];
-    [bannerSplit setPosition: bannerImage.size.height+3 ofDividerAtIndex: 0];
+    [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
 }
 
 - (void) checkForBanner: (id) sender
