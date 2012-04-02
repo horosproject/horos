@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------------------
-
-A:
-- MainMenu.xib : subSampling (this is a reminder, not a bug)
+Tests:
+- CD
+- XML-RPC, including plugin
 
 Added features:
 - Access DICOM CD/DVD as a database
