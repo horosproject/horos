@@ -97,7 +97,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 	
 	for( NSString *s in a)
 	{
-		if( [s isEqualToString: lastString])
+		if( [s isKindOfClass:[NSString class]] && [s isEqualToString: lastString])
 			[self removeObjectAtIndex: [self indexOfObject: s]];
 		else lastString = s;
 	}
@@ -111,7 +111,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 	
 	for( NSString *s in a)
 	{
-		if( [s isEqualToString: lastString])
+		if( [s isKindOfClass:[NSString class]] && [s isEqualToString: lastString])
 		{
 			int index = [self indexOfObject: s];
 			[self removeObjectAtIndex: index];
@@ -125,8 +125,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 {
 	for( id object in self)
 	{
-		if ([object isKindOfClass:[NSString class]])
-			if ([object isEqualToString:string])
+		if ([object isKindOfClass:[NSString class]] && [object isEqualToString:string])
 				return YES;
 	}
 
