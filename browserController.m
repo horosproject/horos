@@ -20183,7 +20183,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	
     if ([item isKindOfClass:[DicomSeries class]])
-        item = [item objectForKey:@"study"];
+        item = [item valueForKey:@"study"];
     
 	if( item)
 	{
