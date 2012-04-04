@@ -25,13 +25,14 @@
 											*totoku12Bit;
 	
 	IBOutlet NSMatrix						*sizeMatrix,
-											*multipleScreensMatrix,
 											*windowSizeMatrix,
 											*toolbarPanelMatrix;
 											
 	IBOutlet NSTextField					*iPhotoAlbumName;
 	
 	IBOutlet NSWindow						*mainWindow;
+    
+    IBOutlet NSButton* screensButton;
 }
 
 -(AppController*)appController;
@@ -40,9 +41,9 @@
 - (IBAction) setExportSize: (id) sender;
 - (IBAction) setReverseScrollWheel: (id) sender;
 - (IBAction) setOpenViewerBut: (id) sender;
-- (IBAction) setMultipleScreens: (id) sender;
 - (IBAction) setAlbumName: (id) sender;
 - (IBAction) setAutoHideMatrixState: (id) sender;
 - (IBAction) setWindowSizeViewer: (id) sender;
 - (IBAction) setAutoTiling: (id) sender;
+
 @end

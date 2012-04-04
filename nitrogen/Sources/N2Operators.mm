@@ -16,9 +16,11 @@
 #import <N2Operators.h>
 #include <cmath>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 NSString* N2LinesDontInterceptException = @"N2LinesDontInterceptException";
-
 
 // CGFloat
 
@@ -35,6 +37,25 @@ CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max) {
 const NSNumber* const N2Yes = [[NSNumber alloc] initWithBool:YES];
 const NSNumber* const N2No = [[NSNumber alloc] initWithBool:NO];
 
+NSSize NSRoundSize(NSSize s) {
+    return n2::round(s);
+}
+
+NSSize N2ProportionallyScaleSize(NSSize s, NSSize t) {
+    if (NSEqualSizes(s, t))
+        return t;
+    return s * MIN(t.width/s.width, t.height/s.height);
+}
+    
+NSRect N2FlipRect(NSRect frame, NSRect bounds) {
+    frame.origin.y = bounds.size.height-frame.origin.y-frame.size.height;
+    return frame;
+}
+
+#ifdef __cplusplus
+}
+#endif
+    
 /// NSSize
 
 namespace n2 {
@@ -51,10 +72,6 @@ namespace n2 {
 		return floor(s+0.5);
 	}
 	
-}
-
-NSSize NSRoundSize(NSSize s) {
-	return n2::round(s);
 }
 
 NSSize NSMakeSize(CGFloat wh) {

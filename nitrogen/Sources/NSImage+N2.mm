@@ -232,10 +232,7 @@ end_size_y:
 }
 
 -(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize {
-	NSSize imageSize = self.size;
-	if (NSEqualSizes(imageSize, targetSize))
-		return targetSize;
-	return imageSize * MIN(targetSize.width/imageSize.width, targetSize.height/imageSize.height);
+    return N2ProportionallyScaleSize(self.size, targetSize);
 }
 
 -(NSSize)sizeByScalingDownProportionallyToSize:(NSSize)targetSize {

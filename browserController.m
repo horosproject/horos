@@ -15157,9 +15157,12 @@ static volatile int numberOfThreadsForJPEG = 0;
 	NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
 	int reportsMode = [[[NSUserDefaults standardUserDefaults] stringForKey:@"REPORTSMODE"] intValue];
 	
+    if ([item isKindOfClass:[DicomSeries class]])
+        item = [item valueForKey:@"study"];
+    
 	if( item)
 	{
-		if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
+        if( reportsMode == 0 && [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Microsoft Word"] == nil) // Would absolutePathForAppBundleWithIdentifier be better here? (DDP)
 		{
 			NSRunAlertPanel( NSLocalizedString(@"Report Error", nil), NSLocalizedString(@"Microsoft Word is required to open/generate '.doc' reports. You can change it to TextEdit in the Preferences.", nil), nil, nil, nil);
 			return;

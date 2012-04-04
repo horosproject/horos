@@ -63,7 +63,7 @@
 -(void)drawRect:(NSRect)rect {
 	[NSGraphicsContext saveGraphicsState];
 	
-	NSSize s = -self.contentViewMargins;
+//	NSSize s = -self.contentViewMargins;
 	NSRect r = NSInsetRect([self.contentView frame], -3.5, -1);
 	r.origin.y -= 1.5;
 

@@ -39,7 +39,7 @@
 }
 
 -(NSRect)titleRectForBounds:(NSRect)bounds {
-	NSSize size = [super cellSizeForBounds:bounds];
+//	NSSize size = [super cellSizeForBounds:bounds];
 	NSSize textSize = [self textSize];
 	return NSMakeRect(bounds.origin.x+bounds.size.width, bounds.origin.y, textSize.width, textSize.height);
 }

@@ -14,6 +14,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern NSString* N2LinesDontInterceptException;
 
 CGFloat NSSign(const CGFloat f);
@@ -22,21 +26,19 @@ CGFloat NSLimit(const CGFloat v, const CGFloat min, const CGFloat max);
 extern const NSNumber* const N2Yes;
 extern const NSNumber* const N2No;
 
-#pragma mark NSSize
+NSSize NSRoundSize(NSSize s) DEPRECATED_ATTRIBUTE;
+NSSize N2ProportionallyScaleSize(NSSize s, NSSize t);
+    
+NSRect N2FlipRect(NSRect frame, NSRect bounds);
 
 #ifdef __cplusplus
+}
 
 namespace n2 {
 	NSSize floor(const NSSize& s);
 	NSSize ceil(const NSSize& s);
 	NSSize round(const NSSize& s);
 }
-
-#endif
-
-NSSize NSRoundSize(NSSize s) DEPRECATED_ATTRIBUTE;
-
-#ifdef __cplusplus
 
 NSSize NSMakeSize(CGFloat wh);
 NSSize operator-(const NSSize& s);						// -[x,y] = [-x,-y]

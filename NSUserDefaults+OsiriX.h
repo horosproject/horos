@@ -32,6 +32,13 @@ extern NSString* const OsirixCanActivateDefaultDatabaseOnlyDefaultsKey;
 +(BOOL)canActivateOnlyDefaultDatabase;
 +(BOOL)canActivateAnyLocalDatabase;
 
+extern NSString* const O2NonViewerScreensDefaultsKey;
+#ifdef OSIRIX_VIEWER
+-(NSArray*)screensUsedForViewers;
+-(BOOL)screenIsUsedForViewers:(NSScreen*)screen;
+-(void)screen:(NSScreen*)screen setIsUsedForViewers:(BOOL)flag;
+#endif
+
 #pragma mark Bonjour Sharing
 
 extern NSString* const OsirixBonjourSharingIsActiveDefaultsKey;

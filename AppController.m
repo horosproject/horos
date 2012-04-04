@@ -3969,64 +3969,25 @@ static BOOL initialized = NO;
 	return nil;
 }
 
-- (NSArray *)viewerScreens
+- (NSArray*)viewerScreens
 {
-	//once we have ethe list of viewers we need to arrange them ledft to right
-	NSArray *viewers;
-	if ([[NSScreen screens] count] > 1)
-	{
-		if ([[NSUserDefaults standardUserDefaults] integerForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
-			return [NSArray arrayWithObject: [NSScreen mainScreen]];
-		
-		NSMutableArray *array = [NSMutableArray array];
-		NSEnumerator *enumerator = [[NSScreen screens] objectEnumerator];
-		NSScreen *screen;
-		while (screen = [enumerator nextObject])
-		{
-			if (![screen isEqual:[self dbScreen]])
-				[array addObject:screen];
-		}
-		//return array;
-		viewers =  array;
-	}
-	else viewers = [NSScreen screens]; 
+	NSMutableArray* screens = [[[[NSUserDefaults standardUserDefaults] screensUsedForViewers] mutableCopy] autorelease];
+    if (!screens.count)
+        screens = [[[NSScreen screens] mutableCopy] autorelease];
 	
-	if( [viewers count] == 1) return viewers;
-	
-	//once we have the list of viewers we need to arrange them left to right
-	int count = [viewers count];
-	int i;
-	int position;
-	NSMutableArray *arrangedViewers = [NSMutableArray array];
-	for (i = 0; i < count; i++)
-	{
-		NSScreen *aScreen = [viewers objectAtIndex:i];
-		float x = [aScreen frame].origin.x;
-		NSEnumerator *enumerator = [arrangedViewers objectEnumerator];
-		NSScreen *screen;
-		position = i;
-		int current = 0;
-		while (screen = [enumerator nextObject])
-		{
-			if (x < [screen frame].origin.x)
-			{
-				position = current;
-				current ++;
-				break;
-			}
-		}
-		
-		[arrangedViewers insertObject:aScreen atIndex:position];
-	}
-	
-	if( [self dbScreen] == nil)
-	{
-		[arrangedViewers removeObject: [dbWindow screen]];
-		[arrangedViewers addObject: [dbWindow screen]];
-	}
-	else if( [arrangedViewers count] > 1) [arrangedViewers removeObject: [dbWindow screen]];
-	
-	return arrangedViewers;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] && [screens containsObject:[dbWindow screen]] && [screens count] > 1)
+        [screens removeObject:[dbWindow screen]];
+    
+	// arrange them left to right
+    [screens sortUsingComparator:^NSComparisonResult(id o1, id o2) {
+        NSRect f1 = ((NSScreen*)o1).frame, f2 = ((NSScreen*)o2).frame;
+        CGFloat c1 = f1.origin.x+f1.size.width/2, c2 = f2.origin.x+f2.size.width/2;
+        if (c1 < c2) return NSOrderedAscending;
+        if (c1 > c2) return NSOrderedDescending;
+        return NSOrderedSame;
+    }];
+    
+    return screens;
 }
 
 //- (NSRect) resizeWindow:(NSWindow*) win	withInRect:(NSRect) destRect
