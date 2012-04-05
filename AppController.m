@@ -1885,7 +1885,7 @@ static NSDate *lastWarningDate = nil;
 	NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
 }
 
--(void) displayListenerError: (NSString*) err
+-(void) displayListenerError: (NSString*) err // the DiscPublishing plugin swizzles this method, do not rename it
 {
 	NSLog( @"*** listener error (displayListenerError): %@", err);
 	
@@ -1896,7 +1896,7 @@ static NSDate *lastWarningDate = nil;
 		[alert setInformativeText: [err stringByAppendingString: @"\r\rThis error message can be hidden by activating the Server Mode (see Listener Preferences)"]];
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
-		[alert runModal];
+		[alert beginSheetModalForWindow:nil modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	}
 }
 
