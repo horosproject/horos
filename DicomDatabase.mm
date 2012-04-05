@@ -1680,6 +1680,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								else
 									[image setValue: 0L forKey: @"generatedByOsiriX"];
 								
+                                if (newObject) {
+                                    [seriesTable setValue: nil forKey: @"windowWidth"];
+                                    [seriesTable setValue: nil forKey: @"windowLevel"];
+								}
+                                
                                 [image setValue: [curDict objectForKey: @"modality"]  forKey:@"modality"];
                                 
 								[seriesTable setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];

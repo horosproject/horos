@@ -90,6 +90,7 @@ extern NSString* const KFSplitViewDidCollapseSubviewNotification;
 extern NSString* const KFSplitViewDidExpandSubviewNotification;
 extern NSString* const BLAuthenticatedNotification;
 extern NSString* const BLDeauthenticatedNotification;
+extern NSString* const OsiriXLogEvent;
 
 extern NSString* const OsirixActiveLocalDatabaseDidChangeNotification;
 

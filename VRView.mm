@@ -6047,20 +6047,23 @@ public:
 		www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 		[www start];
         
-        if( 0.9 * [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] < dst8.rowBytes * dst8.height)
+        if( engine == 1)
         {
-            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)  name: @"result"];
-            
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideVRAMAlert"] == NO)
+            if( 0.9 * [VTKView VRAMSizeForDisplayID: [[[[NSScreen mainScreen] deviceDescription] objectForKey: @"NSScreenNumber"] intValue]] < dst8.rowBytes * dst8.height)
             {
-                NSAlert* alert = [[NSAlert new] autorelease];
-                [alert setMessageText: NSLocalizedString( @"Warning!", nil)];
-                [alert setInformativeText: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)];
-                [alert setShowsSuppressionButton:YES ];
-                [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
-                [alert runModal];
-                if ([[alert suppressionButton] state] == NSOnState)
-                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideVRAMAlert"];
+                [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Warning!", nil) description: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)  name: @"result"];
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideVRAMAlert"] == NO)
+                {
+                    NSAlert* alert = [[NSAlert new] autorelease];
+                    [alert setMessageText: NSLocalizedString( @"Warning!", nil)];
+                    [alert setInformativeText: NSLocalizedString( @"3D Dataset volume is larger than the amount of graphic board VRAM: GPU Rendering could be slower than CPU Rendering.", nil)];
+                    [alert setShowsSuppressionButton:YES ];
+                    [alert addButtonWithTitle: NSLocalizedString( @"Continue", nil)];
+                    [alert runModal];
+                    if ([[alert suppressionButton] state] == NSOnState)
+                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideVRAMAlert"];
+                }
             }
         }
 	}
@@ -6704,6 +6707,9 @@ public:
     if( engine != 0)
         self.engine = 0; // Switch to CPU !
     
+    if( firstObject.isRGB)
+        return;
+    
 	if( volumeMapper)
 	{
 		volumeMapper->SetIntermixIntersectingGeometry( 0);
@@ -6816,7 +6822,7 @@ public:
             *w = size[0];
             *h = size[1];
             
-            if( renderingMode == 1 || renderingMode == 3 || renderingMode == 2)		// MIP
+            if( firstObject.isRGB == NO && ( renderingMode == 1 || renderingMode == 3 || renderingMode == 2))		// MIP
             {
                 unsigned short *destPtr, *destFixedPtr;
                 

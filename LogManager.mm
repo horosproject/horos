@@ -18,6 +18,7 @@
 #import "DICOMToNSString.h"
 #import "DicomFile.h"
 #import "N2Debug.h"
+#import "Notifications.h"
 
 static LogManager *currentLogManager = nil;
 

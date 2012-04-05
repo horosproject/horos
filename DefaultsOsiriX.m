@@ -997,6 +997,21 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"WebServerUseMailAppForEmails"];
     [defaultValues setObject:@"1" forKey:@"DICOMQueryAllowFutureQuery"];
     
+    
+    [defaultValues setObject:@"1" forKey:@"allow_qr_name"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_id"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_accession_number"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_birthdate"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_description"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_referring_physician"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_comments"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_institution"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_study_date"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
+    [defaultValues setObject:@"1" forKey:@"allow_qr_customDICOMField"];
+    
+    
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
 	#else

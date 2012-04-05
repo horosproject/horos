@@ -293,7 +293,7 @@
 	long				i;
 	long				size, x;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
-	
+	BOOL                isRGB = firstPix.isRGB;
 	
 	currentAxe = axe;
 
@@ -305,7 +305,7 @@
 	{
 		sliceInterval = [firstPix sliceInterval];
 	}
-
+    
 	// Get Values
 	if( axe == 0)		// X - RESLICE
 	{
@@ -433,6 +433,9 @@
 		}
 	}
 	
+    int bits = 32;
+    if( isRGB) bits = 8;
+    
 	for( i = minI, stack = 0 ; i < maxI ; i++, stack++)
 	{
 		if( i < 0) i = 0;
@@ -441,7 +444,7 @@
 		{
 			if( stack >= [newPixListX count])
 			{
-				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
 				[newPixListX addObject: curPix];
@@ -453,7 +456,7 @@
 		{
 			if( stack  >= [newPixListY count])
 			{
-				curPix = [[DCMPix alloc] initWithData: nil :32 :newX :newY :1 :1 :0 :0 :0 :NO];
+				curPix = [[DCMPix alloc] initWithData: nil :bits :newX :newY :1 :1 :0 :0 :0 :NO];
 				[curPix copySUVfrom: firstPix];
 				curPix.frameofReferenceUID = firstPix.frameofReferenceUID;
 				[newPixListY addObject: curPix];

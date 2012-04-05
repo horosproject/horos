@@ -151,7 +151,7 @@
 		// We will try again later...
 		
 		if ([[dict valueForKey: @"failureRetry"] intValue] > 0) {
-			NSLog( @"Autorouting failure count: %d", [[dict valueForKey: @"failureRetry"] intValue]);
+			NSLog( @"Autorouting for %@ : failure count: %d", [[samePatientArray objectAtIndex: 0] valueForKeyPath:@"series.study.name"], [[dict valueForKey: @"failureRetry"] intValue]);
 			@synchronized (_routingSendQueues) {
 				[_routingSendQueues addObject: [NSDictionary dictionaryWithObjectsAndKeys: 
                                                 [NSMutableArray arrayWithArray:[samePatientArray valueForKey:@"objectID"]], @"objectIDs",

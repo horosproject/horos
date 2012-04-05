@@ -269,6 +269,16 @@ static	BOOL frameZoomed = NO;
 	[super dealloc];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    if( [item action] == @selector( actualSize:) || [item action] == @selector( realSize:) || [item action] == @selector( scaleToFit:))
+    {
+        return NO;
+    }
+    
+    return YES;
+}
+
 -(void) updateViewMPR
 {
 	[self updateViewMPR: YES];

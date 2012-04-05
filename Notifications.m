@@ -95,3 +95,4 @@ NSString* const BLDeauthenticatedNotification = @"BLDeauthenticatedNotification"
 NSString* const OsirixActiveLocalDatabaseDidChangeNotification = @"OsirixActiveLocalDatabaseDidChangeNotification";
 
 NSString* const OsirixPopulatedContextualMenuNotification = @"OsirixPopulatedContextualMenuNotification";
+NSString* const OsiriXLogEvent = @"OsiriXLogEvent";
