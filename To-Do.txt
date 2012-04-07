@@ -1,3 +1,5 @@
+- Osirix repeatedly crashes converted closed polygon ROIs to Brush ROIs
+
 ------------------------------------------------------------------------------------------
 Tests:
 - CD

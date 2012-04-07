@@ -451,6 +451,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
     NSLog( @"--- will unloadplugin: %@", [bundle bundlePath]);
     @try
     {
+        [PluginManager startProtectForCrashWithPath: [bundle bundlePath]];
+        
         Class filterClass = [bundle principalClass];
                 
         [PluginManager releaseInstanciedObjectsOfClass: filterClass];
@@ -461,6 +463,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         [fileFormatPlugins removeObject: bundle];
         [pluginsDict removeObject: bundle];
         [reportPlugins removeObject: bundle];
+        
+        [PluginManager endProtectForCrash];
         
         if( [bundle unload] == NO)
         {

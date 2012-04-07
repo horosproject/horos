@@ -2001,7 +2001,7 @@ static NSDate *lastWarningDate = nil;
 		[alert setInformativeText: [err stringByAppendingString: @"\r\rThis error message can be hidden by activating the Server Mode (see Listener Preferences)"]];
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
-		[alert runModal];
+        [alert beginSheetModalForWindow:nil modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	}
 }
 
@@ -2867,6 +2867,20 @@ static BOOL initialized = NO;
 				#else
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"LP64bit"];
 				#endif
+                
+                
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_name"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_id"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_accession_number"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_birthdate"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_description"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_referring_physician"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_comments"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_institution"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_customDICOMField"];
 				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
