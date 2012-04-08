@@ -443,7 +443,8 @@ extern short check_overshoot_f;
 
 
 extern FILE *DFILE;
-static int messcount=0;			// EPRO set to global (local removed from warning) to give the same warnings to all runs
+static int messcount = 0;			// EPRO set to global (local removed from warning) to give the same warnings to all runs
+static int depthConnect = 0;
 #define DEBS(qq)  {if (DEBUG>qq) {
 #define EDEBS }}
 #define DEBOUT DFILE
@@ -1403,6 +1404,8 @@ void adapted_main()
 
     int main_out_form=0, i,k;
 
+    depthConnect = 0;
+    
     simplex *root;
 
     struct edgesimp *eindex;
@@ -5384,6 +5387,13 @@ neighbor *op_vert(simplex *a, site b) {lookup(a,b,vert,site)}
 void connect(simplex *s) {
     /* make neighbor connections between newly created simplices incident to p */
 
+    if( depthConnect > 200) // protection against infinite recursive loops
+    {
+        printf( "depth connect limit reached\r");
+        s->visit = pnum;
+        return;
+    }
+    
     site xf,xb,xfi;
     simplex *sb, *sf, *seen;
     int i;
@@ -5396,41 +5406,51 @@ void connect(simplex *s) {
     if (s->visit==pnum) return;
     s->visit = pnum;
     seen = s->peak.simp;
-    xfi = op_simp(seen,s)->vert;
-    for (i=0, sn = s->neigh; i<cdim; i++,sn++) {
-        xb = sn->vert;
-        if (p == xb) continue;
-        sb = seen;
-        sf = sn->simp;
-        xf = xfi;
-        if (!sf->peak.vert) {   /* are we done already? */
-            sf = op_vert(seen,xb)->simp;
-            if (sf->peak.vert) continue;                
-        } else do {
-            xb = xf;
-            neighbor *n = op_simp(sf,sb);
-            if( n)
-            {
-                xf = n->vert;
-                sb = sf;
-                
-                neighbor *ov = op_vert(sb,xb);
-                if( ov)
-                    sf = ov->simp;
-                else
-                    break;
-            }
-            else break;
-        } while (sf->peak.vert);
+    
+    depthConnect++;
+    
+    neighbor *z = op_simp(seen,s);
+    if( z)
+    {
+        xfi = z->vert;
+        for (i=0, sn = s->neigh; i<cdim; i++,sn++)
+        {
+            xb = sn->vert;
+            if (p == xb) continue;
+            sb = seen;
+            sf = sn->simp;
+            xf = xfi;
+            if (!sf->peak.vert) {   /* are we done already? */
+                sf = op_vert(seen,xb)->simp;
+                if (sf->peak.vert) continue;                
+            } else do {
+                xb = xf;
+                neighbor *n = op_simp(sf,sb);
+                if( n)
+                {
+                    xf = n->vert;
+                    sb = sf;
+                    
+                    neighbor *ov = op_vert(sb,xb);
+                    if( ov)
+                        sf = ov->simp;
+                    else
+                        break;
+                }
+                else break;
+            } while (sf->peak.vert);
 
-        sn->simp = sf;
-        
-        neighbor *o = op_vert(sf,xf);
-        if( o)
-            o->simp = s;
+            sn->simp = sf;
+            
+            neighbor *o = op_vert(sf,xf);
+            if( o)
+                o->simp = s;
 
-        connect(sf);
+            connect(sf);
+        }
     }
+    
+    depthConnect--;
 }
 
 
@@ -5467,7 +5487,10 @@ simplex *make_facets(simplex *seen) {
         /*      ns->Sb -= ns->neigh[i].basis->sqb; */
         NULLIFY(basis_s,ns->neigh[i].basis);
         ns->neigh[i].vert = p;
-        bn->simp = op_simp(n,seen)->simp = ns;
+        
+        neighbor *ov = op_simp(n,seen);
+        if( ov)
+            bn->simp = ov->simp = ns;
     }
     return ns;
 }
