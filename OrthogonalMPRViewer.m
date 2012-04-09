@@ -1665,13 +1665,13 @@ return YES;
 	else if ([[self keyView] isEqualTo:[controller xReslicedView]])
 	{
 		view = [controller originalView];
-		max = [[view curDCM] pwidth];
+		max = [[view curDCM] pheight];
 		curIndex = [[controller originalView] crossPositionX];
 	}
 	else if ([[self keyView] isEqualTo:[controller yReslicedView]])
 	{
 		view = [controller originalView];
-		max = [[view curDCM] pheight];
+		max = [[view curDCM] pwidth];
 		curIndex = [[controller originalView] crossPositionY];
 	}
 	
