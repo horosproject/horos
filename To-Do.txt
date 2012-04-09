@@ -1,4 +1,4 @@
-
+- Orthogonal : export non-squared matrix (max number of images: bart)
 ------------------------------------------------------------------------------------------
 
 Tests:

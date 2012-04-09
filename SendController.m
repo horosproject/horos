@@ -270,7 +270,7 @@ static volatile int sendControllerObjects = 0;
 		objects = _files;
 	
 	[_lock lock];
-	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget: self withObject: nil];
+	[self performSelectorOnMainThread: @selector(releaseSelfWhenDone:) withObject: nil waitUntilDone: NO];
 	
 	[_destinationServer release];
 	_destinationServer = [node retain];
