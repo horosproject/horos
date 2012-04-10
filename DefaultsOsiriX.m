@@ -875,7 +875,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"SINGLEPROCESS"];
 	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
 	[defaultValues setObject: @"1" forKey: @"CheckOsiriXUpdates4"];
-	[defaultValues setObject: @"1" forKey:@"MOUNT"];
+	[defaultValues setObject: @"-1" forKey:@"MOUNT"];
 	[defaultValues setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
 //	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
 	[defaultValues setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
