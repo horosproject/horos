@@ -238,5 +238,5 @@ typedef NSInteger CPRExportRotationSpan;
 - (void) saveBezierPathToFile:(NSString*) f;
 - (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
-
+- (void) setupToolbar;
 @end

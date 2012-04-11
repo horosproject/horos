@@ -471,12 +471,6 @@ extern int delayedTileWindows;
     }
 }
 
-
-- (void) windowDidLoad
-{
-    [self setupToolbar];
-}
-
 + (XMLController*) windowForViewer: (ViewerController*) v
 {
 	// Check if we have already a window displaying this ManagedObject
@@ -599,6 +593,8 @@ extern int delayedTileWindows;
 		
 		[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(CloseViewerNotification:) name: OsirixCloseViewerNotification object: nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(refresh:) name:OsirixDCMViewIndexChangedNotification object:nil];
+        
+        [self setupToolbar];
 	}
 	return self;
 }

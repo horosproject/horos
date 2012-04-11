@@ -172,7 +172,9 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 	curOpacityMenu = [NSLocalizedString(@"Linear Table", nil) retain];
 	[nc addObserver:self selector:@selector(UpdateOpacityMenu:) name:OsirixUpdateOpacityMenuNotification object:nil];
 	[nc postNotificationName:OsirixUpdateOpacityMenuNotification object:curOpacityMenu userInfo:nil];
-
+    
+    [self setupToolbar];
+    
 	return self;
 }
 
@@ -536,11 +538,6 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
     [[self window] setDelegate:nil];
     
     [self autorelease];
-}
-
-- (void) windowDidLoad
-{
-    [self setupToolbar];
 }
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification
