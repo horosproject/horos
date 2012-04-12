@@ -68,6 +68,8 @@ static BOOL SEPARATECARDIAC4D = NO;
 //static int SeparateCardiacMRMode = 0;
 static BOOL filesAreFromCDMedia = NO;
 
+#define QUICKTIMETIMEFRAMELIMIT 1200
+
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
 {
 	if( encoding != NSISOLatin1StringEncoding) return str;
@@ -961,7 +963,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					if (aTime != -1) NoOfFrames++;
 				} while (aTime != -1);
 				
-				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
+				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1016,9 +1018,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NoOfFrames++;
 					[movie stepForward];
 				}
-				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < 400);
+				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < QUICKTIMETIMEFRAMELIMIT);
 				
-				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
+				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
