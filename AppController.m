@@ -4517,9 +4517,6 @@ static BOOL initialized = NO;
 
 - (void) tileWindows:(id)sender windows: (NSMutableArray*) viewersList display2DViewerToolbar: (BOOL) display2DViewerToolbar
 {
-	long i, x;
-	NSArray *winList = [NSApp windows];
-	
 	BOOL origCopySettings = [[NSUserDefaults standardUserDefaults] boolForKey: @"COPYSETTINGS"];
 	NSRect screenRect =  screenFrame();
 	BOOL keepSameStudyOnSameScreen = [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesTogetherOnSameScreen"];
@@ -4534,20 +4531,20 @@ static BOOL initialized = NO;
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"COPYSETTINGS"];
 	[AppController checkForPreferencesUpdate: YES];
 	
-	for( id obj in winList)
-		[obj retain];
-	
 	//order windows from left-top to right-bottom, per screen if necessary
 	NSMutableArray	*cWindows = [NSMutableArray arrayWithArray: viewersList];
 	
 	// Only the visible windows
-	for( i = [cWindows count]-1; i >= 0; i--)
+	for( int i = [cWindows count]-1; i >= 0; i--)
 	{
 		if( [[[cWindows objectAtIndex: i] window] isVisible] == NO) [cWindows removeObjectAtIndex: i];
 	}
 	
-	NSMutableArray	*cResult = [NSMutableArray array];
-	
+    //Retain windows
+    NSArray *windows = [cWindows valueForKey: @"window"];
+    
+	NSMutableArray *cResult = [NSMutableArray array];
+    
 	@try
 	{
 		int count = [cWindows count];
@@ -4556,7 +4553,7 @@ static BOOL initialized = NO;
 			int index = 0;
 			int row = [self currentRowForViewer: [cWindows objectAtIndex: index]];
 			
-			for( x = 0; x < [cWindows count]; x++)
+			for( int x = 0; x < [cWindows count]; x++)
 			{
 				if( [self currentRowForViewer: [cWindows objectAtIndex: x]] < row)
 				{
@@ -4567,7 +4564,7 @@ static BOOL initialized = NO;
 			
 			float minX = [self windowCenter: [[cWindows objectAtIndex: index] window]].x;
 			
-			for( x = 0; x < [cWindows count]; x++)
+			for( int x = 0; x < [cWindows count]; x++)
 			{
 				if( [self windowCenter: [[cWindows objectAtIndex: x] window]].x < minX && [self currentRowForViewer: [cWindows objectAtIndex: x]] <= row)
 				{
@@ -4605,7 +4602,7 @@ static BOOL initialized = NO;
 	
     if( keyWindow == -1)
     {
-        for( i = 0; i < [viewersList count]; i++)
+        for( int i = 0; i < [viewersList count]; i++)
         {
             if( [[[viewersList objectAtIndex: i] window] isKeyWindow])
                 keyWindow = i;
@@ -4622,7 +4619,7 @@ static BOOL initialized = NO;
 			NSString	*studyUID = [[[[viewersList objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
 			
 			//get 2D viewer study arrays
-			for( i = 0; i < [viewersList count]; i++)
+			for( int i = 0; i < [viewersList count]; i++)
 			{
 				if( [[[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID] == NO)
 					identical = NO;
@@ -4635,13 +4632,13 @@ static BOOL initialized = NO;
 		if( keepSameStudyOnSameScreen == YES && identical == NO)
 		{
 			//get 2D viewer study arrays
-			for( i = 0; i < [viewersList count]; i++)
+			for( int i = 0; i < [viewersList count]; i++)
 			{
 				NSString	*studyUID = [[[[viewersList objectAtIndex: i] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"];
 				
 				BOOL found = NO;
 				// loop through and add to correct array if present
-				for( x = 0; x < [studyList count]; x++)
+				for( int x = 0; x < [studyList count]; x++)
 				{
 					if( [[[[[[studyList objectAtIndex: x] objectAtIndex: 0] fileList] objectAtIndex: 0] valueForKeyPath:@"series.study.studyInstanceUID"] isEqualToString: studyUID])
 					{
@@ -4794,7 +4791,7 @@ static BOOL initialized = NO;
 		{
 			NSLog(@"Tile Windows with keepSameStudyOnSameScreen == YES");
 			
-			for( i = 0; i < numberOfMonitors && i < [studyList count]; i++)
+			for( int i = 0; i < numberOfMonitors && i < [studyList count]; i++)
 			{
 				NSMutableArray	*viewersForThisScreen = [studyList objectAtIndex:i];
 				
@@ -4802,7 +4799,7 @@ static BOOL initialized = NO;
 				{
 					// Take all remaining studies
 					
-					for ( x = i+1; x < [studyList count]; x++)
+					for( int x = i+1; x < [studyList count]; x++)
 					{
 						[viewersForThisScreen addObjectsFromArray: [studyList objectAtIndex: x]];
 					}
@@ -4824,7 +4821,7 @@ static BOOL initialized = NO;
 	{
 		int count = [viewersList count];
 		
-		for( i = 0; i < count; i++)
+		for( int i = 0; i < count; i++)
 		{
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
@@ -4844,7 +4841,7 @@ static BOOL initialized = NO;
 	else if((viewerCount <= columns) &&  (viewerCount % numberOfMonitors == 0))
 	{
 		int viewersPerScreen = viewerCount / numberOfMonitors;
-		for( i = 0; i < viewerCount; i++)
+		for( int i = 0; i < viewerCount; i++)
 		{
 			int index = (int) i/viewersPerScreen;
 			int viewerPosition = i % viewersPerScreen;
@@ -4869,7 +4866,7 @@ static BOOL initialized = NO;
 		int columnsPerScreen = ceil(((float) columns / numberOfMonitors));
 		int extraViewers = viewerCount % numberOfMonitors;
 		
-		for( i = 0; i < viewerCount; i++)
+		for( int i = 0; i < viewerCount; i++)
 		{
 			int monitorIndex = (int) i /columnsPerScreen;
 			int viewerPosition = i % columnsPerScreen;
@@ -4919,7 +4916,7 @@ static BOOL initialized = NO;
 		
 		if( viewerCount)
 		{
-			for( i = 0; i < viewerCount; i++)
+			for( int i = 0; i < viewerCount; i++)
 			{
 				monitorIndex =  i / (columnsPerScreen*rowsPerScreen);
 				
@@ -5014,9 +5011,6 @@ static BOOL initialized = NO;
 			
 		NSEnableScreenUpdates();
 	}
-	
-	for( id obj in winList)
-		[obj release];
 }
 
 
