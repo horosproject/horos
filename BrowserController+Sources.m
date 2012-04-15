@@ -645,6 +645,23 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 {
     [service stop];
     
+    NSValue* bsk = nil;
+    
+    @synchronized (_bonjourSources) {
+        for (NSValue* ibsk in _bonjourSources) {
+            NSNetService* ibsks = [ibsk pointerValue];
+            if ([ibsks isEqual:service]) {
+                bsk = ibsk;
+                break;
+            }
+        }
+        
+    	if (!bsk)
+            return;
+    }
+    
+    [(id)[bsk pointerValue] release]; // release the NSNetService
+    
     @synchronized (_bonjourSources) {
         [_bonjourSources removeObjectForKey:[NSValue valueWithPointer: service]];
     }
