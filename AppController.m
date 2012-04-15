@@ -1948,6 +1948,11 @@ static NSDate *lastWarningDate = nil;
 }
 
 #ifndef OSIRIX_LIGHT
+- (void)netService:(NSNetService *)aNetService didNotResolve:(NSDictionary *)errorDict
+{
+    [aNetService stop];
+    [aNetService release];
+}
 
 - (void)netServiceDidResolveAddress:(NSNetService *) aNetService
 {
@@ -1981,6 +1986,9 @@ static NSDate *lastWarningDate = nil;
 			}
 		}
 	}
+    
+    [aNetService stop];
+    [aNetService release];
 }
 
 #endif

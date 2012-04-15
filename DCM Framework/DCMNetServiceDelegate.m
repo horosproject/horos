@@ -113,17 +113,12 @@ static NSMutableArray *cachedServersArray = nil;
 	NSLog(@"netServiceBrowser didNotSearch");	
 }
 
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveDomain:(NSString *)domainString moreComing:(BOOL)moreComing
-{
-}
-
 - (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
 {
-	[aNetService retain];	// <- Yes, this is a memory leak, but we will avoid a not comprehensible bug....
+	[aNetService stop];
 	
 	if( [_dicomServices containsObject: aNetService])
 	{
-//		NSLog( @"didRemove retainCout: %d", [aNetService retainCount]);
 		[_dicomServices removeObject: aNetService];
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
 	}
@@ -145,6 +140,8 @@ static NSMutableArray *cachedServersArray = nil;
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
     NSLog( @"There was an error while attempting to resolve address for %@", [sender name]);
+    
+    [sender stop];
 }
 
 + (void) syncDICOMNodes
@@ -430,13 +427,15 @@ static NSMutableArray *cachedServersArray = nil;
 		
 		}
 	}
-	
+    
 	return hostname;
 }
 
-- (void)netServiceDidResolveAddress:(NSNetService *)sender
+- (void)netServiceDidResolveAddress:(NSNetService *)aNetService
 {
-	NSLog( @"DICOM Bonjour node detected: %@", sender);
+	NSLog( @"DICOM Bonjour node detected: %@", aNetService);
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"DCMNetServicesDidChange" object:nil];
+    
+    [aNetService stop];
 }
 @end
