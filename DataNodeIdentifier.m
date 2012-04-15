@@ -155,6 +155,12 @@
         return;
     }
     
+    if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
+    {
+        cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
+        return;
+    }
+    
     NSString* path = self.location;
     BOOL atMediaRoot = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] containsObject:path];
     if (!atMediaRoot)
@@ -187,6 +193,13 @@
 
 -(void)willDisplayCell:(PrettyCell*)cell {    
     [super willDisplayCell:cell];
+    
+    if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
+    {
+        cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
+        return;
+    }
+    
     cell.image = [NSImage imageNamed:@"FixedIP.tif"];
 }
 
@@ -246,6 +259,13 @@
 
 -(void)willDisplayCell:(PrettyCell*)cell {
     [super willDisplayCell:cell];
+    
+    if( [_dictionary valueForKey: @"icon"] && [NSImage imageNamed:[_dictionary valueForKey:@"icon"]])
+    {
+        cell.image = [NSImage imageNamed:[_dictionary valueForKey:@"icon"]];
+        return;
+    }
+    
     cell.image = [NSImage imageNamed:@"DICOMDestination.tif"];
 }
 

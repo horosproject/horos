@@ -554,6 +554,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netServiceDidResolveAddress:(NSNetService*)service
 {
+    [service stop]; //Technical Q&A QA1297
+    
     NSValue* key = [NSValue valueWithPointer:service];
     DataNodeIdentifier* source0 = nil;
     @synchronized (_bonjourSources) {
@@ -641,8 +643,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)netService:(NSNetService*)service didNotResolve:(NSDictionary*)errorDict
 {
+    [service stop];
+    
     @synchronized (_bonjourSources) {
-        [_bonjourSources removeObjectForKey:[NSValue valueWithPointer:service]];
+        [_bonjourSources removeObjectForKey:[NSValue valueWithPointer: service]];
     }
 }
 
@@ -658,7 +662,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 //    source.discovered = YES;
 //	source.service = service;
     @synchronized (_bonjourSources) {
-        [_bonjourSources setObject:source forKey:[NSValue valueWithPointer:[service retain]]];
+        [_bonjourSources setObject:source forKey:[NSValue valueWithPointer: [service retain]]];
 	}
     
 	// resolve the address and port for this NSNetService
