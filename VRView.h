@@ -193,7 +193,7 @@ typedef char* VTKStereoVRView;
 @interface VRView : VTKView <Schedulable>
 {
 	NSTimer						*autoRotate, *startAutoRotate;
-	BOOL						rotate, flyto;
+	BOOL						isRotating, flyto;
 	int							incFlyTo;
 	
     int                         engine;
