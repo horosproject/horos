@@ -1774,12 +1774,12 @@ public:
 - (void) startAutoRotate:(id) sender
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"autorotate3D"])
-		rotate = YES;
+		isRotating = YES;
 }
 
 - (void) autoRotate:(id) sender
 {
-	if( rotate)
+	if( isRotating)
 	{
 		[self Azimuth: 4.];
 		[self mouseMoved: [[NSApplication sharedApplication] currentEvent]];
@@ -1809,7 +1809,7 @@ public:
 		
 		[self addTrackingArea: cursorTracking];
 	
-		rotate = NO;
+		isRotating = NO;
 		
 		splash = nil;	//[[WaitRendering alloc] init:NSLocalizedString(@"Rendering...", nil)];
 		currentTool = t3DRotate;
@@ -2778,7 +2778,7 @@ public:
 	vtkCocoaRenderWindowInteractor *interactor = [self getInteractor];
 	if (!interactor) return;
 	
-	rotate = NO;
+	isRotating = NO;
 	[self resetAutorotate: self];
 	
 	if( projectionMode != 2 && clipRangeActivated == NO)
@@ -2850,7 +2850,7 @@ public:
 
 - (void) setRotate: (BOOL) r
 {
-	rotate = r;
+	isRotating = r;
 }
 
 -(void) mouseMoved: (NSEvent*) theEvent
@@ -3712,7 +3712,7 @@ public:
 		
 		if( tool != tWL && tool != tZoom)
 		{
-			rotate = NO;
+			isRotating = NO;
 			
 			[self resetAutorotate: self];
 		}
@@ -4850,7 +4850,7 @@ public:
 	else if( c == ' ')
 	{
 		if( [[[self window] windowController] isKindOfClass:[VRController class]])
-			rotate = !rotate;
+			isRotating = !isRotating;
 	}
 	else if( c == '?')
 	{
