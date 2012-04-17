@@ -26,6 +26,8 @@
 #import "DCMPix.h"
 #import "ThreadsManager.h"
 #import "DiscMountedAskTheUserDialogController.h"
+#import "DCMAbstractSyntaxUID.h"
+#import "N2Stuff.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -109,7 +111,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return _dcmElementKey(key.getGroup(), key.getElement());
 }
 
--(NSArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
+-(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
 	NSString* tabs = [NSString stringByRepeatingString:@" " times:context.count*4];
 	NSMutableArray* items = [NSMutableArray array];
 	NSMutableDictionary* elements = [NSMutableDictionary dictionary];
@@ -197,7 +199,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             BOOL ok = YES;
             // DICOM 11 says we must expect MONOCHROME2 PhotometricInterpretation, 8 BitsAllocated & BitsStored (monochrome -> 1 SamplesPerPixel)
             Uint16 uint16; OFString string;
-            if (ok && (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), string).good() || string != "MONOCHROME2")) ok = NO; // PhotometricInterpretation must be MONOCHROME2
+            if (ok && (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), string).good() || string != "MONOCHROME2")) ok = NO; // PhotometricInterpretation must be MONOCHROME2 // TODO: actually, other encodings should be supported...
             if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0100), uint16).good() || uint16 != 8)) ok = NO; // BitsAllocated must be 8
             if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0101), uint16).good() || uint16 != 8)) ok = NO; // BitsStored must be 8
             Uint16 width, height; const Uint8* data;
@@ -211,7 +213,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 [im addRepresentation:rep];
                 [item setObject:im forKey:@"NSImageThumbnail"];
             } else {
-                NSLog(@"Warning: non-standard DICOMDIR IconImageSequence, ignored");
+                NSLog(@"Warning: unsupported DICOMDIR IconImageSequence, ignored");
             }
         }
         
@@ -255,7 +257,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return items;
 }
 
--(NSArray*)_itemsInRecord:(DcmDirectoryRecord*)record basePath:(NSString*)basepath {
+-(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record basePath:(NSString*)basepath {
 	return [self _itemsInRecord:record context:[NSMutableArray array] basePath:basepath];
 }
 
@@ -269,28 +271,63 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return nil;
 }
 
--(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths {
++(BOOL)_item:(NSDictionary*)item isOnlyEntryForItsSeriesInItems:(NSArray*)items {
+    NSString* seriesInstanceUID = [item objectForKey:@"seriesID"];
+    for (NSDictionary* i2 in items)
+        if (i2 != item && [[i2 objectForKey:@"seriesID"] isEqualToString:seriesInstanceUID])
+            return NO;
+    return YES;
+}
+
+-(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths pathsToScanAnyway:(NSMutableArray*)pathsToScanAnyway {
 	NSThread* thread = [NSThread currentThread];
 
 	DcmDicomDir dcmdir([path fileSystemRepresentation]);
 	DcmDirectoryRecord& record = dcmdir.getRootRecord();
-	NSArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
+	NSMutableArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
 	
 	// file paths are sometimes wrong the DICOMDIR, see if these files exist
-	for (NSMutableDictionary* item in items) {
+	for (NSInteger i = items.count-1; i >= 0; --i) {
+        NSMutableDictionary* item = [items objectAtIndex:i];
+        
 		NSString* filepath = [item objectForKey:@"filePath"];
-		
 		if (![NSFileManager.defaultManager fileExistsAtPath:filepath]) { // reference invalid, try and find the file...
 			filepath = [self _fixedPathForPath:filepath withPaths:allpaths];
 			if (filepath) [item setObject:filepath forKey:@"filePath"];
 		}
         
+        // some DICOMDIR files only list 1 image for 1 multiframe DICOM file
+        NSString* scuid = [item objectForKey:@"SOPClassUID"];
+        if ([[self class] _item:item isOnlyEntryForItsSeriesInItems:items] &&
+            ([scuid isEqualToString:[DCMAbstractSyntaxUID enhancedMRImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedCTImageStorage]] ||
+//             [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedMRColorImageStorage]] ||
+  //           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedUSVolumeStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeSingleBitSecondaryCaptureImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleByteSecondaryCaptureImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleWordSecondaryCaptureImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeTrueColorSecondaryCaptureImageStorage]] ||
+  //           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedXRayAngiographicImageStorage]] ||
+    //         [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedXRayRadiofluoroscopicImageStorage]] ||
+      //       [scuid isEqualToString:[DCMAbstractSyntaxUID xRay3DAngiographicImageStorage]] ||
+        //     [scuid isEqualToString:[DCMAbstractSyntaxUID xRay3DCraniofacialImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedPETImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorageRetired]]))
+        {
+            [pathsToScanAnyway addObject:filepath];
+            [items removeObjectAtIndex:i];
+        }
+        
         if ([thread isCancelled]) 
             break;
 	}
 	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %d %@...", nil), items.count, items.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil) ];
-	NSArray* objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
+    NSArray* objectIDs = nil;
+    if (items.count) {
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Importing %@...", nil), N2LocalizedSingularPluralCount(items.count, @"file", @"files")];
+        objectIDs = [self addFilesDescribedInDictionaries:items postNotifications:NO rereadExistingItems:NO generatedByOsiriX:NO];
+    }
     
     return [self objectsWithIDs:objectIDs];
 }
@@ -337,6 +374,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
         thread.status = NSLocalizedString(@"Scanning directories...", nil);
         NSMutableArray* allpaths = [[[path stringsByAppendingPaths:[[NSFileManager.defaultManager enumeratorAtPath:path filesOnly:YES] allObjects]] mutableCopy] autorelease];
+        NSMutableArray* pathsToScanAnyway = [NSMutableArray array];
         
         // first read the DICOMDIR file
         if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
@@ -345,43 +383,52 @@ static NSString* _dcmElementKey(DcmElement* element) {
             if (dicomdirPath) {
                 NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
                 thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
-                dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths];
+                dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths pathsToScanAnyway:pathsToScanAnyway];
             }
             
         //	NSLog(@"DICOMDIR referenced %d images: %@", dicomImages.count, [dicomImages valueForKey:@"completePath"]);
         }
         
-        if ((![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"])) {
+        BOOL doScan = (![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"]);
+        if (pathsToScanAnyway.count || doScan) {
             NSMutableArray* dicomFilePaths = [NSMutableArray array];
             
-            thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
-            thread.supportsCancel = YES;
-            for (NSInteger i = 0; i < allpaths.count; ++i) {
-                thread.progress = 1.0*i/allpaths.count;
-                NSString* path = [allpaths objectAtIndex:i];
-                
-                if ([DicomFile isDICOMFile:path]) {
-                    [dicomFilePaths addObject:path];
-                } else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
-                    [thread enterOperation];
-                    thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
-
-                    // unzip file to a temporary place and add the files to allpaths
-                    [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
-                    NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
-                    [NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
+            if (doScan) {
+                thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
+                thread.supportsCancel = YES;
+                for (NSInteger i = 0; i < allpaths.count; ++i) {
+                    thread.progress = 1.0*i/allpaths.count;
+                    NSString* path = [allpaths objectAtIndex:i];
                     
-                    if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
-                        [self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
+                    if ([DicomFile isDICOMFile:path]) {
+                        // avoid DICOMDIR files
+                        if ([path.lastPathComponent.lowercaseString rangeOfString:@"dicomdir"].length == 0)
+                            [dicomFilePaths addObject:path];
+                    } else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
+                        [thread enterOperation];
+                        thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
+
+                        // unzip file to a temporary place and add the files to allpaths
+                        [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+                        NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
+                        [NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
+                        
+                        if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
+                            [self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
+                        }
+                        
+                        [self scanAtPath:tempPath isVolume:NO];
+                        [thread exitOperation];
                     }
                     
-                    [self scanAtPath:tempPath isVolume:NO];
-                    [thread exitOperation];
+                    if (thread.isCancelled)
+                        return;
                 }
-                
-                if (thread.isCancelled)
-                    return;
             }
+            
+            for (NSString* path in pathsToScanAnyway)
+                if (![dicomFilePaths containsObject:path])
+                    [dicomFilePaths addObject:path];
             
             dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
         }

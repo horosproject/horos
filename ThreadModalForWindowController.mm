@@ -47,9 +47,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExitNotification:) name:NSThreadWillExitNotification object:_thread];
 
 	[NSApp beginSheet:self.window modalForWindow:self.docWindow modalDelegate:self didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-    if (!self.docWindow)
-        [self.window center];
-        
+    
 	[self retain];
 
 	return self;	
@@ -78,6 +76,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
     
     if (!self.docWindow && [NSThread isMainThread]) {
+        [self.window center];
         [NSApp activateIgnoringOtherApps:YES];
         [self.window makeKeyAndOrderFront:self];
     }

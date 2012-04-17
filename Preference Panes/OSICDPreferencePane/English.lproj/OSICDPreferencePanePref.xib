@@ -652,6 +652,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrame">{{236, 11}, {437, 20}}</string>
 											<reference key="NSSuperview" ref="185696618"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPathCell" key="NSCell" id="84108953">
 												<int key="NSCellFlags">337772033</int>

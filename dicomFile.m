@@ -1838,6 +1838,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		
 	[PapyrusLock lock];
 	
+    @try {
+    
 	// open the test file
 	if( forceConverted) fileNb = -1;
 	else fileNb = Papy3FileOpen ( (char*) [filePath UTF8String], (PAPY_FILE) 0, TRUE, 0);
@@ -1846,7 +1848,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSLog( @"fileNb < 0 : %d , %@", fileNb, filePath);
 		if( [self getDicomFileDCMTK] == 0)	// First, try with dcmtk
 		{
-			[PapyrusLock unlock];
+//			[PapyrusLock unlock];
 			return 0;
 		}
 		
@@ -3091,8 +3093,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			returnValue = [self getDicomFilePapyrus: YES];
 	}
 	
-	[PapyrusLock unlock];
-	
+    } @catch (...) {
+        @throw;
+    } @finally {
+        [PapyrusLock unlock];
+    }
+    
 	return returnValue;
 }
 

@@ -1277,6 +1277,11 @@ static NSConditionLock *threadLock = nil;
 			
 			[self outlineViewRefresh];
 			[self refreshMatrix:self];
+            
+            @try {
+                [self showEntireDatabase];
+            } @catch (...) {
+            }
 			
 //			[self willChangeValueForKey:@"database"];
 			_database = [db retain];
