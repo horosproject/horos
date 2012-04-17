@@ -106,6 +106,13 @@ static int increment = 0, previousNumberOfScreens = 0;
 	{
 		toolbar = nil;
 		
+        emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
+        [emptyToolbar setDelegate: self];
+        [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
+        
+        [[self window] setToolbar: emptyToolbar];
+        [[self window] setLevel: NSNormalWindowLevel];
+        
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewerWillClose:) name: OsirixCloseViewerNotification object: nil];
@@ -114,6 +121,13 @@ static int increment = 0, previousNumberOfScreens = 0;
 			[[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
 		
 		[self applicationDidChangeScreenParameters:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:0];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
+        
+        [self.window safelySetMovable:NO];
 	}
 	
 	return self;
@@ -203,27 +217,6 @@ static int increment = 0, previousNumberOfScreens = 0;
 	}
 	
 	[[self window] setFrame:[[self window] frame] display:YES];
-}
-
-- (void) windowDidLoad
-{
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignKey:) name:NSWindowDidResignKeyNotification object:0];
-	
-	[super windowDidLoad];
-	[self.window safelySetMovable:NO];
-	
-	emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
-	[emptyToolbar setDelegate: self];
-	[emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
-	
-	[[self window] setToolbar: emptyToolbar];
-	
-	[[self window] setLevel: NSNormalWindowLevel];
-	
-//	[self checkPosition];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar

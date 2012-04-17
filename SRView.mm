@@ -2726,16 +2726,24 @@ typedef struct _xyzArray
 	
 	double vPos[ 3];
 	
-	iso[ 0]->GetPosition( vPos);
-	
-	pt2D[ 0] -= vPos[ 0];
-	pt2D[ 1] -= vPos[ 1];
-	pt2D[ 2] -= vPos[ 2];
-	
-	pt2D[0] /= [firstObject pixelSpacingX];
-	pt2D[1] /= [firstObject pixelSpacingY];
-	pt2D[2] /= [firstObject sliceInterval];
-						
+    if( iso[ 0])
+    {
+        iso[ 0]->GetPosition( vPos);
+        
+        pt2D[ 0] -= vPos[ 0];
+        pt2D[ 1] -= vPos[ 1];
+        pt2D[ 2] -= vPos[ 2];
+        
+        if( [firstObject pixelSpacingX])
+            pt2D[0] /= [firstObject pixelSpacingX];
+        
+        if( [firstObject pixelSpacingY])
+            pt2D[1] /= [firstObject pixelSpacingY];
+        
+        if( [firstObject sliceInterval])
+            pt2D[2] /= [firstObject sliceInterval];
+    }
+    
 	Transform->Delete();
 }
 

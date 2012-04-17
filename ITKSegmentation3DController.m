@@ -392,6 +392,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	[viewer roiDeleteWithName: NSLocalizedString( @"Segmentation Preview", nil)];
 	
+    [viewer addToUndoQueue: @"roi"];
+    
 	long slice;
 	int previousMovieIndex = [viewer curMovieIndex];
 	
@@ -485,6 +487,8 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"growingRegionPropagateIn4D"])
 		[viewer setMovieIndex: previousMovieIndex];
+    
+    [[viewer window] makeKeyAndOrderFront: self]; //For easier undo/redo on ViewerController
 }
 
 - (void) fillAlgorithmPopup
@@ -640,5 +644,4 @@ enum algorithmTypes { intervalSegmentationType, thresholdSegmentationType, neigh
 {
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[urlHelp objectAtIndex:[[algorithmPopup selectedItem] tag]]]];
 }
-
 @end

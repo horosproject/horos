@@ -62,13 +62,15 @@ static BOOL useSeriesDescription = NO;
 static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
-static int CHECKFORLAVIM = -1;
+//static int CHECKFORLAVIM = -1;
 static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO;
 static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO;
 static BOOL SEPARATECARDIAC4D = NO;
 //static BOOL SeparateCardiacMR = NO;
 //static int SeparateCardiacMRMode = 0;
 static BOOL filesAreFromCDMedia = NO;
+
+#define QUICKTIMETIMEFRAMELIMIT 1200
 
 char* replaceBadCharacter (char* str, NSStringEncoding encoding) 
 {
@@ -326,11 +328,11 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			combineProjectionSeries = [sd boolForKey: @"combineProjectionSeries"];
 			combineProjectionSeriesMode = [sd boolForKey: @"combineProjectionSeriesMode"];
 			
-			if( CHECKFORLAVIM == -1)
-			{
-				if( [DefaultsOsiriX isLAVIM]) CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
-				else CHECKFORLAVIM = NO;
-			}
+//			if( CHECKFORLAVIM == -1)
+//			{
+//				if( [DefaultsOsiriX isLAVIM]) CHECKFORLAVIM = YES;	// HUG SPECIFIC, Thanks... Antoine Rosset
+//				else CHECKFORLAVIM = NO;
+//			}
 		}
 		else	// FOR THE SAFEDBREBUILD ! Shell tool
 		{
@@ -364,7 +366,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			oneFileOnSeriesForUS = [[dict objectForKey: @"oneFileOnSeriesForUS"] intValue];
 			combineProjectionSeriesMode = [[dict objectForKey: @"combineProjectionSeriesMode"] intValue];
 			
-			CHECKFORLAVIM = NO;
+//			CHECKFORLAVIM = NO;
 		}
 	}
 }
@@ -963,7 +965,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					if (aTime != -1) NoOfFrames++;
 				} while (aTime != -1);
 				
-				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
+				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1018,9 +1020,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NoOfFrames++;
 					[movie stepForward];
 				}
-				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < 400);
+				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < QUICKTIMETIMEFRAMELIMIT);
 				
-				if( NoOfFrames > 400) NoOfFrames = 400;   // Limit number of images to 400 !
+				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
 				
 				[dicomElements setObject:studyID forKey:@"studyID"];
 				[dicomElements setObject:study forKey:@"studyDescription"];
@@ -1883,7 +1885,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			for( int i = 0; i < 10; i++) encoding[ i] = 0;
 			encoding[ 0] = NSISOLatin1StringEncoding;
 			
-			if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
+			if (COMMENTSAUTOFILL == YES) // || CHECKFORLAVIM == YES)
 			{
 				if( COMMENTSAUTOFILL)
 				{
@@ -1993,105 +1995,105 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         [dicomElements setObject: commentsField forKey:@"commentsAutoFill"];
 				}
 				
-				if( CHECKFORLAVIM == YES)
-				{
-					NSString	*album = nil;
-					
-					theErr = Papy3GotoGroupNb (fileNb, 0x0020);
-					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
-					{
-						SElement *inGrOrModP = theGroupP;
-						
-						int theEnumGrNb = Papy3ToEnumGroup( 0x0020);
-						int theMaxElem = gArrGroup [theEnumGrNb].size;
-						int j;
-						
-						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
-						{
-							if( inGrOrModP->element == 0x4000)
-							{
-								if( inGrOrModP->nb_val > 0)
-								{
-									UValue_T *theValueP = inGrOrModP->value;
-									
-									if( theValueP->a && validAPointer( inGrOrModP->vr))
-									{
-										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
-										
-										if( [album length] >= 2)
-										{
-											if( [[album substringToIndex:2] isEqualToString: @"LV"])
-											{
-												album = [album substringFromIndex:2];
-												[dicomElements setObject:album forKey:@"album"];
-											}
-										}
-									}
-								}
-							}
-						}
-						
-						theErr = Papy3GroupFree (&theGroupP, TRUE);
-					}
-					
-					theErr = Papy3GotoGroupNb (fileNb, 0x0040);
-					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
-					{
-						SElement *inGrOrModP = theGroupP;
-						
-						int theEnumGrNb = Papy3ToEnumGroup( 0x0040);
-						int theMaxElem = gArrGroup [theEnumGrNb].size;
-						int j;
-						
-						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
-						{
-							if( inGrOrModP->element == 0x0280)
-							{
-								if( inGrOrModP->nb_val > 0)
-								{
-									UValue_T *theValueP = inGrOrModP->value;
-									
-									if( theValueP->a && validAPointer( inGrOrModP->vr))
-									{
-										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
-										
-										if( [album length] >= 2)
-										{
-											if( [[album substringToIndex:2] isEqualToString: @"LV"])
-											{
-												album = [album substringFromIndex:2];
-												[dicomElements setObject:album forKey:@"album"];
-											}
-										}
-									}
-								}
-							}
-							
-							if( inGrOrModP->element == 0x1400)
-							{
-								if( inGrOrModP->nb_val > 0)
-								{
-									UValue_T *theValueP = inGrOrModP->value;
-									
-									if( theValueP->a && validAPointer( inGrOrModP->vr))
-									{
-										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
-										
-										if( [album length] >= 2)
-										{
-											if( [[album substringToIndex:2] isEqualToString: @"LV"])
-											{
-												album = [album substringFromIndex:2];
-												[dicomElements setObject:album forKey:@"album"];
-											}
-										}
-									}
-								}
-							}
-						}
-						theErr = Papy3GroupFree (&theGroupP, TRUE);
-					}
-				}
+//				if( CHECKFORLAVIM == YES)
+//				{
+//					NSString	*album = nil;
+//					
+//					theErr = Papy3GotoGroupNb (fileNb, 0x0020);
+//					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+//					{
+//						SElement *inGrOrModP = theGroupP;
+//						
+//						int theEnumGrNb = Papy3ToEnumGroup( 0x0020);
+//						int theMaxElem = gArrGroup [theEnumGrNb].size;
+//						int j;
+//						
+//						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+//						{
+//							if( inGrOrModP->element == 0x4000)
+//							{
+//								if( inGrOrModP->nb_val > 0)
+//								{
+//									UValue_T *theValueP = inGrOrModP->value;
+//									
+//									if( theValueP->a && validAPointer( inGrOrModP->vr))
+//									{
+//										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+//										
+//										if( [album length] >= 2)
+//										{
+//											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//											{
+//												album = [album substringFromIndex:2];
+//												[dicomElements setObject:album forKey:@"album"];
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//						
+//						theErr = Papy3GroupFree (&theGroupP, TRUE);
+//					}
+//					
+//					theErr = Papy3GotoGroupNb (fileNb, 0x0040);
+//					if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+//					{
+//						SElement *inGrOrModP = theGroupP;
+//						
+//						int theEnumGrNb = Papy3ToEnumGroup( 0x0040);
+//						int theMaxElem = gArrGroup [theEnumGrNb].size;
+//						int j;
+//						
+//						for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+//						{
+//							if( inGrOrModP->element == 0x0280)
+//							{
+//								if( inGrOrModP->nb_val > 0)
+//								{
+//									UValue_T *theValueP = inGrOrModP->value;
+//									
+//									if( theValueP->a && validAPointer( inGrOrModP->vr))
+//									{
+//										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+//										
+//										if( [album length] >= 2)
+//										{
+//											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//											{
+//												album = [album substringFromIndex:2];
+//												[dicomElements setObject:album forKey:@"album"];
+//											}
+//										}
+//									}
+//								}
+//							}
+//							
+//							if( inGrOrModP->element == 0x1400)
+//							{
+//								if( inGrOrModP->nb_val > 0)
+//								{
+//									UValue_T *theValueP = inGrOrModP->value;
+//									
+//									if( theValueP->a && validAPointer( inGrOrModP->vr))
+//									{
+//										album = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+//										
+//										if( [album length] >= 2)
+//										{
+//											if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//											{
+//												album = [album substringFromIndex:2];
+//												[dicomElements setObject:album forKey:@"album"];
+//											}
+//										}
+//									}
+//								}
+//							}
+//						}
+//						theErr = Papy3GroupFree (&theGroupP, TRUE);
+//					}
+//				}
 			}
 			
 			if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
@@ -3130,14 +3132,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	DCMObject *dcmObject;
 	
-	if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
+	if (COMMENTSAUTOFILL == YES) // || CHECKFORLAVIM == YES)
 		dcmObject = [DCMObject objectWithContentsOfFile:filePath decodingPixelData:NO];
 	else
 		dcmObject = [DCMObjectDBImport objectWithContentsOfFile:filePath decodingPixelData:NO];
 	   
 	if (dcmObject)
 	{
-		if (COMMENTSAUTOFILL == YES || CHECKFORLAVIM == YES)
+		if (COMMENTSAUTOFILL == YES) // || CHECKFORLAVIM == YES)
 		{
 			if( COMMENTSAUTOFILL)
 			{
@@ -3157,43 +3159,41 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				}
 			}
 			
-			////////// **** HUG SPECIFIC CODE - DO NOT REMOVE THANKS ! Antoine Rosset
-			
-			if( CHECKFORLAVIM == YES)
-			{
-				//Le nom de l'Žtude peut se trouver dans plusieurs champs DICOM, suivant la modalitŽ de l'examen.
-				//IRM :	0x0040:0x0280
-				//CT Philips :	0x0040:0x1400
-				//CT GE :	Pas encore dŽfini
-				//Autres modalitŽs :	A dŽfinir.
-				NSString			*field = nil, *album = nil;
-				
-				field = [dcmObject attributeValueForKey: @"0020,4000"];
-				if( field)
-				{
-					if( [field length] >= 2)
-						if( [[field substringToIndex:2] isEqualToString: @"LV"])
-							album = [field substringFromIndex:2];
-				}
-				
-				field = [dcmObject attributeValueForKey: @"0040,0280"];
-				if( field)
-				{
-					if( [field length] >= 2)
-						if( [[field substringToIndex:2] isEqualToString: @"LV"])
-							album = [field substringFromIndex:2];
-				}
-				
-				field = [dcmObject attributeValueForKey: @"0040,1400"];
-				if( field)
-				{
-					if( [field length] >= 2)
-						if( [[field substringToIndex:2] isEqualToString: @"LV"])
-							album = [field substringFromIndex:2];
-				}
-				
-				if( album) [dicomElements setObject:album forKey:@"album"];
-			}
+//			if( CHECKFORLAVIM == YES)
+//			{
+//				//Le nom de l'Žtude peut se trouver dans plusieurs champs DICOM, suivant la modalitŽ de l'examen.
+//				//IRM :	0x0040:0x0280
+//				//CT Philips :	0x0040:0x1400
+//				//CT GE :	Pas encore dŽfini
+//				//Autres modalitŽs :	A dŽfinir.
+//				NSString			*field = nil, *album = nil;
+//				
+//				field = [dcmObject attributeValueForKey: @"0020,4000"];
+//				if( field)
+//				{
+//					if( [field length] >= 2)
+//						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+//							album = [field substringFromIndex:2];
+//				}
+//				
+//				field = [dcmObject attributeValueForKey: @"0040,0280"];
+//				if( field)
+//				{
+//					if( [field length] >= 2)
+//						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+//							album = [field substringFromIndex:2];
+//				}
+//				
+//				field = [dcmObject attributeValueForKey: @"0040,1400"];
+//				if( field)
+//				{
+//					if( [field length] >= 2)
+//						if( [[field substringToIndex:2] isEqualToString: @"LV"])
+//							album = [field substringFromIndex:2];
+//				}
+//				
+//				if( album) [dicomElements setObject:album forKey:@"album"];
+//			}
 		}
 		
 		NSString *transferSyntaxUID = [dcmObject attributeValueWithName:@"TransferSyntaxUID"];
@@ -4165,12 +4165,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return SEPARATECARDIAC4D;
 }
 
-- (BOOL) checkForLAVIM
-{
-	if( CHECKFORLAVIM == YES) return YES;
-	
-	return NO;
-}
+//- (BOOL) checkForLAVIM
+//{
+//	if( CHECKFORLAVIM == YES) return YES;
+//	
+//	return NO;
+//}
 
 - (int)commentsGroup
 {

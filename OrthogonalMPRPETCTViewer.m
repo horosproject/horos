@@ -254,7 +254,8 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 															  forKeyPath: @"values.exportDCMIncludeAllViews"
 																 options: NSKeyValueObservingOptionNew
 																 context: NULL];
-	
+	[self setupToolbar];
+    
 	return self;
 }
 
@@ -824,11 +825,6 @@ static NSString*	ThreeDPositionToolbarItemIdentifier			= @"3DPosition";
 	[modalitySplitView setDelegate:nil];
 	
 	[self autorelease];
-}
-
-- (void) windowDidLoad
-{
-    [self setupToolbar];
 }
 
 -(void) windowDidBecomeKey:(NSNotification *)aNotification

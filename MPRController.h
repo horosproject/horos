@@ -142,4 +142,5 @@
 - (NSImage*) imageForROI: (int) i;
 - (void) setROIToolTag:(int) roitype;
 - (IBAction) roiGetInfo:(id) sender;
+- (void) setupToolbar;
 @end

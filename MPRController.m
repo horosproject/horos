@@ -246,6 +246,8 @@ static float deg2rad = M_PI/180.0;
 		redoQueue = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		[self setToolIndex: tWL];
+        
+        [self setupToolbar];
 	}
 	
 	@catch (NSException *e)
@@ -2746,11 +2748,6 @@ static float deg2rad = M_PI/180.0;
 		}
 	}
 	#endif
-}
-
-- (void) windowDidLoad
-{
-	[self setupToolbar];
 }
 
 - (IBAction)customizeViewerToolBar:(id)sender

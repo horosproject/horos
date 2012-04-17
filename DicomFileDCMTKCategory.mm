@@ -291,22 +291,34 @@ extern NSRecursiveLock *PapyrusLock;
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
-		if ([self autoFillComments]  == YES ||[self checkForLAVIM] == YES)
+		if ([self autoFillComments]  == YES) // ||[self checkForLAVIM] == YES)
 		{
 			if( [self autoFillComments])
 			{
 				NSString *commentsField = nil;
 				DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
-				if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                DcmItem *dicomItems = nil;
+                
+                if( [self commentsGroup] == 2) // MetaHeader
+                    dicomItems = fileformat.getMetaInfo();
+                else
+                    dicomItems = dataset;
+                    
+				if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
 				{
 					commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
-					
 				}
                 
                 if( [self commentsGroup2] && [self commentsElement2])
                 {
                     DcmTagKey key = DcmTagKey([self commentsGroup2], [self commentsElement2]);
-                    if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    
+                    if( [self commentsGroup2] == 2) // MetaHeader
+                        dicomItems = fileformat.getMetaInfo();
+                    else
+                        dicomItems = dataset;
+                    
+                    if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
                     {
                         if( commentsField)
                             commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
@@ -319,7 +331,13 @@ extern NSRecursiveLock *PapyrusLock;
                 if( [self commentsGroup3] && [self commentsElement3])
                 {
                     DcmTagKey key = DcmTagKey([self commentsGroup3], [self commentsElement3]);
-                    if (dataset->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    
+                    if( [self commentsGroup3] == 2) // MetaHeader
+                        dicomItems = fileformat.getMetaInfo();
+                    else
+                        dicomItems = dataset;
+                    
+                    if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
                     {
                         if( commentsField)
                             commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
@@ -333,50 +351,51 @@ extern NSRecursiveLock *PapyrusLock;
                     [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
 			}
 			
-			if([self checkForLAVIM] == YES)
-			{
-				NSString	*album = nil;
-				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL)
-				{
-					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-					if( [album length] >= 2)
-					{
-						if( [[album substringToIndex:2] isEqualToString: @"LV"])
-						{
-							album = [album substringFromIndex:2];
-							[dicomElements setObject:album forKey:@"album"];
-						}
-					}
-				}
-				
-				DcmTagKey albumKey = DcmTagKey(0x0040, 0x0280); 
-				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
-				{
-					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-					if( [album length] >= 2)
-					{
-						if( [[album substringToIndex:2] isEqualToString: @"LV"])
-						{
-							album = [album substringFromIndex:2];
-							[dicomElements setObject:album forKey:@"album"];
-						}
-					}
-				} 
-				
-				 albumKey = DcmTagKey(0x0040, 0x1400); 
-				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
-				 {
-					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
-					if( [album length] >= 2)
-					{
-						if( [[album substringToIndex:2] isEqualToString: @"LV"])
-						{
-							album = [album substringFromIndex:2];
-							[dicomElements setObject:album forKey:@"album"];
-						}
-					}
-				} 
-			}  //ckeck LAVIN
+//			if([self checkForLAVIM] == YES)
+//			{
+//				NSString	*album = nil;
+//				if (dataset->findAndGetString(DCM_ImageComments, string, OFFalse).good() && string != NULL)
+//				{
+//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
+//					if( [album length] >= 2)
+//					{
+//						if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//						{
+//							album = [album substringFromIndex:2];
+//							[dicomElements setObject:album forKey:@"album"];
+//						}
+//					}
+//				}
+//				
+//				DcmTagKey albumKey = DcmTagKey(0x0040, 0x0280); 
+//				if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
+//				{
+//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
+//					if( [album length] >= 2)
+//					{
+//						if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//						{
+//							album = [album substringFromIndex:2];
+//							[dicomElements setObject:album forKey:@"album"];
+//						}
+//					}
+//				} 
+//				
+//				 albumKey = DcmTagKey(0x0040, 0x1400); 
+//				 if (dataset->findAndGetString(albumKey, string, OFFalse).good() && string != NULL)
+//				 {
+//					album = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];					
+//					if( [album length] >= 2)
+//					{
+//						if( [[album substringToIndex:2] isEqualToString: @"LV"])
+//						{
+//							album = [album substringFromIndex:2];
+//							[dicomElements setObject:album forKey:@"album"];
+//						}
+//					}
+//				} 
+//			}  //ckeck LAVIN
+
 		} //check autofill and album
 		
 		//SOPClass

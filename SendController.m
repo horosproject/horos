@@ -155,9 +155,14 @@ static volatile int sendControllerObjects = 0;
 
 - (void)releaseSelfWhenDone:(id)sender
 {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
 	[_lock lock];
 	[_lock unlock];
-	[self autorelease];
+    
+	[self performSelectorOnMainThread: @selector( autorelease) withObject: nil waitUntilDone: NO];
+    
+    [pool release];
 }
 
 - (NSString *)numberFiles{

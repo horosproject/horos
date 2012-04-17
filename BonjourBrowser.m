@@ -272,57 +272,66 @@ static BonjourBrowser *currentBrowser = nil;
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 
+- (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
+{
+    [sender stop];
+}
+
 - (void) netServiceDidResolveAddress:(NSNetService *)sender
 {
-	   if ([[sender addresses] count] > 0)
-	   {
-			NSData * address;
-			struct sockaddr * socketAddress;
-			NSString * ipAddressString = nil;
-			NSString * portString = nil;
-			char buffer[256];
-			int index;
+    if ([[sender addresses] count] > 0)
+    {
+        NSData * address;
+        struct sockaddr * socketAddress;
+        NSString * ipAddressString = nil;
+        NSString * portString = nil;
+        char buffer[256];
+        int index;
 
-			// Iterate through addresses until we find an IPv4 address
-			for (index = 0; index < [[sender addresses] count]; index++)
-			{
-				address = [[sender addresses] objectAtIndex:index];
-				socketAddress = (struct sockaddr *)[address bytes];
+        // Iterate through addresses until we find an IPv4 address
+        for (index = 0; index < [[sender addresses] count]; index++)
+        {
+            address = [[sender addresses] objectAtIndex:index];
+            socketAddress = (struct sockaddr *)[address bytes];
 
-				if (socketAddress->sa_family == AF_INET) break;
-			}
+            if (socketAddress->sa_family == AF_INET) break;
+        }
 
-			// Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
+        // Be sure to include <netinet/in.h> and <arpa/inet.h> or else you'll get compile errors.
 
-			if (socketAddress) {
-				switch(socketAddress->sa_family) {
-					case AF_INET:
-						if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer))) {
-							ipAddressString = [NSString stringWithCString:buffer];
-							portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
-						}
-						
-						// Cancel the resolve now that we have an IPv4 address.
-						[sender stop];
-
-						break;
-					case AF_INET6:
-						// OsiriX server doesn't support IPv6
-						return;
-				}
-			}
-			
-			for( NSDictionary *serviceDict in services)
-			{
-				if( [serviceDict objectForKey:@"service"] == sender)
-				{
-					NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
-					
-					[serviceDict setValue: ipAddressString forKey:@"Address"];
-					[serviceDict setValue: portString forKey:@"OsiriXPort"];
-				}
-			}
-		}
+        if (socketAddress)
+        {
+            switch(socketAddress->sa_family)
+            {
+                case AF_INET:
+                    if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer)))
+                    {
+                        ipAddressString = [NSString stringWithCString:buffer];
+                        portString = [NSString stringWithFormat:@"%d", ntohs(((struct sockaddr_in *)socketAddress)->sin_port)];
+                    }
+                    break;
+                case AF_INET6:
+                    // OsiriX server doesn't support IPv6
+                    break;
+            }
+        }
+        
+        if( ipAddressString && portString)
+        {
+            for( NSDictionary *serviceDict in services)
+            {
+                if( [serviceDict objectForKey:@"service"] == sender)
+                {
+                    NSLog( @"netServiceDidResolveAddress: %@:%@", ipAddressString, portString);
+                    
+                    [serviceDict setValue: ipAddressString forKey:@"Address"];
+                    [serviceDict setValue: portString forKey:@"OsiriXPort"];
+                }
+            }
+        }
+    }
+    
+    [sender stop];
 }
 
 @end

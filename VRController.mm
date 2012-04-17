@@ -193,11 +193,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[[[wlwwPopup menu] itemAtIndex:0] setTitle:curWLWWMenu];
 }
 
-- (void) windowDidLoad
-{
-//    [self setupToolbar];
-}
-
 -(ViewerController*) blendingController
 {
 	return blendingController;

@@ -344,6 +344,8 @@ static float deg2rad = M_PI / 180.0;
         self.cprType = [[NSUserDefaults standardUserDefaults] integerForKey: @"SavedCPRType"];
         
         [[self window] registerForDraggedTypes: [NSArray arrayWithObjects: NSFilenamesPboardType, nil]];
+        
+        [self setupToolbar];
 	}
 	
 	@catch (NSException *e)
@@ -3417,11 +3419,6 @@ static float deg2rad = M_PI / 180.0;
 	}
 #endif
 	
-}
-
-- (void) windowDidLoad
-{
-	[self setupToolbar];
 }
 
 - (IBAction)customizeViewerToolBar:(id)sender

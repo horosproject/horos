@@ -18608,11 +18608,6 @@ int i,j,l;
 			}
 		}
 	}
-    else
-    {
-        if( error) *error = NSLocalizedString( @"No points found to compute the volume.", nil);
-        return 0;
-    }
 	
 	if( data)
 	{

@@ -33,9 +33,9 @@ enum HotKeyActions {DefaultWWWLHotKeyAction = 0, FullDynamicWWWLHotKeyAction,
 
 }
 
-+ (BOOL) isHUG;
-+ (BOOL) isUniGE;
-+ (BOOL) isLAVIM;
+//+ (BOOL) isHUG;
+//+ (BOOL) isUniGE;
+//+ (BOOL) isLAVIM;
 + (NSMutableDictionary*) getDefaults;
 + (NSString*) hostName;
 + (NSHost*) currentHost;

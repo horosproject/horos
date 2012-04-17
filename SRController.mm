@@ -81,7 +81,6 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 
 - (void) windowDidLoad
 {
-    [self setupToolbar];
 	[self setResolution:0.5];
 	[self setShouldDecimate:YES];
 	[self setShouldSmooth:YES];
@@ -289,6 +288,8 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 #endif
 	//[[self window] performZoom:self];
 	
+    [self setupToolbar];
+    
     return self;
 }
 

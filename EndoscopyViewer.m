@@ -132,6 +132,8 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 	//assistant
 	[self initFlyAssistant:vData];
 	
+    [self setupToolbar];
+    
 	return self;
 }
 
@@ -711,11 +713,6 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 
 #pragma mark-
 #pragma mark NSWindow related methods
-
-- (void) windowDidLoad
-{
-    [self setupToolbar];
-}
 
 - (void) CloseViewerNotification: (NSNotification*) note
 {
