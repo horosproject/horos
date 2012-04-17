@@ -66,6 +66,13 @@ htt://www.pixelmed.com
 + (NSString *)visibleLightSlideCoordinatesMicroscopicImageStorage;
 + (NSString *)visibleLightPhotographicImageStorage;
 + (NSString *)videoPhotographicImageStorage;
++ (NSString *)EnhancedXAImageStorage;
++ (NSString *)XrayAngiographicImageStorage;
++ (NSString *)XrayRadioFlouroscopicImageStorage;
++ (NSString *)EnhancedXRFImageStorage;
++ (NSString *)XrayAngiographicBiplaneImageStorage;
++ (NSString *)XRay3DAngiographicImageStorage;
++ (NSString *)XRay3DCraniofacialImageStorage;
 + (NSString *)PETImageStorage;
 + (NSString *)RTImageStorage;
 + (BOOL)isImageStorage:(NSString *)sopClassUID;

@@ -279,6 +279,34 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	return CTImageStorage;
 }
 
++ (NSString *)EnhancedXAImageStorage{
+	return EnhancedXAImageStorage;
+}
+
++ (NSString *)XrayAngiographicImageStorage{
+	return XrayAngiographicImageStorage;
+}
+
++ (NSString *)XrayRadioFlouroscopicImageStorage{
+	return XrayRadioFlouroscopicImageStorage;
+}
+
++ (NSString *)EnhancedXRFImageStorage{
+	return EnhancedXRFImageStorage;
+}
+
++ (NSString *)XrayAngiographicBiplaneImageStorage{
+	return XrayAngiographicBiplaneImageStorage;
+}
+
++ (NSString *)XRay3DAngiographicImageStorage{
+	return XRay3DAngiographicImageStorage;
+}
+
++ (NSString *)XRay3DCraniofacialImageStorage{
+	return XRay3DCraniofacialImageStorage;
+}
+
 + (NSString *)enhancedCTImageStorage{
 	return EnhancedCTImageStorage;
 }
@@ -491,7 +519,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
 		}
         
         @try 
