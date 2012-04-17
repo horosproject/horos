@@ -111,6 +111,51 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	return _dcmElementKey(key.getGroup(), key.getElement());
 }
 
++(NSImage*)_nsImageForElement:(DcmItem*)thumb {
+    // ftp://medical.nema.org/medical/dicom/2011/11_03pu.pdf F.7 ICON IMAGE KEY DEFINITION
+    
+    // Pixel samples have a Value of either 1 or 8 for Bits Allocated (0028,0100) and Bits Stored (0028,0101)
+    Uint16 bitsAllocated, bitsStored;
+    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0100), bitsAllocated).good()) return nil;
+    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0101), bitsStored).good()) return nil;
+    if (bitsAllocated != 1 && bitsAllocated != 8) return nil;
+    if (bitsStored != 1 && bitsStored != 8) return nil;
+    
+    Uint16 width, height;
+    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0010), height).good()) return nil; // Rows must be defined
+    if (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0011), width).good()) return nil; // Columns must be defined
+    
+    const Uint8* data;
+    if (!thumb->findAndGetUint8Array(DcmTagKey(0x7fe0,0x0010), data).good()) return nil; // PixelRepresentation must be defined
+    
+    // Photometric Interpretation (0028,0004) shall have a Value of either MONOCHROME 1, MONOCHROME 2 or PALETTE COLOR
+    OFString spi;
+    if (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), spi).good()) return nil;
+    NSBitmapImageRep* rep = nil;
+    if (spi == "MONOCHROME1") {
+        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
+        unsigned char* bitmapData = rep.bitmapData;
+        // invert data
+        for (NSUInteger i = 0; i < width*height*bitsAllocated/8; ++i) {
+            if (bitsAllocated == 1)
+                bitmapData[i] = data[i]^0xff;
+            else bitmapData[i] = 0xff-data[i];
+        }
+    } else
+    if (spi == "MONOCHROME2") {
+        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
+        memcpy(rep.bitmapData, data, width*height*bitsAllocated/8);
+    } else
+    if (spi == "PALETTE COLOR") {
+        return nil; // TODO: this type of thumbnail should be read too...
+    } else
+        return nil;
+
+    NSImage* im = [[[NSImage alloc] init] autorelease];
+    [im addRepresentation:rep];
+    return im;
+}
+
 -(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
 	NSString* tabs = [NSString stringByRepeatingString:@" " times:context.count*4];
 	NSMutableArray* items = [NSMutableArray array];
@@ -196,25 +241,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
         _DicomDatabaseScanDcmElement* thumbnailElement = [elements objectForKeyRemove:_dcmElementKey(0x0088,0x0200)]; // IconImageSequence
         if (thumbnailElement && thumbnailElement.element->ident() == EVR_SQ && ((DcmSequenceOfItems*)thumbnailElement.element)->card() == 1) {
             DcmItem* thumb = ((DcmSequenceOfItems*)thumbnailElement.element)->getItem(0);
-            BOOL ok = YES;
-            // DICOM 11 says we must expect MONOCHROME2 PhotometricInterpretation, 8 BitsAllocated & BitsStored (monochrome -> 1 SamplesPerPixel)
-            Uint16 uint16; OFString string;
-            if (ok && (!thumb->findAndGetOFString(DcmTagKey(0x0028,0x0004), string).good() || string != "MONOCHROME2")) ok = NO; // PhotometricInterpretation must be MONOCHROME2 // TODO: actually, other encodings should be supported...
-            if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0100), uint16).good() || uint16 != 8)) ok = NO; // BitsAllocated must be 8
-            if (ok && (!thumb->findAndGetUint16(DcmTagKey(0x0028,0x0101), uint16).good() || uint16 != 8)) ok = NO; // BitsStored must be 8
-            Uint16 width, height; const Uint8* data;
-            if (ok && !thumb->findAndGetUint16(DcmTagKey(0x0028,0x0010), height).good()) ok = NO; // Rows must be defined
-            if (ok && !thumb->findAndGetUint16(DcmTagKey(0x0028,0x0011), width).good()) ok = NO; // Columns must be defined
-            if (ok && !thumb->findAndGetUint8Array(DcmTagKey(0x7fe0,0x0010), data).good()) ok = NO; // PixelRepresentation must be defined
-            if (ok) {
-                unsigned char* planes[] = {(Uint8*)data};
-                NSBitmapImageRep* rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:planes pixelsWide:width pixelsHigh:height bitsPerSample:8 samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width bitsPerPixel:8] autorelease];
-                NSImage* im = [[[NSImage alloc] init] autorelease];
-                [im addRepresentation:rep];
+            NSImage* im = [[self class] _nsImageForElement:thumb];
+            if (im)
                 [item setObject:im forKey:@"NSImageThumbnail"];
-            } else {
-                NSLog(@"Warning: unsupported DICOMDIR IconImageSequence, ignored");
-            }
         }
         
 /*		[item setObject:path forKey:@"date"];
@@ -392,7 +421,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         
         BOOL doScan = (![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"]);
         if (pathsToScanAnyway.count || doScan) {
-            NSMutableArray* dicomFilePaths = [NSMutableArray array];
+            NSMutableArray* dicomFilePaths = [NSMutableArray arrayWithArray:pathsToScanAnyway];
             
             if (doScan) {
                 thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
@@ -400,6 +429,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 for (NSInteger i = 0; i < allpaths.count; ++i) {
                     thread.progress = 1.0*i/allpaths.count;
                     NSString* path = [allpaths objectAtIndex:i];
+                    
+                    if ([dicomFilePaths containsObject:path])
+                        continue;
                     
                     if ([DicomFile isDICOMFile:path]) {
                         // avoid DICOMDIR files
@@ -426,10 +458,6 @@ static NSString* _dcmElementKey(DcmElement* element) {
                         return;
                 }
             }
-            
-            for (NSString* path in pathsToScanAnyway)
-                if (![dicomFilePaths containsObject:path])
-                    [dicomFilePaths addObject:path];
             
             dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
         }
