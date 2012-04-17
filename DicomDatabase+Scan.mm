@@ -302,16 +302,17 @@ static NSString* _dcmElementKey(DcmElement* element) {
             ([scuid isEqualToString:[DCMAbstractSyntaxUID enhancedMRImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedCTImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedMRColorImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedUSVolumeStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeSingleBitSecondaryCaptureImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleByteSecondaryCaptureImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleWordSecondaryCaptureImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeTrueColorSecondaryCaptureImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedXRayAngiographicImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedXRayRadiofluoroscopicImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID xRay3DAngiographicImageStorage]] ||
-//           [scuid isEqualToString:[DCMAbstractSyntaxUID xRay3DCraniofacialImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID EnhancedXAImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayAngiographicImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayRadioFlouroscopicImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID EnhancedXRFImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayAngiographicBiplaneImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID XRay3DAngiographicImageStorage]] ||
+             [scuid isEqualToString:[DCMAbstractSyntaxUID XRay3DCraniofacialImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedPETImageStorage]] ||
              [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorageRetired]]))
         {
