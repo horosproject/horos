@@ -2448,7 +2448,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) endWaitWindow:(id) waitWindow
 {
 	[waitWindow close];
-	[waitWindow release];
+	[waitWindow autorelease];
 }
 
 -(IBAction) updateImage:(id) sender
@@ -5657,7 +5657,7 @@ return YES;
     if ([self.database isReadOnly])
         if ([toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier])
             return NO;
-	
+    
     BOOL enable = YES;
     if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])
     {
@@ -18687,7 +18687,7 @@ int i,j,l;
 			
 			gdev = 0;
 			gmin = totalPtr[ 0];
-			gmin = totalPtr[ 0];
+			gmax = totalPtr[ 0];
 			for( i = 0; i < memSize; i++)
 			{
 				float	val = totalPtr[ i];

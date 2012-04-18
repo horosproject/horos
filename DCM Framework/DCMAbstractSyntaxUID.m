@@ -437,7 +437,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	{
 		for( NSString *sopUID in [DCMAbstractSyntaxUID imageSyntaxes])
 		{
-			if( [sopClassUID isEqualToString: sopUID]) return YES;
+			if( [sopClassUID hasPrefix: sopUID]) return YES;
 		}
 	}
 	
@@ -510,6 +510,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			EnhancedXRFImageStorage,
 			XRay3DAngiographicImageStorage,
 			XRay3DCraniofacialImageStorage,
+            PhilipsPrivatePrefixStorage,
 			nil];
 		
 		@try 

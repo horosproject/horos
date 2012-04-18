@@ -1379,11 +1379,23 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"acceptUnsupportedSOPClassUID"] == NO)
                 {
-                    if( SOPClassUID != nil 
-                       && [[DCMAbstractSyntaxUID allSupportedSyntaxes] containsObject: SOPClassUID] == NO)
+                    if( SOPClassUID != nil)
                     {
-                        NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
-                        curDict = nil;
+                        BOOL supportedSOPClass = NO;
+                        for( NSString *s in [DCMAbstractSyntaxUID allSupportedSyntaxes])
+                        {
+                            if( [SOPClassUID hasPrefix: s])
+                            {
+                                supportedSOPClass = YES;
+                                break;
+                            }
+                        }
+                        
+                        if( supportedSOPClass == NO)
+                        {
+                            NSLog( @"unsupported DICOM SOP CLASS (%@)-> Reject the file : %@", SOPClassUID, newFile);
+                            curDict = nil;
+                        }
                     }
                 }
 				

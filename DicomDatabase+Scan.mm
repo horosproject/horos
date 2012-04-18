@@ -144,7 +144,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     } else
     if (spi == "MONOCHROME2") {
         rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
-        memcpy(rep.bitmapData, data, width*height*bitsAllocated/8);
+        memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
     } else
     if (spi == "PALETTE COLOR") {
         return nil; // TODO: this type of thumbnail should be read too...
