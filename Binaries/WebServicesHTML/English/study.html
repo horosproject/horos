@@ -253,6 +253,7 @@ function shareDestinationChange(select) {
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
+				%[IF:Study.authorizedUsers.count%
 				<tr>
 					<td>This study is visible by:</td>
 					<td>
@@ -261,6 +262,7 @@ function shareDestinationChange(select) {
 					%]FOREACH:Study.authorizedUsers:aUser%
 					</td>
 				</tr>
+				%]IF:Study.authorizedUsers.count%
 				<tr>
 					<td>User:</td>
 					<td>
