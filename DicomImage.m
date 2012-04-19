@@ -194,7 +194,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 -(id)copy {
     id copy = [super copy];
     
-    [copy setThumbnail:_thumbnail];
+    [copy setThumbnail: [[_thumbnail copy] autorelease]];
     
     return copy;
 }
@@ -461,7 +461,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 //	mountedVolume = [f retain];
 //
 //	return mountedVolume;
-    return NO;
+    return nil;
 }
 
 - (void) setMountedVolume:(NSNumber*) f
