@@ -779,7 +779,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	[width release];
 	[numberOfFrames release];
 	[numberOfSeries release];
-	[mountedVolume release];
+//	[mountedVolume release];
 	[isKeyImage release];
 	[extension release];
 	[modality release];

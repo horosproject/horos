@@ -36,7 +36,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 	NSNumber	*height, *width;
 	NSNumber	*numberOfFrames;
 	NSNumber	*numberOfSeries;
-	NSNumber	*mountedVolume;
+//	NSNumber	*mountedVolume;
 	NSNumber	*isKeyImage, *dicomTime;
 	NSString	*extension;
 	NSString	*modality;
