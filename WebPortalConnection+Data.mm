@@ -354,6 +354,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	int height = [[dict valueForKey: @"height"] floatValue];
 	NSString *outFile = [dict valueForKey: @"outFile"];
 	NSString *fileName = [dict valueForKey: @"fileName"];
+    NSInteger* fpsP = (NSInteger*)[[dict valueForKey:@"fpsP"] pointerValue];
 	
 	for( int x = location ; x < location+length; x++)
 	{
@@ -381,8 +382,8 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 				else
 					[dcmPix checkImageAvailble:[dcmPix savedWW] :[dcmPix savedWL]];
 				
-				if( x== 0 && [dcmPix cineRate])
-					[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey: @"quicktimeExportRateValue"];
+				if (x == 0 && [dcmPix cineRate])
+					*fpsP = [dcmPix cineRate];
 			}
 			else
 			{
@@ -495,8 +496,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[[NSFileManager defaultManager] removeItemAtPath: [fileName stringByAppendingString: @" dir"] error: nil];
 			[[NSFileManager defaultManager] createDirectoryAtPath: [fileName stringByAppendingString: @" dir"] attributes: nil];
 			
-			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
-			
+            NSInteger fps = 0;
+            
 			@try 
 			{
 				DCMPixLoadingThreads = 0;
@@ -517,7 +518,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 															[NSNumber numberWithFloat: height], @"height",
 															outFile, @"outFile",
 															fileName, @"fileName",
-															dicomImageArray, @"DicomImageArray", nil]];
+															dicomImageArray, @"DicomImageArray",
+                                                            [NSValue valueWithPointer:&fps], @"fpsP", nil]];
 					}
 					
 					range.location += range.length;
@@ -536,6 +538,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 //			[self.portal.dicomDatabase unlock];
 			
 			[DCMPixLoadingLock unlock];
+            
+            if (fps <= 0)
+                fps = [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultFrameRate"];
+            if (fps <= 0)
+                fps = 10;
 						
 			NSTask *theTask = [[[NSTask alloc] init] autorelease];
 			
@@ -545,7 +552,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], [[NSNumber numberWithInteger:fps] stringValue], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					
@@ -578,7 +585,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			{
 				@try
 				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSUserDefaults standardUserDefaults] stringForKey: @"quicktimeExportRateValue"], nil]];
+					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSNumber numberWithInteger:fps] stringValue], nil]];
 					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 					[theTask launch];
 					

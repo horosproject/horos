@@ -16743,22 +16743,23 @@ int i,j,l;
 	
 	mov = [[[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :qt_to - qt_from] autorelease];
 	
+    NSInteger fps = 0;
 	switch( qt_dimension)
 	{
 		default:
 		case 1:
 		case 3:
-			if( [self frameRate] > 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: [self frameRate] forKey: @"quicktimeExportRateValue"];
+			if ([self frameRate] > 0)
+				fps = [self frameRate];
 		break;
 		
 		case 0:
-			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+			// fps = 10; // the default value is set in [QuicktimeExport createMovieQTKit::::::::::] when fps is 0
 		break;
 		
 		case 2:
-			if( [self frame4DRate] > 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: [self frame4DRate] forKey: @"quicktimeExportRateValue"];
+			if ([self frame4DRate] > 0)
+				fps = [self frame4DRate];
 		break;
 	}
 	
@@ -16767,7 +16768,7 @@ int i,j,l;
 	if( [mode isEqualToString:@"export2iphoto"]) produceImageFiles = YES;
 	else produceImageFiles = NO;
 	
-	NSString *path = [mov createMovieQTKit: NO  :produceImageFiles :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	NSString *path = [mov createMovieQTKit: NO  :produceImageFiles :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"] :fps];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO && path != nil)
 		NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);

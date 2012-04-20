@@ -443,8 +443,15 @@
 	}
 }
 
-- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name {
+    return [self createMovieQTKit:openIt :produceFiles :name :0];
+}
+
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)fps
 {
+    if (fps > 0)
+        [[NSUserDefaults standardUserDefaults] setInteger:fps forKey:@"quicktimeExportRateValue"];
+
 	NSString		*fileName;
 	long			result;
 
@@ -498,10 +505,7 @@
 			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 			
-			if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] <= 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
-			
-			long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
+            long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
 			long timeScale = 600;
 			
 			curTime = QTMakeTime(timeValue, timeScale);

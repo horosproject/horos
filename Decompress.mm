@@ -687,9 +687,8 @@ int main(int argc, const char *argv[])
 				
 				[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 				
-				long long timeValue = 600 / rateValue;
-				long timeScale = 600;
-				
+				long timeScale = 600; // The default time scale for a new track is 600
+				long long timeValue = timeScale / rateValue;
 				QTTime curTime = QTMakeTime(timeValue, timeScale);
 				
 				NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];

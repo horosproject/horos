@@ -12379,7 +12379,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return [BrowserController movieWithFile:dict];
 }
 
-+ (void)writeMovieToPath:(NSString*)fileName images:(NSArray*)imagesArray
++ (void)writeMovieToPath:(NSString*)fileName images:(NSArray*)imagesArray framesPerSecond:(NSInteger)fps
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	if (![NSThread isMainThread])
@@ -12415,13 +12415,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 		
-		if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] <= 0)
-			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+		if (fps <= 0)
+            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
+		if (fps <= 0)
+			fps = 10;
 		
-		long long rateValue = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
-		long long timeValue = 600 / rateValue;
 		long timeScale = 600;
-		
+		long long timeValue = timeScale / fps;
 		QTTime curTime = QTMakeTime(timeValue, timeScale);
 		
 		NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
@@ -12454,6 +12454,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[QTMovie exitQTKitOnThread];
 		[pool release];
 	}
+}
+
++ (void)writeMovieToPath:(NSString*)fileName images:(NSArray*)imagesArray {
+    [self writeMovieToPath:fileName images:imagesArray framesPerSecond:0];
 }
 
 - (void)writeMovie:(NSArray*)imagesArray name:(NSString*)fileName
@@ -12516,7 +12520,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		BOOL first = YES;
 		BOOL cineRateSet = NO;
 		
-		[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+		NSInteger fps = 10;
 		
 		for( DicomImage *curImage in dicomFiles2Export)
 		{
@@ -12776,7 +12780,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 							
 							if( cineRateSet == NO && [dcmPix cineRate])
 							{
-								[[NSUserDefaults standardUserDefaults] setInteger: [dcmPix cineRate] forKey:@"quicktimeExportRateValue"];
+								fps = [dcmPix cineRate];
 							}
 						}
 						
@@ -12829,7 +12833,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			}
 			
 			NSString* fullPath = [previousPath stringByAppendingPathExtension:@"mov"];
-			[BrowserController writeMovieToPath:fullPath images:imagesArray];
+			[BrowserController writeMovieToPath:fullPath images:imagesArray framesPerSecond:fps];
 			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
 		}
 		else if( [imagesArray count] == 1)
