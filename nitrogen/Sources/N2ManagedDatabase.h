@@ -26,7 +26,9 @@
 @property(readonly,retain) NSString* sqlFilePath;
 @property(readonly) NSManagedObjectModel* managedObjectModel;
 @property(readwrite,retain) NSManagedObjectContext* managedObjectContext; // only change this value if you know what you're doing
+
 @property(readonly,retain) id mainDatabase; // for independentDatabases
+-(BOOL)isMainDatabase;
 
 // locking actually locks the context
 -(void)lock;

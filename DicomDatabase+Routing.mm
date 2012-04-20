@@ -37,7 +37,7 @@
 @implementation DicomDatabase (Routing)
 
 -(void)initRouting {
-    if (!self.mainDatabase) {
+    if (self.isMainDatabase) {
         _routingSendQueues = [[NSMutableArray alloc] init];
         _routingLock = [[NSRecursiveLock alloc] init];
     } else {
@@ -51,7 +51,7 @@
 -(void)deallocRouting {
 	NSRecursiveLock* temp;
 	
-    if (!self.mainDatabase) {
+    if (self.isMainDatabase) {
         temp = _routingLock;
         [temp lock]; // if currently routing, wait until finished
         _routingLock = nil;

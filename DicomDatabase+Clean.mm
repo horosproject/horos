@@ -35,7 +35,7 @@
 @implementation DicomDatabase (Clean)
 
 -(void)initClean {
-	if (!self.mainDatabase) {
+	if (self.isMainDatabase) {
         _cleanLock = [[NSRecursiveLock alloc] init];
     } else {
         _cleanLock = [[self.mainDatabase cleanLock] retain];
@@ -46,7 +46,7 @@
 -(void)deallocClean {
 	NSRecursiveLock* temp;
 	
-    if (!self.mainDatabase) {
+    if (self.isMainDatabase) {
         temp = _cleanLock;
         [temp lock]; // if currently cleaning, wait until finished
         _cleanLock = nil;

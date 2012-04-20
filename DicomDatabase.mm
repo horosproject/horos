@@ -362,7 +362,7 @@ static DicomDatabase* activeLocalDatabase = nil;
     
 	// post-init
 	
-    if (!mainDbReference) // is main (not independent)
+    if (self.isMainDatabase) // is main (not independent)
     {
 	    [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
         
@@ -448,7 +448,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[self deallocClean];
 	[self deallocRouting];
     
-    if (!self.mainDatabase) {
+    if (self.isMainDatabase) {
         NSRecursiveLock* temp;
         
         temp = _importFilesFromIncomingDirLock;
@@ -2120,7 +2120,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 if ([objects count]) {
                     @try {
                         BrowserController* bc = [BrowserController currentBrowser];
-                        DicomDatabase* mdatabase = self.mainDatabase? self.mainDatabase : self;
+                        DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                         NSArray* mobjects = [mdatabase objectsWithIDs:objects];
                         
                         if (studySelected == NO) {
@@ -2507,7 +2507,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         thread.status = NSLocalizedString(@"Finishing...", nil);
         thread.progress = -1;
 		
-        DicomDatabase* theDatabase = self.mainDatabase? self.mainDatabase : self;
+        DicomDatabase* theDatabase = self.isMainDatabase? self : self.mainDatabase;
 		if (theDatabase == DicomDatabase.activeLocalDatabase)
 			[AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject:(importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil) waitUntilDone:NO];
 		

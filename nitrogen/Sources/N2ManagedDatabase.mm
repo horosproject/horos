@@ -168,6 +168,10 @@
 @synthesize managedObjectContext = _managedObjectContext;
 @synthesize mainDatabase = _mainDatabase;
 
+-(BOOL)isMainDatabase {
+    return (_mainDatabase == nil);
+}
+
 -(NSManagedObjectContext*)managedObjectContext {
 	return _managedObjectContext;
 }
