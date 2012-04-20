@@ -623,63 +623,67 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) modalities
 {
-	if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
-		return cachedModalites;
+    @synchronized (self) {
+        if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
+            return cachedModalites;
+        
+        [cachedModalites release]; cachedModalites = nil;
+        
+        NSString *m = nil;
+        
+        [[self managedObjectContext] lock];
+        
+        @try 
+        {
+            NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
+            
+            NSMutableArray *r = [NSMutableArray array];
+            
+            BOOL SC = NO, SR = NO, PR = NO;
+            
+            for( NSString *mod in seriesModalities)
+            {
+                if( [mod isEqualToString:@"SR"])
+                    SR = YES;
+                else if( [mod isEqualToString:@"SC"])
+                    SC = YES;
+                else if( [mod isEqualToString:@"PR"])
+                    PR = YES;
+                else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+                    [r addObject: @"RT"];
+                else if( [mod isEqualToString:@"KO"])
+                {
+                }
+                else if([r containsString: mod] == NO)
+                    [r addObject: mod];
+            }
+            
+            if( [r count] == 0)
+            {
+                if( SC) [r addObject: @"SC"];
+                else
+                {
+                    if( SR) [r addObject: @"SR"];
+                    if( PR) [r addObject: @"PR"];
+                }
+            }
+            
+            m = [r componentsJoinedByString:@"\\"];
+        }
+        @catch (NSException * e) 
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        
+        cachedModalites = [m retain];
+        _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
+        
+        [[self managedObjectContext] unlock];
+        
+        return m;
+    }
     
-    [cachedModalites release]; cachedModalites = nil;
-    
-	NSString *m = nil;
-	
-	[[self managedObjectContext] lock];
-	
-	@try 
-	{
-		NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
-		
-		NSMutableArray *r = [NSMutableArray array];
-		
-		BOOL SC = NO, SR = NO, PR = NO;
-		
-		for( NSString *mod in seriesModalities)
-		{
-			if( [mod isEqualToString:@"SR"])
-				SR = YES;
-			else if( [mod isEqualToString:@"SC"])
-				SC = YES;
-			else if( [mod isEqualToString:@"PR"])
-				PR = YES;
-			else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
-				[r addObject: @"RT"];
-			else if( [mod isEqualToString:@"KO"])
-			{
-			}
-			else if([r containsString: mod] == NO)
-				[r addObject: mod];
-		}
-		
-		if( [r count] == 0)
-		{
-			if( SC) [r addObject: @"SC"];
-			else
-			{
-				if( SR) [r addObject: @"SR"];
-				if( PR) [r addObject: @"PR"];
-			}
-		}
-		
-		m = [r componentsJoinedByString:@"\\"];
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	cachedModalites = [m retain];
-    _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
-	
-	[[self managedObjectContext] unlock];
-	
-	return m;
+    return nil;
 }
 
 - (void) dealloc
@@ -994,21 +998,27 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setDate:(NSDate*) date
 {
-	[dicomTime release];
-	dicomTime = nil;
-	
-	[self willChangeValueForKey: @"date"];
-	[self setPrimitiveValue: date forKey:@"date"];
-	[self didChangeValueForKey: @"date"];
+    @synchronized (self) {
+        [dicomTime release];
+        dicomTime = nil;
+        
+        [self willChangeValueForKey: @"date"];
+        [self setPrimitiveValue: date forKey:@"date"];
+        [self didChangeValueForKey: @"date"];
+    }
 }
 
 - (NSNumber*) dicomTime
 {
-	if( dicomTime) return dicomTime;
-	
-	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
-	
-	return dicomTime;
+    @synchronized (self) {
+        if( dicomTime) return dicomTime;
+        
+        dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+        
+        return dicomTime;
+    }
+    
+    return nil;
 }
 
 - (id) valueForUndefinedKey:(NSString *)key
@@ -1108,41 +1118,47 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) setNumberOfImages:(NSNumber *) n
 {
-	[cachedRawNoFiles release];
-	cachedRawNoFiles = nil;
-	
-	[cachedModalites release];
-	cachedModalites = nil;
-	
-	[self willChangeValueForKey: @"numberOfImages"];
-	[self setPrimitiveValue: n forKey:@"numberOfImages"];
-	[self didChangeValueForKey: @"numberOfImages"];
+    @synchronized (self) {
+        [cachedRawNoFiles release];
+        cachedRawNoFiles = nil;
+        
+        [cachedModalites release];
+        cachedModalites = nil;
+        
+        [self willChangeValueForKey: @"numberOfImages"];
+        [self setPrimitiveValue: n forKey:@"numberOfImages"];
+        [self didChangeValueForKey: @"numberOfImages"];
+    }
 }
 
 - (NSNumber *) rawNoFiles
 {
-	int sum = 0;
-	
-	if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
-		return cachedRawNoFiles;
+    @synchronized (self) {
+        int sum = 0;
+        
+        if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
+            return cachedRawNoFiles;
+        
+        [cachedRawNoFiles release]; cachedRawNoFiles = nil;
+        
+        [self.managedObjectContext lock];
+        @try  {
+            for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
+                sum += [[s valueForKey: @"rawNoFiles"] intValue];
+            _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
+        }
+        @catch (NSException * e) 
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        [self.managedObjectContext unlock];
+        
+        cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
+        
+        return cachedRawNoFiles;
+    }
     
-    [cachedRawNoFiles release]; cachedRawNoFiles = nil;
-	
-    [self.managedObjectContext lock];
-	@try  {
-		for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
-			sum += [[s valueForKey: @"rawNoFiles"] intValue];
-        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-    [self.managedObjectContext unlock];
-    
-	cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
-	
-	return cachedRawNoFiles;
+    return nil;
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames

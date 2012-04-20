@@ -134,11 +134,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 - (BOOL) isEqualToSopInstanceUID:(NSData*) sopInstanceUID
 {
 	NSUInteger length = [self length];
-	if( length == 0)
+	if (length == 0)
 		return NO;
 	
 	NSUInteger sopInstanceUIDLength = [sopInstanceUID length];
-	if( sopInstanceUIDLength == 0)
+	if (sopInstanceUIDLength == 0)
 		return NO;
 	
 	const UInt8* bytes = (const UInt8*) [self bytes];
@@ -151,7 +151,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	if (length == sopInstanceUIDLength)
 	{
-		if( memcmp (bytes, sopInstanceUIDBytes, length) == 0)
+		if (memcmp(bytes, sopInstanceUIDBytes, length) == 0)
 			return YES;
 	}
 	
@@ -243,79 +243,92 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) sopInstanceUID
 {
-	if( sopInstanceUID) return sopInstanceUID;
-	
+    @synchronized (self) {
+        if (sopInstanceUID)
+            return sopInstanceUID;
+    
 //	char *ss = sopInstanceUIDEncode( @"1.3.6.1.4.1.19291.2.1.3.4214185015613178564241742949672953387242");
 //	NSString* uid =  sopInstanceUIDDecode( [[NSData dataWithBytes: ss length: strlen( ss)+1] bytes]);
 //	free( ss);
 	
-	NSData *data = [self primitiveValueForKey:@"compressedSopInstanceUID"];
-	
-	unsigned char* src =  (unsigned char*) [data bytes];
-	
-	if( src)
-	{
-		NSString* uid =  sopInstanceUIDDecode( src, [data length]);
-		
-		[sopInstanceUID release];
-		sopInstanceUID = [uid retain];
-	}
-	else
-	{
-		[sopInstanceUID release];
-		sopInstanceUID = nil;
-	}
-	
-	return sopInstanceUID;
+        NSData *data = [self primitiveValueForKey:@"compressedSopInstanceUID"];
+        
+        unsigned char* src =  (unsigned char*) [data bytes];
+        
+        if( src)
+        {
+            NSString* uid =  sopInstanceUIDDecode( src, [data length]);
+            
+            [sopInstanceUID release];
+            sopInstanceUID = [uid retain];
+        }
+        else
+        {
+            [sopInstanceUID release];
+            sopInstanceUID = nil;
+        }
+        
+        return sopInstanceUID;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setSopInstanceUID: (NSString*) s
 {
-	[sopInstanceUID release];
-	sopInstanceUID = nil;
+    @synchronized (self) {
+        [sopInstanceUID release];
+        sopInstanceUID = nil;
 
-	if( s)
-	{
-		int length = [s length];
-		length++;
-		length /= 2;
-		
-		char *ss = sopInstanceUIDEncode( s);
-		[self setValue: [NSData dataWithBytesNoCopy: ss length: length] forKey:@"compressedSopInstanceUID"];
-		
-//		if( [[self sopInstanceUID] isEqualToString: s] == NO)
-//			NSLog(@"******** ERROR sopInstanceUID : %@ %@", s, [self sopInstanceUID]);
-	}
-	else [self setValue: nil forKey:@"compressedSopInstanceUID"];
+        if( s)
+        {
+            int length = [s length];
+            length++;
+            length /= 2;
+            
+            char *ss = sopInstanceUIDEncode( s);
+            [self setValue: [NSData dataWithBytesNoCopy: ss length: length] forKey:@"compressedSopInstanceUID"];
+            
+    //		if( [[self sopInstanceUID] isEqualToString: s] == NO)
+    //			NSLog(@"******** ERROR sopInstanceUID : %@ %@", s, [self sopInstanceUID]);
+        }
+        else [self setValue: nil forKey:@"compressedSopInstanceUID"];
+    }
 }
 
 #pragma mark-
 
 - (NSNumber*) inDatabaseFolder
 {
-	if( inDatabaseFolder) return inDatabaseFolder;
-	
-	NSNumber	*f = [self primitiveValueForKey:@"storedInDatabaseFolder"];
-	
-	if( f == nil) f = [NSNumber numberWithBool: YES];
-	
-	[inDatabaseFolder release];
-	inDatabaseFolder = [f retain];
+    @synchronized (self) {
+        if( inDatabaseFolder) return inDatabaseFolder;
+        
+        NSNumber	*f = [self primitiveValueForKey:@"storedInDatabaseFolder"];
+        
+        if( f == nil) f = [NSNumber numberWithBool: YES];
+        
+        [inDatabaseFolder release];
+        inDatabaseFolder = [f retain];
 
-	return inDatabaseFolder;
+        return inDatabaseFolder;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setInDatabaseFolder:(NSNumber*) f
 {
-	[inDatabaseFolder release];
-	inDatabaseFolder = nil;
-	
-	[self willChangeValueForKey:@"storedInDatabaseFolder"];
-	if( [f boolValue] == YES)	
-		[self setPrimitiveValue: nil forKey:@"storedInDatabaseFolder"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedInDatabaseFolder"];
-	[self didChangeValueForKey:@"storedInDatabaseFolder"];
+    @synchronized (self) {
+        [inDatabaseFolder release];
+        inDatabaseFolder = nil;
+        
+        [self willChangeValueForKey:@"storedInDatabaseFolder"];
+        if( [f boolValue] == YES)	
+            [self setPrimitiveValue: nil forKey:@"storedInDatabaseFolder"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedInDatabaseFolder"];
+        [self didChangeValueForKey:@"storedInDatabaseFolder"];
+    }
 }
 
 #pragma mark-
@@ -329,128 +342,152 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSNumber*) height
 {
-	if (height) return height;
-	
-	NSNumber* f = [self primitiveValueForKey:@"storedHeight"];
-	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
-		[self _updateMetaData_size];
-		f = [self primitiveValueForKey:@"storedHeight"];
-	}
-	
-	[height release];
-	height = [f retain];
+	@synchronized (self) {
+        if (height) return height;
+        
+        NSNumber* f = [self primitiveValueForKey:@"storedHeight"];
+        if (f == nil) f = [NSNumber numberWithInt: 512];
+        else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
+            [self _updateMetaData_size];
+            f = [self primitiveValueForKey:@"storedHeight"];
+        }
+        
+        [height release];
+        height = [f retain];
 
-	return height;
+        return height;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setHeight:(NSNumber*) f
 {
-	[height release];
-	height = nil;
-	
-	[self willChangeValueForKey:@"storedHeight"];
-	if( [f intValue] == 512)	
-		[self setPrimitiveValue: nil forKey:@"storedHeight"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedHeight"];
-	[self didChangeValueForKey:@"storedHeight"];
+	@synchronized (self) {
+        [height release];
+        height = nil;
+        
+        [self willChangeValueForKey:@"storedHeight"];
+        if( [f intValue] == 512)	
+            [self setPrimitiveValue: nil forKey:@"storedHeight"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedHeight"];
+        [self didChangeValueForKey:@"storedHeight"];
+    }
 }
 
 #pragma mark-
 
 - (NSNumber*) width
 {
-	if (width) return width;
-	
-	NSNumber* f = [self primitiveValueForKey:@"storedWidth"];
-	if (f == nil) f = [NSNumber numberWithInt: 512];
-	else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
-		[self _updateMetaData_size];
-		f = [self primitiveValueForKey:@"storedWidth"];
-	}
-	
-	[width release];
-	width = [f retain];
+	@synchronized (self) {
+        if (width) return width;
+        
+        NSNumber* f = [self primitiveValueForKey:@"storedWidth"];
+        if (f == nil) f = [NSNumber numberWithInt: 512];
+        else if ([f integerValue] == OsirixDicomImageSizeUnknown) {
+            [self _updateMetaData_size];
+            f = [self primitiveValueForKey:@"storedWidth"];
+        }
+        
+        [width release];
+        width = [f retain];
 
-	return width;
+        return width;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setWidth:(NSNumber*) f
 {
-	[width release];
-	width = nil;
-	
-	[self willChangeValueForKey:@"storedWidth"];
-	if( [f intValue] == 512)	
-		[self setPrimitiveValue: nil forKey:@"storedWidth"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedWidth"];
-	[self didChangeValueForKey:@"storedWidth"];
+	@synchronized (self) {
+        [width release];
+        width = nil;
+        
+        [self willChangeValueForKey:@"storedWidth"];
+        if( [f intValue] == 512)	
+            [self setPrimitiveValue: nil forKey:@"storedWidth"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedWidth"];
+        [self didChangeValueForKey:@"storedWidth"];
+    }
 }
 
 #pragma mark-
 
 - (NSNumber*) numberOfFrames
 {
-	if( numberOfFrames) return numberOfFrames;
-	
-	NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfFrames"];
-	
-	if( f == nil) f = [NSNumber numberWithInt: 1];
+	@synchronized (self) {
+        if( numberOfFrames) return numberOfFrames;
+        
+        NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfFrames"];
+        
+        if( f == nil) f = [NSNumber numberWithInt: 1];
 
-	[numberOfFrames release];
-	numberOfFrames = [f retain];
+        [numberOfFrames release];
+        numberOfFrames = [f retain];
 
-	return numberOfFrames;
+        return numberOfFrames;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setNumberOfFrames:(NSNumber*) f
 {
-	[numberOfFrames release];
-	numberOfFrames = nil;
-	
-	[self willChangeValueForKey:@"storedNumberOfFrames"];
-	if( [f intValue] == 1)	
-		[self setPrimitiveValue: nil forKey:@"storedNumberOfFrames"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedNumberOfFrames"];
-	[self didChangeValueForKey:@"storedNumberOfFrames"];
+	@synchronized (self) {
+        [numberOfFrames release];
+        numberOfFrames = nil;
+
+        [self willChangeValueForKey:@"storedNumberOfFrames"];
+        if( [f intValue] == 1)	
+            [self setPrimitiveValue: nil forKey:@"storedNumberOfFrames"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedNumberOfFrames"];
+        [self didChangeValueForKey:@"storedNumberOfFrames"];
+    }
 }
 
 #pragma mark-
 
 - (NSNumber*) numberOfSeries
 {
-	if( numberOfSeries) return numberOfSeries;
-	
-	NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfSeries"];
-	
-	if( f == nil) f = [NSNumber numberWithInt: 1];
+	@synchronized (self) {
+        if( numberOfSeries) return numberOfSeries;
+        
+        NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfSeries"];
+        
+        if( f == nil) f = [NSNumber numberWithInt: 1];
 
-	[numberOfSeries release];
-	numberOfSeries = [f retain];
+        [numberOfSeries release];
+        numberOfSeries = [f retain];
 
-	return numberOfSeries;
+        return numberOfSeries;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setNumberOfSeries:(NSNumber*) f
 {
-	[numberOfSeries release];
-	numberOfSeries = nil;
-	
-	[self willChangeValueForKey:@"storedNumberOfSeries"];
-	if( [f intValue] == 1)	
-		[self setPrimitiveValue: nil forKey:@"storedNumberOfSeries"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedNumberOfSeries"];
-	[self didChangeValueForKey:@"storedNumberOfSeries"];
+	@synchronized (self) {
+        [numberOfSeries release];
+        numberOfSeries = nil;
+        
+        [self willChangeValueForKey:@"storedNumberOfSeries"];
+        if( [f intValue] == 1)	
+            [self setPrimitiveValue: nil forKey:@"storedNumberOfSeries"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedNumberOfSeries"];
+        [self didChangeValueForKey:@"storedNumberOfSeries"];
+    }
 }
 
 #pragma mark-
 
-- (NSNumber*) mountedVolume
-{
+//- (NSNumber*) mountedVolume
+//{
 //	if( mountedVolume) return mountedVolume;
 //	
 //	NSNumber	*f = [self primitiveValueForKey:@"storedMountedVolume"];
@@ -461,11 +498,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 //	mountedVolume = [f retain];
 //
 //	return mountedVolume;
-    return nil;
-}
+//    return nil;
+//}
 
-- (void) setMountedVolume:(NSNumber*) f
-{
+//- (void) setMountedVolume:(NSNumber*) f
+//{
 //	[mountedVolume release];
 //	mountedVolume = nil;
 //	
@@ -475,7 +512,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 //	else
 //		[self setPrimitiveValue: f forKey:@"storedMountedVolume"];
 //	[self didChangeValueForKey:@"storedMountedVolume"];
-}
+//}
 
 #pragma mark-
 
@@ -533,197 +570,221 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSNumber*) isKeyImage
 {
-	if( isKeyImage) return isKeyImage;
-	
-	NSNumber	*f = [self primitiveValueForKey:@"storedIsKeyImage"];
-	
-	if( f == nil)  f = [NSNumber numberWithBool: NO];
+	@synchronized (self) {
+        if( isKeyImage) return isKeyImage;
+        
+        NSNumber	*f = [self primitiveValueForKey:@"storedIsKeyImage"];
+        
+        if( f == nil)  f = [NSNumber numberWithBool: NO];
 
-	[isKeyImage release];
-	isKeyImage = [f retain];
+        [isKeyImage release];
+        isKeyImage = [f retain];
 
-	return isKeyImage;
+        return isKeyImage;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setIsKeyImage:(NSNumber*) f
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[isKeyImage release];
-	isKeyImage = nil;
-	
-	if( [f boolValue] != [[self primitiveValueForKey: @"storedIsKeyImage"] boolValue])
-	{
-		#ifdef OSIRIX_VIEWER
-		#ifndef OSIRIX_LIGHT
-		if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
-		{
-			NSString *c = nil;
-			
-			if( [[self numberOfFrames] intValue] > 1)
-			{
-				[[DicomStudy dbModifyLock] lock];
-				
-				DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
-				
-				if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
-				{
-					int frame = [[self frameID] intValue];
-					
-					NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]]; // DCM_FramesOfInterestDescription
-					
-					BOOL found = NO;
-					for( NSString *k in keyFrames)
-					{
-						if( [k intValue] == frame) // corresponding frame
-						{
-							if( [f boolValue] == NO)
-								[keyFrames removeObject: k];
-								
-							found = YES;
-							break;
-						}
-					}
-					
-					if( [f boolValue] == YES && found == NO)
-						[keyFrames addObject: [[self frameID] stringValue]];
-					
-					c = [keyFrames componentsJoinedByString: @"\\"];
-				}
-				else
-				{
-					if( [f boolValue])
-						c = [[self frameID] stringValue];
-				}
-				
-				[dcmObject release];
-				
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
-				
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
-				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-				
-				[[DicomStudy dbModifyLock] unlock];
-			}
-			else
-			{
-				if( [f boolValue])
-					c = @"0"; // frame 0 is key image 
-					
-				NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+	@synchronized (self) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        
+        [isKeyImage release];
+        isKeyImage = nil;
+        
+        if( [f boolValue] != [[self primitiveValueForKey: @"storedIsKeyImage"] boolValue])
+        {
+            #ifdef OSIRIX_VIEWER
+            #ifndef OSIRIX_LIGHT
+            if( [self.series.study.hasDICOM boolValue] == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"savedCommentsAndStatusInDICOMFiles"]  && [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] == NO)
+            {
+                NSString *c = nil;
+                
+                if( [[self numberOfFrames] intValue] > 1)
+                {
+                    [[DicomStudy dbModifyLock] lock];
+                    
+                    DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
+                    
+                    if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
+                    {
+                        int frame = [[self frameID] intValue];
+                        
+                        NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]]; // DCM_FramesOfInterestDescription
+                        
+                        BOOL found = NO;
+                        for( NSString *k in keyFrames)
+                        {
+                            if( [k intValue] == frame) // corresponding frame
+                            {
+                                if( [f boolValue] == NO)
+                                    [keyFrames removeObject: k];
+                                    
+                                found = YES;
+                                break;
+                            }
+                        }
+                        
+                        if( [f boolValue] == YES && found == NO)
+                            [keyFrames addObject: [[self frameID] stringValue]];
+                        
+                        c = [keyFrames componentsJoinedByString: @"\\"];
+                    }
+                    else
+                    {
+                        if( [f boolValue])
+                            c = [[self frameID] stringValue];
+                    }
+                    
+                    [dcmObject release];
+                    
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+                    
+                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+                    t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
+                    
+                    [[DicomStudy dbModifyLock] unlock];
+                }
+                else
+                {
+                    if( [f boolValue])
+                        c = @"0"; // frame 0 is key image 
+                        
+                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
 
-				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
-				t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-				[[ThreadsManager defaultManager] addThreadAndStart: t];
-			}
-		}
-		#endif
-		#endif
-		
-		NSNumber *previousValue = [self primitiveValueForKey: @"storedIsKeyImage"];
-		
-		[self willChangeValueForKey: @"storedIsKeyImage"];
-		
-		if( [f boolValue] == NO)
-			[self setPrimitiveValue: nil forKey:@"storedIsKeyImage"];
-		else
-			[self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
-		
-		[self didChangeValueForKey:@"storedIsKeyImage"];
-		
-		if( [f intValue] != [previousValue intValue])
-			[[self valueForKeyPath: @"series.study"] archiveAnnotationsAsDICOMSR];
-	}
-	
-	[pool release];
+                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+                    t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
+                }
+            }
+            #endif
+            #endif
+            
+            NSNumber *previousValue = [self primitiveValueForKey: @"storedIsKeyImage"];
+            
+            [self willChangeValueForKey: @"storedIsKeyImage"];
+            
+            if( [f boolValue] == NO)
+                [self setPrimitiveValue: nil forKey:@"storedIsKeyImage"];
+            else
+                [self setPrimitiveValue: f forKey:@"storedIsKeyImage"];
+            
+            [self didChangeValueForKey:@"storedIsKeyImage"];
+            
+            if( [f intValue] != [previousValue intValue])
+                [[self valueForKeyPath: @"series.study"] archiveAnnotationsAsDICOMSR];
+        }
+        
+        [pool release];
+    }
 }
 
 #pragma mark-
 
 - (NSString*) extension
 {
-	if( extension) return extension;
-	
-	NSString	*f = [self primitiveValueForKey:@"storedExtension"];
-	
-	if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"dcm"];
+    @synchronized (self) {
+        if( extension) return extension;
+        
+        NSString	*f = [self primitiveValueForKey:@"storedExtension"];
+        
+        if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"dcm"];
 
-	[extension release];
-	extension = [f retain];
+        [extension release];
+        extension = [f retain];
 
-	return extension;
+        return extension;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setExtension:(NSString*) f
 {
-	[extension release];
-	extension = nil;
-	
-	[self willChangeValueForKey:@"storedExtension"];
-	if( [f isEqualToString:@"dcm"])
-		[self setPrimitiveValue: nil forKey:@"storedExtension"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedExtension"];
-	[self didChangeValueForKey:@"storedExtension"];
+    @synchronized (self) {
+        [extension release];
+        extension = nil;
+        
+        [self willChangeValueForKey:@"storedExtension"];
+        if( [f isEqualToString:@"dcm"])
+            [self setPrimitiveValue: nil forKey:@"storedExtension"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedExtension"];
+        [self didChangeValueForKey:@"storedExtension"];
+    }
 }
 
 #pragma mark-
 
 - (NSString*) modality
 {
-	if( modality) return modality;
-	
-	NSString	*f = [self primitiveValueForKey:@"storedModality"];
-	
-	if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"CT"];
+    @synchronized (self) {
+        if( modality) return modality;
+        
+        NSString	*f = [self primitiveValueForKey:@"storedModality"];
+        
+        if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"CT"];
 
-	[modality release];
-	modality = [f retain];
+        [modality release];
+        modality = [f retain];
 
-	return modality;
+        return modality;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setModality:(NSString*) f
 {
-	[modality release];
-	modality = nil;
-	
-	[self willChangeValueForKey:@"storedModality"];
-	if( [f isEqualToString:@"CT"])
-		[self setPrimitiveValue: nil forKey:@"storedModality"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedModality"];
-	[self didChangeValueForKey:@"storedModality"];
+    @synchronized (self) {
+        [modality release];
+        modality = nil;
+        
+        [self willChangeValueForKey:@"storedModality"];
+        if( [f isEqualToString:@"CT"])
+            [self setPrimitiveValue: nil forKey:@"storedModality"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedModality"];
+        [self didChangeValueForKey:@"storedModality"];
+    }
 }
 
 #pragma mark-
 
 - (NSString*) fileType
 {
-	if( fileType) return fileType;
-	
-	NSString	*f = [self primitiveValueForKey:@"storedFileType"];
-	
-	if( f == 0 || [f isEqualToString:@""]) f =  [NSString stringWithString: @"DICOM"];
-	
-	[fileType release];
-	fileType = [f retain];
+    @synchronized (self) {
+        if( fileType) return fileType;
+        
+        NSString	*f = [self primitiveValueForKey:@"storedFileType"];
+        
+        if( f == 0 || [f isEqualToString:@""]) f =  [NSString stringWithString: @"DICOM"];
+        
+        [fileType release];
+        fileType = [f retain];
 
-	return fileType;
+        return fileType;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (void) setFileType:(NSString*) f
 {
-	[fileType release];
-	fileType = nil;
-	
-	[self willChangeValueForKey:@"storedFileType"];
-	if( [f isEqualToString:@"DICOM"])
-		[self setPrimitiveValue: nil forKey:@"storedFileType"];
-	else
-		[self setPrimitiveValue: f forKey:@"storedFileType"];
-	[self didChangeValueForKey:@"storedFileType"];
+    @synchronized (self) {
+        [fileType release];
+        fileType = nil;
+        
+        [self willChangeValueForKey:@"storedFileType"];
+        if( [f isEqualToString:@"DICOM"])
+            [self setPrimitiveValue: nil forKey:@"storedFileType"];
+        else
+            [self setPrimitiveValue: f forKey:@"storedFileType"];
+        [self didChangeValueForKey:@"storedFileType"];
+    }
 }
 
 #pragma mark-
@@ -748,21 +809,27 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) setDate:(NSDate*) date
 {
-	[dicomTime release];
-	dicomTime = nil;
-	
-	[self willChangeValueForKey:@"date"];
-	[self setPrimitiveValue: date forKey:@"date"];
-	[self didChangeValueForKey:@"date"];
+    @synchronized (self) {
+        [dicomTime release];
+        dicomTime = nil;
+        
+        [self willChangeValueForKey:@"date"];
+        [self setPrimitiveValue: date forKey:@"date"];
+        [self didChangeValueForKey:@"date"];
+    }
 }
 
 - (NSNumber*) dicomTime
 {
-	if( dicomTime) return dicomTime;
-	
-	dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
-	
-	return dicomTime;
+    @synchronized (self) {
+        if( dicomTime) return dicomTime;
+        
+        dicomTime = [[[DCMCalendarDate dicomTimeWithDate:[self valueForKey: @"date"]] timeAsNumber] retain];
+        
+        return dicomTime;
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 - (NSString*) type
@@ -787,7 +854,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	
 	[completePathCache release];
     
-    [_thumbnail release]; _thumbnail = nil;
+    [_thumbnail release];
 	
 	[super dealloc];
 }
@@ -799,8 +866,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) clearCompletePathCache
 {
-	[completePathCache release];
-	completePathCache = nil;
+	@synchronized (self) {
+        [completePathCache release];
+        completePathCache = nil;
+    }
 }
 
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory
@@ -872,59 +941,65 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
-    if( completePathCache && download == NO)
-		return completePathCache;
+    @synchronized (self) {
+        if( completePathCache && download == NO)
+            return completePathCache;
     
-	DicomDatabase* db = nil;
-    BOOL isLocal = YES;
-    
-    if( supportNonLocalDatabase)
-     @try {
-        db = [DicomDatabase databaseForContext:self.managedObjectContext];
-        isLocal = [db isLocal];
-     } @catch (...) {
-     }
-    
-	if( completePathCache)
-	{
-		if( download == NO)
-			return completePathCache;
-		else if ( isLocal)
-			return completePathCache;
-	}
-	
-	#ifdef OSIRIX_VIEWER
-	if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
-	{
-		NSString *path = [self valueForKey:@"path"];
-		
-		if( !isLocal)
-		{
-            NSString* temp = [DicomImage completePathForLocalPath:path directory:[DicomImage dbPathForManagedContext:[self managedObjectContext]]];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
-                return temp;
+        DicomDatabase* db = nil;
+        BOOL isLocal = YES;
+        if (supportNonLocalDatabase)
+            @try {
+                db = [DicomDatabase databaseForContext:self.managedObjectContext];
+                isLocal = [db isLocal];
+            } @catch (...) {
+            }
+        
+        if (completePathCache) {
+            if (download == NO)
+                return completePathCache;
+            else if (isLocal)
+                return completePathCache;
+        }
+        
+        #ifdef OSIRIX_VIEWER
+        if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
+        {
+            NSString *path = [self valueForKey:@"path"];
             
-            [completePathCache release]; completePathCache = nil;
-			if (download)
-				completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
-			else
-                completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
-			
-			return completePathCache;
-		}
-		else
-		{
-			if( [path characterAtIndex: 0] != '/')
-			{
-				completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
-				
-				return completePathCache;
-			}
-		}
-	}
-	#endif
-	
-	return [self valueForKey:@"path"];
+            if( !isLocal)
+            {
+                NSString* temp = [DicomImage completePathForLocalPath:path directory:[DicomImage dbPathForManagedContext:[self managedObjectContext]]];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
+                    return temp;
+                
+                @synchronized (self) {
+                    [completePathCache release]; completePathCache = nil;
+                    
+                    if (download)
+                        completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
+                    else completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+                    
+                    return completePathCache;
+                }
+            }
+            else
+            {
+                if( [path characterAtIndex: 0] != '/')
+                {
+                    @synchronized (self) {
+                        [completePathCache release];
+                        completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
+                        return completePathCache;
+                    }
+                }
+            }
+        }
+        #endif
+        
+        return [self valueForKey:@"path"];
+    }
+    
+    return nil; // to resolve a compiler warning: this line never executes
 }
 
 -(NSString*) completePathWithDownload:(BOOL) download
@@ -949,30 +1024,34 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (BOOL)validateForDelete:(NSError **)error
 {
-	BOOL delete = [super validateForDelete: error];
-	if (delete)
-	{
-		#ifdef OSIRIX_VIEWER
-		if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
-		{
-			[[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
-			
-			NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
-			
-			if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
-				[[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
-			
-			[self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
-		}
-		#endif
-		
-		#ifndef OSIRIX_LIGHT
-		NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
-		if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
-			[[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
-		#endif
-	}
-	return delete;
+    BOOL delete = [super validateForDelete: error];
+    
+    @synchronized (self) {
+        if (delete)
+        {
+            #ifdef OSIRIX_VIEWER
+            if( [[self valueForKey:@"inDatabaseFolder"] boolValue] == YES)
+            {
+                [[BrowserController currentBrowser] addFileToDeleteQueue: [self valueForKey:@"completePath"]];
+                
+                NSString *pathExtension = [[self valueForKey:@"path"] pathExtension];
+                
+                if( [pathExtension isEqualToString:@"hdr"])		// ANALYZE -> DELETE IMG
+                    [[BrowserController currentBrowser] addFileToDeleteQueue: [[[self valueForKey:@"completePath"] stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"]];
+                
+                [self setValue:[NSNumber numberWithBool:NO] forKey:@"inDatabaseFolder"];
+            }
+            #endif
+            
+            #ifndef OSIRIX_LIGHT
+            NSString *vrFile = [VRController getUniqueFilenameScissorStateFor: self];
+            if( vrFile && [[NSFileManager defaultManager] fileExistsAtPath: vrFile])
+                [[NSFileManager defaultManager] removeFileAtPath: vrFile handler: nil];
+            #endif
+        }
+    }
+    
+    return delete;
 }
 
 - (NSSet *)paths
@@ -1042,40 +1121,48 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSImage *)image
 {
-	#ifdef OSIRIX_VIEWER
-	DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	NSData	*data = [[pix image] TIFFRepresentation];
-	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
+#ifdef OSIRIX_VIEWER
+    @synchronized (self) {
+        DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+        NSData	*data = [[pix image] TIFFRepresentation];
+        NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
 
-	[pix release];
-	return thumbnail;
-	#endif
-
+        [pix release];
+        return thumbnail;
+    }
+#endif
+    return nil;
 }
 - (NSImage *)thumbnail
 {
-	#ifdef OSIRIX_VIEWER
-    if (_thumbnail)
-        return _thumbnail;
-	DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
-	NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
-	NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
-	[pix release];
-	return thumbnail;
-	#endif
+#ifdef OSIRIX_VIEWER
+    @synchronized (self) {
+        if (_thumbnail)
+            return _thumbnail;
+        DCMPix *pix = [[DCMPix alloc] initWithPath:[self valueForKey:@"completePath"] :0 :0 :nil :0 :[[self valueForKeyPath:@"series.id"] intValue] isBonjour:NO imageObj:self];
+        NSData	*data = [[pix generateThumbnailImageWithWW:0 WL:0] TIFFRepresentation];
+        NSImage *thumbnail = [[[NSImage alloc] initWithData: data] autorelease];
+        [pix release];
+        return thumbnail;
+    }
+#endif
+    return nil;
 }
 
 -(NSImage*)thumbnailIfAlreadyAvailable {
 #ifdef OSIRIX_VIEWER
     return _thumbnail;
 #endif
+    return nil;
 }
 
 - (void)setThumbnail:(NSImage*)image {
 #ifdef OSIRIX_VIEWER
-    if (image != _thumbnail) {
-        [_thumbnail release];
-        _thumbnail = [image retain];
+    @synchronized (self) {
+        if (image != _thumbnail) {
+            [_thumbnail release];
+            _thumbnail = [image retain];
+        }
     }
 #endif
 }

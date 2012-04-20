@@ -245,19 +245,25 @@
 
 - (void) setDate:(NSDate*) date
 {
-	[dicomTime release];
-	dicomTime = NULL;
-	
-	[self willChangeValueForKey: @"date"];
-	[self setPrimitiveValue:date forKey:@"date"];
-	[self didChangeValueForKey: @"date"];
+    @synchronized (self) {
+        [dicomTime release];
+        dicomTime = NULL;
+        
+        [self willChangeValueForKey: @"date"];
+        [self setPrimitiveValue:date forKey:@"date"];
+        [self didChangeValueForKey: @"date"];
+    }
 }
 
 - (NSNumber*)dicomTime
 {
-	if (!dicomTime)
-		dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
-	return dicomTime;
+    @synchronized (self) {
+        if (!dicomTime)
+            dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
+        return dicomTime;
+    }
+    
+    return nil;
 }
 
 -(NSData*)thumbnail
