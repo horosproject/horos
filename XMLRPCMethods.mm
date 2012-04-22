@@ -798,7 +798,9 @@
 -(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
     NSXMLDocument* doc = _doc? _doc : [[[NSXMLDocument alloc] initWithXMLString:[N2XMLRPC requestWithMethodName:methodName arguments:params] options:0 error:NULL] autorelease];
     
-    NSMutableDictionary* notificationObject = [[params mutableCopy] autorelease];
+    NSMutableDictionary* notificationObject = [[params mutableCopy] autorelease]; //ERROR : params is a NSArray, not an NSDictionary.... XXXXX TO BE CORRECTED : addEntriesFromDictionary doesn't EXIST
+    //  Warning: [N2XMLRPCConnection handleRequest:] -[__NSArrayM addEntriesFromDictionary:]: unrecognized selector sent to instance
+    
     [notificationObject addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys: methodName, @"MethodName", methodName, @"methodName", doc, @"NSXMLDocument", self.address, @"peerAddress", nil]];
     [[NSNotificationCenter defaultCenter] postNotificationName:OsirixXMLRPCMessageNotification object:notificationObject];
     
