@@ -134,12 +134,12 @@
     return nil;
 }
 
--(NSError*)errorWithCode:(NSInteger)code {
++(NSError*)errorWithCode:(NSInteger)code {
     NSString* xml = [NSString stringWithFormat:@"<?xml version=\"1.0\"?><methodResponse><params><param><value><struct><member><name>error</name><value>%d</value></member></struct></value></param></params></methodResponse>", code];
     return [NSError errorWithDomain:NSCocoaErrorDomain code:code userInfo:[NSDictionary dictionaryWithObject:xml forKey:NSLocalizedDescriptionKey]];
 }
 
-#define ReturnWithCode(code) { if (error) *error = [self errorWithCode:code]; return nil; }
+#define ReturnWithCode(code) { if (error) *error = [XMLRPCInterface errorWithCode:code]; return nil; }
 #define ReturnWithErrorValueAndObjectForKey(code, object, key) { return [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%d", (int)code], @"error", object, key, nil]; }
 #define ReturnWithErrorValue(code) { return [NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", (int)code] forKey:@"error"]; }
 
@@ -798,8 +798,15 @@
 -(id)methodCall:(NSString*)methodName params:(NSArray*)params error:(NSError**)error {
     NSXMLDocument* doc = _doc? _doc : [[[NSXMLDocument alloc] initWithXMLString:[N2XMLRPC requestWithMethodName:methodName arguments:params] options:0 error:NULL] autorelease];
     
-    NSMutableDictionary* notificationObject = [[params mutableCopy] autorelease]; //ERROR : params is a NSArray, not an NSDictionary.... XXXXX TO BE CORRECTED : addEntriesFromDictionary doesn't EXIST
-    //  Warning: [N2XMLRPCConnection handleRequest:] -[__NSArrayM addEntriesFromDictionary:]: unrecognized selector sent to instance
+    NSMutableDictionary* notificationObject = nil;
+    if ([params count] < 1)
+        notificationObject = [NSMutableDictionary dictionary];
+    else {
+        NSDictionary* dic = [params objectAtIndex:0];
+        if ([dic isKindOfClass:[NSDictionary class]])
+            notificationObject = [[dic mutableCopy] autorelease];
+        else notificationObject = [NSMutableDictionary dictionary];
+    }
     
     [notificationObject addEntriesFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys: methodName, @"MethodName", methodName, @"methodName", doc, @"NSXMLDocument", self.address, @"peerAddress", nil]];
     [[NSNotificationCenter defaultCenter] postNotificationName:OsirixXMLRPCMessageNotification object:notificationObject];
