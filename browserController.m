@@ -3791,7 +3791,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete
 {
-	NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
 	NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
 	
 	[reportFilesToCheck removeAllObjects];
@@ -3818,7 +3817,7 @@ static NSConditionLock *threadLock = nil;
 						[seriesArray addObject: series];
 					
 					// Is a viewer containing this series opened? -> close it
-					for( ViewerController *vc in viewersList)
+					for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
 					{
 						if( series == [[[vc fileList] objectAtIndex: 0] valueForKey:@"series"])
 							[[vc window] close];
@@ -3837,7 +3836,7 @@ static NSConditionLock *threadLock = nil;
 							[studiesArray addObject: study];
 						
 						// Is a viewer containing this series opened? -> close it
-						for( ViewerController *vc in viewersList)
+						for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
 						{
 							if( study == [[[vc fileList] objectAtIndex: 0] valueForKeyPath:@"series.study"])
 								[vc buildMatrixPreview];
