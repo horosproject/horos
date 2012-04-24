@@ -3797,6 +3797,10 @@ static NSConditionLock *threadLock = nil;
 	
 	[_database lock];
 	
+    displayEmptyDatabase = YES;
+    [self outlineViewRefresh];
+    [self refreshMatrix: self];
+    
 	@try
 	{
 		NSManagedObject	*study = nil, *series = nil;
@@ -3844,9 +3848,10 @@ static NSConditionLock *threadLock = nil;
 					}
 				}
 			}
-			
+        }
+        
+        for ( NSManagedObject *obj in objectsToDelete)
 			[_database.managedObjectContext deleteObject:obj];
-		}
 	}
 	@catch ( NSException *e)
 	{
@@ -3928,6 +3933,7 @@ static NSConditionLock *threadLock = nil;
 		
 		[self saveDatabase];
 		
+        displayEmptyDatabase = NO;
 		[self outlineViewRefresh];
 		[self refreshAlbums];
 	}
