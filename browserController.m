@@ -7246,6 +7246,18 @@ static BOOL withReset = NO;
     }
 }
 
++(NSInteger)_scrollerStyle:(NSScroller*)scroller {
+    if ([scroller respondsToSelector:@selector(scrollerStyle)]) {
+        NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[scroller methodSignatureForSelector:@selector(scrollerStyle)]];
+        [inv setSelector:@selector(scrollerStyle)];
+        [inv invokeWithTarget:scroller];
+        NSInteger r; [inv getReturnValue:&r];
+        return r;
+    }
+
+    return 0; // NSScrollerStyleLegacy is 0
+}
+
 - (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
     if (sender == splitViewVert)
@@ -7259,16 +7271,7 @@ static BOOL withReset = NO;
         if ([scrollView isKindOfClass:[NSScrollView class]])
         {
             NSScroller* scroller = [scrollView verticalScroller];
-            BOOL overlays = NO;
-            if ([scroller respondsToSelector:@selector(scrollerStyle)])
-            {
-                NSInvocation* inv = [NSInvocation invocationWithMethodSignature:[scroller methodSignatureForSelector:@selector(scrollerStyle)]];
-                [inv setSelector:@selector(scrollerStyle)];
-                [inv invokeWithTarget:scroller];
-                NSInteger r; [inv getReturnValue:&r];
-                overlays = r == 1;
-            }
-            if (!overlays)
+            if ([[self class] _scrollerStyle:scroller] != 1)
                 if ([scrollView hasVerticalScroller] && ![scroller isHidden])
                     scrollbarWidth = [scroller frame].size.width;
         }
@@ -7279,7 +7282,7 @@ static BOOL withReset = NO;
         proposedPosition = rcs*hcells-oMatrix.intercellSpacing.width;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
         
-        proposedPosition += scrollbarWidth+1;
+        proposedPosition += (scrollbarWidth?scrollbarWidth+3:2);
         
         return proposedPosition;
     }
@@ -7299,6 +7302,14 @@ static BOOL withReset = NO;
 }
 
 -(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n {
+    NSRect frame = [thumbnailsScrollView.superview bounds];
+    if ([[self class] _scrollerStyle:thumbnailsScrollView.verticalScroller] == 1) { // overlay
+        frame.origin.x += 2; frame.size.width -= 2;
+        [thumbnailsScrollView setFrame:frame];
+    } else {
+        frame.origin.x += 2; frame.size.width -= 3;
+        [thumbnailsScrollView setFrame:frame];
+    }
     [splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
 //    [self ];
 }
@@ -10789,6 +10800,7 @@ static NSArray*	openSubSeriesArray = nil;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:reportTemplatesListPopUpButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
+    [self observeScrollerStyleDidChangeNotification:nil];
     
 	@try
 	{
