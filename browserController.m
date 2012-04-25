@@ -3791,16 +3791,15 @@ static NSConditionLock *threadLock = nil;
 
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete
 {
-	NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
+	DicomDatabase* database = [_database retain];
+    
+    NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
 	
 	[reportFilesToCheck removeAllObjects];
 	
-	[_database lock];
+    [self setDatabase:nil];
+	[database lock];
 	
-    displayEmptyDatabase = YES;
-    [self outlineViewRefresh];
-    [self refreshMatrix: self];
-    
 	@try
 	{
 		NSManagedObject	*study = nil, *series = nil;
@@ -3851,7 +3850,7 @@ static NSConditionLock *threadLock = nil;
         }
         
         for ( NSManagedObject *obj in objectsToDelete)
-			[_database.managedObjectContext deleteObject:obj];
+			[database.managedObjectContext deleteObject:obj];
 	}
 	@catch ( NSException *e)
 	{
@@ -3866,7 +3865,7 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-		[_database save: nil];
+		[database save: nil];
 	}
 	@catch( NSException *e)
 	{	
@@ -3882,7 +3881,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				if( [series isDeleted] == NO && [series isFault] == NO && [[series valueForKey:@"images"] count] == 0)
 				{
-					[_database.managedObjectContext deleteObject:series];
+					[database.managedObjectContext deleteObject:series];
 				}
 				else if( [series isDeleted] == NO && [series isFault] == NO)
 				{
@@ -3898,7 +3897,7 @@ static NSConditionLock *threadLock = nil;
 		
 		@try
 		{	
-			[_database save:nil];
+			[database save:nil];
 		}
 		@catch( NSException *e)
 		{
@@ -3914,7 +3913,7 @@ static NSConditionLock *threadLock = nil;
 				{
 					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
 					
-					[_database.managedObjectContext deleteObject:study];
+					[database.managedObjectContext deleteObject:study];
 				}
 				else if( [study isDeleted] == NO && [study isFault] == NO)
 				{
@@ -3930,12 +3929,6 @@ static NSConditionLock *threadLock = nil;
 		
 		[previousItem release];
 		previousItem = nil;
-		
-		[self saveDatabase];
-		
-        displayEmptyDatabase = NO;
-		[self outlineViewRefresh];
-		[self refreshAlbums];
 	}
 	
 	@catch( NSException *ne)
@@ -3946,7 +3939,9 @@ static NSConditionLock *threadLock = nil;
 	[wait close];
 	[wait release];
 		
-	[_database unlock];
+	[database unlock];
+    [self setDatabase:database];
+    [self saveDatabase];
 }
 
 - (void) delObjects:(NSMutableArray*) objectsToDelete
@@ -7259,7 +7254,7 @@ static BOOL withReset = NO;
 
 		CGFloat rcs = oMatrix.cellSize.width+oMatrix.intercellSpacing.width;
 		
-        NSScrollView* scrollView = [[(NSScrollView*)[[sender subviews] objectAtIndex:0] subviews] objectAtIndex:0];
+        NSScrollView* scrollView = [[(NSScrollView*)[[[[[[sender subviews] objectAtIndex:0] subviews] objectAtIndex:0] subviews] objectAtIndex:0] subviews] objectAtIndex:0];
         CGFloat scrollbarWidth = 0;
         if ([scrollView isKindOfClass:[NSScrollView class]])
         {
@@ -7301,6 +7296,11 @@ static BOOL withReset = NO;
     }
 	
     return proposedPosition;
+}
+
+-(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n {
+    [splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
+//    [self ];
 }
 
 - (void) windowDidChangeScreen:(NSNotification *)aNotification
@@ -7372,7 +7372,7 @@ static BOOL withReset = NO;
     NSSize size = thumbnailsScrollView.bounds.size;
     size.width += oMatrix.intercellSpacing.width;
     
-    NSInteger hcells = (NSInteger)roundf(oMatrix.bounds.size.width/rcs);
+    NSInteger hcells = (NSInteger)roundf(size.width/rcs);
     NSInteger vcells = MAX(1, (NSInteger)ceilf(1.0*matrixViewArray.count/hcells));
     [oMatrix renewRows:vcells columns:hcells];
     
@@ -10780,11 +10780,15 @@ static NSArray*	openSubSeriesArray = nil;
 //	[waitCompressionWindow setCancel:YES];
 		
 	
+    [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
+    
 	[wait showWindow:self];
 	
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:databaseOutline];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:databaseOutline];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:reportTemplatesListPopUpButton];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     
 	@try
 	{
