@@ -20453,7 +20453,7 @@ int i,j,l;
             templatesArray = [Reports wordTemplatesList];
             break;
     }
-
+    
 	DicomStudy* studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
 	
     if (!studySelected.reportURL && templatesArray.count > 1)

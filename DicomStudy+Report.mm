@@ -31,7 +31,7 @@
     // determine the default app for ODT files
     NSURL* applicationUrl = NULL;
     OSStatus status = LSGetApplicationForInfo(kLSUnknownType, kLSUnknownCreator, CFSTR("odt"), kLSRolesAll, NULL, (CFURLRef*)&applicationUrl);
-    if (status) [NSException raise:NSGenericException format:@"impossible de determiner quelle application ouvre les fichiers ODT"];
+    if (status) [NSException raise:NSGenericException format:@"can't find custom application for ODT files"];
     NSString* applicationPath = applicationUrl.path;
     NSString* sofficePath = [applicationPath stringByAppendingPathComponent:@"Contents/MacOS/soffice"];
     
@@ -42,6 +42,27 @@
     if ([sofficeHelp contains:@"--accept"])
         acceptString = @"--accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
     else acceptString = @"-accept=socket,host=localhost,port=2083;urp;StarOffice.ServiceManager";
+    
+    // LibreOffice is moving files around.....
+    
+    NSString* offapiPath = nil;
+    for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/MacOS/types/offapi.rdb", @"Contents/basis-link/program/offapi.rdb", nil]) {
+        offapiPath = [applicationPath stringByAppendingPathComponent:subpath];
+        if ([NSFileManager.defaultManager fileExistsAtPath:offapiPath])
+            break;
+        else offapiPath = nil;
+    }
+    
+    NSString* urelinklibPath = nil;
+    for (NSString* subpath in [NSArray arrayWithObjects:@"Contents/ure-link/lib", @"Contents/basis-link/ure-link/lib", nil]) {
+        urelinklibPath = [applicationPath stringByAppendingPathComponent:subpath];
+        if ([NSFileManager.defaultManager fileExistsAtPath:urelinklibPath])
+            break;
+        else urelinklibPath = nil;
+    }
+    
+    if (!offapiPath || !urelinklibPath)
+        [NSException raise:NSGenericException format:@"can't find necessary items inside %@", [applicationPath lastPathComponent]];
     
     // launch soffice to make sure it's accepting sdk interactions
     
@@ -61,8 +82,8 @@
             NSTask* task = [[[NSTask alloc] init] autorelease];
             
             [task setLaunchPath:[[NSBundle mainBundle] pathForAuxiliaryExecutable:@"odt2pdf"]];
-            [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@/Contents/basis-link/program/offapi.rdb", applicationPath], odtPath, pdfPath, nil]];
-            [task setEnvironment:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%@/Contents/basis-link/ure-link/lib", applicationPath] forKey:@"DYLD_LIBRARY_PATH"]];
+            [task setArguments:[NSArray arrayWithObjects: [NSString stringWithFormat:@"-env:URE_MORE_TYPES=file://%@", offapiPath], odtPath, pdfPath, nil]];
+            [task setEnvironment:[NSDictionary dictionaryWithObject:urelinklibPath forKey:@"DYLD_LIBRARY_PATH"]];
             [task setStandardOutput:[NSPipe pipe]];
             [task launch];
             [task waitUntilExit];

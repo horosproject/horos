@@ -3800,13 +3800,16 @@ static NSConditionLock *threadLock = nil;
     [self setDatabase:nil];
 	[database lock];
 	
+    [self outlineViewRefresh];
+    [self refreshMatrix: self];
+    
 	@try
 	{
 		NSManagedObject	*study = nil, *series = nil;
 		
 		NSLog(@"objects to delete : %d", (int) [objectsToDelete count]);
 		
-		for ( NSManagedObject *obj in objectsToDelete)
+		for( NSManagedObject *obj in objectsToDelete)
 		{
 			if( [obj valueForKey:@"series"] != series)
 			{
@@ -3940,7 +3943,7 @@ static NSConditionLock *threadLock = nil;
 	[wait release];
 		
 	[database unlock];
-    [self setDatabase:database];
+    [self setDatabase:[database autorelease]];
     [self saveDatabase];
 }
 
@@ -4012,6 +4015,7 @@ static NSConditionLock *threadLock = nil;
             
             [wait close];
             [wait release];
+            wait = nil;
             
             NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
             
@@ -4063,6 +4067,7 @@ static NSConditionLock *threadLock = nil;
             @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
             [wait close];
             [wait release];
+            wait = nil;
         }
     }
     

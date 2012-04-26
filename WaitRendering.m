@@ -103,7 +103,6 @@
 	[startTime release];
 	startTime = nil;
 	
-	session = nil;
 	stop = YES;
 }
 
@@ -192,19 +191,13 @@
 
 - (void) dealloc
 {
-    [[self window] orderOut:self];
+    [self close];
     
 	[string release];
     string = nil;
     
     [startTime release];
 	startTime = nil;
-    
-    if( session != nil)
-	{
-		[NSApp endModalSession: session];
-		session = nil;
-	}
     
 	[super dealloc];
 }

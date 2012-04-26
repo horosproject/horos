@@ -1360,19 +1360,27 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 -(NSMutableDictionary*)wadoCache {
 	const NSString* const WadoCacheKey = @"WADO Cache";
-	NSMutableDictionary* dict = [self.portal.cache objectForKey:WadoCacheKey];
-	if (!dict || ![dict isKindOfClass: [NSMutableDictionary class]])
-		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoCacheSize] forKey:WadoCacheKey];
-	return dict;
+    NSMutableDictionary* dict = nil;
+    @synchronized( self.portal.cache)
+    {
+        dict = [self.portal.cache objectForKey:WadoCacheKey];
+        if (!dict || ![dict isKindOfClass: [NSMutableDictionary class]])
+            [self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoCacheSize] forKey:WadoCacheKey];
+	}
+    return dict;
 }
 
 #define WadoSOPInstanceUIDCacheSize 5000
 
 -(NSMutableDictionary*)wadoSOPInstanceUIDCache {
 	const NSString* const WadoSOPInstanceUIDCacheKey = @"WADO SOPInstanceUID Cache";
-	NSMutableDictionary* dict = [self.portal.cache objectForKey:WadoSOPInstanceUIDCacheKey];
-	if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
-		[self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoSOPInstanceUIDCacheSize] forKey:WadoSOPInstanceUIDCacheKey];
+    NSMutableDictionary* dict = nil;
+    @synchronized( self.portal.cache)
+    {
+        dict = [self.portal.cache objectForKey:WadoSOPInstanceUIDCacheKey];
+        if (!dict || ![dict isKindOfClass:[NSMutableDictionary class]])
+            [self.portal.cache setObject: dict = [NSMutableDictionary dictionaryWithCapacity:WadoSOPInstanceUIDCacheSize] forKey:WadoSOPInstanceUIDCacheKey];
+    }
 	return dict;
 }
 
@@ -1485,24 +1493,40 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	dbRequest.entity = self.independentDicomDatabase.studyEntity;
 	
-	@try {
+	@try
+    {
 		NSMutableDictionary *imageCache = nil;
 		NSArray *images = nil;
 		
-		if (self.wadoCache.count > WadoCacheSize)
-			[self.wadoCache removeAllObjects];
-		
-		if( self.wadoSOPInstanceUIDCache.count > WadoSOPInstanceUIDCacheSize)
-			[self.wadoSOPInstanceUIDCache removeAllObjects];
-		
+        @synchronized( self.wadoCache)
+        {
+            if (self.wadoCache.count > WadoCacheSize)
+                [self.wadoCache removeAllObjects];
+        }
+        
+        @synchronized( self.wadoSOPInstanceUIDCache)
+        {
+            if( self.wadoSOPInstanceUIDCache.count > WadoSOPInstanceUIDCacheSize)
+                [self.wadoSOPInstanceUIDCache removeAllObjects];
+		}
+        
 		NSString *cachedPathForSOPInstanceUID = nil;
 		
 		if (contentType.length == 0 || [contentType isEqualToString:@"image/jpeg"] || [contentType isEqualToString:@"image/png"] || [contentType isEqualToString:@"image/gif"] || [contentType isEqualToString:@"image/jp2"])
-			imageCache = [self.wadoCache objectForKey:[objectUID stringByAppendingFormat:@"%d", frameNumber]];
-		
+        {
+			@synchronized( self.wadoCache)
+            {
+                imageCache = [self.wadoCache objectForKey:[objectUID stringByAppendingFormat:@"%d", frameNumber]];
+            }
+        }
 		else if( [contentType isEqualToString: @"application/dicom"])
-			cachedPathForSOPInstanceUID = [self.wadoSOPInstanceUIDCache objectForKey: objectUID];
-		
+        {
+			@synchronized( self.wadoSOPInstanceUIDCache)
+            {
+                cachedPathForSOPInstanceUID = [self.wadoSOPInstanceUIDCache objectForKey: objectUID];
+            }
+        }
+        
 		if (!imageCache && !cachedPathForSOPInstanceUID)
 		{
 			NSPredicate* predicate1 = nil;
@@ -1530,9 +1554,13 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				allImages = [allImages arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 			
 			//We will cache all the paths for these sopInstanceUIDs
-			for( DicomImage *image in allImages)
-				[self.wadoSOPInstanceUIDCache setObject: image.completePath forKey: image.sopInstanceUID];
-			
+            
+            @synchronized( self.wadoSOPInstanceUIDCache)
+            {
+                for( DicomImage *image in allImages)
+                    [self.wadoSOPInstanceUIDCache setObject: image.completePath forKey: image.sopInstanceUID];
+			}
+            
 			NSPredicate* predicate = [NSComparisonPredicate predicateWithLeftExpression: [NSExpression expressionForKeyPath: @"compressedSopInstanceUID"] rightExpression: [NSExpression expressionForConstantValue: [DicomImage sopInstanceUIDEncodeString: objectUID]] customSelector: @selector( isEqualToSopInstanceUID:)];
 			NSPredicate *N2NonNullStringPredicate = [NSPredicate predicateWithFormat:@"compressedSopInstanceUID != NIL"];
 			
@@ -1666,8 +1694,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					imageCache = [NSMutableDictionary dictionaryWithObject: dcmPix forKey: @"dcmPix"];
 					
-					[self.wadoCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
-				}
+                    @synchronized( self.wadoCache)
+                    {
+                        [self.wadoCache setObject: imageCache forKey: [objectUID stringByAppendingFormat: @"%d", frameNumber]];
+                    }
+                }
 				
 				if (dcmPix)
 				{

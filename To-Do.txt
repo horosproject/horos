@@ -1,14 +1,12 @@
+- GUI to autofill comments2, 3, 4
 
 ------------------------------------------------------------------------------------------
-
 Tests:
-- CD
 - XML-RPC, including plugin
 - Review sourceforge commits
 
 Added features:
 - Access DICOM CD/DVD as a database
-
 ------------------------------------------------------------------------------------------
 
 - ExportROIs plugin: add Length

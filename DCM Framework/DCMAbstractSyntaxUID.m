@@ -76,7 +76,43 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 	static NSString *XRay3DAngiographicImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.1";
 	static NSString *XRay3DCraniofacialImageStorage = @"1.2.840.10008.5.1.4.1.1.13.1.2";
     /***/
+	static NSString *GE3DModelStorage = @"1.2.840.113619.4.26";
+	static NSString *GECollageStorage = @"1.2.528.1.1001.5.1.1.1";
+	static NSString *GEeNTEGRAProtocolOrNMGenieStorage = @"1.2.840.113619.4.27";
+	static NSString *GEPETRawDataStorage = @"1.2.840.113619.4.30";
+    /***/
+    static NSString *Philips3DObject2Storage = @"1.3.46.670589.5.0.2.1";
+    static NSString *Philips3DObjectStorage = @"1.3.46.670589.5.0.2";
+    static NSString *Philips3DPresentationStateStorage = @"1.3.46.670589.2.5.1.1";
+    static NSString *PhilipsCompositeObjectStorage = @"1.3.46.670589.5.0.4";
+    static NSString *PhilipsCTSyntheticImageStorage = @"1.3.46.670589.5.0.9";
+    static NSString *PhilipsCXImageStorage = @"1.3.46.670589.2.4.1.1";
+    static NSString *PhilipsCXSyntheticImageStorage = @"1.3.46.670589.5.0.12";
+    static NSString *PhilipsLiveRunStorage = @"1.3.46.670589.7.8.1618510092";
+    static NSString *PhilipsMRCardio2Storage = @"1.3.46.670589.5.0.8.1";
+    static NSString *PhilipsMRCardioAnalysis2Storage = @"1.3.46.670589.5.0.11.1";
+    static NSString *PhilipsMRCardioAnalysisStorage = @"1.3.46.670589.5.0.11";
+    static NSString *PhilipsMRCardioProfileStorage = @"1.3.46.670589.5.0.7";
+    static NSString *PhilipsMRCardioStorage = @"1.3.46.670589.5.0.8";
+    static NSString *PhilipsMRColorImageStorage = @"1.3.46.670589.11.0.0.12.3";
+    static NSString *PhilipsMRExamcardStorage = @"1.3.46.670589.11.0.0.12.4";
+    static NSString *PhilipsMRSeriesDataStorage = @"1.3.46.670589.11.0.0.12.2";
+    static NSString *PhilipsMRSpectrumStorage = @"1.3.46.670589.11.0.0.12.1";
+    static NSString *PhilipsMRSyntheticImageStorage = @"1.3.46.670589.5.0.10";
+    static NSString *PhilipsPerfusionImageStorage = @"1.3.46.670589.5.0.14";
+    static NSString *PhilipsPerfusionStorage = @"1.3.46.670589.5.0.13";
+    static NSString *PhilipsPrivateXRayMFStorage = @"1.3.46.670589.7.8.1618510091";
+    static NSString *PhilipsReconstructionStorage = @"1.3.46.670589.7.8.16185100130";
+    static NSString *PhilipsRunStorage = @"1.3.46.670589.7.8.16185100129";
+    static NSString *PhilipsSpecialisedXAStorage = @"1.3.46.670589.2.3.1.1";
+    static NSString *PhilipsSurface2Storage = @"1.3.46.670589.5.0.3.1";
+    static NSString *PhilipsSurfaceStorage = @"1.3.46.670589.5.0.3";
+    static NSString *PhilipsVolume2Storage = @"1.3.46.670589.5.0.1.1";
+    static NSString *PhilipsVolumeSetStorage = @"1.3.46.670589.2.11.1.1";
+    static NSString *PhilipsVolumeStorage = @"1.3.46.670589.5.0.1";
+    static NSString *PhilipsVRMLStorage = @"1.3.46.670589.2.8.1.1";    
 	static NSString *PhilipsPrivatePrefixStorage = @"1.3.46.670589"; // Prefix
+
     static NSString *SiemensCSAPrivateNonImageStorage = @"1.3.12.2.1107.5.9.1";
 	/***/
 	static NSString *XrayAngiographicBiplaneImageStorage = @"1.2.840.10008.5.1.4.1.1.12.3";
@@ -466,7 +502,8 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 {
 	if( imagesSyntaxes == nil)
 	{
-		imagesSyntaxes = [NSArray arrayWithObjects:ComputedRadiographyImageStorage ,
+		imagesSyntaxes = [NSArray arrayWithObjects:
+            ComputedRadiographyImageStorage ,
 		    DigitalXRayImageStorageForPresentation ,
 		    DigitalXRayImageStorageForProcessing ,
 		    DigitalMammographyXRayImageStorageForPresentation ,
@@ -510,7 +547,13 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 			EnhancedXRFImageStorage,
 			XRay3DAngiographicImageStorage,
 			XRay3DCraniofacialImageStorage,
-            PhilipsPrivatePrefixStorage,
+            PhilipsPrivateXRayMFStorage,
+            PhilipsCTSyntheticImageStorage,
+            PhilipsCXImageStorage,
+            PhilipsCXSyntheticImageStorage,
+            PhilipsMRColorImageStorage,
+            PhilipsMRSyntheticImageStorage,
+            PhilipsPerfusionImageStorage,
 			nil];
 		
 		@try 
@@ -619,7 +662,16 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 
 + (NSArray*) supportedPrivateClasses
 {
-    return [NSArray arrayWithObjects: MRSpectroscopyStorage, RawDataStorage, PhilipsPrivatePrefixStorage, SiemensCSAPrivateNonImageStorage, nil];
+    return [NSArray arrayWithObjects:
+            MRSpectroscopyStorage,
+            RawDataStorage,
+            PhilipsPrivatePrefixStorage,
+            SiemensCSAPrivateNonImageStorage,
+            GE3DModelStorage,
+            GECollageStorage,
+            GEeNTEGRAProtocolOrNMGenieStorage,
+            GEPETRawDataStorage,
+            nil];
 }
 
 + (BOOL) isSupportedPrivateClasses:(NSString *)sopClassUID

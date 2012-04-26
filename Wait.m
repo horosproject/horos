@@ -47,25 +47,21 @@
 	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
 		[NSThread sleepForTimeInterval: 0.5];
 	
+    [[self window] orderOut:self];
+    
     if( session != nil)
 		[NSApp endModalSession:session];
 	session = nil;
-    
-	[super close];
 }
 
 - (void) dealloc
 {
+    [self close];
+    
 	[startTime release];
-	
+	startTime = nil;
+    
 	[super dealloc];
-}
-
-- (void)windowDidLoad
-{
-//	[[self window] center];
-//	[[self window] setOpaque:NO];
-//	[[self window] setAlphaValue:.8f];
 }
 
 - (void)incrementBy:(double)delta

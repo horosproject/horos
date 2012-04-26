@@ -9227,14 +9227,35 @@ END_CREATE_ROIS:
 				{
 					success = [self loadDICOMPapyrus];
 					
+                    #ifdef OSIRIX_VIEWER
 					#ifndef OSIRIX_LIGHT
-					//only try again if is strict DICOM
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
-					{
-						NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
-						success = [self loadDICOMDCMFramework];
-					}
+                    
+                    // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+                    
+                    NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                    
+                    @try 
+                    {
+                        [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                        
+                        //only try again if is strict DICOM
+                        if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
+                        {
+                            NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
+                            success = [self loadDICOMDCMFramework];
+                        }
+                        
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                    }
+                    @catch (NSException * e) 
+                    {
+                        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    }
+                    
 					#endif
+                    #endif
 				}
 				#ifndef OSIRIX_LIGHT
 				else
@@ -12491,9 +12512,29 @@ END_CREATE_ROIS:
 	#ifndef OSIRIX_LIGHT
 	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
 	{
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+        NSString *s = nil;
+        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+        
+        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+        
+        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+        
+        @try 
+        {
+            [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+            
+            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
-		return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+            s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+        
+            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+            
+        return s;
 	}
 	else 
 	#endif
@@ -12617,8 +12658,29 @@ END_CREATE_ROIS:
 		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
 		{
 			#ifndef OSIRIX_LIGHT
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-			return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+            NSString *s = nil;
+            // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+            
+            NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+            
+            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+            
+            @try 
+            {
+                [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                
+                DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+                
+                s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+                
+                [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+            }
+            @catch (NSException * e) 
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            return s;
 			#endif
 		}
 	}
