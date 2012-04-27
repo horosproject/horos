@@ -3860,12 +3860,6 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(e);
 	}
 	
-	WaitRendering *wait = nil;
-	
-	if( [NSThread isMainThread])
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
-	[wait showWindow:self];
-	
 	@try
 	{
 		[database save: nil];
@@ -3939,9 +3933,6 @@ static NSConditionLock *threadLock = nil;
         N2LogExceptionWithStackTrace(ne);
 	}
 	
-	[wait close];
-	[wait release];
-		
 	[database unlock];
     [self setDatabase:[database autorelease]];
     [self saveDatabase];
@@ -4008,25 +3999,22 @@ static NSConditionLock *threadLock = nil;
             
             NSMutableArray	*nonLocalImagesPath = [NSMutableArray array];
             
-            WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Preparing Delete...", nil)];
+            WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
             [wait showWindow:self];
             
             nonLocalImagesPath = [[objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"inDatabaseFolder == NO"]] valueForKey:@"completePath"];
             
-            [wait close];
-            [wait release];
-            wait = nil;
-            
-            NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
-            
             if( [nonLocalImagesPath  count] > 0)
             {
+                [wait.window orderOut: self];
+                
+                NSLog(@"non-local images : %d", (int) [nonLocalImagesPath count]);
+                
                 result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete/Remove images", nil), NSLocalizedString(@"Some of the selected images are not stored in the Database folder. Do you want to only remove the links of these images from the database or also delete the original files?", nil), NSLocalizedString(@"Remove the links",nil),  NSLocalizedString(@"Cancel",nil), NSLocalizedString(@"Delete the files",nil));
+                
+                [wait.window makeKeyAndOrderFront: self];
             }
             else result = NSAlertDefaultReturn;
-            
-            wait = [[WaitRendering alloc] init: NSLocalizedString(@"Deleting...", nil)];
-            [wait showWindow:self];
             
             @try
             {
