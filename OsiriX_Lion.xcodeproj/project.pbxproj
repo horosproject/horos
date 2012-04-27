@@ -3777,8 +3777,6 @@
 		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA5FE111B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
 		CEBA709D10C70039003A6186 /* GetPrimaryMACAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = CEBA709C10C70039003A6186 /* GetPrimaryMACAddress.m */; };
-		CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAD133507F50083F3FD /* OpenNetworkSysPrefs.scpt */; };
-		CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */ = {isa = PBXBuildFile; fileRef = CEB98BAE133507F50083F3FD /* OpenSharingSysPrefs.scpt */; };
 		CEBD3E0E14B9EDE300FBDF08 /* French.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0C14B9EDE300FBDF08 /* French.plist */; };
 		CEBD3E0F14B9EDE300FBDF08 /* French.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0C14B9EDE300FBDF08 /* French.plist */; };
 		CEBD3E1014B9EDE300FBDF08 /* Perfusion.plist in Resources */ = {isa = PBXBuildFile; fileRef = CEBD3E0D14B9EDE300FBDF08 /* Perfusion.plist */; };
@@ -10664,8 +10662,6 @@
 		CEB98A16133507C80083F3FD /* ServerTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerTableView.h; path = "Preference Panes/OSILocationsPreferencePane/ServerTableView.h"; sourceTree = "<group>"; };
 		CEB98A17133507C80083F3FD /* ServerTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerTableView.m; path = "Preference Panes/OSILocationsPreferencePane/ServerTableView.m"; sourceTree = "<group>"; };
 		CEB98BAC133507F50083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIListenerPreferencePane/English.lproj/OSIListenerPreferencePanePref.xib"; sourceTree = "<group>"; };
-		CEB98BAD133507F50083F3FD /* OpenNetworkSysPrefs.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = OpenNetworkSysPrefs.scpt; path = "Preference Panes/OSIListenerPreferencePane/OpenNetworkSysPrefs.scpt"; sourceTree = "<group>"; };
-		CEB98BAE133507F50083F3FD /* OpenSharingSysPrefs.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = OpenSharingSysPrefs.scpt; path = "Preference Panes/OSIListenerPreferencePane/OpenSharingSysPrefs.scpt"; sourceTree = "<group>"; };
 		CEB98BAF133507F50083F3FD /* OSIListenerPreferencePanePref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIListenerPreferencePanePref.h; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePanePref.h"; sourceTree = "<group>"; };
 		CEB98BB0133507F50083F3FD /* OSIListenerPreferencePanePref.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = OSIListenerPreferencePanePref.mm; path = "Preference Panes/OSIListenerPreferencePane/OSIListenerPreferencePanePref.mm"; sourceTree = "<group>"; };
 		CEB98BB8133508040083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIHotKeysPreferencePane/English.lproj/OSIHotKeysPref.xib"; sourceTree = "<group>"; };
@@ -17765,8 +17761,6 @@
 			isa = PBXGroup;
 			children = (
 				CEB98BAB133507F50083F3FD /* OSIListenerPreferencePanePref.xib */,
-				CEB98BAD133507F50083F3FD /* OpenNetworkSysPrefs.scpt */,
-				CEB98BAE133507F50083F3FD /* OpenSharingSysPrefs.scpt */,
 				CEB98BAF133507F50083F3FD /* OSIListenerPreferencePanePref.h */,
 				CEB98BB0133507F50083F3FD /* OSIListenerPreferencePanePref.mm */,
 			);
@@ -26377,8 +26371,6 @@
 			files = (
 				596D30B31439B9CD004EE9EC /* word2pdf.applescript in Resources */,
 				596D30B21439B9C8004EE9EC /* pages2pdf.applescript in Resources */,
-				CEBCDAE61350466E0065BC08 /* OpenNetworkSysPrefs.scpt in Resources */,
-				CEBCDAE71350466E0065BC08 /* OpenSharingSysPrefs.scpt in Resources */,
 				CE289B1D0D00AF91004F0A93 /* Mail.scpt in Resources */,
 				ABBB63A70635874E00D9531F /* dcmdump in Resources */,
 				ABBB63A80635874E00D9531F /* dicom.dic in Resources */,
@@ -30856,7 +30848,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "Developer ID";
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
