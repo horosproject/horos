@@ -15,6 +15,7 @@
 #import "PrettyCell.h"
 #import "NSString+N2.h"
 #import "N2Operators.h"
+#import "N2Debug.h"
 @interface PrettyCell ()
 
 @property(readwrite,retain) NSMutableArray* rightSubviews;
@@ -130,6 +131,10 @@
 
 - (BOOL)trackMouse:(NSEvent*)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView untilMouseUp:(BOOL)untilMouseUp {
     return NO;
+}
+
+-(void)setPlaceholderString:(NSString*)str {
+    // this is a dummy function... AppKit calls this, and if we don't implement it, it fails
 }
 
 @end
