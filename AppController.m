@@ -3998,6 +3998,13 @@ static BOOL initialized = NO;
         return NSOrderedSame;
     }];
     
+    // only use the database screen last
+    NSScreen* dbscreen = [dbWindow screen];
+    if ([screens containsObject:dbscreen]) {
+        [screens removeObject:dbscreen];
+        [screens addObject:dbscreen];
+    }
+    
     return screens;
 }
 

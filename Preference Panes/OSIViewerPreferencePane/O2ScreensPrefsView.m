@@ -85,9 +85,13 @@
         [[NSColor blackColor] setStroke];
         
         if (!viewerScreens.count)
-            [[NSColor colorWithDeviceRed:113./255 green:142./255 blue:170.5/255 alpha:1] setFill];
+            if ([self isEnabled])
+                [[NSColor colorWithDeviceRed:113./255 green:142./255 blue:170.5/255 alpha:1] setFill];
+            else [[NSColor colorWithDeviceWhite:141.83/255 alpha:1] setFill];
         else if ([viewerScreens containsObject:record.screen])
-            [[NSColor colorWithDeviceRed:99./255 green:157./255 blue:214./255 alpha:1] setFill];
+            if ([self isEnabled])
+                [[NSColor colorWithDeviceRed:99./255 green:157./255 blue:214./255 alpha:1] setFill];
+            else [[NSColor colorWithDeviceWhite:156.67/255 alpha:1] setFill];
         else [[NSColor lightGrayColor] setFill];
         
         NSRect frame = record.frame;
@@ -131,6 +135,9 @@
 
 - (void)mouseDown:(NSEvent*)theEvent
 {
+    if (![self isEnabled])
+        return;
+    
 	BOOL result = NO;
 	NSPoint currentPoint = [theEvent locationInWindow];
 	BOOL mouseIsUp = NO;
