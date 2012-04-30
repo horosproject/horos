@@ -97,6 +97,7 @@
 #import "DICOMExport.h"
 #import "PrettyCell.h"
 #import "N2Stuff.h"
+#import "NSNotificationCenter+N2.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"

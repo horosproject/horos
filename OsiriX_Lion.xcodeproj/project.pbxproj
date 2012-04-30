@@ -615,6 +615,10 @@
 		84CE7CA714D84F87008CA119 /* Tiling1x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */; };
 		84CE7CA814D84F87008CA119 /* Tiling2x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */; };
 		84CE7CA914D84F87008CA119 /* Tiling2x4.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */; };
+		84D7BBE3154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7BBE1154A941A007B5A86 /* NSNotificationCenter+N2.h */; };
+		84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 84D7BBE1154A941A007B5A86 /* NSNotificationCenter+N2.h */; };
+		84D7BBE5154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */; };
+		84D7BBE6154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */; };
 		84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		84E191FB1369966A008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
@@ -8832,6 +8836,8 @@
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
 		84CE7CA414D84F87008CA119 /* Tiling1x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x4.pdf; path = Binaries/Icons/Tiling/Tiling1x4.pdf; sourceTree = "<group>"; };
 		84CE7CA514D84F87008CA119 /* Tiling2x4.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x4.pdf; path = Binaries/Icons/Tiling/Tiling2x4.pdf; sourceTree = "<group>"; };
+		84D7BBE1154A941A007B5A86 /* NSNotificationCenter+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNotificationCenter+N2.h"; path = "nitrogen/Sources/NSNotificationCenter+N2.h"; sourceTree = "<group>"; };
+		84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSNotificationCenter+N2.mm"; path = "nitrogen/Sources/NSNotificationCenter+N2.mm"; sourceTree = "<group>"; };
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
 		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
@@ -15557,6 +15563,8 @@
 				AB10FB0D1129338A009EB238 /* NS(Attributed)String+Geometrics.m */,
 				AB10FB0E1129338A009EB238 /* NSDictionary+N2.h */,
 				AB10FB0F1129338A009EB238 /* NSDictionary+N2.mm */,
+				84D7BBE1154A941A007B5A86 /* NSNotificationCenter+N2.h */,
+				84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */,
 				596EB3F4118ABBB000880192 /* NSWindow+N2.h */,
 				596EB3F5118ABBB000880192 /* NSWindow+N2.mm */,
 				AB10FB101129338A009EB238 /* NSMutableDictionary+N2.h */,
@@ -25489,6 +25497,7 @@
 				71512E9D15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h in Headers */,
 				714D3BB1152AE40C003EB087 /* O2ScreensPrefsView.h in Headers */,
 				714D3BC4152B2410003EB087 /* NSArray+N2.h in Headers */,
+				84D7BBE3154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26115,6 +26124,7 @@
 				71512EA01523552700B87012 /* DiscMountedAskTheUserDialogController.h in Headers */,
 				714D3BB2152AE40C003EB087 /* O2ScreensPrefsView.h in Headers */,
 				714D3BC5152B2410003EB087 /* NSArray+N2.h in Headers */,
+				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28559,6 +28569,7 @@
 				71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 				714D3BB3152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
 				714D3BC6152B2410003EB087 /* NSScreen+N2.m in Sources */,
+				84D7BBE5154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29803,6 +29814,7 @@
 				71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 				714D3BB4152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
 				714D3BC7152B2410003EB087 /* NSScreen+N2.m in Sources */,
+				84D7BBE6154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

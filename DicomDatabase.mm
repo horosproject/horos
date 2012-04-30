@@ -43,6 +43,7 @@
 #import "NSThread+N2.h"
 #import "N2Stuff.h"
 #import "ThreadModalForWindowController.h"
+#import "NSNotificationCenter+N2.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -1919,11 +1920,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
 				if (postNotifications) {
-                    [NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
-                    [NSNotificationCenter.defaultCenter postNotificationName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);

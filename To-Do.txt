@@ -1,14 +1,13 @@
-- GUI to autofill comments2, 3, 4
-
 ------------------------------------------------------------------------------------------
 Tests:
-- XML-RPC, including plugin
 - Review sourceforge commits
 
 Added features:
 - Access DICOM CD/DVD as a database
 ------------------------------------------------------------------------------------------
 
+- GUI to autofill comments 2, 3, 4
+- Shift+Cmd+Click to add series to viewer
 - ExportROIs plugin: add Length
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching

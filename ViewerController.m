@@ -12472,9 +12472,9 @@ int i,j,l;
 	if( [sender tag] == 0) data = [NSMutableDictionary dictionary];
 	
 	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:data error: &error];
-		
+    
 	// Show Volume Window
-	if( [sender tag] == 0 && error == nil)
+	if( [sender tag] == 0 && error == nil && volume > 0 && pts.count > 0)
 	{
 		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self roi: selectedRoi];
 		
@@ -12517,7 +12517,7 @@ int i,j,l;
 			}
 		}
 	}
-	else if([sender tag]==1 && !error)
+	else if([sender tag] == 1 && !error)
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
@@ -18678,31 +18678,34 @@ int i,j,l;
 				}
 			}
 			
-			gtotal = 0;
-			for( i = 0; i < memSize; i++)
-			{
-				gtotal += totalPtr[ i];
+            if( memSize > 0 && totalPtr != nil)
+            {
+                gtotal = 0;
+                for( i = 0; i < memSize; i++)
+                {
+                    gtotal += totalPtr[ i];
+                }
+                
+                gmean = gtotal / memSize;
+                
+                gdev = 0;
+                gmin = totalPtr[ 0];
+                gmax = totalPtr[ 0];
+                for( i = 0; i < memSize; i++)
+                {
+                    float	val = totalPtr[ i];
+                    
+                    float temp = gmean - val;
+                    temp *= temp;
+                    gdev += temp;
+                    
+                    if( val < gmin) gmin = val;
+                    if( val > gmax) gmax = val;
+                }
+                gdev = gdev / (double) (memSize-1);
+                gdev = sqrt( gdev);
 			}
-			
-			gmean = gtotal / memSize;
-			
-			gdev = 0;
-			gmin = totalPtr[ 0];
-			gmax = totalPtr[ 0];
-			for( i = 0; i < memSize; i++)
-			{
-				float	val = totalPtr[ i];
-				
-				float temp = gmean - val;
-				temp *= temp;
-				gdev += temp;
-				
-				if( val < gmin) gmin = val;
-				if( val > gmax) gmax = val;
-			}
-			gdev = gdev / (double) (memSize-1);
-			gdev = sqrt( gdev);
-			
+            
 			free( totalPtr);
 			
 			[data setObject: [NSNumber numberWithDouble: gmin] forKey:@"min"];
