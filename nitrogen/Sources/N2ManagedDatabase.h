@@ -17,10 +17,11 @@
 
 @interface N2ManagedDatabase : NSObject {
 	@protected
-		NSString* _sqlFilePath;
+    NSString* _sqlFilePath;
 	@private
 	NSManagedObjectContext* _managedObjectContext;
     id _mainDatabase;
+    BOOL _isDeallocating;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;

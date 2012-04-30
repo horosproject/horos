@@ -350,6 +350,11 @@
 }
 
 -(void)dealloc {
+    // this should fix dealloc cycles
+    if (_isDeallocating)
+        return;
+    _isDeallocating = YES;
+    // ok..
     if ([self.managedObjectContext hasChanges])
         [self save];
     [NSNotificationCenter.defaultCenter removeObserver:self];
