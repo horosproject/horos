@@ -469,9 +469,6 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
             [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
         
-        if( mode == 2)
-            return NO;
-        
         if (mode == 1) { // copy into database on mount
             NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
                 NSThread* cft = [NSThread currentThread];
@@ -559,6 +556,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 }
         }
     //    }
+        
+        if (mode == 2)
+            return NO;
         
         /*
         

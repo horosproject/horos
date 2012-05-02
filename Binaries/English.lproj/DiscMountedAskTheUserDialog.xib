@@ -146,7 +146,7 @@
 						<object class="NSButton" id="168133773">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{226, 12}, {82, 32}}</string>
+							<string key="NSFrame">{{14, 12}, {81, 32}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="776323090"/>
@@ -156,7 +156,7 @@
 							<object class="NSButtonCell" key="NSCell" id="233894699">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents">Cancel</string>
+								<string key="NSContents">Ignore</string>
 								<reference key="NSSupport" ref="803137818"/>
 								<string key="NSCellIdentifier">_NS:9</string>
 								<reference key="NSControlView" ref="168133773"/>
