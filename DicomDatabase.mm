@@ -60,7 +60,6 @@ NSString* const CurrentDatabaseVersion = @"2.5";
 -(void)modifyDefaultAlbums;
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context;
 -(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion;
-+(NSArray*)allDatabases;
 
 @end
 
@@ -162,7 +161,11 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 
 +(NSArray*)allDatabases {
 	@synchronized (databasesDictionary) {
-		return [[[databasesDictionary allValues] copy] autorelease];
+        NSMutableArray* mainDatabases = [NSMutableArray array];
+        for (DicomDatabase* db in [databasesDictionary allValues])
+            if ([db isMainDatabase])
+                [mainDatabases addObject:db];
+		return mainDatabases;
 	}
 	
 	return nil;
@@ -173,6 +176,11 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 		@synchronized (databasesDictionary) {
 			if (![[databasesDictionary allValues] containsObject:db] && ![databasesDictionary objectForKey:db.baseDirPath])
 				[databasesDictionary setObject:db forKey:db.baseDirPath];
+            else {
+                NSDate* k = [NSDate date];
+                if (![databasesDictionary objectForKey:k])
+                    [databasesDictionary setObject:db forKey:k];
+            }
 		}
 }
 
