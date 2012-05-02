@@ -143,7 +143,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         }
     } else
     if (spi == "MONOCHROME2") {
-        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:0 bitsPerPixel:bitsAllocated] autorelease];
+        rep = [[[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:width pixelsHigh:height bitsPerSample:bitsStored samplesPerPixel:1 hasAlpha:NO isPlanar:NO colorSpaceName:NSDeviceWhiteColorSpace bytesPerRow:width*8/bitsAllocated bitsPerPixel:bitsAllocated] autorelease];
         memcpy(rep.bitmapData, data, ceilf(1.0*width*height*bitsAllocated/8));
     } else
     if (spi == "PALETTE COLOR") {

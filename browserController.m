@@ -7184,7 +7184,7 @@ static BOOL withReset = NO;
         
         DicomDatabase* idatabase = [database independentDatabase];
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
-
+        
         for (int i = 0; i < objectIDs.count; i++) {
             @try {
                 if (context != previewPix)
@@ -9900,9 +9900,9 @@ static BOOL needToRezoom;
 
 - (void)newViewerDICOM: (id)sender
 {
-	NSManagedObject	*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
-	
 	[_database lock];
+
+	NSManagedObject	*item = [databaseOutline itemAtRow: [databaseOutline selectedRow]];
 	
 	@try 
 	{
