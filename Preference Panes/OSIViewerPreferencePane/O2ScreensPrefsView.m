@@ -64,7 +64,7 @@
         for (NSScreen* screen in screens) {
             NSRect screenFrame = [screen frame];
             NSRect frame = NSIntegralRect(NSMakeRect(bounds.origin.x+(screenFrame.origin.x-desktopBounds.origin.x)/desktopBounds.size.width*width, bounds.origin.y+(screenFrame.origin.y-desktopBounds.origin.y)/desktopBounds.size.height*height, screenFrame.size.width/desktopBounds.size.width*width, screenFrame.size.height/desktopBounds.size.height*height));
-            frame.origin.x += 0.5; frame.origin.y += 0.5;
+            frame.origin.x += 0.5; frame.origin.y += 0.5; frame.size.width -= 1; frame.size.height -= 1;
             
             if (self.isFlipped)
                 frame = N2FlipRect(frame, bounds);
@@ -81,47 +81,62 @@
     
     NSArray* viewerScreens = [[NSUserDefaults standardUserDefaults] screensUsedForViewers];
     NSArray* screens = [NSScreen screens];
-    for (_O2ScreensPrefsViewScreenRecord* record in _records) {
-        [[NSColor blackColor] setStroke];
-        
-        if (!viewerScreens.count)
-            if ([self isEnabled])
-                [[NSColor colorWithDeviceRed:113./255 green:142./255 blue:170.5/255 alpha:1] setFill];
-            else [[NSColor colorWithDeviceWhite:141.83/255 alpha:1] setFill];
-        else if ([viewerScreens containsObject:record.screen])
-            if ([self isEnabled])
-                [[NSColor colorWithDeviceRed:99./255 green:157./255 blue:214./255 alpha:1] setFill];
-            else [[NSColor colorWithDeviceWhite:156.67/255 alpha:1] setFill];
-        else [[NSColor lightGrayColor] setFill];
-        
-        NSRect frame = record.frame;
+    for (int phase = 0; phase < 2; ++phase)
+        for (_O2ScreensPrefsViewScreenRecord* record in _records) {
+            if (phase == 0 && [viewerScreens containsObject:record.screen])
+                continue;
+            if (phase == 1 && ![viewerScreens containsObject:record.screen])
+                continue;
+            
+            [[NSColor blackColor] setStroke];
+            
+            if (!viewerScreens.count)
+                if ([self isEnabled])
+                    [[NSColor colorWithDeviceRed:113./255 green:142./255 blue:170.5/255 alpha:1] setFill];
+                else [[NSColor colorWithDeviceWhite:141.83/255 alpha:1] setFill];
+            else if ([viewerScreens containsObject:record.screen])
+                if ([self isEnabled])
+                    [[NSColor colorWithDeviceRed:99./255 green:157./255 blue:214./255 alpha:1] setFill];
+                else [[NSColor colorWithDeviceWhite:156.67/255 alpha:1] setFill];
+            else [[NSColor lightGrayColor] setFill];
+            
+            NSRect frame = record.frame;
 
-        NSBezierPath* path = [NSBezierPath bezierPathWithRect:frame];
-        [path fill]; [path stroke];
-        
-        if (record.screen == [screens objectAtIndex:0]) {
-            NSRect menuFrame;
-            NSDivideRect(frame, &menuFrame, &frame, 4, self.isFlipped? NSMinYEdge : NSMaxYEdge);
-            path = [NSBezierPath bezierPathWithRect:menuFrame];
-            [[NSColor whiteColor] setFill];
+            NSBezierPath* path = [NSBezierPath bezierPathWithRect:frame];
             [path fill]; [path stroke];
+            
+            if (record.screen == [screens objectAtIndex:0]) {
+                NSRect menuFrame;
+                NSDivideRect(frame, &menuFrame, &frame, 4, self.isFlipped? NSMinYEdge : NSMaxYEdge);
+                path = [NSBezierPath bezierPathWithRect:menuFrame];
+                [[NSColor whiteColor] setFill];
+                [path fill]; [path stroke];
+            }
+            
+            if (record == _activeRecord) {
+                frame.origin.x += 1.5; frame.origin.y += 1.5; frame.size.width -= 3; frame.size.height -= 3;
+                path = [NSBezierPath bezierPathWithRect:frame];
+                [[NSColor grayColor] setStroke];
+                [path stroke];
+            }
         }
-        
-        if (record == _activeRecord) {
-            frame.origin.x += 1.5; frame.origin.y += 1.5; frame.size.width -= 3; frame.size.height -= 3;
-            path = [NSBezierPath bezierPathWithRect:frame];
-            [[NSColor grayColor] setStroke];
-            [path stroke];
-        }
-    }
 
     [[NSGraphicsContext currentContext] restoreGraphicsState];
 }
 
 -(_O2ScreensPrefsViewScreenRecord*)recordAtPoint:(NSPoint)p {
+    NSMutableArray* t = [NSMutableArray array];
     for (_O2ScreensPrefsViewScreenRecord* record in _records)
         if (NSPointInRect(p, record.frame))
-            return record;
+            [t addObject:record];
+    
+    for (_O2ScreensPrefsViewScreenRecord* s in t)
+        if ([[NSUserDefaults standardUserDefaults] screenIsUsedForViewers:s.screen])
+            return s;
+    
+    if (t.count)
+        return [t objectAtIndex:0];
+    
     return nil;
 }
 
