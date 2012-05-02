@@ -18,7 +18,7 @@
 
 @interface DicomDatabase (Scan)
 
--(void)scanAtPath:(NSString*)path;
+-(BOOL)scanAtPath:(NSString*)path;
 +(NSString*)_findDicomdirIn:(NSArray*)allpaths;
 
 @end

@@ -396,7 +396,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
 }
 
--(void)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume {
+-(BOOL)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume {
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
 	@try {
@@ -455,7 +455,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     }
                     
                     if (thread.isCancelled)
-                        return;
+                        return NO;
                 }
             }
             
@@ -463,11 +463,14 @@ static NSString* _dcmElementKey(DcmElement* element) {
         }
         
         if (!dicomImages.count)
-            return;
+            return NO;
         
         NSInteger mode = [NSUserDefaults.standardUserDefaults integerForKey:@"MOUNT"];
         if (mode == -1 || [[NSApp currentEvent] modifierFlags]&NSCommandKeyMask)
             [self performSelectorOnMainThread:@selector(_askUserDiscDataCopyOrBrowse:) withObject:[NSArray arrayWithObjects: path, [NSNumber numberWithInteger:dicomImages.count], [NSValue valueWithPointer:&mode], nil] waitUntilDone:YES];
+        
+        if( mode == 2)
+            return NO;
         
         if (mode == 1) { // copy into database on mount
             NSThread* copyFilesThread = [NSThread performBlockInBackground:^{
@@ -536,7 +539,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     }
                 }
                 
-                return;
+                return YES;
             }
         }
         
@@ -570,10 +573,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
     } @finally {
         [thread exitOperation];
     }
+    
+    return YES;
 }
 
--(void)scanAtPath:(NSString*)path {
-	[self scanAtPath:path isVolume:YES];
+-(BOOL)scanAtPath:(NSString*)path {
+	return [self scanAtPath:path isVolume:YES];
 }
 
 @end

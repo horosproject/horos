@@ -1064,8 +1064,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		thread.name = NSLocalizedString(@"Scanning disc...", nil);
 		[[ThreadsManager defaultManager] addThreadAndStart:thread];
 		
-        [database scanAtPath:self.devicePath];
-		
+        BOOL autoselect = [database scanAtPath:self.devicePath];
+        
 		if (![[database objectsForEntity:database.imageEntity] count])
         {
 			[[[BrowserController currentBrowser] sources] removeObject:self];
@@ -1074,7 +1074,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		
         self.detected = YES;
         
-		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"autoSelectSourceCDDVD"] && [[NSFileManager defaultManager] fileExistsAtPath:self.devicePath] && autoselect)
 			[[BrowserController currentBrowser] performSelectorOnMainThread:@selector(setDatabaseFromSourceIdentifier:) withObject:self waitUntilDone:NO];
         else [[BrowserController currentBrowser] redrawSources];
 	} @catch (NSException* e)
