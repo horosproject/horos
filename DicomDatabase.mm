@@ -3194,7 +3194,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	self.managedObjectContext = nil;
 	
 	[self dumpSqlFile];
-	[self upgradeSqlFileFromModelVersion:CurrentDatabaseVersion];
+//	[self upgradeSqlFileFromModelVersion:CurrentDatabaseVersion]; // removing this line reflects antoine's commit 9758
 	
 	self.managedObjectContext = [self contextAtPath:self.sqlFilePath];
 	

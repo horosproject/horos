@@ -377,30 +377,15 @@ static int hotKeyToolCrossTable[] =
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
-	
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSMutableArray *viewersCtrl = [[NSMutableArray alloc] initWithCapacity: numberOf2DViewer];
-		
-		NSArray *winList = [NSApp orderedWindows];
-		for( NSWindow *w in winList)
-		{
-			if( [w windowController])
-				[viewersCtrl addObject: [w windowController]];
-		}
-		
-		for( NSWindowController *ctrl in viewersCtrl)
-		{
-			if( [ctrl isKindOfClass:[ViewerController class]])
-			{
-				if( [(ViewerController*) ctrl windowWillClose] == NO)
-					[viewersList addObject: ctrl];
-			}
-		}
-		
-		[viewersCtrl release];
-		[pool release];
-	}
+    
+    for( NSWindow *w in [NSApp orderedWindows])
+    {
+        if( [[w windowController] isKindOfClass:[ViewerController class]])
+        {
+            if( [(ViewerController*) [w windowController] windowWillClose] == NO)
+                [viewersList addObject: [w windowController]];
+        }
+    }
 	
 	return viewersList;
 }
@@ -3069,7 +3054,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
 				found = YES;
 			}
-			else [[toolbarPanel[ i] window] orderOut:self];
+			else
+            {
+                if( [[toolbarPanel[ i] window] isVisible])
+                    [[toolbarPanel[ i] window] orderOut:self];
+            }
 		}
 		if( found == NO) NSLog( @"Toolbar NOT found");
 	}

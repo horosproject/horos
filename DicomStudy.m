@@ -1860,9 +1860,14 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         for (WebPortalUser* user in users)
         {
-            NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
+            if( user.studyPredicate.length > 0)
+            {
+                NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
             
-            if( [studies containsObject: self])
+                if( [studies containsObject: self])
+                    [authorizedUsers addObject: user];
+            }
+            else
                 [authorizedUsers addObject: user];
         }
     }

@@ -22,6 +22,7 @@
 #import "NSError+OsiriX.h"
 #import "DDData.h"
 #import "NSData+N2.h"
+#import "DicomStudy.h"
 
 static PSGenerator *generator = nil;
 static NSMutableDictionary *studiesForUserCache = nil;
@@ -284,68 +285,76 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	return YES;
 }
 
--(NSArray*)arrayByAddingSpecificStudiesForPredicate:(NSPredicate*)predicate toArray:(NSArray*)array
+-(NSArray*)arrayByAddingSpecificStudiesToArray:(NSArray*)array
 {
 	NSMutableArray *specificArray = [NSMutableArray array];
-	BOOL truePredicate = NO;
 	
-	if (!predicate)
-	{
-		predicate = [NSPredicate predicateWithValue: YES];
-		truePredicate = YES;
-	}
-	
+    if( array == nil)
+        array = [NSArray array];
+    
 	@try
 	{
 		NSArray* userStudies = self.studies.allObjects;
 		
 		if( userStudies.count == 0)
 			return array;
-		
-        NSArray* studiesArray = nil;
         
         @synchronized( studiesForUserCache)
         {
-            if( [studiesForUserCache objectForKey: @"allStudies"])
+            NSString *userID = [self.name stringByAppendingString: @" specificStudies"];
+            
+            if( [studiesForUserCache objectForKey: userID])
             {
-                studiesArray = [studiesForUserCache objectForKey: @"allStudies"];
+                specificArray = [studiesForUserCache objectForKey: userID];
             }
             else
             {
-                // Find studies
-                NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-                req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
-                req.predicate = predicate;
-                studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+                NSArray* studiesArray = nil;
                 
-                [studiesForUserCache setObject: studiesArray forKey: @"allStudies"];
+                if( [studiesForUserCache objectForKey: @"all DB studies"])
+                {
+                    studiesArray = [studiesForUserCache objectForKey: @"all DB studies"];
+                }
+                else
+                {
+                    // Find studies
+                    NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+                    req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+                    req.predicate = [NSPredicate predicateWithValue: YES];
+                    studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+                    
+                    if( studiesArray)
+                        [studiesForUserCache setObject: studiesArray forKey: @"all DB studies"];
+                }
+                
+                for (WebPortalStudy* study in userStudies)
+                {
+                    NSArray *obj = nil;
+                    
+                    if (self.canAccessPatientsOtherStudies.boolValue)
+                        obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
+                    else
+                        obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+                    
+                    if ([obj count] >= 1)
+                    {
+                        for( id o in obj)
+                        {
+                            if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
+                                [specificArray addObject: o];
+                        }
+                    }
+                    else if ([obj count] == 0)
+                    {
+                        // It means this study doesnt exist in the entire DB -> remove it from this user list
+                        NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+                        [self.managedObjectContext deleteObject:study];
+                    }
+                }
+                
+                [studiesForUserCache setObject: specificArray forKey: userID];
             }
-		}
-                
-		for (WebPortalStudy* study in userStudies)
-		{
-			NSArray *obj = nil;
-			
-			if (self.canAccessPatientsOtherStudies.boolValue)
-				obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
-			else
-				obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
-			
-			if ([obj count] >= 1)
-			{
-				for( id o in obj)
-				{
-					if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
-						[specificArray addObject: o];
-				}
-			}
-			else if (truePredicate && [obj count] == 0)
-			{
-				// It means this study doesnt exist in the entire DB -> remove it from this user list
-				NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
-				[self.managedObjectContext deleteObject:study];
-			}
-		}
+        }
 	}
 	@catch (NSException * e)
 	{
@@ -403,10 +412,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		{
             req.predicate = [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate];
 			
-            if( studiesForUserCache == nil)
+            if( studiesForUserCache == nil && user)
             {
                 studiesForUserCache = [[NSMutableDictionary alloc] init];
-                [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+                [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
             }
             
             @synchronized( studiesForUserCache)
@@ -424,12 +433,12 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 }
             }
             
+            if( user && user.studyPredicate.length > 0)
+				studiesArray = [user arrayByAddingSpecificStudiesToArray: studiesArray];
+            
             if( predicate)
                 studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
             
-			if( user)  
-				studiesArray = [user arrayByAddingSpecificStudiesForPredicate: predicate toArray:studiesArray];
-			
 			if( user.canAccessPatientsOtherStudies.boolValue)
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
@@ -518,7 +527,22 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
     @synchronized( studiesForUserCache)
     {
-        [studiesForUserCache removeAllObjects];
+        NSMutableSet *set = [NSMutableSet set];
+        
+        if( [n.userInfo objectForKey: NSInsertedObjectsKey])
+            [set unionSet: [n.userInfo objectForKey: NSInsertedObjectsKey]];
+        
+        if( [n.userInfo objectForKey: NSDeletedObjectsKey])
+            [set unionSet: [n.userInfo objectForKey: NSDeletedObjectsKey]];
+        
+        for( NSManagedObject *object in set)
+        {
+            if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]])
+            {
+                [studiesForUserCache removeAllObjects];
+                break;
+            }
+        }
     }
 }
 
@@ -527,10 +551,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	
 	NSArray *studiesArray = nil, *albumArray = nil;
 	
-    if( studiesForUserCache == nil)
+    if( studiesForUserCache == nil && user)
     {
         studiesForUserCache = [[NSMutableDictionary alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
     }
     
     @synchronized( studiesForUserCache)
@@ -580,7 +604,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                     {
                         studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
                         
-                        NSArray *specificArray = [user arrayByAddingSpecificStudiesForPredicate:NULL toArray:NULL];
+                        NSArray *specificArray = [user arrayByAddingSpecificStudiesToArray: nil];
                         
                         for ( NSManagedObject *specificStudy in specificArray)
                         {

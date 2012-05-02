@@ -184,24 +184,6 @@ void errmsg(const char* msg, ...)
 
 - (void)dealloc
 {
-	if (scp != NULL)
-	{
-		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
-		 delete scp;
-		 scp = nil;
-	}
-
-	if (scptls != NULL)
-	{
-		scptls->cleanChildren(OFTrue);  // clean up any child processes 		 
-		delete scptls;
-		scptls = nil;
-		
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"] handler:nil];		
-	}
-
 	[_aeTitle release];
 	[_params release];
 	[super dealloc];
@@ -578,6 +560,11 @@ DcmQueryRetrieveConfig config;
 	
 	localSCP = NULL;
 	
+    if([[_params objectForKey:@"TLSEnabled"] boolValue])
+		scptls = nil;
+	else
+		scp = nil;
+    
 	if (cond.bad())
 		errmsg("****** cond.good() != normal ---- DCMTKQueryRetrieve");
 	
@@ -594,6 +581,12 @@ DcmQueryRetrieveConfig config;
 		delete tLayer;
 #endif
 	
+    if([[_params objectForKey:@"TLSEnabled"] boolValue])
+    {
+        [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"] handler:nil];
+    }
 	return;
 }
 

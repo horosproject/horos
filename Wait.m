@@ -15,6 +15,7 @@
 #import "WaitRendering.h"
 #import "Wait.h"
 #import "SendController.h"
+#import "NSWindow+N2.h"
 
 @implementation Wait
 
@@ -131,6 +132,10 @@
 -(id) initWithString:(NSString*) str :(BOOL) useSession
 {
 	self = [super initWithWindowNibName:@"Wait"];
+
+    if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
+        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+    
     [[self window] center];
 	[[self window] setLevel: NSModalPanelWindowLevel];
 	if( str) [text setStringValue:str];

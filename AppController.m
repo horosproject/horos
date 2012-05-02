@@ -3027,7 +3027,7 @@ static BOOL initialized = NO;
 		[QueryController echo: [self privateIP] port:[dcmtkQRSCPTLS port] AET: [dcmtkQRSCPTLS aeTitle]];
 	#endif
 	
-	[NSThread sleepForTimeInterval: 1.0];
+	[NSThread sleepForTimeInterval: 0.1];
 	
 	if( wait)
 	{

@@ -52,7 +52,6 @@
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
-
 static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	NSCalendarDate* start = [NSCalendarDate dateWithYear:day.yearOfCommonEra month:day.monthOfYear day:day.dayOfMonth hour:0 minute:0 second:0 timeZone:NULL];
 	return start.timeIntervalSinceReferenceDate;
@@ -1372,7 +1371,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 #define WadoSOPInstanceUIDCacheSize 5000
 
--(NSMutableDictionary*)wadoSOPInstanceUIDCache {
+-(NSMutableDictionary*)wadoSOPInstanceUIDCache
+{
 	const NSString* const WadoSOPInstanceUIDCacheKey = @"WADO SOPInstanceUID Cache";
     NSMutableDictionary* dict = nil;
     @synchronized( self.portal.cache)
@@ -1386,14 +1386,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 // wado?requestType=WADO&studyUID=XXXXXXXXXXX&seriesUID=XXXXXXXXXXX&objectUID=XXXXXXXXXXX
 // 127.0.0.1:3333/wado?requestType=WADO&frameNumber=1&studyUID=2.16.840.1.113669.632.20.1211.10000591592&seriesUID=1.3.6.1.4.1.19291.2.1.2.2867252960399100001&objectUID=1.3.6.1.4.1.19291.2.1.3.2867252960616100004
--(void)processWado {
-	if (!self.portal.wadoEnabled) {
+-(void)processWado
+{
+	if (!self.portal.wadoEnabled)
+    {
 		self.response.statusCode = 403;
 		[self.response setDataWithString:NSLocalizedString(@"OsiriX cannot fulfill your request because the WADO service is disabled.", NULL)];
 		return;
 	}
 	
-	if (![[[parameters objectForKey:@"requestType"] lowercaseString] isEqual:@"wado"]) {
+	if (![[[parameters objectForKey:@"requestType"] lowercaseString] isEqual:@"wado"])
+    {
 		self.response.statusCode = 404;
 		return;
 	}
@@ -1786,7 +1789,9 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (!self.response.data)
 			self.response.data = [NSData data];
 
-	} @catch (NSException * e) {
+	}
+    @catch (NSException * e)
+    {
 		NSLog(@"Error: [WebPortalResponse processWado:] %@", e);
 		self.response.statusCode = 500;
 	}

@@ -233,7 +233,7 @@
                         break;
                     }
                     
-                    [NSThread sleepForTimeInterval:1];
+                    [NSThread sleepForTimeInterval:4];
                 } while ([NSDate timeIntervalSinceReferenceDate] - startTime < 300); // try for 300 seconds = 5 minutes
             }
         }

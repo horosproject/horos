@@ -280,7 +280,6 @@ DcmQueryRetrieveSCP::DcmQueryRetrieveSCP(
 
 DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
 {
-
 }
 
 void DcmQueryRetrieveSCP::lockFile(void)

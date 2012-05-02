@@ -14,6 +14,7 @@
 
 #import "Wait.h"
 #import "WaitRendering.h"
+#import "NSWindow+N2.h"
 
 @implementation WaitRendering
 
@@ -235,6 +236,9 @@
 	startTime = nil;
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
+    if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
+        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+    
 	[[self window] setLevel: NSModalPanelWindowLevel];
 	
 	return self;

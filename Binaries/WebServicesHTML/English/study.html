@@ -249,11 +249,11 @@ function shareDestinationChange(select) {
 			</table>
 		</div>
 	
-		%[IF:Info.proposeShare&&ShareDestinations.count||User.isAdmin%
+		%[IF:Info.proposeShare&&ShareDestinations.count%
 		<div class="title separated">Share</div>
 		<div>
 			<table class="basic wide form">
-				%[IF:Study.authorizedUsers.count%
+				%[IF:User.isAdmin&&Study.authorizedUsers.count%
 				<tr>
 					<td>This study is visible by:</td>
 					<td>
@@ -262,7 +262,7 @@ function shareDestinationChange(select) {
 					%]FOREACH:Study.authorizedUsers:aUser%
 					</td>
 				</tr>
-				%]IF:Study.authorizedUsers.count%
+				%]IF:User.isAdmin&&Study.authorizedUsers.count%
 				<tr>
 					<td>User:</td>
 					<td>
@@ -298,7 +298,7 @@ function shareDestinationChange(select) {
 				</tr>
 			</table>
 		</div>
-		%]IF:Info.proposeShare&&ShareDestinations.count||User.isAdmin%
+		%]IF:Info.proposeShare&&ShareDestinations.count%
 	
 		%[IF:Info.proposeDicomSend%
 		<div class="title separated">DICOM Transfer</div>
