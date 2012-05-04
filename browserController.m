@@ -11698,7 +11698,9 @@ static NSArray*	openSubSeriesArray = nil;
             NSString *parentFolder = [file stringByDeletingLastPathComponent];
 			if( [lastFolder isEqualToString: parentFolder] == NO)
 			{
-				[folders addObject: parentFolder];
+				if( [folders containsString: parentFolder] == NO)
+                    [folders addObject: parentFolder];
+                
                 [lastFolder release];
 				lastFolder = [[NSString alloc] initWithString: parentFolder];
 			}
@@ -11725,9 +11727,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
         [NSThread currentThread].status = NSLocalizedString(@"Cleaning database folders...", nil);
         [NSThread currentThread].progress = -1;
-
-		[folders removeDuplicatedStrings];
-		
+        
 		@try 
 		{
 			for( NSString *f in folders)
