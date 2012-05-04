@@ -117,8 +117,21 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     CGFloat p = 0;
     NSRect frame;
     
+    /* position buttons horizontally */ {
+        CGFloat p = 14, w = self.window.frame.size.width;
+        for (NSButton* button in [NSArray arrayWithObjects: self.backgroundButton, self.cancelButton, nil]) {
+            if (![button isHidden]) {
+                frame = button.frame;
+                p += frame.size.width;
+                frame.origin.x = w-p;
+                [button setFrame:frame];
+                p += 10;
+            }
+        }
+    }
+    
     if (!self.cancelButton.isHidden || !self.backgroundButton.isHidden) {
-        p += 20;
+        p += 12;
         
         frame = self.cancelButton.frame;
         frame.origin.y = p;
@@ -131,7 +144,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
         p += frame.size.height;
     }
     
-    p += 20;
+    p += 12;
     frame = self.progressIndicator.frame;
     frame.origin.y = p;
     [self.progressIndicator setFrame:frame];
@@ -181,14 +194,14 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 		if (![NSThread isMainThread])
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
         else {
-            CGFloat previousProgress = self.progressIndicator.doubleValue;
-            if ([keyPath isEqual:NSThreadProgressKey]) {
-                [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
-                if (self.thread.progress >= 0)
-                    [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-            }
-            
-            if ([NSThread isMainThread]) {
+            @synchronized (obj.threadDictionary) {
+                CGFloat previousProgress = self.progressIndicator.doubleValue;
+                if ([keyPath isEqual:NSThreadProgressKey]) {
+                    [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
+                    if (self.thread.progress >= 0)
+                        [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
+                }
+                
                 if ([keyPath isEqual:NSThreadProgressKey])
                     if (fabs(_lastDisplayedStatus-self.progressIndicator.doubleValue) > 1.0/self.progressIndicator.frame.size.width) {
                         _lastDisplayedStatus = self.progressIndicator.doubleValue;
@@ -216,11 +229,12 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                     [self.backgroundButton setHidden: !obj.supportsBackgrounding];
                     [self.backgroundButton display];
                 }
-                
-                [self repositionViews];
             }
         
-        } return;
+            [self repositionViews];
+        }
+    
+        return;
 	}
     
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];

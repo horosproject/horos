@@ -105,7 +105,7 @@
 						<object class="NSButton" id="742100993">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{278, 12}, {96, 32}}</string>
+							<string key="NSFrame">{{163, 12}, {96, 32}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
@@ -123,19 +123,19 @@
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
-						<object class="NSButton" id="691840419">
+						<object class="NSButton" id="218795798">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">289</int>
-							<string key="NSFrame">{{14, 12}, {115, 32}}</string>
+							<string key="NSFrame">{{259, 12}, {115, 32}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
-							<object class="NSButtonCell" key="NSCell" id="425283634">
+							<object class="NSButtonCell" key="NSCell" id="532716624">
 								<int key="NSCellFlags">67239424</int>
 								<int key="NSCellFlags2">134217728</int>
 								<string key="NSContents">Background</string>
 								<reference key="NSSupport" ref="735323237"/>
-								<reference key="NSControlView" ref="691840419"/>
+								<reference key="NSControlView" ref="218795798"/>
 								<int key="NSButtonFlags">-2038284033</int>
 								<int key="NSButtonFlags2">129</int>
 								<string key="NSAlternateContents"/>
@@ -351,7 +351,7 @@
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">backgroundButton</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="691840419"/>
+						<reference key="destination" ref="218795798"/>
 					</object>
 					<int key="connectionID">29</int>
 				</object>
@@ -359,7 +359,7 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">backgroundAction:</string>
 						<reference key="source" ref="1001"/>
-						<reference key="destination" ref="691840419"/>
+						<reference key="destination" ref="218795798"/>
 					</object>
 					<int key="connectionID">30</int>
 				</object>
@@ -421,8 +421,8 @@
 							<reference ref="99804013"/>
 							<reference ref="984214236"/>
 							<reference ref="322195196"/>
+							<reference ref="218795798"/>
 							<reference ref="742100993"/>
-							<reference ref="691840419"/>
 						</array>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -484,16 +484,16 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">26</int>
-						<reference key="object" ref="691840419"/>
+						<reference key="object" ref="218795798"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="425283634"/>
+							<reference ref="532716624"/>
 						</array>
 						<reference key="parent" ref="1006"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">27</int>
-						<reference key="object" ref="425283634"/>
-						<reference key="parent" ref="691840419"/>
+						<reference key="object" ref="532716624"/>
+						<reference key="parent" ref="218795798"/>
 					</object>
 				</array>
 			</object>
