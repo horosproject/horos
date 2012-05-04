@@ -1026,7 +1026,8 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 {
     BOOL delete = [super validateForDelete: error];
     
-    @synchronized (self) {
+    @synchronized (self)
+    {
         if (delete)
         {
             #ifdef OSIRIX_VIEWER

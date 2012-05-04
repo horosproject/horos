@@ -23,6 +23,7 @@
 #import "Notifications.h"
 #import "NSThread+N2.h"
 
+#define MAXSTUDYDELETE 100
 
 @interface DicomDatabase (Private)
 
@@ -223,6 +224,9 @@
 									}
 								}
 							}
+                            
+                            if( toBeRemoved.count > MAXSTUDYDELETE)
+                                break;
 						}
 						
 						for ( int i = 0; i < [toBeRemoved count]; i++) // Check if studies are in an album or added this week.  If so don't autoclean that study from the database (DDP: 051108).
@@ -472,6 +476,8 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
         
         BOOL flagDeleteLinkedImages = [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOCLEANINGDELETEORIGINAL"];
         
+        int deletedStudies = 0;
+        
         for (NSArray* sd in studiesDates) {
             { CGFloat a = initialDelta, b = freeMemoryRequested, f = free; [NSThread currentThread].progress = (a-(b-f))/a; }
             
@@ -514,6 +520,10 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
             NSDictionary* fsattrs = [[NSFileManager defaultManager] fileSystemAttributesAtPath:self.dataBaseDirPath];
             free = [[fsattrs objectForKey:NSFileSystemFreeSize] unsignedLongLongValue]/1024/1024;
             if (free >= freeMemoryRequested) // if so, stop deleting studies
+                break;
+            
+            deletedStudies++;
+            if( deletedStudies > MAXSTUDYDELETE) // To avoid HUGE loop with very large DB
                 break;
         }
         
