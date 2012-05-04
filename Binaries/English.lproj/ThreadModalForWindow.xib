@@ -123,6 +123,27 @@
 								<int key="NSPeriodicInterval">25</int>
 							</object>
 						</object>
+						<object class="NSButton" id="691840419">
+							<reference key="NSNextResponder" ref="1006"/>
+							<int key="NSvFlags">289</int>
+							<string key="NSFrame">{{14, 12}, {115, 32}}</string>
+							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="425283634">
+								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Background</string>
+								<reference key="NSSupport" ref="735323237"/>
+								<reference key="NSControlView" ref="691840419"/>
+								<int key="NSButtonFlags">-2038284033</int>
+								<int key="NSButtonFlags2">129</int>
+								<string key="NSAlternateContents"/>
+								<string type="base64-UTF8" key="NSKeyEquivalent">Gw</string>
+								<int key="NSPeriodicDelay">200</int>
+								<int key="NSPeriodicInterval">25</int>
+							</object>
+						</object>
 						<object class="NSScrollView" id="322195196">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">290</int>
@@ -327,6 +348,22 @@
 					<int key="connectionID">25</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">backgroundButton</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="691840419"/>
+					</object>
+					<int key="connectionID">29</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">backgroundAction:</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="691840419"/>
+					</object>
+					<int key="connectionID">30</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">font: smallSystemFont</string>
 						<reference key="source" ref="810177480"/>
@@ -383,8 +420,9 @@
 						<array class="NSMutableArray" key="children">
 							<reference ref="99804013"/>
 							<reference ref="984214236"/>
-							<reference ref="742100993"/>
 							<reference ref="322195196"/>
+							<reference ref="742100993"/>
+							<reference ref="691840419"/>
 						</array>
 						<reference key="parent" ref="1005"/>
 					</object>
@@ -444,6 +482,19 @@
 						<reference key="object" ref="36925282"/>
 						<reference key="parent" ref="322195196"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">26</int>
+						<reference key="object" ref="691840419"/>
+						<array class="NSMutableArray" key="children">
+							<reference ref="425283634"/>
+						</array>
+						<reference key="parent" ref="1006"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">27</int>
+						<reference key="object" ref="425283634"/>
+						<reference key="parent" ref="691840419"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -460,6 +511,8 @@
 				<string key="2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="20.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="21.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="26.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="27.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="9.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -468,7 +521,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">25</int>
+			<int key="maxID">30</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -483,18 +536,22 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">ThreadModalForWindowController</string>
 					<string key="superclassName">NSWindowController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">cancelAction:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">cancelAction:</string>
-						<object class="IBActionInfo" key="NS.object.0">
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="backgroundAction:">id</string>
+						<string key="cancelAction:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="backgroundAction:">
+							<string key="name">backgroundAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="cancelAction:">
 							<string key="name">cancelAction:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-					</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="backgroundButton">NSButton</string>
 						<string key="cancelButton">NSButton</string>
 						<string key="progressDetailsField">NSTextField</string>
 						<string key="progressIndicator">NSProgressIndicator</string>
@@ -503,6 +560,10 @@
 						<string key="titleField">NSTextField</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="backgroundButton">
+							<string key="name">backgroundButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="cancelButton">
 							<string key="name">cancelButton</string>
 							<string key="candidateClassName">NSButton</string>

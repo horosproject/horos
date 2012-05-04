@@ -222,6 +222,31 @@ NSString* const NSThreadSupportsCancelKey = @"supportsCancel";
 	}
 }
 
+NSString* const NSThreadSupportsBackgroundingKey = @"supportsBackgrounding";
+
+-(BOOL)supportsBackgrounding {
+	@synchronized (self.threadDictionary) {
+		return [[self.currentOperationDictionary objectForKey:NSThreadSupportsBackgroundingKey] boolValue];
+	}
+	
+	return NO;
+}
+
+-(void)setSupportsBackgrounding:(BOOL)supportsBackgrounding {
+    if ([self isMainThread])
+        return;
+	
+	if (supportsBackgrounding == self.supportsBackgrounding)
+		return;
+	
+	@synchronized (self.threadDictionary) {
+		[self willChangeValueForKey:NSThreadSupportsBackgroundingKey];
+		[self.currentOperationDictionary setObject:[NSNumber numberWithBool:supportsBackgrounding] forKey:NSThreadSupportsBackgroundingKey];
+		[self didChangeValueForKey:NSThreadSupportsBackgroundingKey];
+	}
+}
+
+
 NSString* const NSThreadStatusKey = @"status";
 
 -(NSString*)status {

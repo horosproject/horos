@@ -40,6 +40,10 @@ extern NSString* const NSThreadSupportsCancelKey;
 -(BOOL)supportsCancel;
 -(void)setSupportsCancel:(BOOL)supportsCancel;
 
+extern NSString* const NSThreadSupportsBackgroundingKey;
+-(BOOL)supportsBackgrounding;
+-(void)setSupportsBackgrounding:(BOOL)supportsBackgrounding;
+
 extern NSString* const NSThreadStatusKey;
 -(NSString*)status;
 -(void)setStatus:(NSString*)status;

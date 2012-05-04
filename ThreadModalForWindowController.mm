@@ -29,6 +29,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 @synthesize docWindow = _docWindow;
 @synthesize progressIndicator = _progressIndicator;
 @synthesize cancelButton = _cancelButton;
+@synthesize backgroundButton = _backgroundButton;
 @synthesize titleField = _titleField;
 @synthesize statusField = _statusField;
 @synthesize statusFieldScroll = _statusFieldScroll;
@@ -67,6 +68,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
     [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	[self.cancelButton bind:@"hidden2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
+	[self.backgroundButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsBackgroundingKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	
 	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadNameKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
@@ -74,6 +76,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread addObserver:self forKeyPath:NSThreadProgressDetailsKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadIsCancelledKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
+	[self.thread addObserver:self forKeyPath:NSThreadSupportsBackgroundingKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
     
     if (!self.docWindow && [NSThread isMainThread]) {
         [self.window center];
@@ -114,11 +117,17 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     CGFloat p = 0;
     NSRect frame;
     
-    if (!self.cancelButton.isHidden) {
+    if (!self.cancelButton.isHidden || !self.backgroundButton.isHidden) {
         p += 20;
+        
         frame = self.cancelButton.frame;
         frame.origin.y = p;
         [self.cancelButton setFrame:frame];
+
+        frame = self.backgroundButton.frame;
+        frame.origin.y = p;
+        [self.backgroundButton setFrame:frame];
+
         p += frame.size.height;
     }
     
@@ -199,9 +208,13 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
                     self.progressDetailsField.stringValue = obj.progressDetails? obj.progressDetails : @"";
                     [self.progressDetailsField display];
                 }
-                if ([keyPath isEqual:NSThreadSupportsCancelKey] && [keyPath isEqual:NSThreadIsCancelledKey]) {
-                    [self.cancelButton setHidden: obj.supportsCancel && !obj.isCancelled];
+                if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
+                    [self.cancelButton setHidden: !obj.supportsCancel && !obj.isCancelled];
                     [self.cancelButton display];
+                }
+                if ([keyPath isEqual:NSThreadSupportsBackgroundingKey]) {
+                    [self.backgroundButton setHidden: !obj.supportsBackgrounding];
+                    [self.backgroundButton display];
                 }
                 
                 [self repositionViews];
@@ -237,6 +250,10 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 -(void)cancelAction:(id)source {
 	[self.thread setIsCancelled:YES];
+}
+
+-(void)backgroundAction:(id)source {
+	[self invalidate];
 }
 
 @end

@@ -21,6 +21,7 @@
 	NSWindow* _docWindow;
 	NSProgressIndicator* _progressIndicator;
 	NSButton* _cancelButton;
+	NSButton* _backgroundButton;
 	NSTextField* _titleField;
 	NSTextView* _statusField;
     NSScrollView* _statusFieldScroll;
@@ -33,6 +34,7 @@
 @property(retain, readonly) NSWindow* docWindow;
 @property(retain) IBOutlet NSProgressIndicator* progressIndicator;
 @property(retain) IBOutlet NSButton* cancelButton;
+@property(retain) IBOutlet NSButton* backgroundButton;
 @property(retain) IBOutlet NSTextField* titleField;
 @property(retain) IBOutlet NSTextView* statusField;
 @property(retain) IBOutlet NSScrollView* statusFieldScroll;
@@ -41,6 +43,7 @@
 -(id)initWithThread:(NSThread*)thread window:(NSWindow*)window;
 
 -(IBAction)cancelAction:(id)source;
+-(IBAction)backgroundAction:(id)source;
 
 -(void)invalidate;
 
