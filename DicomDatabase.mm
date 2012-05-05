@@ -160,73 +160,86 @@ static DicomDatabase* defaultDatabase = nil;
 static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] init];
 
 +(NSArray*)allDatabases {
-	@synchronized (databasesDictionary) {
+	@synchronized (databasesDictionary)
+    {
         NSMutableArray* mainDatabases = [NSMutableArray array];
-        for (DicomDatabase* db in [databasesDictionary allValues])
+        
+        for (NSValue *value in [databasesDictionary allValues])
+        {
+            DicomDatabase* db = (DicomDatabase*) [value pointerValue];
+            
             if ([db isMainDatabase])
                 [mainDatabases addObject:db];
+        }
+        
 		return mainDatabases;
 	}
 	
 	return nil;
 }
 
-+(void)knowAbout:(DicomDatabase*)db {
++(void)knowAbout:(DicomDatabase*)db
+{
 	if (db && db.baseDirPath)
-		@synchronized (databasesDictionary) {
-			if (![[databasesDictionary allValues] containsObject:db] && ![databasesDictionary objectForKey:db.baseDirPath])
-				[databasesDictionary setObject:db forKey:db.baseDirPath];
-            else {
+		@synchronized (databasesDictionary)
+        {
+			if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
+				[databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
+            else
+            {
                 NSDate* k = [NSDate date];
+                
                 if (![databasesDictionary objectForKey:k])
-                    [databasesDictionary setObject:db forKey:k];
+                    [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
             }
 		}
 }
 
--(oneway void)release
-{
-	NSInteger prc;
-	@synchronized(self)
-    {
-		prc = self.retainCount;
-//		if (prc <= 2)
-//			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
-		
-	NSInteger rc = prc-1;
-//	if (rc == 1)
-//		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
-//	if (rc == 0)
-//		NSLog(@"\tself.rc = 0, zombies arising..?");
-	
-        @synchronized (databasesDictionary)
-        {
-            if (rc == 1 && [databasesDictionary keyForObject:self])
-            {
-//              NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
+//-(oneway void)release
+//{
+//	NSInteger prc;
+//	@synchronized(self)
+//    {
+//		prc = self.retainCount;
+////		if (prc <= 2)
+////			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
+//		
+//	NSInteger rc = prc-1;
+////	if (rc == 1)
+////		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
+////	if (rc == 0)
+////		NSLog(@"\tself.rc = 0, zombies arising..?");
+//	
+//        @synchronized (databasesDictionary)
+//        {
+//            if (rc == 1 && [databasesDictionary keyForObject:self])
+//            {
+////              NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
+//
+//                //[managedObjectContext invalidate];
+//                    
+//                if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1)
+//                {
+////                  NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
+//                    id key = [databasesDictionary keyForObject:self];
+//                    if (key)
+//                    {
+//                        [databasesDictionary removeObjectForKey:key];
+//                        
+////                        [[self class] performSelectorOnMainThread:@selector(_mainthreadDatabasesDictionaryRemoveObjectForKey:) withObject:key waitUntilDone:NO];
+//                    }
+//                }
+//            }
+//        }
+//        [super release];
+//	}
+//}
 
-                //[managedObjectContext invalidate];
-                    
-                if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1)
-                {
-//                  NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
-                    id key = [databasesDictionary keyForObject:self];
-                    if (key)
-                    {
-                        [[self class] performSelectorOnMainThread:@selector(_mainthreadDatabasesDictionaryRemoveObjectForKey:) withObject:key waitUntilDone:NO];
-                    }
-                }
-            }
-        }
-        [super release];
-	}
-}
-
-+(void)_mainthreadDatabasesDictionaryRemoveObjectForKey:(id)key {
-    @synchronized (databasesDictionary) {
-        [databasesDictionary removeObjectForKey:key];
-    }
-}
+//+(void)_mainthreadDatabasesDictionaryRemoveObjectForKey:(id)key {
+//    @synchronized (databasesDictionary) {
+//        [databasesDictionary removeObjectForKey:key];
+//    }
+//}
 
 //-(id)retain {
 //	NSLog(@"%@ - [DicomDatabase retain] self.rc = %d, managedObjectContext.rc = %d ", self.name, self.retainCount, self.managedObjectContext.retainCount); 
@@ -242,7 +255,7 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 	
     DicomDatabase* database = nil;
 	@synchronized(databasesDictionary) {
-		database = [databasesDictionary objectForKey:path];
+		database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
     }
 	
 	if (database) return database;
@@ -253,8 +266,9 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 }
 
 +(DicomDatabase*)existingDatabaseAtPath:(NSString*)path {
-	@synchronized(databasesDictionary) {
-        return [databasesDictionary objectForKey:[self baseDirPathForPath:path]];
+	@synchronized(databasesDictionary)
+    {
+        return (DicomDatabase*) [[databasesDictionary objectForKey:[self baseDirPathForPath:path]] pointerValue];
     }
     
     return nil;
@@ -265,19 +279,29 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
         return nil;
     
 	//if (databasesDictionary)
-		@synchronized(databasesDictionary) {
+		@synchronized(databasesDictionary)
+    {
 			// is it the MOC of a listed database?
-			for (DicomDatabase* dbi in [databasesDictionary allValues])
+			for (NSValue *value in [databasesDictionary allValues])
+            {
+                DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
+                
 				if (dbi.managedObjectContext == c)
 					return dbi;
+            }
 			// is it an independent MOC of a listed database?
-			for (DicomDatabase* dbi in [databasesDictionary allValues])
-				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator) {
+			for (NSValue *value in [databasesDictionary allValues])
+            {
+                DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
+                
+				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator)
+                {
 					// we must return a valid DicomDatabase with the specified context
 					DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
 					db.name = dbi.name;
 					return db;
 				}
+            }
             // uhm, let's try with the persistentStores
             //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
             //    
@@ -460,6 +484,16 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(void)dealloc {
+    
+    @synchronized (databasesDictionary)
+    {
+        for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
+        {
+            if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+                [databasesDictionary removeObjectForKey: key];
+        }
+    }
+    
 	[self deallocClean];
 	[self deallocRouting];
     
