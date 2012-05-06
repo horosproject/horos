@@ -195,6 +195,14 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 		}
 }
 
+-(oneway void)release
+{
+	@synchronized( databasesDictionary)
+    {
+        [super release];
+    }
+}
+
 //-(oneway void)release
 //{
 //	NSInteger prc;
