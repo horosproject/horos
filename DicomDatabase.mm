@@ -250,12 +250,15 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 	return [[self class] databaseAtPath:path name:nil];
 }
 
-+(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name {
++(DicomDatabase*)databaseAtPath:(NSString*)path name:(NSString*)name
+{
 	path = [self baseDirPathForPath:path];
 	
     DicomDatabase* database = nil;
-	@synchronized(databasesDictionary) {
+	@synchronized(databasesDictionary)
+    {
 		database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
+        [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
     }
 	
 	if (database) return database;
@@ -265,13 +268,17 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 	return database;
 }
 
-+(DicomDatabase*)existingDatabaseAtPath:(NSString*)path {
++(DicomDatabase*)existingDatabaseAtPath:(NSString*)path
+{
+    DicomDatabase *database = nil;
+    
 	@synchronized(databasesDictionary)
     {
-        return (DicomDatabase*) [[databasesDictionary objectForKey:[self baseDirPathForPath:path]] pointerValue];
+        database = (DicomDatabase*) [[databasesDictionary objectForKey:[self baseDirPathForPath:path]] pointerValue];
+        [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
     }
     
-    return nil;
+    return database;
 }
 
 +(DicomDatabase*)databaseForContext:(NSManagedObjectContext*)c { // hopefully one day this will be __deprecated
@@ -483,8 +490,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return self;
 }
 
--(void)dealloc {
-    
+-(void)dealloc
+{
     @synchronized (databasesDictionary)
     {
         for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
@@ -497,7 +504,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	[self deallocClean];
 	[self deallocRouting];
     
-    if (self.isMainDatabase) {
+    if (self.isMainDatabase)
+    {
         NSRecursiveLock* temp;
         
         temp = _importFilesFromIncomingDirLock;
