@@ -197,62 +197,20 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 
 -(oneway void)release
 {
-	@synchronized( databasesDictionary)
+	if( self.retainCount == 1)
     {
-        [super release];
+        @synchronized (databasesDictionary)
+        {
+            for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
+            {
+                if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+                    [databasesDictionary removeObjectForKey: key];
+            }
+        }
     }
+    
+    [super release];
 }
-
-//-(oneway void)release
-//{
-//	NSInteger prc;
-//	@synchronized(self)
-//    {
-//		prc = self.retainCount;
-////		if (prc <= 2)
-////			NSLog(@"%@ - [DicomDatabase release] self.rc = %d, managedObjectContext.rc = %d ", self.name, prc, self.managedObjectContext.retainCount); 
-//		
-//	NSInteger rc = prc-1;
-////	if (rc == 1)
-////		NSLog(@"\tself.rc = %d, managedObjectContext.rc = %d ", self.retainCount, self.managedObjectContext.retainCount);
-////	if (rc == 0)
-////		NSLog(@"\tself.rc = 0, zombies arising..?");
-//	
-//        @synchronized (databasesDictionary)
-//        {
-//            if (rc == 1 && [databasesDictionary keyForObject:self])
-//            {
-////              NSLog(@"\tThis database's retainCount has gone down to 1; the context has %d registered objects", self.managedObjectContext.registeredObjects.count);
-//
-//                //[managedObjectContext invalidate];
-//                    
-//                if (self.managedObjectContext.retainCount /*- self.managedObjectContext.registeredObjects.count*/ == 1)
-//                {
-////                  NSLog(@"\t\tThe context seems to be retained only by the database and by its registered objects.. We can release the database!");
-//                    id key = [databasesDictionary keyForObject:self];
-//                    if (key)
-//                    {
-//                        [databasesDictionary removeObjectForKey:key];
-//                        
-////                        [[self class] performSelectorOnMainThread:@selector(_mainthreadDatabasesDictionaryRemoveObjectForKey:) withObject:key waitUntilDone:NO];
-//                    }
-//                }
-//            }
-//        }
-//        [super release];
-//	}
-//}
-
-//+(void)_mainthreadDatabasesDictionaryRemoveObjectForKey:(id)key {
-//    @synchronized (databasesDictionary) {
-//        [databasesDictionary removeObjectForKey:key];
-//    }
-//}
-
-//-(id)retain {
-//	NSLog(@"%@ - [DicomDatabase retain] self.rc = %d, managedObjectContext.rc = %d ", self.name, self.retainCount, self.managedObjectContext.retainCount); 
-//	return [super retain];
-//}
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
 	return [[self class] databaseAtPath:path name:nil];
@@ -500,15 +458,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(void)dealloc
 {
-    @synchronized (databasesDictionary)
-    {
-        for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
-        {
-            if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
-                [databasesDictionary removeObjectForKey: key];
-        }
-    }
-    
 	[self deallocClean];
 	[self deallocRouting];
     

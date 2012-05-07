@@ -2862,7 +2862,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)_computeNumberOfStudiesForAlbumsThread
 {
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     @try {
         static NSNumberFormatter* decimalNumberFormatter = NULL;
         if (!decimalNumberFormatter) {
@@ -2870,18 +2870,21 @@ static NSConditionLock *threadLock = nil;
             [decimalNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
         }
         
-        DicomDatabase* idatabase = [self.database independentDatabase];
-        if (!idatabase)
-            return;
-        
         if (_computingNumberOfStudiesForAlbums) {
             [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
             return;
         }
         
+        _computingNumberOfStudiesForAlbums = YES;
+        
+        DicomDatabase* idatabase = [self.database independentDatabase];
+        if (!idatabase)
+        {
+            _computingNumberOfStudiesForAlbums = NO;
+            return;
+        }
+        
         @try {
-            _computingNumberOfStudiesForAlbums = YES;
-            
             NSMutableArray* NoOfStudies = [NSMutableArray array];
             
             // compute number of studies in database

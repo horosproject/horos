@@ -30,11 +30,11 @@ const static void *namesKey = &namesKey;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    @synchronized (self)
+    NSString *bundleIdentifier = [[NSBundle bundleForClass: [notificationObserver class]] bundleIdentifier];
+    
+    if( [bundleIdentifier hasPrefix: @"com.rossetantoine"] == NO && [bundleIdentifier hasPrefix: @"com.apple"] == NO && [bundleIdentifier hasPrefix: @"dk.infinite-loop.crashreporter"] == NO)
     {
-        NSString *bundleIdentifier = [[NSBundle bundleForClass: [notificationObserver class]] bundleIdentifier];
-        
-        if( [bundleIdentifier hasPrefix: @"com.rossetantoine"] == NO && [bundleIdentifier hasPrefix: @"com.apple"] == NO)
+        @synchronized (self)
         {
             NSMutableDictionary *names = objc_getAssociatedObject(self, (void*) namesKey);
             if (!names)
@@ -55,12 +55,13 @@ const static void *namesKey = &namesKey;
             {
                 [observers addObject: observerDictionary];
             }
-            
-            NSLog( @"---- catch notifications: %@", [notificationObserver class]);
         }
-        else
-            [self my_addObserver:notificationObserver selector:notificationSelector name:notificationName object:notificationSender];
+        
+        NSLog( @"---- catch notifications: %@ - %@", [notificationObserver class], bundleIdentifier);
     }
+    else
+        [self my_addObserver:notificationObserver selector:notificationSelector name:notificationName object:notificationSender];
+   
     
     [pool release];
 }
@@ -106,9 +107,9 @@ const static void *namesKey = &namesKey;
             
             [pool release];
         }
-        
-        [self my_removeObserver: notificationObserver name: notificationName object: notificationSender];
     }
+    
+    [self my_removeObserver: notificationObserver name: notificationName object: notificationSender];
 }
 
 - (NSSet *) my_observersForNotificationName:(NSString *)notificationName
@@ -145,30 +146,30 @@ const static void *namesKey = &namesKey;
 
 - (void) my_postNotificationName:(NSString *)aName object:(id)anObject userInfo:(NSDictionary *)aUserInfo
 {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
     @synchronized (self)
     {
-        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-        
         [self postExtraNotification: [NSNotification notificationWithName: aName object: anObject userInfo: aUserInfo]];
-        
-        [self my_postNotificationName: aName object: anObject userInfo: aUserInfo];
-        
-        [pool release];
     }
+    
+    [self my_postNotificationName: aName object: anObject userInfo: aUserInfo];
+        
+    [pool release];
 }
 
 - (void) my_postNotification:(NSNotification *)notification
 {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
     @synchronized (self)
     {
-        NSAutoreleasePool *pool = [NSAutoreleasePool new];
-        
         [self postExtraNotification: notification];
-        
-        [self my_postNotification: notification];
-        
-        [pool release];
     }
+    
+    [self my_postNotification: notification];
+        
+    [pool release];
 }
 @end
 
