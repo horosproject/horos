@@ -2952,7 +2952,12 @@ static NSConditionLock *threadLock = nil;
 - (void)refreshAlbums
 {
     if( _database)
-        [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+    {
+        if( _computingNumberOfStudiesForAlbums)
+            [self delayedRefreshAlbums];
+        else
+            [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+    }
 }
 
 - (void)refreshDatabase: (id)sender
@@ -3934,6 +3939,15 @@ static NSConditionLock *threadLock = nil;
             }
 		}
 		
+        @try
+		{	
+			[database save:nil];
+		}
+		@catch( NSException *e)
+		{
+            N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
+        }
+        
 		[previousItem release];
 		previousItem = nil;
 	}
