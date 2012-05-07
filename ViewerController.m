@@ -4049,7 +4049,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 }
 
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
-    CGFloat dividerPosition = previewMatrix.cellSize.width;
+    CGFloat dividerPosition = [[[sender subviews] objectAtIndex:0] isHidden]? 0 : previewMatrix.cellSize.width;
     dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
     
     NSRect splitFrame = [sender frame];
