@@ -2951,7 +2951,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void)refreshAlbums
 {
-	[NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+    if( _database)
+        [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
 }
 
 - (void)refreshDatabase: (id)sender
