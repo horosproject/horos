@@ -443,6 +443,12 @@ static DicomDatabase* activeLocalDatabase = nil;
 {
     @synchronized (databasesDictionary)
     {
+        if( self.retainCount > 1)
+        {
+            NSLog( @"********* DicomDatabase self.retainCount != 1"); //Just to be sure... never really happened...
+            return;
+        }
+        
         for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
         {
             if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)

@@ -1168,8 +1168,11 @@ static NSConditionLock *threadLock = nil;
 		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
 	else
     {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_reactToDatabaseAdd) object:nil];
-        [self performSelector:@selector(_reactToDatabaseAdd) withObject:nil afterDelay:0.01];
+        [self outlineViewRefresh];
+        [self refreshAlbums];
+        
+//        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_reactToDatabaseAdd) object:nil];
+//        [self performSelector:@selector(_reactToDatabaseAdd) withObject:nil afterDelay:0.01];
 	}
 }
 
@@ -2881,6 +2884,7 @@ static NSConditionLock *threadLock = nil;
         if (!idatabase)
         {
             _computingNumberOfStudiesForAlbums = NO;
+            [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
             return;
         }
         
