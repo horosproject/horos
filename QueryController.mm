@@ -64,7 +64,6 @@ static NSString *InstitutionName = @"InstitutionName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 static NSMutableArray *studyArrayInstanceUID = [[NSMutableArray alloc] init], *studyArrayID = [[NSMutableArray alloc] init];
-static NSString *kStudyArrayInstanceUIDLock = @"studyArrayInstanceUIDLock";
 static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
 static BOOL afterDelayRefresh = NO;
 
@@ -1105,32 +1104,32 @@ extern "C"
             @finally {
                 [independentContext unlock];
             }
-            
-            if( local_studyArrayID && local_studyArrayInstanceUID)
-            {
-                @synchronized (studyArrayInstanceUID)
-                {
-                    [studyArrayInstanceUID removeAllObjects];
-                    [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
-                
-                    [studyArrayID removeAllObjects];
-                    [studyArrayID addObjectsFromArray: local_studyArrayID];
-                }
-                
-                if( [NSThread isMainThread])
-                    [self applyNewStudyArray: nil];
-                else
-                    [self performSelectorOnMainThread:@selector(applyNewStudyArray:) withObject: nil waitUntilDone: NO];
-            }
-            else
-                NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
         }
         @catch (NSException * e)
         {
             NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
         }
     }
-	
+        
+    if( local_studyArrayID && local_studyArrayInstanceUID)
+    {
+        @synchronized (studyArrayInstanceUID)
+        {
+            [studyArrayInstanceUID removeAllObjects];
+            [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
+        
+            [studyArrayID removeAllObjects];
+            [studyArrayID addObjectsFromArray: local_studyArrayID];
+        }
+        
+        if( [NSThread isMainThread])
+            [self applyNewStudyArray: nil];
+        else
+            [self performSelectorOnMainThread:@selector(applyNewStudyArray:) withObject: nil waitUntilDone: NO];
+    }
+    else
+        NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
+        
 	afterDelayRefresh = NO;
 	
 	[pool release];

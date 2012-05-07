@@ -157,42 +157,46 @@ static DicomDatabase* defaultDatabase = nil;
 	return defaultDatabase;
 }
 
-static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] init];
+static NSMutableDictionary *databasesDictionary = [[NSMutableDictionary alloc] init];
+static NSRecursiveLock *databasesDictionaryLock = [[NSRecursiveLock alloc] init];
 
-+(NSArray*)allDatabases {
-	@synchronized (databasesDictionary)
++(NSArray*)allDatabases
+{
+	[databasesDictionaryLock lock];
+    
+    NSMutableArray* mainDatabases = [NSMutableArray array];
+    
+    for (NSValue *value in [databasesDictionary allValues])
     {
-        NSMutableArray* mainDatabases = [NSMutableArray array];
+        DicomDatabase* db = (DicomDatabase*) [value pointerValue];
         
-        for (NSValue *value in [databasesDictionary allValues])
-        {
-            DicomDatabase* db = (DicomDatabase*) [value pointerValue];
-            
-            if ([db isMainDatabase])
-                [mainDatabases addObject:db];
-        }
-        
-		return mainDatabases;
-	}
-	
-	return nil;
+        if ([db isMainDatabase])
+            [mainDatabases addObject:db];
+    }
+
+    [databasesDictionaryLock unlock];
+    
+    return mainDatabases;
 }
 
 +(void)knowAbout:(DicomDatabase*)db
 {
 	if (db && db.baseDirPath)
-		@synchronized (databasesDictionary)
+    {
+		[databasesDictionaryLock lock];
+        
+        if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
+            [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
+        else
         {
-			if (![[databasesDictionary allValues] containsObject: [NSValue valueWithPointer: db]] && ![databasesDictionary objectForKey:db.baseDirPath])
-				[databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:db.baseDirPath];
-            else
-            {
-                NSDate* k = [NSDate date];
-                
-                if (![databasesDictionary objectForKey:k])
-                    [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
-            }
-		}
+            NSDate* k = [NSDate date];
+            
+            if (![databasesDictionary objectForKey:k])
+                [databasesDictionary setObject: [NSValue valueWithPointer: db] forKey:k];
+        }
+        
+		[databasesDictionaryLock unlock];
+    }
 }
 
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
@@ -204,11 +208,13 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 	path = [self baseDirPathForPath:path];
 	
     DicomDatabase* database = nil;
-	@synchronized(databasesDictionary)
-    {
+    
+	[databasesDictionaryLock lock];
+    
 		database = (DicomDatabase*) [[databasesDictionary objectForKey:path] pointerValue];
         [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
-    }
+    
+    [databasesDictionaryLock unlock];
 	
 	if (database) return database;
 	
@@ -221,11 +227,12 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 {
     DicomDatabase *database = nil;
     
-	@synchronized(databasesDictionary)
+	[databasesDictionaryLock lock];
     {
         database = (DicomDatabase*) [[databasesDictionary objectForKey:[self baseDirPathForPath:path]] pointerValue];
         [[database retain] autorelease]; // It was a weak link in databasesDictionary : add it to the current autorelease pool
     }
+    [databasesDictionaryLock unlock];
     
     return database;
 }
@@ -234,35 +241,42 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
     if (!c)
         return nil;
     
-	//if (databasesDictionary)
-		@synchronized(databasesDictionary)
+    DicomDatabase* returnedDB = nil;
+	[databasesDictionaryLock lock];
     {
-			// is it the MOC of a listed database?
-			for (NSValue *value in [databasesDictionary allValues])
+        // is it the MOC of a listed database?
+        for (NSValue *value in [databasesDictionary allValues])
+        {
+            DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
+            
+            if (dbi.managedObjectContext == c)
+                returnedDB = dbi;
+        }
+        if( returnedDB == nil)
+        {
+            // is it an independent MOC of a listed database?
+            for (NSValue *value in [databasesDictionary allValues])
             {
                 DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
                 
-				if (dbi.managedObjectContext == c)
-					return dbi;
-            }
-			// is it an independent MOC of a listed database?
-			for (NSValue *value in [databasesDictionary allValues])
-            {
-                DicomDatabase* dbi = (DicomDatabase*) [value pointerValue];
-                
-				if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator)
+                if (dbi.managedObjectContext.persistentStoreCoordinator == c.persistentStoreCoordinator)
                 {
-					// we must return a valid DicomDatabase with the specified context
-					DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
-					db.name = dbi.name;
-					return db;
-				}
+                    // we must return a valid DicomDatabase with the specified context
+                    DicomDatabase* db = [[[DicomDatabase alloc] initWithPath:dbi.baseDirPath context:c mainDatabase:dbi] autorelease];
+                    db.name = dbi.name;
+                    returnedDB = db;
+                }
             }
-            // uhm, let's try with the persistentStores
-            //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
-            //    
-            //}
-		}
+        }
+        // uhm, let's try with the persistentStores
+        //for (NSPersistentStore* ps in [c.persistentStoreCoordinator persistentStores]) {
+        //    
+        //}
+    }
+    [databasesDictionaryLock unlock];
+    
+    if( returnedDB)
+        return returnedDB;
 
     NSString* path = nil;
     for (NSPersistentStore* ps in c.persistentStoreCoordinator.persistentStores)
@@ -439,22 +453,22 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return self;
 }
 
+-(oneway void) release
+{
+    [databasesDictionaryLock lock];
+    [super release];
+    [databasesDictionaryLock unlock];
+}
+
 -(void)dealloc
 {
-    @synchronized (databasesDictionary)
+    for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
     {
-        if( self.retainCount > 1)
-        {
-            NSLog( @"********* DicomDatabase self.retainCount != 1"); //Just to be sure... never really happened...
-            return;
-        }
-        
-        for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
-        {
-            if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
-                [databasesDictionary removeObjectForKey: key];
-        }
+        if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+            [databasesDictionary removeObjectForKey: key];
     }
+    
+    [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     
 	[self deallocClean];
 	[self deallocRouting];
@@ -485,6 +499,8 @@ static DicomDatabase* activeLocalDatabase = nil;
 	self.baseDirPath = nil;
 	
 	[super dealloc];
+    
+    [databasesDictionaryLock lock]; //We will be unlocked from -(oneway void) release
 }
 
 -(void)observeIndependentDatabaseNotification:(NSNotification*)notification {
