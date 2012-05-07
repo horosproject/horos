@@ -23,6 +23,7 @@ extern NSString* N2NonNullString(NSString* s);
 -(NSString *)stringByTruncatingToLength:(NSInteger)theWidth;
 +(NSString*)sizeString:(unsigned long long)size;
 +(NSString*)timeString:(NSTimeInterval)time;
++(NSString*)timeString:(NSTimeInterval)time maxUnits:(NSInteger)maxUnits;
 +(NSString*)dateString:(NSTimeInterval)date;
 -(NSString*)stringByTrimmingStartAndEnd;
 
@@ -46,6 +47,10 @@ extern NSString* N2NonNullString(NSString* s);
 -(NSArray*)componentsWithLength:(NSUInteger)len;
 
 -(BOOL)isEmail;
+
+-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator;
+
+-(NSString*)md5;
 
 @end
 

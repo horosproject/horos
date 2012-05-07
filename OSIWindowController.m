@@ -19,21 +19,57 @@
 #import "AppController.h"
 #import "ViewerController.h"
 #import "BrowserController.h"
+#import "Notifications.h"
 #import <Carbon/Carbon.h>
 #import "DCMPix.h"
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "DicomDatabase.h"
 
 static	BOOL dontEnterMagneticFunctions = NO;
 static	BOOL dontWindowDidChangeScreen = NO;
 extern  BOOL USETOOLBARPANEL;
-extern  ToolbarPanelController  *toolbarPanel[ 10];
+extern  ToolbarPanelController  *toolbarPanel[10];
 extern int delayedTileWindows;
 
 static BOOL protectedReentryWindowDidResize = NO;
 
 @implementation OSIWindowController
+
+@synthesize database = _database;
+
+-(void)setDatabase:(DicomDatabase*)database {
+	if (database != _database) {
+		if (_database) {
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
+			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
+		}
+		
+		_database = database;
+		
+		if (_database) {
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseObjectsMayFaultNotification:) name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
+			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
+		}
+	}
+}
+
+-(void)refreshDatabase:(NSArray*)newImages {
+}
+
+-(void)observeDatabaseAddNotification:(NSNotification*)notification {
+	[self refreshDatabase:[[notification userInfo] objectForKey:OsirixAddToDBCompleteNotificationImagesArray]];
+}
+
+-(void)observeManagedObjectContextObjectsDidChangeNotification:(NSNotification*)notification {
+}
+
+-(void)observeDatabaseObjectsMayFaultNotification:(NSNotification*)notification {
+	[self close];
+}
 
 #pragma mark-
 #pragma mark Magnetic Windows & Tiling
@@ -124,7 +160,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//			while (screen = [e nextObject])
 				{
 					NSRect frame = [[[self window] screen] visibleFrame];
-					if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+					if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 					frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 					[rects addObject: [NSValue valueWithRect: frame]];
 				}
@@ -215,9 +251,9 @@ static BOOL protectedReentryWindowDidResize = NO;
 			
 			if( USETOOLBARPANEL)
 			{
-				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight])
+				if( dstFrame.size.height >= [[[self window] screen] visibleFrame].size.height - [[AppController toolbarForScreen:[[self window] screen]] exposedHeight])
 				{
-					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [ToolbarPanelController exposedHeight];
+					dstFrame.size.height = [[[self window] screen] visibleFrame].size.height - [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 				}
 			}
 			
@@ -295,8 +331,10 @@ static BOOL protectedReentryWindowDidResize = NO;
 {
 	if( magneticWindowActivated)
 	{
-		if( windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
+		if(/*!Button() && */windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
 		{
+			NSLog(@"windowDidMove:");
+			
 			if( Button() == 0) windowIsMovedByTheUserO = NO;
 			
 			NSEnumerator	*e;
@@ -330,7 +368,7 @@ static BOOL protectedReentryWindowDidResize = NO;
 	//		while (screen = [e nextObject])
 			{
 				NSRect frame = [[[self window] screen] visibleFrame];
-				if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+				if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 				frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 				
 				[rects addObject: [NSValue valueWithRect: frame]];

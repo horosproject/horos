@@ -15,6 +15,7 @@
 #import "DCMTKQueryRetrieveSCP.h"
 #import "AppController.h"
 #import "DICOMTLS.h"
+#import "N2Debug.h"
 
 #undef verify
 
@@ -183,24 +184,6 @@ void errmsg(const char* msg, ...)
 
 - (void)dealloc
 {
-	if (scp != NULL)
-	{
-		 scp->cleanChildren(OFTrue);  // clean up any child processes 		 
-		 delete scp;
-		 scp = nil;
-	}
-
-	if (scptls != NULL)
-	{
-		scptls->cleanChildren(OFTrue);  // clean up any child processes 		 
-		delete scptls;
-		scptls = nil;
-		
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"] handler:nil];		
-	}
-
 	[_aeTitle release];
 	[_params release];
 	[super dealloc];
@@ -257,14 +240,14 @@ void errmsg(const char* msg, ...)
 
 	//timeout
 	OFCmdSignedInt opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+    
+    if( opt_timeout <= 5)
+        opt_timeout = 5;
+    
 	dcmConnectionTimeout.set((Sint32) opt_timeout);
 	
 	//acse-timeout
-	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 	options.acse_timeout_ = OFstatic_cast(int, opt_timeout);
-	
-	//dimse-timeout
-	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
 	options.dimse_timeout_ = OFstatic_cast(int, opt_timeout);
 	options.blockMode_ = DIMSE_NONBLOCKING;
 	
@@ -564,7 +547,7 @@ DcmQueryRetrieveConfig config;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 		}
 	}
@@ -577,6 +560,11 @@ DcmQueryRetrieveConfig config;
 	
 	localSCP = NULL;
 	
+    if([[_params objectForKey:@"TLSEnabled"] boolValue])
+		scptls = nil;
+	else
+		scp = nil;
+    
 	if (cond.bad())
 		errmsg("****** cond.good() != normal ---- DCMTKQueryRetrieve");
 	
@@ -593,6 +581,12 @@ DcmQueryRetrieveConfig config;
 		delete tLayer;
 #endif
 	
+    if([[_params objectForKey:@"TLSEnabled"] boolValue])
+    {
+        [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS keyPathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:[DICOMTLS certificatePathForLabel:TLS_KEYCHAIN_IDENTITY_NAME_SERVER withStringID:@"StoreSCPTLS"] handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"%@%@", TLS_TRUSTED_CERTIFICATES_DIR, @"StoreSCPTLS"] handler:nil];
+    }
 	return;
 }
 

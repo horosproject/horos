@@ -13,9 +13,11 @@
 =========================================================================*/
 
 #import "NSString+N2.h"
+#import "NSData+N2.h"
 #import "NSMutableString+N2.h"
 #include <cmath>
 #include <sys/stat.h>
+#include <CommonCrypto/CommonDigest.h>
 
 
 NSString* N2NonNullString(NSString* s) {
@@ -54,30 +56,59 @@ NSString* N2NonNullString(NSString* s) {
 	return str;
 }
 
-+(NSString*)sizeString:(unsigned long long)size { // From http://snippets.dzone.com/posts/show/3038 with slight modifications
++(NSString*)sizeString:(unsigned long long)size { // from http://snippets.dzone.com/posts/show/3038 with slight modifications
     if (size<1023)
-        return [NSString stringWithFormat:@"%i octets", size];
+        return [NSString stringWithFormat:NSLocalizedString(@"%i bytes", nil), size];
     float floatSize = float(size) / 1024;
     if (floatSize<1023)
-        return [NSString stringWithFormat:@"%1.1f KO", floatSize];
+        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f KB", nil), floatSize];
     floatSize = floatSize / 1024;
     if (floatSize<1023)
-        return [NSString stringWithFormat:@"%1.1f MO", floatSize];
+        return [NSString stringWithFormat:NSLocalizedString(@"%1.2f MB", nil), floatSize];
     floatSize = floatSize / 1024;
-    return [NSString stringWithFormat:@"%1.1f GO", floatSize];
+    return [NSString stringWithFormat:NSLocalizedString(@"%1.2f GB", nil), floatSize];
 }
 
 +(NSString*)timeString:(NSTimeInterval)time {
-	NSString* unit; unsigned value;
-	if (time < 60-1) {
-		unit = @"seconde"; value = std::ceil(time);
-	} else if (time < 3600-1) {
-		unit = @"minute"; value = std::ceil(time/60);
-	} else {
-		unit = @"heure"; value = std::ceil(time/3600);
+	return [self timeString:time maxUnits:1];
+}
+
++(NSString*)timeString:(NSTimeInterval)time maxUnits:(NSInteger)maxUnits {
+	NSMutableArray* rs = [NSMutableArray array];
+	
+	do {
+		NSString* unit; NSString* units; unsigned value;
+		if (time < 60) {
+			unit = NSLocalizedString(@"second", nil);
+			units = NSLocalizedString(@"seconds", nil);
+			value = std::ceil(time);
+			time -= value;
+		} else if (time < 3600) {
+			unit = NSLocalizedString(@"minute", nil);
+			units = NSLocalizedString(@"minutes", nil);
+			value = std::ceil(time/60);
+			time -= value*60;
+		} else {
+			unit = NSLocalizedString(@"hour", nil);
+			units = NSLocalizedString(@"hours", nil);
+			value = std::ceil(time/3600);
+			time -= value*3600;
+		}
+		
+		NSString* s = [NSString stringWithFormat:@"%d %@", value, value==1? unit : units];
+		[rs addObject:s];
+	} while (rs.count < maxUnits && time >= 1);
+	
+	NSMutableString* s = [NSMutableString string];
+	for (NSInteger i = 0; i < rs.count; ++i) {
+		if (i > 1)
+			if (i == rs.count-1) 
+				[s appendString:NSLocalizedString(@" and ", nil)];
+			else [s appendString:@", "];
+		[s appendString:[rs objectAtIndex:i]];
 	}
 	
-	return [NSString stringWithFormat:@"%d %@%@", value, unit, value==1? @"" : @"s"];
+	return s;
 }
 
 +(NSString*)dateString:(NSTimeInterval)date {
@@ -341,6 +372,23 @@ NSString* N2NonNullString(NSString* s) {
 
 -(BOOL)isEmail { // from DHValidation
     return [[NSPredicate predicateWithFormat:@"SELF MATCHES %@", @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"] evaluateWithObject:self];
+}
+
+-(void)splitStringAtCharacterFromSet:(NSCharacterSet*)charset intoChunks:(NSString**)part1 :(NSString**)part2 separator:(unichar*)separator {
+	NSInteger i = [self rangeOfCharacterFromSet:charset].location;
+	if (i != NSNotFound) {
+		if (part1) *part1 = [self substringToIndex:i];
+		if (separator) *separator = [self characterAtIndex:i];
+		if (part2) *part2 = [self substringFromIndex:i+1];
+	} else {
+		if (part1) *part1 = self;
+		if (separator) *separator = nil;
+		if (part2) *part2 = nil;
+	}
+}
+
+-(NSString*)md5 {
+	return [[(NSData*)[NSData dataWithBytesNoCopy:(void*)self.UTF8String length:strlen(self.UTF8String) freeWhenDone:NO] md5] hex];
 }
 
 @end

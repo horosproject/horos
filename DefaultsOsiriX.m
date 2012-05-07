@@ -753,8 +753,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"0" forKey:@"DEFAULTLEFTTOOL"];	// WL TOOL
 	[defaultValues setObject:@"2" forKey:@"DEFAULTRIGHTTOOL"];	// ZOOM TOOL
 	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACE"];
-	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
-	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
+//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEPRODUCED"];
+//	[defaultValues setObject:@"1" forKey:@"AUTOCLEANINGSPACEOPENED"];
+    [defaultValues setObject:@"2" forKey:@"AutocleanSpaceMode"];
 	[defaultValues setObject:@"10000" forKey:@"AUTOCLEANINGSPACESIZE"];
 	[defaultValues setObject:@"0" forKey:@"PETMinimumValue"];
 	[defaultValues setObject:@"1" forKey:@"PETWindowingMode"];
@@ -845,6 +846,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1.2" forKey:@"BESTRENDERING"];
 	#endif
 
+    [defaultValues setObject:@"120" forKey:@"DatabaseRefreshInterval"];
+    
     [defaultValues setObject:@"1" forKey:@"ShowAlbumOnlyIfNotEmpty"];
 	[defaultValues setObject:@"0" forKey:@"UseFrameofReferenceUID"];
 	[defaultValues setObject:@"1" forKey:@"savedCommentsAndStatusInDICOMFiles"];
@@ -872,8 +875,9 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"SINGLEPROCESS"];
 	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
 	[defaultValues setObject: @"1" forKey: @"CheckOsiriXUpdates4"];
-	[defaultValues setObject: @"1" forKey:@"MOUNT"];
-	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
+	[defaultValues setObject: @"-1" forKey:@"MOUNT"];
+	[defaultValues setObject: @"1" forKey:@"CDDVDEjectAfterAutoCopy"];
+//	[defaultValues setObject: @"1" forKey:@"UNMOUNT"];
 	[defaultValues setObject: @"1" forKey: @"UseDICOMDIRFileCD"];
 	[defaultValues setObject: @"1" forKey: @"SAVEROIS"];
 	[defaultValues setObject: @"1" forKey: @"NOLOCALIZER"];
@@ -884,7 +888,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"UseKDUForJPEG2000"];
 	[defaultValues setObject: @"0" forKey: @"KeepStudiesTogetherOnSameScreen"];
 	[defaultValues setObject: @"1" forKey: @"ShowErrorMessagesForAutorouting"];
-	[defaultValues setObject: @"0" forKey: @"STILLMOVIEMODE"];
 	[defaultValues setObject: @"1" forKey: @"SAMESTUDY"];
 	[defaultValues setObject: @"0" forKey: @"recomputePatientUID"];
 	[defaultValues setObject: @"1" forKey: @"ReserveScreenForDB"];
@@ -975,6 +978,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"activateCGETSCP"];
 	[defaultValues setObject:@"0" forKey:@"notificationsEmails"];
 	[defaultValues setObject:@"1" forKey:@"validateFilesBeforeImporting"];
+	[defaultValues setObject:[NSNumber numberWithInt:10] forKey:@"defaultFrameRate"];
 	[defaultValues setObject:@"10" forKey:@"quicktimeExportRateValue"];
 	[defaultValues setObject:@"0" forKey:@"32bitDICOMAreAlwaysIntegers"];
 	[defaultValues setObject:@"1" forKey:@"archiveReportsAndAnnotationsAsDICOMSR"];
@@ -984,6 +988,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"exportOrientationIn3DExport"];
 	[defaultValues setObject:@"240" forKey:@"WADOTimeout"];
 	[defaultValues setObject:@"50" forKey:@"WADOMaximumConcurrentDownloads"];
+	[defaultValues setObject:@"1" forKey:@"autoSelectSourceCDDVD"];
+	[defaultValues setObject:@"1" forKey:@"ScanDiskIfDICOMDIRZero"];
 	[defaultValues setObject:@"1" forKey:@"WebServerTagUploadedStudiesWithUsername"];
     [defaultValues setObject:@"20" forKey:@"MaxNumberOfRetrieveForAutoQR"];
     [defaultValues setObject:@"1800" forKey:@"WebServerTimeOut"]; // = 30*60 = 30 min 120*60 = 2 hours
@@ -1004,8 +1010,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_study_date"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_customDICOMField"];
-    
+    [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

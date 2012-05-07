@@ -89,20 +89,28 @@
 
 static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
--(id)init {
-	AuthorizationRef authRef;
+-(id)init
+{
+	AuthorizationRef authRef = nil;
 	OSStatus err = AuthorizationCreate(NULL, NULL, 0, &authRef);
-	if (err == noErr) {
-		char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
-		if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
-			if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr) {
-				#ifndef NDEBUG
-				NSLog(@"Could not create default right (error %d)", (int) err);
-				#endif
-			}
+    if( authRef)
+    {
+        if (err == noErr)
+        {
+            char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
+            if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
+            {
+                if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr)
+                {
+                    #ifndef NDEBUG
+                    NSLog(@"Could not create default right (error %d)", (int) err);
+                    #endif
+                }
+            }
+        }
+        AuthorizationFree(authRef, kAuthorizationFlagDefaults);
 	}
-	AuthorizationFree(authRef, kAuthorizationFlagDefaults);
-	
+    
 	self = [super initWithWindowNibName:@"PreferencesWindow"];
 	animations = [[NSMutableArray alloc] init];
 	return self;
@@ -110,7 +118,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
 -(void)addPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image toGroupWithName:(NSString*)groupName
 {
-	Class builtinPrefPaneClass = NSClassFromString( resourceName);
+	Class builtinPrefPaneClass = NSClassFromString(resourceName);
 	
 	if( builtinPrefPaneClass)
 	{
@@ -346,7 +354,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		NSString* title = context? context.title : NSLocalizedString(@"OsiriX Preferences", NULL);
 		
 		[self.window setTitle:title];
-
+		
 		[context.pane willSelect];
 		[flippedDocumentView setFrameSize:view.frame.size];
 		[flippedDocumentView addSubview:view];

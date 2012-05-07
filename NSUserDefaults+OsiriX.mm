@@ -15,6 +15,8 @@
 #import "NSUserDefaults+OsiriX.h"
 #import "N2Shell.h"
 #import <Foundation/Foundation.h>
+#import "browserController.h"
+#import "NSScreen+N2.h"
 
 
 @implementation NSUserDefaults (OsiriX)
@@ -40,6 +42,10 @@ NSString* const OsirixDateTimeFormatDefaultsKey = @"DBDateFormat2";
 	return formatter;
 }
 
++(NSString*)formatDateTime:(NSDate*)date {
+	return [self.dateTimeFormatter stringFromDate:date];
+}
+
 NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 
 +(NSString*)dateFormat {
@@ -59,6 +65,82 @@ NSString* const OsirixDateFormatDefaultsKey = @"DBDateOfBirthFormat2";
 	return formatter;
 }
 
++(NSString*)formatDate:(NSDate*)date {
+	return [self.dateFormatter stringFromDate:date];
+}
+
+NSString* const OsirixCanActivateDefaultDatabaseOnlyDefaultsKey = @"addNewIncomingFilesToDefaultDBOnly";
+
++(BOOL)canActivateOnlyDefaultDatabase {
+	return [self.standardUserDefaults boolForKey:OsirixCanActivateDefaultDatabaseOnlyDefaultsKey];
+}
+
++(BOOL)canActivateAnyLocalDatabase {
+	return !self.canActivateOnlyDefaultDatabase;
+}
+
+#ifdef OSIRIX_VIEWER
+
+NSString* const O2NonViewerScreensDefaultsKey = @"NonViewerScreens";
+
+-(NSArray*)screensNotUsedForViewers {
+    NSArray* nonIDs = [self arrayForKey:O2NonViewerScreensDefaultsKey];
+    
+    if (!nonIDs) { // the array doesn't exist, consider the ReserveScreenForDB default
+        NSMutableArray* mnonIDs = [NSMutableArray array];
+        
+        switch ([self integerForKey:@"ReserveScreenForDB"]) {
+            case 0: // all screens are used, the exclusion list is empty
+                break;
+            case 1: // all except DB, all screens are used but the tiling algorithm must consider the ReserveScreenForDB default and exclude the screen where the database currently is
+                break;
+            case 2: // main screen only
+                for (NSScreen* screen in [NSScreen screens])
+                    if (screen != [NSScreen mainScreen])
+                        [mnonIDs addObject:[NSNumber numberWithUnsignedInteger:[screen screenNumber]]];
+                [self setInteger:0 forKey:@"ReserveScreenForDB"];
+                break;
+        }
+        
+        [self setObject:mnonIDs forKey:O2NonViewerScreensDefaultsKey];
+        
+        nonIDs = mnonIDs;
+    }
+    
+    NSMutableArray* screens = [[[NSScreen screens] mutableCopy] autorelease];
+    for (NSInteger i = screens.count-1; i >= 0; --i) {
+        NSScreen* screen = [screens objectAtIndex:i];
+        if (![nonIDs containsObject:[NSNumber numberWithUnsignedInteger:[screen screenNumber]]])
+            [screens removeObjectAtIndex:i];
+    }
+    
+    return screens;
+}
+
+-(NSArray*)screensUsedForViewers {
+    NSMutableArray* screens = [[[NSScreen screens] mutableCopy] autorelease];
+    for (NSScreen* screen in [self screensNotUsedForViewers])
+        [screens removeObject:screen];
+    return screens;
+}
+
+-(BOOL)screenIsUsedForViewers:(NSScreen*)screen {
+    return [[self screensUsedForViewers] containsObject:screen];
+}
+
+-(void)screen:(NSScreen*)screen setIsUsedForViewers:(BOOL)flag {
+    NSMutableArray* a = [[[self arrayForKey:O2NonViewerScreensDefaultsKey] mutableCopy] autorelease];
+
+    if (!flag && [self screenIsUsedForViewers:screen])
+        [a addObject:[NSNumber numberWithUnsignedInteger:screen.screenNumber]];
+    if (flag && ![self screenIsUsedForViewers:screen])
+        [a removeObject:[NSNumber numberWithUnsignedInteger:screen.screenNumber]];
+
+    [self setObject:a forKey:O2NonViewerScreensDefaultsKey];
+}
+
+
+#endif
 
 #pragma mark Bonjour Sharing
 

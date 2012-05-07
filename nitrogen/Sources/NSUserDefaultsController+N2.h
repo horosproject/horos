@@ -44,7 +44,7 @@ CF_EXTERN_C_BEGIN
 // we often need to compose the string constants declared earlier in this file with a values key path - these functions/methods make that easier
 extern NSString* valuesKeyPath(NSString* key);
 CF_EXTERN_C_END
-
+		
 @interface NSObject (N2ValuesBinding)
 
 -(id)valueForValuesKey:(NSString*)keyPath;

@@ -103,7 +103,7 @@
 
 
 //	[[scrollView verticalScroller] setFloatValue: 0]; 
-////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0];
+////	[[scrollView verticalScroller] setFloatValue:0.0 knobProportion:0.0]; //// now with bindings
 //	[scrollView setVerticalScroller: [scrollView verticalScroller]];
 	
 //	[[scrollView contentView] scrollToPoint: NSMakePoint(600,600)];
@@ -111,7 +111,7 @@
 	NSUserDefaults	*defaults = [NSUserDefaults standardUserDefaults];
 	
 	//setup GUI
-	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]];
+////	[copyDatabaseOnOffButton setState:[defaults boolForKey:@"COPYDATABASE"]]; //// now with bindings
 	
 //	[displayAllStudies setState:[defaults boolForKey:@"KeepStudiesOfSamePatientTogether"]];
 	
@@ -122,8 +122,8 @@
 	[locationPathField setURL: [NSURL fileURLWithPath: [defaults stringForKey:@"DEFAULT_DATABASELOCATIONURL"]]];
 	
 //	[copyDatabaseModeMatrix setEnabled:[defaults boolForKey:@"COPYDATABASE"]];
-	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
-	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]];
+////	[copyDatabaseModeMatrix selectCellWithTag:[defaults integerForKey:@"COPYDATABASEMODE"]];
+//	[localizerOnOffButton setState:[defaults boolForKey:@"NOLOCALIZER"]]; 
 //	[multipleScreensMatrix selectCellWithTag:[defaults integerForKey:@"MULTIPLESCREENSDATABASE"]];
 	[seriesOrderMatrix selectCellWithTag:[defaults integerForKey:@"SERIESORDER"]];
 	
@@ -158,11 +158,10 @@
 	[olderThanProduced selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGDATEPRODUCEDDAYS"] intValue]];
 	[olderThanOpened selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGDATEOPENEDDAYS"] intValue]];
 	
-	[freeSpace setState:[defaults boolForKey:@"AUTOCLEANINGSPACE"]];
-	[[freeSpaceType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"]];
-	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
-	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
-	
+//	[freeSpace setState:[defaults boolForKey:@"AUTOCLEANINGSPACE"]];
+//	[[freeSpaceType cellWithTag:0] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEPRODUCED"]];
+//	[[freeSpaceType cellWithTag:1] setState:[defaults boolForKey:@"AUTOCLEANINGSPACEOPENED"]];
+//	[freeSpaceSize selectItemWithTag:[[defaults stringForKey:@"AUTOCLEANINGSPACESIZE"] intValue]];
 }
 
 - (void)didSelect
@@ -283,10 +282,10 @@
 	[defaults setInteger:[[olderThanOpened selectedItem] tag] forKey:@"AUTOCLEANINGDATEOPENEDDAYS"];
 
 
-	[defaults setBool:[freeSpace state] forKey:@"AUTOCLEANINGSPACE"];
-	[defaults setBool:[[freeSpaceType cellWithTag:0] state] forKey:@"AUTOCLEANINGSPACEPRODUCED"];
-	[defaults setBool:[[freeSpaceType cellWithTag:1] state] forKey:@"AUTOCLEANINGSPACEOPENED"];
-	[defaults setInteger:[[freeSpaceSize selectedItem] tag] forKey:@"AUTOCLEANINGSPACESIZE"];
+//	[defaults setBool:[freeSpace state] forKey:@"AUTOCLEANINGSPACE"];
+//	[defaults setBool:[[freeSpaceType cellWithTag:0] state] forKey:@"AUTOCLEANINGSPACEPRODUCED"];
+//	[defaults setBool:[[freeSpaceType cellWithTag:1] state] forKey:@"AUTOCLEANINGSPACEOPENED"];
+//	[defaults setInteger:[[freeSpaceSize selectedItem] tag] forKey:@"AUTOCLEANINGSPACESIZE"];
 }
 
 //- (IBAction)setMultipleScreens:(id)sender{
@@ -384,18 +383,6 @@
 	[[[[self mainView] window] windowController] reopenDatabase];
 	
 	[[[self mainView] window] makeKeyAndOrderFront: self];
-}
-
-- (IBAction) setCopyDatabaseMode:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey:@"COPYDATABASEMODE"];
-}
-- (IBAction)setCopyDatabaseOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"COPYDATABASE"];
-//	[copyDatabaseModeMatrix setEnabled:[sender state]];
-}
-- (IBAction)setLocalizerOnOff:(id)sender{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey:@"NOLOCALIZER"];
-
 }
 
 - (BOOL)useSeriesDescription{

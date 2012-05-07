@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2Debug.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
 
 #import "DicomStudy.h"
@@ -1608,7 +1609,7 @@ return YES;
 					}
 					@catch (NSException * e) 
 					{
-						NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        N2LogExceptionWithStackTrace(e);
 					}
 				}
 				

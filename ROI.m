@@ -889,6 +889,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		c->textureDownRightCornerY = textureDownRightCornerY;
 		
 		c->textureBuffer = (unsigned char*) malloc( textureWidth*textureHeight*sizeof(unsigned char));
+        if( c->textureBuffer == nil)
+            return nil;
+        
 		if( c->textureBuffer && textureBuffer)
 			memcpy( c->textureBuffer, textureBuffer, textureWidth*textureHeight*sizeof(unsigned char));
 	}
@@ -910,6 +913,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 		c->layerImageJPEG = [layerImageJPEG copy];
 		c->layerImage = [[NSImage alloc] initWithData: c->layerImageJPEG];
 		
+        if( c->layerImage == nil)
+            return nil;
+        
 		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
 	}
 	c->textualBoxLine1 = [textualBoxLine1 copy];
@@ -2828,6 +2834,9 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	int				minX, maxX, minY, maxY;
 	unsigned char	*tempBuf = textureBuffer;
 	
+    if( tempBuf == nil)
+        return NO;
+    
 	minX = textureWidth;
 	maxX = 0;
 	minY = textureHeight;

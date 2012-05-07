@@ -44,6 +44,7 @@
 #import "NSUserDefaultsController+OsiriX.h"
 #import <N2Debug.h>
 #import "NSFileManager+N2.h"
+#import <objc/runtime.h>
 #import "NSPanel+N2.h"
 #ifndef OSIRIX_LIGHT
 #ifndef MACAPPSTORE
@@ -60,6 +61,8 @@
 #import "DicomImage.h"
 #import "ThreadsManager.h"
 #import "NSThread+N2.h"
+#import "DicomDatabase.h"
+#import "N2MutableUInteger.h"
 #import "Window3DController.h"
 
 
@@ -77,7 +80,7 @@ ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, n
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
-static BOOL checkForPreferencesUpdate = YES;
+static BOOL checkForPreferencesUpdate = YES, _appDidFinishLoading = NO;
 static PluginManager *pluginManager = nil;
 static unsigned char *LUT12toRGB = nil;
 static BOOL canDisplay12Bit = NO;
@@ -96,8 +99,10 @@ NSRecursiveLock			*PapyrusLock = nil, *STORESCP = nil, *STORESCPTLS = nil;			// 
 NSMutableArray			*accumulateAnimationsArray = nil;
 BOOL					accumulateAnimations = NO;
 
+AppController* OsiriX = nil;
+
 extern int delayedTileWindows;
-extern NSString* getMacAddress( void);
+extern NSString* getMacAddress(void);
 
 enum	{kSuccess = 0,
         kCouldNotFindRequestedProcess = -1, 
@@ -374,97 +379,12 @@ int GetAllPIDsForProcessName(const char* ProcessName,
     }
 }
 
-NSString * documentsDirectoryFor( int mode, NSString *url)
-{
-	char s[ 4096];
-	FSRef ref;
-	NSString *path = nil;
-	BOOL isDirectory = NO;
-	
-	switch( mode)
-	{
-		case 0:
-			#ifdef MACAPPSTORE
-			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
-			{
-				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
-				
-				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
-				
-				if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] || isDirectory == NO)
-				{
-					path = [@"~/Library/Application Support/OsiriX/OsiriX Data/" stringByExpandingTildeInPath];
-				
-					if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
-                    {
-                        path = [@"~/Library/Application Support/OsiriX App/OsiriX Data/" stringByExpandingTildeInPath];
-                        
-                        if( [[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] == NO || isDirectory == NO)
-                            [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: YES attributes: nil error: nil];
-                    }
-				}
-			}
-			#else
-			if( FSFindFolder (kOnAppropriateDisk, kDocumentsFolderType, kCreateFolder, &ref) == noErr )
-			{
-				FSRefMakePath(&ref, (UInt8 *)s, sizeof(s));
-				
-				path = [[NSString stringWithUTF8String:s] stringByAppendingPathComponent:@"/OsiriX Data"];
-				
-				if (![[NSFileManager defaultManager] fileExistsAtPath: path isDirectory: &isDirectory] || isDirectory == NO)
-					[[NSFileManager defaultManager] createDirectoryAtPath: path attributes:nil];
-			}
-			#endif
-		break;
-			
-		case 1:
-		{
-			path = [url stringByAppendingPathComponent:@"/OsiriX Data"];
-			
-			if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory: &isDirectory]) [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-		}
-		break;
-	}
-	
-	NSString *dir = nil;
-	dir = [path stringByAppendingPathComponent:@"/REPORTS/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-//	dir = [path stringByAppendingPathComponent:@"/ROIs/"];
-//	if ([[NSFileManager defaultManager] fileExistsAtPath: dir] == NO)
-//		[[NSFileManager defaultManager] createDirectoryAtPath: dir attributes:nil];
-	
-	if( path == 0L)
-		NSLog( @"**** documentsDirectoryFor is NIL");
-	
-	return path;
+NSString* documentsDirectoryFor(int mode, NSString *url) { // __deprecated
+	return [DicomDatabase baseDirPathForMode:mode path:url];
 }
 
-NSString * documentsDirectory()
-{
-	NSString *path = nil;
-	
-	@try
-	{
-		path = documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
-	
-		if( [[NSFileManager defaultManager] fileExistsAtPath:path] == NO || path == 0L)	// STILL NOT AVAILABLE??
-		{   // Use the default folder.. and reset this strange URL..
-			
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
-			[[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
-			
-			return documentsDirectoryFor( [[NSUserDefaults standardUserDefaults] integerForKey: @"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
-		}
-	}
-	
-	@catch (NSException *e)
-	{
-		NSLog( @"**** exception documentsDirectory: %@", e);
-	}
-	
-	return path;
+NSString* documentsDirectory() { // __deprecated
+	return [DicomDatabase defaultBaseDirPath];
 }
 
 static volatile BOOL converting = NO;
@@ -488,7 +408,7 @@ NSString* convertDICOM( NSString *inputfile)
 	if( inputfile == nil)
 		return nil;
 	
-	NSString *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
+	NSString *outputfile = [[[DicomDatabase defaultDatabase] tempDirPath] stringByAppendingPathComponent:filenameWithDate(inputfile)];
 	
 	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
 		return outputfile;
@@ -785,9 +705,7 @@ static void dumpLSArchitecturesForX86_64()
 
 void exceptionHandler(NSException *exception)
 {
-    NSLog(@"%@", [exception reason]);
-    NSLog(@"%@", [exception userInfo]);
-	[AppController printStackTrace: exception];
+    N2LogExceptionWithStackTrace(exception);
 }
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -804,13 +722,12 @@ static NSDate *lastWarningDate = nil;
 
 @implementation AppController
 
-@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, XMLRPCServer;
+@synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 
-- (void) pause
-{
-	[[[BrowserController currentBrowser] checkIncomingLock] lock];
+- (void) pause { // __deprecated
+	[[[BrowserController currentBrowser] database] lock]; // was checkIncomingLock
 	sleep( 2);
-	[[[BrowserController currentBrowser] checkIncomingLock] unlock];
+	[[[BrowserController currentBrowser] database] unlock]; // was checkIncomingLock
 }
 
 // Plugins installation
@@ -915,7 +832,7 @@ static NSDate *lastWarningDate = nil;
 
 +(BOOL) hasMacOSXSnowLeopard
 {
-	OSErr						err;       
+	OSErr						err;
 	SInt32						osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
@@ -945,38 +862,8 @@ static NSDate *lastWarningDate = nil;
 	return YES;                   
 }
 
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path
-{
-	BOOL newFolder = NO;
-	
-	if( ![[NSFileManager defaultManager] fileExistsAtPath: path] && [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
-	{
-		[[NSFileManager defaultManager] movePath:[path stringByDeletingPathExtension] toPath:path handler: nil];
-		newFolder = YES;
-	}
-	
-	if( ![[NSFileManager defaultManager] fileExistsAtPath: path])
-	{
-		if( [[NSFileManager defaultManager] createDirectoryAtPath: path withIntermediateDirectories: NO attributes: nil error: nil] == NO)
-			NSLog( @"******* failed to create directory: %@", path);
-		newFolder = YES;
-	}
-	
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByDeletingPathExtension]])
-		[[NSFileManager defaultManager] removeFileAtPath: [path stringByDeletingPathExtension] handler: nil];
-	
-//	if( newFolder)
-//	{
-//		NSDictionary *d = [[NSFileManager defaultManager] attributesOfItemAtPath:path error: nil];
-//	
-//		if( d && [[d objectForKey: NSFileExtensionHidden] boolValue] == NO)
-//		{
-//			NSMutableDictionary *m = [NSMutableDictionary dictionaryWithDictionary: d];
-//		
-//			[m setObject: [NSNumber numberWithBool: YES] forKey:NSFileExtensionHidden];
-//			[[NSFileManager defaultManager] changeFileAttributes: m atPath: path];
-//		}
-//	}
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
+	[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
 }
 
 + (void) pause
@@ -998,6 +885,12 @@ static NSDate *lastWarningDate = nil;
 	
 /*	for( int i = 0; i < numberOfScreens; i++)
 		[toolbarPanel[ i] fixSize];*/
+}
+
++(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen {
+    NSArray* screens = [NSScreen screens];
+    NSInteger i = [screens indexOfObject:screen];
+    return toolbarPanel[i];
 }
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
@@ -1072,7 +965,7 @@ static NSDate *lastWarningDate = nil;
 
 - (NSString*) privateIP
 {
-	return [NSString stringWithCString: GetPrivateIP()];
+	return [NSString stringWithCString:GetPrivateIP() encoding:NSUTF8StringEncoding];
 }
 
 - (IBAction)cancelModal:(id)sender
@@ -1146,7 +1039,7 @@ static NSDate *lastWarningDate = nil;
 	{
 		if( threadStateChanged == NO)
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [(NSString*) [NSString stringWithContentsOfFile: path] length] > 0)
+			if( [[NSFileManager defaultManager] fileExistsAtPath: path] && [(NSString*)[NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil] length] > 0)
 			{
 				[NSThread currentThread].status = [[NSThread currentThread].status stringByAppendingFormat: NSLocalizedString( @" - %@", nil), [NSString stringWithContentsOfFile: path]];
 				[NSThread sleepForTimeInterval: 1];
@@ -1338,7 +1231,7 @@ static NSDate *lastWarningDate = nil;
 			restartListener = YES;
 	}
 	else NSLog( @"*** isKindOfClass NSString");
-	if ([[previousDefaults valueForKey: @"addNewIncomingFilesToDefaultDBOnly"] intValue] !=	[defaults integerForKey: @"addNewIncomingFilesToDefaultDBOnly"])
+	if ([[previousDefaults valueForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey] intValue] !=	[defaults integerForKey: OsirixCanActivateDefaultDatabaseOnlyDefaultsKey])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"STORESCP"] intValue] != [defaults integerForKey: @"STORESCP"])
 		restartListener = YES;
@@ -1493,7 +1386,6 @@ static NSDate *lastWarningDate = nil;
 	#endif
 	
 	[[BrowserController currentBrowser] setNetworkLogs];
-	[[BrowserController currentBrowser] createDBContextualMenu]; // Update the routing rules
 	[DicomFile resetDefaults];
 	
 	[DCMView setDefaults];
@@ -1785,19 +1677,24 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
++(NSString*)UID {
+    return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
+}
+
 - (void) startDICOMBonjour:(NSTimer*) t
 {
 	NSLog( @"startDICOMBonjour");
 
 	BonjourDICOMService = [[NSNetService alloc] initWithDomain:@"" type:@"_dicom._tcp." name: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] port:[[[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"] intValue]];
 	
-	NSString* description = [NSUserDefaultsController BonjourSharingName];
+	NSString* description = [NSUserDefaults bonjourSharingName];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	
 	if( description && [description length] > 0)
 		[dict setValue: description forKey: @"serverDescription"];
 	
 	[dict setValue: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"]; 
+	[dict setValue:[AppController UID] forKey: @"UID"]; 
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"activateCGETSCP"])
 		[dict setValue: @"YES" forKey: @"CGET"]; // TXTRECORD doesnt support NSNumber
@@ -1864,83 +1761,81 @@ static NSDate *lastWarningDate = nil;
 	// This should be performed only if OsiriX is to handle storescp, depending on what is defined in the preferences
 	// Key:@"STORESCP" is the corresponding switch
 	
-	NS_DURING
-    quitting = YES;
-	
-	// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"] != YES)
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
-	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
-	{
-		// Kill DCMTK listener
-		// built in dcmtk serve testing
-		if (BUILTIN_DCMTK == YES)
-		{
-			[dcmtkQRSCP release];
-			dcmtkQRSCP = nil;
-		}
-		else
-		{
-			NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
-			
-			NSMutableArray *theArguments = [NSMutableArray array];
-			NSTask *aTask = [[NSTask alloc] init];		
-			[aTask setLaunchPath:@"/usr/bin/killall"];		
-			[theArguments addObject:@"storescp"];
-			[aTask setArguments:theArguments];		
-			[aTask launch];
-			[aTask waitUntilExit];		
-			[aTask interrupt];
-			[aTask release];
-			aTask = nil;
-		}
+	@try {
+		quitting = YES;
 		
-		//make sure that there exist a receiver folder at @"folder" path
-		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
+		// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06
+		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"] != YES)
+			[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"USESTORESCP"];
 		
-		[AppController createNoIndexDirectoryIfNecessary: path];
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"STORESCP"])
 		{
-			if( [STORESCP tryLock])
+			// Kill DCMTK listener
+			// built in dcmtk serve testing
+			if (BUILTIN_DCMTK == YES)
 			{
-				[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
-				
-				[STORESCP unlock];
+				[dcmtkQRSCP release];
+				dcmtkQRSCP = nil;
 			}
-			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-		}		
-	}
-	
-	if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
-	{
-		[dcmtkQRSCPTLS release];
-		dcmtkQRSCPTLS = nil;
-		
-		//make sure that there exist a receiver folder at @"folder" path
-		NSString *path = [[BrowserController currentBrowser] INCOMINGPATH];
-		[AppController createNoIndexDirectoryIfNecessary: path];	
-		
-		if( [STORESCPTLS tryLock])
-		{
-			[NSThread detachNewThreadSelector: @selector(startSTORESCPTLS:) toTarget: self withObject: self];
+			else
+			{
+				NSLog(@"********* WARNING - WE SHOULD NOT BE HERE - STORE-SCP");
+				
+				NSMutableArray *theArguments = [NSMutableArray array];
+				NSTask *aTask = [[NSTask alloc] init];		
+				[aTask setLaunchPath:@"/usr/bin/killall"];		
+				[theArguments addObject:@"storescp"];
+				[aTask setArguments:theArguments];		
+				[aTask launch];
+				[aTask waitUntilExit];		
+				[aTask interrupt];
+				[aTask release];
+				aTask = nil;
+			}
 			
-			[STORESCPTLS unlock];
+			//make sure that there exist a receiver folder at @"folder" path
+			NSString* path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+			[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
+			
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"USESTORESCP"])
+			{
+				if( [STORESCP tryLock])
+				{
+					[NSThread detachNewThreadSelector: @selector(startSTORESCP:) toTarget: self withObject: self];
+					
+					[STORESCP unlock];
+				}
+				else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM Listener Error", nil), NSLocalizedString( @"Cannot start DICOM Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+			}		
 		}
-		else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM TLS Listener Error", nil), NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		
+		if([[NSUserDefaults standardUserDefaults] boolForKey:@"STORESCPTLS"])
+		{
+			[dcmtkQRSCPTLS release];
+			dcmtkQRSCPTLS = nil;
+			
+			//make sure that there exist a receiver folder at @"folder" path
+			NSString* path = [[DicomDatabase activeLocalDatabase] incomingDirPath];
+			[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
+			
+			if( [STORESCPTLS tryLock])
+			{
+				[NSThread detachNewThreadSelector: @selector(startSTORESCPTLS:) toTarget: self withObject: self];
+				
+				[STORESCPTLS unlock];
+			}
+			else NSRunCriticalAlertPanel( NSLocalizedString( @"DICOM TLS Listener Error", nil), NSLocalizedString( @"Cannot start DICOM TLS Listener. Another thread is already running. Restart OsiriX.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+		}
+	
+	} @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
 	}
-	
-	
-	NS_HANDLER
-		NSLog(@"Exception restarting storeSCP");
-	NS_ENDHANDLER
 	
 	[BonjourDICOMService stop];
 	[BonjourDICOMService release];
 	BonjourDICOMService = nil;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"publishDICOMBonjour"])
 	{
 		//Start DICOM Bonjour 
 		[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( startDICOMBonjour:) userInfo: nil repeats: NO];
@@ -1998,7 +1893,7 @@ static NSDate *lastWarningDate = nil;
 	NSRunCriticalAlertPanel( NSLocalizedString( @"Error", nil), err, NSLocalizedString( @"OK", nil), nil, nil);
 }
 
--(void) displayListenerError: (NSString*) err
+-(void) displayListenerError: (NSString*) err // the DiscPublishing plugin swizzles this method, do not rename it
 {
 	NSLog( @"*** listener error (displayListenerError): %@", err);
 	
@@ -2009,7 +1904,7 @@ static NSDate *lastWarningDate = nil;
 		[alert setInformativeText: [err stringByAppendingString: @"\r\rThis error message can be hidden by activating the Server Mode (see Listener Preferences)"]];
 		[alert addButtonWithTitle: NSLocalizedString(@"OK", nil)];
 		
-        [alert beginSheetModalForWindow:nil modalDelegate:nil didEndSelector:nil contextInfo:nil];
+		[alert beginSheetModalForWindow:nil modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	}
 }
 
@@ -2046,7 +1941,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[pool release];
@@ -2151,7 +2046,7 @@ static NSDate *lastWarningDate = nil;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[STORESCPTLS unlock];
@@ -2256,22 +2151,8 @@ static NSDate *lastWarningDate = nil;
 				
 				if( [urlParameters objectForKey: @"methodName"]) // XML-RPC message
 				{
-                    // Send the XML-RPC as a notification : give a chance to plugin to answer
-                    [[NSNotificationCenter defaultCenter] postNotificationName: OsirixXMLRPCMessageNotification object: urlParameters];
-                    
-                    // Did someone processed the message?
-                    if( [[urlParameters valueForKey: @"Processed"] boolValue])
-                    {
-                        NSLog( @"--- %@ processed by a plugin", [url resourceSpecifier]);
-                    }
-                    else // Built-in messages
-                    {
-                        NSMutableDictionary *paramDict = [NSMutableDictionary dictionaryWithDictionary: urlParameters];
-					
-                        [paramDict removeObjectForKey: @"methodName"];
-					
-                        [XMLRPCServer processXMLRPCMessage: [urlParameters objectForKey: @"methodName"] httpServerMessage: nil HTTPServerRequest: nil version: (NSString*) kCFHTTPVersion1_0 paramDict: paramDict encoding: @"UTF-8"];
-                    }
+                    NSMutableDictionary* paramDict = [NSMutableDictionary dictionaryWithDictionary:urlParameters];
+                    [XMLRPCServer methodCall:[urlParameters objectForKey:@"methodName"] parameters:paramDict error:NULL];
 				}
 				
 				if( [urlParameters objectForKey: @"image"])
@@ -2292,7 +2173,7 @@ static NSDate *lastWarningDate = nil;
 							NSMutableArray *allImages = [NSMutableArray array];
 							[[BrowserController currentBrowser] filesForDatabaseOutlineSelection: allImages];
 							
-							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+							NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
 							
 							[context lock];
 							
@@ -2310,7 +2191,7 @@ static NSDate *lastWarningDate = nil;
 							}
 							@catch (NSException * e)
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
 							[context unlock];
@@ -2320,10 +2201,10 @@ static NSDate *lastWarningDate = nil;
 						if( succeeded == NO)
 						{
 							NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-							[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Series"]];
+							[dbRequest setEntity: [[[BrowserController currentBrowser] database] seriesEntity]];
 							[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"seriesSOPClassUID == %@", sopclassuid]];
 							
-							NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+							NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
 							
 							[context lock];
 							
@@ -2361,7 +2242,7 @@ static NSDate *lastWarningDate = nil;
 							}
 							@catch (NSException * e)
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							[wait end];
 							[wait close];
@@ -2393,7 +2274,7 @@ static NSDate *lastWarningDate = nil;
 				}
 		}
 	}
-	
+
     // exclude --LoadPlugin arguments
     NSMutableArray* passedFilenames = [NSMutableArray array];
     NSArray* args = [[NSProcessInfo processInfo] arguments];
@@ -2412,7 +2293,10 @@ static NSDate *lastWarningDate = nil;
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-	[[BrowserController currentBrowser] syncReportsIfNecessary];
+	if (!_appDidFinishLoading)
+        return;
+    
+    [[BrowserController currentBrowser] syncReportsIfNecessary];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO) // Server mode
 	{
@@ -2477,14 +2361,14 @@ static NSDate *lastWarningDate = nil;
 	
 	[self closeAllViewers: self];
 	
-	for( NSThread *t in [[ThreadsManager defaultManager] threads])
-		[t setIsCancelled: YES];
+	for (NSThread* t in [[ThreadsManager defaultManager] threads])
+		[t cancel];
 	
 	
 	[[BrowserController currentBrowser] browserPrepareForClose];
 
 #ifndef OSIRIX_LIGHT
-	[WebPortal applicationWillTerminate];
+	[WebPortal finalizeWebPortalClass];
 #endif
 
 	[ROI saveDefaultSettings];
@@ -2511,39 +2395,37 @@ static NSDate *lastWarningDate = nil;
 	[AppController cleanOsiriXSubProcesses];
 	
 	// DELETE the content of TEMP.noindex directory...
-	NSString *tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP.noindex/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath: tempDirectory])
-	{
-		for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: tempDirectory error: nil])
-			[[NSFileManager defaultManager] removeFileAtPath: [tempDirectory stringByAppendingPathComponent: file] handler: nil];
-	}
-	
-	tempDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/TEMP/"];
+	NSString *tempDirectory = [[DicomDatabase activeLocalDatabase] tempDirPath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
-		[[NSFileManager defaultManager] removeFileAtPath:tempDirectory handler: nil];
+		for (NSString* file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tempDirectory error:NULL])
+			[[NSFileManager defaultManager] removeItemAtPath:[tempDirectory stringByAppendingPathComponent:file] error:NULL];
+	tempDirectory = [tempDirectory stringByDeletingPathExtension];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:tempDirectory])
+		[[NSFileManager defaultManager] removeItemAtPath:tempDirectory error:NULL];
 	
 	// DELETE THE DUMP DIRECTORY...
-	NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory]) [[NSFileManager defaultManager] removeFileAtPath:dumpDirectory handler: nil];
+	NSString *dumpDirectory = [[DicomDatabase activeLocalDatabase] dumpDirPath];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory])
+		[[NSFileManager defaultManager] removeItemAtPath:dumpDirectory error:NULL];
 	
 	// DELETE THE DECOMPRESSION.noindex DIRECTORY...
-	NSString *decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION.noindex/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
-	decompressionDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DECOMPRESSION/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory]) [[NSFileManager defaultManager] removeFileAtPath:decompressionDirectory handler: nil];
+	NSString *decompressionDirectory = [[DicomDatabase activeLocalDatabase] decompressionDirPath];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+		[[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
+	decompressionDirectory = [decompressionDirectory stringByDeletingPathExtension];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:decompressionDirectory])
+		[[NSFileManager defaultManager] removeItemAtPath:decompressionDirectory error:NULL];
 	
 	// Delete all process_state files
-	for( NSString *s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error: nil]) 
-	{
-		if( [s hasPrefix: @"process_state-"])
-			[[NSFileManager defaultManager] removeItemAtPath: [@"/tmp/" stringByAppendingPathComponent: s] error: nil];
-	}
+	for (NSString* s in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: @"/tmp" error:nil])
+		if ([s hasPrefix:@"process_state-"])
+			[[NSFileManager defaultManager] removeItemAtPath:[@"/tmp" stringByAppendingPathComponent:s] error:nil];
 	
 	[NSSplitView saveSplitView];
 	
-//	[[NSUserDefaultsController sharedUserDefaultsController] setBool: [[ActivityWindowController defaultController].window isVisible] forKey: @"ActivityWindowVisibleFlag"];
-	
-	[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zippedCD/" handler: nil];
+	[[NSFileManager defaultManager] removeItemAtPath:@"/tmp/zippedCD/" error:nil];
+
+    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
 }
 
 
@@ -2560,12 +2442,20 @@ static NSDate *lastWarningDate = nil;
 	
 	for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
-	
+    
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] release];
 	[[QueryController currentAutoQueryController] release];
-	#endif
+    #endif
 	
+    NSTimeInterval t = [NSDate timeIntervalSinceReferenceDate];
+    while ([[[ThreadsManager defaultManager] threads] count] && [NSDate timeIntervalSinceReferenceDate]-t < 10) { // give declared background threads 10 secs to cancel
+        for (NSThread* thread in [[ThreadsManager defaultManager] threads])
+            if (![thread isCancelled])
+                [thread cancel];
+        [NSThread sleepForTimeInterval:0.05];
+    }
+    
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
 	[NSApp terminate: sender];
@@ -2574,17 +2464,21 @@ static NSDate *lastWarningDate = nil;
 - (id)init
 {
 	self = [super init];
-	appController = self;
+	OsiriX = appController = self;
 	
+    [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
+    
 	if ([[NSFileManager defaultManager] fileExistsAtPath:[[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"]])
 		[N2Debug setActive:YES];
 	
+//  NSLog(@"%@ -> %d", [[[[NSFileManager defaultManager] findSystemFolderOfType:kApplicationSupportFolderType forDomain:kLocalDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]] stringByAppendingPathComponent:@"DLog.enable"], [N2Debug isActive]);
+    
 	PapyrusLock = [[NSRecursiveLock alloc] init];
 	STORESCP = [[NSRecursiveLock alloc] init];
 	STORESCPTLS = [[NSRecursiveLock alloc] init];
 	
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
-	
+    
 	#ifndef OSIRIX_LIGHT
 	[IChatTheatreDelegate sharedDelegate];
     [VRView testGraphicBoard];
@@ -2673,7 +2567,7 @@ static NSDate *lastWarningDate = nil;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return r;
@@ -2711,7 +2605,6 @@ static NSDate *lastWarningDate = nil;
 static BOOL initialized = NO;
 + (void) initialize
 {
-
 //	int test = NSSwapHostIntToBig( 19191919);
 //	unsigned char *ptr = (unsigned char*) &test;
 //	long result;
@@ -2729,10 +2622,7 @@ static BOOL initialized = NO;
 //	}
 //	@catch (NSException * e) 
 //	{
-//		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//		#ifdef OSIRIX_VIEWER
-//		[AppController printStackTrace: e];
-//		#endif
+//    N2LogExceptionWithStackTrace(e);
 //	}
 	
 //	NSSetUncaughtExceptionHandler( exceptionHandler);
@@ -2846,7 +2736,22 @@ static BOOL initialized = NO;
 
 				[[NSUserDefaults standardUserDefaults] registerDefaults: [DefaultsOsiriX getDefaults]];
 //				[[NSUserDefaults standardUserDefaults] addSuiteNamed: @"com.rossetantoine.osirix"]; // Backward compatibility
+                [[NSUserDefaults standardUserDefaults] setInteger:200 forKey:@"NSInitialToolTipDelay"];
+
 				
+                // AutoClean evolution: old defaults AUTOCLEANINGSPACEPRODUCED and AUTOCLEANINGSPACEOPENED are merged into AutocleanSpaceMode
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:@"AutocleanSpaceMode"] == nil) {
+                    BOOL cleanOldest = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEPRODUCED"] boolValue];
+                    BOOL cleanOldestUnopened = [[[NSUserDefaults standardUserDefaults] objectForKey:@"AUTOCLEANINGSPACEOPENED"] boolValue];
+                    if (!cleanOldest && !cleanOldestUnopened) {
+                        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTOCLEANINGSPACE"];
+                        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"AutocleanSpaceMode"];
+                    } else if (cleanOldestUnopened) {
+                        [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"AutocleanSpaceMode"];
+                    } else 
+                        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"AutocleanSpaceMode"];
+                }
+                
 				[[NSUserDefaults standardUserDefaults] setInteger: [[NSUserDefaults standardUserDefaults] integerForKey: @"DEFAULT_DATABASELOCATION"] forKey: @"DATABASELOCATION"];
 				[[NSUserDefaults standardUserDefaults] setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"DEFAULT_DATABASELOCATIONURL"] forKey: @"DATABASELOCATIONURL"];
 				
@@ -2888,7 +2793,7 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_customDICOMField"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
@@ -2998,7 +2903,8 @@ static BOOL initialized = NO;
 				
                 
 				// CREATE A TEMPORATY FILE DURING STARTUP
-				NSString *path = [documentsDirectory() stringByAppendingPathComponent:@"/Loading"];
+				
+				NSString* path = [[DicomDatabase defaultBaseDirPath] stringByAppendingPathComponent:@"Loading"];
                 
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
                 {
@@ -3015,36 +2921,9 @@ static BOOL initialized = NO;
                     }
                 }
                 
-				[path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
-				
-				if( [[NSFileManager defaultManager] fileExistsAtPath:[documentsDirectory() stringByAppendingPathComponent:@"/TOBEINDEXED.noindex/"]])
-				{
-					[[NSFileManager defaultManager]	movePath: [documentsDirectory() stringByAppendingPathComponent:@"/TOBEINDEXED.noindex/"]
-													toPath: [documentsDirectory() stringByAppendingPathComponent:@"/INCOMING.noindex/TOBEINDEXED.noindex"] handler: nil];
-				}
-				
-				NSString *reportsDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/REPORTS/"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:reportsDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:reportsDirectory attributes:nil];
-				
-				NSString *dumpDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/DUMP/"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:dumpDirectory] == NO) [[NSFileManager defaultManager] createDirectoryAtPath:dumpDirectory attributes:nil];
-				
-				// CHECK IF THE REPORT TEMPLATE IS AVAILABLE
-				
-				NSString *reportFile;
+                [path writeToFile:path atomically:NO encoding: NSUTF8StringEncoding error: nil];
 				
                 [self checkForWordTemplates];
-
-				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.rtf"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.rtf"] handler:nil];
-				
-				reportFile = [documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.odt"];
-				if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-					[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/ReportTemplate.odt"] toPath:[documentsDirectory() stringByAppendingPathComponent:@"/ReportTemplate.odt"] handler:nil];
-				
-				
-				[AppController checkForHTMLTemplates];
 				[AppController checkForPagesTemplate];
 				
 				Use_kdu_IfAvailable = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseKDUForJPEG2000"];
@@ -3148,7 +3027,7 @@ static BOOL initialized = NO;
 		[QueryController echo: [self privateIP] port:[dcmtkQRSCPTLS port] AET: [dcmtkQRSCPTLS aeTitle]];
 	#endif
 	
-	[NSThread sleepForTimeInterval: 1.0];
+	[NSThread sleepForTimeInterval: 0.1];
 	
 	if( wait)
 	{
@@ -3174,7 +3053,7 @@ static BOOL initialized = NO;
 {
     if ([[notification name] isEqualToString:  NSWorkspaceSessionDidResignActiveNotification])
     {
-		[[BrowserController currentBrowser] saveDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+		[[[BrowserController currentBrowser] database] save:nil];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"RunListenerOnlyIfActive"])
 		{
@@ -3195,7 +3074,7 @@ static BOOL initialized = NO;
 		{
 			NSLog( @"----- OsiriX : session activation: START DICOM LISTENER FOR THIS SESSION");
 			
-			[[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]];
+			// [[BrowserController currentBrowser] loadDatabase: [[BrowserController currentBrowser] currentDatabasePath]]; // TODO: hmm
 			
 			[self restartSTORESCP];
 		}
@@ -3325,8 +3204,7 @@ static BOOL initialized = NO;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 		exit( 0);
 	}
 	
@@ -3449,6 +3327,8 @@ static BOOL initialized = NO;
     
 	#endif
     
+    _appDidFinishLoading = YES;
+    
     [ROI loadDefaultSettings];
 }
 
@@ -3499,6 +3379,9 @@ static BOOL initialized = NO;
 	}
 	else [[NSUserDefaults standardUserDefaults] setInteger: [[NSTimeZone localTimeZone] secondsFromGMT] forKey: @"timeZone"];
 	
+    if ([[[NSUserDefaults standardUserDefaults] valueForKey:@"COPYDATABASEMODE"] intValue] == 1) // tag 1 "if on CD", disappeared after new CD/DVD import system
+        [[NSUserDefaults standardUserDefaults] setInteger:2 forKey:@"COPYDATABASEMODE"];
+        
 //	NSLog(@"%s", __PRETTY_FUNCTION__, nil);
 	
 	if( dialog == NO)
@@ -3558,14 +3441,16 @@ static BOOL initialized = NO;
 	
 	[NSTimer scheduledTimerWithTimeInterval: 2 target: self selector: @selector( checkForRestartStoreSCPOrder:) userInfo: nil repeats: YES];
 	
+	[DicomDatabase initializeDicomDatabaseClass];
+	[BrowserController initializeBrowserControllerClass];
 	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"])
-	{
-		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCMethods alloc] init];
+	[WebPortal initializeWebPortalClass];
+	#endif
+	
+	#ifndef OSIRIX_LIGHT
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"httpXMLRPCServer"]) {
+		if(XMLRPCServer == nil) XMLRPCServer = [[XMLRPCInterface alloc] init];
 	}
-	
-	[WebPortal applicationWillFinishLaunching];
-	
 	#endif
 	
 	#if __LP64__
@@ -3743,6 +3628,7 @@ static BOOL initialized = NO;
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
+	
 }
 
 - (IBAction) updateViews:(id) sender
@@ -4094,64 +3980,32 @@ static BOOL initialized = NO;
 	return nil;
 }
 
-- (NSArray *)viewerScreens
+- (NSArray*)viewerScreens
 {
-	//once we have ethe list of viewers we need to arrange them ledft to right
-	NSArray *viewers;
-	if ([[NSScreen screens] count] > 1)
-	{
-		if ([[NSUserDefaults standardUserDefaults] integerForKey:@"ReserveScreenForDB"] == 2)	// Use only main screen
-			return [NSArray arrayWithObject: [NSScreen mainScreen]];
-		
-		NSMutableArray *array = [NSMutableArray array];
-		NSEnumerator *enumerator = [[NSScreen screens] objectEnumerator];
-		NSScreen *screen;
-		while (screen = [enumerator nextObject])
-		{
-			if (![screen isEqual:[self dbScreen]])
-				[array addObject:screen];
-		}
-		//return array;
-		viewers =  array;
-	}
-	else viewers = [NSScreen screens]; 
+	NSMutableArray* screens = [[[[NSUserDefaults standardUserDefaults] screensUsedForViewers] mutableCopy] autorelease];
+    if (!screens.count)
+        screens = [[[NSScreen screens] mutableCopy] autorelease];
 	
-	if( [viewers count] == 1) return viewers;
-	
-	//once we have the list of viewers we need to arrange them left to right
-	int count = [viewers count];
-	int i;
-	int position;
-	NSMutableArray *arrangedViewers = [NSMutableArray array];
-	for (i = 0; i < count; i++)
-	{
-		NSScreen *aScreen = [viewers objectAtIndex:i];
-		float x = [aScreen frame].origin.x;
-		NSEnumerator *enumerator = [arrangedViewers objectEnumerator];
-		NSScreen *screen;
-		position = i;
-		int current = 0;
-		while (screen = [enumerator nextObject])
-		{
-			if (x < [screen frame].origin.x)
-			{
-				position = current;
-				current ++;
-				break;
-			}
-		}
-		
-		[arrangedViewers insertObject:aScreen atIndex:position];
-	}
-	
-	if( [self dbScreen] == nil)
-	{
-		[arrangedViewers removeObject: [dbWindow screen]];
-		[arrangedViewers addObject: [dbWindow screen]];
-	}
-	else if( [arrangedViewers count] > 1) [arrangedViewers removeObject: [dbWindow screen]];
-	
-	return arrangedViewers;
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ReserveScreenForDB"] && [screens containsObject:[dbWindow screen]] && [screens count] > 1)
+        [screens removeObject:[dbWindow screen]];
+    
+	// arrange them left to right
+    [screens sortUsingComparator:^NSComparisonResult(id o1, id o2) {
+        NSRect f1 = ((NSScreen*)o1).frame, f2 = ((NSScreen*)o2).frame;
+        CGFloat c1 = f1.origin.x+f1.size.width/2, c2 = f2.origin.x+f2.size.width/2;
+        if (c1 < c2) return NSOrderedAscending;
+        if (c1 > c2) return NSOrderedDescending;
+        return NSOrderedSame;
+    }];
+    
+    // only use the database screen last
+    NSScreen* dbscreen = [dbWindow screen];
+    if ([screens containsObject:dbscreen]) {
+        [screens removeObject:dbscreen];
+        [screens addObject:dbscreen];
+    }
+    
+    return screens;
 }
 
 //- (NSRect) resizeWindow:(NSWindow*) win	withInRect:(NSRect) destRect
@@ -4248,7 +4102,7 @@ static BOOL initialized = NO;
 		NSScreen *screen = [screens objectAtIndex: monitorIndex];
 		NSRect frame = [screen visibleFrame];
 
-		if( USETOOLBARPANEL) frame.size.height -= [ToolbarPanelController exposedHeight];
+		if( USETOOLBARPANEL) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
 		frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 
 		int temp;
@@ -4775,7 +4629,7 @@ static BOOL initialized = NO;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 	}
@@ -4833,7 +4687,7 @@ static BOOL initialized = NO;
 		{
 			NSScreen *screen = [screens objectAtIndex:i];
 			NSRect frame = [screen visibleFrame];
-			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			[[viewersList objectAtIndex:i] setWindowFrame: frame showWindow:YES animate: YES];			
@@ -4856,7 +4710,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex:index];
 			NSRect frame = [screen visibleFrame];
 			
-			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			frame.size.width /= viewersPerScreen;
@@ -4881,7 +4735,7 @@ static BOOL initialized = NO;
 			NSScreen *screen = [screens objectAtIndex: monitorIndex];
 			NSRect frame = [screen visibleFrame];
 			
-			if( display2DViewerToolbar) frame.size.height -= [ToolbarPanelController exposedHeight];
+			if( display2DViewerToolbar) frame.size.height -= [[AppController toolbarForScreen:screen] exposedHeight];
 			frame = [NavigatorView adjustIfScreenAreaIf4DNavigator: frame];
 			
 			if (monitorIndex < extraViewers) 
@@ -5039,52 +4893,22 @@ static BOOL initialized = NO;
 
 #pragma mark-
 #pragma mark HTML Templates
-+ (void)checkForHTMLTemplates;
-{
-	// directory
-	NSString *htmlTemplatesDirectory = [documentsDirectory() stringByAppendingPathComponent:@"/HTML_TEMPLATES/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlTemplatesDirectory] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath:htmlTemplatesDirectory attributes:nil];
-	
-	// HTML templates
-	NSString *templateFile;
-
-	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"];
-	NSLog( @"%@", templateFile);
-	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportPatientsTemplate.html"] toPath:templateFile handler:nil];
-
-	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"];
-	NSLog( @"%@", templateFile);
-	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStudiesTemplate.html"] toPath:templateFile handler:nil];
-
-	templateFile = [htmlTemplatesDirectory stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"];
-	NSLog( @"%@", templateFile);
-	if ([[NSFileManager defaultManager] fileExistsAtPath:templateFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportSeriesTemplate.html"] toPath:templateFile handler:nil];
-	
-	// HTML-extra directory
-	NSString *htmlExtraDirectory = [htmlTemplatesDirectory stringByAppendingPathComponent:@"html-extra/"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:htmlExtraDirectory] == NO)
-		[[NSFileManager defaultManager] createDirectoryAtPath:htmlExtraDirectory attributes:nil];
-		
-	// CSS file
-	NSString *cssFile = [htmlExtraDirectory stringByAppendingPathComponent:@"style.css"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:cssFile] == NO)
-		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/QTExportStyle.css"] toPath:cssFile handler:nil];
++ (void)checkForHTMLTemplates { // __deprecated
+	[[[BrowserController currentBrowser] database] checkForHtmlTemplates];
 }
 
 #pragma mark-
 #pragma mark Pages Template
 
-+ (void)checkForPagesTemplate;
++ (NSString*)checkForPagesTemplate;
 {
-	#ifndef MACAPPSTORE
+#ifndef MACAPPSTORE
+#ifndef OSIRIX_LIGHT
+	NSString *templateDirectory = nil;
+
 	// Pages template directory
 	NSArray *templateDirectoryPathArray = [NSArray arrayWithObjects:NSHomeDirectory(), @"Library", @"Application Support", @"iWork", @"Pages", @"Templates", @"OsiriX", nil];
 	int i;
-	NSString *templateDirectory = nil;
 	for(i=0; i<[templateDirectoryPathArray count]; i++)
 	{
 		templateDirectory = [NSString pathWithComponents:[templateDirectoryPathArray subarrayWithRange:NSMakeRange(0,i+1)]];
@@ -5106,21 +4930,19 @@ static BOOL initialized = NO;
 	}
 	
 	// Pages template
-	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"];
-	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO)
-	{
+	NSString *reportFile = [templateDirectory stringByAppendingPathComponent:@"OsiriX Basic Report.template"];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:reportFile] == NO) {
 		[[NSFileManager defaultManager] copyPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/OsiriX Report.template"] toPath:[templateDirectory stringByAppendingPathComponent:@"/OsiriX Basic Report.template"] handler:nil];
 	}
 	
-	// Pages templates in the OsiriX Data folder
-	// creation of the alias to the iWork template folder if needed
-	NSString* templateDirectoryInOsiriXData = [documentsDirectory() stringByAppendingPathComponent:@"PAGES TEMPLATES"];
-	if(![[NSFileManager defaultManager] fileExistsAtPath:templateDirectoryInOsiriXData])
-		[[NSFileManager defaultManager] createSymbolicLinkAtPath:templateDirectoryInOsiriXData pathContent:templateDirectory];
-	#endif
+#endif
+#endif
+    
+    return nil;
 }
 
-+(void)checkForWordTemplates {
++(void)checkForWordTemplates
+{
 #ifndef MACAPPSTORE
 #ifndef OSIRIX_LIGHT
     // previously, we had a single word template in the OsiriX Data folder
@@ -5129,27 +4951,27 @@ static BOOL initialized = NO;
     // today, we use a dir in the database folder, which contains the templates
     NSString* templatesDirPath = [documentsDirectory() stringByAppendingPathComponent:@"WORD TEMPLATES"];
     
-    if (![[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath]) { // dir doesn't exist, or is not a dir
-//        //[[NSFileManager defaultManager] removeItemAtPath:templatesDirPath error:NULL]; // remove file if there is one, so we can put 
-        NSLog(@"hic");
-        NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
-        [[NSFileManager defaultManager] confirmDirectoryAtPath:wordTemplatesOsirixDirPath];
-        [[NSFileManager defaultManager] createSymbolicLinkAtPath:templatesDirPath pathContent:wordTemplatesOsirixDirPath];
-        templatesDirPath = wordTemplatesOsirixDirPath;
-    } else { // file/dir exists
-        templatesDirPath = [[NSFileManager defaultManager] destinationOfAliasOrSymlinkAtPath:templatesDirPath];
-    }
+    // by default, the templates are stored in the Office Application Support folder
+    NSString* wordTemplatesOsirixDirPath = [Reports wordTemplatesOsirixDirPath];
+    [[NSFileManager defaultManager] confirmDirectoryAtPath:wordTemplatesOsirixDirPath];
+    
+    // TODO: aliases for other Office languages
     
     NSUInteger templatesCount = 0;
-    for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+    for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:wordTemplatesOsirixDirPath error:NULL]) 
         if ([filename hasPrefix:@"OsiriX "])
             ++templatesCount;
     
-    if (!templatesCount) { // no word templates for OsiriX
+    if (!templatesCount && [[NSFileManager defaultManager] fileExistsAtPath:templatesDirPath])
+        for (NSString* filename in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:templatesDirPath error:NULL])
+            if ([filename hasPrefix:@"OsiriX "]) {
+                [[NSFileManager defaultManager] copyItemAtPath:[templatesDirPath stringByAppendingPathComponent:filename] toPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:filename] error:NULL];
+                ++templatesCount;
+            }
+    if (!templatesCount)
         if ([[NSFileManager defaultManager] fileExistsAtPath:oldReportFilePath])
-            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
+            [[NSFileManager defaultManager] createSymbolicLinkAtPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
         else [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
-    }
 #endif
 #endif
 }
@@ -5343,5 +5165,52 @@ static BOOL initialized = NO;
 }
 
 #endif
+
+static NSMutableDictionary* _receivingDict = nil;
+
+-(void)_receivingIconUpdate {
+	if (!_receivingDict.count)
+		[NSApp setApplicationIconImage:[NSImage imageNamed:@"Osirix.icns"]];
+	else [NSApp setApplicationIconImage:[NSImage imageNamed:@"OsirixDownload.icns"]];
+}
+
+-(void)_receivingIconSet:(BOOL)flag {
+	@synchronized (self) {
+		if (!_receivingDict)
+			_receivingDict = [[NSMutableDictionary alloc] init];
+		
+		NSThread* thread = [NSThread currentThread];
+		NSValue* threadValue = [NSValue valueWithPointer:thread];
+		N2MutableUInteger* setCount = [_receivingDict objectForKey:threadValue];
+		
+		if (flag) {
+			if (!setCount)
+				[_receivingDict setObject: setCount = [N2MutableUInteger mutableUIntegerWithUInteger:1] forKey:threadValue];
+			else [setCount increment];
+		} else {
+			if (setCount) {
+                if (setCount.unsignedIntegerValue > 0)
+                    [setCount decrement];
+				if (!setCount.unsignedIntegerValue)
+					[_receivingDict removeObjectForKey:threadValue];
+			}
+		}
+		
+		[self performSelectorOnMainThread:@selector(_receivingIconUpdate) withObject:nil waitUntilDone:NO];
+	}
+}
+
+-(void)setReceivingIcon {
+	[self _receivingIconSet:YES];
+}
+
+-(void)unsetReceivingIcon {
+	[self _receivingIconSet:NO];
+}
+
+-(void)setBadgeLabel:(NSString*)label {
+	[[NSApp dockTile] setBadgeLabel:label];
+	[[NSApp dockTile] display];
+}
 
 @end

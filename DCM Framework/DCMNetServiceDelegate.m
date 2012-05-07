@@ -46,6 +46,10 @@ static NSMutableArray *cachedServersArray = nil;
 	{
 		_dicomNetBrowser = [[NSNetServiceBrowser alloc] init];
 		[_dicomNetBrowser setDelegate:self];
+        
+        if (!cachedServersArray)
+            cachedServersArray = [[NSMutableArray alloc] init];
+        
 		[self update];
 	}
 	return self;
@@ -161,6 +165,61 @@ static NSMutableArray *cachedServersArray = nil;
 	[pool release];
 }
 
++(NSMutableDictionary*)DICOMNodeInfoFromTXTRecordData:(NSData*)data {
+	NSDictionary *dict = [NSNetService dictionaryFromTXTRecordData: data];
+	NSString *description = nil;
+	
+	if( [dict valueForKey: @"serverDescription"])
+		description = [[[NSString alloc] initWithData: [dict valueForKey: @"serverDescription"] encoding:NSUTF8StringEncoding] autorelease];
+	
+	int transferSyntax = 2;
+	
+	if( [dict valueForKey: @"preferredSyntax"])
+	{
+		NSString *ts = [[[NSString alloc] initWithData: [dict valueForKey: @"preferredSyntax"] encoding:NSUTF8StringEncoding] autorelease];
+		
+		if( [ts isEqualToString: @"LittleEndianImplicit"])
+			transferSyntax = 0;
+		
+		if( [ts isEqualToString: @"JPEGProcess14SV1TransferSyntax"])
+			transferSyntax = SendJPEGLossless;
+		
+		if( [ts isEqualToString: @"JPEG2000LosslessOnly"])
+			transferSyntax = SendJPEG2000Lossless;
+		
+		if( [ts isEqualToString: @"JPEG2000"])
+			transferSyntax = SendJPEG2000Lossy10;
+		
+		if( [ts isEqualToString: @"RLELossless"])
+			transferSyntax = SendRLE;
+	}
+	
+	BOOL retrieveMode = CMOVERetrieveMode;
+	
+	if( [dict valueForKey: @"CGET"])
+	{
+		NSString *cg = [[[NSString alloc] initWithData: [dict valueForKey: @"CGET"] encoding:NSUTF8StringEncoding] autorelease];
+		retrieveMode = CGETRetrieveMode;
+	}
+	
+	NSMutableDictionary* s = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+					 [NSNumber numberWithBool:YES] , @"QR",
+					 [NSNumber numberWithInt: retrieveMode] , @"retrieveMode",
+					 [NSNumber numberWithBool:YES] , @"Send",
+					 [NSNumber numberWithInt: transferSyntax], @"TransferSyntax",
+							nil];
+	if (description)
+		[s setObject:description forKey:@"Description"];
+	
+	if( [dict valueForKey: @"icon"])
+	{
+		NSString *icon = [[[NSString alloc] initWithData: [dict valueForKey: @"icon"] encoding:NSUTF8StringEncoding] autorelease];
+		[s setObject: icon forKey: @"icon"];
+	}
+
+	return s;
+}
+
 + (NSArray *) DICOMServersListSendOnly: (BOOL) send QROnly:(BOOL) QR cached:(BOOL) cached
 {
 	NSMutableArray *serversArray = nil;
@@ -177,7 +236,7 @@ static NSMutableArray *cachedServersArray = nil;
 				}
 			}
 			
-			if( cached == NO || cachedServersArray == nil)
+			if( cached == NO)
 			{
 				serversArray = [NSMutableArray arrayWithArray: [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"]];
 				
@@ -316,8 +375,8 @@ static NSMutableArray *cachedServersArray = nil;
 					}
 				}
 				
-				[cachedServersArray release];
-				cachedServersArray = [[NSMutableArray arrayWithArray: serversArray] retain];
+                [cachedServersArray removeAllObjects];
+                [cachedServersArray addObjectsFromArray:serversArray];
 			}
 			else serversArray = [NSMutableArray arrayWithArray: cachedServersArray];
 			
@@ -347,7 +406,7 @@ static NSMutableArray *cachedServersArray = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
 		}
 	}
 	

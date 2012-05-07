@@ -20,6 +20,7 @@
 #import "BLAuthentication.h"
 #import "PluginManagerController.h"
 #import "Notifications.h"
+#import "NSFileManager+N2.h"
 #import "NSMutableDictionary+N2.h"
 #import "PreferencesWindowController.h"
 
@@ -180,6 +181,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
 		NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
 		
+        [PluginManager startProtectForCrashWithPath: [plugin bundlePath]];
+        
 		if( menuTitles)
 		{
 			if( [menuTitles count] > 1)
@@ -304,6 +307,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 					[othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
 			}
 		}
+        
+        [PluginManager endProtectForCrash];
 	}
 	
 	if( [filtersMenu numberOfItems] < 1)
@@ -360,9 +365,20 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	NSEnumerator *pluginEnum = [plugins objectEnumerator];
 	PluginFilter *pluginFilter;
 	
-	while ( pluginFilter = [pluginEnum nextObject])
+	while( pluginFilter = [pluginEnum nextObject])
     {
-		[pluginFilter setMenus];
+        [PluginManager startProtectForCrashWithFilter: pluginFilter];
+        
+        @try
+        {
+            [pluginFilter setMenus];
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+        
+        [PluginManager endProtectForCrash];
 	}
 }
 
@@ -667,7 +683,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSLog( @"|||||||||||||||||| Plugins loading START ||||||||||||||||||");
         #ifndef OSIRIX_LIGHT
 		
-        NSString *pluginCrash = @"/tmp/PluginCrashed";
+        NSString *pluginCrash = [[[NSFileManager defaultManager] userApplicationSupportFolderForApp] stringByAppendingPathComponent:@"Plugin_Loading"];
         if ([[NSFileManager defaultManager] fileExistsAtPath: pluginCrash] && ![[NSUserDefaults standardUserDefaults] boolForKey:@"DoNotDeleteCrashingPlugins"])
         {
             NSString *pluginCrashPath = [NSString stringWithContentsOfFile: pluginCrash encoding: NSUTF8StringEncoding error: nil];
@@ -689,8 +705,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
         for (id path in paths)
 		{
             NSArray* donotloadnames = nil;
-            if (![path isKindOfClass:[NSNull class]])
-            {
+            if (![path isKindOfClass:[NSNull class]]) {
                 donotloadnames = [[NSString stringWithContentsOfFile:[path stringByAppendingPathComponent:@"DoNotLoad.txt"]] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
                 if ([donotloadnames containsObject:@"*"])
                     break;
@@ -705,8 +720,10 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                 NSMutableArray* cl = [NSMutableArray array];
                 NSArray* args = [[NSProcessInfo processInfo] arguments];
                 for (NSInteger i = 0; i < [args count]; ++i)
-                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1)
+                    if ([[args objectAtIndex:i] isEqualToString:@"--LoadPlugin"] && [args count] > i+1) {
                         [cl addObject:[args objectAtIndex:++i]];
+                        NSLog(@"Should load plugin at %@", [cl lastObject]);
+                    }
                 e = [cl objectEnumerator];
             }
             

@@ -18,6 +18,8 @@
 #import <Cocoa/Cocoa.h>
 
 @class DRTrack;
+@class DicomDatabase;
+
 /** \brief Window Controller for DICOM disk burning */
 @interface BurnerWindowController : NSWindowController <NSWindowDelegate>
 {
@@ -47,6 +49,8 @@
 	int burnAnimationIndex;
     int irisAnimationIndex;
     NSTimer *irisAnimationTimer;
+    
+    DicomDatabase* idatabase;
 }
 
 @property BOOL buttonsDisabled;
@@ -69,7 +73,7 @@
 - (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
-- (void)addDICOMDIRUsingDCMTK;
+//- (void)addDICOMDIRUsingDCMTK;
 - (void)addDicomdir;
 - (IBAction)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;

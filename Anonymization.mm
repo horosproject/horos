@@ -31,6 +31,7 @@
 #import "XMLController.h"
 #import "DicomFileDCMTKCategory.h"
 #import "XMLControllerDCMTKCategory.h"
+#import "N2Debug.h"
 
 static NSString *templateDicomFile = nil;
 
@@ -212,7 +213,7 @@ static NSString *templateDicomFile = nil;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	NSArray* values = [Anonymization tagsValuesArrayFromDictionary:[[NSUserDefaultsController sharedUserDefaultsController] dictionaryForKey:defaultsKey]];
@@ -347,8 +348,7 @@ static NSString *templateDicomFile = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"%@", [e description]);
-				[AppController printStackTrace: e];
+				N2LogExceptionWithStackTrace(e);
 			}
 			
 			[pool release];
@@ -408,8 +408,7 @@ static NSString *templateDicomFile = nil;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"%@", [e description]);
-				[AppController printStackTrace: e];
+				N2LogExceptionWithStackTrace(e);
 			}
 			
 			[pool release];
@@ -471,8 +470,7 @@ static NSString *templateDicomFile = nil;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"%@", [e description]);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	

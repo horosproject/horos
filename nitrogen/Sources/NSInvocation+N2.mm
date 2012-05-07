@@ -17,79 +17,151 @@
 
 @implementation NSInvocation (N2)
 
-+(NSInvocation*)invocationWithSelector:(SEL)sel target:(id)target argument:(id)arg {
-	NSMethodSignature* signature = [target methodSignatureForSelector:sel];
++(NSInvocation*)invocationWithSelector:(SEL)sel target:(id)target {
+    return [[self class] invocationWithSelector:sel target:target argument:nil];
+}
+
++(NSInvocation*)invocationWithSelector:(SEL)selector target:(id)target argument:(id)arg {
+	NSMethodSignature* signature = [target methodSignatureForSelector:selector];
 	NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:signature];
-	[invocation setTarget:target];
-	[invocation setSelector:sel];
-	
-	// http://17.254.2.129/mac/library/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
-	const char* firstArgumentType = [signature getArgumentTypeAtIndex:2];
-//	DLog(@"Creating invocation for [%@ %@(%c)%@]", [target className], NSStringFromSelector(sel), firstArgumentType[0], arg);
-	switch (firstArgumentType[0]) {
-		case '@': {
-			[invocation setArgument:&arg atIndex:2];
-		} break;
-			
-		case 'i':
-		case 'Q':
-		case 'f':
-		case 'd':
-		case 'c': {
-			if ([arg isKindOfClass:[NSString class]] || [arg isKindOfClass:[NSNumber class]]) {
-				switch (firstArgumentType[0]) {
-					case 'i': {
-						NSInteger i = [arg integerValue];
-						[invocation setArgument:&i atIndex:2];
-					} break;
-					case 'Q': {
-						long long Q = [arg longLongValue];
-						[invocation setArgument:&Q atIndex:2];
-					} break;
-					case 'f': {
-						CGFloat f = [arg floatValue];
-						[invocation setArgument:&f atIndex:2];
-					} break;
-					case 'd': {
-						double d = [arg doubleValue];
-						[invocation setArgument:&d atIndex:2];
-					} break;
-					case 'c': {
-						char c = [arg intValue];
-						[invocation setArgument:&c atIndex:2];
-					} break;
-				}
-			}
-		} break;
-		
-		case 'I': {
-			if ([arg isKindOfClass:[NSString class]]) {
-				switch (firstArgumentType[0]) {
-					case 'I': {
-						NSUInteger I = [arg integerValue];
-						[invocation setArgument:&I atIndex:2];
-					} break;
-				}
-			} else if ([arg isKindOfClass:[NSNumber class]]) {
-				switch (firstArgumentType[0]) {
-					case 'I': {
-						NSUInteger I = [arg unsignedIntegerValue];
-						[invocation setArgument:&I atIndex:2];
-					} break;
-				}
-			} else {
-				NSLog(@"Warning: unhandled argument class %@", [arg className]);
-				return NULL;
-			}
-		} break;
-			
-		default: {
-			NSLog(@"Warning: unhandled first argument type '%s'", firstArgumentType);
-			return NULL;
-		} break;
-	}
-	
+	invocation.target = target;
+	invocation.selector = selector;
+	if (arg) [invocation setArgumentObject:arg atIndex:2];
 	return invocation;
+}
+
+// https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
+
+-(void)setArgumentObject:(id)o atIndex:(NSUInteger)i {
+	const char* argumentType = [self.methodSignature getArgumentTypeAtIndex:i];
+    switch (argumentType[0]) {
+		case '@': {
+			[self setArgument:&o atIndex:i];
+		} break;
+        case 'c': {
+            char v = [o charValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'i': {
+            int v = [o integerValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 's': {
+            short v = [o shortValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'l': {
+            long v = [o longValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'q': {
+            long long v = [o longLongValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'C': {
+            unsigned char v = [o unsignedCharValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'I': {
+            unsigned int v = [o unsignedIntegerValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'S': {
+            unsigned short v = [o unsignedShortValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'L': {
+            unsigned long v = [o unsignedLongValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'Q': {
+            unsigned long long v = [o unsignedLongLongValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'f': {
+            float v = [o floatValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'd': {
+            double v = [o doubleValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'B': {
+            bool v = [o boolValue];
+            [self setArgument:&v atIndex:i];
+		} break;
+        case 'v': {
+            NSLog(@"Warning: unexpected invocation argument of type void");
+		} break;
+        case '*': {
+            const char* v = [[o stringValue] UTF8String];
+            [self setArgument:&v atIndex:i];
+		} break;
+        default: {
+            if ([o isKindOfClass:[NSValue class]] && !strcmp(argumentType, [o objCType])) {
+                NSUInteger size;
+                NSGetSizeAndAlignment(argumentType, &size, NULL);
+                void* v = malloc(size);
+                [o getValue:v];
+                [self setArgument:v atIndex:i];
+                free(v);
+            } else
+                NSLog(@"Warning: unhandled invocation argument type '%s'", argumentType);
+        } break;
+	}
+}
+
+-(id)returnValue {
+    NSUInteger returnLength = [[self methodSignature] methodReturnLength];
+    if (!returnLength)
+        return nil;
+    void* r = malloc(returnLength);
+    [self getReturnValue:r];
+    @try {
+        const char* returnType = [[self methodSignature] methodReturnType];
+        switch (returnType[0]) {
+            case '@':
+                return *(id*)r;
+            case 'c':
+                return [NSNumber numberWithChar:*(char*)r];
+            case 'i':
+                return [NSNumber numberWithInt:*(int*)r];
+            case 's':
+                return [NSNumber numberWithShort:*(short*)r];
+            case 'l':
+                return [NSNumber numberWithLong:*(long*)r];
+            case 'q':
+                return [NSNumber numberWithLongLong:*(long long*)r];
+            case 'C':
+                return [NSNumber numberWithUnsignedChar:*(unsigned char*)r];
+            case 'I':
+                return [NSNumber numberWithUnsignedInt:*(unsigned int*)r];
+            case 'S':
+                return [NSNumber numberWithUnsignedShort:*(unsigned short*)r];
+            case 'L':
+                return [NSNumber numberWithUnsignedLong:*(unsigned long*)r];
+            case 'Q':
+                return [NSNumber numberWithUnsignedLongLong:*(unsigned long long*)r];
+            case 'f':
+                return [NSNumber numberWithFloat:*(float*)r];
+            case 'd':
+                return [NSNumber numberWithDouble:*(double*)r];
+            case 'B':
+                return [NSNumber numberWithBool:*(bool*)r];
+            case 'v':
+                return nil;
+            case '*':
+                return [NSString stringWithCString:*(char**)r encoding:NSUTF8StringEncoding];
+            default:
+                return [NSValue valueWithBytes:r objCType:returnType];
+        }
+    } @catch (NSException* e) {
+        @throw e;
+    } @finally {
+        free(r);
+    }
+
+    return nil;
 }
 
 @end

@@ -36,6 +36,7 @@
 #import "DicomImage.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
+#import "N2Debug.h"
 
 #include "vtkMath.h"
 #include "vtkAbstractPropPicker.h"
@@ -7121,7 +7122,7 @@ public:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -7599,28 +7600,35 @@ public:
 
 - (void) convert3Dto2Dpoint:(double*) pt3D :(double*) pt2D
 {
+    if( pt3D == nil) return;
+    if( pt2D == nil) return;
+    if( volume == nil) return;
+    
 	vtkTransform *Transform = vtkTransform::New();
-			
-	Transform->SetMatrix( volume->GetUserMatrix());
-	Transform->Push();
-	
-	Transform->Inverse();
-	
-	Transform->TransformPoint( pt3D, pt2D);
-	
-	double vPos[ 3];
-	
-	volume->GetPosition( vPos);
-	
-	pt2D[ 0] -= vPos[ 0];
-	pt2D[ 1] -= vPos[ 1];
-	pt2D[ 2] -= vPos[ 2];
-	
-	pt2D[0] /= [firstObject pixelSpacingX];
-	pt2D[1] /= [firstObject pixelSpacingY];
-	pt2D[2] /= [firstObject sliceInterval];
-						
-	Transform->Delete();
+    
+    if( Transform)
+    {
+        Transform->SetMatrix( volume->GetUserMatrix());
+        Transform->Push();
+        
+        Transform->Inverse();
+        
+        Transform->TransformPoint( pt3D, pt2D);
+        
+        double vPos[ 3];
+        
+        volume->GetPosition( vPos);
+        
+        pt2D[ 0] -= vPos[ 0];
+        pt2D[ 1] -= vPos[ 1];
+        pt2D[ 2] -= vPos[ 2];
+        
+        pt2D[0] /= [firstObject pixelSpacingX];
+        pt2D[1] /= [firstObject pixelSpacingY];
+        pt2D[2] /= [firstObject sliceInterval];
+                            
+        Transform->Delete();
+    }
 }
 
 - (void)convert2DPoint:(float *)pt2D to3DPoint:(float *)pt3D

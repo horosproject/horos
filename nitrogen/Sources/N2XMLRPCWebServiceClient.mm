@@ -18,21 +18,9 @@
 
 @implementation N2XMLRPCWebServiceClient
 
-
 -(id)execute:(NSString*)methodName arguments:(NSArray*)args {
-	NSMutableString* request = [NSMutableString stringWithCapacity:1024];
-	
-	[request appendFormat:@"<?xml version='1.0' encoding='utf-8' ?>\n\n"];
-	[request appendFormat:@"<methodCall>"];
-	[request appendFormat:@"<methodName>%@</methodName>", methodName];
-	[request appendFormat:@"<params>"];
-	
-	for (id arg in args)
-		[request appendFormat:@"<param><value>%@</value></param>", [N2XMLRPC FormatElement:arg]];
-	
-	[request appendFormat:@"</params>"];
-	[request appendFormat:@"</methodCall>"];
-	
+    NSString* request = [N2XMLRPC requestWithMethodName:methodName arguments:args];
+    
 	NSData* result = [self postWithContent:[request dataUsingEncoding:NSISOLatin1StringEncoding]];
 	
 	NSError* error = NULL;

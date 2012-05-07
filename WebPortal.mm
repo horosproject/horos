@@ -24,6 +24,7 @@
 #import "NSString+N2.h"
 #import "DDData.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 #import "CSMailMailClient.h"
 
 @interface WebPortalServer ()
@@ -128,7 +129,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWadoServiceEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
-+(void)applicationWillFinishLaunching { // called from AppController
+#ifndef OSIRIX_LIGHT
++(void)initializeWebPortalClass { // called from AppController
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalPortNumberDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalAddressDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalUsesSSLDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
@@ -147,6 +149,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     
     [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
 }
+#endif
 
 +(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context {
 	if (!context) {
@@ -219,7 +222,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	//NSTimer* t = [[NSTimer scheduledTimerWithTimeInterval:60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
 }
 
-+(void)applicationWillTerminate {
++(void)finalizeWebPortalClass {
 	//	[NSUserDefaultsController.sharedUserDefaultsController removeObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey];
 	[self.defaultWebPortal release];
 }
@@ -375,7 +378,9 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		{
 			[NSRunLoop.currentRunLoop runMode: NSDefaultRunLoopMode beforeDate:NSDate.distantFuture];
 		}
-		@catch (NSException * e) {NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);[AppController printStackTrace: e];}
+		@catch (NSException * e) {
+            N2LogExceptionWithStackTrace(e);
+        }
 		
 		[runloopPool release];
 	}

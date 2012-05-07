@@ -50,7 +50,7 @@
 
 -(id)copyWithZone:(NSZone*)zone {
 	N2CellDescriptor* copy = [[N2CellDescriptor allocWithZone:zone] initWithWidthConstraints:_widthConstraints alignment:_alignment];
-	if( copy == nil) return nil;
+	if (copy == nil) return nil;
 	
 	[copy setView:_view];
 	[copy setAlignment:_alignment];

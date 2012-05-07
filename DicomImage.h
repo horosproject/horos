@@ -17,6 +17,8 @@
 NSString* sopInstanceUIDDecode( unsigned char *r, int length);
 void* sopInstanceUIDEncode( NSString *sopuid);
 
+#define OsirixDicomImageSizeUnknown INT_MAX
+
 @class DCMSequenceAttribute, DicomSeries;
 
 @interface NSData (OsiriX)
@@ -34,16 +36,21 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 	NSNumber	*height, *width;
 	NSNumber	*numberOfFrames;
 	NSNumber	*numberOfSeries;
-	NSNumber	*mountedVolume;
+//	NSNumber	*mountedVolume;
 	NSNumber	*isKeyImage, *dicomTime;
 	NSString	*extension;
 	NSString	*modality;
 	NSString	*fileType;
+    
+    NSImage*    _thumbnail;
 }
 
 @property(retain) NSNumber* numberOfFrames;
 
 @property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
 @property(nonatomic, retain) NSData* compressedSopInstanceUID;
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSNumber* frameID;
@@ -60,7 +67,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 @property(nonatomic, retain) NSNumber* storedInDatabaseFolder;
 @property(nonatomic, retain) NSNumber* storedIsKeyImage;
 @property(nonatomic, retain) NSString* storedModality;
-@property(nonatomic, retain) NSNumber* storedMountedVolume;
+@property(nonatomic, retain) NSNumber* storedMountedVolume __deprecated;
 @property(nonatomic, retain) NSNumber* storedNumberOfFrames;
 @property(nonatomic, retain) NSNumber* storedNumberOfSeries;
 @property(nonatomic, retain) NSNumber* storedWidth;
@@ -84,14 +91,24 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 #endif
 - (NSImage *)image;
 - (NSImage *)thumbnail;
-- (NSString*) completePathWithDownload:(BOOL) download;
-+ (NSString*) dbPathForManagedContext: (NSManagedObjectContext *) c;
+- (NSImage *)thumbnailIfAlreadyAvailable;
+- (void)setThumbnail:(NSImage*)image;
+- (NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase;
 + (NSString*) completePathForLocalPath:(NSString*) path directory:(NSString*) directory;
 - (NSString*) SRFilenameForFrame: (int) frameNo;
 - (NSString*) SRPathForFrame: (int) frameNo;
 - (NSString*) SRPath;
 - (NSString	*)sopInstanceUID;
 @property(nonatomic, retain) NSString* modality;
+
+- (NSString*) path;
+- (NSString*) extension;
+- (NSNumber*) height;
+- (NSNumber*) width;
+
+- (NSNumber*) isKeyImage;
+
++(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
 
 @end
 

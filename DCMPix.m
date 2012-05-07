@@ -24,6 +24,7 @@
 #import "ROI.h"
 #import "SRAnnotation.h"
 #import "Notifications.h"
+#import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
 
 #ifdef OSIRIX_VIEWER
@@ -48,6 +49,7 @@
 
 #include <Accelerate/Accelerate.h>
 #include "AppController.h"
+#include "NSFileManager+N2.h"
 
 #import <QTKit/QTKit.h>
 #import "Point3D.h"
@@ -1397,10 +1399,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	
@@ -3362,8 +3361,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		srcFile = [s retain];
 		imageObj = [iO retain];
 		
-		savedHeightInDB = [[imageObj valueForKey:@"height"] intValue];
-		savedWidthInDB = [[imageObj valueForKey:@"width"] intValue];
+		savedHeightInDB = [[imageObj valueForKey:@"storedHeight"] intValue];
+		savedWidthInDB = [[imageObj valueForKey:@"storedWidth"] intValue];
 		
 		imID = pos;
 		imTot = tot;
@@ -3511,7 +3510,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -3519,7 +3519,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3596,7 +3597,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		while( feof(fp) == 0)
 		{
 			fread( &bnote, BIORAD_NOTE_LENGTH, 1, fp);
-			bnote.noteText[ BIORAD_NOTE_LENGTH-1] = 0;
+			bnote.noteText[ BIORAD_NOTE_TEXT_LENGTH-1] = 0;
 			
 			NSString *noteText = [NSString stringWithCString:bnote.noteText encoding: NSISOLatin1StringEncoding];
 			//NSLog(@"noteText %@",noteText);
@@ -3729,7 +3730,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -3737,7 +3739,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -4314,7 +4317,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedWidthInDB != 0 && savedWidthInDB != width)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+                        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 						if( width > savedWidthInDB)
 							width = savedWidthInDB;
@@ -4326,7 +4330,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 					
 					if( savedHeightInDB != 0 && savedHeightInDB != height)
 					{
-						NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+                        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 						if( height > savedHeightInDB)
 							height = savedHeightInDB;
@@ -4681,7 +4686,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		goto END_CREATE_ROIS;
 	}
 	
-	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContextIndependentContext:YES];
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	request.entity = [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc];	
@@ -4695,7 +4700,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	[moc unlock];
 	
@@ -5275,7 +5280,8 @@ END_CREATE_ROIS:
 	
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+        if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
@@ -5283,7 +5289,8 @@ END_CREATE_ROIS:
 	
 	if( savedWidthInDB != 0 && savedWidthInDB != width)
 	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+        if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+            NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
@@ -5568,8 +5575,7 @@ END_CREATE_ROIS:
 		
 		@try
 		{
-			if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-				[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+            [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
 			
 			NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 			
@@ -5620,7 +5626,7 @@ END_CREATE_ROIS:
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 #else
 		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
@@ -5816,7 +5822,7 @@ END_CREATE_ROIS:
 			}
 			@catch (NSException *e)
 			{
-				NSLog( @"***** exception in overlays DCMFramework : %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e/*, @"overlays dcmframework"*/);
 			}
 		}
 		
@@ -6484,7 +6490,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6565,7 +6571,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -6603,7 +6609,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[PapyrusLock unlock];
@@ -7033,7 +7039,8 @@ END_CREATE_ROIS:
 		height = (int) (*val).us;
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
 			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
@@ -7047,7 +7054,8 @@ END_CREATE_ROIS:
 		width = (int) (*val).us;
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
-			NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
 			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
@@ -8328,8 +8336,7 @@ END_CREATE_ROIS:
 
 						@try
 						{
-							if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/dicomsr_osirix/"] == NO)
-								[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/dicomsr_osirix/" attributes: nil];
+                            [[NSFileManager defaultManager] confirmDirectoryAtPath:@"/tmp/dicomsr_osirix/"];
 							
 							NSString *htmlpath = [[@"/tmp/dicomsr_osirix/" stringByAppendingPathComponent: [srcFile lastPathComponent]] stringByAppendingPathExtension: @"xml"];
 							
@@ -8375,7 +8382,7 @@ END_CREATE_ROIS:
 						}
 						@catch (NSException * e)
 						{
-							NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                            N2LogExceptionWithStackTrace(e);
 						}
 	#else
 		[self getDataFromNSImage: [NSImage imageNamed: @"NSIconViewTemplate"]];
@@ -8979,143 +8986,148 @@ END_CREATE_ROIS:
 - (void) getDataFromNSImage:(NSImage*) otherImage
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	int x, y;
-	
-	NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
-	
-	NSImage *r = nil;
-	
-	if( [rep pixelsWide] > [otherImage size].width)
-		r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
-	else
-		r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
-	
-	[r lockFocus];
-	[[NSColor whiteColor] set];
-	NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
-	[otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
-	[r unlockFocus];
-	
-	NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
-	
-	height = [TIFFRep pixelsHigh];
-	width = [TIFFRep pixelsWide];
-	
-	if( savedHeightInDB != 0 && savedHeightInDB != height)
-	{
-		NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
-		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
-		if( height > savedHeightInDB)
-			height = savedHeightInDB;
-	}
-	
-	if( savedWidthInDB != 0 && savedWidthInDB != width)
-	{
-		NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
-		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
-		if( width > savedWidthInDB)
-			width = savedWidthInDB;
-	}
+	@try {
+        int x, y;
+        
+        NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData: [otherImage TIFFRepresentation]];
+        
+        NSImage *r = nil;
+        
+        if( [rep pixelsWide] > [otherImage size].width)
+            r = [[[NSImage alloc] initWithSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])] autorelease];
+        else
+            r = [[[NSImage alloc] initWithSize: NSMakeSize( [otherImage size].width, [otherImage size].height)] autorelease];
+        
+        [r lockFocus];
+        [[NSColor whiteColor] set];
+        NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
+        [otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
+        [r unlockFocus];
+        
+        NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
+        
+        height = [TIFFRep pixelsHigh];
+        width = [TIFFRep pixelsWide];
+        
+        if( savedHeightInDB != 0 && savedHeightInDB != height)
+        {
+            if( savedHeightInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
+            [imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+            if( height > savedHeightInDB)
+                height = savedHeightInDB;
+        }
+        
+        if( savedWidthInDB != 0 && savedWidthInDB != width)
+        {
+            if( savedWidthInDB != OsirixDicomImageSizeUnknown)
+                NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
+            [imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+            if( width > savedWidthInDB)
+                width = savedWidthInDB;
+        }
 
-	unsigned char *srcImage = [TIFFRep bitmapData];
-	unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
-	
-	int totSize = height * width * 4;
-	if( fExternalOwnedImage)
-		argbImage =	(unsigned char*) fExternalOwnedImage;
-	else
-		argbImage = malloc( totSize);
-	
-	if( srcImage != nil && argbImage != nil)
-	{
-		switch( [TIFFRep bitsPerPixel])
-		{
-			case 8:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						*tmpPtr++ = *srcPtr;
-						srcPtr++;
-					}
-				}
-			break;
-				
-			case 32:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						*tmpPtr++ = 255;
-						*tmpPtr++ = *srcPtr++;
-						*tmpPtr++ = *srcPtr++;
-						*tmpPtr++ = *srcPtr++;
-						srcPtr++;
-					}
-				}
-			break;
-				
-			case 24:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						
-						*((short*)tmpPtr) = *((short*)srcPtr);
-						tmpPtr+=2;
-						srcPtr+=2;
-						
-						*tmpPtr++ = *srcPtr++;
-					}
-				}
-			break;
-				
-			case 48:
-				tmpPtr = argbImage;
-				for( y = 0 ; y < height; y++)
-				{
-					srcPtr = srcImage + y*[TIFFRep bytesPerRow];
-					
-					x = width;
-					while( x-->0)
-					{
-						tmpPtr++;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-						*tmpPtr++ = *srcPtr;	srcPtr += 2;
-					}
-				}
-			break;
-				
-			default:
-				NSLog(@"Error - Unknow bitsPerPixel ...");
-			break;
-		}
-		
-		fImage = (float*) argbImage;
-		isRGB = YES;
-	}
-	
-	[TIFFRep release];
-	
-	[pool release];
+        unsigned char *srcImage = [TIFFRep bitmapData];
+        unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
+        
+        int totSize = height * width * 4;
+        if( fExternalOwnedImage)
+            argbImage =	(unsigned char*) fExternalOwnedImage;
+        else
+            argbImage = malloc( totSize);
+        
+        if( srcImage != nil && argbImage != nil)
+        {
+            switch( [TIFFRep bitsPerPixel])
+            {
+                case 8:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            *tmpPtr++ = *srcPtr;
+                            *tmpPtr++ = *srcPtr;
+                            *tmpPtr++ = *srcPtr;
+                            srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 32:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            *tmpPtr++ = 255;
+                            *tmpPtr++ = *srcPtr++;
+                            *tmpPtr++ = *srcPtr++;
+                            *tmpPtr++ = *srcPtr++;
+                            srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 24:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            
+                            *((short*)tmpPtr) = *((short*)srcPtr);
+                            tmpPtr+=2;
+                            srcPtr+=2;
+                            
+                            *tmpPtr++ = *srcPtr++;
+                        }
+                    }
+                break;
+                    
+                case 48:
+                    tmpPtr = argbImage;
+                    for( y = 0 ; y < height; y++)
+                    {
+                        srcPtr = srcImage + y*[TIFFRep bytesPerRow];
+                        
+                        x = width;
+                        while( x-->0)
+                        {
+                            tmpPtr++;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                            *tmpPtr++ = *srcPtr;	srcPtr += 2;
+                        }
+                    }
+                break;
+                    
+                default:
+                    NSLog(@"Error - Unknow bitsPerPixel ...");
+                break;
+            }
+            
+            fImage = (float*) argbImage;
+            isRGB = YES;
+        }
+        
+        [TIFFRep release];
+	} @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
 }
 
 - (void) getFrameFromMovie:(NSString*) extension
@@ -9165,7 +9177,7 @@ END_CREATE_ROIS:
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[QTMovie exitQTKitOnThread];
@@ -9215,14 +9227,35 @@ END_CREATE_ROIS:
 				{
 					success = [self loadDICOMPapyrus];
 					
+                    #ifdef OSIRIX_VIEWER
 					#ifndef OSIRIX_LIGHT
-					//only try again if is strict DICOM
-					if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
-					{
-						NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
-						success = [self loadDICOMDCMFramework];
-					}
+                    
+                    // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+                    
+                    NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                    
+                    @try 
+                    {
+                        [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                        
+                        //only try again if is strict DICOM
+                        if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
+                        {
+                            NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
+                            success = [self loadDICOMDCMFramework];
+                        }
+                        
+                        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                    }
+                    @catch (NSException * e) 
+                    {
+                        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    }
+                    
 					#endif
+                    #endif
 				}
 				#ifndef OSIRIX_LIGHT
 				else
@@ -10377,10 +10410,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return newPix;
@@ -10953,7 +10983,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[checking unlock];
@@ -12310,7 +12340,7 @@ END_CREATE_ROIS:
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[checking unlock];
@@ -12482,9 +12512,29 @@ END_CREATE_ROIS:
 	#ifndef OSIRIX_LIGHT
 	if( inGrOrModP == nil) // Papyrus failed... unknown group? Try DCM Framework
 	{
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+        NSString *s = nil;
+        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+        
+        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+        
+        [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+        
+        @try 
+        {
+            [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+            
+            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
-		return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+            s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+        
+            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+        }
+        @catch (NSException * e) 
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+            
+        return s;
 	}
 	else 
 	#endif
@@ -12608,8 +12658,29 @@ END_CREATE_ROIS:
 		if( elementDefinitionFound == NO)	// Papyrus doesn't have the definition of all dicom tags.... 2004?
 		{
 			#ifndef OSIRIX_LIGHT
-			DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-			return [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+            NSString *s = nil;
+            // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+            
+            NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+            
+            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+            
+            @try 
+            {
+                [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                
+                DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+                
+                s = [self getDICOMFieldValueForGroup: group element: element DCMLink: dcmObject];
+                
+                [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+            }
+            @catch (NSException * e) 
+            {
+                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            }
+            
+            return s;
 			#endif
 		}
 	}
@@ -12753,40 +12824,44 @@ END_CREATE_ROIS:
 							}
 							else if([type isEqualToString:@"DB"])
 							{
-								NSString *fieldName = [field objectForKey:@"field"];
-								NSString *level = [field objectForKey:@"level"];
-								if([level isEqualToString:@"image"])
-								{
-									value = [imageObj valueForKey:fieldName];
-								}
-								else if([level isEqualToString:@"series"])
-								{
-									value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
-								}
-								else if([level isEqualToString:@"study"])
-								{
-									value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
-									
-									if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
-								}
-								
-								if(value==nil) value = @"-";
-								else contentForLine = YES;
-								
-								if( [value isKindOfClass: [NSDate class]])
-								{
-//									value = [value description];
-									
-									if([fieldName isEqualToString:@"dateOfBirth"])
-										value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
-									else
-										value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
-								}
-								else
-								{
-									value = [value description];
-									if( [value length] == 0) value = @"-";
-								}
+                                @try {
+                                    NSString *fieldName = [field objectForKey:@"field"];
+                                    NSString *level = [field objectForKey:@"level"];
+                                    if([level isEqualToString:@"image"])
+                                    {
+                                        value = [imageObj valueForKey:fieldName];
+                                    }
+                                    else if([level isEqualToString:@"series"])
+                                    {
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+                                    }
+                                    else if([level isEqualToString:@"study"])
+                                    {
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+                                        
+                                        if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
+                                    }
+                                    
+                                    if(value==nil) value = @"-";
+                                    else contentForLine = YES;
+                                    
+                                    if( [value isKindOfClass: [NSDate class]])
+                                    {
+    //									value = [value description];
+                                        
+                                        if([fieldName isEqualToString:@"dateOfBirth"])
+                                            value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
+                                        else
+                                            value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
+                                    }
+                                    else
+                                    {
+                                        value = [value description];
+                                        if( [value length] == 0) value = @"-";
+                                    }
+                                } @catch (...) {
+                                    @throw;
+                                }
 							}
 							else if([type isEqualToString:@"Special"])
 							{

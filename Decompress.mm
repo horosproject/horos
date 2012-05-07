@@ -10,6 +10,7 @@
 #import "DCMPix.h"
 #import <WebKit/WebKit.h>
 #include <mingpp.h>
+#import "N2Debug.h"
 #import <Quartz/Quartz.h>
 
 #undef verify
@@ -176,7 +177,7 @@ int main(int argc, const char *argv[])
 		
 		BOOL useDCMTKForJP2K = [[dict objectForKey:@"useDCMTKForJP2K"] intValue];
 		
-# pragma mark compress
+#pragma mark compress
 		if( [what isEqualToString:@"compress"])
 		{
 			[DCMPixelDataAttribute setUse_kdu_IfAvailable: [[dict objectForKey:@"UseKDUForJPEG2000"] intValue]];
@@ -686,9 +687,8 @@ int main(int argc, const char *argv[])
 				
 				[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 				
-				long long timeValue = 600 / rateValue;
-				long timeScale = 600;
-				
+				long timeScale = 600; // The default time scale for a new track is 600
+				long long timeValue = timeScale / rateValue;
 				QTTime curTime = QTMakeTime(timeValue, timeScale);
 				
 				NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
@@ -849,7 +849,7 @@ int main(int argc, const char *argv[])
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			return 0;
 		}

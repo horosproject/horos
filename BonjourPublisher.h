@@ -55,4 +55,6 @@
 - (int) OsiriXDBCurrentPort;
 + (BonjourPublisher*) currentPublisher;
 
++(NSDictionary*)dictionaryFromXTRecordData:(NSData*)data;
+
 @end

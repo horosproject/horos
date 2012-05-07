@@ -29,6 +29,8 @@
 #import "DicomSeries.h"
 #import "MutableArrayCategory.h"
 #import "WADODownload.h"
+#import "N2Debug.h"
+#import "DicomDatabase.h"
 
 #include <libkern/OSAtomic.h>
 
@@ -796,8 +798,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	}
 //	@catch (NSException * e) 
 //	{
-//		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-//		[AppController printStackTrace: e];
+//      N2LogExceptionWithStackTrace(e);
 //	}
 //	
 //	[pool release];
@@ -834,8 +835,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	int quality = 100;
@@ -847,7 +847,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		NSError *error = nil;
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContextIndependentContext: YES];
+		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] independentContext];
 		
 		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
 		if( [self isMemberOfClass: [DCMTKSeriesQueryNode class]])
@@ -863,7 +863,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		for( DicomSeries *s in [localStudy valueForKey: @"series"])
 			[localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
 	}
-	@catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+	@catch (NSException * e) {
+		N2LogExceptionWithStackTrace(e);
+    }
 	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
 	
@@ -1243,8 +1245,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[lock unlock];
@@ -1279,8 +1280,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[lock unlock];
@@ -1880,8 +1880,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			[AppController printStackTrace: e];
+            N2LogExceptionWithStackTrace(e);
 			
 			succeed = NO;
 		}
@@ -1946,10 +1945,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 
 	[pool release];
@@ -2239,8 +2235,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		[AppController printStackTrace: e];
+		N2LogExceptionWithStackTrace(e);
 	}
 	
     return cond;

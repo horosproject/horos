@@ -28,15 +28,18 @@ static int increment = 0, previousNumberOfScreens = 0;
 
 @synthesize viewer;
 
-+ (long) fixedHeight {
-	return 90;
+- (long) fixedHeight {
+	//return 90;
+    NSRect windowFrame = [NSWindow contentRectForFrameRect:[self.window frame] styleMask:[self.window styleMask]];
+    NSRect contentFrame = [[self.window contentView] frame];
+    return NSHeight(windowFrame) - NSHeight(contentFrame) + 13;
 }
 
-+ (long) hiddenHeight {
-	return 16;
+- (long) hiddenHeight {
+	return 15;
 }
 
-+ (long) exposedHeight {
+- (long) exposedHeight {
 	return [self fixedHeight] - [self hiddenHeight];
 }
 
@@ -87,10 +90,10 @@ static int increment = 0, previousNumberOfScreens = 0;
 	NSRect screenRect = [[[NSScreen screens] objectAtIndex:screen] visibleFrame];
 	
 	NSRect dstframe;
-	dstframe.size.height = [ToolbarPanelController fixedHeight];
+	dstframe.size.height = [self fixedHeight];
 	dstframe.size.width = screenRect.size.width;
 	dstframe.origin.x = screenRect.origin.x;
-	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [ToolbarPanelController hiddenHeight];
+	dstframe.origin.y = screenRect.origin.y + screenRect.size.height - dstframe.size.height + [self hiddenHeight];
 	
 	[[self window] setFrame:dstframe display:YES];
 }
@@ -106,6 +109,9 @@ static int increment = 0, previousNumberOfScreens = 0;
         emptyToolbar = [[NSToolbar alloc] initWithIdentifier: [NSString stringWithFormat:@"nstoolbar osirix %d", increment++]];
         [emptyToolbar setDelegate: self];
         [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
+        
+        if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
+            [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
         [[self window] setToolbar: emptyToolbar];
         [[self window] setLevel: NSNormalWindowLevel];

@@ -20,6 +20,10 @@
 #import "DicomStudy.h"
 #import "NSUserDefaultsController+OsiriX.h"
 #import "NSUserDefaultsController+N2.h"
+#import "N2Debug.h"
+#import "DicomDatabase.h"
+#import "DicomImage.h"
+#import "AppController.h"
 
 // imports required for socket initialization
 #import <sys/socket.h>
@@ -219,6 +223,7 @@ extern const char *GetPrivateIP();
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
 		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
 		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+        [params setObject:[AppController UID] forKey: @"UID"]; 
 		
 		if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
 		{
@@ -235,6 +240,24 @@ extern const char *GetPrivateIP();
     }
 	
 	dbPublished = activated;
+}
+
++(NSDictionary*)dictionaryFromXTRecordData:(NSData*)data {
+	NSMutableDictionary* d = [NSMutableDictionary dictionary];
+	NSDictionary* dict = [NSNetService dictionaryFromTXTRecordData:data];
+	
+	for (NSString* key in dict) {
+		NSData* data = [dict objectForKey:key];
+		if ([key isEqualToString:@"AETitle"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else if ([key isEqualToString:@"port"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else if ([key isEqualToString:@"UID"])
+			[d setObject:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] forKey:key];
+		else [d setObject:data forKey:key];
+	}
+	
+	return d;
 }
 
 //- (NSData *)dataByZippingLocalPath:(NSString *)_path
@@ -282,7 +305,7 @@ extern const char *GetPrivateIP();
 																filesToSend: [todo valueForKey: @"Files"]
 																transferSyntax: [[todo objectForKey:@"TransferSyntax"] intValue] 
 																compression: 1.0
-																extraParameters: nil]; // nil == TLS not supported !
+																extraParameters: [NSDictionary dictionaryWithObject:[DicomDatabase activeLocalDatabase] forKey:@"DicomDatabase"]]; // nil == TLS not supported !
 							
 	@try
 	{
@@ -308,7 +331,7 @@ extern const char *GetPrivateIP();
 {
 	NSAutoreleasePool	*mPool = [[NSAutoreleasePool alloc] init];
 
-	BOOL saveDB = NO;
+//	BOOL saveDB = NO;
 	BOOL refreshDB = NO;
 
 	[incomingConnection retain];
@@ -511,7 +534,7 @@ extern const char *GetPrivateIP();
 							NSLog( @"******* unknown order: %@", order);
 							
 						NSArray *objects = [BrowserController addFiles: savedFiles
-															toContext: [[BrowserController currentBrowser] localManagedObjectContext]
+															toContext: [[BrowserController currentBrowser] localManagedObjectContextIndependentContext:YES]
 															toDatabase: [BrowserController currentBrowser]
 															onlyDICOM: NO 
 														notifyAddedFiles: YES
@@ -519,7 +542,13 @@ extern const char *GetPrivateIP();
 														dbFolder: [[BrowserController currentBrowser] documentsDirectory]
 													generatedByOsiriX: generatedByOsiriX];
 						
-						representationToSend = nil;
+						representationToSend = [NSMutableData data];
+                        unsigned int temp = NSSwapHostIntToBig([objects count]);
+                        [representationToSend appendBytes:&temp length:4];
+                        for (DicomImage* image in objects) {
+                            unsigned int temp = NSSwapHostIntToBig(image.pathNumber.intValue);
+                            [representationToSend appendBytes:&temp length:4];
+                        }
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"NEWMS" length: 6]]) // New Messaging System
 					{
@@ -563,33 +592,32 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-							NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-							[context lock];
-							
-							@try
+                            DicomDatabase* database = [DicomDatabase defaultDatabase];
+							[database lock];
+                            @try
 							{
-								NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-								NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								NSMutableSet* albumStudies = [album mutableSetValueForKey:@"studies"];
 								
-								for( NSString *uri in studies)
+								for (NSString* uri in studies)
 								{
-									DicomStudy *alb = (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
-									[studiesOfTheAlbum addObject: alb];
-									[alb archiveAnnotationsAsDICOMSR];
+									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									[albumStudies addObject:study];
+									[study archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
-								saveDB = YES;
+                                
+                                [database save:nil];
 							}
 							
 							@catch (NSException * e)
 							{
 								NSLog(@"Exception in BonjourPublisher ADDAL");
 							}
-							
-							NSError *error = nil;
-							[context save: &error];
-							[context unlock];
+							@finally {
+                                [database unlock];
+                            }
 						}
 						
 						representationToSend = nil;
@@ -615,33 +643,32 @@ extern const char *GetPrivateIP();
 							NSArray *studies = [d objectForKey:@"albumStudies"];
 							NSString *albumUID = [d objectForKey:@"albumUID"];
 							
-							NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-							[context lock];
-							
+                            DicomDatabase* database = [DicomDatabase defaultDatabase];
+							[database lock];
 							@try
 							{
-								NSManagedObject *albumObject = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
-								NSMutableSet	*studiesOfTheAlbum = [albumObject mutableSetValueForKey: @"studies"];
+								DicomAlbum* album = [database objectWithID:albumUID]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: albumUID]]];
+								NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
 								
-								for( NSString *uri in studies)
+								for (NSString* uri in studies)
 								{
-									DicomStudy *alb = (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
-									[studiesOfTheAlbum removeObject: alb];
-									[alb archiveAnnotationsAsDICOMSR];
+									DicomStudy* study = [database objectWithID:uri]; // (DicomStudy*) [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: uri]]];
+									[albumStudies removeObject:study];
+									[study archiveAnnotationsAsDICOMSR];
 								}
 								
 								refreshDB = YES;
-								saveDB = YES;
+                                
+                                [database save:nil];
 							}
 							
 							@catch (NSException * e)
 							{
 								NSLog(@"Exception in BonjourPublisher REMAL");
 							}
-							
-							NSError *error = nil;
-							[context save: &error];
-							[context unlock];
+							@finally {
+                                [database unlock];
+                            }
 						}
 						
 						representationToSend = nil;
@@ -657,7 +684,7 @@ extern const char *GetPrivateIP();
 						
 						// We read the string
 						while ( [data length] < pos + stringSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
-						NSString *object = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
+						NSString *objectId = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 						pos += stringSize;
 						
 						// We read 4 bytes that contain the string size
@@ -688,12 +715,11 @@ extern const char *GetPrivateIP();
 						NSString *key = [NSString stringWithUTF8String: [[data subdataWithRange: NSMakeRange(pos,stringSize)] bytes]];
 						pos += stringSize;
 						
-						NSManagedObjectContext *context = [interfaceOsiriX defaultManagerObjectContext];
-						[context lock];
-						
+                        DicomDatabase* database = [DicomDatabase defaultDatabase];
+                        [database lock];
 						@try
 						{					
-							NSManagedObject	*item = [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
+							NSManagedObject* item = [database objectWithID:objectId]; // [context objectWithID: [[context persistentStoreCoordinator] managedObjectIDForURIRepresentation: [NSURL URLWithString: object]]];
 							
 							//NSLog(@"URL:%@", object);
 							if( item)
@@ -716,19 +742,19 @@ extern const char *GetPrivateIP();
 									[item setValue: value forKeyPath: key];
 								}
 							}
+                            
+                            [database save:NULL];
 						}
 						
 						@catch (NSException *e)
 						{
 							NSLog(@"***** BonjourPublisher Exception: %@", e);
 						}
-						
-						NSError *error = nil;
-						[context save: &error];
-						[context unlock];
-						
+						@finally {
+                            [database unlock];
+                        }
+                        
 						refreshDB = YES;
-						saveDB = YES;
 					}
 					else if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"MFILE" length: 6]])
 					{
@@ -990,7 +1016,11 @@ extern const char *GetPrivateIP();
 	[incomingConnection release];
 	
 	if( refreshDB) [interfaceOsiriX performSelectorOnMainThread:@selector( refreshDatabase:) withObject:nil waitUntilDone: NO];		// This has to be performed on the main thread
-	if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
+	
+    // remark: there was this saveDB flag that was set when changes were made to the database, but it was always just after a [contact save:err] call... 
+    // ...so a saveDatabase would just cause a 2nd [database save]...
+    // ...another possible reason for this 2nd [database save] could be that the DB_VERSION file was originally written in the saveDatabase function..  since DicomDatabase, [database save] does that too.
+//    if( saveDB) [interfaceOsiriX performSelectorOnMainThread:@selector( saveDatabase:) withObject:nil waitUntilDone: NO];			// This has to be performed on the main thread
 	
 	[mPool release];
 }
@@ -1008,7 +1038,7 @@ extern const char *GetPrivateIP();
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[connectionLock unlock];

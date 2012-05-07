@@ -18,6 +18,7 @@
 
 #include "osconfig.h"
 #include "mdfconen.h"
+#import "N2Debug.h"
 
 #include "dcvrsl.h"
 #include "ofcast.h"
@@ -53,7 +54,7 @@ extern NSRecursiveLock *PapyrusLock;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
     return error_count;

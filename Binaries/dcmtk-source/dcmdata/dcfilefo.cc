@@ -457,7 +457,7 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         /* DCM_ImplementationVersionName */
         metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
         checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer);
-
+                
         /* dump some information if reuqired */
         DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
                 metinf->card()));
@@ -722,6 +722,10 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
     {
         /* open file for input */
         DcmInputFileStream fileStream(fileName);
+/*        cout << "Asd.." << fileStream.avail() << "\n";
+        if (fileStream.avail() > 240000000) {
+            cout << "!!!" << fileStream.avail() << "\n";
+        }*/
         /* check stream status */
         l_error = fileStream.status();
         if (l_error.good())

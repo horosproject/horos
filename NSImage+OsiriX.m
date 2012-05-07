@@ -13,6 +13,8 @@
 =========================================================================*/
 
 #import "NSImage+OsiriX.h"
+#import "N2Debug.h"
+
 extern unsigned char* compressJPEG(int inQuality, unsigned char* inImageBuffP, int inImageHeight, int inImageWidth, int monochrome, int *destSize);
 extern NSRecursiveLock* PapyrusLock;
 
@@ -36,7 +38,7 @@ extern NSRecursiveLock* PapyrusLock;
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[PapyrusLock unlock];

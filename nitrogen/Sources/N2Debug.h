@@ -20,8 +20,6 @@
 +(BOOL)isActive;
 +(void)setActive:(BOOL)active;
 
-extern NSString* RectString(NSRect r) __deprecated; // use NSStringFromRect
-
 @end
 
 #ifdef DEBUG
@@ -34,16 +32,19 @@ extern NSString* RectString(NSRect r) __deprecated; // use NSStringFromRect
 extern "C" {
 #endif
 	
-	extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...);
-	extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
-	
+extern NSString* RectString(NSRect r) __deprecated; // use NSStringFromRect
+extern NSString* PointString(NSPoint p) __deprecated; // use NSStringFromPoint
+
+extern void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...);
+extern void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf);
+
 #define N2LogError(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, __VA_ARGS__)
 #define N2LogDeprecatedCall(...) _N2LogErrorImpl(__PRETTY_FUNCTION__, __FILE__, __LINE__, @"deprecated API usage")
 #define N2LogException(e, ...) _N2LogExceptionImpl(e, NO, __PRETTY_FUNCTION__, ## __VA_ARGS__)
 #define N2LogExceptionWithStackTrace(e, ...) _N2LogExceptionImpl(e, YES, __PRETTY_FUNCTION__, ## __VA_ARGS__)
-	
-	extern void N2LogStackTrace(NSString* format, ...);
-	
+
+extern void N2LogStackTrace(NSString* format, ...);
+
 #ifdef __cplusplus
 }
 #endif

@@ -20,6 +20,7 @@
 #import <SecurityInterface/SFChooseIdentityPanel.h>
 #import <OsiriXAPI/WebPortal.h>
 #import <OsiriXAPI/WebPortalDatabase.h>
+#import "NSAppleScript+N2.h"
 
 #include <netdb.h>
 #include <unistd.h>
@@ -158,11 +159,21 @@
 }
 
 -(IBAction)editAddresses:(id)sender {
-	[NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObject:[[NSBundle bundleForClass:[self class]] pathForResource:@"OpenNetworkSysPrefs" ofType:@"scpt"]]];
+    NSAppleScript* as = [[[NSAppleScript alloc] initWithSource:
+                          @"tell application \"System Preferences\"\n"
+                          @"activate\n"
+                          @"set current pane to pane \"com.apple.preference.network\"\n"
+                          @"end tell\n"] autorelease];
+    [as runWithArguments:nil error:NULL];
 }
 
 -(IBAction)editHostname:(id)sender {
-	[NSTask launchedTaskWithLaunchPath:@"/usr/bin/osascript" arguments:[NSArray arrayWithObject:[[NSBundle bundleForClass:[self class]] pathForResource:@"OpenSharingSysPrefs" ofType:@"scpt"]]];
+    NSAppleScript* as = [[[NSAppleScript alloc] initWithSource:
+                          @"tell application \"System Preferences\"\n"
+                          @"activate\n"
+                          @"set current pane to pane \"com.apple.preferences.sharing\"\n"
+                          @"end tell\n"] autorelease];
+    [as runWithArguments:nil error:NULL];
 }
 
 #pragma mark TLS

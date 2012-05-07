@@ -15,6 +15,7 @@
 #import "Scripting_Additions.h"
 #import "BrowserController.h"
 #import "AppController.h"
+#import "XMLRPCMethods.h"
 
 @implementation OsiriXScripts
 
@@ -67,10 +68,12 @@
 	{
 		NSString	*url = [[self arguments] objectForKey:@"URL"];
 		
-        if( [[BrowserController currentBrowser] addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]] == NO)
-        {
-            NSLog( @"XML-RPC DownloadURLFile: failed to download URL");
-        }
+		NSArray	*files = [[BrowserController currentBrowser] addURLToDatabaseFiles: [NSArray arrayWithObject: [NSURL URLWithString:url]]];
+		
+		if( [[BrowserController currentBrowser] findAndSelectFile: [[files objectAtIndex:0] valueForKey:@"completePath"] image: nil shouldExpand: NO])
+		{
+			NSLog(@"done!");
+		}
 	}
 	
 	if( [command isEqualToString:@"OpenViewerForSelected"]) [[BrowserController currentBrowser] viewerDICOM: self];
@@ -88,15 +91,8 @@
 		
 		// The XMLRPC method is the direct parameter in AppleScript 
 		NSString *xmlrpcMethodName = [self directParameter];
-		NSMutableDictionary *httpServerMessage = [[NSMutableDictionary alloc] initWithCapacity:2];
-		[httpServerMessage setValue:[NSNumber numberWithBool:NO] forKey:@"Processed"];
         
-		[[[AppController sharedAppController] XMLRPCServer] processXMLRPCMessage:xmlrpcMethodName httpServerMessage:httpServerMessage HTTPServerRequest:nil version:(NSString*)kCFHTTPVersion1_0 paramDict:paramDict encoding:@"UTF-8"];
-		// Check if the XMLRPC Method added some result for AppleScript. If not, the reply to AppleScript will be nil.
-		ASReply = [httpServerMessage valueForKey:@"ASResponse"];
-		
-		// We have to make sure the server message gets released once the results are passed to AppleScript:
-		[httpServerMessage autorelease];	
+		ASReply = [[[AppController sharedAppController] XMLRPCServer] methodCall:xmlrpcMethodName parameters:paramDict error:NULL];
 	}	
     return ASReply;
 }

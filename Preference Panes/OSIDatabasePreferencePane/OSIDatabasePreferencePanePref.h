@@ -19,9 +19,9 @@
 	IBOutlet NSMatrix		*locationMatrix;
 	IBOutlet NSTextField	*locationURLField;
 	IBOutlet NSPathControl	*locationPathField;
-	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
-	IBOutlet NSButton		*copyDatabaseOnOffButton;
-	IBOutlet NSButton		*localizerOnOffButton;
+//	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
+//	IBOutlet NSButton		*copyDatabaseOnOffButton;
+//	IBOutlet NSButton		*localizerOnOffButton;
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSPopUpButton	*reportsMode;
 	
@@ -40,18 +40,15 @@
 	IBOutlet NSMatrix		*olderType;
 	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
 	
-	IBOutlet NSButton		*freeSpace;
-	IBOutlet NSMatrix		*freeSpaceType;
-	IBOutlet NSPopUpButton	*freeSpaceSize;
+//	IBOutlet NSButton		*freeSpace;
+//	IBOutlet NSMatrix		*freeSpaceType;
+//	IBOutlet NSPopUpButton	*freeSpaceSize;
 	IBOutlet NSWindow *mainWindow;
 }
 
 - (void) mainViewDidLoad;
 - (IBAction)setLocation:(id)sender;
 - (IBAction)setLocationURL:(id)sender;
-- (IBAction)setCopyDatabaseMode:(id)sender;
-- (IBAction)setCopyDatabaseOnOff:(id)sender;
-- (IBAction)setLocalizerOnOff:(id)sender;
 - (IBAction)databaseCleaning:(id)sender;
 - (IBAction)setSeriesOrder:(id)sender;
 - (IBAction)setAutoComments:(id) sender;

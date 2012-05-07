@@ -17,6 +17,7 @@
 #import "Wait.h"
 #import "WaitRendering.h"
 #import "BrowserController.h"
+#import "DicomDatabase.h"
 
 @implementation QuicktimeExport
 
@@ -442,8 +443,15 @@
 	}
 }
 
-- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name {
+    return [self createMovieQTKit:openIt :produceFiles :name :0];
+}
+
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)fps
 {
+    if (fps > 0)
+        [[NSUserDefaults standardUserDefaults] setInteger:fps forKey:@"quicktimeExportRateValue"];
+
 	NSString		*fileName;
 	long			result;
 
@@ -457,10 +465,10 @@
 	{
 		result = NSFileHandlingPanelOKButton;
 		
-		[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/"] handler: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/"] withIntermediateDirectories: YES attributes: nil error: nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
+		[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
 		
-		fileName = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/OsiriXMovie.mov"];
+		fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
 	}
 	else
 	{
@@ -497,10 +505,7 @@
 			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
 			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
 			
-			if( [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"] <= 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
-			
-			long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
+            long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
 			long timeScale = 600;
 			
 			curTime = QTMakeTime(timeValue, timeScale);
@@ -535,7 +540,7 @@
 				}
 				else
 				{
-					NSString *curFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/IPHOTO/OsiriX-%4d.jpg", curSample];
+					NSString *curFile = [[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] stringByAppendingPathComponent:[NSString stringWithFormat:@"OsiriX-%4d.jpg", curSample]];
 					
 					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 					[bitmapData writeToFile:curFile atomically:YES];

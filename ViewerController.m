@@ -92,6 +92,8 @@
 #import "MPRController.h"
 #import "CPRController.h"
 #import "Notifications.h"
+#import "DicomDatabase.h"
+#import "N2Debug.h"
 #import "OSIEnvironment+Private.h"
 #import "NSString+N2.h"
 #import "WindowLayoutManager.h"
@@ -375,30 +377,15 @@ static int hotKeyToolCrossTable[] =
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
-	
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSMutableArray *viewersCtrl = [[NSMutableArray alloc] initWithCapacity: numberOf2DViewer];
-		
-		NSArray *winList = [NSApp orderedWindows];
-		for( NSWindow *w in winList)
-		{
-			if( [w windowController])
-				[viewersCtrl addObject: [w windowController]];
-		}
-		
-		for( NSWindowController *ctrl in viewersCtrl)
-		{
-			if( [ctrl isKindOfClass:[ViewerController class]])
-			{
-				if( [(ViewerController*) ctrl windowWillClose] == NO)
-					[viewersList addObject: ctrl];
-			}
-		}
-		
-		[viewersCtrl release];
-		[pool release];
-	}
+    
+    for( NSWindow *w in [NSApp orderedWindows])
+    {
+        if( [[w windowController] isKindOfClass:[ViewerController class]])
+        {
+            if( [(ViewerController*) [w windowController] windowWillClose] == NO)
+                [viewersList addObject: [w windowController]];
+        }
+    }
 	
 	return viewersList;
 }
@@ -2446,7 +2433,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 - (void) endWaitWindow:(id) waitWindow
 {
 	[waitWindow close];
-	[waitWindow release];
+	[waitWindow autorelease];
 }
 
 -(IBAction) updateImage:(id) sender
@@ -2584,7 +2571,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( NSIsEmptyRect( standardRect)) standardRect = currentFrame;
 	
 	if( [AppController USETOOLBARPANEL])
-		screenRect.size.height -= [ToolbarPanelController exposedHeight];	
+		screenRect.size.height -= [[AppController toolbarForScreen:[sender screen]] exposedHeight];	
 
 	if (currentFrame.size.height >= screenRect.size.height - 20 && currentFrame.size.width >= screenRect.size.width - 20)
 		return standardRect;
@@ -3067,7 +3054,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[toolbarPanel[ i] setToolbar: toolbar viewer: self];
 				found = YES;
 			}
-			else [[toolbarPanel[ i] window] orderOut:self];
+			else
+            {
+                if( [[toolbarPanel[ i] window] isVisible])
+                    [[toolbarPanel[ i] window] orderOut:self];
+            }
 		}
 		if( found == NO) NSLog( @"Toolbar NOT found");
 	}
@@ -4052,8 +4043,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( [[self window] isVisible] == NO) return;	//we will do it in checkBuiltMatrixPreview : faster opening !
 	if( windowWillClose) return;
     
-	NSManagedObjectModel	*model = [[BrowserController currentBrowser] managedObjectModel];
-	NSManagedObjectContext	*context = [[BrowserController currentBrowser] managedObjectContext];
+	DicomDatabase* db = [[BrowserController currentBrowser] database];
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
 	NSError					*error = nil;
@@ -4086,18 +4076,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
 	}
 	else predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", searchString];
-	
-	dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
-	[dbRequest setPredicate: predicate];
-	
-	[context retain];
-	[context lock];
-	
+		
 	@try
 	{
-		error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		NSArray *studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
 		
 		if ([studiesArray count])
 		{
@@ -4150,10 +4132,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[cell setTarget: self];
 				[cell setBordered: YES];
 				[cell setLineBreakMode: NSLineBreakByCharWrapping];
-				
+                
 				NSString	*name = [curStudy valueForKey:@"studyName"];
 //				if( [name length] > 15) name = [name substringToIndex: 15];
-				
+                
 				name = [name stringByTruncatingToLength: 34];
 				
 				NSString *stateText;
@@ -4164,8 +4146,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				if( comment == nil) comment = @"";
 				
 				comment = [comment stringWithTruncatingToLength: 32];
-				
-				NSString	*modality = [curStudy valueForKey:@"modality"];
+                
+                NSString	*modality = [curStudy valueForKey:@"modality"];
 				
 				if( modality == nil) modality = @"OT:";
 				
@@ -4176,7 +4158,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				NSString *patName = @"";
 				
 				if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-					patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [BrowserController DateOfBirthFormat: [curStudy valueForKey:@"dateOfBirth"]]];
+					patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
 				
 				if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
 				
@@ -4193,7 +4175,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					for( i = 0; i < [series count]; i++)
 					{
-						NSManagedObject	*curSeries = [series objectAtIndex:i];
+						DicomSeries* curSeries = [series objectAtIndex:i];
 						
 						NSButtonCell *cell = [previewMatrix cellAtRow: index column:0];
 						
@@ -4208,6 +4190,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						[cell setEnabled:YES];
 						
 						NSString *name = [curSeries valueForKey:@"name"];
+                        
 						if( [name length] > 18)
 						{
 							[cell setFont:[NSFont boldSystemFontOfSize: 7.8]];
@@ -4218,7 +4201,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 						int count = [[curSeries valueForKey:@"noFiles"] intValue];
 						if( count == 1)
 						{
-							[[[BrowserController currentBrowser] managedObjectContext] lock];
+							[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 							
 							@try 
 							{
@@ -4232,10 +4215,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 							}
 							@catch (NSException * e) 
 							{
-								NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                                N2LogExceptionWithStackTrace(e);
 							}
 							
-							[[[BrowserController currentBrowser] managedObjectContext] unlock];
+							[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 						}
 						else if (count == 0)
 						{
@@ -4289,33 +4272,29 @@ static volatile int numberOfThreadsForRelisce = 0;
 								
 									[dcmPix CheckLoad];
 									
-									if( dcmPix && dcmPix.notAbleToLoadImage == NO)
+									if (dcmPix && dcmPix.notAbleToLoadImage == NO)
 									{
-										NSImage *img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
+										img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 										
-										if( img)
-										{
-											[cell setImage: img];
+										if (img) {
+											[cell setImage:img];
 											
-											if( [[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
-												[curSeries setValue: [BrowserController produceJPEGThumbnail: img] forKey:@"thumbnail"];
+											if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
+												curSeries.thumbnail = [BrowserController produceJPEGThumbnail:img];
 										}
-										else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+										else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 										
-										[dcmPix release];
 									}
-									else [cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+									else [cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
+									
+									[dcmPix release];
 								}
-								@catch (NSException * e) 
-								{
-									NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-									#ifdef OSIRIX_VIEWER
-									[AppController printStackTrace: e];
-									#endif
-									[cell setImage: [NSImage imageNamed: @"FileNotFound.tif"]];
+								@catch (NSException* e) {
+									N2LogExceptionWithStackTrace(e);
+									[cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 								}
-							}
-							else [cell setImage: img];
+							} else
+								[cell setImage:img];
 						}
 						
 						index++;
@@ -4345,9 +4324,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		NSLog( @"***** buildMatrixPreview exception: %@", e);
 	}
-	
-	[context unlock];
-	[context release];
 }
 
 - (void) showCurrentThumbnail:(id) sender;
@@ -5666,7 +5642,11 @@ return YES;
 
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
-	
+    
+    if ([self.database isReadOnly])
+        if ([toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier])
+            return NO;
+    
     BOOL enable = YES;
     if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])
     {
@@ -6431,10 +6411,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	isDataVolumicIn4DLevel--;
 	return volumicData;
@@ -6448,6 +6425,9 @@ return YES;
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*)d withVolume:(NSData*) v
 {
 //	*(long*)0 = 0xDEADBEEF; // ILCrashReporter test -- DO NOT ACTIVATE THIS LINE 
+	
+	DicomImage* dicomImage = [d objectAtIndex:0];
+	self.database = [DicomDatabase databaseForContext:dicomImage.managedObjectContext];
 	
 	[self setMagnetic: YES];
 	
@@ -6520,6 +6500,36 @@ return YES;
 #endif
 	
 	return self;
+}
+
+-(void)refreshDatabase:(NSArray*)newImages {
+	if ([[self imageView] mouseDragging]) {
+		[self performSelector:@selector(refreshDatabase:) withObject:newImages afterDelay:0.01];
+		return;
+	}
+	
+	BOOL rebuild = NO, reload = NO;
+    
+    if (!newImages)
+        rebuild = reload = YES;
+    
+	DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
+	for (DicomImage* dicomImage in newImages) {
+		if (dicomImage.series == firstObject.series)
+			reload = YES;
+		else if (!firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
+			rebuild = YES;
+	}
+	
+	if (rebuild)
+		[self buildMatrixPreview: NO];
+	if (reload) {
+		BrowserController* bc = [BrowserController currentBrowser];
+		[bc openViewerFromImages:[NSArray arrayWithObject:[bc childrenArray:firstObject.series]] movie:NO viewer:self keyImagesOnly:NO tryToFlipData:YES];
+	}
+	
+	
+	[super refreshDatabase:newImages];
 }
 
 - (NSNumber*) KeyImageCounter
@@ -6758,6 +6768,9 @@ return YES;
 			
 			long minWindows = 1;
 			if( [self FullScreenON]) minWindows++;
+			
+			
+			[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 			
 			if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 			{
@@ -7226,13 +7239,19 @@ return YES;
                 
                 [self redrawToolbar];
 			}
+			
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
+			
+			[self willChangeValueForKey: @"KeyImageCounter"];
+			[self didChangeValueForKey: @"KeyImageCounter"];
+			
+			[imageView computeColor];
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-			#ifdef OSIRIX_VIEWER
-			[AppController printStackTrace: e];
-			#endif
+            N2LogExceptionWithStackTrace(e);
 		}
 	}
 	
@@ -7273,7 +7292,7 @@ return YES;
 	
 	if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
-		screenRect.size.height -= [ToolbarPanelController exposedHeight];
+		screenRect.size.height -= [[AppController toolbarForScreen:[[self window] screen]] exposedHeight];
 	}
 	
 	[[self window] setFrame:screenRect display:YES];
@@ -7405,7 +7424,7 @@ return YES;
 	
 	for( int i = from; i < to; i++)
 	{
-		if( loadingPauseDelay)
+		/*if( loadingPauseDelay)
 		{
 			NSLog(@"loadingPause is starting...");
 			
@@ -7413,7 +7432,7 @@ return YES;
 				[NSThread sleepForTimeInterval: 0.1];
 			
 			NSLog(@"loadingPause is over...");
-		}
+		}*/
 		
 		if( stopThreadLoadImage == NO)
 		{
@@ -7450,13 +7469,12 @@ return YES;
     [NSThread currentThread].name = @"Load Image Data";
     
 	[ThreadLoadImageLock lock];
-	
 	@try 
 	{
 		ThreadLoadImage = YES;
 		
 		loadingPercentage = 0;
-			
+		
 		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
 		
 		while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
@@ -7469,7 +7487,7 @@ return YES;
                 compressed = NO;
         
 		if( compressed)
-			NSLog( @"start loading multiple thread : compressed data");
+			NSLog( @"start loading multiple thread");
 		else
 			NSLog( @"start loading single thread");
 			
@@ -7507,7 +7525,7 @@ return YES;
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
 						
-						[NSThread detachNewThreadSelector: @selector( subLoadingThread:) toTarget: self withObject: d];
+						[NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: d];
 					}
 					
 					[subLoadingThread lockWhenCondition: 0];
@@ -7539,7 +7557,6 @@ return YES;
 			ThreadLoadImage = NO;
 			loadingThread = nil;
 			[pool release];
-			[ThreadLoadImageLock unlock];
 			return;
 		}
 		
@@ -7547,10 +7564,11 @@ return YES;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[ThreadLoadImageLock unlock];
+	@finally {
+        [ThreadLoadImageLock unlock];
+    }
 
 #pragma mark modality dependant code, once images are already displayed in 2D viewer
 	if( stopThreadLoadImage == NO)
@@ -7760,7 +7778,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
         [PluginManager endProtectForCrash];
         
@@ -7780,7 +7798,7 @@ return YES;
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		NSRunAlertPanel(NSLocalizedString(@"Plugins Error", nil), NSLocalizedString(@"OsiriX cannot launch the selected plugin.", nil), nil, nil, nil);
 	}
 	
@@ -11206,7 +11224,7 @@ short				matrix[25];
 	DicomStudy *study = [[fileList[0] objectAtIndex:0] valueForKeyPath: @"series.study"];
 	NSArray *roisArray = [[[study roiSRSeries] valueForKey: @"images"] allObjects];
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 	
 	@try
 	{
@@ -11277,7 +11295,7 @@ short				matrix[25];
 	{
 		NSLog( @"*** load ROI exception: %@", e);
 	}
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 }
 
 + (BOOL) areROIsArraysIdentical: (NSArray*) copy with: (NSArray*) roisArray
@@ -11312,7 +11330,8 @@ short				matrix[25];
 	
 	if( [[fileList[ mIndex] lastObject] isKindOfClass:[NSManagedObject class]])
 	{
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		DicomDatabase* database = [DicomDatabase databaseForContext:[[fileList[mIndex] lastObject] managedObjectContext]];
+		[database lock];
 		
 		@try
 		{
@@ -11332,13 +11351,13 @@ short				matrix[25];
 							BOOL forceArchive = NO;
 							NSString *str = [study roiPathForImage: image inArray: roisArray];
 							
-							if( str == nil)
-								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+							if (str == nil)
+								str = [database uniquePathForNewDataFileWithExtension:@"dcm"];
 							
 							else if( [[NSFileManager defaultManager] fileExistsAtPath: str] && [str isEqualToString: [image SRPath]]) // Old ROIs folder -> move it to DATABASE.index file
 							{
 								[[NSFileManager defaultManager] removeItemAtPath: [image SRPath] error: nil];
-								str = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
+								str = [database uniquePathForNewDataFileWithExtension: @"dcm"];
 								forceArchive = YES;
 							}
 							
@@ -11390,20 +11409,16 @@ short				matrix[25];
 				}
 			}
 			
-			[BrowserController addFiles: allDICOMSR
-							  toContext: [[BrowserController currentBrowser] managedObjectContext]
-							 toDatabase: [BrowserController currentBrowser]
-							  onlyDICOM: YES 
-					   notifyAddedFiles: YES
-					parseExistingObject: YES
-							   dbFolder: [[BrowserController currentBrowser] fixedDocumentsDirectory]
-					  generatedByOsiriX: YES];
+            if (allDICOMSR.count)
+                [database addFilesAtPaths:allDICOMSR postNotifications:YES dicomOnly:YES rereadExistingItems:YES generatedByOsiriX:YES];
 		}
 		@catch ( NSException *e)
 		{
-			NSLog( @"****** saveROI exception : %@", e);
+			N2LogExceptionWithStackTrace(e);
+		} 
+		@finally {
+			[database unlock];
 		}
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
 	}
 }
 
@@ -12446,9 +12461,9 @@ int i,j,l;
 	if( [sender tag] == 0) data = [NSMutableDictionary dictionary];
 	
 	volume = [self computeVolume: selectedRoi points:&pts generateMissingROIs: YES generatedROIs: generatedROIs computeData:data error: &error];
-		
+    
 	// Show Volume Window
-	if( [sender tag] == 0 && error == nil)
+	if( [sender tag] == 0 && error == nil && volume > 0 && pts.count > 0)
 	{
 		ROIVolumeController	*viewer = [[ROIVolumeController alloc] initWithPoints:pts :volume :self roi: selectedRoi];
 		
@@ -12491,7 +12506,7 @@ int i,j,l;
 			}
 		}
 	}
-	else if([sender tag]==1 && !error)
+	else if([sender tag] == 1 && !error)
 	{
 		int	numberOfGeneratedROIafter = [[self roisWithComment:@"morphing generated"] count];
 		if(!numberOfGeneratedROIafter)
@@ -13951,7 +13966,7 @@ int i,j,l;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[roiLock unlock];
@@ -15902,7 +15917,7 @@ int i,j,l;
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 			return NO;
 		}
 		// Create the new series
@@ -16717,22 +16732,23 @@ int i,j,l;
 	
 	mov = [[[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrame: maxFrame:) :qt_to - qt_from] autorelease];
 	
+    NSInteger fps = 0;
 	switch( qt_dimension)
 	{
 		default:
 		case 1:
 		case 3:
-			if( [self frameRate] > 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: [self frameRate] forKey: @"quicktimeExportRateValue"];
+			if ([self frameRate] > 0)
+				fps = [self frameRate];
 		break;
 		
 		case 0:
-			[[NSUserDefaults standardUserDefaults] setInteger: 10 forKey: @"quicktimeExportRateValue"];
+			// fps = 10; // the default value is set in [QuicktimeExport createMovieQTKit::::::::::] when fps is 0
 		break;
 		
 		case 2:
-			if( [self frame4DRate] > 0)
-				[[NSUserDefaults standardUserDefaults] setInteger: [self frame4DRate] forKey: @"quicktimeExportRateValue"];
+			if ([self frame4DRate] > 0)
+				fps = [self frame4DRate];
 		break;
 	}
 	
@@ -16741,7 +16757,7 @@ int i,j,l;
 	if( [mode isEqualToString:@"export2iphoto"]) produceImageFiles = YES;
 	else produceImageFiles = NO;
 	
-	NSString *path = [mov createMovieQTKit: NO  :produceImageFiles :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+	NSString *path = [mov createMovieQTKit: NO  :produceImageFiles :[[[self fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"] :fps];
 	
 	if( [[NSFileManager defaultManager] fileExistsAtPath: path] == NO && path != nil)
 		NSRunAlertPanel(NSLocalizedString(@"Export", nil), NSLocalizedString(@"Failed to export this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -17569,7 +17585,7 @@ int i,j,l;
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	//check if the folder PAGES exists in OsiriX document folder
-	NSString *pathToPAGES = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/PAGES/"];
+	NSString *pathToPAGES = [[[BrowserController currentBrowser] database] pagesDirPath];
 	if (!([fileManager fileExistsAtPath:pathToPAGES]))
 	[fileManager createDirectoryAtPath:pathToPAGES attributes:nil];
 
@@ -17580,7 +17596,7 @@ int i,j,l;
 	if (!([[sender title] isEqualToString: @"SCAN"]))
 	{
 		//create pathToTemplate
-		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/PAGES/"];
+		NSString *pathToTemplate = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"PAGES"];
 		pathToTemplate = [pathToTemplate stringByAppendingPathComponent:[sender title]];
 		pathToTemplate = [pathToTemplate stringByAppendingPathExtension:@"template"];	
 		
@@ -17859,8 +17875,8 @@ int i,j,l;
 		
 		if( pathOK == YES)
 		{
-			[[NSFileManager defaultManager] removeFileAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] handler:nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"] attributes:nil];
+			[[NSFileManager defaultManager] removeItemAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] error:nil];
+			[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] withIntermediateDirectories:YES attributes:nil error:nil];
 		
 			int fileIndex;
 			
@@ -17917,7 +17933,7 @@ int i,j,l;
 //						else
 							bitmapData = [NSBitmapImageRep representationOfImageRepsInArray:representations usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
 
-						NSString *jpegFile = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/%4.4d.jpg", fileIndex++];
+						NSString *jpegFile = [[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%4.4d.jpg", fileIndex++]];
 						
 						[bitmapData writeToFile: jpegFile atomically:YES];
 						
@@ -17981,7 +17997,7 @@ int i,j,l;
 				}
 			}
 			
-			NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
+			NSString *root = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 			
 			if( [[imageFormat selectedCell] tag] == 2) // iPhoto
 			{
@@ -18021,7 +18037,7 @@ int i,j,l;
 				NSAppleEventDescriptor *listComments = [NSAppleEventDescriptor listDescriptor];
 				
 				int f = 0;
-				NSString *root = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/EXPORT/"];
+				NSString *root = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"EXPORT"];
 				NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
 				for( int x = 0; x < [files count] ; x++)
 				{
@@ -18651,31 +18667,34 @@ int i,j,l;
 				}
 			}
 			
-			gtotal = 0;
-			for( i = 0; i < memSize; i++)
-			{
-				gtotal += totalPtr[ i];
+            if( memSize > 0 && totalPtr != nil)
+            {
+                gtotal = 0;
+                for( i = 0; i < memSize; i++)
+                {
+                    gtotal += totalPtr[ i];
+                }
+                
+                gmean = gtotal / memSize;
+                
+                gdev = 0;
+                gmin = totalPtr[ 0];
+                gmax = totalPtr[ 0];
+                for( i = 0; i < memSize; i++)
+                {
+                    float	val = totalPtr[ i];
+                    
+                    float temp = gmean - val;
+                    temp *= temp;
+                    gdev += temp;
+                    
+                    if( val < gmin) gmin = val;
+                    if( val > gmax) gmax = val;
+                }
+                gdev = gdev / (double) (memSize-1);
+                gdev = sqrt( gdev);
 			}
-			
-			gmean = gtotal / memSize;
-			
-			gdev = 0;
-			gmin = totalPtr[ 0];
-			gmin = totalPtr[ 0];
-			for( i = 0; i < memSize; i++)
-			{
-				float	val = totalPtr[ i];
-				
-				float temp = gmean - val;
-				temp *= temp;
-				gdev += temp;
-				
-				if( val < gmin) gmin = val;
-				if( val > gmax) gmax = val;
-			}
-			gdev = gdev / (double) (memSize-1);
-			gdev = sqrt( gdev);
-			
+            
 			free( totalPtr);
 			
 			[data setObject: [NSNumber numberWithDouble: gmin] forKey:@"min"];
@@ -19383,7 +19402,7 @@ int i,j,l;
 				[imageView getWLWW:&iwl :&iww];
 				[viewer setWLWW:iwl :iww];
 				
-				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [BrowserController DateTimeFormat: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
+				[[viewer window] setTitle: [NSString stringWithFormat:@"%@: %@ - %@", [[viewer window] title], [NSUserDefaults formatDateTime: [[fileList[0] objectAtIndex:0]  valueForKeyPath:@"series.study.date"]], [[self window] title]]];
 			}
 		}
 	}
@@ -19830,7 +19849,7 @@ int i,j,l;
 		
 		[imageView setNeedsDisplay:YES];
 		
-		[[BrowserController currentBrowser] saveDatabase: nil];
+		[[[BrowserController currentBrowser] database] save:nil];
 	}
 }
 
@@ -20080,7 +20099,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }
@@ -20111,7 +20130,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }
@@ -20142,7 +20161,7 @@ int i,j,l;
 	
 	[self buildMatrixPreview: NO];
 	[imageView setNeedsDisplay:YES];
-	[[BrowserController currentBrowser] saveDatabase: nil];
+	[[[BrowserController currentBrowser] database] save:nil];
 	
 	[self adjustKeyImage];
 }
@@ -20426,7 +20445,7 @@ int i,j,l;
             templatesArray = [Reports wordTemplatesList];
             break;
     }
-
+    
 	DicomStudy* studySelected = [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study"];
 	
     if (!studySelected.reportURL && templatesArray.count > 1)

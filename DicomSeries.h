@@ -27,13 +27,16 @@
 @property(nonatomic, retain, readonly) NSNumber* dicomTime;
 
 @property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSDate* dateAdded;
 @property(nonatomic, retain) NSDate* dateOpened;
 @property(nonatomic, retain) NSNumber* displayStyle;
 @property(nonatomic, retain) NSNumber* id;
 @property(nonatomic, retain) NSString* modality;
-@property(nonatomic, retain) NSNumber* mountedVolume;
+@property(nonatomic, retain) NSNumber* mountedVolume __deprecated;
 @property(nonatomic, retain) NSString* name;
 @property(nonatomic, retain) NSNumber* numberOfImages;
 @property(nonatomic, retain) NSNumber* numberOfKeyImages;

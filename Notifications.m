@@ -42,9 +42,15 @@ NSString* const OsirixServerArrayChangedNotification = @"OsiriXServerArray has c
 NSString* const OsirixStudyAnnotationsChangedNotification = @"OsirixStudyAnnotationsChanged";
 NSString* const OsirixGLFontChangeNotification = @"changeGLFontNotification";
 NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";
-const NSString* const OsirixAddToDBNotificationImagesArray = @"OsiriXAddToDBArray";
+NSString* const OsirixDicomDatabaseDidChangeContextNotification = @"OsirixDicomDatabaseDidChangeContextNotification";
+#define OsiriXAddToDBArrayKey @"OsiriXAddToDBArray"
+NSString* const OsirixAddToDBNotificationImagesArray = OsiriXAddToDBArrayKey;
 NSString* const OsirixAddToDBCompleteNotification = @"OsirixAddToDBCompleteNotification";
-const NSString* const OsirixAddToDBCompleteNotificationImagesArray = @"OsiriXAddToDBArray";
+NSString* const OsirixAddToDBCompleteNotificationImagesArray = OsiriXAddToDBArrayKey; // is deprecated in favor of OsirixAddToDBNotificationImagesArray
+NSString* const _O2AddToDBAnywayNotification = @"_O2AddToDBAnywayNotification";
+NSString* const _O2AddToDBAnywayCompleteNotification = @"_O2AddToDBAnywayCompleteNotification";
+NSString* const O2DatabaseInvalidateAlbumsCacheNotification = @"InvalidateAlbumsCache";
+NSString* const OsirixDatabaseObjectsMayBecomeUnavailableNotification = @"OsirixDatabaseObjectsMayBecomeUnavailableNotification";
 NSString* const OsirixNewStudySelectedNotification = @"NewStudySelectedNotification";
 NSString* const OsirixDidLoadNewObjectNotification = @"OsiriX Did Load New Object";
 NSString* const OsirixRTStructNotification = @"RTSTRUCTNotification";
@@ -85,5 +91,8 @@ NSString* const KFSplitViewDidCollapseSubviewNotification = @"KFSplitViewDidColl
 NSString* const KFSplitViewDidExpandSubviewNotification = @"KFSplitViewDidExpandSubviewNotification";
 NSString* const BLAuthenticatedNotification = @"BLAuthenticatedNotification";
 NSString* const BLDeauthenticatedNotification = @"BLDeauthenticatedNotification";
+
+NSString* const OsirixActiveLocalDatabaseDidChangeNotification = @"OsirixActiveLocalDatabaseDidChangeNotification";
+
 NSString* const OsirixPopulatedContextualMenuNotification = @"OsirixPopulatedContextualMenuNotification";
 NSString* const OsiriXLogEvent = @"OsiriXLogEvent";

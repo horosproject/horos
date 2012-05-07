@@ -231,6 +231,16 @@ end_size_y:
 	return [image autorelease];
 }
 
+-(NSSize)sizeByScalingProportionallyToSize:(NSSize)targetSize {
+    return N2ProportionallyScaleSize(self.size, targetSize);
+}
+
+-(NSSize)sizeByScalingDownProportionallyToSize:(NSSize)targetSize {
+    NSSize imageSize = self.size;
+	NSSize outSize = [self sizeByScalingProportionallyToSize:targetSize];
+    return outSize.width < imageSize.width? outSize : imageSize;
+}
+
 - (NSImage*)imageByScalingProportionallyToSize:(NSSize)targetSize
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];

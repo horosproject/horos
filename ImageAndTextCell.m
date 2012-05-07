@@ -1,19 +1,20 @@
 /*=========================================================================
-  Program:   OsiriX
-
-  Copyright (c) OsiriX Team
-  All rights reserved.
-  Distributed under GNU - LGPL
-  
-  See http://www.osirix-viewer.com/copyright.html for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.
-=========================================================================*/
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "ImageAndTextCell.h"
 #import "BrowserController.h"
+#import "N2Debug.h"
 
 @implementation ImageAndTextCell
 
@@ -26,9 +27,9 @@
 		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:nil];
 		NSSize	imageSize;
 		NSRect	imageFrame, cellFrameOut;
-			
+        
 		imageSize = [lastImage size];
-			
+        
 		NSDivideRect(cellFrame, &imageFrame, &cellFrameOut, 3 + imageSize.width, NSMaxXEdge);
 		
 		if( NSMouseInRect( pt, cellFrameOut, NO) == NO)
@@ -142,8 +143,9 @@
 }
 
 - (void)drawWithFrame:(NSRect)cellFrameIn inView:(NSView *)controlView {
-	
 	NSRect cellFrame = cellFrameIn;
+    
+    NS_DURING
 	
     if (image != nil)
 	{
@@ -158,12 +160,12 @@
         }
         imageFrame.origin.x += 3;
         imageFrame.size = imageSize;
-
+        
         if ([controlView isFlipped])
             imageFrame.origin.y += ceil((cellFrame.size.height + imageFrame.size.height) / 2);
         else
             imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
-
+        
         [image compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
     }
 	
@@ -180,17 +182,21 @@
         }
         imageFrame.origin.x += 3;
         imageFrame.size = imageSize;
-
+        
         if ([controlView isFlipped])
             imageFrame.origin.y += ceil((cellFrame.size.height + imageFrame.size.height) / 2);
         else
             imageFrame.origin.y += ceil((cellFrame.size.height - imageFrame.size.height) / 2);
-
+        
         [lastImage compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
 	}
+
+    NS_HANDLER
+    N2LogExceptionWithStackTrace(localException);
+    NS_ENDHANDLER
 	
 	[super drawWithFrame:cellFrame inView:controlView];
-
+    
 }
 
 - (NSSize)cellSize {

@@ -19,7 +19,10 @@
 	IBOutlet NSWindow *compressionSettingsWindow;
 	NSArray *compressionSettingsCopy, *compressionSettingsLowResCopy;
 	IBOutlet NSWindow *mainWindow;
+    NSMutableArray *languages;
 }
+
+@property (retain) NSMutableArray *languages;
 
 - (IBAction) editCompressionSettings:(id) sender;
 - (IBAction) endEditCompressionSettings:(id) sender;

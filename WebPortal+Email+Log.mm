@@ -24,6 +24,7 @@
 #import "DicomDatabase.h"
 #import "AppController.h"
 #import "NSManagedObject+N2.h"
+#import "N2Debug.h"
 
 // TODO: NSUserDefaults access for keys @"logWebServer", @"notificationsEmailsSender" and @"lastNotificationsDate" must be replaced with WebPortal properties
 
@@ -106,9 +107,9 @@
 		return;
 	}
 	
-	if ([self.dicomDatabase tryLock])
+//	if ([self.dicomDatabase tryLock])
 	{
-		[WebPortal.defaultWebPortal.database.managedObjectContext lock];
+		[database.managedObjectContext lock];
 		
 		// TEMPORARY USERS
 		
@@ -116,14 +117,7 @@
 		{
 			BOOL toBeSaved = NO;
 			
-			// Find all users
-			NSError *error = nil;
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:WebPortal.defaultWebPortal.database.managedObjectContext];
-			dbRequest.predicate = [NSPredicate predicateWithValue:YES];
-			
-			error = nil;
-			NSArray *users = [WebPortal.defaultWebPortal.database.managedObjectContext executeFetchRequest: dbRequest error:&error];
+			NSArray *users = [database objectsForEntity:database.userEntity];
 			
 			for (WebPortalUser* user in users)
 			{
@@ -134,12 +128,12 @@
 					[self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:nil];
 					
 					toBeSaved = YES;
-					[WebPortal.defaultWebPortal.database.managedObjectContext deleteObject: user];
+					[database.managedObjectContext deleteObject:user];
 				}
 			}
 			
 			if (toBeSaved)
-				[WebPortal.defaultWebPortal.database save:NULL];
+				[database save:NULL];
 		}
 		@catch (NSException *e)
 		{
@@ -152,20 +146,12 @@
 		{
 			@try
 			{
-				NSFetchRequest* dbRequest = nil;
 				// Find all studies AFTER the lastCheckDate
-				dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-				[dbRequest setEntity: [dicomDatabase entityForName:@"Study"]];
-				[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-				NSArray *studies = [dicomDatabase.managedObjectContext executeFetchRequest:dbRequest error:NULL];
+				NSArray *studies = [dicomDatabase.independentDatabase objectsForEntity:@"Study"];
 				
 				if ([studies count] > 0)
 				{
-					// Find all users
-					dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-					[dbRequest setEntity:[NSEntityDescription entityForName:@"User" inManagedObjectContext:database.managedObjectContext]];
-					[dbRequest setPredicate: [NSPredicate predicateWithValue: YES]];
-					NSArray *users = [WebPortal.defaultWebPortal.database.managedObjectContext executeFetchRequest: dbRequest error:NULL];
+					NSArray *users = [database objectsForEntity:database.userEntity];
 					
 					for (WebPortalUser* user in users)
 					{
@@ -176,7 +162,9 @@
 							@try
 							{
 								filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
-								filteredStudies = [user arrayByAddingSpecificStudiesForPredicate:[NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]] toArray:filteredStudies];
+                                
+                                if( user.studyPredicate.length)
+                                    filteredStudies = [user arrayByAddingSpecificStudiesToArray: filteredStudies];
 								
 								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
 								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
@@ -188,7 +176,7 @@
 							
 							if ([filteredStudies count] > 0)
 							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies: filteredStudies predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] customText: nil];
+								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] customText: nil];
 							}
 						}
 					}
@@ -199,8 +187,8 @@
 				NSLog( @"***** emailNotifications exception: %@", e);
 			}
 		}
-		[WebPortal.defaultWebPortal.database.managedObjectContext unlock];
-		[dicomDatabase.managedObjectContext unlock];
+		[database.managedObjectContext unlock];
+//		[dicomDatabase.managedObjectContext unlock];
 	}
 	
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];
@@ -210,8 +198,9 @@
 {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"logWebServer"] == NO) return;
 	
-	[self.dicomDatabase.managedObjectContext lock];
+//	[self.dicomDatabase.managedObjectContext lock];
 	
+    DicomDatabase* independentDatabase = self.dicomDatabase.independentDatabase;
 	@try {
 		if (user)
 			message = [user stringByAppendingFormat:@": %@", message];
@@ -221,17 +210,13 @@
 		
 		// Search for same log entry during last 5 min
 		NSArray* logs = NULL;
-		@try {
-			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-			req.entity = [NSEntityDescription entityForName:@"LogEntry" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
-			req.predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
-			logs = [self.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-		} @catch (NSException* e) {
-			NSLog(@"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
+        
+        
+        NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientName==%@) AND (studyName==%@) AND (message==%@) AND (originName==%@) AND (endTime >= CAST(%lf, \"NSDate\"))", study.name, study.studyName, message, ip, [[NSDate dateWithTimeIntervalSinceNow: -5 * 60] timeIntervalSinceReferenceDate]];
+        logs = [independentDatabase objectsForEntity:independentDatabase.logEntryEntity predicate:predicate];
 		
 		if (!logs.count) {
-			NSManagedObject* logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:self.dicomDatabase.managedObjectContext];
+			NSManagedObject* logEntry = [independentDatabase newObjectForEntity:independentDatabase.logEntryEntity];
 			[logEntry setValue:[NSDate date] forKey:@"startTime"];
 			[logEntry setValue:[NSDate date] forKey:@"endTime"];
 			[logEntry setValue:@"Web" forKey:@"type"];
@@ -250,7 +235,7 @@
 	} @catch (NSException* e) {
 		NSLog( @"****** OsiriX HTTPConnection updateLogEntry exception : %@", e);
 	} @finally {
-		[self.dicomDatabase.managedObjectContext unlock];
+		[independentDatabase save];
 	}
 }
 

@@ -20,6 +20,7 @@
 #import "DicomSeries.h"
 #import "BrowserController.h"
 #import "NSString+N2.h"
+#import "DicomDatabase.h"
 
 @implementation QTExportHTMLSummary
 
@@ -70,12 +71,11 @@
 
 - (void)readTemplates;
 {
-	[AppController checkForHTMLTemplates];
-	patientsListTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportPatientsTemplate.html"]] retain];
-	[AppController checkForHTMLTemplates];
-	examsListTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportStudiesTemplate.html"]] retain];
-	[AppController checkForHTMLTemplates];
-	seriesTemplate = [[NSString stringWithContentsOfFile:[[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/HTML_TEMPLATES/QTExportSeriesTemplate.html"]] retain];
+	DicomDatabase* database = [[BrowserController currentBrowser] database];
+	[database checkForHtmlTemplates];
+	patientsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportPatientsTemplate.html"]] retain];
+	examsListTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportStudiesTemplate.html"]] retain];
+	seriesTemplate = [[NSString stringWithContentsOfFile:[[database htmlTemplatesDirPath] stringByAppendingPathComponent:@"QTExportSeriesTemplate.html"]] retain];
 }
 
 - (NSString*)fillPatientsListTemplates;
@@ -209,7 +209,7 @@
 			
 			[fileName appendFormat: @"_%d", uniqueSeriesID];
 			
-			NSString* thumbnailName;
+            NSString* thumbnailName;
 			if ((thumbnailName = [self imagePathForSeriesId:[iId intValue] kind:@"thumb"])) // thumbnailName is in patient/study/series format, should be study/series
                 thumbnailName = [[[thumbnailName componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(1,2)] componentsJoinedByString:@"/"];
             else thumbnailName = [NSMutableString stringWithFormat:@"%@_thumb.jpg", fileName];

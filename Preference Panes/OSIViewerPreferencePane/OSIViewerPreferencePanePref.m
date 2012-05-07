@@ -13,9 +13,11 @@
 =========================================================================*/
 
 #import "OSIViewerPreferencePanePref.h"
-#import <OsiriXAPI/AppController.h>
+#import "AppController.h"
 
 @implementation OSIViewerPreferencePanePref
+
+static NSString* UserDefaultsObservingContext = @"UserDefaultsObservingContext";
 
 - (id) initWithBundle:(NSBundle *)bundle
 {
@@ -26,9 +28,26 @@
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeyPath:@"values.ReserveScreenForDB" options:0 context:UserDefaultsObservingContext];
 	}
 	
 	return self;
+}
+
+-(void)dealloc {
+	NSLog(@"dealloc OSIViewerPreferencePanePref");
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeyPath:@"values.ReserveScreenForDB"];
+    [super dealloc];
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (context != UserDefaultsObservingContext) {
+        return [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+    
+    [self willChangeValueForKey:@"screensThumbnail"];
+    [self didChangeValueForKey:@"screensThumbnail"];
 }
 
 
@@ -52,13 +71,6 @@
 	[[NSUserDefaults standardUserDefaults] setObject:[iPhotoAlbumName stringValue] forKey: @"ALBUMNAME"];
 }
 
-- (void) dealloc
-{
-	NSLog(@"dealloc OSIViewerPreferencePanePref");
-	
-	[super dealloc];
-}
-
 - (void) mainViewDidLoad
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -73,7 +85,6 @@
 	
 	[openViewerCheck setState: [defaults boolForKey: @"OPENVIEWER"]];
 	[reverseScrollWheelCheck setState: [defaults boolForKey: @"Scroll Wheel Reversed"]];
-	[multipleScreensMatrix selectCellWithTag: [defaults integerForKey: @"ReserveScreenForDB"]];
 	[iPhotoAlbumName setStringValue: [defaults stringForKey: @"ALBUMNAME"]];
 	[toolbarPanelMatrix selectCellWithTag:[defaults boolForKey: @"USEALWAYSTOOLBARPANEL2"]];
 	[autoHideMatrix setState: [defaults boolForKey: @"AUTOHIDEMATRIX"]];
@@ -110,11 +121,6 @@
 	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"WINDOWSIZEVIEWER"];
 }
 
-- (IBAction) setMultipleScreens: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setInteger:[[sender selectedCell] tag] forKey: @"ReserveScreenForDB"];
-}
-
 - (IBAction) setToolbarMatrix: (id) sender
 {
 	[[NSUserDefaults standardUserDefaults] setBool:[[sender selectedCell] tag] forKey: @"USEALWAYSTOOLBARPANEL2"];
@@ -146,3 +152,27 @@
 }
 
 @end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -42,9 +42,14 @@ extern NSString* const OsirixServerArrayChangedNotification;
 extern NSString* const OsirixStudyAnnotationsChangedNotification;
 extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
-extern const NSString* const OsirixAddToDBNotificationImagesArray;
+extern NSString* const OsirixAddToDBNotificationImagesArray;
 extern NSString* const OsirixAddToDBCompleteNotification;
-extern const NSString* const OsirixAddToDBCompleteNotificationImagesArray;
+extern NSString* const OsirixAddToDBCompleteNotificationImagesArray __deprecated; // use OsirixAddToDBNotificationImagesArray
+extern NSString* const OsirixDicomDatabaseDidChangeContextNotification;
+extern NSString* const _O2AddToDBAnywayNotification;
+extern NSString* const _O2AddToDBAnywayCompleteNotification;
+extern NSString* const O2DatabaseInvalidateAlbumsCacheNotification;
+extern NSString* const OsirixDatabaseObjectsMayBecomeUnavailableNotification; // database objects may soon become invalid
 extern NSString* const OsirixNewStudySelectedNotification;
 extern NSString* const OsirixDidLoadNewObjectNotification;
 extern NSString* const OsirixRTStructNotification;
@@ -86,6 +91,8 @@ extern NSString* const KFSplitViewDidExpandSubviewNotification;
 extern NSString* const BLAuthenticatedNotification;
 extern NSString* const BLDeauthenticatedNotification;
 extern NSString* const OsiriXLogEvent;
+
+extern NSString* const OsirixActiveLocalDatabaseDidChangeNotification;
 
 /**
  * OsirixPopulatedContextualMenuNotification

@@ -22,12 +22,18 @@
 #import <DiscRecordingUI/DRBurnProgressPanel.h>
 #import "BrowserController.h"
 #import "DicomStudy.h"
+#import "DicomImage.h"
 #import "DicomStudy+Report.h"
 #import "Anonymization.h"
 #import "AnonymizationPanelController.h"
 #import "AnonymizationViewController.h"
 #import "ThreadsManager.h"
+#import "NSThread+N2.h"
+#import "NSFileManager+N2.h"
+#import "N2Debug.h"
+#import "NSImage+N2.h"
 #import "DicomDir.h"
+#import "DicomDatabase.h"
 
 @implementation BurnerWindowController
 @synthesize password, buttonsDisabled;
@@ -67,7 +73,7 @@
 	{
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
 		[wait showWindow:self];
-		
+		        
 		@try
 		{
 			[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
@@ -129,9 +135,11 @@
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
-		files = [theFiles mutableCopy];
-		dbObjects = [managedObjects mutableCopy];
-		originalDbObjects = [managedObjects mutableCopy];
+        idatabase = [[[DicomDatabase databaseForContext:[[managedObjects objectAtIndex:0] managedObjectContext]] independentDatabase] retain];
+        
+		files = [theFiles mutableCopy]; // file paths
+		dbObjects = [[idatabase objectsWithIDs:managedObjects] mutableCopy]; // managedObjects in idatabase
+		originalDbObjects = [dbObjects mutableCopy];
 		
 		[files removeDuplicatedStringsInSyncWithThisArray: dbObjects];
 		
@@ -139,9 +147,9 @@
 		id patient = nil;
 		_multiplePatients = NO;
 		
-		[[[BrowserController currentBrowser] managedObjectContext] lock];
+		[idatabase lock];
 		
-		for (managedObject in managedObjects)
+		for (managedObject in dbObjects)
 		{
 			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
@@ -155,7 +163,7 @@
 			patient = newPatient;
 		}
 		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		[idatabase unlock];
 		
 		burning = NO;
 		
@@ -188,6 +196,8 @@
 	[originalDbObjects release];
 	[cdName release];
 	[password release];
+    
+    [idatabase release];
 	
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
@@ -691,25 +701,37 @@
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
-- (void)addDICOMDIRUsingDCMTK
+/*+(void)image:(NSImage*)image writePGMToPath:(NSString*)ppmpath {
+    NSSize scaledDownSize = [image sizeByScalingDownProportionallyToSize:NSMakeSize(128,128)];
+    NSInteger width = scaledDownSize.width, height = scaledDownSize.height;
+    
+    static CGColorSpaceRef grayColorSpace = nil;
+    if (!grayColorSpace) grayColorSpace = CGColorSpaceCreateDeviceGray();
+    
+    CGContextRef cgContext = CGBitmapContextCreate(NULL, width, height, 8, width, grayColorSpace, 0);
+    uint8* data = CGBitmapContextGetData(cgContext);
+    
+    NSGraphicsContext* nsContext = [NSGraphicsContext graphicsContextWithGraphicsPort:cgContext flipped:NO];
+    
+    NSGraphicsContext* savedContext = [NSGraphicsContext currentContext];
+    [NSGraphicsContext setCurrentContext:nsContext];
+    [image drawInRect:NSMakeRect(0,0,width,height) fromRect:NSMakeRect(0,0,image.size.width,image.size.height) operation:NSCompositeCopy fraction:1];
+    [NSGraphicsContext setCurrentContext:savedContext];
+    
+    NSMutableData* out = [NSMutableData data];
+    
+    [out appendData:[[NSString stringWithFormat:@"P5\n%d %d\n255\n", width, height] dataUsingEncoding:NSUTF8StringEncoding]];
+    [out appendBytes:data length:width*height];
+    
+    [[NSFileManager defaultManager] confirmDirectoryAtPath:[ppmpath stringByDeletingLastPathComponent]];
+    [out writeToFile:ppmpath atomically:YES];
+    
+    CGContextRelease(cgContext);
+}*/
+
+- (void)addDICOMDIRUsingDCMTK_forFilesAtPaths:(NSArray*/*NSString*/)paths dicomImages:(NSArray*/*DicomImage*/)dimages
 {
     [DicomDir createDicomDirAtDir:[self folderToBurn]];
-        
-/*		NSString *burnFolder = [self folderToBurn];
-		
-		NSTask              *theTask;
-		//NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-W", @"-Nxc", @"*", nil];
-		NSMutableArray *theArguments = [NSMutableArray arrayWithObjects:@"+r", @"-Pfl", @"-W", @"-Nxc",@"+I",@"+id", burnFolder,  nil];
-		
-		theTask = [[NSTask alloc] init];
-		[theTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];	// DO NOT REMOVE !
-		[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmmkdir"]];
-		[theTask setCurrentDirectoryPath:[self folderToBurn]];
-		[theTask setArguments:theArguments];		
-		
-		[theTask launch];
-		[theTask waitUntilExit];
-		[theTask release];*/
 }
 
 - (void) produceHtml:(NSString*) burnFolder
@@ -785,9 +807,10 @@
 
 - (void) addDicomdir
 {
+    NSThread* thread = [NSThread currentThread];
+    
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
-
-	//NSLog(@"add Dicomdir");
+    
 	NS_DURING
 	NSEnumerator *enumerator;
 	if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
@@ -882,13 +905,17 @@
 			[[NSUserDefaults standardUserDefaults] setInteger: copyCompressionResolutionLimit forKey: @"CompressionResolutionLimit"];
 		}
 		
-		[self addDICOMDIRUsingDCMTK];
+        thread.name = NSLocalizedString( @"Burning...", nil);
+        thread.status = NSLocalizedString( @"Writing DICOMDIR...", nil);
+		[self addDICOMDIRUsingDCMTK_forFilesAtPaths:newFiles dicomImages:dbObjects];
 		
 		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
 		
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Weasis...", nil);
 			NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
 			for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
 				[[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
@@ -898,6 +925,8 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding OsiriX Lite...", nil);
 			// unzip the file
 			NSTask *unzipTask = [[NSTask alloc] init];
 			[unzipTask setLaunchPath: @"/usr/bin/unzip"];
@@ -906,54 +935,12 @@
 			[unzipTask launch];
 			[unzipTask waitUntilExit];
 			[unzipTask release];
-			
-//			[manager removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"/OsiriX.app/Contents/Resources/sn64"]  error: nil];
-//			
-//			// Remove 64-bit binaries
-//			
-//			NSString	*pathExecutable = [[NSBundle bundleWithPath: [NSString stringWithFormat:@"%@/OsiriX.app", burnFolder]] executablePath];
-//			NSString	*pathLightExecutable = [[pathExecutable stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"light"];
-//			
-//			// **********
-//			
-//			@try
-//			{
-//				NSTask *todo = [[[NSTask alloc]init] autorelease];
-//				[todo setLaunchPath: @"/usr/bin/lipo"];
-//				
-//				NSArray *args = [NSArray arrayWithObjects: pathExecutable, @"-remove", @"x86_64", @"-output", pathLightExecutable, nil];
-//
-//				[todo setArguments:args];
-//				[todo launch];
-//				[todo waitUntilExit];
-//				
-//				// **********
-//				
-//				todo = [[[NSTask alloc]init]autorelease];
-//				[todo setLaunchPath: @"/usr/bin/mv"];
-//
-//				args = [NSArray arrayWithObjects:pathLightExecutable, pathExecutable, @"-f", nil];
-//
-//				[todo setArguments:args];
-//				[todo launch];
-//				[todo waitUntilExit];
-//			}
-//			
-//			@catch( NSException *ne)
-//			{
-//				NSLog( @"lipo / mv exception");
-//			}
-//			
-//			if( [[NSFileManager defaultManager] fileExistsAtPath: pathLightExecutable])
-//			{
-//				[[NSFileManager defaultManager] removeFileAtPath: pathExecutable handler: nil];
-//				[[NSFileManager defaultManager] movePath: pathLightExecutable toPath: pathExecutable handler: nil];
-//			}
-			// **********
 		}
 		
 		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
 			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
@@ -961,6 +948,8 @@
 
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Supplementary folder...", nil);
 			NSString *supplementaryBurnPath = [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
 			if (supplementaryBurnPath)
 			{
@@ -978,9 +967,12 @@
 		
 		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
 		{
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Adding Reports...", nil);
+            
 			NSMutableArray *studies = [NSMutableArray array];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
+			[idatabase lock];
 			
 			for( NSManagedObject *im in dbObjects)
 			{
@@ -1012,12 +1004,15 @@
 				}
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[idatabase unlock];
 		}
 	}
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
 	{
+        thread.name = NSLocalizedString( @"Burning...", nil);
+        thread.status = NSLocalizedString( @"Encrypting CD...", nil);
+        
 		self.password = @"";
 		int result = 0;
 		do
@@ -1071,6 +1066,9 @@
 		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
 	}
 	
+    thread.name = NSLocalizedString( @"Burning...", nil);
+    thread.status = [NSString stringWithFormat: NSLocalizedString( @"Writing %3.2fMB...", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)];
+    
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
 	
 	NS_HANDLER

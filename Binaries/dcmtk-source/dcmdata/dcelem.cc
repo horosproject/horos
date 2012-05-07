@@ -838,6 +838,10 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
             /* the reading of this element's value from the stream */
             if (fTransferState == ERW_init)
             {
+/*                cout << "UHUHUH: " << Length << "\n";
+                if (Length == 294912000) {
+                    int a = 0;
+                }*/
                 /* if the Length of this element's value is greater than the amount of bytes we */
                 /* can read from the stream and if the stream has random access, we want to create */
                 /* a DcmInputStreamFactory object that enables us to read this element's value later. */
@@ -858,7 +862,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
                              ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
-                                 << Length << ") that remaining bytes in file" << endl;
+                                 << Length << ") that remaining bytes in file"<< endl;
                              ofConsole.unlockCerr();
                         }
                     }

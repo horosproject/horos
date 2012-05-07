@@ -22,9 +22,22 @@
 
 extern NSString* const OsirixDateTimeFormatDefaultsKey;
 +(NSDateFormatter*)dateTimeFormatter;
++(NSString*)formatDateTime:(NSDate*)date;
 
 extern NSString* const OsirixDateFormatDefaultsKey;
 +(NSDateFormatter*)dateFormatter;
++(NSString*)formatDate:(NSDate*)date;
+
+extern NSString* const OsirixCanActivateDefaultDatabaseOnlyDefaultsKey;
++(BOOL)canActivateOnlyDefaultDatabase;
++(BOOL)canActivateAnyLocalDatabase;
+
+extern NSString* const O2NonViewerScreensDefaultsKey;
+#ifdef OSIRIX_VIEWER
+-(NSArray*)screensUsedForViewers;
+-(BOOL)screenIsUsedForViewers:(NSScreen*)screen;
+-(void)screen:(NSScreen*)screen setIsUsedForViewers:(BOOL)flag;
+#endif
 
 #pragma mark Bonjour Sharing
 

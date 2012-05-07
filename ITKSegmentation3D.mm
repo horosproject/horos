@@ -590,9 +590,12 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	NSLog(@"RegionGrowing starts...");
 	
+    BOOL succeed = NO;
+    
 	try
 	{
 		caster->Update();
+        succeed = YES;
 	}
 	catch( itk::ExceptionObject & excep )
 	{
@@ -601,393 +604,395 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 	
 	NSLog(@"Done...");
 	
-	[wait setString: NSLocalizedString(@"Preparing Results...",@"Preparing Results...")];
-	
-	// PRODUCE A NEW SERIES
-	if( destViewer)
-	{
-		long	i, x, y;
-		float	*dstImage, *srcImage;
-		long	startSlice, endSlice;
-		
-		if( slice == -1)
-		{
-			startSlice = 0;
-			endSlice = [[destViewer pixList] count];
-		}
-		else
-		{
-			startSlice = slice;
-			endSlice = startSlice+1;
-		}
-		
-		for( i = startSlice; i < endSlice; i++)
-		{
-			ImageType::IndexType pixelIndex; 
-			DCMPix	*curPix = [[destViewer pixList] objectAtIndex: i];
-			dstImage = [curPix fImage];
-			srcImage = [[[srcViewer pixList] objectAtIndex: i] fImage];
-			
-			if(slice == -1) pixelIndex[2] = i; // z position
-			else pixelIndex[2] = 0; // z position
-			
-			for( y = 0; y < [curPix pheight]; y++) 
-			{
-				pixelIndex[1] = y; // y position
-				for( x = 0; x < [curPix pwidth]; x++) 
-				{
-					pixelIndex[0] = x; // x position
-					
-					if( caster->GetOutput()->GetPixel( pixelIndex) == 255)
-					{
-						if( setIn)
-						{
-							*dstImage = inValue;
-						}
-						else
-						{
-							*dstImage = *srcImage;
-						}
-					}
-					
-					dstImage++;
-					srcImage++;
-				}
-			}
-		}
-	}
-	// PRODUCE A ROI ON THE ORIGINAL SERIES
-	// ROI type = tPlain
-	else if (roiType == 0)
-	{
-		if( slice == -1)
-		{			
-			unsigned char *buff = caster->GetOutput()->GetBufferPointer();
-			
-			if( buff)
-			{
-				for( int i = 0; i < [[srcViewer pixList] count]; i++)
-				{
-					int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
-					int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
-					
-					if( memchr( buff, 255, buffWidth * buffHeight))
-					{
-						ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
-														textWidth:buffWidth
-														textHeight:buffHeight
-														textName:newname
-														positionX:0
-														positionY:0
-														spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
-														spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-														imageOrigin: [DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
-						
-						[[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
-						
-						if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
-						{
-							RGBColor color;
-							
-							color.red = 0.67*65535.;
-							color.green = 0.90*65535.;
-							color.blue = 0.58*65535.;
-							
-							[theNewROI setColor: color];
-						}
-						
-						[theNewROI setROIMode: ROI_selected];
-						[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
-						
-						[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
-						[theNewROI release];
-					}
-					
-					buff+= buffHeight*buffWidth;
-				}
-			
-				if( mergeWithExistingROIs)
-				{
-					int currentImageIndex = [[srcViewer imageView] curImage];
-					
-					for( NSMutableArray *rois in [srcViewer roiList])
-					{
-						[srcViewer mergeBrushROI: self ROIs: rois ROIList: rois];
-					}
-					
-					[[srcViewer imageView] setIndex: currentImageIndex];
-					[[srcViewer imageView] sendSyncMessage:0];
-					[srcViewer adjustSlider];
-				}
-			}
-			else
-			{
-				if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Upgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
-					[[AppController sharedAppController] osirix64bit: self];	
-			}
-		}
-		else
-		{
-			// result of the segmentation will only contain one slice.
-			unsigned char *buff = caster->GetOutput()->GetBufferPointer();
-			
-			int buffHeight = [[[srcViewer pixList] objectAtIndex: 0] pheight];
-			int buffWidth = [[[srcViewer pixList] objectAtIndex: 0] pwidth];
+    if( succeed && caster->GetOutput() && caster->GetOutput()->GetBufferPointer())
+    { 
+        [wait setString: NSLocalizedString(@"Preparing Results...",@"Preparing Results...")];
+        // PRODUCE A NEW SERIES
+        if( destViewer)
+        {
+            long	i, x, y;
+            float	*dstImage, *srcImage;
+            long	startSlice, endSlice;
+            
+            if( slice == -1)
+            {
+                startSlice = 0;
+                endSlice = [[destViewer pixList] count];
+            }
+            else
+            {
+                startSlice = slice;
+                endSlice = startSlice+1;
+            }
+            
+            for( i = startSlice; i < endSlice; i++)
+            {
+                ImageType::IndexType pixelIndex; 
+                DCMPix	*curPix = [[destViewer pixList] objectAtIndex: i];
+                dstImage = [curPix fImage];
+                srcImage = [[[srcViewer pixList] objectAtIndex: i] fImage];
+                
+                if(slice == -1) pixelIndex[2] = i; // z position
+                else pixelIndex[2] = 0; // z position
+                
+                for( y = 0; y < [curPix pheight]; y++) 
+                {
+                    pixelIndex[1] = y; // y position
+                    for( x = 0; x < [curPix pwidth]; x++) 
+                    {
+                        pixelIndex[0] = x; // x position
+                        
+                        if( caster->GetOutput()->GetPixel( pixelIndex) == 255)
+                        {
+                            if( setIn)
+                            {
+                                *dstImage = inValue;
+                            }
+                            else
+                            {
+                                *dstImage = *srcImage;
+                            }
+                        }
+                        
+                        dstImage++;
+                        srcImage++;
+                    }
+                }
+            }
+        }
+        // PRODUCE A ROI ON THE ORIGINAL SERIES
+        // ROI type = tPlain
+        else if (roiType == 0)
+        {
+            if( slice == -1)
+            {			
+                unsigned char *buff = caster->GetOutput()->GetBufferPointer();
+                
+                if( buff)
+                {
+                    for( int i = 0; i < [[srcViewer pixList] count]; i++)
+                    {
+                        int buffHeight = [[[srcViewer pixList] objectAtIndex: i] pheight];
+                        int buffWidth = [[[srcViewer pixList] objectAtIndex: i] pwidth];
+                        
+                        if( memchr( buff, 255, buffWidth * buffHeight))
+                        {
+                            ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
+                                                            textWidth:buffWidth
+                                                            textHeight:buffHeight
+                                                            textName:newname
+                                                            positionX:0
+                                                            positionY:0
+                                                            spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
+                                                            spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
+                                                            imageOrigin: [DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
+                            
+                            [[[srcViewer roiList] objectAtIndex:i] addObject:theNewROI];
+                            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];	
+                            
+                            if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
+                            {
+                                RGBColor color;
+                                
+                                color.red = 0.67*65535.;
+                                color.green = 0.90*65535.;
+                                color.blue = 0.58*65535.;
+                                
+                                [theNewROI setColor: color];
+                            }
+                            
+                            [theNewROI setROIMode: ROI_selected];
+                            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
+                            
+                            [theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
+                            [theNewROI release];
+                        }
+                        
+                        buff+= buffHeight*buffWidth;
+                    }
+                
+                    if( mergeWithExistingROIs)
+                    {
+                        int currentImageIndex = [[srcViewer imageView] curImage];
+                        
+                        for( NSMutableArray *rois in [srcViewer roiList])
+                        {
+                            [srcViewer mergeBrushROI: self ROIs: rois ROIList: rois];
+                        }
+                        
+                        [[srcViewer imageView] setIndex: currentImageIndex];
+                        [[srcViewer imageView] sendSyncMessage:0];
+                        [srcViewer adjustSlider];
+                    }
+                }
+                else
+                {
+                    if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Upgrade to OsiriX 64-bit to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+                        [[AppController sharedAppController] osirix64bit: self];	
+                }
+            }
+            else
+            {
+                // result of the segmentation will only contain one slice.
+                unsigned char *buff = caster->GetOutput()->GetBufferPointer();
+                
+                int buffHeight = [[[srcViewer pixList] objectAtIndex: 0] pheight];
+                int buffWidth = [[[srcViewer pixList] objectAtIndex: 0] pwidth];
 
-			ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
-											textWidth:buffWidth
-											textHeight:buffHeight
-											textName:newname
-											positionX:0
-											positionY:0
-											spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
-											spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
-                                            imageOrigin:[DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
-			[theNewROI reduceTextureIfPossible];
-			[theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
-			[[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
-			[[srcViewer imageView] roiSet];
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
-			
-			if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
-			{
-				RGBColor color;
-				
-				color.red = 0.67*65535.;
-				color.green = 0.90*65535.;
-				color.blue = 0.58*65535.;
-				
-				[theNewROI setColor: color];
-			}
-			else if( mergeWithExistingROIs)
-			{
-				[[srcViewer imageView] selectAll: self];
-				[srcViewer mergeBrushROI: self];
-			}
-			
-			[theNewROI setROIMode: ROI_selected];
-			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
-			
-			[theNewROI release];
-		}
-		[srcViewer needsDisplayUpdate];
-	}
-	// PRODUCE A ROI ON THE ORIGINAL SERIES
-	// ROI type = tPolygon
-	else
-	{
-		long	i, x;
-		long	startSlice, endSlice;
-		OutputImageType::Pointer frameImage = caster->GetOutput();
-		
-		
-		frameImage->Update();
-		
-		if( slice == -1)
-		{
-			startSlice = 0;
-			endSlice = [[srcViewer pixList] count];
-		}
-		else
-		{
-			startSlice = slice;
-			endSlice = startSlice+1;
-		}
+                ROI *theNewROI = [[ROI alloc]	initWithTexture:buff
+                                                textWidth:buffWidth
+                                                textHeight:buffHeight
+                                                textName:newname
+                                                positionX:0
+                                                positionY:0
+                                                spacingX:[[[srcViewer imageView] curDCM] pixelSpacingX]
+                                                spacingY:[[[srcViewer imageView] curDCM] pixelSpacingY]
+                                                imageOrigin:[DCMPix originCorrectedAccordingToOrientation: [[srcViewer imageView] curDCM]]];
+                [theNewROI reduceTextureIfPossible];
+                [theNewROI setSliceThickness:[[[srcViewer imageView] curDCM] sliceThickness]];
+                [[[srcViewer roiList] objectAtIndex:slice] addObject:theNewROI];
+                [[srcViewer imageView] roiSet];
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object:theNewROI userInfo: nil];
+                
+                if( [newname isEqualToString: NSLocalizedString( @"Segmentation Preview", nil)])
+                {
+                    RGBColor color;
+                    
+                    color.red = 0.67*65535.;
+                    color.green = 0.90*65535.;
+                    color.blue = 0.58*65535.;
+                    
+                    [theNewROI setColor: color];
+                }
+                else if( mergeWithExistingROIs)
+                {
+                    [[srcViewer imageView] selectAll: self];
+                    [srcViewer mergeBrushROI: self];
+                }
+                
+                [theNewROI setROIMode: ROI_selected];
+                [[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object:theNewROI userInfo: nil];
+                
+                [theNewROI release];
+            }
+            [srcViewer needsDisplayUpdate];
+        }
+        // PRODUCE A ROI ON THE ORIGINAL SERIES
+        // ROI type = tPolygon
+        else
+        {
+            long	i, x;
+            long	startSlice, endSlice;
+            OutputImageType::Pointer frameImage = caster->GetOutput();
+            
+            
+            frameImage->Update();
+            
+            if( slice == -1)
+            {
+                startSlice = 0;
+                endSlice = [[srcViewer pixList] count];
+            }
+            else
+            {
+                startSlice = slice;
+                endSlice = startSlice+1;
+            }
 
-		//------------------------------------------------------------------------
-		// ITK to VTK pipeline connection.
-		//------------------------------------------------------------------------
+            //------------------------------------------------------------------------
+            // ITK to VTK pipeline connection.
+            //------------------------------------------------------------------------
 
-		typedef itk::VTKImageExport<OutputImageType> ImageExportType;
+            typedef itk::VTKImageExport<OutputImageType> ImageExportType;
 
-		// Create the itk::VTKImageExport instance and connect it to the
-		// itk::CurvatureFlowImageFilter.
-		ImageExportType::Pointer itkExporter = ImageExportType::New();
-		itkExporter->SetInput( frameImage);
+            // Create the itk::VTKImageExport instance and connect it to the
+            // itk::CurvatureFlowImageFilter.
+            ImageExportType::Pointer itkExporter = ImageExportType::New();
+            itkExporter->SetInput( frameImage);
 
-		// Create the vtkImageImport and connect it to the
-		// itk::VTKImageExport instance.
-		vtkImageImport* vtkImporter = vtkImageImport::New();
-		ConnectPipelines(itkExporter, vtkImporter);
-		vtkImporter->Update();
-		
-		int dataExtent[ 6];
-		vtkImporter->GetDataExtent( dataExtent);
-				
-		for( i = startSlice; i < endSlice; i++)
-		{
-			long			imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
-			unsigned char	*image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
-			vtkImageImport	*image2D;
-			DCMPix			*curPix = [[srcViewer pixList] objectAtIndex: i];
-			
-			if( slice == -1)
-				memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
-			else
-				memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()), imageSize);
+            // Create the vtkImageImport and connect it to the
+            // itk::VTKImageExport instance.
+            vtkImageImport* vtkImporter = vtkImageImport::New();
+            ConnectPipelines(itkExporter, vtkImporter);
+            vtkImporter->Update();
+            
+            int dataExtent[ 6];
+            vtkImporter->GetDataExtent( dataExtent);
+                    
+            for( i = startSlice; i < endSlice; i++)
+            {
+                long			imageSize = (dataExtent[ 1]+1) * (dataExtent[ 3]+1);
+                unsigned char	*image2Ddata = (unsigned char*) malloc( imageSize), *tempPtr;
+                vtkImageImport	*image2D;
+                DCMPix			*curPix = [[srcViewer pixList] objectAtIndex: i];
+                
+                if( slice == -1)
+                    memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()) + (i * imageSize), imageSize);
+                else
+                    memcpy( image2Ddata, ((unsigned char*) vtkImporter->GetOutput()->GetScalarPointer()), imageSize);
 
-			image2D = vtkImageImport::New();
-			image2D->SetWholeExtent(0, dataExtent[ 1], 0, dataExtent[ 3], 0, 0);
-			image2D->SetDataExtentToWholeExtent();
-			image2D->SetDataScalarTypeToUnsignedChar();
-			image2D->SetImportVoidPointer(image2Ddata);		
-			
-			tempPtr = image2Ddata;
-			for( x = 0; x < [curPix pwidth]; x++) 
-			{
-				tempPtr[ x] = 0;
-			}
-			tempPtr = image2Ddata + ([curPix pwidth]) * ([curPix pheight]-1);
-			for( x = 0; x < [curPix pwidth]; x++) 
-			{
-				tempPtr[ x] = 0;
-			}
-			tempPtr = image2Ddata;
-			for( x = 0; x < [curPix pheight]; x++) 
-			{
-				*tempPtr = 0;
-				tempPtr += [curPix pwidth];
-			}
-			tempPtr = image2Ddata + [curPix pwidth]-1;
-			for( x = 0; x < [curPix pheight]; x++) 
-			{
-				*tempPtr = 0;
-				tempPtr += [curPix pwidth];
-			}
-			
-			{
-				//------------------------------------------------------------------------
-				// VTK MARCHING SQUARE
-				//------------------------------------------------------------------------
-				
-				int dataExtent[ 6];
-				vtkImporter->GetDataExtent( dataExtent);
-			//	NSLog(@"%d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3]);
-				
-//				if( slice == -1)
-//				{
-//					isoContour->SetImageRange(dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3], i, i);
-//				}
-				
-				vtkContourFilter*		isoContour = vtkContourFilter::New();
-			//	vtkMarchingSquares*		isoContour = vtkMarchingSquares::New();
-				
-				isoContour->SetValue(0, 1);
-				isoContour->SetInput( (vtkDataObject*) image2D->GetOutput());
-				isoContour->Update();
+                image2D = vtkImageImport::New();
+                image2D->SetWholeExtent(0, dataExtent[ 1], 0, dataExtent[ 3], 0, 0);
+                image2D->SetDataExtentToWholeExtent();
+                image2D->SetDataScalarTypeToUnsignedChar();
+                image2D->SetImportVoidPointer(image2Ddata);		
+                
+                tempPtr = image2Ddata;
+                for( x = 0; x < [curPix pwidth]; x++) 
+                {
+                    tempPtr[ x] = 0;
+                }
+                tempPtr = image2Ddata + ([curPix pwidth]) * ([curPix pheight]-1);
+                for( x = 0; x < [curPix pwidth]; x++) 
+                {
+                    tempPtr[ x] = 0;
+                }
+                tempPtr = image2Ddata;
+                for( x = 0; x < [curPix pheight]; x++) 
+                {
+                    *tempPtr = 0;
+                    tempPtr += [curPix pwidth];
+                }
+                tempPtr = image2Ddata + [curPix pwidth]-1;
+                for( x = 0; x < [curPix pheight]; x++) 
+                {
+                    *tempPtr = 0;
+                    tempPtr += [curPix pwidth];
+                }
+                
+                {
+                    //------------------------------------------------------------------------
+                    // VTK MARCHING SQUARE
+                    //------------------------------------------------------------------------
+                    
+                    int dataExtent[ 6];
+                    vtkImporter->GetDataExtent( dataExtent);
+                //	NSLog(@"%d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3]);
+                    
+    //				if( slice == -1)
+    //				{
+    //					isoContour->SetImageRange(dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3], i, i);
+    //				}
+                    
+                    vtkContourFilter*		isoContour = vtkContourFilter::New();
+                //	vtkMarchingSquares*		isoContour = vtkMarchingSquares::New();
+                    
+                    isoContour->SetValue(0, 1);
+                    isoContour->SetInput( (vtkDataObject*) image2D->GetOutput());
+                    isoContour->Update();
 
-				image2D->GetDataExtent( dataExtent);
-				NSLog(@"%d, %d, %d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3], dataExtent[4], dataExtent[5]);
-				
-				vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
-				filter->SetColorRegions( 1);
-				filter->SetExtractionModeToLargestRegion();
-				filter->SetInput( isoContour->GetOutput());
-				
-				vtkPolyDataConnectivityFilter	*filter2 = vtkPolyDataConnectivityFilter::New();
-				filter2->SetColorRegions( 1);
-				filter2->SetExtractionModeToLargestRegion();
-				filter2->SetInput( filter->GetOutput());
-				
-				vtkPolyData *output = filter2->GetOutput();
-				
-	//			filter->SetExtractionModeToAllRegions();
-	//			filter->Update();
-	//			filter->SetExtractionModeToSpecifiedRegions();
-	//
-	//			for (int i=0; i<filter->GetNumberOfExtractedRegions(); i++)
-	//			{
-	//				filter->AddSpecifiedRegion(i);
-	//				filter->Update();
-	//				
-	//				output = filter->GetOutput();
-	//				NSLog( @"%d", filter->GetOutput()->GetNumberOfPolys());
-	////				NSLog( @"Region 0: %d", cells->GetNumberOfPoints());
-	//				NSLog( @"Lines: %d Polys: %d, Points: %d, Cells: %d - %d - %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints(), output->GetNumberOfCells(), output->GetNumberOfStrips(), output->GetNumberOfVerts());
-	//
-	//				// if region shall be dropped
-	//				filter->DeleteSpecifiedRegion(i);
-	//			}
-				
-				output->Update();
-//				NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());				
-//				NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());
-				
-				if( output->GetNumberOfLines() > 3)
-				{
-					long			ii;
-					ROI				*newROI = [srcViewer newROI: tCPolygon];
-					NSMutableArray  *points = [newROI points];
-					
-					for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
-					{
-						double p[ 3];
-						output->GetPoint(ii, p);
-						[points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
-					}
-					ii--;
-					if(ii>= output->GetNumberOfLines()) ii-=2;
-					for( ; ii >= 0; ii-=2)
-					{
-						double p[ 3];
-						output->GetPoint(ii, p);
-						[points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
-					}
-					
-					#define MAXPOINTS 200
-					
-					if( [points count] > MAXPOINTS)
-					{
-						long newroiResolution = [points count] / MAXPOINTS;
-						
-						newroiResolution++;
-						
-						if( newroiResolution >  roiResolution) roiResolution = newroiResolution;
-					}
-					
-					if( roiResolution != 1 && roiResolution > 0)
-					{
-						long tot = [points count];
-						long zz;
-						
-						for( ii = tot-1; ii >= 0; ii -= roiResolution)
-						{
-							for( zz = 0; zz < roiResolution-1; zz++)
-							{
-								if( [points count] > 3 && ii-zz >= 0) [points removeObjectAtIndex: ii-zz];
-							}
-						}
-					}
-	
-					{
-						NSMutableArray  *roiSeriesList;
-						NSMutableArray  *roiImageList;
+                    image2D->GetDataExtent( dataExtent);
+                    NSLog(@"%d, %d, %d, %d, %d, %d", dataExtent[0], dataExtent[1], dataExtent[2], dataExtent[3], dataExtent[4], dataExtent[5]);
+                    
+                    vtkPolyDataConnectivityFilter	*filter = vtkPolyDataConnectivityFilter::New();
+                    filter->SetColorRegions( 1);
+                    filter->SetExtractionModeToLargestRegion();
+                    filter->SetInput( isoContour->GetOutput());
+                    
+                    vtkPolyDataConnectivityFilter	*filter2 = vtkPolyDataConnectivityFilter::New();
+                    filter2->SetColorRegions( 1);
+                    filter2->SetExtractionModeToLargestRegion();
+                    filter2->SetInput( filter->GetOutput());
+                    
+                    vtkPolyData *output = filter2->GetOutput();
+                    
+        //			filter->SetExtractionModeToAllRegions();
+        //			filter->Update();
+        //			filter->SetExtractionModeToSpecifiedRegions();
+        //
+        //			for (int i=0; i<filter->GetNumberOfExtractedRegions(); i++)
+        //			{
+        //				filter->AddSpecifiedRegion(i);
+        //				filter->Update();
+        //				
+        //				output = filter->GetOutput();
+        //				NSLog( @"%d", filter->GetOutput()->GetNumberOfPolys());
+        ////				NSLog( @"Region 0: %d", cells->GetNumberOfPoints());
+        //				NSLog( @"Lines: %d Polys: %d, Points: %d, Cells: %d - %d - %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints(), output->GetNumberOfCells(), output->GetNumberOfStrips(), output->GetNumberOfVerts());
+        //
+        //				// if region shall be dropped
+        //				filter->DeleteSpecifiedRegion(i);
+        //			}
+                    
+                    output->Update();
+    //				NSLog( @"Extracted region: %d", filter->GetNumberOfExtractedRegions());				
+    //				NSLog( @"Lines: %d Polys: %d, Points: %d", output->GetNumberOfLines(), output->GetNumberOfPolys(), output->GetNumberOfPoints());
+                    
+                    if( output->GetNumberOfLines() > 3)
+                    {
+                        long			ii;
+                        ROI				*newROI = [srcViewer newROI: tCPolygon];
+                        NSMutableArray  *points = [newROI points];
+                        
+                        for( ii = 0; ii < output->GetNumberOfLines(); ii+=2)
+                        {
+                            double p[ 3];
+                            output->GetPoint(ii, p);
+                            [points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
+                        }
+                        ii--;
+                        if(ii>= output->GetNumberOfLines()) ii-=2;
+                        for( ; ii >= 0; ii-=2)
+                        {
+                            double p[ 3];
+                            output->GetPoint(ii, p);
+                            [points addObject: [srcViewer newPoint: p[0]  : p[1] ]];
+                        }
+                        
+                        #define MAXPOINTS 200
+                        
+                        if( [points count] > MAXPOINTS)
+                        {
+                            long newroiResolution = [points count] / MAXPOINTS;
+                            
+                            newroiResolution++;
+                            
+                            if( newroiResolution >  roiResolution) roiResolution = newroiResolution;
+                        }
+                        
+                        if( roiResolution != 1 && roiResolution > 0)
+                        {
+                            long tot = [points count];
+                            long zz;
+                            
+                            for( ii = tot-1; ii >= 0; ii -= roiResolution)
+                            {
+                                for( zz = 0; zz < roiResolution-1; zz++)
+                                {
+                                    if( [points count] > 3 && ii-zz >= 0) [points removeObjectAtIndex: ii-zz];
+                                }
+                            }
+                        }
+        
+                        {
+                            NSMutableArray  *roiSeriesList;
+                            NSMutableArray  *roiImageList;
 
-						roiSeriesList = [srcViewer roiList];
-						
-						if( slice == -1) roiImageList = [roiSeriesList objectAtIndex: i];
-						else roiImageList = [roiSeriesList objectAtIndex: [[srcViewer imageView] curImage]];
-						
-						[newROI setName: newname];
-						[roiImageList addObject: newROI];
-						[[srcViewer imageView] roiSet];
-						[srcViewer needsDisplayUpdate];
-					}
-				}
-				
-				isoContour->Delete();
-				filter->Delete();
-				filter2->Delete();
-			}
-			
-			image2D->Delete();
-			free( image2Ddata);
-		}
-		
-		vtkImporter->Delete();
-	}
-	
+                            roiSeriesList = [srcViewer roiList];
+                            
+                            if( slice == -1) roiImageList = [roiSeriesList objectAtIndex: i];
+                            else roiImageList = [roiSeriesList objectAtIndex: [[srcViewer imageView] curImage]];
+                            
+                            [newROI setName: newname];
+                            [roiImageList addObject: newROI];
+                            [[srcViewer imageView] roiSet];
+                            [srcViewer needsDisplayUpdate];
+                        }
+                    }
+                    
+                    isoContour->Delete();
+                    filter->Delete();
+                    filter2->Delete();
+                }
+                
+                image2D->Delete();
+                free( image2Ddata);
+            }
+            
+            vtkImporter->Delete();
+        }
+    }
+    
 	[wait close];
 	[wait release];
 }

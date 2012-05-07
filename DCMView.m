@@ -44,6 +44,7 @@
 #include "NSFont_OpenGL/NSFont_OpenGL.h"
 #import "Notifications.h"
 #import "PluginManager.h"
+#import "N2Debug.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -1589,7 +1590,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -1601,18 +1602,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	yFlipped = v;
 	
-	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+	if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 	{
 		// Series Level
 		[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
 		
 		// Image Level
-		if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+		if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
 			[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
 		else
 			[[self imageObj] setValue: nil forKey:@"yFlipped"];
 		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
+		[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 	}
 	
 	[self updateTilingViews];
@@ -1624,18 +1625,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	xFlipped = v;
 	
-	if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
-	{
-		[[self seriesObj]  setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-		
-		// Image Level
-		if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-			[[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-		else
-			[[self imageObj] setValue: nil forKey:@"xFlipped"];
-		
-		[[[BrowserController currentBrowser] managedObjectContext] unlock];
-	}
+	if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
+    {
+        [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+        
+        // Image Level
+        if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+            [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+        else
+            [[self imageObj] setValue: nil forKey:@"xFlipped"];
+        
+        [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
+    }
 	
 	[self updateTilingViews];
 	
@@ -1795,7 +1796,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void)DrawCStringGL:(char*)cstrOut :(GLuint)fontL :(long)x :(long)y align:(DCMViewTextAlign)align useStringTexture:(BOOL)stringTex;
 {
-	[self DrawNSStringGL:[NSString stringWithCString:cstrOut] :fontL :x :y align:align useStringTexture:stringTex];
+	[self DrawNSStringGL:[NSString stringWithCString:cstrOut encoding:NSUTF8StringEncoding] :fontL :x :y align:align useStringTexture:stringTex];
 }
 
 - (void) DrawCStringGL: (char *) cstrOut :(GLuint) fontL :(long) x :(long) y
@@ -2138,7 +2139,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2347,7 +2348,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	COPYSETTINGSINSERIES = !COPYSETTINGSINSERIES;
 	
-	[[[BrowserController currentBrowser] managedObjectContext] lock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
 	
 	@try 
 	{
@@ -2395,11 +2396,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 
 	
-	[[[BrowserController currentBrowser] managedObjectContext] unlock];
+	[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 }
 
 - (void) resetLoadingPause:(id) sender
@@ -2526,7 +2527,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2622,7 +2623,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			[drawLock unlock];
@@ -2839,9 +2840,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
             else [self setIndexWithReset:curImage :YES];
             
-            if( matrix )
-			{
-                [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+            if( matrix ) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow:curImage/cols column:curImage%cols];
             }
             
 			if( [self is2DViewer] == YES)
@@ -2884,7 +2885,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -2960,8 +2961,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [description length]) [description appendString:@"\r"];
 		
-		if( [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]])
-			[description appendString: [BrowserController DateTimeFormat: [curSeries valueForKey:@"date"]]];
+		if( [NSUserDefaults formatDateTime: [curSeries valueForKey:@"date"]])
+			[description appendString: [NSUserDefaults formatDateTime: [curSeries valueForKey:@"date"]]];
 		
 		if( [self allIdenticalValues: @"studyName" inArray: studiesArray] == NO)
 		{
@@ -3002,7 +3003,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -3141,9 +3142,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 			if( curImage != startImage && (matrix && [BrowserController currentBrowser]))
 			{
-				NSButtonCell *cell = [matrix cellAtRow:curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                NSButtonCell *cell = [matrix cellAtRow:curImage/cols column:curImage%cols];
 				[cell performClick:nil];
-				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
+				[matrix selectCellAtRow :curImage/cols column:curImage%cols];
 			}
 			
 			long tool = currentMouseEventTool;
@@ -3231,7 +3233,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		
@@ -3681,7 +3683,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			@catch (NSException * e) 
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 
 			[drawLock unlock];
@@ -3692,7 +3694,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	avoidMouseMovedRecursive = NO;
@@ -4477,7 +4479,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[drawLock unlock];
@@ -4710,9 +4712,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix )
-				[matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-			
+			if( matrix ) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow :curImage/cols column:curImage%cols];
+			}
+            
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];    //mouseDown:theEvent];
 			
@@ -4970,7 +4974,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
         
 		[drawLock unlock];
@@ -5173,12 +5177,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//set value for Series Object Presentation State
 	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
 }
@@ -5244,8 +5248,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( listType == 'i') [self setIndex:curImage];
 			else [self setIndexWithReset:curImage :YES];
 			
-			if( matrix) [matrix selectCellAtRow :curImage/[[BrowserController currentBrowser] COLUMN] column:curImage%[[BrowserController currentBrowser] COLUMN]];
-			
+			if (matrix) {
+                NSInteger rows, cols; [matrix getNumberOfRows:&rows columns:&cols];
+                [matrix selectCellAtRow :curImage/cols column:curImage%cols];
+			}
+            
 			if( [self is2DViewer] == YES)
 				[[self windowController] adjustSlider];
 			
@@ -5779,7 +5786,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer])
 	{
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
             @try
             {
@@ -5826,7 +5833,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             {
                 NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
             }
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
 }
@@ -5847,7 +5854,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [self is2DViewer])
 	{
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
 			//set value for Series Object Presentation State
 			if( curDCM.SUVConverted == NO)
@@ -5887,7 +5894,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 				}
 			}
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
 }
@@ -9056,7 +9063,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	// Swap buffer to screen
@@ -10480,7 +10487,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if( [self is2DViewer])
 		{
-			if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+			if( [[[[BrowserController currentBrowser] database] managedObjectContext]
+ tryLock])
 			{
 				// Series Level
 				[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
@@ -10492,7 +10500,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else
 					[[self imageObj] setValue: nil forKey:@"scale"];
 				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 			}
 		}
 		
@@ -10523,7 +10531,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [[self windowController] isPostprocessed] == NO)
 			{
-				if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+				if( [[[[BrowserController currentBrowser] database] managedObjectContext]
+ tryLock])
 				{				
 					// Series Level
 					[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
@@ -10535,7 +10544,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					else
 						[[self imageObj] setValue: nil forKey:@"scale"];
 					
-					[[[BrowserController currentBrowser] managedObjectContext] unlock];
+					[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 				}
 			}
 		}
@@ -10655,7 +10664,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( rotation < 0) rotation += 360;
 		if( rotation > 360) rotation -= 360;
 		
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext]
+ tryLock])
 		{		
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
 			
@@ -10665,7 +10675,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else
 				[[self imageObj] setValue: nil forKey:@"rotationAngle"];
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 		
 		[self updateTilingViews];
@@ -10786,7 +10796,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	if( [self is2DViewer] == YES && [[self windowController] isPostprocessed] == NO)
 	{
-		if( [[[BrowserController currentBrowser] managedObjectContext] tryLock])
+		if( [[[[BrowserController currentBrowser] database] managedObjectContext]
+ tryLock])
 		{		
 			// Series Level
 			[[self seriesObj] setValue:[NSNumber numberWithFloat:x] forKey:@"xOffset"];
@@ -10804,7 +10815,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				[[self imageObj] setValue: nil forKey:@"yOffset"];
 			}
 			
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
+			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
 	
@@ -11494,7 +11505,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[drawLock unlock];
@@ -11518,11 +11529,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	[self sendSyncMessage: 0];
 	
-	if( [self is2DViewer])
+	/*if( [self is2DViewer])
 	{
-		[[self windowController] adjustSlider];
+		[[self windowController] adjustSlider]; HERE HERE
 		[[self windowController] propagateSettings];
-	}
+	}*/
 	
 	[self computeColor];
 	
@@ -12185,7 +12196,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSArray *screens = [NSScreen screens];
 	
-	for( id loopItem in screens)
+	for(NSScreen* loopItem in screens)
 	{
 		if( NSPointInRect( center, [loopItem frame]))
 		{
@@ -12193,7 +12204,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( [AppController USETOOLBARPANEL] || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 			{
-				screenFrame.size.height -= [ToolbarPanelController exposedHeight];
+				screenFrame.size.height -= [[AppController toolbarForScreen:loopItem] exposedHeight];
 			}
 			
 			if( newHeight > screenFrame.size.height) newHeight = screenFrame.size.height;

@@ -21,6 +21,7 @@
 #import "DCMPix.h"
 #import "BrowserController.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DicomFileDCMTKCategory.h"
@@ -34,7 +35,7 @@
 
 @synthesize dicomTime;
 
-@dynamic comment;
+@dynamic comment, comment2, comment3, comment4;
 @dynamic date;
 @dynamic dateAdded;
 @dynamic dateOpened;
@@ -129,7 +130,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -167,7 +168,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	#endif
 	#endif
@@ -244,117 +245,146 @@
 
 - (void) setDate:(NSDate*) date
 {
-	[dicomTime release];
-	dicomTime = NULL;
-	
-	[self willChangeValueForKey: @"date"];
-	[self setPrimitiveValue:date forKey:@"date"];
-	[self didChangeValueForKey: @"date"];
+    @synchronized (self) {
+        [dicomTime release];
+        dicomTime = NULL;
+        
+        [self willChangeValueForKey: @"date"];
+        [self setPrimitiveValue:date forKey:@"date"];
+        [self didChangeValueForKey: @"date"];
+    }
 }
 
 - (NSNumber*)dicomTime
 {
-	if (!dicomTime)
-		dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
-	return dicomTime;
+    @synchronized (self) {
+        if (!dicomTime)
+            dicomTime = [[[DCMCalendarDate dicomTimeWithDate:self.date] timeAsNumber] retain];
+        return dicomTime;
+    }
+    
+    return nil;
 }
 
 -(NSData*)thumbnail
 {
-	NSData *thumbnailData = [[self primitiveValueForKey:@"thumbnail"] retain];
-	
-	if( !thumbnailData)
-	{
-		NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-		
-		@try
-		{
-			NSArray* files = [self sortedImages];
-			if (files.count)
-			{
-				DicomImage* image = [files objectAtIndex:[files count]/2];
-				
-				if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
-				{
-					int frame = 0;
-					
-					if (files.count == 1 && image.numberOfFrames.intValue > 1)
-						frame = [image.numberOfFrames intValue]/2;
-					
-					if (image.frameID)
-						frame = image.frameID.intValue;
-					
-					NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-					[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
-					[[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
-					
-					NSImage *thumbnail = nil;
-					NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
-					
-					if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
-					{
-						thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
-						thumbnailData = [[thumbnail TIFFRepresentation] retain];
-					}
-					else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
-					{
-						NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
-						
-						thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
-						
-						[thumbnail lockFocus];
-						[icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
-						[thumbnail unlockFocus];
-						
-						thumbnailData = [[thumbnail TIFFRepresentation] retain];
-					}
-					else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
-					{
-						DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
-						[dcmPix CheckLoad];
-						
-                        //Set the default series level window-width&level
+    NSData* thumbnailData = nil;
+    
+    @try
+    {
+        @synchronized( self) // To avoid multiple threads computing the same thumbnail
+        {
+            thumbnailData = [[self primitiveValueForKey:@"thumbnail"] retain]; // autoreleased when returning
+            
+            if( !thumbnailData)
+            {
+                NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+                
+                @try
+                {
+                    NSArray* files = [self sortedImages];
+                    if (files.count)
+                    {
+                        DicomImage* image = [files objectAtIndex:[files count]/2];
                         
-                        if( image.series.windowWidth == nil && image.series.windowLevel == nil)
-                        {
-                            if( dcmPix.ww != 0 && dcmPix.wl != 0)
-                            {
-                                image.series.windowWidth = [NSNumber numberWithFloat: dcmPix.ww];
-                                image.series.windowLevel = [NSNumber numberWithFloat: dcmPix.wl];
-                            }
+                        NSImage* thumbAv = [image thumbnailIfAlreadyAvailable];
+                        if (thumbAv) {
+                            NSImage* thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize(70, 70)] autorelease];
+                            
+                            [thumbnail lockFocus];
+                            [thumbAv drawInRect:NSMakeRect(0,0,70,70) fromRect:[thumbAv alignmentRect] operation:NSCompositeCopy fraction:1.0];
+                            [thumbnail unlockFocus];
+                            
+                            thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
                         }
-                        
-						thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
-						
-						if (!dcmPix.notAbleToLoadImage)
-							thumbnailData = [[thumbnail JPEGRepresentationWithQuality:0.3] retain];
-						
-						[dcmPix release];
-					}
-					else
-					{
-						thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
-						thumbnailData = [[thumbnail TIFFRepresentation] retain];
-					}
-					
-					[[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
-				}
-			}
+                        else
+                        if ([[NSFileHandle fileHandleForReadingAtPath: image.completePath] readDataOfLength: 100])	// This means the file is readable...
+                        {
+                            int frame = 0;
+                            
+                            if (files.count == 1 && image.numberOfFrames.intValue > 1)
+                                frame = [image.numberOfFrames intValue]/2;
+                            
+                            if (image.frameID)
+                                frame = image.frameID.intValue;
+                            
+                            NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+                            [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                            [[[[[self valueForKey:@"study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                            
+                            NSImage *thumbnail = nil;
+                            NSString *seriesSOPClassUID = [self valueForKey: @"seriesSOPClassUID"];
+                            
+                            if( [DCMAbstractSyntaxUID isSpectroscopy: seriesSOPClassUID])
+                            {
+                                thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
+                                thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            }
+                            else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
+                            {
+                                NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
+                                
+                                thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
+                                
+                                [thumbnail lockFocus];
+                                [icon drawInRect: NSMakeRect( 0, 0, 70, 70) fromRect: [icon alignmentRect] operation: NSCompositeCopy fraction: 1.0];
+                                [thumbnail unlockFocus];
+                                
+                                thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            }
+                            else if( [DCMAbstractSyntaxUID isImageStorage: seriesSOPClassUID] || [DCMAbstractSyntaxUID isRadiotherapy: seriesSOPClassUID] || [seriesSOPClassUID length] == 0)
+                            {
+                                DCMPix* dcmPix = [[DCMPix alloc] initWithPath: image.completePath :0 :1 :nil :frame :self.id.intValue isBonjour: [[BrowserController currentBrowser] isBonjour: [self managedObjectContext]] imageObj:image];
+                                [dcmPix CheckLoad];
+                                
+                                //Set the default series level window-width&level
+                                
+                                if( image.series.windowWidth == nil && image.series.windowLevel == nil)
+                                {
+                                    if( dcmPix.ww != 0 && dcmPix.wl != 0)
+                                    {
+                                        image.series.windowWidth = [NSNumber numberWithFloat: dcmPix.ww];
+                                        image.series.windowLevel = [NSNumber numberWithFloat: dcmPix.wl];
+                                    }
+                                }
+                                
+                                thumbnail = [dcmPix generateThumbnailImageWithWW: [image.series.windowWidth floatValue] WL: [image.series.windowLevel floatValue]];
+                                
+                                if (!dcmPix.notAbleToLoadImage)
+                                    thumbnailData = [[thumbnail JPEGRepresentationWithQuality:0.3] retain]; // autoreleased when returning
+                                
+                                [dcmPix release];
+                            }
+                            else
+                            {
+                                thumbnail = [NSImage imageNamed: @"FileNotFound.tif"];
+                                thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
+                            }
+                            
+                            [[NSFileManager defaultManager] removeFileAtPath: recoveryPath handler: nil];
+                        }
+                    }
 
-			if( thumbnailData)
-			{
-				[self willChangeValueForKey: @"thumbnail"];
-				[self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
-				[self didChangeValueForKey: @"thumbnail"];
-			}
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		}
-		[pool release];
-	}
-	
+                    if (thumbnailData)
+                    {
+                        [self willChangeValueForKey: @"thumbnail"];
+                        [self setPrimitiveValue:thumbnailData forKey:@"thumbnail"];
+                        [self didChangeValueForKey: @"thumbnail"];
+                    }
+                }
+                @catch (NSException * e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+                [pool release];
+            }
+        }
+    }
+    @catch (NSException * e)
+    {
+        thumbnailData = [[[NSImage imageNamed: @"FileNotFound.tif"] TIFFRepresentation] retain];
+    }
+        
 	return [thumbnailData autorelease];
 }
 
@@ -381,7 +411,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -407,7 +437,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -451,7 +481,7 @@
 		}
 		@catch (NSException * e) 
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[[self managedObjectContext] unlock];
@@ -497,13 +527,33 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
 	
 	return set;
 }
+
+- (NSSet *)pathsForForkedProcess
+{
+	[[self managedObjectContext] lock];
+	
+	NSSet *set = nil;
+	@try 
+	{
+		set = [self valueForKeyPath:@"images.completePathWithNoDownloadAndLocalOnly"];
+	}
+	@catch (NSException * e) 
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	[[self managedObjectContext] unlock];
+	
+	return set;
+}
+
 
 - (NSSet *)keyImages
 {
@@ -518,7 +568,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[[self managedObjectContext] unlock];
@@ -541,7 +591,7 @@
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}	
 	
 	[[self managedObjectContext] unlock];

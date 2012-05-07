@@ -113,7 +113,7 @@
 CF_EXTERN_C_BEGIN
 
 NSString* valuesKeyPath(NSString* key) {
-	return [NSString stringWithFormat:@"values.%@", key];
+	return [@"values." stringByAppendingString:key];
 }
 
 CF_EXTERN_C_END

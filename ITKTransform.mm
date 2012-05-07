@@ -260,7 +260,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 		
 		[[new2DViewer window] makeKeyAndOrderFront: self];
 		[new2DViewer setWL: wl WW: ww];
-		[new2DViewer propagateSettings];
+		[referenceViewer propagateSettings]; // avolz: previously [new2DViewer propagateSettings], the consequence was that both the reference and the new viewer were awkwardly zoomed in - by propagating the untouched viewer's settings the user will get what he was viewing before the fusion
 		[new2DViewer setRegisteredViewer: referenceViewer];
 	}
 	else

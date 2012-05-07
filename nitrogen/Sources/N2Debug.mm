@@ -28,18 +28,28 @@ static BOOL _active = NO;
 	_active = active;
 }
 
-NSString* RectString(NSRect r) {
-	return [NSString stringWithFormat:@"[%f,%f,%f,%f]", r.origin.x, r.origin.y, r.size.width, r.size.height];
-}
-
 @end
 
 extern "C" {
 
-void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSString* format, ...) {
+NSString* RectString(NSRect r) {
+	return [NSString stringWithFormat:@"[%f,%f,%f,%f]", r.origin.x, r.origin.y, r.size.width, r.size.height];
+}
+
+NSString* PointString(NSPoint p) {
+	return [NSString stringWithFormat:@"[%f,%f]", p.x, p.y];
+}
+	
+void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, id arg, ...) {
 	va_list args;
-	va_start(args, format);
-	NSString* message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+	va_start(args, arg);
+	
+	NSString* message = @"no details";
+	if ([arg isKindOfClass:[NSString class]])
+		message = [[[NSString alloc] initWithFormat:arg arguments:args] autorelease];
+	if ([arg isKindOfClass:[NSError class] ])
+		message = [(NSError*)arg description];
+	
 	va_end(args);
 	NSLog(@"Error (in %s): %@ (%s:%d)", pf, message, fileName, lineNumber);
 }
@@ -47,12 +57,10 @@ void _N2LogErrorImpl(const char* pf, const char* fileName, int lineNumber, NSStr
 void _N2LogExceptionVImpl(NSException* e, BOOL logStack, const char* pf, NSString* format, va_list args) {
 	NSString* message = format? [[[NSString alloc] initWithFormat:format arguments:args] autorelease] : e.name;
 	@synchronized(NSApp) {
-		NSLog(@"%@ (in %s): %@", message, pf, e);
-		if (logStack)
-			[e printStackTrace];
+		NSLog(@"%@ (in %s): %@%@", message, pf, e, logStack? [NSString stringWithFormat:@"\n%@", e.stackTrace] : @"");
 	}
 }
-
+	
 void _N2LogExceptionImpl(NSException* e, BOOL logStack, const char* pf) {
 	_N2LogExceptionVImpl(e, logStack, pf, nil, nil);
 }
@@ -66,7 +74,7 @@ extern void N2LogStackTrace(NSString* format, ...) {
 	} @catch (NSException* e) {
 		_N2LogExceptionVImpl(e, YES, "", format, args);
 	}
-	
+
 	va_end(args);
 }
 

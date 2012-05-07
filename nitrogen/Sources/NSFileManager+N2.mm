@@ -48,8 +48,14 @@
 	return nsPath;
 }
 
+-(NSString*)tmpDirPath {
+    NSString* path = [NSString stringWithFormat:@"/tmp/%@_%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], NSUserName()];
+    [self confirmDirectoryAtPath:path];
+    return path;
+}
+
 -(NSString*)tmpFilePathInTmp {
-	return [self tmpFilePathInDir:@"/tmp"];
+	return [self tmpFilePathInDir:[self tmpDirPath]];
 }
 
 -(NSString*)confirmDirectoryAtPath:(NSString*)dirPath {
@@ -80,7 +86,7 @@
 -(NSString*)confirmNoIndexDirectoryAtPath:(NSString*)path {
 	NSString* pathWithExt;
 	NSString* pathWithoutExt;
-	NSString* ext = @".noindex";
+	NSString* const ext = @".noindex";
 	
 	if ([path hasSuffix:ext]) {
 		pathWithExt = path;
@@ -261,11 +267,17 @@
 	return [[[N2DirectoryEnumerator alloc] initWithPath:path maxNumberOfFiles:maxNumberOfFiles] autorelease];
 }
 
+-(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path filesOnly:(BOOL)filesOnly {
+	return [self enumeratorAtPath:path filesOnly:filesOnly recursive:YES];
+}
 
 
-
-
-
+-(N2DirectoryEnumerator*)enumeratorAtPath:(NSString*)path filesOnly:(BOOL)filesOnly recursive:(BOOL)recursive {
+	N2DirectoryEnumerator* de = [[[N2DirectoryEnumerator alloc] initWithPath:path maxNumberOfFiles:-1] autorelease];
+	de.filesOnly = filesOnly;
+	de.recursive = recursive;
+	return de;
+}
 
 
 @end

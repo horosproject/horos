@@ -47,7 +47,7 @@
 	copy.compressJPEGNotJPEG2000 = self.compressJPEGNotJPEG2000;
 	copy.zip = self.zip;
 	copy.zipEncrypt = self.zipEncrypt;
-	copy.zipEncryptPassword = [self.zipEncryptPassword copyWithZone:zone];
+	copy.zipEncryptPassword = [[self.zipEncryptPassword copyWithZone:zone] autorelease];
 	
 	return copy;
 }

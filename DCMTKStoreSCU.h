@@ -27,6 +27,8 @@ int runStoreSCU(const char *myAET, const char*peerAET, const char*hostname, int 
 * based on DCMTK 
 */
 @interface DCMTKStoreSCU : NSObject {
+	BOOL _threadStatus;
+	
 	NSString *_callingAET;
 	NSString *_calledAET;
 	int _port;

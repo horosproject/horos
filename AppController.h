@@ -71,8 +71,8 @@ extern "C"
 {
 #endif
 	NSRect screenFrame();
-	NSString * documentsDirectoryFor( int mode, NSString *url);
-	NSString * documentsDirectory();
+	NSString * documentsDirectoryFor( int mode, NSString *url) __deprecated;
+	NSString * documentsDirectory() __deprecated;
 #ifdef __cplusplus
 }
 #endif
@@ -92,6 +92,10 @@ extern "C"
 @protocol GrowlApplicationBridgeDelegate
 @end
 #endif
+
+@class AppController, ToolbarPanelController;
+
+extern AppController* OsiriX;
 
 @interface AppController : NSObject	<NSNetServiceBrowserDelegate, NSNetServiceDelegate, GrowlApplicationBridgeDelegate>
 {
@@ -119,7 +123,7 @@ extern "C"
 	
 	NSTimer							*updateTimer;
 	DCMNetServiceDelegate			*dicomNetServiceDelegate;
-	XMLRPCMethods					*XMLRPCServer;
+	XMLRPCInterface					*XMLRPCServer;
 	ThreadPoolServer				*webServer;
 	
 	BOOL							checkAllWindowsAreVisibleIsOff, isSessionInactive;
@@ -130,7 +134,8 @@ extern "C"
 
 @property BOOL checkAllWindowsAreVisibleIsOff, isSessionInactive;
 @property (readonly) NSMenu *filtersMenu, *windowsTilingMenuRows, *windowsTilingMenuColumns;
-@property (readonly) XMLRPCMethods *XMLRPCServer;
+@property(readonly) NSNetService* dicomBonjourPublisher;
+@property (readonly) XMLRPCInterface *XMLRPCServer;
 
 + (BOOL) isFDACleared;
 + (BOOL) willExecutePlugin;
@@ -138,23 +143,26 @@ extern "C"
 + (BOOL) hasMacOSXSnowLeopard;
 + (BOOL) hasMacOSXLeopard;
 
++(NSString*)UID;
+
 #pragma mark-
 #pragma mark initialization of the main event loop singleton
 
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path;
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path __deprecated;
 + (void) displayImportantNotice:(id) sender;
 + (AppController*) sharedAppController; /**< Return the shared AppController instance */
-+ (void)checkForPagesTemplate; /**< Check for Pages report template */
++ (NSString*)checkForPagesTemplate; /**< Check for Pages report template */
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame;
-+ (void) pause;
++ (void) pause __deprecated;
 + (void) resetToolbars;
-+ (NSString*) printStackTrace: (NSException*) e;
++ (ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen;
++ (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
 + (int) numberOfSubOsiriXProcesses;
 + (BOOL) isKDUEngineAvailable;
 
 #pragma mark-
 #pragma mark HTML Templates
-+ (void)checkForHTMLTemplates;
++ (void)checkForHTMLTemplates __deprecated;
 
 
 #pragma mark-
@@ -253,5 +261,10 @@ extern "C"
 #ifndef OSIRIX_LIGHT
 -(NSString*)weasisBasePath;
 #endif
+
+-(void)setReceivingIcon;
+-(void)unsetReceivingIcon;
+-(void)setBadgeLabel:(NSString*)label;
+
 @end
 

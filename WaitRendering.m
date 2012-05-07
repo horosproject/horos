@@ -14,6 +14,7 @@
 
 #import "Wait.h"
 #import "WaitRendering.h"
+#import "NSWindow+N2.h"
 
 @implementation WaitRendering
 
@@ -80,26 +81,20 @@
 	while( [NSDate timeIntervalSinceReferenceDate] - displayedTime < 0.5)
 		[NSThread sleepForTimeInterval: 0.5];
 	
+    [[self window] orderOut:self];
+    
     if( session != nil)
 	{
 		[NSApp endModalSession:session];
 		session = nil;
 	}
-    
-	[super close];
 }
 
 -(void) end
 {
 	if( startTime == nil) return;	// NOT STARTED
 	
-	[[self window] orderOut:self];
-	
-	if( session != nil)
-	{
-		[NSApp endModalSession:session];
-		session = nil;
-	}
+	[self close];
 	
 	if( aborted == NO && supportCancel == YES)
 	{
@@ -109,7 +104,6 @@
 	[startTime release];
 	startTime = nil;
 	
-	session = nil;
 	stop = YES;
 }
 
@@ -198,7 +192,14 @@
 
 - (void) dealloc
 {
+    [self close];
+    
 	[string release];
+    string = nil;
+    
+    [startTime release];
+	startTime = nil;
+    
 	[super dealloc];
 }
 
@@ -235,6 +236,9 @@
 	startTime = nil;
 	displayedTime = [NSDate timeIntervalSinceReferenceDate];
 	
+    if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
+        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+    
 	[[self window] setLevel: NSModalPanelWindowLevel];
 	
 	return self;

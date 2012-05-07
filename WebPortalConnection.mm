@@ -137,6 +137,15 @@ static NSString* NotNil(NSString *s) {
 	return self;
 }
 
+-(DicomDatabase*)independentDicomDatabase {
+    if (_independentDicomDatabase)
+        return _independentDicomDatabase;
+    
+    _independentDicomDatabase = [[self.portal.dicomDatabase independentDatabase] retain];
+    
+    return _independentDicomDatabase;
+}
+
 -(void)dealloc {
 	[sendLock lock];
 	[sendLock unlock];
@@ -149,6 +158,10 @@ static NSString* NotNil(NSString *s) {
 	[POSTfilename release];
 	
 	self.session = NULL;
+    
+    if ([_independentDicomDatabase.managedObjectContext hasChanges])
+        [_independentDicomDatabase save];
+    [_independentDicomDatabase release];
 	
 	[super dealloc];
 }
@@ -236,19 +249,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 {
 	self.user = NULL;
 	
-	NSArray* users = NULL;
-	[self.portal.database.managedObjectContext lock];
-	@try {
-		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext:self.portal.database.managedObjectContext];
-		req.predicate = [NSPredicate predicateWithFormat:@"name == %@", username];
-		users = [self.portal.database.managedObjectContext executeFetchRequest:req error:NULL];
-	} @catch (NSException* e) {
-		NSLog(@"Error: [WebPortalConnection passwordForUser:] %@", e);
-	} @finally {
-		[self.portal.database.managedObjectContext unlock];
-	}
-	
+	NSArray* users = [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", username]];
 	if (users.count)
 		self.user = users.lastObject;
 	
@@ -519,14 +520,15 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		response.statusCode = 404;
 		#endif
 	}
-	else if ([requestedPath rangeOfString:@".pvt."].length) {
+	else if ([requestedPath rangeOfString:@".pvt."].length)
+    {
 		response.statusCode = 404;
 	}
 	else
 	{
-		[self.portal.dicomDatabase.managedObjectContext lock];
-		BOOL lockReleased = NO;
-		@try {
+//		[self.portal.dicomDatabase.managedObjectContext lock];
+		@try
+        {
 			if ([requestedPath isEqual:@"/"] || [requestedPath isEqual: @"/index"])
 				[self processIndexHtml];
 			else
@@ -600,13 +602,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			
 			if (!response.data.length && !response.statusCode)
 				response.statusCode = 404;
-			
-		} @catch (NSException* e) {
+		}
+        @catch (NSException* e)
+        {
 			response.statusCode = 500;
 			NSLog(@"Error: [WebPortalConnection httpResponseForMethod:URI:] %@", e);
 		} @finally {
-			if (!lockReleased)
-				[self.portal.dicomDatabase.managedObjectContext unlock];
+//			[self.portal.dicomDatabase.managedObjectContext unlock];
 		}
 	}
 	
@@ -760,6 +762,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						// Add study to specific study list for this user
 						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
+							NSArray *studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+							
+							if ([studies count] == 0)
+								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
+							
+							// Add study to specific study list for this user
+							
 							NSArray *studiesArrayStudyInstanceUID = [user.studies.allObjects valueForKey:@"studyInstanceUID"];
 							NSArray *studiesArrayPatientUID = [user.studies.allObjects valueForKey: @"patientUID"];
 							
@@ -1048,9 +1057,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             NSString* sha1 = [params objectForKey:@"sha1"];
             
             if (username.length && sha1.length)
-            {
-                [NSThread sleepForTimeInterval: 2]; // To avoid brute-force attacks
-                
+            {                
                 NSString *userInternalPassword = [self passwordForUser: username];
                 
                 [self.user convertPasswordToHashIfNeeded];
@@ -1065,6 +1072,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                 }
                 else
                 {
+                    [NSThread sleepForTimeInterval: 2]; // To avoid brute-force attacks
+                    
                     [self.portal updateLogEntryForStudy:NULL withMessage:[NSString stringWithFormat: @"Unsuccessful login attempt with invalid password for user name: %@", username] forUser:NULL ip:asyncSocket.connectedHost];
                 }
             }

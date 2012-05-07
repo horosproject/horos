@@ -17,29 +17,42 @@
 
 @interface ThreadModalForWindowController : NSWindowController {
 	NSThread* _thread;
+    id _retainedThreadDictionary;
 	NSWindow* _docWindow;
 	NSProgressIndicator* _progressIndicator;
 	NSButton* _cancelButton;
+	NSButton* _backgroundButton;
 	NSTextField* _titleField;
-	NSTextField* _statusField;
+	NSTextView* _statusField;
+    NSScrollView* _statusFieldScroll;
+	NSTextField* _progressDetailsField;
+    CGFloat _lastDisplayedStatus;
+    BOOL _isValid;
 }
 
 @property(retain, readonly) NSThread* thread;
 @property(retain, readonly) NSWindow* docWindow;
 @property(retain) IBOutlet NSProgressIndicator* progressIndicator;
 @property(retain) IBOutlet NSButton* cancelButton;
+@property(retain) IBOutlet NSButton* backgroundButton;
 @property(retain) IBOutlet NSTextField* titleField;
-@property(retain) IBOutlet NSTextField* statusField;
+@property(retain) IBOutlet NSTextView* statusField;
+@property(retain) IBOutlet NSScrollView* statusFieldScroll;
+@property(retain) IBOutlet NSTextField* progressDetailsField;
 
 -(id)initWithThread:(NSThread*)thread window:(NSWindow*)window;
 
 -(IBAction)cancelAction:(id)source;
+-(IBAction)backgroundAction:(id)source;
+
+-(void)invalidate;
 
 @end
 
 
 @interface NSThread (ModalForWindow)
 
--(void)startModalForWindow:(NSWindow*)window;
+-(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window; // returns nil if not called on main thread
+-(ThreadModalForWindowController*)modalForWindowController;
 
 @end;

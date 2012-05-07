@@ -96,47 +96,59 @@
 
 +(id)objectWithDescriptor:(NSAppleEventDescriptor*)descriptor {
 	switch (descriptor.descriptorType) {
-		case 'null':
+		case typeNull:
 		case 'msng':
 			return [NSNull null];
-		case 'reco': {
+        case typeAERecord: {
 			NSAssert(descriptor.numberOfItems == 1, @"'reco' should contain only one subrecord");
 			descriptor = [descriptor descriptorAtIndex:1];
 			NSAssert(descriptor.descriptorType == 'list', @"'reco' subrecord should be of type 'list'");
 			return [self dictionaryWithArray:[descriptor object]];
-		} break;
-		case 'list': {
+        } break;
+        case typeAEList: {
 			NSMutableArray* list = [NSMutableArray arrayWithCapacity:descriptor.numberOfItems];
 			for (NSInteger i = 0; i < descriptor.numberOfItems; ++i)
 				[list addObject:[[descriptor descriptorAtIndex:i+1] object]];
 			return [[list copy] autorelease];
 		} break;
-		case 'utxt':
+		case typeUnicodeText:
 			return [descriptor stringValue];
 		case 'cha ': {
 			char temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithChar:temp];
 		} break;
-		case 'long': {
-			int temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithInt:temp];
+		case typeSInt32: {
+			SInt32 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithInt:temp];
 		} break;
-		case 'shor': {
-			short temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithShort:temp];
+		case typeSInt16: {
+			SInt16 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithShort:temp];
 		} break;
-		case 'comp': {
-			long temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithLong:temp];
+		case typeSInt64: {
+			SInt64 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithLong:temp];
 		} break;
-		case 'magn': {
-			unsigned int temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithUnsignedInt:temp];
+		case typeUInt32: {
+			UInt32 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithUnsignedInt:temp];
 		} break;
-		case 'sing': {
-			float temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithFloat:temp];
+		case typeIEEE32BitFloatingPoint: {
+			Float32 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithFloat:temp];
 		} break;
-		case 'doub': {
-			double temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithDouble:temp];
+		case typeIEEE64BitFloatingPoint: {
+			Float64 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithDouble:temp];
 		} break;
-		case 'bool': {
+		case typeBoolean: {
 			bool temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSNumber numberWithBool:temp];
 		} break;
+        case 'obj ': {
+            NSMutableDictionary* dict = [NSMutableDictionary dictionary];
+            [dict setObject:[[descriptor descriptorAtIndex:1] object] forKey:@"class"];
+            [dict setObject:[[descriptor descriptorAtIndex:2] object] forKey:@"container"];
+            [dict setObject:[[descriptor descriptorAtIndex:3] object] forKey:@"form"];
+            [dict setObject:[[descriptor descriptorAtIndex:4] object] forKey:@"data"];
+            return dict;
+        } break;
+        case typeEnumerated:
+        case typeType: {
+            uint32 temp; [descriptor.data getBytes:&temp length:sizeof(temp)]; return [NSString stringWithFormat:@"%c%c%c%c", ((char*)&temp)[3], ((char*)&temp)[2], ((char*)&temp)[1], ((char*)&temp)[0]];
+        } break;
 			// 'exte': extended float
 			// 'ldbl': 128 bits
 		case 'ObjC': {
@@ -146,7 +158,7 @@
 	
 	DescType type = descriptor.descriptorType;
 	char* c = (char*)&type;
-	[NSException raise:NSGenericException format:@"unhandled NSAppleEventDescriptor type '%c%c%c%c'", c[3],c[2],c[1],c[0]];
+	[NSException raise:NSGenericException format:@"unhandled NSAppleEventDescriptor of type '%c%c%c%c': %@", c[3],c[2],c[1],c[0], [descriptor stringValue]];
 	
 	return NULL;
 }

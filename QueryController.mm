@@ -32,9 +32,13 @@
 #import "NSThread+N2.h"
 #import "PieChartImage.h"
 #import "OpenGLScreenReader.h"
+#import "Notifications.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "N2Debug.h"
+#import "DicomDatabase.h"
 #import "DicomStudy.h"
 #import "CIADICOMField.h"
+#import "N2Stuff.h"
 
 #include "osconfig.h"
 #include "mdfconen.h"
@@ -59,7 +63,9 @@ static NSString *InstitutionName = @"InstitutionName";
 
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
-static NSArray *studyArrayInstanceUID = nil, *studyArrayCache = nil;
+static NSMutableArray *studyArrayInstanceUID = [[NSMutableArray alloc] init], *studyArrayID = [[NSMutableArray alloc] init];
+static NSString *kStudyArrayInstanceUIDLock = @"studyArrayInstanceUIDLock";
+static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
 static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
@@ -378,7 +384,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return YES;
@@ -768,7 +774,8 @@ extern "C"
 	
     if ([item action] == @selector( deleteSelection:))
 	{
-		[[BrowserController currentBrowser] showEntireDatabase];
+		[[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
+        [[BrowserController currentBrowser] showEntireDatabase];
 	
 		NSIndexSet* indices = [outlineView selectedRowIndexes];
 		
@@ -796,10 +803,13 @@ extern "C"
     
     if( result == NSAlertDefaultReturn)
     {
+        [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
+        [[BrowserController currentBrowser] showEntireDatabase];
+        
         NSIndexSet* indices = [outlineView selectedRowIndexes];
         BOOL extendingSelection = NO;
         
-        [[[BrowserController currentBrowser] managedObjectContext] lock];
+     //   [[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
         
         @try 
         {
@@ -811,23 +821,25 @@ extern "C"
                     
                     if( [studyArray count] > 0)
                     {
-                        NSMutableArray *images = [NSMutableArray array];
-                        
-                        for( DicomStudy *study in studyArray)
-                           [images addObjectsFromArray: [[study images] allObjects]];
-                        
-                        [[BrowserController currentBrowser] delObjects: images];
+                        NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
+                        [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+                        extendingSelection = YES;
                     }
                     else NSBeep();
                 } 
             }
+
+            if( extendingSelection)
+            {
+                [[BrowserController currentBrowser] delItem: nil];
+            }
         }
         @catch (NSException * e) 
         {
-            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
         }
         
-        [[[BrowserController currentBrowser] managedObjectContext] unlock];
+    //    [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
     }
 }
 
@@ -879,10 +891,10 @@ extern "C"
 
 - (void) executeRefresh: (id) sender
 {
-	if( currentQueryController.DatabaseIsEdited == NO) [currentQueryController.outlineView reloadData];
-	if( currentAutoQueryController.DatabaseIsEdited == NO) [currentAutoQueryController.outlineView reloadData];
+    if (currentQueryController.DatabaseIsEdited == NO) [currentQueryController.outlineView reloadData];
+	if (currentAutoQueryController.DatabaseIsEdited == NO) [currentAutoQueryController.outlineView reloadData];
 	
-	[NSThread detachNewThreadSelector: @selector( computeStudyArrayInstanceUID:) toTarget: self withObject: nil];
+    [NSThread detachNewThreadSelector:@selector(computeStudyArrayInstanceUID:) toTarget:self withObject:nil];
 }
 
 - (void) refresh: (id) sender
@@ -900,7 +912,7 @@ extern "C"
 		else
 			delay = 10;
 		
-		[self performSelector: @selector( executeRefresh:) withObject: nil afterDelay: delay];
+		[self performSelector:@selector(executeRefresh:) withObject:self afterDelay:delay];
 	}
 }
 
@@ -929,7 +941,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return nil;
@@ -952,7 +964,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return NO;
@@ -974,7 +986,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return NO;
@@ -1006,7 +1018,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return [resultArray count];
@@ -1021,7 +1033,7 @@ extern "C"
 	
 	if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]] == YES)
 	{
-		NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
 		
 		[context lock];
 		
@@ -1031,7 +1043,7 @@ extern "C"
 		}
 		@catch (NSException * e)
 		{
-			NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            N2LogExceptionWithStackTrace(e);
 		}
 		
 		[context unlock];
@@ -1046,14 +1058,8 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	@synchronized( studyArrayInstanceUID)
+	@synchronized (studyArrayInstanceUID)
 	{
-		[studyArrayInstanceUID release];
-		[studyArrayCache release];
-		
-		studyArrayInstanceUID = [[d objectForKey:@"studyArrayInstanceUID"] retain];
-		studyArrayCache = [[d objectForKey:@"studyArrayCache"] retain];
-		
 		if( currentQueryController.DatabaseIsEdited == NO)
 			[currentQueryController.outlineView reloadData];
 			
@@ -1068,50 +1074,53 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSArray *local_studyArrayCache = nil;
+	NSArray *local_studyArrayID = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
-    static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
     @synchronized( kComputeStudyArrayInstanceUIDLock)
     {
         @try
         {
-            NSError *error = nil;
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-            NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-            NSPredicate *predicate = [NSPredicate predicateWithValue: YES];
+            NSManagedObjectContext *independentContext = [[[BrowserController currentBrowser] database] independentContext];
             
-            [request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-            [request setPredicate: predicate];
-            
-            [context lock];
+            [independentContext lock];
             
             @try
             {
-                local_studyArrayCache = [context executeFetchRequest:request error: &error];
+                NSError *error = nil;
+                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                
+                request.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext: independentContext];
+                request.predicate = [NSPredicate predicateWithValue: YES];
+                
+                NSArray *result = [independentContext executeFetchRequest:request error: &error];
+                
+                local_studyArrayID = [result valueForKey: @"objectID"];
+                local_studyArrayInstanceUID = [result valueForKey:@"studyInstanceUID"];
             }
-            @catch (NSException * e)
+            @catch (NSException* e)
             {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
+            }
+            @finally {
+                [independentContext unlock];
             }
             
-            [context unlock];
-            
-            @try
+            if( local_studyArrayID && local_studyArrayInstanceUID)
             {
-                local_studyArrayInstanceUID = [local_studyArrayCache valueForKey:@"studyInstanceUID"];
-            }
-            @catch (NSException * e)
-            {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-            }
-            
-            if( local_studyArrayCache && local_studyArrayInstanceUID)
-            {
+                @synchronized (studyArrayInstanceUID)
+                {
+                    [studyArrayInstanceUID removeAllObjects];
+                    [studyArrayInstanceUID addObjectsFromArray: local_studyArrayInstanceUID];
+                
+                    [studyArrayID removeAllObjects];
+                    [studyArrayID addObjectsFromArray: local_studyArrayID];
+                }
+                
                 if( [NSThread isMainThread])
-                    [self applyNewStudyArray: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil]];
+                    [self applyNewStudyArray: nil];
                 else
-                    [self performSelectorOnMainThread: @selector( applyNewStudyArray:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: local_studyArrayInstanceUID, @"studyArrayInstanceUID", local_studyArrayCache, @"studyArrayCache", nil] waitUntilDone: NO];
+                    [self performSelectorOnMainThread:@selector(applyNewStudyArray:) withObject: nil waitUntilDone: NO];
             }
             else
                 NSLog( @"******** computeStudyArrayInstanceUID FAILED...");
@@ -1133,35 +1142,30 @@ extern "C"
 	{
 		@try
 		{
-			if( studyArrayInstanceUID == nil)
-				[self computeStudyArrayInstanceUID: nil];
-			
 			NSArray *result = nil;
 			
-			if( studyArrayInstanceUID)
-			{
-				@synchronized( studyArrayInstanceUID)
-				{
-					NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
-					
-					if( index == NSNotFound) result = [NSArray array];
-					else result = [NSArray arrayWithObject: [studyArrayCache objectAtIndex: index]];
-				}
-			}
-			else
-				NSLog( @"----- localStudy computeStudyArrayInstanceUID == nil");
+            @synchronized (studyArrayInstanceUID)
+            {
+                if (studyArrayInstanceUID.count == 0)
+                    [self computeStudyArrayInstanceUID: nil];
 
+                NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
+                
+                if( index == NSNotFound) result = [NSArray array];
+                else
+                {
+                    result = [NSArray arrayWithObject: [[[BrowserController currentBrowser] database] objectWithID: [studyArrayID objectAtIndex: index]]];
+                }
+            }
 			
 			return result;
 		}
 		@catch (NSException * e)
 		{
-			@synchronized( studyArrayInstanceUID)
+			@synchronized (studyArrayInstanceUID)
 			{
-				[studyArrayInstanceUID release];
-				studyArrayInstanceUID = nil;
+				[studyArrayInstanceUID removeAllObjects];
 			}
-			return nil;
 		}
 	}
 	
@@ -1218,7 +1222,7 @@ extern "C"
 	}
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	return @"";
 }
@@ -1288,7 +1292,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 }
 
@@ -1353,7 +1357,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	return nil;
@@ -1374,6 +1378,7 @@ extern "C"
 			
 			if( [array count] > 0)
 			{
+                [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
 				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
 			}
 			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
@@ -1381,7 +1386,7 @@ extern "C"
 	}
 	@catch (NSException * e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	DatabaseIsEdited = NO;
@@ -2010,7 +2015,7 @@ extern "C"
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[autoQueryLock unlock];
@@ -2235,7 +2240,7 @@ extern "C"
 	if( autoQuery == NO)
 		goto returnFromThread;
 	
-	if( [BrowserController currentBrowser].isCurrentDatabaseBonjour)
+	if( [[BrowserController currentBrowser] database] != [DicomDatabase activeLocalDatabase])
 		goto returnFromThread;
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
@@ -2377,13 +2382,9 @@ extern "C"
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 			t.name = NSLocalizedString( @"Retrieving images...", nil);
-			if( [selectedItems count] == 1)
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [selectedItems count]];
-			else
-				t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
-			
-			if( [selectedItems count] > 1)
-				t.progress = 0;
+            t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
+            if ([selectedItems count] > 1)
+                t.progress = 0;
 			t.supportsCancel = YES;
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 			
@@ -2411,7 +2412,7 @@ extern "C"
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[autoQueryLock unlock];
@@ -2684,14 +2685,9 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
-				
-				if( [selectedItems count] == 1)
-					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d study", nil), [selectedItems count]];
-				else
-					t.status = [NSString stringWithFormat: NSLocalizedString( @"%d studies", nil), [selectedItems count]];
-				
-				if( [selectedItems count] > 1)
-					t.progress = 0;
+                t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
+                if ([selectedItems count] > 1)
+                    t.progress = 0;
 				
 				t.supportsCancel = YES;
 				[[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -2700,7 +2696,7 @@ extern "C"
 				
 				if( showGUI)
 				{
-					[NSThread sleepForTimeInterval: 0.4];
+					[NSThread sleepForTimeInterval: 0.2];
 				
 					[wait close];
 					[wait release];
@@ -3025,11 +3021,12 @@ extern "C"
 		return;
 	}
 	
+    [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
 	[[BrowserController currentBrowser] checkIncoming: self];
 	
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
+	NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] managedObjectContext];
 	
 	NSArray *studyArray, *seriesArray;
 	BOOL success = NO;
@@ -3700,6 +3697,8 @@ extern "C"
 			NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Query & Retrieve",nil),NSLocalizedString( @"No DICOM locations available. See Preferences to add DICOM locations.",nil),NSLocalizedString( @"OK",nil), nil, nil);
 		}
 		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:nil];
+		
 		queryFilters = nil;
 		dateQueryFilter = nil;
 		timeQueryFilter = nil;
@@ -3780,7 +3779,9 @@ extern "C"
 		return;
 	
 	avoidQueryControllerDeallocReentry = YES;
-	
+
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];
+
 	NSLog( @"dealloc QueryController");
 	
 	[NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector( executeRefresh:) object:nil];
@@ -4024,6 +4025,10 @@ extern "C"
 			[self querySelectedStudy: self];
 		break;
 	}
+}
+
+-(void)observeDatabaseAddNotification:(NSNotification*)notification {
+	[self performSelectorOnMainThread:@selector(refresh:) withObject:self waitUntilDone:NO];
 }
 
 @end

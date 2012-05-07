@@ -38,6 +38,7 @@
 + (NSString*) generateQTVR:(NSString*) srcPath frames:(int) frames;
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
+- (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)framesPerSecond;
 - (IBAction) changeExportType:(id) sender;
 @end
 

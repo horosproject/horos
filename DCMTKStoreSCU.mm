@@ -19,6 +19,8 @@
 #import "Notifications.h"
 #import "MutableArrayCategory.h"
 #import "NSThread+N2.h"
+#import "DicomDatabase.h"
+#import "N2Debug.h"
 #undef verify
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -936,6 +938,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if (self = [super init])
 	{
+		_threadStatus = YES;
+		if ([extraParameters objectForKey:@"threadStatus"])
+			_threadStatus = [[extraParameters objectForKey:@"threadStatus"] boolValue];
+		
 		_callingAET = [myAET retain];
 		_calledAET = [theirAET retain];
 		_port = port;
@@ -1598,10 +1604,14 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 			{
                 NSString *extraInfo = @"";
                 if( _secureConnection)
-                    extraInfo = @" (TLS Activated)";
-				[NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)%@", nil), [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue], extraInfo];
+                    extraInfo = NSLocalizedString(@" (TLS)", @"don't remove leading space");
+                NSInteger theNumber = [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue];
+				[NSThread currentThread].status = [NSString stringWithFormat:@"%d %@%@", theNumber, (theNumber != 1? NSLocalizedString(@"files", nil) : NSLocalizedString(@"file", nil)), extraInfo];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
+            
+            if ([[NSThread currentThread] isCancelled]) // alessandro
+                break;
 		}
 		
 		/* tear down association, i.e. terminate network connection to SCP */
@@ -1821,18 +1831,15 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
-	NSManagedObjectContext *context = [[BrowserController currentBrowser] managedObjectContext];
-	if( context == nil)
-		return;
+    DicomDatabase* database = [_extraParameters objectForKey:@"DicomDatabase"];
+    if (!database) return;
 	
-	[context retain];
-	[context lock];
-	
+    [database lock];
 	@try
 	{
 		if (!_logEntry)
 		{
-			_logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+			_logEntry = [database newObjectForEntity:database.logEntryEntity];
 			[_logEntry setValue:[NSDate date] forKey:@"startTime"];
 			[_logEntry setValue:@"Send" forKey:@"type"];
 			[_logEntry setValue:_calledAET forKey:@"destinationName"];
@@ -1851,12 +1858,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 		[_logEntry setValue:[NSDate date] forKey:@"endTime"];
 		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
 	}
-	@catch (NSException * e)
-	{
-		NSLog( @"********* updateLogEntry exception: %@", e);
-	}
-	
-	[context unlock];
-	[context release];
+	@catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	} @finally {
+        [database unlock];
+    }
 }
+
 @end

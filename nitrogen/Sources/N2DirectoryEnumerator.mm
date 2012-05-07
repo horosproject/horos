@@ -1,10 +1,16 @@
-//
-//  N2DirectoryEnumerator.mm
-//  OsiriX
-//
-//  Created by Alessandro Volz on 21.03.11.
-//  Copyright 2011 OsiriX Team. All rights reserved.
-//
+/*=========================================================================
+ Program:   OsiriX
+ 
+ Copyright (c) OsiriX Team
+ All rights reserved.
+ Distributed under GNU - LGPL
+ 
+ See http://www.osirix-viewer.com/copyright.html for details.
+ 
+ This software is distributed WITHOUT ANY WARRANTY; without even
+ the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.
+ =========================================================================*/
 
 #import "N2DirectoryEnumerator.h"
 #include <dirent.h>
@@ -22,6 +28,9 @@
 
 @implementation N2DirectoryEnumerator
 
+@synthesize filesOnly = _filesOnly;
+@synthesize recursive = _recursive;
+
 -(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)m {
 	self = [super init];
 	
@@ -30,6 +39,7 @@
 	currpath = nil;
 	basepath = [path retain];
 	DIRs = [[NSMutableArray alloc] init];
+	_recursive = YES;
 	
 	DIR* dir = opendir(path.fileSystemRepresentation);
 	if (dir) [self pushDIR:dir subpath:NULL];
@@ -49,8 +59,16 @@
 #pragma mark NSEnumerator API
 
 -(NSArray*)allObjects {
-	[NSException raise:NSGenericException format:@"N2DirectoryEnumerator doesn't provide -allObjects"];
-	return nil;
+	NSMutableArray* all = [NSMutableArray array];
+	
+	id i;
+	do {
+		i = [self nextObject];
+		//NSLog(@"i is %@", i);
+		if (i) [all addObject:i];
+	} while (i);
+	
+	return all;
 }
 
 -(id)nextObject {
@@ -64,18 +82,26 @@
 	DIR* dir;
 	while((dir = [self DIRAndSubpath:&subpath]))
     {
+		//NSLog(@"dir %X subpath %@", dir, subpath);
 		struct dirent* dirp = readdir(dir);
 		if (dirp) {
 			NSString* subsubpath = [fm stringWithFileSystemRepresentation:dirp->d_name length:strlen(dirp->d_name)];
+			//NSLog(@"nextItem %@", subsubpath);
 			if ([subsubpath isEqualToString:@"."] || [subsubpath isEqualToString:@".."])
 				continue;
 			
 			[currpath release];
 			currpath = [(subpath? [subpath stringByAppendingPathComponent:subsubpath] : subsubpath) retain];
-
-			if (dirp->d_type == DT_DIR) {
-				DIR* sdir = opendir([[basepath stringByAppendingPathComponent:currpath] fileSystemRepresentation]);
-				if (sdir) [self pushDIR:sdir subpath:currpath];
+			NSString* fullpath = [basepath stringByAppendingPathComponent:currpath];
+			
+			BOOL isDir;
+			if (dirp->d_type == DT_DIR || (dirp->d_type == DT_UNKNOWN && [NSFileManager.defaultManager fileExistsAtPath:fullpath isDirectory:&isDir] && isDir)) {
+				if (_recursive) {
+					DIR* sdir = opendir([fullpath fileSystemRepresentation]);
+					//NSLog(@"\tPushed");
+					if (sdir) [self pushDIR:sdir subpath:currpath];
+				}
+				if (_filesOnly) continue;
 			}
 			
 			return currpath;

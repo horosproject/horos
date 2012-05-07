@@ -21,6 +21,7 @@
 #import "OSIWindow.h"
 #import "ThreadsManager.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "N2Debug.h"
 
 #define VERSIONNUMBERSTRING	@"v1.00.000"
 #define ECHOTIMEOUT 5
@@ -584,7 +585,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 	}
 	
 	[printing unlock];

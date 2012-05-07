@@ -24,6 +24,7 @@
 #import "DicomSeries.h"
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
+#import "N2Debug.h"
 
 #include "dctk.h"
 
@@ -171,7 +172,7 @@ extern NSManagedObjectContext *staticContext;
 			}
 			@catch (NSException * e)
 			{
-				NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                N2LogExceptionWithStackTrace(e);
 			}
 			
 			encoding = [NSString encodingForDICOMCharacterSet: specificCharacterSet];
@@ -742,7 +743,7 @@ extern NSManagedObjectContext *staticContext;
 	
 	@catch ( NSException *e)
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+		N2LogExceptionWithStackTrace(e);
 		dataset->print(COUT);
 	}
 	
@@ -1338,7 +1339,7 @@ extern NSManagedObjectContext *staticContext;
 
 - (OFCondition)prepareFindForDataSet: (DcmDataset *) dataset
 {
-	NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
@@ -1573,7 +1574,7 @@ extern NSManagedObjectContext *staticContext;
 	OFCondition cond = EC_IllegalParameter;
 	@try 
 	{
-		NSManagedObjectModel *model = [[BrowserController currentBrowser] managedObjectModel];
+		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 		NSError *error = nil;
 		NSEntityDescription *entity;
 		NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
@@ -1670,33 +1671,9 @@ extern NSManagedObjectContext *staticContext;
 				
 				NSMutableSet *moveSet = [NSMutableSet set];
 				while (moveEntity = [enumerator nextObject])
-					[moveSet unionSet:[moveEntity valueForKey:@"paths"]];
+					[moveSet unionSet:[moveEntity valueForKey:@"pathsForForkedProcess"]];
 				
 				NSArray *tempMoveArray = [moveSet allObjects];
-				
-				/*
-				create temp folder for Move paths. 
-				Create symbolic links. 
-				Will allow us to convert the sytax on copies if necessary
-				*/
-				
-				//delete if necessary and create temp folder. Allows us to compress and deompress files. Wish we could do on the fly
-		//		tempMoveFolder = [[NSString stringWithFormat:@"/tmp/DICOMMove_%@", [[NSDate date] descriptionWithCalendarFormat:@"%H%M%S%F"  timeZone:nil locale:nil]] retain]; 
-		//		
-		//		NSFileManager *fileManager = [NSFileManager defaultManager];
-		//		if ([fileManager fileExistsAtPath:tempMoveFolder]) [fileManager removeFileAtPath:tempMoveFolder handler:nil];
-		//		if ([fileManager createDirectoryAtPath:tempMoveFolder attributes:nil]) 
-		//			NSLog(@"created temp Folder: %@", tempMoveFolder);
-		//		
-		//		//NSLog(@"Temp Move array: %@", [tempMoveArray description]);
-		//		NSEnumerator *tempEnumerator = [tempMoveArray objectEnumerator];
-		//		NSString *path;
-		//		while (path = [tempEnumerator nextObject]) {
-		//			NSString *lastPath = [path lastPathComponent];
-		//			NSString *newPath = [tempMoveFolder stringByAppendingPathComponent:lastPath];
-		//			[fileManager createSymbolicLinkAtPath:newPath pathContent:path];
-		//			[paths addObject:newPath];
-		//		}
 				
 				tempMoveArray = [tempMoveArray sortedArrayUsingSelector:@selector(compare:)];
 				
@@ -1724,7 +1701,7 @@ extern NSManagedObjectContext *staticContext;
 			NSLog( @"%@", [e description]);
 			NSLog( @"%@", [predicate description]);
 		}
-
+        
 		[context unlock];
 		context = 0L;
 		
@@ -1748,10 +1725,7 @@ extern NSManagedObjectContext *staticContext;
 	}
 	@catch (NSException * e) 
 	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-		#ifdef OSIRIX_VIEWER
-		[AppController printStackTrace: e];
-		#endif
+		N2LogExceptionWithStackTrace(e);
 	}
 	[pool release];
 	

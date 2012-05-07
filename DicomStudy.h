@@ -22,12 +22,16 @@
 {
 	BOOL isHidden;
 	NSNumber *dicomTime;
+    NSUInteger _numberOfImagesWhenCachedRawNoFiles, _numberOfImagesWhenCachedModalities;
 	NSNumber *cachedRawNoFiles;
 	NSString *cachedModalites;
 }
 
 @property(nonatomic, retain) NSString* accessionNumber;
 @property(nonatomic, retain) NSString* comment;
+@property(nonatomic, retain) NSString* comment2;
+@property(nonatomic, retain) NSString* comment3;
+@property(nonatomic, retain) NSString* comment4;
 @property(nonatomic, retain) NSDate* date;
 @property(nonatomic, retain) NSDate* dateAdded;
 @property(nonatomic, retain) NSDate* dateOfBirth;
@@ -56,6 +60,7 @@
 
 + (NSRecursiveLock*) dbModifyLock;
 + (NSString*) soundex: (NSString*) s;
+- (NSString*)soundex;
 + (BOOL) displaySeriesWithSOPClassUID: (NSString*) uid andSeriesDescription: (NSString*) description;
 - (NSNumber *) noFiles;
 - (NSSet *) paths;
@@ -70,10 +75,10 @@
 - (NSString*) roiPathForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
 - (NSString*) roiPathForImage: (DicomImage*) image;
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray;
-- (NSManagedObject *) roiSRSeries;
-- (NSManagedObject *) reportSRSeries;
+- (DicomSeries *) roiSRSeries;
+- (DicomSeries *) reportSRSeries;
 - (DicomImage*) reportImage;
-- (NSManagedObject *) annotationsSRImage;
+- (DicomImage *) annotationsSRImage;
 - (void) archiveReportAsDICOMSR;
 - (void) archiveAnnotationsAsDICOMSR;
 - (BOOL) isHidden;
@@ -97,6 +102,7 @@
 - (void)removeSeriesObject:(DicomSeries *)value;
 - (void)addSeries:(NSSet *)value;
 - (void)removeSeries:(NSSet *)value;
+
 
 @end
 

@@ -55,7 +55,7 @@
 -(BOOL)validateName:(NSString**)value error:(NSError**)error;
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error;
 
--(NSArray*)arrayByAddingSpecificStudiesForPredicate:(NSPredicate*)predicate toArray:(NSArray*)array;
+-(NSArray*)arrayByAddingSpecificStudiesToArray:(NSArray*)array;
 
 -(NSArray*)studiesForPredicate:(NSPredicate*)predicate;
 -(NSArray*)studiesForPredicate:(NSPredicate*)predicate sortBy:(NSString*)sortValue;

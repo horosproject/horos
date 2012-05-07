@@ -17,6 +17,7 @@
 #import "BrowserController.h"
 #import "NSString+N2.h"
 #import "NSThread+N2.h"
+#import "N2Operators.h"
 #import "AppController.h"
 
 @implementation ThreadCell
@@ -33,9 +34,6 @@
 	_view = [view retain];
 	_manager = [manager retain];
 	
-	BrowserController* threadsBController = (id)view.delegate;
-	//[self setTextColor:threadsBController.AstatusLabel.textColor];
-	
 	_progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSZeroRect];
 	[_progressIndicator setUsesThreadedAnimation:YES];
 	[_progressIndicator setMinValue:0];
@@ -50,20 +48,27 @@
 	_cancelButton.action = @selector(cancelThreadAction:);
 
 	self.thread = thread;
+	[(_retainedThreadDictionary = thread.threadDictionary) retain];
 
 //	NSLog(@"cell created!");
 	
 	return self;
 }
 
--(void)dealloc {
-//	NSLog(@"cell destroyed!");
-	[self.progressIndicator removeFromSuperview];
-	[_progressIndicator release];
+-(void)cleanup {
+    [self.progressIndicator removeFromSuperview];
+	[_progressIndicator release]; _progressIndicator = nil;
 	
 	[self.cancelButton removeFromSuperview];
-	[_cancelButton release];
-	
+	[_cancelButton release]; _cancelButton = nil;
+
+}
+
+-(void)dealloc {
+//	NSLog(@"cell destroyed!");
+	[self cleanup];
+    
+	[_retainedThreadDictionary release]; _retainedThreadDictionary = nil;
 	self.thread = nil;
 	
 	[_view release];
@@ -90,8 +95,17 @@
 	[self.thread addObserver:self forKeyPath:NSThreadSupportsCancelKey options:NSKeyValueObservingOptionInitial context:NULL];
 }
 
+-(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
+	[self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
-	if (obj == self.thread)
+	if (obj == self.thread) {
+		if (![NSThread isMainThread]) {
+			[self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
+			return;
+		}
+		
 		if ([keyPath isEqual:NSThreadStatusKey]) {
 			[self.view setNeedsDisplayInRect: [self.view rectOfRow:[self.manager.threads indexOfObject:self.thread]]];
 			return;
@@ -105,6 +119,7 @@
 			[self.cancelButton setEnabled:self.thread.supportsCancel];
 			return;
 		}
+	}
 	
 	[super observeValueForKeyPath:keyPath ofObject:obj change:change context:context];
 }
@@ -115,8 +130,11 @@
 	[self.thread setIsCancelled:YES];
 }
 
+
 -(void)drawInteriorWithFrame:(NSRect)frame inView:(NSView*)view {
-	if ([self.thread isFinished]) return;
+    
+	if ([self.thread isFinished])
+        return;
 	
 	NSMutableParagraphStyle* paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
 	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
@@ -132,11 +150,6 @@
 	NSRect statusFrame = [self statusFrame];
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
 	[self.thread.status drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
-	
-	NSRect cancelFrame = NSMakeRect(frame.origin.x+frame.size.width-15-5, frame.origin.y+5, 15, 15);
-	if (![self.cancelButton superview])
-		[view addSubview:self.cancelButton];
-	if (!NSEqualRects(self.cancelButton.frame, cancelFrame)) [self.cancelButton setFrame:cancelFrame];
 	
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
@@ -155,12 +168,27 @@
 	[NSGraphicsContext restoreGraphicsState];
 }
 
-static NSPoint operator+(const NSPoint& p, const NSSize& s)
-{ return NSMakePoint(p.x+s.width, p.y+s.height); }
-
 -(void)drawWithFrame:(NSRect)frame inView:(NSView*)view {
-	if ([self.thread isFinished]) return;
+//	{ // for debug
+//		[NSGraphicsContext saveGraphicsState];
+//		
+//		[[NSColor colorWithCalibratedRed:1 green:0 blue:0 alpha:0.25] setFill];
+//		[NSBezierPath fillRect:frame];
+//		
+//		[NSGraphicsContext restoreGraphicsState];
+//	}
 	
+//	if ([self.thread isFinished])
+//    {
+//        // I agree this is U-G-L-Y... bug the phantom bug is even more ugly...
+//        @synchronized( [[ThreadsManager defaultManager] threadsController])
+//        {
+//            if( [[[[ThreadsManager defaultManager] threadsController] arrangedObjects] containsObject: self.thread])
+//                [[ThreadsManager defaultManager] removeThread: self.thread];
+//        }
+//        return;
+//    }
+    
 	[self drawInteriorWithFrame:frame inView:view];
 	
 	[NSGraphicsContext saveGraphicsState];

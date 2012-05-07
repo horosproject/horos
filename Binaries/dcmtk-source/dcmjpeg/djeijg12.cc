@@ -400,6 +400,9 @@ OFCondition DJCompressIJG12Bit::encode(
      // always disables any kind of color space conversion
      jpeg_simple_lossless(&cinfo,psv,pt);
      break;
+          
+      default:
+    break;
   }
   
   cinfo.smoothing_factor = cparam->getSmoothingFactor();
