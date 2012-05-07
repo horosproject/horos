@@ -309,6 +309,7 @@
         [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
+            [self.managedObjectContext save:NULL];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {

@@ -181,6 +181,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 		NSString	*pluginType = [[plugin infoDictionary] objectForKey:@"pluginType"];
 		NSArray		*menuTitles = [[plugin infoDictionary] objectForKey:@"MenuTitles"];
 		
+        [PluginManager startProtectForCrashWithPath: [plugin bundlePath]];
+        
 		if( menuTitles)
 		{
 			if( [menuTitles count] > 1)
@@ -305,6 +307,8 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 					[othersMenu insertItem:item atIndex:[othersMenu numberOfItems]];
 			}
 		}
+        
+        [PluginManager endProtectForCrash];
 	}
 	
 	if( [filtersMenu numberOfItems] < 1)
@@ -361,9 +365,20 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 	NSEnumerator *pluginEnum = [plugins objectEnumerator];
 	PluginFilter *pluginFilter;
 	
-	while ( pluginFilter = [pluginEnum nextObject])
+	while( pluginFilter = [pluginEnum nextObject])
     {
-		[pluginFilter setMenus];
+        [PluginManager startProtectForCrashWithFilter: pluginFilter];
+        
+        @try
+        {
+            [pluginFilter setMenus];
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+        }
+        
+        [PluginManager endProtectForCrash];
 	}
 }
 

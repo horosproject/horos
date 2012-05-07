@@ -64,6 +64,8 @@ static NSString *InstitutionName = @"InstitutionName";
 static QueryController *currentQueryController = nil;
 static QueryController *currentAutoQueryController = nil;
 static NSMutableArray *studyArrayInstanceUID = [[NSMutableArray alloc] init], *studyArrayID = [[NSMutableArray alloc] init];
+static NSString *kStudyArrayInstanceUIDLock = @"studyArrayInstanceUIDLock";
+static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
 static BOOL afterDelayRefresh = NO;
 
 static int inc = 0;
@@ -1075,7 +1077,6 @@ extern "C"
 	NSArray *local_studyArrayID = nil;
 	NSArray *local_studyArrayInstanceUID = nil;
 	
-    static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
     @synchronized( kComputeStudyArrayInstanceUIDLock)
     {
         @try

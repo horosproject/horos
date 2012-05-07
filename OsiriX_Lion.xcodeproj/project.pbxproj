@@ -574,6 +574,8 @@
 		848A6BF214C5BBA700C936C3 /* Tiling2x2.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 848A6BEA14C5BBA700C936C3 /* Tiling2x2.pdf */; };
 		848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */ = {isa = PBXBuildFile; fileRef = 848CE28E145AC9AE00BEB249 /* curvedPath.icns */; };
 		848CE290145AC9AE00BEB249 /* curvedPath.icns in Resources */ = {isa = PBXBuildFile; fileRef = 848CE28E145AC9AE00BEB249 /* curvedPath.icns */; };
+		849B44BD1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 849B44BA1552B2D800194728 /* OsiriXNotificationCenter.m */; };
+		849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 849B44BA1552B2D800194728 /* OsiriXNotificationCenter.m */; };
 		84A220E80F25E41800C6C3EB /* ROIs.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E60F25E41800C6C3EB /* ROIs.tif */; };
 		84A220E90F25E41800C6C3EB /* Keys.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84A220E70F25E41800C6C3EB /* Keys.tif */; };
 		84A6790E0EEED04000AE5C98 /* jpeg_memsrc.h in Headers */ = {isa = PBXBuildFile; fileRef = 84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */; };
@@ -8806,6 +8808,7 @@
 		848A6BE914C5BBA700C936C3 /* Tiling2x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x1.pdf; path = Binaries/Icons/Tiling/Tiling2x1.pdf; sourceTree = "<group>"; };
 		848A6BEA14C5BBA700C936C3 /* Tiling2x2.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling2x2.pdf; path = Binaries/Icons/Tiling/Tiling2x2.pdf; sourceTree = "<group>"; };
 		848CE28E145AC9AE00BEB249 /* curvedPath.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = curvedPath.icns; sourceTree = "<group>"; };
+		849B44BA1552B2D800194728 /* OsiriXNotificationCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OsiriXNotificationCenter.m; sourceTree = "<group>"; };
 		84A220E60F25E41800C6C3EB /* ROIs.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ROIs.tif; sourceTree = "<group>"; };
 		84A220E70F25E41800C6C3EB /* Keys.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Keys.tif; sourceTree = "<group>"; };
 		84A6790D0EEED04000AE5C98 /* jpeg_memsrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memsrc.h; path = Papyrus3/jpeg_memsrc.h; sourceTree = "<group>"; };
@@ -15806,6 +15809,7 @@
 		ABAA285A058A675600F0601D /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				849B44BA1552B2D800194728 /* OsiriXNotificationCenter.m */,
 				597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */,
 				597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */,
 				59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */,
@@ -28570,6 +28574,7 @@
 				714D3BB3152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
 				714D3BC6152B2410003EB087 /* NSScreen+N2.m in Sources */,
 				84D7BBE5154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
+				849B44BD1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29815,6 +29820,7 @@
 				714D3BB4152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
 				714D3BC7152B2410003EB087 /* NSScreen+N2.m in Sources */,
 				84D7BBE6154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
+				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

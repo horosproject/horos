@@ -89,20 +89,28 @@
 
 static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
--(id)init {
-	AuthorizationRef authRef;
+-(id)init
+{
+	AuthorizationRef authRef = nil;
 	OSStatus err = AuthorizationCreate(NULL, NULL, 0, &authRef);
-	if (err == noErr) {
-		char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
-		if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
-			if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr) {
-				#ifndef NDEBUG
-				NSLog(@"Could not create default right (error %d)", (int) err);
-				#endif
-			}
+    if( authRef)
+    {
+        if (err == noErr)
+        {
+            char* rightName = (char*)"com.rossetantoine.osirix.preferences.allowalways";
+            if (AuthorizationRightGet(rightName, NULL) == errAuthorizationDenied)
+            {
+                if ((err = AuthorizationRightSet(authRef, rightName, CFSTR(kAuthorizationRuleClassAllow), CFSTR("You are always authorized."), NULL, NULL)) != noErr)
+                {
+                    #ifndef NDEBUG
+                    NSLog(@"Could not create default right (error %d)", (int) err);
+                    #endif
+                }
+            }
+        }
+        AuthorizationFree(authRef, kAuthorizationFlagDefaults);
 	}
-	AuthorizationFree(authRef, kAuthorizationFlagDefaults);
-	
+    
 	self = [super initWithWindowNibName:@"PreferencesWindow"];
 	animations = [[NSMutableArray alloc] init];
 	return self;

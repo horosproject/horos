@@ -14047,47 +14047,49 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if( destFile)
 		[[NSFileManager defaultManager] removeItemAtPath: destFile error: nil];
 	
-	WaitRendering *wait = nil;
-	if( [NSThread isMainThread] && showGUI == YES)
-	{
-		wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
-		[wait showWindow:self];
-	}
-	
-	@try
-	{
-		t = [[[NSTask alloc] init] autorelease];
-		[t setLaunchPath: @"/usr/bin/zip"];
-		
-		BOOL isDirectory;
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: srcFolder isDirectory: &isDirectory])
-		{
-			[t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
-	
-			if( [password length] > 0)
-				args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
-			else
-				args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
-			
-			[t setArguments: args];
-			[t launch];
-			[t waitUntilExit];
-			
-			if( [t terminationStatus] == 0 && deleteSource == YES)
-			{
-				if( srcFolder)
-					[[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
-			}
-		}
-	}
-	@catch (NSException *e)
-	{
-        N2LogExceptionWithStackTrace(e);
-	}
-	
-	[wait close];
-	[wait release];
+    @synchronized (destFile) {
+        WaitRendering *wait = nil;
+        if( [NSThread isMainThread] && showGUI == YES)
+        {
+            wait = [[WaitRendering alloc] init: NSLocalizedString(@"Compressing the files...", nil)];
+            [wait showWindow:self];
+        }
+        
+        @try
+        {
+            t = [[[NSTask alloc] init] autorelease];
+            [t setLaunchPath: @"/usr/bin/zip"];
+            
+            BOOL isDirectory;
+            
+            if( [[NSFileManager defaultManager] fileExistsAtPath: srcFolder isDirectory: &isDirectory])
+            {
+                [t setCurrentDirectoryPath: [srcFolder stringByDeletingLastPathComponent]];
+        
+                if( [password length] > 0)
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", @"-e", @"-P", password, destFile, [srcFolder lastPathComponent], nil];
+                else
+                    args = [NSArray arrayWithObjects: @"-q", @"-r", destFile, [srcFolder lastPathComponent], nil];
+                
+                [t setArguments: args];
+                [t launch];
+                [t waitUntilExit];
+                
+                if( [t terminationStatus] == 0 && deleteSource == YES)
+                {
+                    if( srcFolder)
+                        [[NSFileManager defaultManager] removeItemAtPath: srcFolder error: nil];
+                }
+            }
+        }
+        @catch (NSException *e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+        
+        [wait close];
+        [wait release];
+    }
 }
 
 - (void) exportDICOMFile: (id)sender

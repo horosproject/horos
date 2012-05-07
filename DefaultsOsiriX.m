@@ -1010,8 +1010,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_study_date"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
-    [defaultValues setObject:@"1" forKey:@"allow_qr_customDICOMField"];
-    
+    [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

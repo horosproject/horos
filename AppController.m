@@ -2793,7 +2793,7 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_study_date"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_modality"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
-                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_customDICOMField"];
+                [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset

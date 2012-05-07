@@ -91,7 +91,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 - (void) removeDuplicatedStrings
 {
-	NSArray *a = [self sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	NSArray *a = [self sortedArrayUsingSelector: @selector(compare:)];
 	
 	NSString *lastString = nil;
 	
@@ -105,7 +105,7 @@ NSInteger sortByAddress(id roi1, id roi2, void *context)
 
 - (void) removeDuplicatedStringsInSyncWithThisArray: (NSMutableArray*) otherArray
 {
-	NSArray *a = [self sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)];
+	NSArray *a = [self sortedArrayUsingSelector: @selector(compare:)];
 	
 	NSString *lastString = nil;
 	
