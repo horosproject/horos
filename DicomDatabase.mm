@@ -195,23 +195,6 @@ static NSMutableDictionary* databasesDictionary = [[NSMutableDictionary alloc] i
 		}
 }
 
--(oneway void)release
-{
-	if( self.retainCount == 1)
-    {
-        @synchronized (databasesDictionary)
-        {
-            for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
-            {
-                if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
-                    [databasesDictionary removeObjectForKey: key];
-            }
-        }
-    }
-    
-    [super release];
-}
-
 +(DicomDatabase*)databaseAtPath:(NSString*)path {
 	return [[self class] databaseAtPath:path name:nil];
 }
@@ -458,6 +441,15 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(void)dealloc
 {
+    @synchronized (databasesDictionary)
+    {
+        for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
+        {
+            if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
+                [databasesDictionary removeObjectForKey: key];
+        }
+    }
+    
 	[self deallocClean];
 	[self deallocRouting];
     
