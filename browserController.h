@@ -608,6 +608,8 @@ OsirixNewStudySelectedNotification with userinfo key @"Selected Study" posted wh
 OsirixAddToDBNotification posted when files are added to the DB
 */
 
++(NSInteger)_scrollerStyle:(NSScroller*)scroller;
+
 #pragma mark Deprecated
 
 @property(readonly) NSManagedObjectContext *userManagedObjectContext __deprecated;

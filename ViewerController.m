@@ -252,6 +252,12 @@ enum
 
 #pragma mark-
 
+@interface ViewerController ()
+
+-(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n;
+
+@end
+
 @implementation ViewerController
 
 @synthesize currentOrientationTool, loadingPercentage, speedSlider, loadingPauseDelay;
@@ -3775,15 +3781,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	stopViewFrameDidChangeNotification = YES;
 	
-	frame = [[[splitView subviews] objectAtIndex: 0] frame];
+//	frame = [[[splitView subviews] objectAtIndex: 0] frame];
 	
-	if( frame.size.width > 0)
+	if ([[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
 	{
-		frame.size.width = [previewMatrix cellSize].width+13;
+//		frame.size.width = [previewMatrix cellSize].width+13;
 		visible = YES;
 	}
 	
-	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
+/*	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 	
 	if( [[splitView subviews] count] > 1)
 	{
@@ -3793,7 +3799,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	
 	[splitView adjustSubviews];
-	
+	*/
 	stopViewFrameDidChangeNotification = NO;
 	
 	return visible;
@@ -3801,7 +3807,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) setMatrixVisible: (BOOL) visible
 {
-	NSRect	frameLeft, frameRight, previous;
+    NSView* left = [[splitView subviews] objectAtIndex:0];
+    BOOL currentlyVisible = !([left isHidden] || [splitView isSubviewCollapsed:0]);
+    
+    if (currentlyVisible != visible) {
+        [left setHidden:!visible];
+        [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
+    }
+/*    
+    NSRect	frameLeft, frameRight, previous;
 	
 	if( [[splitView subviews] count] > 1)
 	{
@@ -3838,7 +3852,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			
 			imageView.dontEnterReshape = NO;
 		}
-	}
+	}*/
 }
 
 - (IBAction) showHideMatrix: (id) sender
@@ -3958,7 +3972,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( [[splitView subviews] count] > 1)
 	{
-		if( [note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
+		if ([note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
 		{
 			BOOL visible = [self checkFrameSize];
 			
@@ -3980,17 +3994,36 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[window disableUpdatesUntilFlush];
 }
 
+- (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
+{
+    return YES;
+}
+
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
-    if( [sender isVertical] == YES)
+    if (sender == splitView)
     {
-		NSSize size = [previewMatrix cellSize];
+		CGFloat rcs = previewMatrix.cellSize.width;
+        
+        NSScrollView* scrollView = previewMatrixScrollView;
+        CGFloat scrollbarWidth = 0;
+        if ([scrollView isKindOfClass:[NSScrollView class]])
+        {
+            NSScroller* scroller = [scrollView verticalScroller];
+            if ([BrowserController _scrollerStyle:scroller] != 1)
+                if ([scrollView hasVerticalScroller] && ![scroller isHidden])
+                    scrollbarWidth = [scroller frame].size.width;
+        }
+        
+        proposedPosition -= scrollbarWidth;
+        
+        NSUInteger f = roundf(proposedPosition/rcs);
+        if (f > 1) f = 1;
+        proposedPosition = rcs*f;
 		
-        long pos = proposedPosition;
-		
-		if( pos <  size.width/2) pos = 0;
-		else pos = size.width+13;
-		
+        if (proposedPosition)
+            proposedPosition += (scrollbarWidth?scrollbarWidth+2:1);
+        
 		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"] == NO)
 		{
 			// Apply show / hide matrix to all viewers
@@ -4002,17 +4035,31 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					if( [[loopItem windowController] isKindOfClass:[ViewerController class]] && [loopItem windowController] != self)
 					{
-						if( pos) [[loopItem windowController] setMatrixVisible: YES];
+						if (proposedPosition) [[loopItem windowController] setMatrixVisible: YES];
 						else [[loopItem windowController] setMatrixVisible: NO];
 					}
 				}
 			}
 		}
 		
-        return (float) pos;
+        return proposedPosition;
     }
 	
 	return proposedPosition;
+}
+
+-(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+    CGFloat dividerPosition = previewMatrix.cellSize.width;
+    dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
+    
+    NSRect splitFrame = [sender frame];
+    
+    [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
+    [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+}
+
+-(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n {
+    [splitView resizeSubviewsWithOldSize:[splitView bounds].size];
 }
 
 - (void) matrixPreviewSwitchHidden:(id) sender
@@ -4783,8 +4830,8 @@ static ViewerController *draggedController = nil;
 	
 	if( windowWillClose) return;
 	
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
-		[self autoHideMatrix];
+/*	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
+		[self autoHideMatrix];*/
 	
 //	if( [self checkFrameSize])
 //	{
@@ -6500,6 +6547,13 @@ return YES;
 #endif
 	
 	return self;
+}
+
+-(void)awakeFromNib {
+    [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
+    [self observeScrollerStyleDidChangeNotification:nil];
 }
 
 -(void)refreshDatabase:(NSArray*)newImages {

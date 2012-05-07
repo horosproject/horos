@@ -191,6 +191,7 @@ void restartSTORESCP()
 -(void)splitViewDidResizeSubviews:(NSNotification*)notification;
 -(NSArray*)albumsInDatabase;
 -(void)initContextualMenus;
+-(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n;
 
 @end
 
