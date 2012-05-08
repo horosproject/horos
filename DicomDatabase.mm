@@ -442,8 +442,11 @@ static DicomDatabase* activeLocalDatabase = nil;
         
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
+        
+        // Why? these two observers? Aren't they equal to the previous ones?
+//        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
+//        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
+        
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:self];
     }
 
@@ -1947,10 +1950,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
-                [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
-                [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
-				if (postNotifications) {
+                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                
+                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                
+				if (postNotifications)
+                {
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                    
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
 				}
 			} @catch (NSException* e) {
