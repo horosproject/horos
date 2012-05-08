@@ -4830,8 +4830,8 @@ static ViewerController *draggedController = nil;
 	
 	if( windowWillClose) return;
 	
-/*	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
-		[self autoHideMatrix];*/
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"])
+		[self autoHideMatrix];
 	
 //	if( [self checkFrameSize])
 //	{
