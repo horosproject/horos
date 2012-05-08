@@ -68,13 +68,13 @@ const static void *namesKey = &namesKey;
 
 - (void) my_removeObserver:(id)notificationObserver name:(NSString *)notificationName object:(id)notificationSender
 {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
     @synchronized (self)
     {
         NSMutableDictionary *names = objc_getAssociatedObject(self, (void*) namesKey);
         if (names)
         {
-            NSAutoreleasePool *pool = [NSAutoreleasePool new];
-            
             if( notificationName)
             {
                 NSMutableSet *set = [names objectForKey: notificationName];
@@ -104,12 +104,12 @@ const static void *namesKey = &namesKey;
                     }
                 }
             }
-            
-            [pool release];
         }
     }
     
     [self my_removeObserver: notificationObserver name: notificationName object: notificationSender];
+    
+    [pool release];
 }
 
 - (NSSet *) my_observersForNotificationName:(NSString *)notificationName
@@ -125,20 +125,36 @@ const static void *namesKey = &namesKey;
 
 - (void) postExtraNotification:(NSNotification *)notification
 {
-    for( NSDictionary *observerDictionary in [self my_observersForNotificationName: notification.name])
+    NSMutableArray *selectors = nil;
+    
+    @synchronized( self)
+    {
+        for( NSDictionary *observerDictionary in [self my_observersForNotificationName: notification.name])
+        {
+            SEL selector = [[observerDictionary objectForKey: @"selector"] pointerValue];
+            id observer = [[observerDictionary objectForKey: @"observer"] pointerValue];
+            
+            if( selectors == nil)
+                selectors = [NSMutableArray array];
+            
+            if( [observerDictionary objectForKey: @"sender"])
+            {
+                if( [observerDictionary objectForKey: @"sender"] == notification.object)
+                    [selectors addObject: [[observerDictionary copy] autorelease]];
+            }
+            else
+                [selectors addObject: [[observerDictionary copy] autorelease]];
+        }
+    }
+    
+    for( NSDictionary *observerDictionary in selectors)
     {
         SEL selector = [[observerDictionary objectForKey: @"selector"] pointerValue];
         id observer = [[observerDictionary objectForKey: @"observer"] pointerValue];
         
         [PluginManager startProtectForCrashWithPath: [[NSBundle bundleForClass: [observer class]] bundlePath]];
         
-        if( [observerDictionary objectForKey: @"sender"])
-        {
-            if( [observerDictionary objectForKey: @"sender"] == notification.object)
-                [observer performSelector: selector withObject: notification];
-        }
-        else
-            [observer performSelector: selector withObject: notification];
+        [observer performSelector: selector withObject: notification];
         
         [PluginManager endProtectForCrash];
     }
@@ -148,10 +164,7 @@ const static void *namesKey = &namesKey;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    @synchronized (self)
-    {
-        [self postExtraNotification: [NSNotification notificationWithName: aName object: anObject userInfo: aUserInfo]];
-    }
+    [self postExtraNotification: [NSNotification notificationWithName: aName object: anObject userInfo: aUserInfo]];
     
     [self my_postNotificationName: aName object: anObject userInfo: aUserInfo];
         
@@ -162,10 +175,7 @@ const static void *namesKey = &namesKey;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    @synchronized (self)
-    {
-        [self postExtraNotification: notification];
-    }
+    [self postExtraNotification: notification];
     
     [self my_postNotification: notification];
         
