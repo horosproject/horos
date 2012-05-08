@@ -3812,7 +3812,7 @@ static NSConditionLock *threadLock = nil;
 	
 	[reportFilesToCheck removeAllObjects];
 	
-    [self setDatabase:nil];
+//    [self setDatabase:nil];
 	[database lock];
 	
     [self outlineViewRefresh];
@@ -3958,7 +3958,11 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	[database unlock];
-    [self setDatabase:[database autorelease]];
+    
+    [self outlineViewRefresh];
+    [self refreshAlbums];
+    
+//    [self setDatabase:[database autorelease]];
     [self saveDatabase];
 }
 
