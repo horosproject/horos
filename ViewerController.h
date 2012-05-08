@@ -602,6 +602,7 @@ enum
 - (void) loadROI:(long) mIndex;
 - (void) saveROI:(long) mIndex;
 - (void) setMatrixVisible: (BOOL) visible;
+- (BOOL) matrixIsVisible;
 - (id) findPlayStopButton;
 - (IBAction)setKeyImage:(id)sender;
 - (IBAction) roiSelectDeselectAll:(id) sender;

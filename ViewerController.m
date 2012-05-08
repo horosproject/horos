@@ -447,14 +447,7 @@ return YES;
 	
 	if( [item action] == @selector( showHideMatrix:))
 	{
-		if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
-		{
-			[item setState: NSOnState];
-		}
-		else
-		{
-			[item setState: NSOffState];
-		}
+		[item setState: [self matrixIsVisible]? NSOnState : NSOffState ];
 		valid = YES;
 	}
 	else if( [item action] == @selector( resetWindowsState:))
@@ -3776,18 +3769,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) checkFrameSize
 {
-	NSRect	frameRight, frame;
-	BOOL	visible = NO;
+//	NSRect	frameRight, frame;
+	BOOL	visible = [self matrixIsVisible];
 	
 	stopViewFrameDidChangeNotification = YES;
 	
 //	frame = [[[splitView subviews] objectAtIndex: 0] frame];
 	
-	if ([[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
-	{
+//	if ([[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+//	{
 //		frame.size.width = [previewMatrix cellSize].width+13;
-		visible = YES;
-	}
+//		visible = YES;
+//	}
 	
 /*	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
 	
@@ -3807,11 +3800,15 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) setMatrixVisible: (BOOL) visible
 {
-    NSView* left = [[splitView subviews] objectAtIndex:0];
-    BOOL currentlyVisible = !([left isHidden] || [splitView isSubviewCollapsed:0]);
+    BOOL currentlyVisible = [self matrixIsVisible];
     
     if (currentlyVisible != visible) {
-        [left setHidden:!visible];
+        NSView* v = [[splitView subviews] objectAtIndex:0];
+        [v setHidden:!visible];
+        if (visible) {
+            NSRect f = v.frame; f.size.width = previewMatrix.cellSize.width;
+            [v setFrame:f];
+        }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
     }
 /*    
@@ -3857,15 +3854,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (IBAction) showHideMatrix: (id) sender
 {
-	BOOL isCurrentlyVisible = NO;
-	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
-	
-    NSView* v = [[splitView subviews] objectAtIndex:0];
-	if (![v isHidden] && [v frame].size.width > 0)
-		isCurrentlyVisible = YES;
-	
-	[self setMatrixVisible: !isCurrentlyVisible];
+    [self setMatrixVisible:![self matrixIsVisible]];
 }
 
 - (void) autoHideMatrix
@@ -3893,12 +3883,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else hide = YES;
 	}
 	
-	BOOL isCurrentlyVisible = NO;
-	
-    NSView* v = [[splitView subviews] objectAtIndex:0];
-	if (![v isHidden] && [v frame].size.width > 0)
-		isCurrentlyVisible = YES;
-		
+	BOOL isCurrentlyVisible = [self matrixIsVisible];
+    
 	if( isCurrentlyVisible == hide)
 	{
 		NSMutableArray *scaleValues = [NSMutableArray array];
@@ -3976,9 +3962,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		if ([note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
 		{
-			BOOL visible = [self checkFrameSize];
-			
-			if( visible == YES && matrixPreviewBuilt == NO)
+			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
 			{
 				[self buildMatrixPreview];
 			}
@@ -4050,8 +4034,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return proposedPosition;
 }
 
+-(BOOL)matrixIsVisible {
+    NSView* v = [[splitView subviews] objectAtIndex:0];
+    return ![v isHidden] && [v frame].size.width > 0; 
+}
+
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
-    CGFloat dividerPosition = [[[sender subviews] objectAtIndex:0] isHidden]? 0 : previewMatrix.cellSize.width;
+    CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
     dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
     
     NSRect splitFrame = [sender frame];
