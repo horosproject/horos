@@ -93,11 +93,11 @@
 													<array class="NSMutableArray" key="NSSubviews">
 														<object class="NSMatrix" id="183170652">
 															<reference key="NSNextResponder" ref="835652840"/>
-															<int key="NSvFlags">274</int>
+															<int key="NSvFlags">294</int>
 															<string key="NSFrameSize">{100, 120}</string>
 															<reference key="NSSuperview" ref="835652840"/>
 															<reference key="NSWindow"/>
-															<reference key="NSNextKeyView" ref="1031944683"/>
+															<reference key="NSNextKeyView" ref="697845505"/>
 															<bool key="NSEnabled">YES</bool>
 															<int key="NSNumRows">1</int>
 															<int key="NSNumCols">1</int>
@@ -193,7 +193,7 @@
 											<string key="NSFrame">{{1, 0}, {184, 503}}</string>
 											<reference key="NSSuperview" ref="100339251"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="697845505"/>
+											<reference key="NSNextKeyView" ref="835652840"/>
 											<int key="NSsFlags">133136</int>
 											<reference key="NSVScroller" ref="1031944683"/>
 											<reference key="NSHScroller" ref="697845505"/>
@@ -254,7 +254,6 @@
 											<string key="NSFrameSize">{356, 487}</string>
 											<reference key="NSSuperview" ref="115002648"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSClassName">StudyView</string>
 											<string key="NSExtension">NSView</string>
 										</object>
@@ -324,7 +323,6 @@
 						<string key="NSFrame">{{0, 3}, {132, 15}}</string>
 						<reference key="NSSuperview" ref="312738934"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSSliderCell" key="NSCell" id="745685698">
 							<int key="NSCellFlags">67501824</int>
