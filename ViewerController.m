@@ -3861,7 +3861,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
 	
-	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+    NSView* v = [[splitView subviews] objectAtIndex:0];
+	if (![v isHidden] && [v frame].size.width > 0)
 		isCurrentlyVisible = YES;
 	
 	[self setMatrixVisible: !isCurrentlyVisible];
