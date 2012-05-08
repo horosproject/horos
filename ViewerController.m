@@ -3895,7 +3895,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	BOOL isCurrentlyVisible = NO;
 	
-	if( [[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
+    NSView* v = [[splitView subviews] objectAtIndex:0];
+	if (![v isHidden] && [v frame].size.width > 0)
 		isCurrentlyVisible = YES;
 		
 	if( isCurrentlyVisible == hide)
