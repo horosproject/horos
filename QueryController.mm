@@ -3244,6 +3244,11 @@ extern "C"
 {
 	[numberOfStudies setStringValue: @""];
 	
+    if( autoQuery)
+        [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"AutoQRPatientModeMatrixIndex"]];
+    else
+        [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"QRPatientModeMatrixIndex"]];
+       
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier: @"stateText"];
@@ -3926,7 +3931,13 @@ extern "C"
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[[NSUserDefaults standardUserDefaults] setInteger: [dateFilterMatrix selectedTag] forKey: @"QRLastDateFilterValue"];
-	
+
+    if( autoQuery)
+        [[NSUserDefaults standardUserDefaults] setInteger: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]] forKey: @"AutoQRPatientModeMatrixIndex"];
+    else
+        [[NSUserDefaults standardUserDefaults] setInteger: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]] forKey: @"QRPatientModeMatrixIndex"];
+
+    
 	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: queryArrayPrefs];
 	
 	[self saveSettings];
