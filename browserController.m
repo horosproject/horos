@@ -15944,13 +15944,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
 {
     return [NSArray arrayWithObjects:
-			ViewersToolbarItemIdentifier,
+            ToggleDrawerToolbarItemIdentifier,
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
-//			CDRomToolbarItemIdentifier,
 			MailToolbarItemIdentifier,
-//			WebServerSingleNotification,
-//			AddStudiesToUserItemIdentifier,
 			QTSaveToolbarItemIdentifier,
 			QueryToolbarItemIdentifier,
 			SendToolbarItemIdentifier,
@@ -15959,15 +15956,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 			XMLToolbarItemIdentifier,
 			TrashToolbarItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
+            ViewersToolbarItemIdentifier,
 			ViewerToolbarItemIdentifier,
 			OpenKeyImagesAndROIsToolbarItemIdentifier,
 			MovieToolbarItemIdentifier,
+            ReportToolbarItemIdentifier,
 			NSToolbarFlexibleSpaceItemIdentifier,
-			ToggleDrawerToolbarItemIdentifier,
-			NSToolbarFlexibleSpaceItemIdentifier,
-			ReportToolbarItemIdentifier,
+            TimeIntervalToolbarItemIdentifier,
 			SearchToolbarItemIdentifier,
-			TimeIntervalToolbarItemIdentifier,
 			nil];
 }
 
