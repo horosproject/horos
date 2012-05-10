@@ -2198,6 +2198,10 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
                       DUL_ASSOCIATESERVICEPARAMETERS * params,
                       PRIVATE_ASSOCIATIONKEY ** association)
 {
+    int tries = 0;
+    
+    retry:
+    
     char node[128];
     int  port;
     struct sockaddr_in server;
@@ -2275,7 +2279,8 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
       fcntl(s, F_SETFL, O_NONBLOCK | flags);
 #endif
     }
-
+    
+    
     // depending on the socket mode, connect will block or return immediately
     int rc = connect(s, (struct sockaddr *) & server, sizeof(server));
 
@@ -2298,9 +2303,9 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         struct timeval timeout;
         timeout.tv_sec = connectTimeout;
         timeout.tv_usec = 0;
-
+        
         rc = select(s+1, NULL, &fdSet, NULL, &timeout);
-
+        
         // reset socket to blocking mode
 #ifdef HAVE_WINSOCK_H
         arg = FALSE;
@@ -2317,6 +2322,11 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #else
             (void) close(s);
 #endif
+            tries++;
+            printf( "\r------------------ retry requestAssociationTCP : %d\r", tries);
+            if( tries < 3)
+                goto retry;
+            
             (*association)->networkState = NETWORK_DISCONNECTED;
             if ((*association)->connection) delete (*association)->connection;
             (*association)->connection = NULL;
