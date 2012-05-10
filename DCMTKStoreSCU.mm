@@ -1188,10 +1188,20 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	
 	//Timeout
 	OFCmdSignedInt opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
-	dcmConnectionTimeout.set((Sint32) opt_timeout);
 
+    if( opt_timeout < 2)
+        opt_timeout = 2;
+    
+    if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"] > 0)
+    {
+        NSLog( @"--- DICOMConnectionTimeout: %d", [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
+        dcmConnectionTimeout.set( (Sint32) [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMConnectionTimeout"]);
+    }
+    else
+        dcmConnectionTimeout.set( (Sint32) opt_timeout);
+    
    //acse-timeout
-	opt_timeout = [[NSUserDefaults standardUserDefaults] integerForKey:@"DICOMTimeout"];
+    
 	opt_acse_timeout = OFstatic_cast(int, opt_timeout);
 	
 	//dimse-timeout
