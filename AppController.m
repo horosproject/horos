@@ -1190,6 +1190,8 @@ static NSDate *lastWarningDate = nil;
 	else NSLog( @"*** isKindOfClass NSString");
 	if ([[previousDefaults valueForKey: @"DICOMTimeout"] intValue] != [defaults integerForKey: @"DICOMTimeout"])
 		restartListener = YES;
+    if ([[previousDefaults valueForKey: @"DICOMConnectionTimeout"] intValue] != [defaults integerForKey: @"DICOMConnectionTimeout"])
+		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"UseHostNameForAETitle"] intValue] != [defaults integerForKey: @"UseHostNameForAETitle"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"preferredSyntaxForIncoming"] intValue] != [defaults integerForKey: @"preferredSyntaxForIncoming"])

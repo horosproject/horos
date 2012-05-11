@@ -1,5 +1,4 @@
 - Automatic reset after query patient
-- GUI for DICOM Connection timeout
 
 ------------------------------------------------------------------------------------------
 Tests:

@@ -904,6 +904,7 @@ static NSHost *currentHost = nil;
 		[defaultValues setObject: defaultAnnotations forKey:@"CUSTOM_IMAGE_ANNOTATIONS"];
 	[defaultValues setObject:@"0" forKey:@"SERIESORDER"];
 	[defaultValues setObject:@"40" forKey:@"DICOMTimeout"];
+    [defaultValues setObject:@"10" forKey:@"DICOMConnectionTimeout"];
 	[defaultValues setObject:@"1" forKey:@"NSWindowsSetFrameAnimate"];
 	[defaultValues setObject: @"0" forKey: @"TRANSITIONTYPE"];
 	#ifndef OSIRIX_LIGHT

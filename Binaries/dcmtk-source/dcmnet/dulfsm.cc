@@ -2324,7 +2324,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 #endif
             tries++;
             printf( "\r------------------ retry requestAssociationTCP : %d\r", tries);
-            if( tries < 3)
+            if( tries < 6)
                 goto retry;
             
             (*association)->networkState = NETWORK_DISCONNECTED;
