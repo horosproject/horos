@@ -2475,7 +2475,10 @@ extern "C"
 				
 //				[NSThread detachNewThreadSelector: @selector( autoQueryThread) toTarget: self withObject: nil];
 				
-				autoQueryRemainingSecs = 60*self.autoRefreshQueryResults; 
+				if( autoRefreshQueryInSeconds)
+                    autoQueryRemainingSecs = self.autoRefreshQueryResults;
+                else
+                    autoQueryRemainingSecs = 60*self.autoRefreshQueryResults;
 				
 				[autoQueryLock unlock];
 			}
@@ -2493,7 +2496,16 @@ extern "C"
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		
-		autoQueryRemainingSecs = 60*self.autoRefreshQueryResults;
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+            autoRefreshQueryInSeconds = YES;
+        else
+            autoRefreshQueryInSeconds = NO;
+        
+        if( autoRefreshQueryInSeconds)
+            autoQueryRemainingSecs = self.autoRefreshQueryResults;
+        else
+            autoQueryRemainingSecs = 60*self.autoRefreshQueryResults;
+        
 		[autoQueryCounter setStringValue: [NSString stringWithFormat: @"%2.2d:%2.2d", (int) (autoQueryRemainingSecs/60), (int) (autoQueryRemainingSecs%60)]];
 		
 		QueryTimer = [[NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector( autoQueryTimerFunction:) userInfo:nil repeats:YES] retain];

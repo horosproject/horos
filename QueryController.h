@@ -47,6 +47,7 @@
 	IBOutlet	NSTextField					*yearOldBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
+    BOOL                                    autoRefreshQueryInSeconds;
 	int										autoQueryRemainingSecs;
 	IBOutlet NSTextField					*autoQueryCounter;
 	
