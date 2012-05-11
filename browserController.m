@@ -4163,36 +4163,31 @@ static NSConditionLock *threadLock = nil;
 	
 	if( result == NSAlertOtherReturn)	// REMOVE FROM CURRENT ALBUMS, BUT DONT DELETE IT FROM THE DATABASE
 	{
-		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
-		
-		if( [databaseOutline selectedRow] >= 0)
+		NSIndexSet* selectedRows = [databaseOutline selectedRowIndexes];
+		if (selectedRows.count)
 		{
-			NSMutableArray *studiesToRemove = [NSMutableArray array];
-			DicomAlbum* album = [albumArray objectAtIndex: albumTable.selectedRow];
+			NSMutableArray* studiesToRemove = [NSMutableArray array];
+			DicomAlbum* album = [albumArray objectAtIndex:albumTable.selectedRow];
 			
-			for( NSInteger x = 0; x < [selectedRows count] ; x++)
-			{
-				NSInteger row = ( x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex: row];
+			for (NSInteger x = 0; x < selectedRows.count; ++x) {
+				NSInteger row = (x == 0) ? [selectedRows firstIndex] : [selectedRows indexGreaterThanIndex:row];
+				DicomStudy* study = [databaseOutline itemAtRow: row];
 				
-				DicomStudy *study = [databaseOutline itemAtRow: row];
-				
-				if( [[study valueForKey:@"type"] isEqualToString: @"Study"])
-				{
-					[studiesToRemove addObject: study];
-					
-					NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-					[studies removeObject: study];
-					[study archiveAnnotationsAsDICOMSR];
-				}
-			}
+				if ([study isKindOfClass:[DicomStudy class]])
+                    if ([album.studies containsObject:study] && ![studiesToRemove containsObject:study])
+                        [studiesToRemove addObject:study];
+            }
+            
+			NSMutableSet* albumStudies = [album mutableSetValueForKey: @"studies"];
+            for (DicomStudy* study in studiesToRemove) {
+                [albumStudies removeObject:study];
+				[study archiveAnnotationsAsDICOMSR];
+            }
 			
-			if (![_database isLocal])
-			{
-				// Do it remotely
+			if (![_database isLocal]) // notify the remote database about the removal of the selected studies from the current album
 				[(RemoteDicomDatabase*)_database removeStudies:studiesToRemove fromAlbum:album];
-			}
 			
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
+			[databaseOutline selectRowIndexes:[NSIndexSet indexSetWithIndex:[selectedRows firstIndex]] byExtendingSelection:NO];
 		}
 		
 		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating database...", nil)];
