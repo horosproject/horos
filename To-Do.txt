@@ -1,5 +1,4 @@
 - Automatic reset after query patient
-- DCMView setBlendingMode infinite loop
 
 ------------------------------------------------------------------------------------------
 Tests:
