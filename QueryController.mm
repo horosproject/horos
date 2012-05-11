@@ -1468,28 +1468,18 @@ extern "C"
 
 - (NSArray*) queryPatientID:(NSString*) ID
 {
-//	NSInteger PatientModeMatrixSelected = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
-//	NSInteger dateFilterMatrixSelected = [dateFilterMatrix selectedTag];
-//	NSMutableArray *selectedModalities = [NSMutableArray array];
-//	for( NSCell *c in [modalityFilterMatrix cells]) if( [c state] == NSOnState) [selectedModalities addObject: c];
-//	NSString *copySearchField = [NSString stringWithString: [searchFieldID stringValue]];
+    NSDictionary *savedSettings = [self savePresetInDictionaryWithDICOMNodes: NO];
 	
+    [self emptyPreset: self];
+    
 	[PatientModeMatrix selectTabViewItemAtIndex: 1];	// PatientID search
-	
-	[dateFilterMatrix selectCellWithTag: 0];
-	[self setDateQuery: dateFilterMatrix];
-	[modalityFilterMatrix deselectAllCells];
-	[self setModalityQuery: modalityFilterMatrix];
 	[searchFieldID setStringValue: ID];
 	
 	[self query: self];
 	
 	NSArray *result = [NSArray arrayWithArray: resultArray];
 	
-//	[PatientModeMatrix selectTabViewItemAtIndex: PatientModeMatrixSelected];
-//	[dateFilterMatrix selectCellWithTag: dateFilterMatrixSelected];
-//	for( NSCell *c in selectedModalities) [modalityFilterMatrix selectCell: c];
-//	[searchFieldID setStringValue: copySearchField];
+    [self applyPresetDictionary: savedSettings];
 	
 	return result;
 }
