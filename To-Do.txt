@@ -1,3 +1,6 @@
+- Automatic reset after query patient
+- GUI for DICOM Connection timeout
+
 ------------------------------------------------------------------------------------------
 Tests:
 - Review sourceforge commits
@@ -6,6 +9,7 @@ Added features:
 - Access DICOM CD/DVD as a database
 ------------------------------------------------------------------------------------------
 
+- https://github.com/potionfactory/LetsMove.git
 - GUI to autofill comments 2, 3, 4
 - Shift+Cmd+Click to add series to viewer
 - ExportROIs plugin: add Length
