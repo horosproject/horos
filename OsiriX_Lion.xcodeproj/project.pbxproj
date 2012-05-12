@@ -3394,6 +3394,12 @@
 		CE569B750E29612100F4A234 /* ThumbnailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE569B730E29612100F4A234 /* ThumbnailCell.m */; };
 		CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
 		CE586CCA0C74B7DB00DB7D5A /* libdcmprintscu.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */; };
+		CE594409155E3838007BDF5B /* NSApplication-Dock.h in Headers */ = {isa = PBXBuildFile; fileRef = CE594403155E3838007BDF5B /* NSApplication-Dock.h */; };
+		CE59440A155E3838007BDF5B /* NSApplication-Dock.m in Sources */ = {isa = PBXBuildFile; fileRef = CE594404155E3838007BDF5B /* NSApplication-Dock.m */; };
+		CE59440B155E3838007BDF5B /* NSString+SymlinksAndAliases.h in Headers */ = {isa = PBXBuildFile; fileRef = CE594405155E3838007BDF5B /* NSString+SymlinksAndAliases.h */; };
+		CE59440C155E3838007BDF5B /* NSString+SymlinksAndAliases.m in Sources */ = {isa = PBXBuildFile; fileRef = CE594406155E3838007BDF5B /* NSString+SymlinksAndAliases.m */; };
+		CE59440D155E3838007BDF5B /* PFMoveApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = CE594407155E3838007BDF5B /* PFMoveApplication.h */; };
+		CE59440E155E3838007BDF5B /* PFMoveApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE594408155E3838007BDF5B /* PFMoveApplication.m */; };
 		CE5A7F8C0CB9430D009C80B4 /* 32-bit shell.app in Resources */ = {isa = PBXBuildFile; fileRef = CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */; };
 		CE5D33B509E1C26400CC6884 /* add-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B309E1C26400CC6884 /* add-large.tif */; };
 		CE5D33B609E1C26400CC6884 /* minus-large.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5D33B409E1C26400CC6884 /* minus-large.tif */; };
@@ -10465,6 +10471,12 @@
 		CE569B730E29612100F4A234 /* ThumbnailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThumbnailCell.m; sourceTree = "<group>"; };
 		CE586CC30C74B75D00DB7D5A /* libdcmprintscu.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libdcmprintscu.dylib; path = AYDicomPrint/libdcmprintscu.dylib; sourceTree = "<group>"; };
 		CE58A260146ECCE800F50080 /* WebPortalDB 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 5.xcdatamodel"; sourceTree = "<group>"; };
+		CE594403155E3838007BDF5B /* NSApplication-Dock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSApplication-Dock.h"; path = "LetsMoveAndDock/NSApplication-Dock.h"; sourceTree = "<group>"; };
+		CE594404155E3838007BDF5B /* NSApplication-Dock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSApplication-Dock.m"; path = "LetsMoveAndDock/NSApplication-Dock.m"; sourceTree = "<group>"; };
+		CE594405155E3838007BDF5B /* NSString+SymlinksAndAliases.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+SymlinksAndAliases.h"; path = "LetsMoveAndDock/NSString+SymlinksAndAliases.h"; sourceTree = "<group>"; };
+		CE594406155E3838007BDF5B /* NSString+SymlinksAndAliases.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+SymlinksAndAliases.m"; path = "LetsMoveAndDock/NSString+SymlinksAndAliases.m"; sourceTree = "<group>"; };
+		CE594407155E3838007BDF5B /* PFMoveApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PFMoveApplication.h; path = LetsMoveAndDock/PFMoveApplication.h; sourceTree = "<group>"; };
+		CE594408155E3838007BDF5B /* PFMoveApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PFMoveApplication.m; path = LetsMoveAndDock/PFMoveApplication.m; sourceTree = "<group>"; };
 		CE5A7F8B0CB9430D009C80B4 /* 32-bit shell.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; path = "32-bit shell.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE5D33B309E1C26400CC6884 /* add-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "add-large.tif"; sourceTree = "<group>"; };
 		CE5D33B409E1C26400CC6884 /* minus-large.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "minus-large.tif"; sourceTree = "<group>"; };
@@ -15811,6 +15823,7 @@
 			children = (
 				849B44BA1552B2D800194728 /* OsiriXNotificationCenter.m */,
 				597BB92F12A7E0F200D0A172 /* NSUserDefaults+OsiriX.h */,
+				CE594401155E382B007BDF5B /* LetsMove and Dock */,
 				597BB93012A7E0F200D0A172 /* NSUserDefaults+OsiriX.mm */,
 				59BDEF3F117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.h */,
 				59BDEF40117DA2DF007F1F2C /* NSUserDefaultsController+OsiriX.mm */,
@@ -17604,6 +17617,19 @@
 				AB64A2D70C4E0F61000E0981 /* HornRegistration.h */,
 			);
 			name = ITK;
+			sourceTree = "<group>";
+		};
+		CE594401155E382B007BDF5B /* LetsMove and Dock */ = {
+			isa = PBXGroup;
+			children = (
+				CE594403155E3838007BDF5B /* NSApplication-Dock.h */,
+				CE594404155E3838007BDF5B /* NSApplication-Dock.m */,
+				CE594405155E3838007BDF5B /* NSString+SymlinksAndAliases.h */,
+				CE594406155E3838007BDF5B /* NSString+SymlinksAndAliases.m */,
+				CE594407155E3838007BDF5B /* PFMoveApplication.h */,
+				CE594408155E3838007BDF5B /* PFMoveApplication.m */,
+			);
+			name = "LetsMove and Dock";
 			sourceTree = "<group>";
 		};
 		CE7A0D670AED557500540017 /* 32-bit Shell */ = {
@@ -25502,6 +25528,9 @@
 				714D3BB1152AE40C003EB087 /* O2ScreensPrefsView.h in Headers */,
 				714D3BC4152B2410003EB087 /* NSArray+N2.h in Headers */,
 				84D7BBE3154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
+				CE594409155E3838007BDF5B /* NSApplication-Dock.h in Headers */,
+				CE59440B155E3838007BDF5B /* NSString+SymlinksAndAliases.h in Headers */,
+				CE59440D155E3838007BDF5B /* PFMoveApplication.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28575,6 +28604,9 @@
 				714D3BC6152B2410003EB087 /* NSScreen+N2.m in Sources */,
 				84D7BBE5154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
 				849B44BD1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
+				CE59440A155E3838007BDF5B /* NSApplication-Dock.m in Sources */,
+				CE59440C155E3838007BDF5B /* NSString+SymlinksAndAliases.m in Sources */,
+				CE59440E155E3838007BDF5B /* PFMoveApplication.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
