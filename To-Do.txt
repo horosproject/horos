@@ -1,3 +1,13 @@
+- OsiriX is now distributed as a dmg file
+- TCP/IP connection: specific timeout, automatically retry 5 times
+- New Database API: more robustness and evolutivity
+- CD/DVD: rely on DICOMDIR for better performance, displayed as independent database
+- Plugins sandboxing: automatically detect crashing plugins
+- Synchronize MPR viewers
+- Multiple bugs corrected
+- Web Portal: faster performances with large database
+- Add supports for private SOP Class UIDs: Philips, GE, Siemens
+- Better Bonjour detection
 
 ------------------------------------------------------------------------------------------
 Tests:
