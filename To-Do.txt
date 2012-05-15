@@ -1,3 +1,6 @@
+- Philips SUV
+- Interpolation 3D: Coronaries
+
 - OsiriX is now distributed as a dmg file
 - TCP/IP connection: specific timeout, automatically retry 5 times
 - New Database API: more robustness and evolutivity
