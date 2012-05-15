@@ -2486,7 +2486,7 @@ extern "C"
 		[QueryTimer invalidate];
 		[QueryTimer release];
 		
-		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSShiftKeyMask)
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
             autoRefreshQueryInSeconds = YES;
         else
             autoRefreshQueryInSeconds = NO;

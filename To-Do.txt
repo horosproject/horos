@@ -1,6 +1,3 @@
-- Philips SUV
-- Interpolation 3D: Coronaries
-
 - OsiriX is now distributed as a dmg file
 - TCP/IP connection: specific timeout, automatically retry 5 times
 - New Database API: more robustness and evolutivity
@@ -20,6 +17,7 @@ Added features:
 - Access DICOM CD/DVD as a database
 ------------------------------------------------------------------------------------------
 
+- High-Res mode for curved MPR ?
 - GUI to autofill comments 2, 3, 4
 - Shift+Cmd+Click to add series to viewer
 - ExportROIs plugin: add Length
