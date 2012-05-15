@@ -303,56 +303,65 @@ static NSMutableDictionary *studiesForUserCache = nil;
         {
             NSString *userID = [self.name stringByAppendingString: @" specificStudies"];
             
-            if( [studiesForUserCache objectForKey: userID])
+            if( [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
             {
-                specificArray = [studiesForUserCache objectForKey: userID];
+                specificArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
             }
-            else
+        }
+        
+        if( specificArray == nil)
+        {
+            NSArray* studiesArray = nil;
+            
+            @synchronized( studiesForUserCache)
             {
-                NSArray* studiesArray = nil;
+                if( [studiesForUserCache objectForKey: @"all DB studies"] && [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
+                    studiesArray = [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"];
+            }
+            
+            if( studiesArray == nil)
+            {
+                // Find studies
+                NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+                req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+                req.predicate = [NSPredicate predicateWithValue: YES];
+                studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
                 
-                if( [studiesForUserCache objectForKey: @"all DB studies"])
+                @synchronized( studiesForUserCache)
                 {
-                    studiesArray = [studiesForUserCache objectForKey: @"all DB studies"];
-                }
-                else
-                {
-                    // Find studies
-                    NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-                    req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
-                    req.predicate = [NSPredicate predicateWithValue: YES];
-                    studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-                    
                     if( studiesArray)
-                        [studiesForUserCache setObject: studiesArray forKey: @"all DB studies"];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
                 }
+            }
+            
+            for (WebPortalStudy* study in userStudies)
+            {
+                NSArray *obj = nil;
                 
-                for (WebPortalStudy* study in userStudies)
+                if (self.canAccessPatientsOtherStudies.boolValue)
+                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
+                else
+                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+                
+                if ([obj count] >= 1)
                 {
-                    NSArray *obj = nil;
-                    
-                    if (self.canAccessPatientsOtherStudies.boolValue)
-                        obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
-                    else
-                        obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
-                    
-                    if ([obj count] >= 1)
+                    for( id o in obj)
                     {
-                        for( id o in obj)
-                        {
-                            if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
-                                [specificArray addObject: o];
-                        }
-                    }
-                    else if ([obj count] == 0)
-                    {
-                        // It means this study doesnt exist in the entire DB -> remove it from this user list
-                        NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
-                        [self.managedObjectContext deleteObject:study];
+                        if ([array containsObject: o] == NO && [specificArray containsObject: o] == NO)
+                            [specificArray addObject: o];
                     }
                 }
-                
-                [studiesForUserCache setObject: specificArray forKey: userID];
+                else if ([obj count] == 0)
+                {
+                    // It means this study doesnt exist in the entire DB -> remove it from this user list
+                    NSLog( @"This study is not longer available in the DB -> delete it : %@", [study valueForKey: @"patientUID"]);
+                    [self.managedObjectContext deleteObject:study];
+                }
+            }
+            
+            @synchronized( studiesForUserCache)
+            {
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: specificArray, @"array", [NSDate date], @"date", nil] forKey: userID];
             }
         }
 	}
@@ -422,14 +431,18 @@ static NSMutableDictionary *studiesForUserCache = nil;
             {
                 NSString *userID = user.name;
                 
-                if( user && [studiesForUserCache objectForKey: userID])
-                    studiesArray = [studiesForUserCache objectForKey: userID];
-                else
+                if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
+                    studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
+            }
+            
+            if( studiesArray == nil)
+            {
+                studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+                
+                @synchronized( studiesForUserCache)
                 {
-                    studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-                    
                     if( studiesArray)
-                        [studiesForUserCache setObject: studiesArray forKey: userID];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: userID];
                 }
             }
             
@@ -561,94 +574,98 @@ static NSMutableDictionary *studiesForUserCache = nil;
     {
         NSString *userID = [user.name stringByAppendingFormat:@" %@", albumName];
         
-        if( user && [studiesForUserCache objectForKey: userID])
+        if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
         {
-            studiesArray = [studiesForUserCache objectForKey: userID];
+            studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
             
             if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
             else
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }
+    }
+    
+    if( studiesArray == nil)
+    {
+        [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+        
+        @try
+        {
+            NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
+            req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+            req.predicate = [NSPredicate predicateWithFormat:@"name == %@", albumName];
+            albumArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+        }
+        @catch(NSException *e)
+        {
+            NSLog(@"******** studiesForAlbum exception: %@", e.description);
+        }
+        
+        [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
+        
+        NSManagedObject *album = [albumArray lastObject];
+        
+        if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
+        {
+            studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
+        }
         else
         {
-            [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+            NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
             
-            @try
+            if( user.studyPredicate.length)
             {
-                NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-                req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
-                req.predicate = [NSPredicate predicateWithFormat:@"name == %@", albumName];
-                albumArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
-            }
-            @catch(NSException *e)
-            {
-                NSLog(@"******** studiesForAlbum exception: %@", e.description);
-            }
-            
-            [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
-            
-            NSManagedObject *album = [albumArray lastObject];
-            
-            if ([[album valueForKey:@"smartAlbum"] intValue] == 1)
-            {
-                studiesArray = [WebPortalUser studiesForUser: user predicate:[DicomDatabase predicateForSmartAlbumFilter:[album valueForKey:@"predicateString"]] sortBy:sortValue];
-            }
-            else
-            {
-                NSArray *originalAlbum = [[album valueForKey:@"studies"] allObjects];
-                
-                if( user.studyPredicate.length)
+                @try
                 {
-                    @try
+                    studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
+                    
+                    NSArray *specificArray = [user arrayByAddingSpecificStudiesToArray: nil];
+                    
+                    for ( NSManagedObject *specificStudy in specificArray)
                     {
-                        studiesArray = [originalAlbum filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: user.studyPredicate]];
-                        
-                        NSArray *specificArray = [user arrayByAddingSpecificStudiesToArray: nil];
-                        
-                        for ( NSManagedObject *specificStudy in specificArray)
+                        if ([originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
                         {
-                            if ([originalAlbum containsObject: specificStudy] == YES && [studiesArray containsObject: specificStudy] == NO)
-                            {
-                                studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
-                            }
+                            studiesArray = [studiesArray arrayByAddingObject: specificStudy];						
                         }
                     }
-                    @catch( NSException *e)
-                    {
-                        NSLog( @"****** User Filter Error : %@", e);
-                        NSLog( @"****** NO studies will be displayed.");
-                        
-                        studiesArray = nil;
-                    }
                 }
-                else studiesArray = originalAlbum;
-                
-                if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
-                    studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
-                else
-                    studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+                @catch( NSException *e)
+                {
+                    NSLog( @"****** User Filter Error : %@", e);
+                    NSLog( @"****** NO studies will be displayed.");
+                    
+                    studiesArray = nil;
+                }
             }
+            else studiesArray = originalAlbum;
             
-            if( studiesArray)
-                [studiesForUserCache setObject: studiesArray forKey: userID];
+            if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
+                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
+            else
+                studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }
         
-        if( numberOfStudies)
-            *numberOfStudies = studiesArray.count;
-        
-        if( fetchLimit)
+        @synchronized( studiesForUserCache)
         {
-            NSRange range = NSMakeRange( fetchOffset, fetchLimit);
-            
-            if( range.location > studiesArray.count)
-                range.location = studiesArray.count;
-            
-            if( range.location + range.length > studiesArray.count)
-                range.length = studiesArray.count - range.location;
-            
-            studiesArray = [studiesArray subarrayWithRange: range];
+            if( studiesArray)
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: userID];
         }
+    }
+        
+    if( numberOfStudies)
+        *numberOfStudies = studiesArray.count;
+    
+    if( fetchLimit)
+    {
+        NSRange range = NSMakeRange( fetchOffset, fetchLimit);
+        
+        if( range.location > studiesArray.count)
+            range.location = studiesArray.count;
+        
+        if( range.location + range.length > studiesArray.count)
+            range.length = studiesArray.count - range.location;
+        
+        studiesArray = [studiesArray subarrayWithRange: range];
     }
     
 	return studiesArray;
