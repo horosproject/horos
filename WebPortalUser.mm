@@ -299,10 +299,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		if( userStudies.count == 0)
 			return array;
         
+        NSString *userID = [self.name stringByAppendingString: @" specificStudies"];
+        
         @synchronized( studiesForUserCache)
         {
-            NSString *userID = [self.name stringByAppendingString: @" specificStudies"];
-            
             if( [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
             {
                 specificArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
@@ -427,10 +427,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
             }
             
+            NSString *userID = user.name;
+            
             @synchronized( studiesForUserCache)
             {
-                NSString *userID = user.name;
-                
                 if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
                     studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
             }
@@ -570,10 +570,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(managedObjectChangedNotificationReceived:) name: NSManagedObjectContextObjectsDidChangeNotification object: nil];
     }
     
+    NSString *userID = [user.name stringByAppendingFormat:@" %@", albumName];
+    
     @synchronized( studiesForUserCache)
     {
-        NSString *userID = [user.name stringByAppendingFormat:@" %@", albumName];
-        
         if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
         {
             studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
