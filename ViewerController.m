@@ -6674,6 +6674,9 @@ return YES;
 {
     [[self window] setDelegate: nil];
 	
+    [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
+    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO]; 
+    
     NSArray *windows = [NSApp windows];
     
     if([windows count] < 2)

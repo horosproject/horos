@@ -14026,8 +14026,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				args = [args arrayByAddingObjectsFromArray: subArray];
 				
 				[t setArguments: args];
-				[t launch];
-				while( [t isRunning]) [NSThread sleepForTimeInterval: 0.01];
+                [t launch];
+				[t waitUntilExit];
+//				while( [t isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				
 				free( objs);
 			}
