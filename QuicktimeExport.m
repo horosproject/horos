@@ -447,6 +447,41 @@
     return [self createMovieQTKit:openIt :produceFiles :name :0];
 }
 
+// Consume the imageNamesCopy mutable array and return a CVPixelBufferRef relative to the last object of the array
+//- (CVPixelBufferRef)fetchNextPixelBuffer
+//{
+//    NSString *imageName = [self.imageNamesCopy lastObject];
+//    if (imageName) [self.imageNamesCopy removeLastObject];
+//    // Create an UIImage instance
+//    UIImage *image = [UIImage imageNamed:imageName];
+//    CGImageRef imageRef = image.CGImage;    
+//    
+//    CVPixelBufferRef buffer = NULL;
+//    size_t width = CGImageGetWidth(imageRef);
+//    size_t height = CGImageGetHeight(imageRef);
+//    // Pixel buffer options
+//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+//                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, 
+//                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+//    // Create the pixel buffer
+//    CVReturn result = CVPixelBufferCreate(NULL, width, height, kCVPixelFormatType_32ARGB, (__bridge CFDictionaryRef) options, &buffer);
+//    if (result == kCVReturnSuccess && buffer) {
+//        CVPixelBufferLockBaseAddress(buffer, 0);
+//        void *bufferPointer = CVPixelBufferGetBaseAddress(buffer);
+//        // Define the color space
+//        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//        // Create the bitmap context to draw the image
+//        CGContextRef context = CGBitmapContextCreate(bufferPointer, width, height, 8, 4 * width, colorSpace, kCGImageAlphaNoneSkipFirst);
+//        CGColorSpaceRelease(colorSpace);
+//        if (context) {
+//            CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+//            CGContextRelease(context);
+//        }
+//        CVPixelBufferUnlockBaseAddress(buffer, 0);
+//    }
+//    return buffer;
+//}
+
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)fps
 {
     if (fps > 0)
@@ -493,105 +528,157 @@
 	
 	if( result == NSFileHandlingPanelOKButton)
 	{
-		int				maxImage, curSample = 0;
-		QTTime			curTime;
-		QTMovie			*mMovie = nil;
-		BOOL			aborted = NO;
-		
-		if( produceFiles == NO)
-		{
-			[[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
-			
-			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
-			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-			
-            long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
-			long timeScale = 600;
-			
-			curTime = QTMakeTime(timeValue, timeScale);
-		}
-		
-		Wait    *wait = [[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil) ];
-		[wait showWindow:self];
-		
-		// For each sample...
-		maxImage = numberOfFrames;
-		
-		[wait setCancel:YES];
-		[[wait progress] setMaxValue:maxImage];
-		//ImageCompression.h QTAddImageCodecType
-		NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality], QTAddImageCodecQuality, nil];	//qdrw , tiff, jpeg
-		
-		for (curSample = 0; curSample < maxImage; curSample++) 
-		{
-			NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-			
-			[wait incrementBy:1];
-			
-            NSDisableScreenUpdates();
+//        if( 0)
+//        {
+//            // Set the frameDuration ivar (50/600 = 1 sec / 12 number of frames)
+//            frameDuration = CMTimeMake(50, 600);
+//            nextPresentationTimeStamp = kCMTimeZero;
+//            
+//            NSError *error = nil;
+//            AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
+//            if (!error) {
+//                // Define video settings to be passed to the AVAssetWriterInput instance
+//                NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                               AVVideoCodecJPEG, AVVideoCodecKey, 
+//                                               [NSNumber numberWithInt:640], AVVideoWidthKey, 
+//                                               [NSNumber numberWithInt:480], AVVideoHeightKey, nil];
+//                // Instanciate the AVAssetWriterInput
+//                AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+//                // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
+//                AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
+//                // Add the writer input to the writer and begin writing
+//                [writer addInput:writerInput];
+//                [writer startWriting];
+//                [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+//                //
+//                dispatch_queue_t mediaDataRequestQueue = dispatch_queue_create("Media data request queue", NULL);
+//                
+//                [writerInput requestMediaDataWhenReadyOnQueue:mediaDataRequestQueue usingBlock:^{
+//                    while (writerInput.isReadyForMoreMediaData) {
+//                        CVPixelBufferRef nextBuffer = [self fetchNextPixelBuffer];
+//                        if (nextBuffer) {
+//                            [pixelBufferAdaptor appendPixelBuffer:nextBuffer withPresentationTime:nextPresentationTimeStamp];
+//                            
+//                            nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+//                            
+//                            CVPixelBufferRelease(nextBuffer);                    
+////                            dispatch_async(dispatch_get_main_queue(), ^{
+////                                NSUInteger totalFrames = [self.imagesNames count]; 
+////                                float progress = 1.0 * (totalFrames - [self.imageNamesCopy count]) / totalFrames;
+////                                [self.progressBar setProgress:progress animated:YES];
+////                            });
+//                        } else {
+//                            [writerInput markAsFinished];
+//                            [writer finishWriting];
+//                            dispatch_release(mediaDataRequestQueue);
+//                            break;
+//                        }
+//                    }
+//                }];
+//            }
+//        }
+//        else
+        {
+            int				maxImage, curSample = 0;
+            QTTime			curTime;
+            QTMovie			*mMovie = nil;
+            BOOL			aborted = NO;
             
-			NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
-			
-			if( im)
-			{
-				if( produceFiles == NO)
-				{
-					[mMovie addImage:im forDuration:curTime withAttributes: myDict];
-				}
-				else
-				{
-					NSString *curFile = [[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] stringByAppendingPathComponent:[NSString stringWithFormat:@"OsiriX-%4d.jpg", curSample]];
-					
-					NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
-					[bitmapData writeToFile:curFile atomically:YES];
-				}
-			}
-			
-			if( [wait aborted])
-			{
-				curSample = maxImage;
-				aborted = YES;
-			}
-            
-            NSEnableScreenUpdates();
-            
-			[pool release];
-		}
-		[wait close];
-		[wait release];
-		
-		// Go back to initial frame
-		[object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
-		
-		if( produceFiles == NO && aborted == NO)
-		{
-			[[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
-			
-			if( aborted == NO)
-			{
-				NSData	*exportSettings = nil;
-				id		component = nil;
-				
-				if( [exportTypes count])
-				{
-					exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
-					component = [exportTypes objectAtIndex: [type indexOfSelectedItem]];
-				}
-				
-                [self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
+            if( produceFiles == NO)
+            {
+                [[QTMovie movie] writeToFile: [fileName stringByAppendingString:@"temp"] withAttributes: nil];
                 
-                if( openIt)
+                mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+                [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+                
+                long long timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
+                long timeScale = 600;
+                
+                curTime = QTMakeTime(timeValue, timeScale);
+            }
+            
+            Wait    *wait = [[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil) ];
+            [wait showWindow:self];
+            
+            // For each sample...
+            maxImage = numberOfFrames;
+            
+            [wait setCancel:YES];
+            [[wait progress] setMaxValue:maxImage];
+            //ImageCompression.h QTAddImageCodecType
+            NSDictionary *myDict = [NSDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecHighQuality], QTAddImageCodecQuality, nil];	//qdrw , tiff, jpeg
+            
+            for (curSample = 0; curSample < maxImage; curSample++) 
+            {
+                NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
+                
+                [wait incrementBy:1];
+                
+                NSDisableScreenUpdates();
+                
+                NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];
+                
+                if( im)
                 {
-                    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-                    [ws openFile:fileName];
+                    if( produceFiles == NO)
+                    {
+                        [mMovie addImage:im forDuration:curTime withAttributes: myDict];
+                    }
+                    else
+                    {
+                        NSString *curFile = [[[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] stringByAppendingPathComponent:[NSString stringWithFormat:@"OsiriX-%4d.jpg", curSample]];
+                        
+                        NSData *bitmapData = [NSBitmapImageRep representationOfImageRepsInArray: [im representations] usingType:NSJPEGFileType properties:[NSDictionary dictionaryWithObject:[NSDecimalNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor]];
+                        [bitmapData writeToFile:curFile atomically:YES];
+                    }
                 }
-			}
-		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:nil];
-		
-		if( aborted == NO)
-			return fileName;
+                
+                if( [wait aborted])
+                {
+                    curSample = maxImage;
+                    aborted = YES;
+                }
+                
+                NSEnableScreenUpdates();
+                
+                [pool release];
+            }
+            [wait close];
+            [wait release];
+            
+            // Go back to initial frame
+            [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
+            
+            if( produceFiles == NO && aborted == NO)
+            {
+                [[NSFileManager defaultManager] removeFileAtPath:fileName handler:nil];
+                
+                if( aborted == NO)
+                {
+                    NSData	*exportSettings = nil;
+                    id		component = nil;
+                    
+                    if( [exportTypes count])
+                    {
+                        exportSettings = [self getExportSettings: mMovie component: [exportTypes objectAtIndex: [type indexOfSelectedItem]]];
+                        component = [exportTypes objectAtIndex: [type indexOfSelectedItem]];
+                    }
+                    
+                    [self writeMovie:mMovie toFile:fileName withComponent: component withExportSettings: exportSettings];
+                    
+                    if( openIt)
+                    {
+                        NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+                        [ws openFile:fileName];
+                    }
+                }
+            }
+            
+            [[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler:nil];
+            
+            if( aborted == NO)
+                return fileName;
+        }
 	}
 	
 	return nil;

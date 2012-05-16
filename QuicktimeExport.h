@@ -12,7 +12,8 @@
      PURPOSE.
 =========================================================================*/
 
-
+//#import <AVFoundation/AVFoundation.h>
+//#import <CoreMedia/CoreMedia.h>
 
 
 #import <Foundation/Foundation.h>
@@ -33,6 +34,9 @@
 	
 	IBOutlet NSView			*view;
 	IBOutlet NSPopUpButton	*type;
+    
+//    CMTime                  frameDuration;
+//    CMTime                  nextPresentationTimeStamp;
 }
 
 + (NSString*) generateQTVR:(NSString*) srcPath frames:(int) frames;
