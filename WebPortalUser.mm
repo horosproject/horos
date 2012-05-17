@@ -287,7 +287,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 -(NSArray*)arrayByAddingSpecificStudiesToArray:(NSArray*)array
 {
-	NSMutableArray *specificArray = [NSMutableArray array];
+	NSMutableArray *specificArray = nil;
 	
     if( array == nil)
         array = [NSArray array];
@@ -321,7 +321,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             if( studiesArray == nil)
             {
-                // Find studies
+                // Find all studies
                 NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
                 req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
                 req.predicate = [NSPredicate predicateWithValue: YES];
@@ -333,6 +333,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
                         [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
                 }
             }
+            
+            specificArray = [NSMutableArray array];
             
             for (WebPortalStudy* study in userStudies)
             {
@@ -584,6 +586,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
         }
     }
+    
+    studiesArray = nil;
     
     if( studiesArray == nil)
     {
