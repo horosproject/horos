@@ -552,7 +552,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         for( NSManagedObject *object in set)
         {
-            if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]])
+            if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]] || [object isKindOfClass: [WebPortalStudy class]])
             {
                 [studiesForUserCache removeAllObjects];
                 break;
