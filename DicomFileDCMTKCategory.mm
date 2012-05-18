@@ -295,19 +295,23 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			if( [self autoFillComments])
 			{
-				NSString *commentsField = nil;
-				DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
+                NSString *commentsField = nil;
                 DcmItem *dicomItems = nil;
                 
-                if( [self commentsGroup] == 2) // MetaHeader
-                    dicomItems = fileformat.getMetaInfo();
-                else
-                    dicomItems = dataset;
+                if( [self commentsGroup] && [self commentsElement])
+                {
+                    DcmTagKey key = DcmTagKey([self commentsGroup], [self commentsElement]);
                     
-				if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
-				{
-					commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
-				}
+                    if( [self commentsGroup] == 2) // MetaHeader
+                        dicomItems = fileformat.getMetaInfo();
+                    else
+                        dicomItems = dataset;
+                        
+                    if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    {
+                        commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                    }
+                }
                 
                 if( [self commentsGroup2] && [self commentsElement2])
                 {
@@ -333,6 +337,25 @@ extern NSRecursiveLock *PapyrusLock;
                     DcmTagKey key = DcmTagKey([self commentsGroup3], [self commentsElement3]);
                     
                     if( [self commentsGroup3] == 2) // MetaHeader
+                        dicomItems = fileformat.getMetaInfo();
+                    else
+                        dicomItems = dataset;
+                    
+                    if( dicomItems->findAndGetString(key, string, OFFalse).good() && string != NULL)
+                    {
+                        if( commentsField)
+                            commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding]];
+                        else
+                            commentsField = [NSString stringWithCString:string encoding: NSISOLatin1StringEncoding];
+                        [dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
+                    }
+                }
+                
+                if( [self commentsGroup4] && [self commentsElement4])
+                {
+                    DcmTagKey key = DcmTagKey([self commentsGroup4], [self commentsElement4]);
+                    
+                    if( [self commentsGroup4] == 2) // MetaHeader
                         dicomItems = fileformat.getMetaInfo();
                     else
                         dicomItems = dataset;

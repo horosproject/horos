@@ -8,6 +8,7 @@
 - Web Portal: faster performances with large database
 - Add supports for private SOP Class UIDs: Philips, GE, Siemens
 - Better Bonjour detection
+- Add up to 4 DICOM fields to Database Comments field
 
 ------------------------------------------------------------------------------------------
 Tests:
@@ -19,7 +20,6 @@ Added features:
 
 - High-Res mode for curved MPR ?
 - Generate Movies with AVAssetWriter (10.7 SDK)
-- GUI to autofill comments 2, 3, 4
 - Shift+Cmd+Click to add series to viewer
 - ExportROIs plugin: add Length
 - Storage Commitment Service

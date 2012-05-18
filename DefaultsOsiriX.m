@@ -921,8 +921,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"0" forKey: @"COMMENTSAUTOFILL"];
 	[defaultValues setObject: @"http://list.dicom.dcm/DICOMNodes.plist" forKey: @"syncDICOMNodesURL"];
 	[defaultValues setObject: @"http://list.dicom.dcm/OsiriXDB.plist" forKey: @"syncOsiriXDBURL"];
-	[defaultValues setObject: @"0008" forKey: @"COMMENTSGROUP"];
-	[defaultValues setObject: @"0008" forKey: @"COMMENTSELEMENT"];
 	[defaultValues setObject: @"1" forKey: @"BurnOsirixApplication"];
 	[defaultValues setObject: @"1" forKey: @"BurnHtml"];
 	[defaultValues setObject: @"0" forKey: @"BurnSupplementaryFolder"];

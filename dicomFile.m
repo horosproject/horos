@@ -63,8 +63,8 @@ static BOOL NOLOCALIZER = NO;
 static BOOL combineProjectionSeries = NO, oneFileOnSeriesForUS = NO;
 static int combineProjectionSeriesMode = NO;
 //static int CHECKFORLAVIM = -1;
-static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO;
-static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO;
+static int COMMENTSGROUP = NO, COMMENTSGROUP2 = NO, COMMENTSGROUP3 = NO, COMMENTSGROUP4 = NO;
+static int COMMENTSELEMENT = NO, COMMENTSELEMENT2 = NO, COMMENTSELEMENT3 = NO, COMMENTSELEMENT4 = NO;
 static BOOL SEPARATECARDIAC4D = NO;
 //static BOOL SeparateCardiacMR = NO;
 //static int SeparateCardiacMRMode = 0;
@@ -320,6 +320,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			
             COMMENTSGROUP3 = [[sd objectForKey: @"COMMENTSGROUP3"] intValue];
 			COMMENTSELEMENT3 = [[sd objectForKey: @"COMMENTSELEMENT3"] intValue];
+            
+            COMMENTSGROUP4 = [[sd objectForKey: @"COMMENTSGROUP4"] intValue];
+			COMMENTSELEMENT4 = [[sd objectForKey: @"COMMENTSELEMENT4"] intValue];
 			
 			useSeriesDescription = [sd boolForKey: @"useSeriesDescription"];
 			splitMultiEchoMR = [sd boolForKey: @"splitMultiEchoMR"];
@@ -359,6 +362,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             COMMENTSGROUP3 = [[dict objectForKey: @"COMMENTSGROUP3"] intValue];
 			COMMENTSELEMENT3 = [[dict objectForKey: @"COMMENTSELEMENT3"] intValue];
 			
+            COMMENTSGROUP4 = [[dict objectForKey: @"COMMENTSGROUP4"] intValue];
+			COMMENTSELEMENT4 = [[dict objectForKey: @"COMMENTSELEMENT4"] intValue];
+            
 			useSeriesDescription = [[dict objectForKey: @"useSeriesDescription"] intValue];
 			splitMultiEchoMR = [[dict objectForKey: @"splitMultiEchoMR"] intValue];
 			NOLOCALIZER = [[dict objectForKey: @"NOLOCALIZER"] intValue];
@@ -1889,31 +1895,34 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     {
                         NSString *commentsField = nil;
                         
-                        theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
-                        if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                        if( COMMENTSGROUP && COMMENTSELEMENT)
                         {
-                            SElement *inGrOrModP = theGroupP;
-                            
-                            int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP);
-                            int theMaxElem = gArrGroup [theEnumGrNb].size;
-                            int j;
-                            
-                            for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+                            theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP);
+                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
                             {
-                                if( inGrOrModP->element == COMMENTSELEMENT)
+                                SElement *inGrOrModP = theGroupP;
+                                
+                                int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP);
+                                int theMaxElem = gArrGroup [theEnumGrNb].size;
+                                int j;
+                                
+                                for (j = 0; j < theMaxElem; j++, inGrOrModP++)
                                 {
-                                    if( inGrOrModP->nb_val > 0)
+                                    if( inGrOrModP->element == COMMENTSELEMENT)
                                     {
-                                        UValue_T *theValueP = inGrOrModP->value;
-                                        
-                                        if( theValueP->a && validAPointer( inGrOrModP->vr))
+                                        if( inGrOrModP->nb_val > 0)
                                         {
-                                            commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+                                            UValue_T *theValueP = inGrOrModP->value;
+                                            
+                                            if( theValueP->a && validAPointer( inGrOrModP->vr))
+                                            {
+                                                commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+                                            }
                                         }
                                     }
                                 }
+                                theErr = Papy3GroupFree (&theGroupP, TRUE);
                             }
-                            theErr = Papy3GroupFree (&theGroupP, TRUE);
                         }
                         
                         if( COMMENTSGROUP2 && COMMENTSELEMENT2)
@@ -1970,6 +1979,42 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                                 for (j = 0; j < theMaxElem; j++, inGrOrModP++)
                                 {
                                     if( inGrOrModP->element == COMMENTSELEMENT3)
+                                    {
+                                        if( inGrOrModP->nb_val > 0)
+                                        {
+                                            UValue_T *theValueP = inGrOrModP->value;
+                                            
+                                            if( theValueP->a && validAPointer( inGrOrModP->vr))
+                                            {
+                                                if( commentsField)
+                                                    commentsField = [commentsField stringByAppendingFormat: @" / %@", [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding]];
+                                                else
+                                                    commentsField = [NSString stringWithCString:theValueP->a encoding: NSISOLatin1StringEncoding];
+                                            }
+                                        }
+                                    }
+                                }
+                                theErr = Papy3GroupFree (&theGroupP, TRUE);
+                            }
+                        }
+                        
+                        if( COMMENTSGROUP4 && COMMENTSELEMENT4)
+                        {
+                            if (gIsPapyFile [fileNb] == DICOM10)
+                                theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+                            
+                            theErr = Papy3GotoGroupNb (fileNb, COMMENTSGROUP4);
+                            if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                            {
+                                SElement *inGrOrModP = theGroupP;
+                                
+                                int theEnumGrNb = Papy3ToEnumGroup( COMMENTSGROUP4);
+                                int theMaxElem = gArrGroup [theEnumGrNb].size;
+                                int j;
+                                
+                                for (j = 0; j < theMaxElem; j++, inGrOrModP++)
+                                {
+                                    if( inGrOrModP->element == COMMENTSELEMENT4)
                                     {
                                         if( inGrOrModP->nb_val > 0)
                                         {
@@ -3144,22 +3189,104 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		{
 			if( COMMENTSAUTOFILL)
 			{
-				id			commentsField;
-				NSString	*grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
-				
-				if((commentsField = [dcmObject attributeValueForKey: grel]))
-				{
-					if( [commentsField isKindOfClass: [NSString class]])
-						[dicomElements setObject:commentsField forKey:@"commentsAutoFill"];
-					
-					if( [commentsField isKindOfClass: [NSNumber class]])
-						[dicomElements setObject:[commentsField stringValue] forKey:@"commentsAutoFill"];
-						
-					if( [commentsField isKindOfClass: [NSCalendarDate class]])
-						[dicomElements setObject:[commentsField description] forKey:@"commentsAutoFill"];
-				}
+                NSString *commentsField = nil, *grel = nil;
+                id field = nil;
+                
+                if( COMMENTSGROUP && COMMENTSELEMENT)
+                {
+                    grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP, COMMENTSELEMENT];
+                    if(( field = [dcmObject attributeValueForKey: grel]))
+                    {
+                        if( [field isKindOfClass: [NSString class]])
+                            commentsField = [NSString stringWithString: field];
+                        
+                        if( [field isKindOfClass: [NSNumber class]])
+                            commentsField = [field stringValue];
+                        
+                        if( [field isKindOfClass: [NSCalendarDate class]])
+                            commentsField = [field description];
+                    }
+                }
+                
+                if( COMMENTSGROUP2 && COMMENTSELEMENT2)
+                {
+                    grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP2, COMMENTSELEMENT2];
+                    if(( field = [dcmObject attributeValueForKey: grel]))
+                    {
+                        NSString *value = nil;
+                        
+                        if( [field isKindOfClass: [NSString class]])
+                            value = [NSString stringWithString: field];
+                        
+                        if( [field isKindOfClass: [NSNumber class]])
+                            value = [field stringValue];
+                        
+                        if( [field isKindOfClass: [NSCalendarDate class]])
+                            value = [field description];
+                        
+                        if( value)
+                        {
+                            if( commentsField)
+                                commentsField = [commentsField stringByAppendingFormat: @" / %@", value];
+                            else
+                                commentsField = value;
+                        }
+                    }
+                }
+                
+                if( COMMENTSGROUP3 && COMMENTSELEMENT3)
+                {
+                    grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP3, COMMENTSELEMENT3];
+                    if(( field = [dcmObject attributeValueForKey: grel]))
+                    {
+                        NSString *value = nil;
+                        
+                        if( [field isKindOfClass: [NSString class]])
+                            value = [NSString stringWithString: field];
+                        
+                        if( [field isKindOfClass: [NSNumber class]])
+                            value = [field stringValue];
+                        
+                        if( [field isKindOfClass: [NSCalendarDate class]])
+                            value = [field description];
+                        
+                        if( value)
+                        {
+                            if( commentsField)
+                                commentsField = [commentsField stringByAppendingFormat: @" / %@", value];
+                            else
+                                commentsField = value;
+                        }
+                    }
+                }
+                
+                if( COMMENTSGROUP4 && COMMENTSELEMENT4)
+                {
+                    grel = [NSString stringWithFormat:@"%04X,%04X", COMMENTSGROUP4, COMMENTSELEMENT4];
+                    if(( field = [dcmObject attributeValueForKey: grel]))
+                    {
+                        NSString *value = nil;
+                        
+                        if( [field isKindOfClass: [NSString class]])
+                            value = [NSString stringWithString: field];
+                        
+                        if( [field isKindOfClass: [NSNumber class]])
+                            value = [field stringValue];
+                        
+                        if( [field isKindOfClass: [NSCalendarDate class]])
+                            value = [field description];
+                        
+                        if( value)
+                        {
+                            if( commentsField)
+                                commentsField = [commentsField stringByAppendingFormat: @" / %@", value];
+                            else
+                                commentsField = value;
+                        }
+                    }
+                }
 			}
-			
+            
 //			if( CHECKFORLAVIM == YES)
 //			{
 //				//Le nom de l'étude peut se trouver dans plusieurs champs DICOM, suivant la modalité de l'examen.
@@ -4201,6 +4328,16 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 - (int)commentsElement3
 {
 	return COMMENTSELEMENT3;
+}
+
+- (int)commentsGroup4
+{
+	return COMMENTSGROUP4;
+}
+
+- (int)commentsElement4
+{
+	return COMMENTSELEMENT4;
 }
 
 @end

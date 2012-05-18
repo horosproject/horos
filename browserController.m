@@ -892,7 +892,7 @@ static NSConditionLock *threadLock = nil;
 - (IBAction) regenerateAutoComments:(id) sender;
 {
 	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Regenerate Auto Comments", nil),
-											 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of all studies and series.", nil),
+											 NSLocalizedString(@"Are you sure you want to regenerate the comments field? It will delete the existing comments of studies and series.", nil),
 											 NSLocalizedString(@"OK",nil),
 											 NSLocalizedString(@"Cancel",nil),
 											 nil) == NSAlertDefaultReturn)

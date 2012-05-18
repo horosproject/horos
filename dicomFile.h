@@ -128,6 +128,8 @@
 - (int) commentsElement2; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
 - (int) commentsGroup3; /**< Returns the commentsGroup default. The DICOM group to get comments from. */
 - (int) commentsElement3; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
+- (int) commentsGroup4; /**< Returns the commentsGroup default. The DICOM group to get comments from. */
+- (int) commentsElement4; /**< Returns the commentsGroup default.  The DICOM  element to get get comments from. */
 - (BOOL) containsString: (NSString*) s inArray: (NSArray*) a;
 @end
 

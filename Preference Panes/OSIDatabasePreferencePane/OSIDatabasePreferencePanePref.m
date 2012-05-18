@@ -21,6 +21,8 @@
 
 @implementation OSIDatabasePreferencePanePref
 
+@synthesize currentCommentsAutoFill;
+
 - (id) initWithBundle:(NSBundle *)bundle
 {
 	if( self = [super init])
@@ -129,10 +131,7 @@
 	
 	
 	// COMMENTS
-	
-	[commentsAutoFill setState:[defaults boolForKey:@"COMMENTSAUTOFILL"]];
-	[commentsGroup setStringValue:[NSString stringWithFormat:@"0x%04X", [[defaults stringForKey:@"COMMENTSGROUP"] intValue]]];
-	[commentsElement setStringValue:[NSString stringWithFormat:@"0x%04X", [[defaults stringForKey:@"COMMENTSELEMENT"] intValue]]];
+	self.currentCommentsAutoFill = 0;
 	
 	// REPORTS
 	[self buildPluginsMenu];
@@ -228,27 +227,73 @@
 	[[BrowserController currentBrowser] regenerateAutoComments: sender];
 }
 
+- (void) setCurrentCommentsAutoFill:(int) v
+{
+    currentCommentsAutoFill = v;
+    
+    NSString *group, *element;
+    if( currentCommentsAutoFill > 0)
+    {
+        group = [NSString stringWithFormat: @"COMMENTSGROUP%d", currentCommentsAutoFill+1];
+        element = [NSString stringWithFormat: @"COMMENTSELEMENT%d", currentCommentsAutoFill+1];
+    }
+    else
+    {
+        group = [NSString stringWithFormat: @"COMMENTSGROUP"];
+        element = [NSString stringWithFormat: @"COMMENTSELEMENT"];
+    }
+    
+    if( [[[NSUserDefaults standardUserDefaults] stringForKey:group] intValue] > 0)
+    {
+        [commentsGroup setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:group] intValue]]];
+        [commentsElement setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:element] intValue]]];
+    }
+    else
+    {
+        [commentsGroup setStringValue: @""];
+        [commentsElement setStringValue: @""];
+    }
+}
+
 - (IBAction) setAutoComments:(id) sender
 {
 	// COMMENTS
-	
-	[[NSUserDefaults standardUserDefaults] setBool: [commentsAutoFill state] forKey:@"COMMENTSAUTOFILL"];
-	
-	unsigned		val;
-	NSScanner	*hexscanner;
+
+    NSString *group, *element;
+    if( currentCommentsAutoFill > 0)
+    {
+        group = [NSString stringWithFormat: @"COMMENTSGROUP%d", currentCommentsAutoFill+1];
+        element = [NSString stringWithFormat: @"COMMENTSELEMENT%d", currentCommentsAutoFill+1];
+    }
+    else
+    {
+        group = [NSString stringWithFormat: @"COMMENTSGROUP"];
+        element = [NSString stringWithFormat: @"COMMENTSELEMENT"];
+    }
+    
+	unsigned val;
+	NSScanner *hexscanner;
 	
 	val = 0;
-	hexscanner = [NSScanner scannerWithString:[commentsGroup stringValue]];
-	[hexscanner scanHexInt:&val];
-	[[NSUserDefaults standardUserDefaults] setInteger:val forKey:@"COMMENTSGROUP"];
-	
-	val = 0;
-	hexscanner = [NSScanner scannerWithString:[commentsElement stringValue]];
-	[hexscanner scanHexInt:&val];
-	[[NSUserDefaults standardUserDefaults] setInteger:val forKey:@"COMMENTSELEMENT"];
-	
-	[commentsGroup setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSGROUP"] intValue]]];
-	[commentsElement setStringValue:[NSString stringWithFormat:@"0x%04X", [[[NSUserDefaults standardUserDefaults] stringForKey:@"COMMENTSELEMENT"] intValue]]];
+	hexscanner = [NSScanner scannerWithString: [commentsGroup stringValue]];
+	[hexscanner scanHexInt: &val];
+    
+    if( val > 0)
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger: val forKey: group];
+        
+        val = 0;
+        hexscanner = [NSScanner scannerWithString: [commentsElement stringValue]];
+        [hexscanner scanHexInt: &val];
+        [[NSUserDefaults standardUserDefaults] setInteger: val forKey: element];
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setObject: nil forKey: element];
+        [[NSUserDefaults standardUserDefaults] setObject: nil forKey: group];
+    }
+    
+    self.currentCommentsAutoFill = currentCommentsAutoFill;
 }
 
 - (IBAction) setDICOMFieldMenu: (id) sender;

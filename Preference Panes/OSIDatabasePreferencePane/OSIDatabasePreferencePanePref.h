@@ -19,9 +19,6 @@
 	IBOutlet NSMatrix		*locationMatrix;
 	IBOutlet NSTextField	*locationURLField;
 	IBOutlet NSPathControl	*locationPathField;
-//	IBOutlet NSMatrix		*copyDatabaseModeMatrix;
-//	IBOutlet NSButton		*copyDatabaseOnOffButton;
-//	IBOutlet NSButton		*localizerOnOffButton;
 	IBOutlet NSMatrix		*seriesOrderMatrix;
 	IBOutlet NSPopUpButton	*reportsMode;
 	
@@ -31,8 +28,9 @@
 	IBOutlet NSMatrix		*commentsDeleteMatrix;
 	IBOutlet NSTextField	*commentsDeleteText;
 	
-	IBOutlet NSButton		*commentsAutoFill;
 	IBOutlet NSTextField	*commentsGroup, *commentsElement;
+    
+    int currentCommentsAutoFill;
 	
 	// Auto-Cleaning
 
@@ -40,11 +38,10 @@
 	IBOutlet NSMatrix		*olderType;
 	IBOutlet NSPopUpButton	*olderThanProduced, *olderThanOpened;
 	
-//	IBOutlet NSButton		*freeSpace;
-//	IBOutlet NSMatrix		*freeSpaceType;
-//	IBOutlet NSPopUpButton	*freeSpaceSize;
 	IBOutlet NSWindow *mainWindow;
 }
+
+@property (nonatomic) int currentCommentsAutoFill;
 
 - (void) mainViewDidLoad;
 - (IBAction)setLocation:(id)sender;
