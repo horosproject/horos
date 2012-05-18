@@ -896,7 +896,7 @@ static NSConditionLock *threadLock = nil;
 											 NSLocalizedString(@"OK",nil),
 											 NSLocalizedString(@"Cancel",nil),
 											 nil) == NSAlertDefaultReturn)
-	{
+	{        
 		Wait *splash = [[Wait alloc] initWithString: NSLocalizedString(@"Regenerate Auto Comments...", nil)];
 			
 		[splash showWindow:self];
@@ -907,25 +907,87 @@ static NSConditionLock *threadLock = nil;
 		
 		[context lock];
 		
-		// Find all studies
-		NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		
-		NSError *error = nil;
-		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		
+        NSArray *studiesArray = nil;
+        NSFetchRequest *dbRequest = nil;
+        
+        if( sender == nil) // Apply to all studies
+        {
+            // Find all studies
+            NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+            [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+            
+            NSError *error = nil;
+            
+            studiesArray = [context executeFetchRequest:dbRequest error:&error];
+		}
+        else
+        {
+            NSMutableArray *objects = [NSMutableArray array];
+            NSMutableArray *selectedStudies = [NSMutableArray array];
+            
+            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+            if( [databaseOutline selectedRow] >= 0)
+            {
+                for( int x = 0; x < [selectedRows count] ; x++)
+                {
+                    NSUInteger row;
+                    if( x == 0) row = [selectedRows firstIndex];
+                    else row = [selectedRows indexGreaterThanIndex: row];
+                    
+                    NSManagedObject	*object = [databaseOutline itemAtRow: row];
+                    
+                    if( [object isKindOfClass:[DicomStudy class]])
+                        [selectedStudies addObject: object];
+                }
+            }
+            
+            studiesArray = selectedStudies;
+        }
+        
 		for( DicomStudy *s in studiesArray)
 			[s setPrimitiveValue: 0L forKey: @"comment"];
 		
-		// Find all series
-		dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		error = nil;
+        NSArray *seriesArray = nil;
+        
+        if( sender == nil) // Apply to all studies
+        {
+            // Find all series
+            dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+            [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Series"]];
+            [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
 		
-		NSArray *seriesArray = [context executeFetchRequest:dbRequest error:&error];
+            NSError *error = nil;
 		
+            seriesArray = [context executeFetchRequest:dbRequest error:&error];
+		}
+        else
+        {
+            NSMutableArray *objects = [NSMutableArray array];
+            NSMutableArray *selectedSeries = [NSMutableArray array];
+            
+            NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
+            if( [databaseOutline selectedRow] >= 0)
+            {
+                for( int x = 0; x < [selectedRows count] ; x++)
+                {
+                    NSUInteger row;
+                    if( x == 0) row = [selectedRows firstIndex];
+                    else row = [selectedRows indexGreaterThanIndex: row];
+                    
+                    NSManagedObject	*object = [databaseOutline itemAtRow: row];
+                    
+                    if( [object isKindOfClass: [DicomStudy class]])
+                        [selectedSeries addObjectsFromArray: [[object valueForKey: @"series"] allObjects]];
+                
+                    if( [object isKindOfClass: [DicomSeries class]])
+                        [selectedSeries addObject: object];
+                }
+            }
+            
+            seriesArray = selectedSeries;
+        }
+        
 		[[splash progress] setMaxValue: [seriesArray count]];
 		
 		for( NSManagedObject *series in seriesArray)
@@ -936,7 +998,7 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"])
 				{			
-					DicomFile	*dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
+					DicomFile *dcm = [[DicomFile alloc] init: [o valueForKey:@"completePath"]];
 					
 					if( dcm)
 					{
@@ -10632,7 +10694,8 @@ static NSArray*	openSubSeriesArray = nil;
 
     BOOL isWritable = ![self.database isReadOnly];
 
-    if (menu == [albumTable menu]) {
+    if (menu == [albumTable menu])
+    {
         if ([self.database isLocal])
         {
             int row = [albumTable clickedRow];
@@ -10741,10 +10804,11 @@ static NSArray*	openSubSeriesArray = nil;
         [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Burn", nil) action: @selector(burnDICOM:) keyEquivalent:@""] autorelease]];
         [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Anonymize", nil) action: @selector(anonymizeDICOM:) keyEquivalent:@""] autorelease]];
         [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Rebuild Selected Thumbnails", nil)  action:@selector(rebuildThumbnails:) keyEquivalent:@""] autorelease]];
+        [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Regenerate Auto-Fill Comment field", nil)  action:@selector(regenerateAutoComments:) keyEquivalent:@""] autorelease]];
         [menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Copy Linked Files to Database Folder", nil)  action:@selector(copyToDBFolder:) keyEquivalent:@""] autorelease]];
     }
 
-	 NSArray	*autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
+	 NSArray *autoroutingRules = [[NSUserDefaults standardUserDefaults] arrayForKey: @"AUTOROUTINGDICTIONARY"];
 	
 	if(isWritable && [autoroutingRules count])
 	{
@@ -11423,7 +11487,8 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( burnDICOM:) || 
 			[menuItem action] == @selector( anonymizeDICOM:) || 
 			[menuItem action] == @selector( viewXML:) || 
-			[menuItem action] == @selector( applyRoutingRule:)
+			[menuItem action] == @selector( applyRoutingRule:) || 
+            [menuItem action] == @selector( regenerateAutoComments:)
 			)
 		return NO;
 	}
@@ -11457,6 +11522,11 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		return YES;
 	}
+    else if( [menuItem action] == @selector( regenerateAutoComments:))
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"COMMENTSAUTOFILL"]) return YES;
+        else return NO;
+    }
 	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
 	{
 		if ([_database isLocal])

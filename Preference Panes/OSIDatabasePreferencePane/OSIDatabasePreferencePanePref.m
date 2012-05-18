@@ -224,7 +224,7 @@
 
 - (IBAction)regenerateAutoComments:(id) sender
 {
-	[[BrowserController currentBrowser] regenerateAutoComments: sender];
+	[[BrowserController currentBrowser] regenerateAutoComments: nil]; // nil == all studies
 }
 
 - (void) setCurrentCommentsAutoFill:(int) v
