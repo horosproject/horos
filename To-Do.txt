@@ -8,17 +8,12 @@
 - Web Portal: faster performances with large database
 - Add supports for private SOP Class UIDs: Philips, GE, Siemens
 - Better Bonjour detection
-- Add up to 4 DICOM fields to Database Comments field
+- Add up to 4 DICOM fields to populate DB Comments field
 
-------------------------------------------------------------------------------------------
-Tests:
-- Review sourceforge commits
+------------------------------------------------------------------------------------------------------------------------
 
-Added features:
-- Access DICOM CD/DVD as a database
-------------------------------------------------------------------------------------------
 
-- High-Res mode for curved MPR ?
+- High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)
 - Shift+Cmd+Click to add series to viewer
 - ExportROIs plugin: add Length
