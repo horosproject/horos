@@ -202,9 +202,7 @@ static	BOOL frameZoomed = NO;
 {
     DCMPix *o = [windowController originalPix];
     
-    float percentage =  100. / (camera.parallelScale * [o pixelSpacingX]);
-    
-    return percentage / [o pixelSpacingX];
+    return [o pixelSpacingX] / previousResolution;
 }
 
 - (float) displayedRotation
@@ -269,9 +267,49 @@ static	BOOL frameZoomed = NO;
 	[super dealloc];
 }
 
+- (IBAction) actualSize:(id)sender
+{
+	[self setOriginX: 0 Y: 0];
+	self.rotation = 0.0f;
+    
+    DCMPix *o = [windowController originalPix];
+    
+    camera.forceUpdate = YES;
+	camera.parallelScale *= [o pixelSpacingX] / previousResolution;
+	
+    [self restoreCamera];
+	[self updateViewMPR];
+}
+
+- (IBAction) realSize:(id)sender
+{
+    CGSize f = CGDisplayScreenSize( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]);
+    CGRect r = CGDisplayBounds( [[[[[self window] screen] deviceDescription] valueForKey: @"NSScreenNumber"] intValue]); 
+    
+    if( f.width != 0 && f.height != 0)
+    {
+        NSLog( @"screen pixel ratio: %f", fabs( (f.width/r.size.width) - (f.height/r.size.height)));
+        if( fabs( (f.width/r.size.width) - (f.height/r.size.height)) < 0.01)
+        {
+            DCMPix *o = [windowController originalPix];
+            
+            camera.forceUpdate = YES;
+            camera.parallelScale *= (f.width/r.size.width) / previousResolution;
+            
+            [self restoreCamera];
+            [self updateViewMPR];
+        }
+        else
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil), NSLocalizedString(@"Displayed pixels are non-squared pixel. Images cannot be displayed at actual size.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+    }
+    else
+        NSRunCriticalAlertPanel(NSLocalizedString(@"Actual Size Error",nil), NSLocalizedString(@"This screen doesn't support this function.",nil) , NSLocalizedString( @"OK",nil), nil, nil);
+}
+
+
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
-    if( [item action] == @selector( actualSize:) || [item action] == @selector( realSize:) || [item action] == @selector( scaleToFit:))
+    if( [item action] == @selector( scaleToFit:))
     {
         return NO;
     }
