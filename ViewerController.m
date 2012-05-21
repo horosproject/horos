@@ -14394,8 +14394,15 @@ int i,j,l;
 	float	maxValueOfSeries = -100000, minValueOfSeries = 100000;
 	
 	if( [[imageView curDCM] isRGB]) return;
-	if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
-	if( [[imageView curDCM] patientsWeight] <= 0) return;
+    if( [[[imageView curDCM] units] isEqualToString:@"CNTS"] && [[imageView curDCM] philipsFactor])
+    {
+        
+    }
+    else
+    {
+        if( [[imageView curDCM] radionuclideTotalDoseCorrected] <= 0) return;
+        if( [[imageView curDCM] patientsWeight] <= 0) return;
+    }
 	if( [[imageView curDCM] hasSUV] == NO) return;
 	
 	if( [[imageView curDCM] SUVConverted] == NO)
