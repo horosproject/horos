@@ -14470,6 +14470,8 @@ int i,j,l;
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateVolumeDataNotification object: pixList[ curMovieIndex] userInfo: nil];
+    
+    [self setWindowTitle:self];
 }
 
 -(IBAction) endDisplaySUV:(id) sender

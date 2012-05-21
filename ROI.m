@@ -641,7 +641,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 - (DCMPix*)pix
 {
-	if ( pix )
+	if( pix)
 	{
 		return pix;
 	}
@@ -4186,8 +4186,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             else
                                 sprintf (line2, "Area: %0.3f pix2", area);
 							
-							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+                            char *pixelUnit = "";
+                            
+                            if( [self pix].SUVConverted)
+                                pixelUnit = " SUV ";
+                            
+							sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
+							sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
 						}
 						else
 						{
@@ -4206,8 +4211,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 							[blendedROI release];
 							
-							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+                            char *pixelUnit = "";
+                            
+                            if( blendedPix.SUVConverted)
+                                pixelUnit = " SUV ";
+                            
+							sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
+							sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
 						}
 					}
 					//if (!_displayCalciumScoring)
@@ -4316,10 +4326,25 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             }
                         }
                         // <--- US Regions (Point)
-
-                        sprintf (line2, "Value: %0.3f", rmean);
                         
-						if( Brtotal != -1) sprintf (line3, "Fused Image Value: %0.3f", Brmean);
+                        char *pixelUnit = "";
+                        
+                        if( [self pix].SUVConverted)
+                            pixelUnit = " SUV ";
+                        
+                        sprintf (line2, "Value: %0.3f%s", rmean, pixelUnit);
+                        
+						if( Brtotal != -1)
+                        {
+                            DCMPix	*blendedPix = [[curView blendingView] curDCM];
+                            
+                            char *pixelUnit = "";
+                            
+                            if( blendedPix.SUVConverted)
+                                pixelUnit = " SUV ";
+                            
+                            sprintf (line3, "Fused Image Value: %0.3f%s", Brmean, pixelUnit);
+                        }
 						
                         // US Regions (Point) --->
                         if (roiInsideMModeOrSpectralUSRegion) {
@@ -4996,9 +5021,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                             }
                             else
                                 sprintf (line2, "Area: %0.3f pix2", fabs( NSWidth(rect)*NSHeight(rect)));
-
-							sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-							sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+                            
+                            char *pixelUnit = "";
+                            
+                            if( [self pix].SUVConverted)
+                                pixelUnit = " SUV ";
+                            
+							sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
+							sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
 							
 							if( [curView blendingView])
 							{
@@ -5020,8 +5050,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 								
 								[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 								
-								sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-								sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+                                char *pixelUnit = "";
+                                
+                                if( blendedPix.SUVConverted)
+                                    pixelUnit = " SUV ";
+                                
+								sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
+								sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
 							}
 						}
 						
@@ -5139,8 +5174,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                         else
                             sprintf (line2, "Area: %0.3f pix2", [self EllipseArea]);
                         
-						sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-						sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+                        char *pixelUnit = "";
+                        
+                        if( [self pix].SUVConverted)
+                            pixelUnit = " SUV ";
+                        
+						sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
+						sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
 						
 						if( [curView blendingView])
 						{
@@ -5156,8 +5196,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 							[blendedROI setPoints: pts];
 							[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 							
-							sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-							sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+                            char *pixelUnit = "";
+                            
+                            if( blendedPix.SUVConverted)
+                                pixelUnit = " SUV ";
+                            
+							sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
+							sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
 						}
 					}
 					
@@ -5659,9 +5704,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                 }
                                 else
                                     sprintf (line2, "Area: %0.3f pix2", [self Area]);								
-
-                                sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-								sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+                                
+                                char *pixelUnit = "";
+                                
+                                if( [self pix].SUVConverted)
+                                    pixelUnit = " SUV ";
+                                
+                                sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
+								sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
 								
 								length = 0;
 								
@@ -5685,8 +5735,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 										[blendedROI setPoints: pts];
 										[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 										
-										sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-										sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+                                        char *pixelUnit = "";
+                                        
+                                        if( blendedPix.SUVConverted)
+                                            pixelUnit = " SUV ";
+                                        
+										sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
+										sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
 									}
 									else
 									{
@@ -5795,14 +5850,19 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									}
 									else
 										sprintf (line2, "Area: %0.3f pix2", [self Area]);
-                                
-									sprintf (line3, "Mean: %0.3f SDev: %0.3f Sum: %0.0f", rmean, rdev, rtotal);
-									sprintf (line4, "Min: %0.3f Max: %0.3f", rmin, rmax);
+                                    
+                                    char *pixelUnit = "";
+                                    
+                                    if( [self pix].SUVConverted)
+                                        pixelUnit = " SUV ";
+                                    
+									sprintf (line3, "Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", rmean, pixelUnit, rdev, pixelUnit, rtotal, pixelUnit);
+									sprintf (line4, "Min: %0.3f%s Max: %0.3f%s", rmin, pixelUnit, rmax, pixelUnit);
 								}
 								
 								if( [curView blendingView])
 								{
-									DCMPix	*blendedPix = [[curView blendingView] curDCM];
+									DCMPix *blendedPix = [[curView blendingView] curDCM];
 									
 									ROI *blendedROI = [[[ROI alloc] initWithType: tCPolygon :[blendedPix pixelSpacingX] :[blendedPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: blendedPix]] autorelease];
 									
@@ -5814,8 +5874,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 									[blendedROI setPoints: pts];
 									[blendedPix computeROI: blendedROI :&Brmean :&Brtotal :&Brdev :&Brmin :&Brmax];
 									
-									sprintf (line5, "Fused Image Mean: %0.3f SDev: %0.3f Sum: %0.0f", Brmean, Brdev, Brtotal);
-									sprintf (line6, "Fused Image Min: %0.3f Max: %0.3f", Brmin, Brmax);
+                                    char *pixelUnit = "";
+                                    
+                                    if( blendedPix.SUVConverted)
+                                        pixelUnit = " SUV ";
+                                    
+									sprintf (line5, "Fused Image Mean: %0.3f%s SDev: %0.3f%s Sum: %0.0f%s", Brmean, pixelUnit, Brdev, pixelUnit, Brtotal, pixelUnit);
+									sprintf (line6, "Fused Image Min: %0.3f%s Max: %0.3f%s", Brmin, pixelUnit, Brmax, pixelUnit);
 								}
 								
 								if( length > 0.0 && length < .1)

@@ -1928,7 +1928,9 @@ static float deg2rad = M_PI/180.0;
 		
 		if( self.dcmQuality == 1)
 			curExportView.LOD = 1;
-		
+		else
+            curExportView.LOD = LOD;
+        
 		if( self.dcmFormat)
 		{
 			[hiddenVRView setLOD: curExportView.LOD];
@@ -2127,6 +2129,8 @@ static float deg2rad = M_PI/180.0;
 						
 						if( self.dcmQuality == 1)
 							curExportView.LOD = 1;
+                        else
+                            curExportView.LOD = LOD;
 					}
 					else
 					{
@@ -2136,6 +2140,12 @@ static float deg2rad = M_PI/180.0;
 							mprView2.LOD = 1;
 							mprView3.LOD = 1;
 						}
+                        else
+                        {
+                            mprView1.LOD = LOD;
+							mprView2.LOD = LOD;
+							mprView3.LOD = LOD;
+                        }
 					}
 					
 					if( self.dcmFormat)

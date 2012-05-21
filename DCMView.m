@@ -7584,14 +7584,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							if(mouseXPos!=0 || mouseYPos!=0)
 							{
+                                NSString *pixelUnit = @"";
+                                
+                                if( curDCM.SUVConverted)
+                                    pixelUnit = @"SUV";
+                                
 								if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-								else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue];
+								else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue, pixelUnit];
 								
 								if( blendingView)
 								{
+                                    if( [blendingView curDCM].SUVConverted)
+                                        pixelUnit = @"SUV";
+                                    
 									if( [blendingView curDCM].isRGB )
 										[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-									else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue];
+									else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue, pixelUnit];
 								}
 								
 								if( curDCM.displaySUVValue )
