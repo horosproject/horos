@@ -2397,6 +2397,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
 				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
 			
+            if( [[imageView curDCM] SUVConverted])
+                windowTitle = [windowTitle stringByAppendingString: NSLocalizedString( @" (SUV Converted)", nil)];
+            
 			windowTitle = [windowTitle stringByAppendingString: loading];
 			
 			[[self window] setTitle: windowTitle];
