@@ -3387,7 +3387,6 @@
 		CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */; };
 		CE51BAF611E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CE51BAF411E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld */; };
 		CE52264F077C48D900EED851 /* Sync.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.tif */; };
-		CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CE5487410989346800CF4C60 /* BrushPalette.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487400989346800CF4C60 /* BrushPalette.tif */; };
 		CE54877A0989363200CF4C60 /* Brush.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5487790989363200CF4C60 /* Brush.tif */; };
 		CE569B740E29612100F4A234 /* ThumbnailCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE569B720E29612100F4A234 /* ThumbnailCell.h */; };
@@ -8118,7 +8117,6 @@
 		CEC7FEFE10A5C844008935EA /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
 		CEC7FEFF10A5C844008935EA /* BrowserMatrix.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC47B570C031397001CEA21 /* BrowserMatrix.h */; };
 		CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */ = {isa = PBXBuildFile; fileRef = ABB230B90C2F95DD00B38596 /* JPEGExif.h */; };
-		CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */ = {isa = PBXBuildFile; fileRef = CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */; };
 		CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = 32E422140C97301600E193CA /* altivecFunctions.h */; };
 		CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */ = {isa = PBXBuildFile; fileRef = CED2CF960C9B288C0047F123 /* CIADICOMField.h */; };
 		CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = A978DE680CB0D4BE00FB2C3D /* NFHUDSlider.h */; };
@@ -10464,7 +10462,6 @@
 		CE4E00BE0830B72F008DAFAE /* Revert.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Revert.tif; sourceTree = "<group>"; };
 		CE51BAF711E2289C006D180E /* OsiriXDB_DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OsiriXDB_DataModel.xcdatamodel; sourceTree = "<group>"; };
 		CE522648077C48D900EED851 /* Sync.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sync.tif; sourceTree = "<group>"; };
-		CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NrrdIO.h; path = ITK180/Utilities/NrrdIO/NrrdIO.h; sourceTree = "<group>"; };
 		CE5487400989346800CF4C60 /* BrushPalette.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BrushPalette.tif; sourceTree = "<group>"; };
 		CE5487790989363200CF4C60 /* Brush.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Brush.tif; sourceTree = "<group>"; };
 		CE569B720E29612100F4A234 /* ThumbnailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThumbnailCell.h; sourceTree = "<group>"; };
@@ -17564,7 +17561,6 @@
 				AB06EDEF05635642006AFFB9 /* dicomFile.m */,
 				BF24254F0A51D39500D3D76B /* DicomFileDCMTKCategory.h */,
 				BF2425500A51D39500D3D76B /* DicomFileDCMTKCategory.mm */,
-				CE542D280C6F8F7B0021A0E7 /* NrrdIO.h */,
 				CEE73FC708F44724002A395F /* FVTiff.h */,
 				CEE73FC808F44724002A395F /* FVTiff.m */,
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
@@ -21928,7 +21924,6 @@
 				BF30B3AD0C079D6B0003390C /* vtkPowerCrustSurfaceReconstruction.h in Headers */,
 				ABB230BD0C2F95DD00B38596 /* JPEGExif.h in Headers */,
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
-				CE542D2B0C6F8F7B0021A0E7 /* NrrdIO.h in Headers */,
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
 				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
@@ -25946,7 +25941,6 @@
 				CEC7FEFE10A5C844008935EA /* stringAdditions.h in Headers */,
 				CEC7FEFF10A5C844008935EA /* BrowserMatrix.h in Headers */,
 				CEC7FF0410A5C844008935EA /* JPEGExif.h in Headers */,
-				CEC7FF0610A5C844008935EA /* NrrdIO.h in Headers */,
 				CEC7FF0A10A5C844008935EA /* altivecFunctions.h in Headers */,
 				CEC7FF0D10A5C844008935EA /* CIADICOMField.h in Headers */,
 				CEC7FF1210A5C844008935EA /* NFHUDSlider.h in Headers */,
