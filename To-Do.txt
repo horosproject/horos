@@ -12,7 +12,6 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
-- PET (BW Inverse mode) -> glClear white, inverse annotations
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)
 - Shift+Cmd+Click to add series to viewer

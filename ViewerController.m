@@ -10262,6 +10262,11 @@ short				matrix[25];
 		}
 	}
 	
+    if( [curCLUTMenu isEqualToString: @"B/W Inverse"])
+        imageView.whiteBackground = YES;
+    else
+        imageView.whiteBackground = NO;
+    
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:[imageView curImage]]  forKey:@"curImage"];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixDCMUpdateCurrentImageNotification object: imageView userInfo: userInfo];
 	

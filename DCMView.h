@@ -98,6 +98,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	NSInteger		_tag;
 
 	BOOL			flippedData;
+    BOOL            whiteBackground;
 	
 	NSString		*yearOld;
 	
@@ -297,7 +298,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 
 @property NSRect drawingFrameRect;
 @property(readonly) NSMutableArray *rectArray, *curRoiList;
-@property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge;
+@property BOOL COPYSETTINGSINSERIES, flippedData, dontEnterReshape, showDescriptionInLarge, whiteBackground;
 @property(readonly) NSMutableArray *dcmPixList,  *dcmRoiList;
 @property(readonly) NSArray *dcmFilesList;
 @property long syncSeriesIndex;

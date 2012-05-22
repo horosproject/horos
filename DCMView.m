@@ -464,7 +464,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 @synthesize showDescriptionInLarge, curRoiList;
 @synthesize drawingFrameRect, dontEnterReshape;
 @synthesize rectArray, studyColorR, studyColorG, studyColorB;
-@synthesize flippedData;
+@synthesize flippedData, whiteBackground;
 @synthesize dcmPixList;
 @synthesize dcmFilesList;
 @synthesize dcmRoiList;
@@ -1730,10 +1730,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		long xc, yc;
 		xc = x+2;
 		yc = y+1-[stringTex texSize].height;
-		glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+        
+        if( whiteBackground)
+            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+        else
+            glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+        
 		[stringTex drawAtPoint:NSMakePoint( xc+1, yc+1)];
 		
-		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+        if( whiteBackground)
+            glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
+        else
+            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 		[stringTex drawAtPoint:NSMakePoint( xc, yc)];
 		
 		glDisable(GL_BLEND);
@@ -1741,7 +1749,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else
 	{
-		char	*cstrOut = (char*) [str UTF8String];
+		char *cstrOut = (char*) [str UTF8String];
 		if(align==DCMViewTextAlignRight)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
@@ -1762,8 +1770,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if (fontColor)
 			glColor4f([fontColor redComponent], [fontColor greenComponent], [fontColor blueComponent], [fontColor alphaComponent]);
 		else
-			glColor4f (0.0, 0.0, 0.0, 1.0);
-
+        {
+            if( whiteBackground)
+                glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+            else
+                glColor4f (0.0, 0.0, 0.0, 1.0);
+        }
+        
 		glRasterPos3d (x+1, y+1, 0);
 		
 		GLint i = 0;
@@ -1773,8 +1786,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( val < 150 && val >= 0) glCallList (fontL+val);
 		}
 		
-		glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-		
+        if( whiteBackground)
+            glColor4f (0.0, 0.0, 0.0, 1.0);
+        else
+            glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
+        
 		glRasterPos3d (x, y, 0);
 		
 		i = 0;
@@ -8120,7 +8136,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		glViewport (0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height); // set the viewport to cover entire window
 		
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        if( whiteBackground)
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        else
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        
 		glClear (GL_COLOR_BUFFER_BIT);
 		
 		if( dcmPixList && curImage > -1)
