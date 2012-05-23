@@ -57,5 +57,6 @@
 - Hanging protocols based on Workspace state
 - Password DB in keychain
 - Preferences for Status menu in DB
+- Reporter for Word
 
 ------------------------------------------------------------------------------------------------------------------------

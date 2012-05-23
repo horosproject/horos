@@ -142,14 +142,21 @@
 
 	[NSGraphicsContext saveGraphicsState];
 	
+    NSString* tempName;
+    NSString* tempStatus;
+    @synchronized (self.thread.threadDictionary) {
+        tempName = [[self.thread.name retain] autorelease];
+        tempStatus = [[self.thread.status retain] autorelease];
+    }
+    
 	NSRect nameFrame = NSMakeRect(frame.origin.x+3, frame.origin.y-1, frame.size.width-23, frame.size.height);
-	NSString* name = self.thread.name;
-	if (!name) name = NSLocalizedString( @"Untitled Thread", nil);
-	[name drawWithRect:nameFrame options:NSStringDrawingUsesLineFragmentOrigin+NSStringDrawingTruncatesLastVisibleLine attributes:textAttributes];
-	
+	if (!tempName) tempName = NSLocalizedString(@"Unspecified Task", nil);
+	[tempName drawWithRect:nameFrame options:NSStringDrawingUsesLineFragmentOrigin+NSStringDrawingTruncatesLastVisibleLine attributes:textAttributes];
+    
 	NSRect statusFrame = [self statusFrame];
 	[textAttributes setObject:[NSFont labelFontOfSize:[NSFont systemFontSizeForControlSize:NSMiniControlSize]] forKey:NSFontAttributeName];
-	[self.thread.status drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
+	if (!tempStatus) tempStatus = @"";
+    [tempStatus drawWithRect:statusFrame options:NSStringDrawingUsesLineFragmentOrigin attributes:textAttributes];
 	
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
