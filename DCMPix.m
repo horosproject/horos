@@ -12386,7 +12386,8 @@ END_CREATE_ROIS:
 		baseAddr = nil;
 	}
 	[imageObj release];
-	
+	imageObj = nil;
+    
 	if( oData) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
 	
@@ -12756,6 +12757,9 @@ END_CREATE_ROIS:
 {
 	@try 
 	{
+        if( imageObj.isDeleted || imageObj.isFault)
+            return;
+        
 		NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
 		
 		NSDictionary *annotationsForModality = nil;

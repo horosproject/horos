@@ -57,7 +57,7 @@ static NSTimeInterval StartOfDay(NSCalendarDate* day) {
 	return start.timeIntervalSinceReferenceDate;
 }
 
-static volatile int DCMPixLoadingThreads = 0;
+static volatile int DCMPixLoadingThreads = 0, uniqueInc = 1;
 static NSRecursiveLock *DCMPixLoadingLock = nil;
 
 @implementation WebPortalConnection (Data)
@@ -1440,6 +1440,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			
 			srcFolder = [srcFolder stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
 			destFile = [destFile stringByAppendingPathComponent: [[[allImages lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
+            
+            destFile = [destFile stringByAppendingFormat:@"-%d", uniqueInc++];
 			destFile = [destFile stringByAppendingPathExtension:@"osirixzip"];
 			
 			if (srcFolder)
@@ -2084,7 +2086,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		
 		srcFolder = [srcFolder stringByAppendingPathComponent: [[[images lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
 		destFile = [destFile stringByAppendingPathComponent: [[[images lastObject] valueForKeyPath:@"series.study.name"] filenameString]];
-		
+		destFile = [destFile stringByAppendingFormat:@"-%d", uniqueInc++];
 		if (self.requestIsMacOS)
 			destFile = [destFile stringByAppendingPathExtension:@"osirixzip"];
 		else destFile = [destFile stringByAppendingPathExtension:@"zip"];
