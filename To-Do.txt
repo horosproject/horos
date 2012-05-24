@@ -16,17 +16,18 @@
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)
 - Shift+Cmd+Click to add series to viewer
-- ExportROIs plugin: add Length
+- ExportROIs plugin: add Length (OSIRIX-111)
 - Storage Commitment Service
-- Support for DICOM Worklist SCU for (pre)fetching
-- CPR : adapt coloscopy path algo to CPR vessels
-- DICOM ECG (Ginkgo CADx)
-- Two Steps DICOM Editing
+- Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
+- CPR : adapt coloscopy path algo to CPR vessels (OSIRIX-108)
+- DICOM ECG (Ginkgo CADx) (OSIRIX-113)
+- Two Steps DICOM Editing (OSIRIX-114)
 - Tool to create a new series from key images+-images with ROIs of a study
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups of users (for sharing)
-- WebPortal: Burn option if the CD/DVD is installed
+- WebPortal: Edit report (OSIRIX-4)
+- WebPortal: Burn option if the CD/DVD is installed (OSIRIX-6)
 - WebPortal: create/delete albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
 - WebPortal: ROIs, Key images series, ...
@@ -36,22 +37,23 @@
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - Delete Alias ROI?
 - Option for Tiling Windows: always order from oldest study to ...
-- Tomographie rotational angio
+- Tomographie rotational angio (OSIRIX-115)
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
 - 'Archived' field (comments?)
-- Custom DB time interval: floating panel
+- Custom DB time interval: floating panel (OSIRIX-116)
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
-- Save default order for albums
+- Save default order for albums (OSIRIX-117)
+- Save albums -> store contained StudyInstanceUIDs, when reloading re-add these to album, if not in DB then show 0 series (OSIRIX-118)
 - VTK Crash : PowerCrust
 - DICOM Network: DICOM Authentication
 - ROI Manager (series level)
 - Display current image in 3D plane
 - Registration see Volview - Plugin
-- Sync Ortho-MPR
+- Sync Ortho-MPR (OSIRIX-30)
 - Propagate sub-settings
-- Phase Cardiac
-- Printing Layout
+- Phase Cardiac (OSIRIX-32)
+- Printing Layout (OSIRIX-34)
 - Growing region: set to new val
 - DICOM Printing 1/1 size, fit to size
 - Add DB toolbar to QR window
