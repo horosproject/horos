@@ -239,7 +239,8 @@
 	}
 }
 
--(WebPortalUser*)newUserWithEmail:(NSString*)email {
+-(WebPortalUser*)newUserWithEmail:(NSString*)email 
+{
 	// create user
 	
 	//NSArray* users = [self usersWithPredicate:[NSPredicate predicateWithFormat:@"email ==[cd] %@", email]];
@@ -249,34 +250,43 @@
 	if (![email isEmail])
 		[NSException raise:NSGenericException format:NSLocalizedString(@"%@ is not an email address.", NULL), email];
 	
-	WebPortalUser* user = [self.database newUser];
-	user.email = email;
-	
-	user.name = [email substringToIndex:[email rangeOfString:@"@"].location];
-	for (int i = 1; ![user validateForInsert:nil]; ++i)
-		user.name = [[email substringToIndex:[email rangeOfString:@"@"].location] stringByAppendingFormat:@"-%d", i];
-	
-	user.autoDelete = [NSNumber numberWithBool:YES];
-	
-	// send message
-	
-	NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
-	
-	[tokens setObject:user forKey:@"User"];
-	[tokens setObject:self.URL forKey:@"WebServerURL"];
-	
-	NSMutableString* ts = [[[self stringForPath:@"tempUserEmail.html"] mutableCopy] autorelease];
-	[WebPortalResponse mutableString:ts evaluateTokensWithDictionary:tokens context:NULL];
-	
-	NSString* emailSubject = [NSString stringWithFormat:NSLocalizedString(@"Temporary account on %@", nil), self.URL];
-	
-	NSMutableDictionary* messageHeaders = [NSMutableDictionary dictionary];
-	[messageHeaders setObject:user.email forKey:@"To"];
-	[messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
-	[messageHeaders setObject:emailSubject forKey:@"Subject"];
     
-    // NSAttributedString initWithHTML is NOT thread-safe
-    [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+    NSArray *existingUsers = [self.database usersWithPredicate:[NSPredicate predicateWithFormat:@"email == %@", email]];
+    
+    WebPortalUser* user = nil;
+    
+    if( existingUsers.count)
+        user = [existingUsers objectAtIndex: 0];
+    else
+    {
+        user = [self.database newUser];
+        user.email = email;
+        user.name = [email substringToIndex:[email rangeOfString:@"@"].location];
+        
+        for (int i = 1; ![user validateForInsert:nil]; ++i)
+            user.name = [[email substringToIndex:[email rangeOfString:@"@"].location] stringByAppendingFormat:@"-%d", i];
+        
+        user.autoDelete = [NSNumber numberWithBool:YES];
+        
+        // send message
+        NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+        
+        [tokens setObject:user forKey:@"User"];
+        [tokens setObject:self.URL forKey:@"WebServerURL"];
+        
+        NSMutableString* ts = [[[self stringForPath:@"tempUserEmail.html"] mutableCopy] autorelease];
+        [WebPortalResponse mutableString:ts evaluateTokensWithDictionary:tokens context:NULL];
+        
+        NSString* emailSubject = [NSString stringWithFormat:NSLocalizedString(@"Temporary account on %@", nil), self.URL];
+        
+        NSMutableDictionary* messageHeaders = [NSMutableDictionary dictionary];
+        [messageHeaders setObject:user.email forKey:@"To"];
+        [messageHeaders setObject:[[NSUserDefaults standardUserDefaults] valueForKey: @"notificationsEmailsSender"] forKey:@"Sender"];
+        [messageHeaders setObject:emailSubject forKey:@"Subject"];
+        
+        // NSAttributedString initWithHTML is NOT thread-safe
+        [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: ts, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+    }
 	
 	return user;
 }
