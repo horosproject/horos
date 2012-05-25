@@ -4335,7 +4335,7 @@ static BOOL initialized = NO;
     NSMutableArray *viewersList = [NSMutableArray array];
     
     //get 2D viewer windows
-	for( NSWindow *win in [NSApp windows])
+	for( NSWindow *win in [NSApp orderedWindows])
 	{
 		if( [[win windowController] isKindOfClass:[OSIWindowController class]] == YES)
 		{
@@ -4362,7 +4362,7 @@ static BOOL initialized = NO;
     NSMutableArray *viewersList = [NSMutableArray array];
     
     //get 2D viewer windows
-	for( NSWindow *win in [NSApp windows])
+	for( NSWindow *win in [NSApp orderedWindows])
 	{
 		if( [[win windowController] isKindOfClass:[Window3DController class]] == YES)
 		{
@@ -4476,6 +4476,9 @@ static BOOL initialized = NO;
             if( [[[viewersList objectAtIndex: i] window] isKeyWindow])
                 keyWindow = i;
         }
+        
+        if( keyWindow == -1)
+            keyWindow = 0;
     }
 	
 	BOOL identical = YES;
