@@ -2159,7 +2159,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                         if (studySelected == NO) {
                             studySelected = YES;
                             if ([[dict objectForKey:@"selectStudy"] boolValue])
-                                [bc performSelectorOnMainThread:@selector(selectThisStudy:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath: @"series.study"] waitUntilDone:NO];
+                                [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath:@"series.study.objectID"] waitUntilDone:NO];
                         }
                         
                         if (bc.database == mdatabase && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
@@ -2172,8 +2172,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                                 
                                 for (NSManagedObject* mobject in mobjects)
                                 {
-                                    [studies addObject: [mobject valueForKeyPath:@"series.study"]];
-                                    [[mobject valueForKeyPath:@"series.study"] archiveAnnotationsAsDICOMSR];
+                                    DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
+                                    [studies addObject:s];
+                                    [s archiveAnnotationsAsDICOMSR];
                                 }
                             }
                         }

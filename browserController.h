@@ -467,6 +467,7 @@ extern NSString* O2AlbumDragType;
 - (int) askForZIPPassword: (NSString*) file destination: (NSString*) destination;
 - (IBAction) reparseIn3D:(id) sender;
 - (IBAction) reparseIn4D:(id) sender;
+- (void)selectStudyWithObjectID:(NSManagedObjectID*)oid;
 - (void) selectThisStudy: (id)study;
 
 //- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;

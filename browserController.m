@@ -1807,6 +1807,11 @@ static NSConditionLock *threadLock = nil;
 	return [self saveDatabase:path context:self.managedObjectContext];
 }
 
+-(void)selectStudyWithObjectID:(NSManagedObjectID*)oid {
+    DicomStudy* s = [self.database objectWithID:oid];
+    if (s) [self selectThisStudy:s];
+}
+
 - (void) selectThisStudy: (NSManagedObject*)study
 {
     if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
