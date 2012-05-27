@@ -338,6 +338,9 @@ extern NSString* O2AlbumDragType;
 - (NSString*) getNewFileDatabasePath: (NSString*) extension dbFolder: (NSString*) dbFolder __deprecated;
 - (NSManagedObjectModel *) managedObjectModel __deprecated;
 
+- (NSManagedObject*) findStudyUID: (NSString*) uid;
+- (NSManagedObject*) findSeriesUID: (NSString*) uid;
+
 - (NSManagedObjectContext *) localManagedObjectContext __deprecated;
 - (NSManagedObjectContext *) localManagedObjectContextIndependentContext: (BOOL) independentContext __deprecated;
 
