@@ -200,11 +200,11 @@
     
     [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output];
     [self _ifAvailableCopyAttributeWithName:@"StudyInstanceUID" from:source to:output];
-    [output setAttributeValues:[NSArray arrayWithObject:@"OsiriX Report PDF"] forName:@"SeriesDescription"];
+    [output setAttributeValues:[NSArray arrayWithObject:@"Report PDF"] forName:@"SeriesDescription"];
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"InstanceNumber"];
     [output setAttributeValues:[NSArray arrayWithObject:@"1"] forName:@"StudyID"];
-    [output setAttributeValues:[NSArray arrayWithObject:@"9997"] forName:@"SeriesNumber"];
-    [self _ifAvailableCopyAttributeWithName:@"StudyDescription" from:source to:output alternatively:@"OsiriX Report PDF"];
+    [output setAttributeValues:[NSArray arrayWithObject:@"0"] forName:@"SeriesNumber"];
+    [self _ifAvailableCopyAttributeWithName:@"StudyDescription" from:source to:output alternatively:@"Report PDF"];
     [self _ifAvailableCopyAttributeWithName:@"PatientsName" from:source to:output alternatively:@""];
     [self _ifAvailableCopyAttributeWithName:@"PatientID" from:source to:output alternatively:@"0"];
     [self _ifAvailableCopyAttributeWithName:@"PatientsBirthDate" from:source to:output];
