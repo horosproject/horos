@@ -280,6 +280,8 @@
             {
                 NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
                 
+                [self.managedObjectContext lock];
+                
                 @try
                 {
                     NSArray* files = [self sortedImages];
@@ -376,6 +378,9 @@
                 {
                     N2LogExceptionWithStackTrace(e);
                 }
+                
+                [self.managedObjectContext unlock];
+                
                 [pool release];
             }
         }
