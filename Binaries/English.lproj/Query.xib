@@ -75,7 +75,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{911, 500}</string>
 				<object class="NSView" key="NSWindowView" id="265611195">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSScrollView" id="225972883">
@@ -91,7 +91,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{1242, 441}</string>
 											<reference key="NSSuperview" ref="896535216"/>
-											<reference key="NSNextKeyView" ref="947580359"/>
+											<reference key="NSNextKeyView" ref="643837582"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="209721991">
 												<reference key="NSNextResponder" ref="241117316"/>
@@ -729,12 +729,13 @@
 							</array>
 							<string key="NSFrame">{{7, 38}, {895, 470}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
-							<reference key="NSNextKeyView" ref="896535216"/>
+							<reference key="NSNextKeyView" ref="947580359"/>
 							<int key="NSsFlags">133810</int>
 							<reference key="NSVScroller" ref="311767854"/>
 							<reference key="NSHScroller" ref="643837582"/>
 							<reference key="NSContentView" ref="896535216"/>
 							<reference key="NSHeaderClipView" ref="241117316"/>
+							<reference key="NSCornerView" ref="947580359"/>
 							<bytes key="NSScrollAmts">AAAAAAAAAABBmAAAQZgAAA</bytes>
 						</object>
 						<object class="NSTextField" id="162008091">
@@ -768,6 +769,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{496, 10}, {406, 13}}</string>
 							<reference key="NSSuperview" ref="265611195"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="830184605">
 								<int key="NSCellFlags">67239424</int>
@@ -2039,6 +2041,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 											<int key="NSvFlags">265</int>
 											<string key="NSFrame">{{-5, 126}, {542, 74}}</string>
 											<reference key="NSSuperview" ref="309855485"/>
+											<reference key="NSNextKeyView" ref="480360764"/>
 											<array class="NSMutableArray" key="NSTabViewItems">
 												<object class="NSTabViewItem" id="466310370">
 													<object class="NSMutableString" key="NSIdentifier">
@@ -2416,7 +2419,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 																<int key="NSvFlags">268</int>
 																<string key="NSFrame">{{428, 8}, {71, 17}}</string>
 																<reference key="NSSuperview" ref="538660984"/>
-																<reference key="NSNextKeyView" ref="493782390"/>
 																<bool key="NSEnabled">YES</bool>
 																<object class="NSTextFieldCell" key="NSCell" id="99554115">
 																	<int key="NSCellFlags">68288064</int>
@@ -3371,9 +3373,10 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{911, 745}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="645620780"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{911, 522}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">QR</string>
@@ -3463,14 +3466,14 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 			<object class="NSWindowTemplate" id="1012154138">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{195, 1280}, {317, 162}}</string>
-				<int key="NSWTFlags">603979776</int>
+				<string key="NSWindowRect">{{0, 0}, {317, 162}}</string>
+				<int key="NSWTFlags">611844096</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="231198305">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="247006607">
@@ -3547,6 +3550,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{3, -5}, {308, 45}}</string>
 							<reference key="NSSuperview" ref="231198305"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="65627383">
 								<int key="NSCellFlags">67239424</int>
@@ -3600,9 +3604,10 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{317, 162}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="936151260"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -3612,14 +3617,14 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 			<object class="NSWindowTemplate" id="665538993">
 				<int key="NSWindowStyleMask">1</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{126, 1195}, {474, 297}}</string>
-				<int key="NSWTFlags">603979776</int>
+				<string key="NSWindowRect">{{0, 0}, {474, 297}}</string>
+				<int key="NSWTFlags">611844096</int>
 				<string key="NSWindowTitle">Auto-Retrieving</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="11071281">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="779998286">
@@ -3649,6 +3654,7 @@ VvgAAKwvAAAdA1hZWiAAAAAAAAAmIgAAEn8AALFwA</bytes>
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{371, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="11071281"/>
+							<reference key="NSNextKeyView"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="677717324">
@@ -3916,9 +3922,10 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{474, 297}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="513748587"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -6984,6 +6991,8 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				<string key="791.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="792.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="793.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="795.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="795.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="795.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="795.IBWindowTemplateEditedContentRect">{{149, 694}, {317, 162}}</string>
 				<integer value="0" key="795.NSWindowTemplate.visibleAtLaunch"/>
@@ -7014,6 +7023,8 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 				<string key="837.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="839.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="840.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="844.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="844.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="844.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="844.IBWindowTemplateEditedContentRect">{{219, 589}, {474, 267}}</string>
 				<integer value="0" key="844.NSWindowTemplate.visibleAtLaunch"/>
@@ -7089,316 +7100,7 @@ ZWQgZHVyaW5nIG5leHQgJ3JlZnJlc2gnLg</string>
 			<nil key="sourceID"/>
 			<int key="maxID">1082</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">DNDArrayController</string>
-					<string key="superclassName">NSArrayController</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="_authView">SFAuthorizationView</string>
-						<string key="tableView">NSTableView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="_authView">
-							<string key="name">_authView</string>
-							<string key="candidateClassName">SFAuthorizationView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="tableView">
-							<string key="name">tableView</string>
-							<string key="candidateClassName">NSTableView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/DNDArrayController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">QueryController</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="abort:">id</string>
-						<string key="autoQueryTimer:">id</string>
-						<string key="cancel:">id</string>
-						<string key="controlAction:">id</string>
-						<string key="endAddPreset:">id</string>
-						<string key="ok:">id</string>
-						<string key="pressButtons:">id</string>
-						<string key="retrieveAndView:">id</string>
-						<string key="retrieveAndViewClick:">id</string>
-						<string key="selectModality:">id</string>
-						<string key="selectUniqueSource:">id</string>
-						<string key="setBirthDate:">id</string>
-						<string key="switchAutoRetrieving:">id</string>
-						<string key="verify:">id</string>
-						<string key="view:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="abort:">
-							<string key="name">abort:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="autoQueryTimer:">
-							<string key="name">autoQueryTimer:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="cancel:">
-							<string key="name">cancel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="controlAction:">
-							<string key="name">controlAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endAddPreset:">
-							<string key="name">endAddPreset:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="ok:">
-							<string key="name">ok:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="pressButtons:">
-							<string key="name">pressButtons:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="retrieveAndView:">
-							<string key="name">retrieveAndView:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="retrieveAndViewClick:">
-							<string key="name">retrieveAndViewClick:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="selectModality:">
-							<string key="name">selectModality:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="selectUniqueSource:">
-							<string key="name">selectUniqueSource:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setBirthDate:">
-							<string key="name">setBirthDate:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchAutoRetrieving:">
-							<string key="name">switchAutoRetrieving:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="verify:">
-							<string key="name">verify:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="view:">
-							<string key="name">view:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="PatientModeMatrix">NSTabView</string>
-						<string key="alreadyInDatabase">NSImageView</string>
-						<string key="autoQueryCounter">NSTextField</string>
-						<string key="autoRetrieveWindow">NSWindow</string>
-						<string key="birthdateFilterMatrix">NSMatrix</string>
-						<string key="dateFilterMatrix">NSMatrix</string>
-						<string key="dicomFieldsMenu">NSPopUpButton</string>
-						<string key="fromDate">NSDatePicker</string>
-						<string key="modalityFilterMatrix">NSMatrix</string>
-						<string key="numberOfStudies">NSTextField</string>
-						<string key="outlineView">QueryOutlineView</string>
-						<string key="partiallyInDatabase">NSImageView</string>
-						<string key="presetName">NSTextField</string>
-						<string key="presetWindow">NSWindow</string>
-						<string key="presetsPopup">NSPopUpButton</string>
-						<string key="progressIndicator">NSProgressIndicator</string>
-						<string key="searchBirth">NSDatePicker</string>
-						<string key="searchCustomField">NSSearchField</string>
-						<string key="searchFieldAN">NSSearchField</string>
-						<string key="searchFieldComments">NSSearchField</string>
-						<string key="searchFieldID">NSSearchField</string>
-						<string key="searchFieldName">NSSearchField</string>
-						<string key="searchFieldRefPhysician">NSSearchField</string>
-						<string key="searchFieldStudyDescription">NSSearchField</string>
-						<string key="searchInstitutionName">NSSearchField</string>
-						<string key="selectedResultSource">NSTextField</string>
-						<string key="sendToPopup">NSPopUpButton</string>
-						<string key="sourcesTable">sourcesTableView</string>
-						<string key="toDate">NSDatePicker</string>
-						<string key="yearOldBirth">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="PatientModeMatrix">
-							<string key="name">PatientModeMatrix</string>
-							<string key="candidateClassName">NSTabView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="alreadyInDatabase">
-							<string key="name">alreadyInDatabase</string>
-							<string key="candidateClassName">NSImageView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="autoQueryCounter">
-							<string key="name">autoQueryCounter</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="autoRetrieveWindow">
-							<string key="name">autoRetrieveWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="birthdateFilterMatrix">
-							<string key="name">birthdateFilterMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dateFilterMatrix">
-							<string key="name">dateFilterMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dicomFieldsMenu">
-							<string key="name">dicomFieldsMenu</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="fromDate">
-							<string key="name">fromDate</string>
-							<string key="candidateClassName">NSDatePicker</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="modalityFilterMatrix">
-							<string key="name">modalityFilterMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="numberOfStudies">
-							<string key="name">numberOfStudies</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="outlineView">
-							<string key="name">outlineView</string>
-							<string key="candidateClassName">QueryOutlineView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="partiallyInDatabase">
-							<string key="name">partiallyInDatabase</string>
-							<string key="candidateClassName">NSImageView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName">
-							<string key="name">presetName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetWindow">
-							<string key="name">presetWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetsPopup">
-							<string key="name">presetsPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="progressIndicator">
-							<string key="name">progressIndicator</string>
-							<string key="candidateClassName">NSProgressIndicator</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchBirth">
-							<string key="name">searchBirth</string>
-							<string key="candidateClassName">NSDatePicker</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchCustomField">
-							<string key="name">searchCustomField</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldAN">
-							<string key="name">searchFieldAN</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldComments">
-							<string key="name">searchFieldComments</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldID">
-							<string key="name">searchFieldID</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldName">
-							<string key="name">searchFieldName</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldRefPhysician">
-							<string key="name">searchFieldRefPhysician</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchFieldStudyDescription">
-							<string key="name">searchFieldStudyDescription</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="searchInstitutionName">
-							<string key="name">searchInstitutionName</string>
-							<string key="candidateClassName">NSSearchField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="selectedResultSource">
-							<string key="name">selectedResultSource</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sendToPopup">
-							<string key="name">sendToPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sourcesTable">
-							<string key="name">sourcesTable</string>
-							<string key="candidateClassName">sourcesTableView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toDate">
-							<string key="name">toDate</string>
-							<string key="candidateClassName">NSDatePicker</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="yearOldBirth">
-							<string key="name">yearOldBirth</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/QueryController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">QueryLogController</string>
-					<string key="superclassName">NSArrayController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">nothing:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">nothing:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">nothing:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/QueryLogController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">QueryOutlineView</string>
-					<string key="superclassName">NSOutlineView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/QueryOutlineView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SFAuthorizationView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/SFAuthorizationView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">sourcesTableView</string>
-					<string key="superclassName">NSTableView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/sourcesTableView.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">

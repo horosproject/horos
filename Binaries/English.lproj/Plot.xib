@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1070</int>
+		<int key="IBDocument.SystemTarget">1060</int>
 		<string key="IBDocument.SystemVersion">11E53</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.47</string>
@@ -38,7 +38,7 @@
 			<object class="NSWindowTemplate" id="486770653">
 				<int key="NSWindowStyleMask">159</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{14, 1220}, {506, 324}}</string>
+				<string key="NSWindowRect">{{0, 0}, {506, 324}}</string>
 				<int key="NSWTFlags">-1334312960</int>
 				<string key="NSWindowTitle">Plot</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -48,7 +48,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 213}</string>
 				<object class="NSView" key="NSWindowView" id="614272813">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSCustomView" id="605275105">
@@ -56,6 +56,7 @@
 							<int key="NSvFlags">274</int>
 							<string key="NSFrame">{{40, 20}, {457, 295}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="528042215"/>
 							<string key="NSClassName">PlotView</string>
 							<string key="NSExtension">NSView</string>
 						</object>
@@ -64,6 +65,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{279, 6}, {215, 13}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="573893960">
 								<int key="NSCellFlags">67239424</int>
@@ -100,6 +102,7 @@
 							<int key="NSvFlags">292</int>
 							<string key="NSFrame">{{42, 6}, {22, 13}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="1045078139"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="562818236">
 								<int key="NSCellFlags">67239424</int>
@@ -116,6 +119,7 @@
 							<int key="NSvFlags">292</int>
 							<string key="NSFrame">{{-3, 20}, {43, 13}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="605275105"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="903730487">
 								<int key="NSCellFlags">67239424</int>
@@ -132,6 +136,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{-3, 302}, {43, 13}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="133077361"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="339756465">
 								<int key="NSCellFlags">67239424</int>
@@ -148,6 +153,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{-3, 279}, {43, 15}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="935923302"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="263017010">
 								<int key="NSCellFlags">67239424</int>
@@ -164,6 +170,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{-3, 264}, {43, 15}}</string>
 							<reference key="NSSuperview" ref="614272813"/>
+							<reference key="NSNextKeyView" ref="26171303"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="1034568489">
 								<int key="NSCellFlags">67239424</int>
@@ -176,9 +183,11 @@
 							</object>
 						</object>
 					</array>
-					<string key="NSFrame">{{1, 1}, {506, 324}}</string>
+					<string key="NSFrameSize">{506, 324}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSNextKeyView" ref="597409625"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{213, 229}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -381,6 +390,8 @@
 				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="637.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="637.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="637.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="638.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="745.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -423,55 +434,14 @@
 						<string key="minorKey"/>
 					</object>
 				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PlotView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PlotView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">PlotWindow</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="maxX">NSTextField</string>
-						<string key="maxY">NSTextField</string>
-						<string key="minY">NSTextField</string>
-						<string key="plot">PlotView</string>
-						<string key="sizeT">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="maxX">
-							<string key="name">maxX</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="maxY">
-							<string key="name">maxY</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="minY">
-							<string key="name">minY</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="plot">
-							<string key="name">plot</string>
-							<string key="candidateClassName">PlotView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sizeT">
-							<string key="name">sizeT</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PlotWindow.h</string>
-					</object>
-				</object>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
+			<real value="1060" key="NS.object.0"/>
+		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
 			<real value="4300" key="NS.object.0"/>

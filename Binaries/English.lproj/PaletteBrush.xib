@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1050</int>
+		<int key="IBDocument.SystemTarget">1060</int>
 		<string key="IBDocument.SystemVersion">11E53</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.47</string>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="255577373">
 				<int key="NSWindowStyleMask">275</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{106, 1333}, {213, 65}}</string>
+				<string key="NSWindowRect">{{0, 0}, {213, 65}}</string>
 				<int key="NSWTFlags">-1334312960</int>
 				<string key="NSWindowTitle">Brush Tool</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -52,7 +52,7 @@
 				<string key="NSWindowContentMaxSize">{500, 500}</string>
 				<string key="NSWindowContentMinSize">{143.87700000000001, 5}</string>
 				<object class="NSView" key="NSWindowView" id="876239671">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="14426821">
@@ -60,6 +60,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{-14, 11}, {82, 17}}</string>
 							<reference key="NSSuperview" ref="876239671"/>
+							<reference key="NSNextKeyView" ref="777437082"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="1023919655">
 								<int key="NSCellFlags">67239424</int>
@@ -96,6 +97,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{93, 11}, {112, 17}}</string>
 							<reference key="NSSuperview" ref="876239671"/>
+							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSliderCell" key="NSCell" id="933253282">
 								<int key="NSCellFlags">67501824</int>
@@ -124,6 +126,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{66, 11}, {26, 17}}</string>
 							<reference key="NSSuperview" ref="876239671"/>
+							<reference key="NSNextKeyView" ref="64071277"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="652797555">
 								<int key="NSCellFlags">67239424</int>
@@ -140,6 +143,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{76, 35}, {129, 25}}</string>
 							<reference key="NSSuperview" ref="876239671"/>
+							<reference key="NSNextKeyView" ref="14426821"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSSegmentedCell" key="NSCell" id="319136523">
 								<int key="NSCellFlags">67239424</int>
@@ -171,6 +175,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{-14, 40}, {82, 17}}</string>
 							<reference key="NSSuperview" ref="876239671"/>
+							<reference key="NSNextKeyView" ref="621205636"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="311077516">
 								<int key="NSCellFlags">67239424</int>
@@ -184,8 +189,10 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{213, 65}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSNextKeyView" ref="816402780"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{143.87700000000001, 21}</string>
 				<string key="NSMaxSize">{500, 516}</string>
 				<string key="NSFrameAutosaveName"/>
@@ -387,6 +394,8 @@
 				<string key="230.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="231.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="232.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="34.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="34.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="34.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="34.IBWindowTemplateEditedContentRect">{{525, 709}, {213, 65}}</string>
 				<string key="35.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -397,56 +406,12 @@
 			<nil key="sourceID"/>
 			<int key="maxID">232</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">PaletteController</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="changeBrushSize:">id</string>
-						<string key="changeMode:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="changeBrushSize:">
-							<string key="name">changeBrushSize:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeMode:">
-							<string key="name">changeMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="modeControl">NSSegmentedControl</string>
-						<string key="sizeSlider">NSSlider</string>
-						<string key="sliderTextValue">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="modeControl">
-							<string key="name">modeControl</string>
-							<string key="candidateClassName">NSSegmentedControl</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sizeSlider">
-							<string key="name">sizeSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="sliderTextValue">
-							<string key="name">sliderTextValue</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/PaletteController.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<real value="1060" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>

@@ -46,7 +46,7 @@
 			<object class="NSWindowTemplate" id="171679235">
 				<int key="NSWindowStyleMask">7</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{324, 675}, {728, 655}}</string>
+				<string key="NSWindowRect">{{0, 0}, {728, 655}}</string>
 				<int key="NSWTFlags">1081606144</int>
 				<string key="NSWindowTitle">&lt;&lt; do not localize &gt;&gt;</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -1392,6 +1392,7 @@ AAA</bytes>
 											<int key="NSvFlags">268</int>
 											<string key="NSFrame">{{3, 8}, {691, 27}}</string>
 											<reference key="NSSuperview" ref="975023040"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="290317157">
 												<int key="NSCellFlags">67239424</int>
@@ -1616,7 +1617,7 @@ Y3R1cmVyLCB3aGljaCBmaWVsZCBzaG91bGQgYmUgdXNlZC4</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="376063861"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{224.66300000000001, 32}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2610,6 +2611,8 @@ Y3R1cmVyLCB3aGljaCBmaWVsZCBzaG91bGQgYmUgdXNlZC4</string>
 				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="12.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="12.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="12.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="12.IBWindowTemplateEditedContentRect">{{366, 283}, {728, 655}}</string>
 				<string key="277.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>

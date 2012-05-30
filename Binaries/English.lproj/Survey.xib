@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1070</int>
+		<int key="IBDocument.SystemTarget">1060</int>
 		<string key="IBDocument.SystemVersion">11E53</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.47</string>
@@ -39,7 +39,7 @@
 			<object class="NSWindowTemplate" id="890720673">
 				<int key="NSWindowStyleMask">17</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{539, 874}, {700, 285}}</string>
+				<string key="NSWindowRect">{{0, 0}, {700, 285}}</string>
 				<int key="NSWTFlags">-260571136</int>
 				<string key="NSWindowTitle">Paris 2009 - October</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -49,7 +49,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="316803161">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="282295248">
@@ -57,6 +57,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{595, 4}, {101, 28}}</string>
 							<reference key="NSSuperview" ref="316803161"/>
+							<reference key="NSNextKeyView"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="769313227">
@@ -88,6 +89,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{7, 12}, {217, 17}}</string>
 							<reference key="NSSuperview" ref="316803161"/>
+							<reference key="NSNextKeyView" ref="475313032"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="286025598">
 								<int key="NSCellFlags">67239424</int>
@@ -125,6 +127,7 @@
 							</set>
 							<string key="NSFrame">{{0, 37}, {700, 248}}</string>
 							<reference key="NSSuperview" ref="316803161"/>
+							<reference key="NSNextKeyView" ref="816901814"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="622315278">
 								<int key="NSCellFlags">130560</int>
@@ -145,6 +148,7 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{448, 4}, {142, 28}}</string>
 							<reference key="NSSuperview" ref="316803161"/>
+							<reference key="NSNextKeyView" ref="282295248"/>
 							<int key="NSTag">2</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="427542604">
@@ -165,8 +169,10 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{700, 285}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSNextKeyView" ref="256123192"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -314,6 +320,8 @@
 				<string key="20.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="28.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="35.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<boolean value="YES" key="39.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="39.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="39.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="39.IBWindowTemplateEditedContentRect">{{544, 734}, {700, 285}}</string>
 				<string key="82.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -329,68 +337,13 @@
 			<nil key="sourceID"/>
 			<int key="maxID">90</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes">
-			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
-				<object class="IBPartialClassDescription">
-					<string key="className">Survey</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="done:">id</string>
-						<string key="dontShowAgain:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="done:">
-							<string key="name">done:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="dontShowAgain:">
-							<string key="name">dontShowAgain:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="comments">NSTextField</string>
-						<string key="plugin">NSMatrix</string>
-						<string key="usage">NSMatrix</string>
-						<string key="what">NSMatrix</string>
-						<string key="where">NSMatrix</string>
-						<string key="who">NSMatrix</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="comments">
-							<string key="name">comments</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="plugin">
-							<string key="name">plugin</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="usage">
-							<string key="name">usage</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="what">
-							<string key="name">what</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="where">
-							<string key="name">where</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="who">
-							<string key="name">who</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/Survey.h</string>
-					</object>
-				</object>
-			</array>
-		</object>
+		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
+			<real value="1060" key="NS.object.0"/>
+		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
 			<real value="4300" key="NS.object.0"/>

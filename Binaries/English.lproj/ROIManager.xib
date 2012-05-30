@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1050</int>
+		<int key="IBDocument.SystemTarget">1060</int>
 		<string key="IBDocument.SystemVersion">11E53</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
 		<string key="IBDocument.AppKitVersion">1138.47</string>
@@ -41,7 +41,7 @@
 			<object class="NSWindowTemplate" id="4267862">
 				<int key="NSWindowStyleMask">159</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{587, 1291}, {407, 216}}</string>
+				<string key="NSWindowRect">{{0, 0}, {407, 216}}</string>
 				<int key="NSWTFlags">-1334312960</int>
 				<string key="NSWindowTitle">ROI Manager</string>
 				<object class="NSMutableString" key="NSWindowClass">
@@ -54,7 +54,7 @@
 				<string key="NSWindowContentMaxSize">{800, 800}</string>
 				<string key="NSWindowContentMinSize">{213, 113}</string>
 				<object class="NSView" key="NSWindowView" id="412428604">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSScrollView" id="584258301">
@@ -70,12 +70,14 @@
 											<int key="NSvFlags">4352</int>
 											<string key="NSFrameSize">{405, 199}</string>
 											<reference key="NSSuperview" ref="661933384"/>
+											<reference key="NSNextKeyView" ref="342652584"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTableHeaderView" key="NSHeaderView" id="440476920">
 												<reference key="NSNextResponder" ref="729188830"/>
 												<int key="NSvFlags">256</int>
 												<string key="NSFrameSize">{405, 17}</string>
 												<reference key="NSSuperview" ref="729188830"/>
+												<reference key="NSNextKeyView" ref="159012642"/>
 												<reference key="NSTableView" ref="214235019"/>
 											</object>
 											<object class="_NSCornerView" key="NSCornerView" id="159012642">
@@ -83,6 +85,7 @@
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{391, 0}, {16, 17}}</string>
 												<reference key="NSSuperview" ref="584258301"/>
+												<reference key="NSNextKeyView" ref="661933384"/>
 											</object>
 											<array class="NSMutableArray" key="NSTableColumns">
 												<object class="NSTableColumn" id="912625207">
@@ -264,6 +267,7 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{391, 17}, {15, 184}}</string>
 									<reference key="NSSuperview" ref="584258301"/>
+									<reference key="NSNextKeyView" ref="15185874"/>
 									<reference key="NSTarget" ref="584258301"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSPercent">0.96842099999999998</double>
@@ -273,6 +277,7 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{1, 201}, {390, 15}}</string>
 									<reference key="NSSuperview" ref="584258301"/>
+									<reference key="NSNextKeyView"/>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="584258301"/>
 									<string key="NSAction">_doScroller:</string>
@@ -295,18 +300,21 @@
 							</array>
 							<string key="NSFrameSize">{407, 217}</string>
 							<reference key="NSSuperview" ref="412428604"/>
-							<reference key="NSNextKeyView" ref="661933384"/>
+							<reference key="NSNextKeyView" ref="729188830"/>
 							<int key="NSsFlags">133682</int>
 							<reference key="NSVScroller" ref="342652584"/>
 							<reference key="NSHScroller" ref="15185874"/>
 							<reference key="NSContentView" ref="661933384"/>
 							<reference key="NSHeaderClipView" ref="729188830"/>
+							<reference key="NSCornerView" ref="159012642"/>
 							<bytes key="NSScrollAmts">QSAAAEEgAABBmAAAQZgAAA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{407, 216}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSNextKeyView" ref="584258301"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1577}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{800, 816}</string>
 				<string key="NSFrameAutosaveName"/>
@@ -512,6 +520,8 @@
 				<integer value="1" key="44.IBShouldRemoveOnLegacySave"/>
 				<string key="45.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<integer value="1" key="45.IBShouldRemoveOnLegacySave"/>
+				<boolean value="YES" key="5.IBNSWindowAutoPositionCentersHorizontal"/>
+				<boolean value="YES" key="5.IBNSWindowAutoPositionCentersVertical"/>
 				<string key="5.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="5.IBWindowTemplateEditedContentRect">{{0, 1335}, {407, 216}}</string>
 				<string key="6.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -544,43 +554,13 @@
 						<string key="minorKey"/>
 					</object>
 				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ROIManagerController</string>
-					<string key="superclassName">NSWindowController</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">deleteROI:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">deleteROI:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">deleteROI:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">tableView</string>
-						<string key="NS.object.0">NSTableView</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">tableView</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">tableView</string>
-							<string key="candidateClassName">NSTableView</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ROIManagerController.h</string>
-					</object>
-				</object>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<integer value="1050" key="NS.object.0"/>
+			<real value="1060" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
