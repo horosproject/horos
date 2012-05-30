@@ -26,6 +26,7 @@
 #import "Notifications.h"
 #import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
+#import "DicomDatabase.h"
 
 #ifdef OSIRIX_VIEWER
 #import "DCMUSRegion.h"   // US Regions
@@ -12521,7 +12522,7 @@ END_CREATE_ROIS:
         NSString *s = nil;
         // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
         
-        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+        NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
         
         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
         
@@ -12667,7 +12668,7 @@ END_CREATE_ROIS:
             NSString *s = nil;
             // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
             
-            NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
+            NSString *recoveryPath = [[[DicomDatabase activeLocalDatabase] dataBaseDirPath] stringByAppendingPathComponent:@"/ThumbnailPath"];
             
             [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
             
