@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<int key="IBDocument.SystemTarget">1050</int>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSUserDefaultsController</string>
@@ -30,7 +30,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="299270671">
 			<object class="NSCustomObject" id="30905188">
 				<string key="NSClassName">PreferencesWindowController</string>
@@ -372,13 +375,13 @@
 				<object class="NSComboTableView" key="NSTableView" id="1009057258">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">274</int>
-					<string key="NSFrameSize">{13, 0}</string>
+					<string key="NSFrameSize">{15, 0}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<bool key="NSEnabled">YES</bool>
 					<array class="NSMutableArray" key="NSTableColumns">
 						<object class="NSTableColumn">
-							<double key="NSWidth">10</double>
+							<double key="NSWidth">12</double>
 							<double key="NSMinWidth">10</double>
 							<double key="NSMaxWidth">1000</double>
 							<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -429,7 +432,7 @@
 					</object>
 					<double key="NSRowHeight">16</double>
 					<string key="NSAction">tableViewAction:</string>
-					<int key="NSTvFlags">-765427712</int>
+					<int key="NSTvFlags">-767524864</int>
 					<reference key="NSDelegate" ref="237752542"/>
 					<reference key="NSDataSource" ref="237752542"/>
 					<reference key="NSTarget" ref="237752542"/>
@@ -478,48 +481,12 @@
 					<int key="connectionID">722</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: currentContext</string>
-						<reference key="source" ref="1059375564"/>
-						<reference key="destination" ref="30905188"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1059375564"/>
-							<reference key="NSDestination" ref="30905188"/>
-							<string key="NSLabel">enabled: currentContext</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">currentContext</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">732</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">authButton</string>
 						<reference key="source" ref="30905188"/>
 						<reference key="destination" ref="331301561"/>
 					</object>
 					<int key="connectionID">747</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.AUTHENTICATION</string>
-						<reference key="source" ref="331301561"/>
-						<reference key="destination" ref="626795967"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="331301561"/>
-							<reference key="NSDestination" ref="626795967"/>
-							<string key="NSLabel">enabled: values.AUTHENTICATION</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.AUTHENTICATION</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">751</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -552,6 +519,42 @@
 						<reference key="destination" ref="461034591"/>
 					</object>
 					<int key="connectionID">759</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: currentContext</string>
+						<reference key="source" ref="1059375564"/>
+						<reference key="destination" ref="30905188"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1059375564"/>
+							<reference key="NSDestination" ref="30905188"/>
+							<string key="NSLabel">enabled: currentContext</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">currentContext</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">732</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.AUTHENTICATION</string>
+						<reference key="source" ref="331301561"/>
+						<reference key="destination" ref="626795967"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="331301561"/>
+							<reference key="NSDestination" ref="626795967"/>
+							<string key="NSLabel">enabled: values.AUTHENTICATION</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.AUTHENTICATION</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">751</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -880,13 +883,13 @@
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
@@ -894,8 +897,8 @@
 			<string key="NSGoLeftTemplate">{9, 9}</string>
 			<string key="NSGoRightTemplate">{9, 9}</string>
 			<string key="NSLockUnlockedTemplate">{9, 12}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 		</dictionary>
 	</data>
 </archive>

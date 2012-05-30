@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11D50b</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
-		<string key="IBDocument.AppKitVersion">1138.32</string>
-		<string key="IBDocument.HIToolboxVersion">568.00</string>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2177</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSColorWell</string>
@@ -63,7 +63,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="345868235">
@@ -79,7 +79,6 @@
 											<int key="NSvFlags">274</int>
 											<string key="NSFrameSize">{356, 217}</string>
 											<reference key="NSSuperview" ref="843978156"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="390045821"/>
 											<string key="NSClassName">CPRMPRDCMView</string>
 										</object>
@@ -88,14 +87,12 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{0, 226}, {356, 217}}</string>
 											<reference key="NSSuperview" ref="843978156"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="165363646"/>
 											<string key="NSClassName">CPRMPRDCMView</string>
 										</object>
 									</array>
 									<string key="NSFrameSize">{356, 443}</string>
 									<reference key="NSSuperview" ref="345868235"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="494401297"/>
 								</object>
 								<object class="NSSplitView" id="165363646">
@@ -107,7 +104,6 @@
 											<int key="NSvFlags">274</int>
 											<string key="NSFrameSize">{366, 217}</string>
 											<reference key="NSSuperview" ref="165363646"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="554492225"/>
 											<string key="NSClassName">CPRMPRDCMView</string>
 										</object>
@@ -120,8 +116,6 @@
 													<int key="NSvFlags">268</int>
 													<string key="NSFrame">{{294, 0}, {72, 75}}</string>
 													<reference key="NSSuperview" ref="554492225"/>
-													<reference key="NSWindow"/>
-													<reference key="NSNextKeyView"/>
 													<string key="NSClassName">CPRTransverseView</string>
 												</object>
 												<object class="NSCustomView" id="1019564056">
@@ -129,7 +123,6 @@
 													<int key="NSvFlags">268</int>
 													<string key="NSFrame">{{294, 74}, {72, 72}}</string>
 													<reference key="NSSuperview" ref="554492225"/>
-													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="144887849"/>
 													<string key="NSClassName">CPRTransverseView</string>
 												</object>
@@ -138,7 +131,6 @@
 													<int key="NSvFlags">268</int>
 													<string key="NSFrame">{{294, 144}, {72, 72}}</string>
 													<reference key="NSSuperview" ref="554492225"/>
-													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="1019564056"/>
 													<string key="NSClassName">CPRTransverseView</string>
 												</object>
@@ -147,34 +139,28 @@
 													<int key="NSvFlags">268</int>
 													<string key="NSFrameSize">{295, 217}</string>
 													<reference key="NSSuperview" ref="554492225"/>
-													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="757269392"/>
 													<string key="NSClassName">CPRView</string>
 												</object>
 											</array>
 											<string key="NSFrame">{{0, 226}, {366, 217}}</string>
 											<reference key="NSSuperview" ref="165363646"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="608397644"/>
 											<string key="NSClassName">CPRClusterView</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{365, 0}, {366, 443}}</string>
 									<reference key="NSSuperview" ref="345868235"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="429309286"/>
 								</object>
 							</array>
 							<string key="NSFrameSize">{731, 443}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="843978156"/>
 							<bool key="NSIsVertical">YES</bool>
 						</object>
 					</array>
 					<string key="NSFrameSize">{730, 443}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="345868235"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -7947,13 +7933,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<real value="1060" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>

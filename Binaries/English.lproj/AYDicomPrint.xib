@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<int key="IBDocument.SystemTarget">1050</int>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSTableHeaderView</string>
@@ -45,7 +45,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="457769047">
 			<object class="NSCustomObject" id="216790319">
 				<string key="NSClassName">AYDicomPrintWindowController</string>
@@ -2496,14 +2499,6 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 			<array class="NSMutableArray" key="connectionRecords">
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">contentView</string>
-						<reference key="source" ref="434728730"/>
-						<reference key="destination" ref="625758988"/>
-					</object>
-					<int key="connectionID">9</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">window</string>
 						<reference key="source" ref="216790319"/>
 						<reference key="destination" ref="965512933"/>
@@ -2519,140 +2514,12 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					<int key="connectionID">157</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.host</string>
-						<reference key="source" ref="141977312"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="141977312"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.host</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.host</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">272</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.port</string>
-						<reference key="source" ref="277505290"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="277505290"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.port</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.port</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">273</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.aeTitle</string>
-						<reference key="source" ref="298495742"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="298495742"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.aeTitle</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.aeTitle</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">274</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">printImages:</string>
 						<reference key="source" ref="216790319"/>
 						<reference key="destination" ref="129599051"/>
 					</object>
 					<int key="connectionID">321</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.copies</string>
-						<reference key="source" ref="803643334"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="803643334"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.copies</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.copies</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">324</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentArray: values.AYDicomPrinter</string>
-						<reference key="source" ref="509854928"/>
-						<reference key="destination" ref="58378945"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="509854928"/>
-							<reference key="NSDestination" ref="58378945"/>
-							<string key="NSLabel">contentArray: values.AYDicomPrinter</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">values.AYDicomPrinter</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValidatesImmediately</string>
-								<integer value="1" key="NS.object.0"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">325</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.copies</string>
-						<reference key="source" ref="770470934"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="770470934"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.copies</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.copies</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSAllowsEditingMultipleValuesSelection</string>
-								<integer value="0" key="NS.object.0"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">341</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">parentWindow</string>
-						<reference key="source" ref="434728730"/>
-						<reference key="destination" ref="965512933"/>
-					</object>
-					<int key="connectionID">350</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.printerName</string>
-						<reference key="source" ref="610975388"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="610975388"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.printerName</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.printerName</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">378</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2664,67 +2531,11 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">toggle:</string>
-						<reference key="source" ref="434728730"/>
-						<reference key="destination" ref="542519636"/>
-					</object>
-					<int key="connectionID">408</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
 						<string key="label">cancel:</string>
 						<reference key="source" ref="216790319"/>
 						<reference key="destination" ref="512692546"/>
 					</object>
 					<int key="connectionID">410</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: selection.printerName</string>
-						<reference key="source" ref="12860048"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="12860048"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">enabled: selection.printerName</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">selection.printerName</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">416</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: selection.printerName</string>
-						<reference key="source" ref="129599051"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="129599051"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">enabled: selection.printerName</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">selection.printerName</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">418</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="434728730"/>
-						<reference key="destination" ref="216790319"/>
-					</object>
-					<int key="connectionID">427</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2733,82 +2544,6 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 						<reference key="destination" ref="542519636"/>
 					</object>
 					<int key="connectionID">428</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.configurationInformation</string>
-						<reference key="source" ref="325419124"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="325419124"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.configurationInformation</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.configurationInformation</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
-								<integer value="1" key="NS.object.0"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">437</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: selection.colorPrint</string>
-						<reference key="source" ref="492042732"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="492042732"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: selection.colorPrint</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">selection.colorPrint</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">441</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: arrangedObjects.printerName</string>
-						<reference key="source" ref="4608006"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="4608006"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: arrangedObjects.printerName</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">arrangedObjects.printerName</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSConditionallySetsEditable</string>
-								<integer value="1" key="NS.object.0"/>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">447</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">fontBold: arrangedObjects.defaultPrinter</string>
-						<reference key="source" ref="4608006"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="4608006"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">fontBold: arrangedObjects.defaultPrinter</string>
-							<string key="NSBinding">fontBold</string>
-							<string key="NSKeyPath">arrangedObjects.defaultPrinter</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">449</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2865,22 +2600,6 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 						<reference key="destination" ref="129599051"/>
 					</object>
 					<int key="connectionID">483</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: arrangedObjects.state</string>
-						<reference key="source" ref="858230738"/>
-						<reference key="destination" ref="509854928"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="858230738"/>
-							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">value: arrangedObjects.state</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">arrangedObjects.state</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">484</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -2979,38 +2698,6 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					<int key="connectionID">518</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.DCMPRINT_Interval</string>
-						<reference key="source" ref="360821547"/>
-						<reference key="destination" ref="58378945"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="360821547"/>
-							<reference key="NSDestination" ref="58378945"/>
-							<string key="NSLabel">value: values.DCMPRINT_Interval</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.DCMPRINT_Interval</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">520</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.DCMPRINT_Interval</string>
-						<reference key="source" ref="822491479"/>
-						<reference key="destination" ref="58378945"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="822491479"/>
-							<reference key="NSDestination" ref="58378945"/>
-							<string key="NSLabel">value: values.DCMPRINT_Interval</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.DCMPRINT_Interval</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">522</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">m_pages</string>
 						<reference key="source" ref="216790319"/>
@@ -3067,20 +2754,64 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					<int key="connectionID">591</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">setPages:</string>
+						<reference key="source" ref="216790319"/>
+						<reference key="destination" ref="669339741"/>
+					</object>
+					<int key="connectionID">597</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">contentView</string>
+						<reference key="source" ref="434728730"/>
+						<reference key="destination" ref="625758988"/>
+					</object>
+					<int key="connectionID">9</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">parentWindow</string>
+						<reference key="source" ref="434728730"/>
+						<reference key="destination" ref="965512933"/>
+					</object>
+					<int key="connectionID">350</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toggle:</string>
+						<reference key="source" ref="434728730"/>
+						<reference key="destination" ref="542519636"/>
+					</object>
+					<int key="connectionID">408</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="434728730"/>
+						<reference key="destination" ref="216790319"/>
+					</object>
+					<int key="connectionID">427</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.autoAdjustPrintingFormat</string>
-						<reference key="source" ref="669339741"/>
+						<string key="label">contentArray: values.AYDicomPrinter</string>
+						<reference key="source" ref="509854928"/>
 						<reference key="destination" ref="58378945"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="669339741"/>
+							<reference key="NSSource" ref="509854928"/>
 							<reference key="NSDestination" ref="58378945"/>
-							<string key="NSLabel">value: values.autoAdjustPrintingFormat</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.autoAdjustPrintingFormat</string>
+							<string key="NSLabel">contentArray: values.AYDicomPrinter</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">values.AYDicomPrinter</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValidatesImmediately</string>
+								<integer value="1" key="NS.object.0"/>
+							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">594</int>
+					<int key="connectionID">325</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3103,28 +2834,20 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 					<int key="connectionID">596</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">setPages:</string>
-						<reference key="source" ref="216790319"/>
-						<reference key="destination" ref="669339741"/>
-					</object>
-					<int key="connectionID">597</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: selection.filmOrientationTag</string>
-						<reference key="source" ref="671165441"/>
+						<string key="label">selectedTag: selection.imageDisplayFormatTag</string>
+						<reference key="source" ref="404805641"/>
 						<reference key="destination" ref="509854928"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="671165441"/>
+							<reference key="NSSource" ref="404805641"/>
 							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">selectedTag: selection.filmOrientationTag</string>
+							<string key="NSLabel">selectedTag: selection.imageDisplayFormatTag</string>
 							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">selection.filmOrientationTag</string>
+							<string key="NSKeyPath">selection.imageDisplayFormatTag</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">598</int>
+					<int key="connectionID">607</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3144,19 +2867,23 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: selection.trimTag</string>
-						<reference key="source" ref="330769721"/>
+						<string key="label">value: selection.configurationInformation</string>
+						<reference key="source" ref="325419124"/>
 						<reference key="destination" ref="509854928"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="330769721"/>
+							<reference key="NSSource" ref="325419124"/>
 							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">selectedTag: selection.trimTag</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">selection.trimTag</string>
+							<string key="NSLabel">value: selection.configurationInformation</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.configurationInformation</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSContinuouslyUpdatesValue</string>
+								<integer value="1" key="NS.object.0"/>
+							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">602</int>
+					<int key="connectionID">437</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3176,6 +2903,38 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.filmOrientationTag</string>
+						<reference key="source" ref="671165441"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="671165441"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">selectedTag: selection.filmOrientationTag</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.filmOrientationTag</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">598</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.trimTag</string>
+						<reference key="source" ref="330769721"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="330769721"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">selectedTag: selection.trimTag</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.trimTag</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">602</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">selectedTag: selection.magnificationTypeTag</string>
 						<reference key="source" ref="106083333"/>
 						<reference key="destination" ref="509854928"/>
@@ -3192,19 +2951,191 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: selection.imageDisplayFormatTag</string>
-						<reference key="source" ref="404805641"/>
+						<string key="label">selectedTag: selection.priorityTag</string>
+						<reference key="source" ref="341988916"/>
 						<reference key="destination" ref="509854928"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="404805641"/>
+							<reference key="NSSource" ref="341988916"/>
 							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">selectedTag: selection.imageDisplayFormatTag</string>
+							<string key="NSLabel">selectedTag: selection.priorityTag</string>
 							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">selection.imageDisplayFormatTag</string>
+							<string key="NSKeyPath">selection.priorityTag</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">607</int>
+					<int key="connectionID">612</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.copies</string>
+						<reference key="source" ref="803643334"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="803643334"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.copies</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.copies</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">324</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: selection.mediumTag</string>
+						<reference key="source" ref="330449747"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="330449747"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">selectedTag: selection.mediumTag</string>
+							<string key="NSBinding">selectedTag</string>
+							<string key="NSKeyPath">selection.mediumTag</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">613</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.port</string>
+						<reference key="source" ref="277505290"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="277505290"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.port</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.port</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">273</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.host</string>
+						<reference key="source" ref="141977312"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="141977312"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.host</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.host</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">272</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.printerName</string>
+						<reference key="source" ref="12860048"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="12860048"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">enabled: selection.printerName</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.printerName</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">416</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: selection.printerName</string>
+						<reference key="source" ref="129599051"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="129599051"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">enabled: selection.printerName</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">selection.printerName</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">418</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.copies</string>
+						<reference key="source" ref="770470934"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="770470934"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.copies</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.copies</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSAllowsEditingMultipleValuesSelection</string>
+								<integer value="0" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">341</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.aeTitle</string>
+						<reference key="source" ref="298495742"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="298495742"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.aeTitle</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.aeTitle</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">274</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.printerName</string>
+						<reference key="source" ref="610975388"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="610975388"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.printerName</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.printerName</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">378</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: selection.colorPrint</string>
+						<reference key="source" ref="492042732"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="492042732"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">value: selection.colorPrint</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">selection.colorPrint</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">441</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -3240,35 +3171,107 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: selection.priorityTag</string>
-						<reference key="source" ref="341988916"/>
+						<string key="label">value: arrangedObjects.state</string>
+						<reference key="source" ref="858230738"/>
 						<reference key="destination" ref="509854928"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="341988916"/>
+							<reference key="NSSource" ref="858230738"/>
 							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">selectedTag: selection.priorityTag</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">selection.priorityTag</string>
+							<string key="NSLabel">value: arrangedObjects.state</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.state</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">612</int>
+					<int key="connectionID">484</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: selection.mediumTag</string>
-						<reference key="source" ref="330449747"/>
+						<string key="label">value: arrangedObjects.printerName</string>
+						<reference key="source" ref="4608006"/>
 						<reference key="destination" ref="509854928"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="330449747"/>
+							<reference key="NSSource" ref="4608006"/>
 							<reference key="NSDestination" ref="509854928"/>
-							<string key="NSLabel">selectedTag: selection.mediumTag</string>
-							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">selection.mediumTag</string>
+							<string key="NSLabel">value: arrangedObjects.printerName</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">arrangedObjects.printerName</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEditable</string>
+								<integer value="1" key="NS.object.0"/>
+							</object>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">613</int>
+					<int key="connectionID">447</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">fontBold: arrangedObjects.defaultPrinter</string>
+						<reference key="source" ref="4608006"/>
+						<reference key="destination" ref="509854928"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="4608006"/>
+							<reference key="NSDestination" ref="509854928"/>
+							<string key="NSLabel">fontBold: arrangedObjects.defaultPrinter</string>
+							<string key="NSBinding">fontBold</string>
+							<string key="NSKeyPath">arrangedObjects.defaultPrinter</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">449</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.DCMPRINT_Interval</string>
+						<reference key="source" ref="822491479"/>
+						<reference key="destination" ref="58378945"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="822491479"/>
+							<reference key="NSDestination" ref="58378945"/>
+							<string key="NSLabel">value: values.DCMPRINT_Interval</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.DCMPRINT_Interval</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">522</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.DCMPRINT_Interval</string>
+						<reference key="source" ref="360821547"/>
+						<reference key="destination" ref="58378945"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="360821547"/>
+							<reference key="NSDestination" ref="58378945"/>
+							<string key="NSLabel">value: values.DCMPRINT_Interval</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.DCMPRINT_Interval</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">520</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.autoAdjustPrintingFormat</string>
+						<reference key="source" ref="669339741"/>
+						<reference key="destination" ref="58378945"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="669339741"/>
+							<reference key="NSDestination" ref="58378945"/>
+							<string key="NSLabel">value: values.autoAdjustPrintingFormat</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.autoAdjustPrintingFormat</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">594</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -5048,19 +5051,19 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
 		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
+		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
 		</dictionary>
 	</data>

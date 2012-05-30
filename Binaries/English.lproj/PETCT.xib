@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11D50b</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
-		<string key="IBDocument.AppKitVersion">1138.32</string>
-		<string key="IBDocument.HIToolboxVersion">568.00</string>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2177</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSUserDefaultsController</string>
@@ -60,7 +60,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{200, 200}</string>
 				<object class="NSView" key="NSWindowView" id="533716545">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="384829009">
@@ -76,7 +76,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{200, 200}</string>
 											<reference key="NSSuperview" ref="312404298"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="781905753"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -86,7 +85,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{209, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="312404298"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="754500110"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -96,7 +94,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{418, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="312404298"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="114900146"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -104,7 +101,6 @@
 									</array>
 									<string key="NSFrameSize">{618, 200}</string>
 									<reference key="NSSuperview" ref="384829009"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="265771596"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
@@ -117,7 +113,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{200, 200}</string>
 											<reference key="NSSuperview" ref="114900146"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="320149383"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -127,7 +122,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{209, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="114900146"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="924177375"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -137,7 +131,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{418, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="114900146"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="428684750"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -145,7 +138,6 @@
 									</array>
 									<string key="NSFrame">{{0, 209}, {618, 200}}</string>
 									<reference key="NSSuperview" ref="384829009"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="379033392"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
@@ -158,7 +150,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{200, 200}</string>
 											<reference key="NSSuperview" ref="428684750"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="989315117"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -168,7 +159,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{209, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="428684750"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="976982902"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -178,28 +168,22 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{418, 0}, {200, 200}}</string>
 											<reference key="NSSuperview" ref="428684750"/>
-											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSClassName">OrthogonalMPRPETCTView</string>
 											<string key="NSExtension">NSOpenGLView</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{0, 418}, {618, 200}}</string>
 									<reference key="NSSuperview" ref="384829009"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="596797012"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
 							</array>
 							<string key="NSFrame">{{3, 10}, {618, 618}}</string>
 							<reference key="NSSuperview" ref="533716545"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="312404298"/>
 						</object>
 					</array>
 					<string key="NSFrameSize">{624, 628}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="384829009"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -4146,13 +4130,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<real value="1060" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>

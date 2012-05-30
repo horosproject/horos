@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<int key="IBDocument.SystemTarget">1050</int>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSTextField</string>
@@ -24,7 +24,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="689494936">
 			<object class="NSCustomObject" id="354696254">
 				<string key="NSClassName">BurnerWindowController</string>
@@ -753,22 +756,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">35</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.anonymizedBeforeBurning</string>
-						<reference key="source" ref="744693312"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="744693312"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.anonymizedBeforeBurning</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.anonymizedBeforeBurning</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">40</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">setAnonymizedCheck:</string>
 						<reference key="source" ref="354696254"/>
@@ -785,22 +772,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">44</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.copyReportsToCD</string>
-						<reference key="source" ref="1017478722"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1017478722"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.copyReportsToCD</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.copyReportsToCD</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">76</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
 						<string key="label">estimateFolderSize:</string>
 						<reference key="source" ref="354696254"/>
@@ -815,54 +786,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="destination" ref="71935462"/>
 					</object>
 					<int key="connectionID">79</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.BurnHtml</string>
-						<reference key="source" ref="150537468"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="150537468"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.BurnHtml</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.BurnHtml</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">80</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.BurnSupplementaryFolder</string>
-						<reference key="source" ref="71935462"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="71935462"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.BurnSupplementaryFolder</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.BurnSupplementaryFolder</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">82</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.EncryptCD</string>
-						<reference key="source" ref="680052618"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="680052618"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.EncryptCD</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.EncryptCD</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">94</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
@@ -889,56 +812,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<int key="connectionID">111</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.saveAsDMGFile</string>
-						<reference key="source" ref="1058265645"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1058265645"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.saveAsDMGFile</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.saveAsDMGFile</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
+					<object class="IBActionConnection" key="connection">
+						<string key="label">estimateFolderSize:</string>
+						<reference key="source" ref="354696254"/>
+						<reference key="destination" ref="1071386119"/>
 					</object>
-					<int key="connectionID">116</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.SupplementaryBurnPath</string>
-						<reference key="source" ref="869202051"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="869202051"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.SupplementaryBurnPath</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">117</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.SupplementaryBurnPath</string>
-						<reference key="source" ref="71935462"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector" id="834256261">
-							<reference key="NSSource" ref="71935462"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">enabled: values.SupplementaryBurnPath</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">119</int>
+					<int key="connectionID">150</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -963,6 +842,42 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: buttonsDisabled</string>
+						<reference key="source" ref="834448456"/>
+						<reference key="destination" ref="354696254"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="834448456"/>
+							<reference key="NSDestination" ref="354696254"/>
+							<string key="NSLabel">enabled: buttonsDisabled</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">buttonsDisabled</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">133</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.anonymizedBeforeBurning</string>
+						<reference key="source" ref="744693312"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="744693312"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.anonymizedBeforeBurning</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.anonymizedBeforeBurning</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">40</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: buttonsDisabled</string>
 						<reference key="source" ref="744693312"/>
 						<reference key="destination" ref="354696254"/>
 						<object class="NSNibBindingConnector" key="connector">
@@ -983,26 +898,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: buttonsDisabled</string>
-						<reference key="source" ref="834448456"/>
-						<reference key="destination" ref="354696254"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="834448456"/>
-							<reference key="NSDestination" ref="354696254"/>
-							<string key="NSLabel">enabled: buttonsDisabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">buttonsDisabled</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">133</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: buttonsDisabled</string>
 						<reference key="source" ref="251360819"/>
 						<reference key="destination" ref="354696254"/>
 						<object class="NSNibBindingConnector" key="connector">
@@ -1019,6 +914,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">134</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.BurnWeasis</string>
+						<reference key="source" ref="251360819"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="251360819"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.BurnWeasis</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.BurnWeasis</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">151</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.BurnHtml</string>
+						<reference key="source" ref="150537468"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="150537468"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.BurnHtml</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.BurnHtml</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">80</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1059,6 +986,98 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.BurnSupplementaryFolder</string>
+						<reference key="source" ref="71935462"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="71935462"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.BurnSupplementaryFolder</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.BurnSupplementaryFolder</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">82</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.SupplementaryBurnPath</string>
+						<reference key="source" ref="71935462"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector" id="834256261">
+							<reference key="NSSource" ref="71935462"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">enabled: values.SupplementaryBurnPath</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSIsNotNil</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">119</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled2: buttonsDisabled</string>
+						<reference key="source" ref="71935462"/>
+						<reference key="destination" ref="354696254"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="71935462"/>
+							<reference key="NSDestination" ref="354696254"/>
+							<string key="NSLabel">enabled2: buttonsDisabled</string>
+							<string key="NSBinding">enabled2</string>
+							<string key="NSKeyPath">buttonsDisabled</string>
+							<dictionary key="NSOptions">
+								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
+								<integer value="-1" key="NSNoSelectionPlaceholder"/>
+								<integer value="-1" key="NSNotApplicablePlaceholder"/>
+								<integer value="-1" key="NSNullPlaceholder"/>
+								<string key="NSValueTransformerName">NSNegateBoolean</string>
+							</dictionary>
+							<reference key="NSPreviousConnector" ref="834256261"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">141</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.SupplementaryBurnPath</string>
+						<reference key="source" ref="869202051"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="869202051"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.SupplementaryBurnPath</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">117</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.copyReportsToCD</string>
+						<reference key="source" ref="1017478722"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1017478722"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.copyReportsToCD</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.copyReportsToCD</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">76</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: buttonsDisabled</string>
 						<reference key="source" ref="1017478722"/>
 						<reference key="destination" ref="354696254"/>
@@ -1096,6 +1115,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.EncryptCD</string>
+						<reference key="source" ref="680052618"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="680052618"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.EncryptCD</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.EncryptCD</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">94</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: buttonsDisabled</string>
 						<reference key="source" ref="680052618"/>
 						<reference key="destination" ref="354696254"/>
@@ -1113,66 +1148,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">139</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: buttonsDisabled</string>
-						<reference key="source" ref="1058265645"/>
-						<reference key="destination" ref="354696254"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1058265645"/>
-							<reference key="NSDestination" ref="354696254"/>
-							<string key="NSLabel">enabled: buttonsDisabled</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">buttonsDisabled</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">140</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled2: buttonsDisabled</string>
-						<reference key="source" ref="71935462"/>
-						<reference key="destination" ref="354696254"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="71935462"/>
-							<reference key="NSDestination" ref="354696254"/>
-							<string key="NSLabel">enabled2: buttonsDisabled</string>
-							<string key="NSBinding">enabled2</string>
-							<string key="NSKeyPath">buttonsDisabled</string>
-							<dictionary key="NSOptions">
-								<integer value="-1" key="NSMultipleValuesPlaceholder"/>
-								<integer value="-1" key="NSNoSelectionPlaceholder"/>
-								<integer value="-1" key="NSNotApplicablePlaceholder"/>
-								<integer value="-1" key="NSNullPlaceholder"/>
-								<string key="NSValueTransformerName">NSNegateBoolean</string>
-							</dictionary>
-							<reference key="NSPreviousConnector" ref="834256261"/>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">141</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: password</string>
-						<reference key="source" ref="571648711"/>
-						<reference key="destination" ref="354696254"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="571648711"/>
-							<reference key="NSDestination" ref="354696254"/>
-							<string key="NSLabel">value: password</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">password</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">142</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1196,6 +1171,58 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">145</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: password</string>
+						<reference key="source" ref="571648711"/>
+						<reference key="destination" ref="354696254"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="571648711"/>
+							<reference key="NSDestination" ref="354696254"/>
+							<string key="NSLabel">value: password</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">password</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">142</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.saveAsDMGFile</string>
+						<reference key="source" ref="1058265645"/>
+						<reference key="destination" ref="329076172"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1058265645"/>
+							<reference key="NSDestination" ref="329076172"/>
+							<string key="NSLabel">value: values.saveAsDMGFile</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.saveAsDMGFile</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">116</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: buttonsDisabled</string>
+						<reference key="source" ref="1058265645"/>
+						<reference key="destination" ref="354696254"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1058265645"/>
+							<reference key="NSDestination" ref="354696254"/>
+							<string key="NSLabel">enabled: buttonsDisabled</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">buttonsDisabled</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">140</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1232,30 +1259,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">149</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">estimateFolderSize:</string>
-						<reference key="source" ref="354696254"/>
-						<reference key="destination" ref="1071386119"/>
-					</object>
-					<int key="connectionID">150</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.BurnWeasis</string>
-						<reference key="source" ref="251360819"/>
-						<reference key="destination" ref="329076172"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="251360819"/>
-							<reference key="NSDestination" ref="329076172"/>
-							<string key="NSLabel">value: values.BurnWeasis</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.BurnWeasis</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">151</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1840,13 +1843,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>

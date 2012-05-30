@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11D50b</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
-		<string key="IBDocument.AppKitVersion">1138.32</string>
-		<string key="IBDocument.HIToolboxVersion">568.00</string>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2177</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSColorWell</string>
@@ -66,7 +66,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="361393435">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="533661285">
@@ -82,7 +82,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{300, 300}</string>
 											<reference key="NSSuperview" ref="843930590"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="481567407"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -92,7 +91,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{309, 0}, {300, 300}}</string>
 											<reference key="NSSuperview" ref="843930590"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="120052299"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -100,7 +98,6 @@
 									</array>
 									<string key="NSFrameSize">{609, 300}</string>
 									<reference key="NSSuperview" ref="533661285"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="459277205"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
@@ -113,7 +110,6 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrameSize">{300, 300}</string>
 											<reference key="NSSuperview" ref="120052299"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="954620390"/>
 											<string key="NSClassName">EndoscopyMPRView</string>
 											<string key="NSExtension">NSOpenGLView</string>
@@ -123,28 +119,22 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{309, 0}, {300, 300}}</string>
 											<reference key="NSSuperview" ref="120052299"/>
-											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSClassName">EndoscopyVRView</string>
 											<string key="NSExtension">NSView</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{0, 309}, {609, 300}}</string>
 									<reference key="NSSuperview" ref="533661285"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="1880684"/>
 									<bool key="NSIsVertical">YES</bool>
 								</object>
 							</array>
 							<string key="NSFrame">{{5, 6}, {609, 609}}</string>
 							<reference key="NSSuperview" ref="361393435"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="843930590"/>
 						</object>
 					</array>
 					<string key="NSFrameSize">{619, 615}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="533661285"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1578}}</string>
@@ -1872,7 +1862,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="312827162">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSCustomView" id="437710069">
@@ -1884,7 +1874,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{-2, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="674663486"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="61325696">
@@ -1906,7 +1895,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{0, 4}, {117, 16}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1027957901"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="567557935">
@@ -1932,8 +1920,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{50, 16}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="437710069"/>
-								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="544387571">
 									<int key="NSCellFlags">67239424</int>
@@ -1948,7 +1934,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{117, 33}</string>
 						<reference key="NSSuperview" ref="312827162"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="699610813"/>
 						<object class="NSMutableString" key="NSClassName">
 							<characters key="NS.bytes">NSView</characters>
@@ -1957,8 +1942,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{117, 33}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="437710069"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
@@ -3586,7 +3569,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="879131380">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="525277034">
@@ -3594,8 +3577,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{2, 2}, {57, 32}}</string>
 						<reference key="NSSuperview" ref="879131380"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="NSEnabled">YES</bool>
 						<int key="NSNumRows">2</int>
 						<int key="NSNumCols">1</int>
@@ -3654,8 +3635,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{59, 36}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="525277034"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -8953,13 +8932,13 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<real value="1060" key="NS.object.0"/>
+		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>

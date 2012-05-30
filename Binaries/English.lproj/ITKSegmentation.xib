@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11A511</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1617</string>
-		<string key="IBDocument.AppKitVersion">1138</string>
-		<string key="IBDocument.HIToolboxVersion">566.00</string>
+		<int key="IBDocument.SystemTarget">1050</int>
+		<string key="IBDocument.SystemVersion">11E53</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
+		<string key="IBDocument.AppKitVersion">1138.47</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1617</string>
+			<string key="NS.object.0">2182</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSPopUpButtonCell</string>
@@ -34,7 +34,10 @@
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 		</array>
-		<dictionary class="NSMutableDictionary" key="IBDocument.Metadata"/>
+		<object class="NSMutableDictionary" key="IBDocument.Metadata">
+			<string key="NS.key.0">PluginDependencyRecalculationVersion</string>
+			<integer value="1" key="NS.object.0"/>
+		</object>
 		<array class="NSMutableArray" key="IBDocument.RootObjects" id="905352527">
 			<object class="NSCustomObject" id="327237798">
 				<string key="NSClassName">ITKSegmentation3DController</string>
@@ -1017,14 +1020,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="576601894"/>
-						<reference key="destination" ref="327237798"/>
-					</object>
-					<int key="connectionID">45</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">outputResult</string>
 						<reference key="source" ref="327237798"/>
 						<reference key="destination" ref="609970929"/>
@@ -1168,6 +1163,98 @@
 					<int key="connectionID">155</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">preview:</string>
+						<reference key="source" ref="327237798"/>
+						<reference key="destination" ref="1019510417"/>
+					</object>
+					<int key="connectionID">242</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="576601894"/>
+						<reference key="destination" ref="327237798"/>
+					</object>
+					<int key="connectionID">45</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.growingRegionPointCount</string>
+						<reference key="source" ref="975915301"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="975915301"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">value: values.growingRegionPointCount</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.growingRegionPointCount</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">170</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.growingRegionROIType</string>
+						<reference key="source" ref="975915301"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="975915301"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">enabled: values.growingRegionROIType</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.growingRegionROIType</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">227</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.growingRegionROIName</string>
+						<reference key="source" ref="456757812"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="456757812"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">value: values.growingRegionROIName</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.growingRegionROIName</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">171</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedIndex: values.growingRegionROIType</string>
+						<reference key="source" ref="754894881"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="754894881"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">selectedIndex: values.growingRegionROIType</string>
+							<string key="NSBinding">selectedIndex</string>
+							<string key="NSKeyPath">values.growingRegionROIType</string>
+							<dictionary key="NSOptions">
+								<integer value="1" key="NSAllowsEditingMultipleValuesSelection"/>
+								<integer value="0" key="NSAlwaysPresentsApplicationModalAlerts"/>
+								<integer value="1" key="NSConditionallySetsEnabled"/>
+								<integer value="0" key="NSConditionallySetsHidden"/>
+								<object class="NSNull" key="NSMultipleValuesPlaceholder" id="4"/>
+								<reference key="NSNoSelectionPlaceholder" ref="4"/>
+								<reference key="NSNotApplicablePlaceholder" ref="4"/>
+								<reference key="NSNullPlaceholder" ref="4"/>
+								<integer value="1" key="NSRaisesForNotApplicableKeys"/>
+								<integer value="0" key="NSValidatesImmediately"/>
+							</dictionary>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">168</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">selectedIndex: values.growingRegionType</string>
 						<reference key="source" ref="729230000"/>
@@ -1182,6 +1269,38 @@
 						</object>
 					</object>
 					<int key="connectionID">161</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: dataVolumic</string>
+						<reference key="source" ref="729230000"/>
+						<reference key="destination" ref="327237798"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="729230000"/>
+							<reference key="NSDestination" ref="327237798"/>
+							<string key="NSLabel">enabled: dataVolumic</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">dataVolumic</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">252</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: dataVolumic</string>
+						<reference key="source" ref="820688270"/>
+						<reference key="destination" ref="327237798"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="820688270"/>
+							<reference key="NSDestination" ref="327237798"/>
+							<string key="NSLabel">enabled: dataVolumic</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">dataVolumic</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">254</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1233,98 +1352,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedIndex: values.growingRegionROIType</string>
-						<reference key="source" ref="754894881"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="754894881"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">selectedIndex: values.growingRegionROIType</string>
-							<string key="NSBinding">selectedIndex</string>
-							<string key="NSKeyPath">values.growingRegionROIType</string>
-							<dictionary key="NSOptions">
-								<integer value="1" key="NSAllowsEditingMultipleValuesSelection"/>
-								<integer value="0" key="NSAlwaysPresentsApplicationModalAlerts"/>
-								<integer value="1" key="NSConditionallySetsEnabled"/>
-								<integer value="0" key="NSConditionallySetsHidden"/>
-								<object class="NSNull" key="NSMultipleValuesPlaceholder" id="4"/>
-								<reference key="NSNoSelectionPlaceholder" ref="4"/>
-								<reference key="NSNotApplicablePlaceholder" ref="4"/>
-								<reference key="NSNullPlaceholder" ref="4"/>
-								<integer value="1" key="NSRaisesForNotApplicableKeys"/>
-								<integer value="0" key="NSValidatesImmediately"/>
-							</dictionary>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">168</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.growingRegionPointCount</string>
-						<reference key="source" ref="975915301"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="975915301"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">value: values.growingRegionPointCount</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.growingRegionPointCount</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">170</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.growingRegionROIName</string>
-						<reference key="source" ref="456757812"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="456757812"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">value: values.growingRegionROIName</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.growingRegionROIName</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">171</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.segmentationDirectlyGenerate</string>
-						<reference key="source" ref="1031480820"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1031480820"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">value: values.segmentationDirectlyGenerate</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.segmentationDirectlyGenerate</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">220</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.mergeWithExistingROIs</string>
-						<reference key="source" ref="557522330"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="557522330"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">value: values.mergeWithExistingROIs</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.mergeWithExistingROIs</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">221</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: values.segmentationDirectlyGenerate</string>
 						<reference key="source" ref="315551320"/>
 						<reference key="destination" ref="689605235"/>
@@ -1345,35 +1372,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.growingRegionROIType</string>
-						<reference key="source" ref="975915301"/>
+						<string key="label">value: values.segmentationDirectlyGenerate</string>
+						<reference key="source" ref="1031480820"/>
 						<reference key="destination" ref="689605235"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="975915301"/>
+							<reference key="NSSource" ref="1031480820"/>
 							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">enabled: values.growingRegionROIType</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.growingRegionROIType</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">227</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.growingRegionPropagateIn4D</string>
-						<reference key="source" ref="1070237023"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1070237023"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">value: values.growingRegionPropagateIn4D</string>
+							<string key="NSLabel">value: values.segmentationDirectlyGenerate</string>
 							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.growingRegionPropagateIn4D</string>
+							<string key="NSKeyPath">values.segmentationDirectlyGenerate</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">231</int>
+					<int key="connectionID">220</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1394,26 +1405,6 @@
 						</object>
 					</object>
 					<int key="connectionID">233</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.growingRegionROIType</string>
-						<reference key="source" ref="557522330"/>
-						<reference key="destination" ref="689605235"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="557522330"/>
-							<reference key="NSDestination" ref="689605235"/>
-							<string key="NSLabel">enabled: values.growingRegionROIType</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.growingRegionROIType</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSNegateBoolean</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">234</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1441,6 +1432,58 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.mergeWithExistingROIs</string>
+						<reference key="source" ref="557522330"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="557522330"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">value: values.mergeWithExistingROIs</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.mergeWithExistingROIs</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">221</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.growingRegionROIType</string>
+						<reference key="source" ref="557522330"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="557522330"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">enabled: values.growingRegionROIType</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.growingRegionROIType</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSValueTransformerName</string>
+								<string key="NS.object.0">NSNegateBoolean</string>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">234</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: values.growingRegionPropagateIn4D</string>
+						<reference key="source" ref="1070237023"/>
+						<reference key="destination" ref="689605235"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1070237023"/>
+							<reference key="NSDestination" ref="689605235"/>
+							<string key="NSLabel">value: values.growingRegionPropagateIn4D</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">values.growingRegionPropagateIn4D</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">231</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.growingRegionInterval</string>
 						<reference key="source" ref="1019510417"/>
 						<reference key="destination" ref="689605235"/>
@@ -1454,14 +1497,6 @@
 						</object>
 					</object>
 					<int key="connectionID">241</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">preview:</string>
-						<reference key="source" ref="327237798"/>
-						<reference key="destination" ref="1019510417"/>
-					</object>
-					<int key="connectionID">242</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1482,38 +1517,6 @@
 						</object>
 					</object>
 					<int key="connectionID">248</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: dataVolumic</string>
-						<reference key="source" ref="729230000"/>
-						<reference key="destination" ref="327237798"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="729230000"/>
-							<reference key="NSDestination" ref="327237798"/>
-							<string key="NSLabel">enabled: dataVolumic</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">dataVolumic</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">252</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: dataVolumic</string>
-						<reference key="source" ref="820688270"/>
-						<reference key="destination" ref="327237798"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="820688270"/>
-							<reference key="NSDestination" ref="327237798"/>
-							<string key="NSLabel">enabled: dataVolumic</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">dataVolumic</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">254</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2245,19 +2248,19 @@
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
-		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencies">
-			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
-		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
 			<integer value="1050" key="NS.object.0"/>
 		</object>
+		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
+			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
+			<real value="4300" key="NS.object.0"/>
+		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
 		</dictionary>
 	</data>
