@@ -221,8 +221,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
-		[[self managedObjectContext] lock];
-		
+		[self.managedObjectContext lock];
 		@try
 		{
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
@@ -237,12 +236,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 					[self applyAnnotationsFromDictionary: annotations];
 			}
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[[self managedObjectContext] unlock];
+		@finally {
+            [self.managedObjectContext unlock];
+        }
 	}
 	#endif
 }
@@ -463,13 +462,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 - (void) archiveAnnotationsAsDICOMSR
 {
 	#ifndef OSIRIX_LIGHT
-	if( [self.hasDICOM boolValue] == YES)
+	if ([self.hasDICOM boolValue] == YES)
 	{
-		[[self managedObjectContext] lock];
-		BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
-		
-		@try
-		{
+		[self.managedObjectContext lock];
+		@try {
+            BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+
 			NSManagedObject *archivedAnnotations = [self annotationsSRImage];
 			NSString *dstPath = [archivedAnnotations valueForKey: @"completePath"];
 			
@@ -495,12 +493,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 						  generatedByOsiriX: YES];
 			}
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[[self managedObjectContext] unlock];
+        @finally {
+            [self.managedObjectContext unlock];
+        }
 	}
 	#endif
 }
@@ -513,11 +511,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	#ifndef OSIRIX_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
-		[[self managedObjectContext] lock];
-		BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
-		
+		[self.managedObjectContext lock];
 		@try
 		{
+            BOOL isMainDB = [self managedObjectContext] == [[BrowserController currentBrowser] managedObjectContext];
+
 			// Report
 			NSString *zippedFile = @"/tmp/zippedReport.zip";
 			BOOL needToArchive = NO;
@@ -595,12 +593,12 @@ static NSRecursiveLock *dbModifyLock = nil;
 			if( zippedFile)
 				[[NSFileManager defaultManager] removeItemAtPath: zippedFile error: nil];
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[[self managedObjectContext] unlock];
+        @finally {
+            [self.managedObjectContext unlock];
+        }
 	}
 	#endif
 }
@@ -631,10 +629,8 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         NSString *m = nil;
         
-        [[self managedObjectContext] lock];
-        
-        @try 
-        {
+        [self.managedObjectContext lock];
+        @try {
             NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
             
             NSMutableArray *r = [NSMutableArray array];
@@ -669,18 +665,18 @@ static NSRecursiveLock *dbModifyLock = nil;
             }
             
             m = [r componentsJoinedByString:@"\\"];
+
+            cachedModalites = [m retain];
+            _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
+            
+            return m;
         }
-        @catch (NSException * e) 
-        {
+        @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         }
-        
-        cachedModalites = [m retain];
-        _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
-        
-        [[self managedObjectContext] unlock];
-        
-        return m;
+        @finally {
+            [self.managedObjectContext unlock];
+        }
     }
     
     return nil;
@@ -716,14 +712,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[[DicomStudy dbModifyLock] lock];
-	
 	#ifdef OSIRIX_VIEWER
 	#ifndef OSIRIX_LIGHT
-	@try 
-	{
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	[[DicomStudy dbModifyLock] lock];
+	@try {
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -754,16 +747,15 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 		}
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [[DicomStudy dbModifyLock] unlock];
+        [pool release];
+    }
 	#endif
 	#endif
-	
-	[[DicomStudy dbModifyLock] unlock];
-	
-	[pool release];
 }
 
 - (void) setComment: (NSString*) c
@@ -975,24 +967,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString *) localstring
 {
-	[[self managedObjectContext] lock];
-	
 	BOOL local = YES;
 	
-	@try 
-	{
-		NSManagedObject	*obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
-	
+	[self.managedObjectContext lock];
+	@try {
+		NSManagedObject* obj = [[[[self valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
-	
-		[[self managedObjectContext] unlock];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	if( local) return @"L";
+	if (local)
+        return @"L";
 	else return @"";
 }
 
@@ -1151,7 +1141,9 @@ static NSRecursiveLock *dbModifyLock = nil;
         {
             N2LogExceptionWithStackTrace(e);
         }
-        [self.managedObjectContext unlock];
+        @finally {
+            [self.managedObjectContext unlock];
+        }
         
         cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
         
@@ -1163,43 +1155,35 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSNumber *) noFilesExcludingMultiFrames
 {
-	if( [[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
+	if ([[self primitiveValueForKey:@"numberOfImages"] intValue] <= 0) // There are frames !
 	{
-		[[self managedObjectContext] lock];
-		
-		int sum = 0;
-		
-		@try 
-		{
-			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
-			{
+		[self.managedObjectContext lock];
+		@try {
+            int sum = 0;
+			for (DicomSeries* s in [[self valueForKey:@"series"] allObjects])
 				sum += [[s valueForKey:@"noFilesExcludingMultiFrames"] intValue];
-			}
+            return [NSNumber numberWithInt:sum];
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[[self managedObjectContext] unlock];
-		
-		return [NSNumber numberWithInt:sum];
+        @finally {
+            [self.managedObjectContext unlock];
+        }
 	}
-	else return [self noFiles];
+	return [self noFiles];
 }
 
 - (NSNumber *) noFiles
 {
 	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
-	if( n == 0)
+	if (n == 0)
 	{
-		[[self managedObjectContext] lock];
-		
 		int sum = 0;
 		NSNumber *no = nil;
 		
-		@try 
-		{
+		[self.managedObjectContext lock];
+		@try {
 			BOOL framesInSeries = NO;
 			
 			for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
@@ -1224,24 +1208,22 @@ static NSRecursiveLock *dbModifyLock = nil;
 			[self setPrimitiveValue: no forKey:@"numberOfImages"];
 			[self didChangeValueForKey: @"numberOfImages"];
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
+		@finally {
+            [self.managedObjectContext unlock];
+        }
 		
-		[[self managedObjectContext] unlock];
-		
-		if( sum < 0)
+		if (sum < 0)
 			return [NSNumber numberWithInt: -sum];
-		else
-			return no;
+		else return no;
 	}
 	else
 	{
-		if( n < 0)
+		if (n < 0)
 			return [NSNumber numberWithInt: -n];
-		else
-			return [self primitiveValueForKey:@"numberOfImages"];
+		else return [self primitiveValueForKey:@"numberOfImages"];
 	}
 }
 
@@ -1249,48 +1231,40 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSSet*) paths
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableSet *set = [NSMutableSet set];
-	
-	@try 
-	{
-		NSSet *sets = [self valueForKeyPath: @"series.images.completePath"];
-	
-		for (id subset in sets)
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableSet *set = [NSMutableSet set];
+		for (id subset in [self valueForKeyPath:@"series.images.completePath"])
 			[set unionSet: subset];
+        return set;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return set;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 - (NSSet*) pathsForForkedProcess
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableSet *set = [NSMutableSet set];
-	
-	@try 
-	{
-		NSSet *sets = [self valueForKeyPath: @"series.images.completePathWithNoDownloadAndLocalOnly"];
-        
-		for (id subset in sets)
-			[set unionSet: subset];
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableSet* set = [NSMutableSet set];
+		for (id subset in [self valueForKeyPath:@"series.images.completePathWithNoDownloadAndLocalOnly"])
+			[set unionSet:subset];
+        return set;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return set;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 
@@ -1298,26 +1272,21 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSSet*) keyImages
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableSet *set = [NSMutableSet set];
-	
-	@try 
-	{
-		NSEnumerator *enumerator = [[self primitiveValueForKey: @"series"] objectEnumerator];
-	
-		id object;
-		while (object = [enumerator nextObject])
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableSet* set = [NSMutableSet set];
+		for (id object in [self primitiveValueForKey:@"series"])
 			[set unionSet:[object keyImages]];
+        return set;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-		
-	[[self managedObjectContext] unlock];
-	
-	return set;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ------------------------ Series subselections-----------------------------------ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -1332,165 +1301,138 @@ static NSRecursiveLock *dbModifyLock = nil;
 		return NO;
 }
 
-- (NSSet *)images
+- (NSSet*)images
 {
-    [[self managedObjectContext] lock];
-	
-	NSMutableSet *images = [NSMutableSet set];
-	
-	@try 
-	{
-		NSSet *sets = [self valueForKeyPath: @"series.images"];
-        
-		for (id subset in sets)
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableSet* images = [NSMutableSet set];
+		for (id subset in [self valueForKeyPath: @"series.images"])
 			[images unionSet: subset];
+        return images;
 	}
-	@catch (NSException * e) 
-	{
-		NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+	@catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return images;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
-- (NSArray *)imageSeries
+- (NSArray*)imageSeries
 {
-//	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
+    [self.managedObjectContext lock];
 	@try {
-		for (DicomSeries* series in [self primitiveValueForKey:@"series"]) {
+        NSMutableArray* newArray = [NSMutableArray array];
+		for (DicomSeries* series in [self primitiveValueForKey:@"series"])
 			@try {
                 if ([DicomStudy displaySeriesWithSOPClassUID:series.seriesSOPClassUID andSeriesDescription:series.name])
                     [newArray addObject:series];
-            } @catch (NSException* e) {
+            } @catch (...) {
             }
-		}
-	} @catch (NSException *e)	{
+        return newArray;
 	}
-	
-//	[[self managedObjectContext] unlock];
-	
-	return newArray;
+    @catch (NSException* e) {
+		N2LogExceptionWithStackTrace(e);
+	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
-- (NSArray *)keyObjectSeries
+- (NSArray*)keyObjectSeries
 {
-	[[self managedObjectContext] lock];
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
-		NSArray *array = [self primitiveValueForKey: @"series"];
-		
-		for (id series in array)
-		{
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
+		for (id series in [self primitiveValueForKey: @"series"])
 			if ([[DCMAbstractSyntaxUID keyObjectSelectionDocumentStorage] isEqualToString:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
-		}
+        return newArray;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	
-	[[self managedObjectContext] unlock];
-	
-	return newArray;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
-- (NSArray *)keyObjects
+- (NSArray*)keyObjects
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableSet *set = [NSMutableSet set];
-	
-	@try 
-	{
-		NSArray *array = [self keyObjectSeries];
-	
-		for (id series in array)
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableSet *set = [NSMutableSet set];
+		for (id series in [self keyObjectSeries])
 			[set unionSet:[series primitiveValueForKey:@"images"]];
+        return [set allObjects];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return [set allObjects];
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 - (NSArray *)presentationStateSeries
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
-		NSArray *array = [self primitiveValueForKey: @"series"];
-	
-		for (id series in array)
-		{
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
+		for (id series in [self primitiveValueForKey: @"series"])
 			if ([DCMAbstractSyntaxUID isPresentationState:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
-		}
+        return newArray;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return newArray;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 - (NSArray *)waveFormSeries
 {
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
-		NSArray *array = [self primitiveValueForKey: @"series"];
-	
-		for (id series in array)
-		{
+    [self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
+		for (id series in [self primitiveValueForKey: @"series"])
 			if ([DCMAbstractSyntaxUID isWaveform:[series valueForKey:@"seriesSOPClassUID"]])
 				[newArray addObject:series];
-		}
+        return newArray;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return newArray;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 
 - (NSManagedObject *) annotationsSRImage // Comments, Status, Key Images, ...
 {
-	NSArray *array = [self primitiveValueForKey: @"series"];
-	if ([array count] < 1)  return nil;
+	NSArray* array = [self primitiveValueForKey:@"series"];
+	if (array.count < 1) return nil;
 	
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	NSManagedObject *image = nil;
-	
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try {
+        NSMutableArray* newArray = [NSMutableArray array];
+        NSManagedObject* image = nil;
+
 		for( DicomSeries *series in array)
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5004 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Annotations SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
@@ -1541,15 +1483,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 			image = [images lastObject];
 		}
 		else image = [[[newArray lastObject] valueForKey: @"images"] anyObject];
+
+        return image;
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
-	
-	return image;
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+    
+	return nil;
 }
 
 - (DicomImage*) reportImage
@@ -1577,15 +1521,13 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSManagedObject *) reportSRSeries
 {
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	if ([array count] < 1)  return nil;
+	NSArray* array = [self primitiveValueForKey:@"series"];
+	if (array.count < 1) return nil;
 	
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
+    
 		for( DicomSeries *series in array)
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5003 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX Report SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
@@ -1623,28 +1565,27 @@ static NSRecursiveLock *dbModifyLock = nil;
                 N2LogExceptionWithStackTrace(e);
 			}
 		}
+
+        return [newArray lastObject];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+	@finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return [newArray lastObject];
+	return nil;
 }
 
 - (NSManagedObject *)roiSRSeries
 {
-	NSArray *array = [self primitiveValueForKey: @"series"] ;
-	if ([array count] < 1)  return nil;
+	NSArray* array = [self primitiveValueForKey:@"series"];
+	if (array.count < 1) return nil;
 	
-	[[self managedObjectContext] lock];
-	
-	NSMutableArray *newArray = [NSMutableArray array];
-	
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try {
+        NSMutableArray *newArray = [NSMutableArray array];
 		for( DicomSeries *series in array)
 		{
 			if( [[series valueForKey:@"id"] intValue] == 5002 && [[series valueForKey:@"name"] isEqualToString: @"OsiriX ROI SR"] == YES && [DCMAbstractSyntaxUID isStructuredReport:[series valueForKey:@"seriesSOPClassUID"]] == YES)
@@ -1682,25 +1623,22 @@ static NSRecursiveLock *dbModifyLock = nil;
                 N2LogExceptionWithStackTrace(e);
 			}
 		}
+        return [newArray lastObject];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return [newArray lastObject];
+	return nil;
 }
 
 - (DicomImage*) roiForImage: (DicomImage*) image inArray: (NSArray*) roisArray
 {
-	DicomImage *roiImage = nil;
-	
-	[[self managedObjectContext] lock];
-	
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try  {
 		NSString *searchedUID = [image valueForKey: @"sopInstanceUID"];
 		
 		searchedUID = [searchedUID stringByAppendingFormat: @"-%d", [[image valueForKey: @"frameID"] intValue]];
@@ -1775,16 +1713,16 @@ static NSRecursiveLock *dbModifyLock = nil;
 			}
 		}
 		
-		roiImage = [found lastObject];
+		return [found lastObject];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return roiImage;
+	return nil;
 }
 
 - (NSString*) roiPathForImage: (DicomImage*) image
@@ -1820,44 +1758,38 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) albumsNames
 {
-	[[self managedObjectContext] lock];
-	
-	NSString *s = nil;
-	@try 
-	{
-		s = [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
+	[self.managedObjectContext lock];
+	@try {
+		return [[[[self valueForKey: @"albums"] allObjects] valueForKey:@"name"] componentsJoinedByString:@"/"];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+	@finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return s;
+	return nil;
 }
 
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
 -(NSArray*)authorizedUsers
 {
-    NSMutableArray *authorizedUsers = [NSMutableArray array];
-    NSManagedObjectContext *webContext = WebPortal.defaultWebPortal.database.managedObjectContext;
-    
-    // Find all users
-    NSError *error = nil;
-    NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-    dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
-    dbRequest.predicate = [NSPredicate predicateWithValue:YES];
-    dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
+    NSManagedObjectContext* webContext = WebPortal.defaultWebPortal.database.managedObjectContext;
     
     [webContext lock];
-    
     @try
     {
-        error = nil;
-        NSArray *users = [webContext executeFetchRequest: dbRequest error: &error];
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        dbRequest.entity = [NSEntityDescription entityForName:@"User" inManagedObjectContext: webContext];
+        dbRequest.predicate = [NSPredicate predicateWithValue:YES];
+        dbRequest.sortDescriptors = [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]];
+
+        // Find all users
+        NSArray* users = [webContext executeFetchRequest: dbRequest error:NULL];
         
+        NSMutableArray* authorizedUsers = [NSMutableArray array];
         for (WebPortalUser* user in users)
         {
             if( user.studyPredicate.length > 0)
@@ -1870,12 +1802,17 @@ static NSRecursiveLock *dbModifyLock = nil;
             else
                 [authorizedUsers addObject: user];
         }
+        
+        return authorizedUsers;
     }
-    @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        [webContext unlock];
+    }
     
-    [webContext unlock];
-    
-    return authorizedUsers;
+    return nil;
 }
 #endif
 #endif

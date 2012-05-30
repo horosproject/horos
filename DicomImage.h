@@ -107,6 +107,7 @@ void* sopInstanceUIDEncode( NSString *sopuid);
 - (NSNumber*) width;
 
 - (NSNumber*) isKeyImage;
+- (void) setIsKeyImage:(NSNumber*) f;
 
 +(NSMutableArray*)dicomImagesInObjects:(NSArray*)objects;
 

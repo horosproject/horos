@@ -518,14 +518,11 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[[DicomStudy dbModifyLock] lock];
-	
 #ifdef OSIRIX_VIEWER
 #ifndef OSIRIX_LIGHT
-	@try 
-	{
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	[[DicomStudy dbModifyLock] lock];
+	@try {
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -556,16 +553,15 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 			}
 		}
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [[DicomStudy dbModifyLock] unlock];
+        [pool release];
+    }
 #endif
 #endif
-	
-	[[DicomStudy dbModifyLock] unlock];
-	
-	[pool release];
 }
 
 - (NSNumber*) isKeyImage
@@ -605,48 +601,53 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 if( [[self numberOfFrames] intValue] > 1)
                 {
                     [[DicomStudy dbModifyLock] lock];
-                    
-                    DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
-                    
-                    if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
-                    {
-                        int frame = [[self frameID] intValue];
+                    @try {
+                        DCMObject *dcmObject = [[DCMObjectPixelDataImport alloc] initWithContentsOfFile: [self valueForKey:@"completePath"] decodingPixelData: NO];
                         
-                        NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]]; // DCM_FramesOfInterestDescription
-                        
-                        BOOL found = NO;
-                        for( NSString *k in keyFrames)
+                        if( [dcmObject.attributes objectForKey: @"0028,6022"]) // DCM_FramesOfInterestDescription
                         {
-                            if( [k intValue] == frame) // corresponding frame
+                            int frame = [[self frameID] intValue];
+                            
+                            NSMutableArray *keyFrames = [NSMutableArray arrayWithArray: [[dcmObject.attributes objectForKey: @"0028,6022"] values]]; // DCM_FramesOfInterestDescription
+                            
+                            BOOL found = NO;
+                            for( NSString *k in keyFrames)
                             {
-                                if( [f boolValue] == NO)
-                                    [keyFrames removeObject: k];
-                                    
-                                found = YES;
-                                break;
+                                if( [k intValue] == frame) // corresponding frame
+                                {
+                                    if( [f boolValue] == NO)
+                                        [keyFrames removeObject: k];
+                                        
+                                    found = YES;
+                                    break;
+                                }
                             }
+                            
+                            if( [f boolValue] == YES && found == NO)
+                                [keyFrames addObject: [[self frameID] stringValue]];
+                            
+                            c = [keyFrames componentsJoinedByString: @"\\"];
+                        }
+                        else
+                        {
+                            if( [f boolValue])
+                                c = [[self frameID] stringValue];
                         }
                         
-                        if( [f boolValue] == YES && found == NO)
-                            [keyFrames addObject: [[self frameID] stringValue]];
+                        [dcmObject release];
                         
-                        c = [keyFrames componentsJoinedByString: @"\\"];
+                        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
+                        
+                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
+                        t.name = NSLocalizedString( @"Updating DICOM files...", nil);
+                        [[ThreadsManager defaultManager] addThreadAndStart: t];
                     }
-                    else
-                    {
-                        if( [f boolValue])
-                            c = [[self frameID] stringValue];
+                    @catch (NSException* e) {
+                        N2LogExceptionWithStackTrace(e);
                     }
-                    
-                    [dcmObject release];
-                    
-                    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithObject: [self valueForKey:@"completePath"]], @"files", @"(0028,6022)", @"field", c, @"value", nil]; // c can be nil : it's important to have it at the end
-                    
-                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( dcmodifyThread:) object: dict] autorelease];
-                    t.name = NSLocalizedString( @"Updating DICOM files...", nil);
-                    [[ThreadsManager defaultManager] addThreadAndStart: t];
-                    
-                    [[DicomStudy dbModifyLock] unlock];
+                    @finally {
+                        [[DicomStudy dbModifyLock] unlock];
+                    }
                 }
                 else
                 {

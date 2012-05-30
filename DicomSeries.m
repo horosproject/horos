@@ -90,14 +90,11 @@
 
 - (void) dcmodifyThread: (NSDictionary*) dict
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	[[DicomStudy dbModifyLock] lock];
-	
 	#ifdef OSIRIX_VIEWER
 	#ifndef OSIRIX_LIGHT
-	@try 
-	{
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+	[[DicomStudy dbModifyLock] lock];
+	@try {
 		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--ignore-errors", nil];
 		
 		if( [dict objectForKey: @"value"] == nil || [(NSString*)[dict objectForKey: @"value"] length] == 0)
@@ -128,16 +125,15 @@
 			}
 		}
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [[DicomStudy dbModifyLock] unlock];
+        [pool release];
+    }
 	#endif
 	#endif
-	
-	[[DicomStudy dbModifyLock] unlock];
-	
-	[pool release];
 }
 
 
@@ -405,32 +401,31 @@
 
 - (NSString *) localstring
 {
-	[[self managedObjectContext] lock];
 	
 	BOOL local = YES;
 	
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try {
 		NSManagedObject	*obj = [[self valueForKey:@"images"] anyObject];
 		local = [[obj valueForKey:@"inDatabaseFolder"] boolValue];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	if( local) return @"L";
+	if (local)
+        return @"L";
 	else return @"";
 }
 
 - (NSNumber *) rawNoFiles
 {
-	NSNumber *no = nil;
+	NSNumber* no = nil;
 	
-	[[self managedObjectContext] lock];
-	
+	[self.managedObjectContext lock];
 	@try 
 	{
 		int v = [[[[self valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
@@ -440,12 +435,12 @@
 		else
 			no = [NSNumber numberWithInt: [[self valueForKey:@"images"] count]];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
-	
-	[[self managedObjectContext] unlock];
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
 	return no;
 }
@@ -456,12 +451,10 @@
 	
 	if( n == 0)
 	{
-		NSNumber *no = nil;
+		NSNumber* no = nil;
 		
-		[[self managedObjectContext] lock];
-		
-		@try 
-		{
+        [self.managedObjectContext lock];
+		@try {
 			NSString *sopClassUID = [self valueForKey: @"seriesSOPClassUID"];
 		
 			if( [DCMAbstractSyntaxUID isStructuredReport: sopClassUID] == NO && [DCMAbstractSyntaxUID isPresentationState: sopClassUID] == NO && [DCMAbstractSyntaxUID isSupportedPrivateClasses: sopClassUID] == NO)
@@ -484,12 +477,12 @@
 			}
 			else no = [NSNumber numberWithInt: 0];
 		}
-		@catch (NSException * e) 
-		{
+		@catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[[self managedObjectContext] unlock];
+        @finally {
+            [self.managedObjectContext unlock];
+        }
 		
 		return no;
 	}
@@ -523,85 +516,71 @@
 
 - (NSSet *)paths
 {
-	[[self managedObjectContext] lock];
-	
-	NSSet *set = nil;
-	@try 
-	{
-		set = [self valueForKeyPath:@"images.completePath"];
+    [self.managedObjectContext lock];
+	@try {
+		return [self valueForKeyPath:@"images.completePath"];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return set;
+	return nil;
 }
 
 - (NSSet *)pathsForForkedProcess
 {
-	[[self managedObjectContext] lock];
-	
-	NSSet *set = nil;
-	@try 
-	{
-		set = [self valueForKeyPath:@"images.completePathWithNoDownloadAndLocalOnly"];
+	[self.managedObjectContext lock];
+	@try {
+		return [self valueForKeyPath:@"images.completePathWithNoDownloadAndLocalOnly"];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return set;
+	return nil;
 }
 
 
 - (NSSet *)keyImages
 {
-	[[self managedObjectContext] lock];
-	
-	NSSet *set = nil;
-	@try 
-	{
+	[self.managedObjectContext lock];
+	@try {
 		NSArray *imageArray = [[self primitiveValueForKey:@"images"] allObjects];
 		NSPredicate *predicate = [NSPredicate predicateWithFormat:@"isKeyImage == YES"]; 
-		set = [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
+		return [NSSet setWithArray:[imageArray filteredArrayUsingPredicate:predicate]];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return set;
+	return nil;
 }
 
 - (NSArray *)sortedImages
 {
-	[[self managedObjectContext] lock];
-	
-	NSArray *imageArray = nil;
-	NSArray *sortDescriptors = nil;
-	
-	@try 
-	{
-		imageArray = [[self primitiveValueForKey:@"images"] allObjects];
-	
-		sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
+	[self.managedObjectContext lock];
+	@try {
+		NSArray* imageArray = [[self primitiveValueForKey:@"images"] allObjects];
+		NSArray* sortDescriptors = [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"instanceNumber" ascending:YES] autorelease]];
+        return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
 	}
-	@catch (NSException * e) 
-	{
+	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	}	
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 	
-	[[self managedObjectContext] unlock];
-	
-	return [imageArray sortedArrayUsingDescriptors:sortDescriptors];
+	return nil;
 }
 
 - (NSComparisonResult)compareName:(DicomSeries*)series;

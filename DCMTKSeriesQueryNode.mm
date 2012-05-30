@@ -66,61 +66,63 @@
 		for( int i = 0; i < 10; i++) encoding[ i] = 0;
 		encoding[ 0] = NSISOLatin1StringEncoding;
 		
-		if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
-		{
-			_specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			
-			NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
-			
-			if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
-			
-			if( [c count] < 10)
-			{
-				for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-				for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
-			}
-		}
-		
-		if (dataset ->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
-			_uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			
-		if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
-			_studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];	
-		else
-			_studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
-		
-		if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
-			_theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
-			
-		if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
-			_name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
-			
-		if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
-			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
-			
-		if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
-		{
-			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			_date = [[DCMCalendarDate dicomDate:dateString] retain];
-			[dateString release];
-		}
-		
-		if (dataset ->findAndGetString(DCM_SeriesTime, string).good() && string != nil)
-		{
-			NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			_time = [[DCMCalendarDate dicomTime:dateString] retain];
-			[dateString release];
-		}
-		
-		if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)	
-			_modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			
-		if (dataset ->findAndGetString(DCM_NumberOfSeriesRelatedInstances, string).good() && string != nil)
-		{
-			NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
-			_numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
-			[numberString release];
-		}
+        if (dataset) {
+            if (dataset ->findAndGetString(DCM_SpecificCharacterSet, string).good() && string != nil)
+            {
+                _specificCharacterSet = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                
+                NSArray	*c = [_specificCharacterSet componentsSeparatedByString:@"\\"];
+                
+                if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+                
+                if( [c count] < 10)
+                {
+                    for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                    for( int i = [c count]; i < 10; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+                }
+            }
+            
+            if (dataset ->findAndGetString(DCM_SeriesInstanceUID, string).good() && string != nil) 
+                _uid = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                
+            if (dataset ->findAndGetString(DCM_StudyInstanceUID, string).good() && string != nil) 
+                _studyInstanceUID = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];	
+            else
+                _studyInstanceUID = [[extraParameters valueForKey: @"StudyInstanceUID"] retain];
+            
+            if (dataset ->findAndGetString(DCM_SeriesDescription, string).good() && string != nil) 
+                _theDescription = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+                
+            if (dataset ->findAndGetString(DCM_SeriesNumber, string).good() && string != nil) 
+                _name = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+                
+            if (dataset ->findAndGetString(DCM_ImageComments, string).good() && string != nil) 
+                _comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+                
+            if (dataset ->findAndGetString(DCM_SeriesDate, string).good() && string != nil)
+            {
+                NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                _date = [[DCMCalendarDate dicomDate:dateString] retain];
+                [dateString release];
+            }
+            
+            if (dataset ->findAndGetString(DCM_SeriesTime, string).good() && string != nil)
+            {
+                NSString *dateString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                _time = [[DCMCalendarDate dicomTime:dateString] retain];
+                [dateString release];
+            }
+            
+            if (dataset ->findAndGetString(DCM_Modality, string).good() && string != nil)	
+                _modality = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                
+            if (dataset ->findAndGetString(DCM_NumberOfSeriesRelatedInstances, string).good() && string != nil)
+            {
+                NSString	*numberString = [[NSString alloc] initWithCString:string encoding:NSISOLatin1StringEncoding];
+                _numberImages = [[NSNumber numberWithInt: [numberString intValue]] retain];
+                [numberString release];
+            }
+        }
 
 	}
 	return self;

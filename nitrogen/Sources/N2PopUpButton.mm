@@ -21,7 +21,6 @@
 @implementation N2PopUpButtonCell
 
 -(void)drawBezelWithFrame:(NSRect)frame inView:(NSView*)view {
-	NSLog(@"drawBezelWithFrame");
 	[super drawBezelWithFrame:frame inView:view];
 	static NSImage* image = [[NSImage alloc] initWithContentsOfFile:[[NSBundle bundleForClass:[self class]] pathForResource:@"PopUpArrows" ofType:@"png"]];
 	static NSSize imageSize = [image size];

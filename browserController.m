@@ -4615,26 +4615,23 @@ static NSConditionLock *threadLock = nil;
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-	if( _database == nil) return nil;
+	if (_database == nil)
+        return nil;
 	
-//	[_database lock];
-	
-	id returnVal = nil;
-	
-	@try
-	{
-		if( [item isFault] == NO)
-			returnVal = [self intOutlineView: outlineView objectValueForTableColumn: tableColumn byItem: item];
+	[_database lock];
+	@try {
+		if ([item isFault] == NO)
+			return [self intOutlineView:outlineView objectValueForTableColumn:tableColumn byItem:item];
 	}
-	
-	@catch (NSException * e)
+	@catch (NSException* e)
 	{
-		NSLog( @"%@", [e description]);
+		N2LogExceptionWithStackTrace(e);
 	}
+    @finally {
+        [_database unlock];
+    }
 
-//	[_database unlock];
-	
-	return returnVal;
+	return nil;
 }
 
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key
@@ -4642,37 +4639,44 @@ static NSConditionLock *threadLock = nil;
     DatabaseIsEdited = NO;
 	
 	[_database lock];
-	
-	if (![_database isLocal])
-		[(RemoteDicomDatabase*)_database object:item setValue:object forKey:key];
-	
-	if( [key isEqualToString:@"stateText"])
-	{
-        for( id managedObject in [self databaseSelection])
+	@try {
+        if (![_database isLocal])
+            [(RemoteDicomDatabase*)_database object:item setValue:object forKey:key];
+        
+        if( [key isEqualToString:@"stateText"])
         {
-            if( [object intValue] >= 0)
+            for( id managedObject in [self databaseSelection])
+            {
+                if( [object intValue] >= 0)
+                    [managedObject setValue:object forKey:key];
+            }
+        }
+        else if( [key isEqualToString:@"lockedStudy"])
+        {
+            for( id managedObject in [self databaseSelection])
+            {
+                if( [[managedObject valueForKey:@"type"] isEqualToString:@"Study"])
+                    [managedObject setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
+            }
+        }
+        else
+        {
+            for( id managedObject in [self databaseSelection])
+            {
                 [managedObject setValue:object forKey:key];
+            }
         }
-	}
-	else if( [key isEqualToString:@"lockedStudy"])
-	{
-        for( id managedObject in [self databaseSelection])
-        {
-            if( [[managedObject valueForKey:@"type"] isEqualToString:@"Study"])
-                [managedObject setValue:[NSNumber numberWithBool: [object intValue]] forKey: @"lockedStudy"];
-        }
+        
+        [refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
     }
-	else
+    @catch (NSException* e)
     {
-        for( id managedObject in [self databaseSelection])
-        {
-            [managedObject setValue:object forKey:key];
-        }
+        N2LogExceptionWithStackTrace(e);
     }
-	
-	[refreshTimer setFireDate: [NSDate dateWithTimeIntervalSinceNow:0.5]];
-	
-	[_database unlock];
+    @finally
+    {
+        [_database unlock];
+    }
 	
 	[_database save:NULL];
 	
