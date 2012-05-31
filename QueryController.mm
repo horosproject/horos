@@ -798,17 +798,29 @@ extern "C"
 
 -(void) deleteSelection:(id) sender
 {
-    NSInteger result = NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Are you sure you want to delete the selected images?", nil), NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
+    NSIndexSet* indices = [outlineView selectedRowIndexes];
+    BOOL somethingToDelete = NO;
     
-    if( result == NSAlertDefaultReturn)
+    for( NSUInteger i = [indices firstIndex]; i != [indices lastIndex]+1; i++)
+    {
+        if( [indices containsIndex: i])
+        {
+            if( [[outlineView itemAtRow: i] isMemberOfClass:[DCMTKStudyQueryNode class]])
+                somethingToDelete = YES;
+        } 
+    }
+    
+    if( somethingToDelete == NO)
+    {
+        if( indices.count > 0)
+            NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"Select a study to delete it. You cannot delete series from this window, go to the Database window to delete series.", nil), NSLocalizedString(@"OK",nil), nil, nil);
+    }
+    else
     {
         [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
         [[BrowserController currentBrowser] showEntireDatabase];
         
-        NSIndexSet* indices = [outlineView selectedRowIndexes];
         BOOL extendingSelection = NO;
-        
-     //   [[[DicomDatabase activeLocalDatabase] managedObjectContext] lock];
         
         @try 
         {
@@ -816,29 +828,29 @@ extern "C"
             {
                 if( [indices containsIndex: i])
                 {
-                    NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
-                    
-                    if( [studyArray count] > 0)
+                    if( [[outlineView itemAtRow: i] isMemberOfClass:[DCMTKStudyQueryNode class]])
                     {
-                        NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
-                        [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
-                        extendingSelection = YES;
+                        NSArray *studyArray = [self localStudy: [outlineView itemAtRow: i]];
+                        
+                        if( [studyArray count] > 0)
+                        {
+                            NSManagedObject	*series =  [[[BrowserController currentBrowser] childrenArray: [studyArray objectAtIndex: 0] onlyImages: NO] objectAtIndex:0];
+                            [[BrowserController currentBrowser] findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO extendingSelection: extendingSelection];
+                            extendingSelection = YES;
+                        }
                     }
-                    else NSBeep();
+                    else
+                        [outlineView deselectRow: i];
                 } 
             }
 
             if( extendingSelection)
-            {
                 [[BrowserController currentBrowser] delItem: nil];
-            }
         }
         @catch (NSException * e) 
         {
             N2LogExceptionWithStackTrace(e);
         }
-        
-    //    [[[DicomDatabase activeLocalDatabase] managedObjectContext] unlock];
     }
 }
 

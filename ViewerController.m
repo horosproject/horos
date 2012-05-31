@@ -6562,11 +6562,15 @@ return YES;
         rebuild = reload = YES;
     
 	DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
-	for (DicomImage* dicomImage in newImages) {
+	for (DicomImage* dicomImage in newImages)
+    {
 		if (dicomImage.series == firstObject.series)
 			reload = YES;
 		else if (!firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
 			rebuild = YES;
+        
+        if( reload == YES && rebuild == YES)
+            break;
 	}
 	
 	if (rebuild)

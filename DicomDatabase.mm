@@ -1634,8 +1634,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								// Does this image contain a valid image path? If not replace it, with the new one
 								if ([[NSFileManager defaultManager] fileExistsAtPath: [DicomImage completePathForLocalPath: [image valueForKey:@"path"] directory:self.dataBaseDirPath]] == YES && inParseExistingObject == NO)
 								{
-									[addedImageObjects addObject:image];
-									
 									if (local)	// Delete this file, it's already in the DB folder
 									{
 										if ([[image valueForKey:@"path"] isEqualToString: [newFile lastPathComponent]] == NO)
