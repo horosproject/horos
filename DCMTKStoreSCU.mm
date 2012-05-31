@@ -546,108 +546,113 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
 {
 	OFCondition cond;
 	OFBool status = YES;
-	DcmXfer filexfer(fileformat.getDataset()->getOriginalXfer());
-	
-	#ifndef OSIRIX_LIGHT
-	BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
-	if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
-	{
-		NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
-		NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-		
-		unlink( outfname);
-		
-		@try
-		{
-			DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-									
-			[dcmObject writeToFile:outpath withTransferSyntax: tsx quality: opt_Quality AET:@"OsiriX" atomically:YES];
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
-		}
-		[dcmObject release];
-	}
-	else if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
-	{
-		NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
-		
-		NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
-		NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
-		
-		DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
-		
-		unlink( outfname);
-		
-		@try
-		{
-			[dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
-		}
-		[dcmObject release];
-	}
-	else
-	#endif
-	{
-		#ifndef OSIRIX_LIGHT
-		NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
-		
-		DcmDataset *dataset = fileformat.getDataset();
-		DcmItem *metaInfo = fileformat.getMetaInfo();
-		
-		DcmRepresentationParameter *params = nil;
-		DJ_RPLossy lossyParams( 90);
-		DJ_RPLossy JP2KParams( opt_Quality);
-		DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
-		DcmRLERepresentationParameter rleParams;
-		DJ_RPLossless losslessParams(6,0);
-		
-		if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-			params = &losslessParams;
-		else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-			params = &lossyParams; 
-		else if (opt_networkTransferSyntax == EXS_RLELossless)
-			params = &rleParams;
-		else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
-			params = &JP2KParamsLossLess; 
-		else if (opt_networkTransferSyntax == EXS_JPEG2000)
-			params = &JP2KParams;
-		else if (opt_networkTransferSyntax == EXS_JPEGLSLossless)
-			params = &JP2KParamsLossLess; 
-		else if (opt_networkTransferSyntax == EXS_JPEGLSLossy)
-			params = &JP2KParams;
+    DcmDataset *dataset = fileformat.getDataset();
+    
+    if( dataset)
+    {
+        DcmXfer filexfer( dataset->getOriginalXfer());
         
-		// this causes the lossless JPEG version of the dataset to be created
-		dataset->chooseRepresentation(opt_networkTransferSyntax, params);
+        #ifndef OSIRIX_LIGHT
+        BOOL useDCMTKForJP2K = [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForJP2K"];
+        if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000)
+        {
+            NSLog(@"SEND - Compress JPEG 2000 Lossy (%d) : %s", opt_Quality, fname);
+            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            
+            DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+            
+            unlink( outfname);
+            
+            @try
+            {
+                DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+                                        
+                [dcmObject writeToFile:outpath withTransferSyntax: tsx quality: opt_Quality AET:@"OsiriX" atomically:YES];
+            }
+            @catch( NSException *e)
+            {
+                NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
+            }
+            [dcmObject release];
+        }
+        else if( useDCMTKForJP2K == NO && opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+        {
+            NSLog(@"SEND - Compress JPEG 2000 Lossless: %s", fname);
+            
+            NSString *path = [NSString stringWithCString:fname encoding:NSUTF8StringEncoding];
+            NSString *outpath = [NSString stringWithCString:outfname encoding:NSUTF8StringEncoding];
+            
+            DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile:path decodingPixelData: NO];
+            
+            unlink( outfname);
+            
+            @try
+            {
+                [dcmObject writeToFile:outpath withTransferSyntax:[DCMTransferSyntax JPEG2000LosslessTransferSyntax] quality: DCMLosslessQuality AET:@"OsiriX" atomically:YES];
+            }
+            @catch( NSException *e)
+            {
+                NSLog( @"**** exception SendController dcmObject writeToFile: %@", e);
+            }
+            [dcmObject release];
+        }
+        else
+        #endif
+        {
+            #ifndef OSIRIX_LIGHT
+            NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
+            
+            DcmItem *metaInfo = fileformat.getMetaInfo();
+            
+            DcmRepresentationParameter *params = nil;
+            DJ_RPLossy lossyParams( 90);
+            DJ_RPLossy JP2KParams( opt_Quality);
+            DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
+            DcmRLERepresentationParameter rleParams;
+            DJ_RPLossless losslessParams(6,0);
+            
+            if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+                params = &losslessParams;
+            else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
+                params = &lossyParams; 
+            else if (opt_networkTransferSyntax == EXS_RLELossless)
+                params = &rleParams;
+            else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+                params = &JP2KParamsLossLess; 
+            else if (opt_networkTransferSyntax == EXS_JPEG2000)
+                params = &JP2KParams;
+            else if (opt_networkTransferSyntax == EXS_JPEGLSLossless)
+                params = &JP2KParamsLossLess; 
+            else if (opt_networkTransferSyntax == EXS_JPEGLSLossy)
+                params = &JP2KParams;
+            
+            // this causes the lossless JPEG version of the dataset to be created
+            dataset->chooseRepresentation(opt_networkTransferSyntax, params);
 
-		// check if everything went well
-		if (dataset->canWriteXfer(opt_networkTransferSyntax))
-		{
-			// force the meta-header UIDs to be re-generated when storing the file 
-			// since the UIDs in the data set may have changed 
-			//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-			//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-			
-			// store in lossless JPEG format
-			
-			fileformat.loadAllDataIntoMemory();
-			
-			unlink( outfname);
-			
-			cond = fileformat.saveFile( outfname, opt_networkTransferSyntax);
-			status =  (cond.good()) ? YES : NO;
-		}
-		else
-			status = NO;
-		#endif
-	}
+            // check if everything went well
+            if (dataset->canWriteXfer(opt_networkTransferSyntax))
+            {
+                // force the meta-header UIDs to be re-generated when storing the file 
+                // since the UIDs in the data set may have changed 
+                //delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+                //delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                
+                // store in lossless JPEG format
+                
+                fileformat.loadAllDataIntoMemory();
+                
+                unlink( outfname);
+                
+                cond = fileformat.saveFile( outfname, opt_networkTransferSyntax);
+                status =  (cond.good()) ? YES : NO;
+            }
+            else
+                status = NO;
+            #endif
+        }
+    }
+    else status = NO;
 
 	return status;
 }

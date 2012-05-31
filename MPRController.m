@@ -2200,6 +2200,12 @@ static float deg2rad = M_PI/180.0;
 				
 				curExportView.camera.focalPoint = [Point3D pointWithX: curExportView.camera.position.x + cos[ 6] y:curExportView.camera.position.y + cos[ 7] z:curExportView.camera.position.z + cos[ 8]];
 				
+                if( self.dcmFormat)
+                {
+                    [hiddenVRView setLOD: curExportView.LOD];
+                    [curExportView.vrView setViewSizeToMatrix3DExport];
+                }
+                
 				[curExportView restoreCameraAndCheckForFrame: NO];
 				
 				if( self.dcmBatchNumberOfFrames < 1)
