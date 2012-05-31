@@ -41,7 +41,7 @@ NSString* const NSThreadModalForWindowControllerKey = @"ThreadModalForWindowCont
 	_docWindow = [docWindow retain];
 	_thread = [thread retain];
     _isValid = YES;
-    _lastDisplayedStatus = -1;
+    _lastDisplayedProgress = -1;
     [(_retainedThreadDictionary = thread.threadDictionary) retain];
 	[thread.threadDictionary setObject:self forKey:NSThreadModalForWindowControllerKey];
     
@@ -62,13 +62,13 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.progressIndicator setUsesThreadedAnimation:NO];
 	[self.progressIndicator startAnimation:self];
 	
-    [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
+//  [self.titleField bind:@"value" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
 //  [self.window bind:@"title" toObject:self.thread withKeyPath:NSThreadNameKey options:NULL];
-    [self.statusField bind:@"string" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
-    [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
-    [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
-	[self.cancelButton bind:@"hidden2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
-	[self.backgroundButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsBackgroundingKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
+//    [self.statusField bind:@"string" toObject:self.thread withKeyPath:NSThreadStatusKey options:NULL];
+//    [self.progressDetailsField bind:@"value" toObject:self.thread withKeyPath:NSThreadProgressDetailsKey options:NULL];
+//    [self.cancelButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsCancelKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
+//	[self.cancelButton bind:@"hidden2" toObject:self.thread withKeyPath:NSThreadIsCancelledKey options:NULL];
+//	[self.backgroundButton bind:@"hidden" toObject:self.thread withKeyPath:NSThreadSupportsBackgroundingKey options:[NSDictionary dictionaryWithObject:NSNegateBooleanTransformerName forKey:NSValueTransformerNameBindingOption]];
 	
 	[self.thread addObserver:self forKeyPath:NSThreadProgressKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
 	[self.thread addObserver:self forKeyPath:NSThreadNameKey options:NSKeyValueObservingOptionInitial context:ThreadModalForWindowControllerObservationContext];
@@ -99,6 +99,8 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 -(void)dealloc {
 	DLog(@"[ThreadModalForWindowController dealloc]");
 	
+    [_lastPositionedStatus release];
+    
 	[self.thread removeObserver:self forKeyPath:NSThreadProgressKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadNameKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadStatusKey];
@@ -115,17 +117,17 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
 -(void)repositionViews {
     CGFloat p = 0;
-    NSRect frame;
+    NSRect frame, oframe;
     
     /* position buttons horizontally */ {
         CGFloat p = 14, w = self.window.frame.size.width;
         for (NSButton* button in [NSArray arrayWithObjects: self.backgroundButton, self.cancelButton, nil]) {
             if (![button isHidden]) {
-                frame = button.frame;
+                oframe = frame = button.frame;
                 p += frame.size.width;
                 frame.origin.x = w-p;
-                [button setFrame:frame];
-                p += 10;
+                if (!NSEqualRects(frame, oframe)) [button setFrame:frame];
+                p += 6;
             }
         }
     }
@@ -133,37 +135,40 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
     if (!self.cancelButton.isHidden || !self.backgroundButton.isHidden) {
         p += 12;
         
-        frame = self.cancelButton.frame;
+        oframe = frame = self.cancelButton.frame;
         frame.origin.y = p;
-        [self.cancelButton setFrame:frame];
+        if (!NSEqualRects(frame, oframe)) [self.cancelButton setFrame:frame];
 
-        frame = self.backgroundButton.frame;
+        oframe = frame = self.backgroundButton.frame;
         frame.origin.y = p;
-        [self.backgroundButton setFrame:frame];
+        if (!NSEqualRects(frame, oframe)) [self.backgroundButton setFrame:frame];
 
         p += frame.size.height;
     }
     
     p += 12;
-    frame = self.progressIndicator.frame;
+    oframe = frame = self.progressIndicator.frame;
     frame.origin.y = p;
-    [self.progressIndicator setFrame:frame];
+    if (!NSEqualRects(frame, oframe)) [self.progressIndicator setFrame:frame];
     p += frame.size.height;
     
     if (self.statusField.string.length) {
         p += 10;
-        frame = self.statusFieldScroll.frame;
-        frame.size.height = [self.statusField optimalSizeForWidth:frame.size.width].height;
+        oframe = frame = self.statusFieldScroll.frame;
+        if (![_lastPositionedStatus isEqualToString:self.statusField.string] && _lastPositionedStatus.length != self.statusField.string.length) {
+            [_lastPositionedStatus release]; _lastPositionedStatus = [self.statusField.string retain];
+            frame.size.height = [self.statusField optimalSizeForWidth:frame.size.width].height;
+        }
         frame.origin.y = p;
-        [self.statusFieldScroll setFrame:frame];
+        if (!NSEqualRects(frame, oframe)) [self.statusFieldScroll setFrame:frame];
         p += frame.size.height;
     }
     
-    if (self.titleField.stringValue.length && ![self.thread isMainThread]) {
+    if (_docWindow && self.titleField.stringValue.length && ![self.thread isMainThread]) {
         p += 8;
-        frame = self.titleField.frame;
+        oframe = frame = self.titleField.frame;
         frame.origin.y = p;
-        [self.titleField setFrame:frame];
+        if (!NSEqualRects(frame, oframe)) [self.titleField setFrame:frame];
         [self.titleField setHidden:NO];
         p += frame.size.height;
     } else
@@ -171,13 +176,13 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 
     p += 18;
     
-    
-    frame = [self.window frame];
+    oframe = frame = [self.window frame];
     NSRect contentRect = [self.window contentRectForFrameRect:frame];
     contentRect.origin.y += contentRect.size.height-p;
     contentRect.size.height = p;
     frame = [self.window frameRectForContentRect:contentRect];
-    [self.window setFrame:frame display:YES animate:YES];
+    if (!NSEqualRects(frame, oframe)) 
+        [self.window setFrame:frame display:YES animate:YES];
 }
 
 -(void)_observeValueForKeyPathOfObjectChangeContext:(NSArray*)args {
@@ -195,39 +200,37 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
             [self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], nil] waitUntilDone:NO];
         else {
             @synchronized (obj.threadDictionary) {
-                CGFloat previousProgress = self.progressIndicator.doubleValue;
                 if ([keyPath isEqual:NSThreadProgressKey]) {
+                    [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
                     [self.progressIndicator setIndeterminate: self.thread.progress < 0];	
-                    if (self.thread.progress >= 0)
-                        [self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
-                }
-                
-                if ([keyPath isEqual:NSThreadProgressKey])
-                    if (fabs(_lastDisplayedStatus-self.progressIndicator.doubleValue) > 1.0/self.progressIndicator.frame.size.width) {
-                        _lastDisplayedStatus = self.progressIndicator.doubleValue;
-                        [self.progressIndicator display];
+                    [self.progressIndicator startAnimation:self];
+                    // display
+                    if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
+                        _lastDisplayedProgress = obj.progress;
+                        if ([obj isMainThread]) [self.progressIndicator display];
                     }
+                }
                 
                 if ([keyPath isEqual:NSThreadNameKey]) {
                     self.window.title = obj.name? obj.name : NSLocalizedString(@"Task Progress", nil);
                     self.titleField.stringValue = obj.name? obj.name : @"";
-                    [self.titleField display];
+                    if ([obj isMainThread]) [self.titleField display];
                 }
                 if ([keyPath isEqual:NSThreadStatusKey]) {
                     self.statusField.string = obj.status? obj.status : @"";
-                    [self.statusField display];
+                    if ([obj isMainThread]) [self.statusField display];
                 }
                 if ([keyPath isEqual:NSThreadProgressDetailsKey]) {
                     self.progressDetailsField.stringValue = obj.progressDetails? obj.progressDetails : @"";
-                    [self.progressDetailsField display];
+                    if ([obj isMainThread]) [self.progressDetailsField display];
                 }
                 if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
                     [self.cancelButton setHidden: !obj.supportsCancel && !obj.isCancelled];
-                    [self.cancelButton display];
+                   if ([obj isMainThread]) [self.cancelButton display];
                 }
                 if ([keyPath isEqual:NSThreadSupportsBackgroundingKey]) {
                     [self.backgroundButton setHidden: !obj.supportsBackgrounding];
-                    [self.backgroundButton display];
+                    if ([obj isMainThread]) [self.backgroundButton display];
                 }
             }
         

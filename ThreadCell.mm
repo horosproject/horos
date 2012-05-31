@@ -50,6 +50,8 @@
 	self.thread = thread;
 	[(_retainedThreadDictionary = thread.threadDictionary) retain];
 
+    _lastDisplayedProgress = -1;
+    
 //	NSLog(@"cell created!");
 	
 	return self;
@@ -99,7 +101,7 @@
 	[self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }
 
--(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)obj change:(NSDictionary*)change context:(void*)context {
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(NSThread*)obj change:(NSDictionary*)change context:(void*)context {
 	if (obj == self.thread) {
 		if (![NSThread isMainThread]) {
 			[self performSelectorOnMainThread:@selector(_observeValueForKeyPathOfObjectChangeContext:) withObject:[NSArray arrayWithObjects: keyPath, obj, change, [NSValue valueWithPointer:context], NULL] waitUntilDone:NO];
@@ -113,6 +115,10 @@
 			[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
 			[self.progressIndicator setIndeterminate: self.thread.progress < 0];
 			[self.progressIndicator startAnimation:self];
+            if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
+                _lastDisplayedProgress = obj.progress;
+                if ([obj isMainThread]) [self.progressIndicator display];
+            }
 			return;
 		} else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
 			[self.cancelButton setHidden:(!self.thread.supportsCancel)||self.thread.isCancelled];
@@ -160,7 +166,7 @@
 	
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
-//		[self.progressIndicator startAnimation:self];
+		[self.progressIndicator startAnimation:self];
 	}
     
     NSRect progressFrame;

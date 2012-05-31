@@ -489,7 +489,7 @@
 
 -(id)newObjectForEntity:(id)entity {
     [self _entity:&entity];
-	return [[[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext] autorelease];
+    return [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:self.managedObjectContext];
 }
 
 -(BOOL)save {

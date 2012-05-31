@@ -26,8 +26,10 @@
 	NSTextView* _statusField;
     NSScrollView* _statusFieldScroll;
 	NSTextField* _progressDetailsField;
-    CGFloat _lastDisplayedStatus;
     BOOL _isValid;
+
+    CGFloat _lastDisplayedProgress;
+    NSString* _lastPositionedStatus;
 }
 
 @property(retain, readonly) NSThread* thread;

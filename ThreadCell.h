@@ -24,6 +24,8 @@
 	NSThread* _thread;
     id _retainedThreadDictionary;
 	NSTableView* _view;
+
+    CGFloat _lastDisplayedProgress;
 }
 
 @property(retain) NSProgressIndicator* progressIndicator;
