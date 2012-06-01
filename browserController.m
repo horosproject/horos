@@ -3095,7 +3095,12 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [item isFault] || [item isDeleted])
 	{
-		NSLog( @"******** isFault - childrenArray");
+        if( [item isFault])
+            NSLog( @"----- isFault - childrenArray : we have to refresh the outlineView...");
+        
+        if( [item isDeleted])
+            NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
+        
 		return nil;
 	}
 	
@@ -3180,6 +3185,9 @@ static NSConditionLock *threadLock = nil;
 	NSArray			*childrenArray = [self childrenArray: item onlyImages:onlyImages];
 	NSMutableArray	*imagesPathArray = nil;
 	
+    if( childrenArray == nil)
+        return nil;
+    
 	[_database lock];
 	
 	@try
@@ -6299,6 +6307,12 @@ static BOOL withReset = NO;
 					animate = YES;
 				}
 			}
+            if( images == nil)
+            {
+                [self outlineViewRefresh];
+                [self refreshMatrix: self];
+                return;
+            }
 		}
 		
 		if( animate == NO)
