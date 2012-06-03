@@ -3163,14 +3163,31 @@ extern "C"
     }
 }
 
+enum
+{
+    anyDate = 0,
+    today = 1,
+    yesteday = 2,
+    last7Days = 3,
+    lastMonth = 4,
+    between = 5,
+    on = 6,
+    last2Days = 7,
+    last3Months = 8,
+    dayBeforeYesterday = 9,
+    todayAM = 10,
+    todayPM = 11,
+};
 
 - (void)setDateQuery:(id)sender
 {
 	[dateQueryFilter release];
+    dateQueryFilter = nil;
+    
 	[timeQueryFilter release];
 	timeQueryFilter = nil;
 	
-	if( [sender selectedTag] == 5)
+	if( [sender selectedTag] == between)
 	{
 		[fromDate setEnabled: YES];
 		[toDate setEnabled: YES];
@@ -3181,6 +3198,15 @@ extern "C"
 		NSString *between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 		
 		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
+	}
+    else if( [sender selectedTag] == on)
+	{
+		[fromDate setEnabled: YES];
+		[toDate setEnabled: NO];
+		
+        DCMCalendarDate *date = [DCMCalendarDate dateWithTimeIntervalSinceReferenceDate: [[fromDate dateValue] timeIntervalSinceReferenceDate]];
+        
+        dateQueryFilter = [[QueryFilter queryFilterWithObject: date ofSearchType: searchExactDate forKey:@"StudyDate"] retain];
 	}
 	else
 	{
@@ -3194,12 +3220,22 @@ extern "C"
 		
 		switch( [sender selectedTag])
 		{
-			case 0:			date = nil;																								break;
-			case 1:			date = [DCMCalendarDate date];											searchType = SearchToday;		break;
-			case 2:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchYesterday;	break;
-			case 3:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1];									break;
-			case 4:			date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1];									break;
+			case anyDate: date = nil; break;
+            
+			case today: date = [DCMCalendarDate date]; searchType = searchExactDate; break;
+            
+			case yesteday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchExactDate; break;
+            
+            case dayBeforeYesterday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*48 -1]; searchType = searchExactDate; break;
+            
+            case last2Days: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*2 -1]; break;
+            
+			case last7Days: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1]; break;
+            
+			case lastMonth: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1]; break;
 			
+            case last3Months: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31*3 -1]; break;
+                
             default:
                 if( [sender selectedTag] >= 100 && [sender selectedTag] <= 200)
                 {
@@ -3231,23 +3267,23 @@ extern "C"
                     
                     timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
                 }
-                else NSLog( @"******* unknown setDateQuery tag: %@", (int) [sender selectedTag]);
+                else NSLog( @"******* unknown setDateQuery tag: %d", (int) [sender selectedTag]);
 			break;
 				
-			case 10:	// AM & PM
-			case 11:
+			case todayAM:	// AM & PM
+			case todayPM:
 				date = [DCMCalendarDate date];
-				searchType = SearchToday;
+				searchType = searchExactDate;
 				
-				if( [sender selectedTag] == 10)
+				if( [sender selectedTag] == todayAM)
 					between = [NSString stringWithString:@"000000.000-120000.000"];
 				else
 					between = [NSString stringWithString:@"120000.000-235959.000"];
 				
-				timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+				timeQueryFilter = [[QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"] retain];
 			break;
 		}
-		dateQueryFilter = [[QueryFilter queryFilterWithObject:date ofSearchType:searchType  forKey:@"StudyDate"] retain];
+		dateQueryFilter = [[QueryFilter queryFilterWithObject: date ofSearchType: searchType forKey:@"StudyDate"] retain];
 	}
 }
 
@@ -3771,8 +3807,7 @@ extern "C"
         
         NSMenuItem *item;
         item = [[[NSMenuItem alloc] init] autorelease];
-        int i;
-        for (i=0; i<[DICOMFieldsArray count]; i++)
+        for( int i = 0; i < [DICOMFieldsArray count]; i++)
         {
             item = [[[NSMenuItem alloc] init] autorelease];
             [item setTitle:[[DICOMFieldsArray objectAtIndex:i] title]];
@@ -3783,6 +3818,9 @@ extern "C"
                 [dicomFieldsMenu selectItemWithTitle: [[DICOMFieldsArray objectAtIndex:i] title]];
         }
         [dicomFieldsMenu setMenu: DICOMFieldsMenu];
+        
+        if( autoQR == NO)
+            self.window.toolbar = nil;
 	}
     
     return self;

@@ -266,7 +266,7 @@
 			
 			switch ([[view searchTypePopup] indexOfSelectedItem] + 4)
 			{
-				case SearchToday:
+				case searchToday:
 					predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_TODAY", field];
 				break;
 				

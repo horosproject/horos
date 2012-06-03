@@ -9,9 +9,11 @@
 - Add supports for private SOP Class UIDs: Philips, GE, Siemens
 - Better Bonjour detection
 - Add up to 4 DICOM fields to populate DB Comments field
+- Auto Query Retrieve : multiple instances
 
 ------------------------------------------------------------------------------------------------------------------------
 
+- Lock auto query retrieve
 - Catch KDU DIVZERO exception
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)

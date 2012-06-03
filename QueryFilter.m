@@ -20,15 +20,21 @@
 
 @implementation QueryFilter
 
-+ (id)queryFilter{
++ (id)queryFilter
+{
 	return [[[QueryFilter alloc] initWithObject:nil ofSearchType:0 forKey:nil] autorelease];
 }
-+ (id)queryFilterWithObject:(id)object ofSearchType:(int)searchType  forKey:(id)key{
+
++ (id)queryFilterWithObject:(id)object ofSearchType:(int)searchType forKey:(id)key
+{
 	return [[[QueryFilter alloc] initWithObject:object ofSearchType:searchType forKey:key] autorelease];
 }
-- (id) initWithObject:(id)object ofSearchType:(int)searchType  forKey:(id)key{
+
+- (id) initWithObject:(id)object ofSearchType:(int)searchType  forKey:(id)key
+{
 	//NSLog(@"object: %@", [object description]);
-	if (self = [super init]){
+	if (self = [super init])
+    {
 		_object = [object retain];
 		_searchType = searchType;
 		_key = [key retain];
@@ -104,14 +110,14 @@
                 return _object;
         break;
         
-        case SearchToday:
+        case searchToday:
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //today
         break;
         
         case searchYesterday:
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];  //Yesterday
         break;
-                
+        
         case searchBefore:
             return [NSString stringWithFormat:@"-%@", [_object descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]]; //before
         break;
@@ -133,14 +139,6 @@
         
         case searchExactDate: 
             return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil];
-        break;
-        
-        case 10:
-            return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil]; //today am
-        break;
-        
-        case 11:
-            return [_object descriptionWithCalendarFormat:@"%Y%m%d-%Y%m%d" timeZone:nil locale:nil]; //today pm
         break;
 	}
 	
