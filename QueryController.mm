@@ -549,7 +549,7 @@ extern "C"
         if( currentAutoQR >= 0) //During deleteAutoQRInstance:
         {
             if( resultArray)
-                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: resultArray forKey: @"resultArray"];
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[resultArray copy] autorelease] forKey: @"resultArray"];
             else
                 [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
             }
@@ -4117,6 +4117,7 @@ enum
                 [[NSUserDefaults standardUserDefaults] setObject: autoQRInstances forKey: @"savedAutoDICOMQuerySettingsArray"];
             }
             
+            currentAutoQR = -1;
             [self setCurrentAutoQRIndex: 0];
 		}
         
@@ -4287,18 +4288,24 @@ enum
 {
 	if( autoQuery)
     {
-        @synchronized( autoQRInstances)
+        if( currentAutoQR >= 0)
         {
-            [[autoQRInstances objectAtIndex: currentAutoQR] addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
-            
-            NSArray *r = [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"resultArray"]; // We dont want to save the result array in the preferences
-            [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
-            
-            [[NSUserDefaults standardUserDefaults] setObject: [[autoQRInstances copy] autorelease] forKey: @"savedAutoDICOMQuerySettingsArray"];
-            
-            if( r)
-                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: r forKey: @"resultArray"];
-        }
+            @synchronized( autoQRInstances)
+            {
+                [[autoQRInstances objectAtIndex: currentAutoQR] addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
+                
+                NSArray *r = [[[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"resultArray"] retain]; // We dont want to save the result array in the preferences
+                [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
+                
+                [[NSUserDefaults standardUserDefaults] setObject: [[autoQRInstances copy] autorelease] forKey: @"savedAutoDICOMQuerySettingsArray"];
+                
+                if( r)
+                {
+                    [[autoQRInstances objectAtIndex: currentAutoQR] setObject: r forKey: @"resultArray"];
+                    [r release];
+                }
+            }
+            }
 	}
     else
     {
