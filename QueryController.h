@@ -118,7 +118,7 @@
 - (void) refreshList: (NSArray*) l;
 - (void) setCurrentAutoQRIndex: (int) index;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
-- (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSDictionary*) dictionary;
+- (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index;
 - (IBAction) selectUniqueSource:(id) sender;
 - (QueryFilter*) getModalityQueryFilderWithString:(NSString*) modalityFilterMatrixString;
 - (void) refreshSources;
@@ -137,8 +137,6 @@
 - (void) clearQuery:(id)sender;
 - (int) dicomEcho:(NSDictionary*) aServer;
 - (IBAction) verify:(id)sender;
-- (IBAction) abort:(id)sender;
-- (IBAction) controlAction:(id)sender;
 - (void) refresh: (id) sender;
 - (IBAction) pressButtons:(id) sender;
 - (NSArray*) localSeries:(id) item;
