@@ -441,9 +441,12 @@ extern "C"
 	}
     else
     {
-        [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"] forKey: @"NumberOfPreviousStudyToRetrieve"];
-		[[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
-		[[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
+        @synchronized( autoQRInstances)
+        {
+            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"] forKey: @"NumberOfPreviousStudyToRetrieve"];
+            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
+            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
+        }
         
         [self saveSettings];
     }
@@ -1769,7 +1772,7 @@ extern "C"
     return [self queryWithDisplayingErrors: showError instance: instance];
 }
 
--(BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSDictionary*) instance
+-(BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance
 {
 	NSString			*theirAET, *hostname, *port;
 	NSNetService		*netService = nil;
@@ -1790,16 +1793,12 @@ extern "C"
     
 	@try 
 	{
-        NSMutableArray *servers = [NSMutableArray array];
-        
-        servers = [instance objectForKey: @"DICOMNodes"];
-        
 		firstServerRealtimeResults = YES;
 		
         if( [NSThread isMainThread])
             [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
         
-		for( NSString *s in servers)
+		for( NSString *s in [instance objectForKey: @"DICOMNodes"])
         {
             NSDictionary *aServer = nil;
             
@@ -2247,9 +2246,19 @@ extern "C"
 	
 	[autoQueryLock unlock];
 	
-	[self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
-	
-	if( atLeastOneSource == NO)
+    if( autoQuery == NO)
+    {
+        [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+	}
+    else
+    {
+        if( instance == [autoQRInstances objectAtIndex: currentAutoQR])
+            [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+        
+        [instance setObject: tempResultArray forKey: @"resultArray"];
+    }
+    
+	if( atLeastOneSource == NO && [NSThread isMainThread])
 	{
 		if( showError)
 			NSRunCriticalAlertPanel( NSLocalizedString(@"Query", nil), NSLocalizedString( @"Please select a DICOM node (check box).", nil), NSLocalizedString(@"Continue", nil), nil, nil) ;
@@ -2460,12 +2469,13 @@ extern "C"
 	}
 }
 
-- (void) autoRetrieveThread: (NSDictionary*) d
+- (void) autoRetrieveThread: (NSDictionary*) instance
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-    NSArray *list = [d objectForKey: @"array"];
-    NSMutableDictionary *instance = [d objectForKey: @"instance"];
+    [autoQueryLock lock];
+    
+    NSArray *list = [[[instance objectForKey: @"resultArray"] copy] autorelease];
     
 	if( autoQuery == NO)
 		goto returnFromThread;
@@ -2473,7 +2483,6 @@ extern "C"
 	if( [[BrowserController currentBrowser] database] != [DicomDatabase activeLocalDatabase])
 		goto returnFromThread;
 	
-    
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
 	{
 		[instance setObject: [NSNumber numberWithBool: NO] forKey: @"autoRetrieving"];
@@ -2485,8 +2494,6 @@ extern "C"
 		NSLog( @"**** numberOfRunningRetrieve > 5... wait for next autoretrieve.");
 		goto returnFromThread;
 	}
-	
-	[autoQueryLock lock];
 	
 	// Start to retrieve the first XX studies...
 	
@@ -2640,23 +2647,21 @@ extern "C"
 		N2LogExceptionWithStackTrace(e);
 	}
 	
+    returnFromThread:
+    
 	[autoQueryLock unlock];
-	
-	returnFromThread:
 	
 	[pool release];
 }
 
 - (void) displayAndRetrieveQueryResults: (NSMutableDictionary*) instance
 {
-    if( instance == nil || [autoQRInstances indexOfObject: instance] == currentAutoQR)
+    if( autoQuery == NO || [autoQRInstances indexOfObject: instance] == currentAutoQR)
         [self displayQueryResults];
 	
 	if( [[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery == YES)
 	{
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: [NSArray arrayWithArray: resultArray], @"array", instance, @"instance", nil];
-        
-		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector( autoRetrieveThread:) object: dict] autorelease];
+		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector( autoRetrieveThread:) object: instance] autorelease];
 		t.name = NSLocalizedString( @"Retrieving images...", nil);
 		[[ThreadsManager defaultManager] addThreadAndStart: t];
 	}
@@ -2704,38 +2709,41 @@ extern "C"
 	{
         if( autoQuery)
         {
-            int i = 0;
-            for( NSDictionary *QRInstance in autoQRInstances)
+            @synchronized( autoQRInstances)
             {
-                if( --autoQueryRemainingSecs[ i] <= 0)
+                int i = 0;
+                for( NSDictionary *QRInstance in autoQRInstances)
                 {
-                    [self saveSettings];
-                    break;
-                }
-                i++;
-            }
-            
-            i = 0;
-            for( NSDictionary *QRInstance in autoQRInstances)
-            {
-                if( autoQueryRemainingSecs[ i] <= 0)
-                {
-                    if( [autoQueryLock tryLock])
+                    if( --autoQueryRemainingSecs[ i] <= 0)
                     {
-                        [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
-                        
-                        NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: QRInstance] autorelease];
-                        t.name = NSLocalizedString( @"Auto-Querying images...", nil);
-                        t.supportsCancel = YES;
-                        [[ThreadsManager defaultManager] addThreadAndStart: t];
-                        
-                        autoQueryRemainingSecs[ i] = 60 * [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue];
-                        
-                        [autoQueryLock unlock];
+                        [self saveSettings];
+                        break;
                     }
-                    else autoQueryRemainingSecs[ i] = 0;
+                    i++;
                 }
-                i++;
+                
+                i = 0;
+                for( NSDictionary *QRInstance in autoQRInstances)
+                {
+                    if( autoQueryRemainingSecs[ i] <= 0)
+                    {
+                        if( [autoQueryLock tryLock])
+                        {
+                            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
+                            
+                            NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: QRInstance] autorelease];
+                            t.name = NSLocalizedString( @"Auto-Querying images...", nil);
+                            t.supportsCancel = YES;
+                            [[ThreadsManager defaultManager] addThreadAndStart: t];
+                            
+                            autoQueryRemainingSecs[ i] = 60 * [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue];
+                            
+                            [autoQueryLock unlock];
+                        }
+                        else autoQueryRemainingSecs[ i] = 0;
+                    }
+                    i++;
+                }
             }
         }
         else
@@ -2799,7 +2807,10 @@ extern "C"
 		
 		if( autoQuery == YES)
         {
-            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [NSNumber numberWithBool: NO] forKey: @"autoRetrieving"];
+            @synchronized( autoQRInstances)
+            {
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [NSNumber numberWithBool: NO] forKey: @"autoRetrieving"];
+            }
         }
 	}
 }
@@ -4294,18 +4305,29 @@ enum
             {
                 [[autoQRInstances objectAtIndex: currentAutoQR] addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
                 
-                NSArray *r = [[[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"resultArray"] retain]; // We dont want to save the result array in the preferences
-                [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
+                NSMutableArray *resultsArrays = [NSMutableArray array];
+                
+                for( NSMutableDictionary *instance in autoQRInstances)
+                {
+                    if( [instance objectForKey: @"resultArray"])
+                        [resultsArrays addObject: [instance objectForKey: @"resultArray"]];
+                    else
+                        [resultsArrays addObject: [NSNull null]];
+                    
+                    [instance removeObjectForKey: @"resultArray"]; // We dont want to save the result array in the preferences
+                }
                 
                 [[NSUserDefaults standardUserDefaults] setObject: [[autoQRInstances copy] autorelease] forKey: @"savedAutoDICOMQuerySettingsArray"];
                 
-                if( r)
+                int i = 0;
+                for( id r in resultsArrays)
                 {
-                    [[autoQRInstances objectAtIndex: currentAutoQR] setObject: r forKey: @"resultArray"];
-                    [r release];
+                    if( r != [NSNull null])
+                        [[autoQRInstances objectAtIndex: i] setObject: r forKey: @"resultArray"];
+                    i++;
                 }
             }
-            }
+        }
 	}
     else
     {
