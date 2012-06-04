@@ -461,7 +461,84 @@ extern "C"
 	}
 }
 
-- (NSDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes
+- (IBAction)lockAutoQRWindow:(id)sender
+{
+    
+}
+
+- (IBAction)deleteAutoQRInstance:(id)sender
+{
+    // Delete the Preset
+    if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+    {
+        [autoQRInstances removeObjectAtIndex: currentAutoQR];
+        
+        if( currentAutoQR >= autoQRInstances.count)
+            currentAutoQR = autoQRInstances.count;
+        
+        if( autoQRInstances.count == 0)
+        {
+            [self emptyPreset: self];
+            
+            NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
+            [preset setObject: NSLocalizedString( @"Default Instance", nil)  forKey: @"instanceName"];
+            [autoQRInstances addObject: preset];
+        }
+    }
+}
+
+- (IBAction) endCreateAutoQRInstance:(id) sender
+{
+	if( [sender tag])
+	{
+		if( [[autoQRInstanceName stringValue] isEqualToString: @""])
+		{
+			NSRunCriticalAlertPanel( NSLocalizedString(@"Create Auto QR Instance", nil),  NSLocalizedString(@"Give a name !", nil), NSLocalizedString(@"OK", nil), nil, nil);
+			return;
+		}
+		
+        for( NSDictionary *instance in autoQRInstances)
+        {
+            if( [[instance objectForKey: @"instanceName"] isEqualToString: [autoQRInstanceName stringValue]])
+            {
+                NSRunCriticalAlertPanel( NSLocalizedString(@"Create Auto QR Instance", nil),  NSLocalizedString(@"An Auto QR Instance with the same name already exists.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                return;
+            }
+		}
+        
+        [self emptyPreset: self];
+        
+        NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
+        [preset setObject: [autoQRInstanceName stringValue] forKey: @"instanceName"];
+        [autoQRInstances addObject: preset];
+	}
+	
+	[addAutoQRInstanceWindow orderOut:sender];
+    [NSApp endSheet:addAutoQRInstanceWindow returnCode:[sender tag]];
+}
+- (IBAction)createAutoQRInstance:(id)sender
+{
+    [NSApp beginSheet: addAutoQRInstanceWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (IBAction)changeAutoQRInstance:(NSSegmentedControl*)sender
+{
+    if( [sender selectedTag] == 0)
+        currentAutoQR--;
+    else
+        currentAutoQR++;
+    
+    if( currentAutoQR < 0)
+        currentAutoQR = autoQRInstances.count -1;
+    
+    if( currentAutoQR >= autoQRInstances.count);
+       currentAutoQR = 0;
+    
+    self.window.title = [NSStringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+    [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
+}
+
+- (NSMutableDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes
 {
 	NSMutableDictionary *presets = [NSMutableDictionary dictionary];
 	
@@ -2438,14 +2515,33 @@ extern "C"
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	if( [self queryWithDisplayingErrors: NO] == 0)
-		[self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
-	else
-	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
-        NSLog( @"****** Q&R autoQueryThread failed...");
+    if( autoQuery)
+    {
+        for( NSDictionary *QRInstance in autoQRInstances)
+        {
+            // TODO
+            
+            
+            if( [self queryWithDisplayingErrors: NO] == 0)
+                [self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
+            else
+            {
+                [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
+                NSLog( @"****** Q&R autoQueryThread failed...");
+            }
+        }
+    }
+    else
+    {
+        if( [self queryWithDisplayingErrors: NO] == 0)
+            [self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults) withObject:0 waitUntilDone: NO];
+        else
+        {
+            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
+            NSLog( @"****** Q&R autoQueryThread failed...");
+        }
 	}
-	
+    
 	[pool release];
 }
 
@@ -3741,7 +3837,7 @@ enum
 
 - (id) initAutoQuery: (BOOL) autoQR
 {
-    if ( self = [super initWithWindowNibName:@"Query"])
+    if( self = [super initWithWindowNibName:@"Query"])
 	{
 		if( [[DCMNetServiceDelegate DICOMServersList] count] == 0)
 		{
@@ -3779,6 +3875,8 @@ enum
 		
 		if( autoQuery == NO)
 		{
+            self.window.toolbar = nil;
+            
 			[dateFilterMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey: @"QRLastDateFilterValue"]];
 			[self setDateQuery: dateFilterMatrix];
 			
@@ -3793,10 +3891,33 @@ enum
 			[self setDateQuery: dateFilterMatrix];
 			
 			currentAutoQueryController = self;
-			[[self window] setTitle: NSLocalizedString( @"DICOM Auto Query/Retrieve", nil)];
 			
-			NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
-			[self applyPresetDictionary: d];
+            autoQRInstances = [[[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] mutableCopy];
+            
+            // retro compatibility
+            NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
+            if( d)
+            {
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"savedAutoDICOMQuerySettings"];
+                
+                [autoQRInstances addObject: d];
+                
+                [[NSUserDefaults standardUserDefaults] setObject: autoQRInstances forKey: @"savedAutoDICOMQuerySettingsArray"];
+            }
+            
+            currentAutoQR = 0;
+            
+            if( autoQRInstances.count == 0)
+            {
+                [self emptyPreset: self];
+                
+                NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
+                [preset setObject: NSLocalizedString( @"Default Instance", nil) forKey: @"instanceName"];
+                [autoQRInstances addObject: preset];
+            }
+            
+            self.window.title = [NSStringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+            [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
 		}
         
         DICOMFieldsArray = [[self prepareDICOMFieldsArrays] retain];
@@ -3818,9 +3939,6 @@ enum
                 [dicomFieldsMenu selectItemWithTitle: [[DICOMFieldsArray objectAtIndex:i] title]];
         }
         [dicomFieldsMenu setMenu: DICOMFieldsMenu];
-        
-        if( autoQR == NO)
-            self.window.toolbar = nil;
 	}
     
     return self;
@@ -3865,11 +3983,16 @@ enum
     
     [DICOMFieldsArray release];
 	
+    [autoQRInstances release];
+    
 	avoidQueryControllerDeallocReentry = NO;
-	
+
+    if( autoQuery == NO)
+        currentQueryController = nil;
+    else
+        currentAutoQueryController = nil;
+    
 	[super dealloc];
-	
-	currentQueryController = nil;
 }
 
 - (void) windowDidBecomeKey:(NSNotification *)notification
@@ -3968,7 +4091,7 @@ enum
 	NSDictionary *settings = [self savePresetInDictionaryWithDICOMNodes: YES];
 	
 	if( autoQuery)
-		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"savedAutoDICOMQuerySettings"];
+		[[NSUserDefaults standardUserDefaults] setObject: autoQRInstances forKey: @"savedAutoDICOMQuerySettingsArray"];
 	else
 		[[NSUserDefaults standardUserDefaults] setObject: settings forKey: @"savedDICOMQuerySettings"];
 }

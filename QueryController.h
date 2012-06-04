@@ -84,6 +84,11 @@
     NSMutableArray                          *downloadedStudies;
     
     NSString                                *customDICOMField;
+    
+    NSMutableArray                          *autoQRInstances;
+    int                                     currentAutoQR;
+    IBOutlet NSWindow                       *addAutoQRInstanceWindow;
+    IBOutlet NSTextField                    *autoQRInstanceName;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
@@ -101,6 +106,9 @@
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
 - (void) autoRetrieveSettings: (id) sender;
 - (void) saveSettings;
+- (void) applyPresetDictionary: (NSDictionary *) presets;
+- (void) emptyPreset:(id) sender;
+- (NSMutableDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes;
 - (id) initAutoQuery: (BOOL) autoQuery;
 - (IBAction) cancel:(id)sender;
 - (IBAction) ok:sender;
