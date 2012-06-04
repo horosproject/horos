@@ -461,15 +461,15 @@ extern "C"
 	}
 }
 
-- (IBAction)lockAutoQRWindow:(id)sender
+- (IBAction) lockAutoQRWindow:(id)sender
 {
     
 }
 
-- (IBAction)deleteAutoQRInstance:(id)sender
+- (IBAction) deleteAutoQRInstance:(id)sender
 {
-    // Delete the Preset
-    if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+    // Delete the instance
+    if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance (%@)?", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
     {
         [autoQRInstances removeObjectAtIndex: currentAutoQR];
         
@@ -484,6 +484,9 @@ extern "C"
             [preset setObject: NSLocalizedString( @"Default Instance", nil)  forKey: @"instanceName"];
             [autoQRInstances addObject: preset];
         }
+        
+        self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+        [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
     }
 }
 
@@ -511,12 +514,17 @@ extern "C"
         NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
         [preset setObject: [autoQRInstanceName stringValue] forKey: @"instanceName"];
         [autoQRInstances addObject: preset];
+        
+        currentAutoQR = [autoQRInstances count] -1;
+        
+        self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+        [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
 	}
 	
 	[addAutoQRInstanceWindow orderOut:sender];
     [NSApp endSheet:addAutoQRInstanceWindow returnCode:[sender tag]];
 }
-- (IBAction)createAutoQRInstance:(id)sender
+- (IBAction) createAutoQRInstance:(id)sender
 {
     [NSApp beginSheet: addAutoQRInstanceWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
@@ -531,7 +539,7 @@ extern "C"
     if( currentAutoQR < 0)
         currentAutoQR = autoQRInstances.count -1;
     
-    if( currentAutoQR >= autoQRInstances.count);
+    if( currentAutoQR >= autoQRInstances.count)
        currentAutoQR = 0;
     
     self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
@@ -789,7 +797,7 @@ extern "C"
 	if([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
 	{
 		// Delete the Preset
-		if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Preset", nil),  NSLocalizedString(@"Are you sure you want to delete the selected Preset?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+		if (NSRunCriticalAlertPanel( NSLocalizedString( @"Delete Preset", nil), [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the selected Preset (%@)?", nil), [sender title]], NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{
 			NSDictionary *savedPresets = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"QRPresets"];
 			
