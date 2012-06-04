@@ -479,10 +479,12 @@ extern "C"
             [autoQRInstances removeObjectAtIndex: currentAutoQR];
             
             if( currentAutoQR >= autoQRInstances.count)
-                currentAutoQR = autoQRInstances.count;
+                currentAutoQR = autoQRInstances.count-1;
             
             if( autoQRInstances.count == 0)
             {
+                currentAutoQR = 0;
+                
                 [self emptyPreset: self];
                 
                 NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
@@ -597,6 +599,7 @@ extern "C"
 	
 	[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
 	[presets setValue: [searchFieldRefPhysician stringValue] forKey: @"searchFieldRefPhysician"];
+    [presets setValue: [searchInstitutionName stringValue] forKey: @"searchInstitutionName"];
 	[presets setValue: [searchFieldID stringValue] forKey: @"searchFieldID"];
 	[presets setValue: [searchFieldAN stringValue] forKey: @"searchFieldAN"];
 	[presets setValue: [searchFieldStudyDescription stringValue] forKey: @"searchFieldStudyDescription"];
@@ -677,6 +680,7 @@ extern "C"
 - (void) emptyPreset:(id) sender
 {
 	[searchFieldRefPhysician setStringValue: @""];
+    [searchInstitutionName setStringValue: @""];
 	[searchFieldName setStringValue: @""];
 	[searchFieldID setStringValue: @""];
 	[searchFieldAN setStringValue: @""];
@@ -753,6 +757,9 @@ extern "C"
 	if( [presets valueForKey: @"searchFieldRefPhysician"])
 		[searchFieldRefPhysician setStringValue: [presets valueForKey: @"searchFieldRefPhysician"]];
 	
+	if( [presets valueForKey: @"searchInstitutionName"])
+		[searchInstitutionName setStringValue: [presets valueForKey: @"searchInstitutionName"]];
+    
 	if( [presets valueForKey: @"searchFieldName"])
 		[searchFieldName setStringValue: [presets valueForKey: @"searchFieldName"]];
 	
@@ -1750,17 +1757,16 @@ extern "C"
 
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError 
 {
-    return [self queryWithDisplayingErrors: showError instance: nil];
+    NSMutableDictionary *instance = [self savePresetInDictionaryWithDICOMNodes: YES];
+    return [self queryWithDisplayingErrors: showError instance: instance];
 }
 
 -(BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSDictionary*) instance
 {
-	NSString			*theirAET;
-	NSString			*hostname;
-	NSString			*port;
+	NSString			*theirAET, *hostname, *port;
 	NSNetService		*netService = nil;
-	int					selectedServer;
-	BOOL				atLeastOneSource = NO, noChecked = YES, error = NO;
+	
+	BOOL				error = NO;
 	NSMutableArray		*tempResultArray = [NSMutableArray array];
     
     [temporaryCFindResultArray release];
@@ -1772,49 +1778,36 @@ extern "C"
 	
 	[[NSUserDefaults standardUserDefaults] setObject:sourcesArray forKey: queryArrayPrefs];
 	
+    BOOL atLeastOneSource = NO;
+    
 	@try 
 	{
         NSMutableArray *servers = [NSMutableArray array];
         
-        if( [instance objectForKey: @"DICOMNodes"])
-            servers = [instance objectForKey: @"DICOMNodes"];
-        else
-        {
-            noChecked = YES;
-            for( NSUInteger i = 0; i < [sourcesArray count]; i++)
-            {
-                if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES)
-                    noChecked = NO;
-            }
-            
-            selectedServer = -1;
-            if( noChecked)
-                selectedServer = [sourcesTable selectedRow];
-            
-            for( NSUInteger i = 0; i < [sourcesArray count]; i++)
-            {
-                if( [[[sourcesArray objectAtIndex: i] valueForKey:@"activated"] boolValue] == YES || selectedServer == i)
-                {
-                    [servers addObject: [[sourcesArray objectAtIndex:i] valueForKey:@"server"]];
-                }
-            }
-		}
+        servers = [instance objectForKey: @"DICOMNodes"];
         
-		atLeastOneSource = NO;
 		firstServerRealtimeResults = YES;
 		
         if( [NSThread isMainThread])
             [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
         
-		for( id aServer in servers)
+		for( NSString *s in servers)
         {
+            NSDictionary *aServer = nil;
+            
+            for( id src in sourcesArray)
+            {
+                if( [[src valueForKey: @"AddressAndPort"] isEqualToString: s])
+                    aServer = [src valueForKey: @"server"];
+            }
+            
+            if( aServer == nil)
+                continue;
+            
             theirAET = [aServer objectForKey:@"AETitle"];
             hostname = [aServer objectForKey:@"Address"];
             port = [aServer objectForKey:@"Port"];
-            
-            [self setDateQuery: dateFilterMatrix];
-            [self setModalityQuery: modalityFilterMatrix];
-            
+                        
             [queryManager release];
             queryManager = nil;
 
@@ -1826,20 +1819,31 @@ extern "C"
                 [queryManager addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
             
             BOOL queryAllFields = NO;
+            int fromField;
+            int toField;
             
-            if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+            
+            if( instance)
             {
-                NSLog( @"--- Query ALL fields");
-                queryAllFields = YES;
+                fromField = toField = [[instance objectForKey: @"PatientModeMatrix"] intValue];
             }
-            
-            int fromField = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
-            int toField = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
-            
-            if( queryAllFields)
+            else
             {
-                fromField = 0;
-                toField = [PatientModeMatrix numberOfTabViewItems];
+                if( [[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSAlternateKeyMask)
+                {
+                    NSLog( @"--- Query ALL fields");
+                    queryAllFields = YES;
+                }
+                
+                if( queryAllFields)
+                {
+                    fromField = 0;
+                    toField = [PatientModeMatrix numberOfTabViewItems];
+                }
+                else
+                {
+                    fromField = toField = [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]];
+                }
             }
             
             BOOL queryItem = NO;
@@ -1861,15 +1865,27 @@ extern "C"
                 
                 if( currentQueryKey == customDICOMField && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_custom_dicom_field"])
                 {
-                    CIADICOMField *dicomField = [[dicomFieldsMenu selectedItem] representedObject];
+                    CIADICOMField *dicomField = nil;
+                    NSString *customValue = nil;
+                    
+                    if( instance)
+                    {
+                        dicomField = [[dicomFieldsMenu itemWithTitle: [instance objectForKey: @"searchCustomFieldDICOM"]] representedObject];
+                        customValue = [instance objectForKey: @"searchCustomField"];
+                    }
+                    else
+                    {
+                        dicomField = [[dicomFieldsMenu selectedItem] representedObject];
+                        customValue = [searchCustomField stringValue];
+                    }
                     
                     DcmTag tag( [dicomField group], [dicomField element]);
                     
                     currentQueryKey = [NSString stringWithCString: tag.getTagName()];
                     
-                    NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, [searchCustomField stringValue]);
+                    NSLog( @"DICOM Q&R with custom field: %@ : %@", currentQueryKey, customValue);
                     
-                    if( showError && [[searchCustomField stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    if( showError && [customValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -1878,7 +1894,7 @@ extern "C"
                         }
                     }
                     
-                    NSString *filterValue = [[searchCustomField stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *filterValue = [customValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1888,7 +1904,19 @@ extern "C"
                 }
                 else if( currentQueryKey == PatientName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_name"])
                 {
-                    if( showError && [[searchFieldName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    NSString *patientNameValue = nil;
+                    
+                    if( instance)
+                        patientNameValue = [instance objectForKey: @"searchFieldName"];
+                    else
+                    {
+                        patientNameValue = [searchFieldName stringValue];
+                        
+                        if( [patientNameValue length] >= 64)
+                            [searchFieldName setStringValue: [patientNameValue substringToIndex: 64]];
+                    }
+                    
+                    if( showError && [patientNameValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -1897,10 +1925,7 @@ extern "C"
                         }
                     }
                     
-                    if( [[searchFieldName stringValue] length] >= 64)
-                        [searchFieldName setStringValue: [[searchFieldName stringValue] substringToIndex: 64]];
-                    
-                    NSString *filterValue = [[searchFieldName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *filterValue = [patientNameValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1910,7 +1935,14 @@ extern "C"
                 }
                 else if( currentQueryKey == ReferringPhysician && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_referring_physician"])
                 {
-                    if( showError && [[searchFieldRefPhysician stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    NSString *refPhysicianValue = nil;
+                    
+                    if( instance)
+                        refPhysicianValue = [instance objectForKey: @"searchFieldRefPhysician"];
+                    else
+                        refPhysicianValue = [searchFieldRefPhysician stringValue];
+                    
+                    if( showError && [refPhysicianValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -1919,7 +1951,7 @@ extern "C"
                         }
                     }
                     
-                    NSString *filterValue = [[searchFieldRefPhysician stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *filterValue = [refPhysicianValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1929,7 +1961,14 @@ extern "C"
                 }
                 else if( currentQueryKey == InstitutionName && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_institution"])
                 {
-                    if( showError && [[searchInstitutionName stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    NSString *institutionNameValue = nil;
+                    
+                    if( instance)
+                        institutionNameValue = [instance objectForKey: @"searchInstitutionName"];
+                    else
+                        institutionNameValue = [searchInstitutionName stringValue];
+                    
+                    if( showError && [institutionNameValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -1938,7 +1977,7 @@ extern "C"
                         }
                     }
                     
-                    NSString *filterValue = [[searchInstitutionName stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *filterValue = [institutionNameValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1948,20 +1987,41 @@ extern "C"
                 }
                 else if( currentQueryKey == PatientBirthDate && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_birthdate"])
                 {
-                    if( [birthdateFilterMatrix selectedTag] == 0)
-                        [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                    int tag;
+                    NSDate *date;
                     
-                    if( [birthdateFilterMatrix selectedTag] == -1)
-                        [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"-%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                    if( instance)
+                    {
+                        tag = [[instance objectForKey: @"birthdateFilterMatrix"] intValue];
+                        date = [NSDate dateWithTimeIntervalSinceReferenceDate: [[instance objectForKey: @"searchBirth"] doubleValue]];
+                    }
+                    else
+                    {
+                        tag = [birthdateFilterMatrix selectedTag];
+                        date = [searchBirth dateValue];
+                    }
                     
-                    if( [birthdateFilterMatrix selectedTag] == 1)
-                        [queryManager addFilter: [[searchBirth dateValue] descriptionWithCalendarFormat:@"%Y%m%d-" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                    if( tag == 0)
+                        [queryManager addFilter: [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                    
+                    if( tag == -1)
+                        [queryManager addFilter: [date descriptionWithCalendarFormat:@"-%Y%m%d" timeZone:nil locale:nil] forDescription:currentQueryKey];
+                    
+                    if( tag == 1)
+                        [queryManager addFilter: [date descriptionWithCalendarFormat:@"%Y%m%d-" timeZone:nil locale:nil] forDescription:currentQueryKey];
                     
                     queryItem = YES;
                 }
                 else if( currentQueryKey == PatientID && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_id"])
                 {
-                    NSString *filterValue = [[searchFieldID stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *patientIDValue = nil;
+                    
+                    if( instance)
+                        patientIDValue = [instance objectForKey: @"searchFieldID"];
+                    else
+                        patientIDValue = [searchFieldID stringValue];
+                    
+                    NSString *filterValue = [patientIDValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1971,7 +2031,15 @@ extern "C"
                 }
                 else if( currentQueryKey == AccessionNumber && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_accession_number"])
                 {
-                    NSString *filterValue = [[searchFieldAN stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *ANValue = nil;
+                    
+                    if( instance)
+                        ANValue = [instance objectForKey: @"searchFieldAN"];
+                    else
+                        ANValue = [searchFieldAN stringValue];
+                    
+                    
+                    NSString *filterValue = [ANValue stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     
                     if ([filterValue length] > 0)
                     {
@@ -1981,7 +2049,14 @@ extern "C"
                 }
                 else if( currentQueryKey == StudyDescription && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_description"])
                 {
-                    if( showError && [[searchFieldStudyDescription stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    NSString *studyDescriptionValue = nil;
+                    
+                    if( instance)
+                        studyDescriptionValue = [instance objectForKey: @"searchFieldStudyDescription"];
+                    else
+                        studyDescriptionValue = [searchFieldStudyDescription stringValue];
+                    
+                    if( showError && [studyDescriptionValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -1990,7 +2065,7 @@ extern "C"
                         }
                     }
                     
-                    NSString *filterValue = [searchFieldStudyDescription stringValue];
+                    NSString *filterValue = studyDescriptionValue;
                     
                     if ([filterValue length] > 0)
                     {
@@ -2000,7 +2075,14 @@ extern "C"
                 }
                 else if( currentQueryKey == Comments && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
                 {
-                    if( showError && [[searchFieldComments stringValue] cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
+                    NSString *commentsValue = nil;
+                    
+                    if( instance)
+                        commentsValue = [instance objectForKey: @"searchFieldComments"];
+                    else
+                        commentsValue = [searchFieldComments stringValue];
+                    
+                    if( showError && [commentsValue cStringUsingEncoding: [NSString encodingForDICOMCharacterSet: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"]]] == nil)
                     {
                         if (NSRunCriticalAlertPanel( NSLocalizedString(@"Query Encoding", nil),  NSLocalizedString(@"The query cannot be encoded in current character set. Should I switch to UTF-8 (ISO_IR 192) encoding?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
                         {
@@ -2009,7 +2091,7 @@ extern "C"
                         }
                     }
                     
-                    NSString *filterValue = [searchFieldComments stringValue];
+                    NSString *filterValue = commentsValue;
                     
                     if ([filterValue length] > 0)
                     {
@@ -2018,6 +2100,10 @@ extern "C"
                     }
                 }
             }
+            
+            QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil, *modalityQueryFilter = nil;
+            
+            [self getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue] date: &dateQueryFilter time: &timeQueryFilter];
             
             if ([dateQueryFilter object])
             {
@@ -2030,6 +2116,8 @@ extern "C"
                 [queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
                 queryItem = YES;
             }
+            
+            modalityQueryFilter = [self getModalityQueryFilderWithString [instance objectForKey: @"modalityFilterMatrixString"]];
             
             if ([modalityQueryFilter object])
             {
@@ -2051,38 +2139,35 @@ extern "C"
                 
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_blank_query"] == NO)
                 {
-                    NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), NSLocalizedString(@"No query parameters provided. Blank query is not allowed.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    if( [NSThread isMainThread])
+                        NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), NSLocalizedString(@"No query parameters provided. Blank query is not allowed.", nil), NSLocalizedString(@"OK", nil), nil, nil);
                 }
                 else
                 {
-                    if( showError)
+                    if( showError && [NSThread isMainThread])
                     {
-                        if( atLeastOneSource == NO)
+                        NSString *alertSuppress = @"No parameters query";
+                        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                        if ([defaults boolForKey:alertSuppress])
                         {
-                            NSString *alertSuppress = @"No parameters query";
-                            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                            if ([defaults boolForKey:alertSuppress])
+                            doit = YES;
+                        }
+                        else
+                        {
+                            NSAlert* alert = [[NSAlert new] autorelease];
+                            [alert setMessageText: NSLocalizedString(@"Query", nil)];
+                            [alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
+                            [alert setShowsSuppressionButton:YES ];
+                            [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+                            [alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+                            
+                            if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
+                            
+                            if ([[alert suppressionButton] state] == NSOnState)
                             {
-                                doit = YES;
-                            }
-                            else
-                            {
-                                NSAlert* alert = [[NSAlert new] autorelease];
-                                [alert setMessageText: NSLocalizedString(@"Query", nil)];
-                                [alert setInformativeText: NSLocalizedString(@"No query parameters provided. The query may take a long time.", nil)];
-                                [alert setShowsSuppressionButton:YES ];
-                                [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-                                [alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-                                
-                                if ( [alert runModal] == NSAlertFirstButtonReturn) doit = YES;
-                                
-                                if ([[alert suppressionButton] state] == NSOnState)
-                                {
-                                    [defaults setBool:YES forKey:alertSuppress];
-                                }
+                                [defaults setBool:YES forKey:alertSuppress];
                             }
                         }
-                        else doit = YES;
                     }
                     else doit = YES;
                 }
@@ -2715,12 +2800,13 @@ extern "C"
 {
 	[queryManager release];
 	queryManager = nil;
-	[progressIndicator stopAnimation:nil];
-	[searchFieldName setStringValue:@""];
+	[progressIndicator stopAnimation: nil];
+	[searchFieldName setStringValue: @""];
 	[searchFieldRefPhysician setStringValue:@""];
-	[searchFieldID setStringValue:@""];
-	[searchFieldAN setStringValue:@""];
-	[searchFieldStudyDescription setStringValue:@""];
+    [searchInstitutionName setStringValue: @""];
+	[searchFieldID setStringValue: @""];
+	[searchFieldAN setStringValue: @""];
+	[searchFieldStudyDescription setStringValue: @""];
 	[searchFieldComments setStringValue: @""];
 	[outlineView reloadData];
 }
@@ -3322,34 +3408,59 @@ extern "C"
 	}
 }
 
-- (void)setModalityQuery:(id)sender
+- (QueryFilter*) getModalityQueryFilderWithString:(NSString*) modalityFilterMatrixString
 {
-	[modalityQueryFilter release];
-	
-	NSMutableString *m = [NSMutableString stringWithString: @""];
-	for( NSCell *cell in [sender cells])
-	{
-		if( [cell state] == NSOnState)
-		{
-			if( [m length]) [m appendString:@"\\"];
-			[m appendString: [cell title]];
-		}
-	}
-	
+    NSScanner *scan = [NSScanner scannerWithString: modalityFilterMatrixString];
+    NSMutableString *m = [NSMutableString stringWithString: @""];
+    QueryFilter *modalityFilter = nil;
+    
+    BOOL more;
+    do
+    {
+        NSInteger row, col;
+        
+        more = [scan scanInteger: &row];
+        more = [scan scanInteger: &col];
+        
+        if( more)
+        {
+            if( [m length]) [m appendString:@"\\"];
+			[m appendString: [[modalityFilterMatrix cellAtRow: row column: col] title]];
+        }
+    }
+    while( more);
+    
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
     {
         if( [m length])
-            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+            modalityFilter = [QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
         else
-            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+            modalityFilter = [QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
     }
     else
     {
         if( [m length])
-            modalityQueryFilter = [[QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+            modalityFilter = [QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"Modality"];
         else
-            modalityQueryFilter = [[QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"Modality"] retain];
+            modalityFilter = [QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"Modality"];
     }
+
+    return modalityFilter;
+}
+
+- (void)setModalityQuery:(id)sender
+{
+    NSMutableString *cellsString = [NSMutableString string];
+	for( NSCell *cell in [modalityFilterMatrix cells])
+	{
+		if( [cell state] == NSOnState)
+		{
+			NSInteger row, col;
+			
+			[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
+			[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
+		}
+	}
 }
 
 enum
@@ -3368,67 +3479,55 @@ enum
     todayPM = 11,
 };
 
-- (void)setDateQuery:(id)sender
+- (void) getDateAndTimeQueryFilterWithTag: (int) tag date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter
 {
-	[dateQueryFilter release];
-    dateQueryFilter = nil;
-    
-	[timeQueryFilter release];
-	timeQueryFilter = nil;
+    *dateQueryFilter = nil;
+	*timeQueryFilter = nil;
 	
-	if( [sender selectedTag] == between)
+	if( tag == between)
 	{
-		[fromDate setEnabled: YES];
-		[toDate setEnabled: YES];
-		
 		NSDate *later = [[fromDate dateValue] laterDate: [toDate dateValue]];
 		NSDate *earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
 		
 		NSString *between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 		
-		dateQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
+		*dateQueryFilter = [QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch forKey:@"StudyDate"];
 	}
-    else if( [sender selectedTag] == on)
+    else if( tag == on)
 	{
-		[fromDate setEnabled: YES];
-		[toDate setEnabled: NO];
-		
         DCMCalendarDate *date = [DCMCalendarDate dateWithTimeIntervalSinceReferenceDate: [[fromDate dateValue] timeIntervalSinceReferenceDate]];
         
-        dateQueryFilter = [[QueryFilter queryFilterWithObject: date ofSearchType: searchExactDate forKey:@"StudyDate"] retain];
+        *dateQueryFilter = [QueryFilter queryFilterWithObject: date ofSearchType: searchExactDate forKey:@"StudyDate"];
 	}
 	else
 	{
-		[fromDate setEnabled: NO];
-		[toDate setEnabled: NO];
-		
 		DCMCalendarDate *date = nil;
 		
 		int searchType = searchAfter;
 		NSString *between = nil;
 		
-		switch( [sender selectedTag])
+		switch( tag)
 		{
 			case anyDate: date = nil; break;
-            
+                
 			case today: date = [DCMCalendarDate date]; searchType = searchExactDate; break;
-            
+                
 			case yesteday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchExactDate; break;
-            
+                
             case dayBeforeYesterday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*48 -1]; searchType = searchExactDate; break;
-            
+                
             case last2Days: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*2 -1]; break;
-            
+                
 			case last7Days: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*7 -1]; break;
-            
+                
 			case lastMonth: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1]; break;
-			
+                
             case last3Months: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31*3 -1]; break;
                 
             default:
-                if( [sender selectedTag] >= 100 && [sender selectedTag] <= 200)
+                if( tag >= 100 && tag <= 200)
                 {
-                    int hours = [sender selectedTag] - 100;
+                    int hours = tag - 100;
                     
                     searchType = searchAfter;
                     
@@ -3438,12 +3537,12 @@ enum
                         between = [NSString stringWithFormat:@"%@.000-", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"]];
                     else
                         between = [NSString stringWithFormat:@"%@.000-%@.000", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*60*hours] descriptionWithCalendarFormat: @"%H%M%S"], [[NSCalendarDate date] descriptionWithCalendarFormat: @"%H%M%S"]];
-                        
-                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                    
+                    *timeQueryFilter = [QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"];
                 }
-                else if( [sender selectedTag] >= 200 && [sender selectedTag] <= 300)
+                else if( tag >= 200 && tag <= 300)
                 {
-                    int min = [sender selectedTag] - 200;
+                    int min = tag - 200;
                     
                     searchType = searchAfter;
                     
@@ -3454,26 +3553,45 @@ enum
                     else
                         between = [NSString stringWithFormat:@"%@.000-%@.000", [[NSCalendarDate dateWithTimeIntervalSinceNow: -60*min] descriptionWithCalendarFormat: @"%H%M%S"], [[NSCalendarDate date] descriptionWithCalendarFormat: @"%H%M%S"]];
                     
-                    timeQueryFilter = [[QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"] retain];
+                    *timeQueryFilter = [QueryFilter queryFilterWithObject:between ofSearchType:searchExactMatch  forKey:@"StudyTime"];
                 }
-                else NSLog( @"******* unknown setDateQuery tag: %d", (int) [sender selectedTag]);
-			break;
+                else NSLog( @"******* unknown setDateQuery tag: %d", (int) tag);
+                break;
 				
 			case todayAM:	// AM & PM
 			case todayPM:
 				date = [DCMCalendarDate date];
 				searchType = searchExactDate;
 				
-				if( [sender selectedTag] == todayAM)
+				if( tag == todayAM)
 					between = [NSString stringWithString:@"000000.000-120000.000"];
 				else
 					between = [NSString stringWithString:@"120000.000-235959.000"];
 				
-				timeQueryFilter = [[QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"] retain];
-			break;
+				*timeQueryFilter = [QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"];
+                break;
 		}
-		dateQueryFilter = [[QueryFilter queryFilterWithObject: date ofSearchType: searchType forKey:@"StudyDate"] retain];
+		*dateQueryFilter = [QueryFilter queryFilterWithObject: date ofSearchType: searchType forKey:@"StudyDate"];
 	}
+}
+
+- (void)setDateQuery:(id)sender
+{
+	if( [sender selectedTag] == between)
+	{
+		[fromDate setEnabled: YES];
+		[toDate setEnabled: YES];
+	}
+    else if( [sender selectedTag] == on)
+	{
+		[fromDate setEnabled: YES];
+		[toDate setEnabled: NO];
+	}
+	else
+	{
+		[fromDate setEnabled: NO];
+		[toDate setEnabled: NO];
+    }
 }
 
 -(void) awakeFromNib
@@ -3933,9 +4051,6 @@ enum
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:nil];
 		
 		queryFilters = nil;
-		dateQueryFilter = nil;
-		timeQueryFilter = nil;
-		modalityQueryFilter = nil;
 		currentQueryKey = nil;
 		autoQuery = autoQR;
 		
@@ -4060,9 +4175,6 @@ enum
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[queryManager release];
 	[queryFilters release];
-	[dateQueryFilter release];
-	[timeQueryFilter release];
-	[modalityQueryFilter release];
 	[previousAutoRetrieve release];
 	[sourcesArray release];
 	[resultArray release];
@@ -4159,13 +4271,13 @@ enum
 	//set up Query Keys
 	currentQueryKey = PatientName;
 	
-	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
-	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyTime"] retain];
+//	dateQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyDate"] retain];
+//	timeQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"StudyTime"] retain];
     
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
-        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"ModalitiesinStudy"] retain];
-	else
-        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
+//    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+//        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"ModalitiesinStudy"] retain];
+//	else
+//        modalityQueryFilter = [[QueryFilter queryFilterWithObject:nil ofSearchType:searchExactMatch forKey:@"Modality"] retain];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( updateServers:) name:@"DCMNetServicesDidChange"  object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector( realtimeCFindResults:) name:@"realtimeCFindResults"  object:nil];

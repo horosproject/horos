@@ -61,7 +61,6 @@
     NSMutableArray							*queryFilters;
 	NSMutableDictionary						*previousAutoRetrieve;
 	
-	QueryFilter								*dateQueryFilter, *timeQueryFilter, *modalityQueryFilter;
 	NSString								*currentQueryKey, *queryArrayPrefs;
 	int										checkAndViewTry;
 	
@@ -108,6 +107,7 @@
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
 - (void) autoRetrieveSettings: (id) sender;
 - (void) saveSettings;
+- (void) getDateAndTimeQueryFilterWithTag: (int) tag date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter;
 - (void) applyPresetDictionary: (NSDictionary *) presets;
 - (void) emptyPreset:(id) sender;
 - (NSMutableDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes;
