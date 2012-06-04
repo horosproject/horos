@@ -20,6 +20,8 @@
 @class QueryArrayController;
 @class QueryFilter;
 
+#define MAXINSTANCE 40
+
 /** \brief Window Controller for Q/R */
 @interface QueryController : NSWindowController <NSWindowDelegate, NSOutlineViewDelegate>
 {
@@ -48,9 +50,8 @@
     IBOutlet	NSPopUpButton				*sendToPopup;
 	
     BOOL                                    autoRefreshQueryInSeconds;
-	int										autoQueryRemainingSecs;
+	int										autoQueryRemainingSecs[ MAXINSTANCE];
 	IBOutlet NSTextField					*autoQueryCounter;
-	
 	
 	BOOL									DatabaseIsEdited;
 	IBOutlet NSWindow						*autoRetrieveWindow;
@@ -89,6 +90,7 @@
     int                                     currentAutoQR;
     IBOutlet NSWindow                       *addAutoQRInstanceWindow;
     IBOutlet NSTextField                    *autoQRInstanceName;
+    IBOutlet NSSegmentedControl             *autoQRNavigationControl;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
@@ -115,6 +117,7 @@
 - (void) refreshAutoQR: (id) sender;
 - (void) refreshList: (NSArray*) l;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
+- (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSDictionary*) dictionary;
 - (IBAction) selectUniqueSource:(id) sender;
 - (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
@@ -143,8 +146,8 @@
 - (IBAction) autoQueryTimer:(id) sender;
 - (IBAction) switchAutoRetrieving: (id) sender;
 - (IBAction) selectModality: (id) sender;
-- (void) displayAndRetrieveQueryResults;
-- (void) autoQueryThread;
+- (void) displayAndRetrieveQueryResults: (NSDictionary*) instance;
+- (void) autoQueryThread:(NSDictionary*) d;
 - (void) autoQueryTimerFunction:(NSTimer*) t;
 - (void) executeRefresh: (id) sender;
 @end
