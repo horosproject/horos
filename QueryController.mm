@@ -534,7 +534,7 @@ extern "C"
     if( currentAutoQR >= autoQRInstances.count);
        currentAutoQR = 0;
     
-    self.window.title = [NSStringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+    self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
     [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
 }
 
@@ -3916,7 +3916,7 @@ enum
                 [autoQRInstances addObject: preset];
             }
             
-            self.window.title = [NSStringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
+            self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
             [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
 		}
         
