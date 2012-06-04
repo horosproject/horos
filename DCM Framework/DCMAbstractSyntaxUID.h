@@ -30,6 +30,7 @@ htt://www.pixelmed.com
 
 + (NSString *)verificationClassUID;
 + (BOOL)isVerification:(NSString *)sopClassUID ;
++ (BOOL)isMultiframe:(NSString*)sopClassUID;
 
 + (NSString *)computedRadiographyImageStorage;
 + (NSString *)digitalXRayImageStorageForPresentation;

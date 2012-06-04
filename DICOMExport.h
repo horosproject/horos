@@ -92,7 +92,7 @@ typedef char* DcmFileFormat;
 		samplePerPixel:		(long) deprecated
 		bitsPerPixel:		(long) deprecated // This is INCORRECT - backward compatibility
 		width:				(long) deprecated
-		height:				(long) deprecated;
+		height:				(long) deprecated __deprecated;
 
 - (void) setSigned: (BOOL) s;
 - (void) setOffset: (int) o;

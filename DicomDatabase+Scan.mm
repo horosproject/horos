@@ -328,22 +328,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
         // some DICOMDIR files only list 1 image for 1 multiframe DICOM file
         NSString* scuid = [item objectForKey:@"SOPClassUID"];
         if ([[self class] _item:item isOnlyEntryForItsSeriesInItems:items] &&
-            ([scuid isEqualToString:[DCMAbstractSyntaxUID enhancedMRImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedCTImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeSingleBitSecondaryCaptureImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleByteSecondaryCaptureImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeGrayscaleWordSecondaryCaptureImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID multiframeTrueColorSecondaryCaptureImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID EnhancedXAImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayAngiographicImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayRadioFlouroscopicImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID EnhancedXRFImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID XrayAngiographicBiplaneImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID XRay3DAngiographicImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID XRay3DCraniofacialImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID enhancedPETImageStorage]] ||
-             [scuid isEqualToString:[DCMAbstractSyntaxUID ultrasoundMultiframeImageStorageRetired]]))
+            ([DCMAbstractSyntaxUID isMultiframe:scuid]))
         {
             [pathsToScanAnyway addObject:filepath];
             [items removeObjectAtIndex:i];

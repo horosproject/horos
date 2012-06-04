@@ -54,6 +54,8 @@
 
 @interface NSThread (ModalForWindow)
 
+extern NSString* const NSThreadModalForWindowControllerKey;
+
 -(ThreadModalForWindowController*)startModalForWindow:(NSWindow*)window; // returns nil if not called on main thread
 -(ThreadModalForWindowController*)modalForWindowController;
 

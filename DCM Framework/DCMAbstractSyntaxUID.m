@@ -467,6 +467,37 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		);
 	}
 
+/*
+ these are also multiframe, says DCMTK 
+ compare(mediaSOPClassUID, UID_XRayFluoroscopyImageStorage) ||
+ compare(mediaSOPClassUID, UID_NuclearMedicineImageStorage) ||
+ compare(mediaSOPClassUID, UID_RTImageStorage) ||
+ compare(mediaSOPClassUID, UID_RTDoseStorage) ||
+ compare(mediaSOPClassUID, UID_VideoEndoscopicImageStorage) ||
+ compare(mediaSOPClassUID, UID_VideoMicroscopicImageStorage) ||
+ compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
+ compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
+ compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage);
+*/
++(BOOL)isMultiframe:(NSString*)sopClassUID {
+    return [sopClassUID isEqualToString:[DCMAbstractSyntaxUID enhancedMRImageStorage]]
+        || [sopClassUID isEqualToString:UltrasoundMultiframeImageStorage]
+        || [sopClassUID isEqualToString:EnhancedCTImageStorage]
+        || [sopClassUID isEqualToString:MultiframeSingleBitSecondaryCaptureImageStorage]
+        || [sopClassUID isEqualToString:MultiframeGrayscaleByteSecondaryCaptureImageStorage]
+        || [sopClassUID isEqualToString:MultiframeGrayscaleWordSecondaryCaptureImageStorage]
+        || [sopClassUID isEqualToString:MultiframeTrueColorSecondaryCaptureImageStorage]
+        || [sopClassUID isEqualToString:EnhancedXAImageStorage]
+        || [sopClassUID isEqualToString:XrayAngiographicImageStorage]
+        || [sopClassUID isEqualToString:XrayRadioFlouroscopicImageStorage]
+        || [sopClassUID isEqualToString:EnhancedXRFImageStorage]
+        || [sopClassUID isEqualToString:XrayAngiographicBiplaneImageStorage]
+        || [sopClassUID isEqualToString:XRay3DAngiographicImageStorage]
+        || [sopClassUID isEqualToString:XRay3DCraniofacialImageStorage]
+        || [sopClassUID isEqualToString:EnhancedPETImageStorage]
+        || [sopClassUID isEqualToString:UltrasoundMultiframeImageStorageRetired];
+}
+
 + (BOOL)isImageStorage:(NSString *)sopClassUID
 {
 	if( sopClassUID)

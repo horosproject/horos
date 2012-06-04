@@ -114,10 +114,10 @@
 		} else if ([keyPath isEqual:NSThreadProgressKey]) {
 			[self.progressIndicator setDoubleValue:self.thread.subthreadsAwareProgress];
 			[self.progressIndicator setIndeterminate: self.thread.progress < 0];
-			[self.progressIndicator startAnimation:self];
+			if (self.thread.progress < 0) [self.progressIndicator startAnimation:self];
             if (fabs(_lastDisplayedProgress-obj.progress) > 1.0/self.progressIndicator.frame.size.width) {
                 _lastDisplayedProgress = obj.progress;
-                if ([obj isMainThread]) [self.progressIndicator display];
+                /*if ([obj isMainThread])*/ [self.progressIndicator display];
             }
 			return;
 		} else if ([keyPath isEqual:NSThreadSupportsCancelKey] || [keyPath isEqual:NSThreadIsCancelledKey]) {
@@ -166,6 +166,7 @@
 	
 	if (![self.progressIndicator superview]) {
 		[view addSubview:self.progressIndicator];
+        [self.progressIndicator setIndeterminate:YES];
 		[self.progressIndicator startAnimation:self];
 	}
     
