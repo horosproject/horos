@@ -476,29 +476,10 @@ extern "C"
     {
         @synchronized( autoQRInstances)
         {
+            int newIndex = currentAutoQR-1;
             [autoQRInstances removeObjectAtIndex: currentAutoQR];
-            
-            if( currentAutoQR >= autoQRInstances.count)
-                currentAutoQR = autoQRInstances.count-1;
-            
-            if( autoQRInstances.count == 0)
-            {
-                currentAutoQR = 0;
-                
-                [self emptyPreset: self];
-                
-                NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
-                [preset setObject: NSLocalizedString( @"Default Instance", nil)  forKey: @"instanceName"];
-                [autoQRInstances addObject: preset];
-            }
-            
-            self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
-            [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
-            
-            if( autoQRInstances.count <= 1)
-                [autoQRNavigationControl setEnabled: NO];
-            else
-                [autoQRNavigationControl setEnabled: YES];
+            currentAutoQR = -1;
+            [self setCurrentAutoQRIndex: newIndex];
         }
     }
 }
@@ -530,15 +511,7 @@ extern "C"
             [preset setObject: [autoQRInstanceName stringValue] forKey: @"instanceName"];
             [autoQRInstances addObject: preset];
             
-            currentAutoQR = [autoQRInstances count] -1;
-            
-            self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
-            [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
-            
-            if( autoQRInstances.count <= 1)
-                [autoQRNavigationControl setEnabled: NO];
-            else
-                [autoQRNavigationControl setEnabled: YES];
+            [self setCurrentAutoQRIndex: [autoQRInstances count] -1];
         }
 	}
 	
@@ -556,26 +529,61 @@ extern "C"
     [NSApp beginSheet: addAutoQRInstanceWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (IBAction)changeAutoQRInstance:(NSSegmentedControl*)sender
+- (void) setCurrentAutoQRIndex: (int) index
 {
     [self saveSettings];
     
     @synchronized( autoQRInstances)
     {
-        if( [sender selectedTag] == 0)
-            currentAutoQR--;
-        else
-            currentAutoQR++;
+        if( autoQRInstances.count == 0)
+        {
+            index = 0;
+            
+            [self emptyPreset: self];
+            
+            NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
+            [preset setObject: NSLocalizedString( @"Default Instance", nil)  forKey: @"instanceName"];
+            [autoQRInstances addObject: preset];
+        }
         
-        if( currentAutoQR < 0)
-            currentAutoQR = autoQRInstances.count -1;
+        if( currentAutoQR >= 0) //During deleteAutoQRInstance:
+        {
+            if( resultArray)
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: resultArray forKey: @"resultArray"];
+            else
+                [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
+            }
         
-        if( currentAutoQR >= autoQRInstances.count)
-           currentAutoQR = 0;
+        if( index < 0)
+            index = autoQRInstances.count -1;
+        
+        if( index >= autoQRInstances.count)
+            index = 0;
+        
+        currentAutoQR = index;
         
         self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
         [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
+        
+        [self refreshList: [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"resultArray"]];
+        
+        if( autoQRInstances.count <= 1)
+            [autoQRNavigationControl setEnabled: NO];
+        else
+            [autoQRNavigationControl setEnabled: YES];
     }
+}
+
+- (IBAction)changeAutoQRInstance:(NSSegmentedControl*)sender
+{
+    int i = currentAutoQR;
+    
+    if( [sender selectedTag] == 0)
+        i--;
+    else
+        i++;
+    
+    [self setCurrentAutoQRIndex: i];
 }
 
 - (NSMutableDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes
@@ -2117,7 +2125,7 @@ extern "C"
                 queryItem = YES;
             }
             
-            modalityQueryFilter = [self getModalityQueryFilderWithString [instance objectForKey: @"modalityFilterMatrixString"]];
+            modalityQueryFilter = [self getModalityQueryFilderWithString: [instance objectForKey: @"modalityFilterMatrixString"]];
             
             if ([modalityQueryFilter object])
             {
@@ -2260,7 +2268,7 @@ extern "C"
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
-	
+    
     if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
 	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
     
@@ -4109,24 +4117,7 @@ enum
                 [[NSUserDefaults standardUserDefaults] setObject: autoQRInstances forKey: @"savedAutoDICOMQuerySettingsArray"];
             }
             
-            currentAutoQR = 0;
-            
-            if( autoQRInstances.count == 0)
-            {
-                [self emptyPreset: self];
-                
-                NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
-                [preset setObject: NSLocalizedString( @"Default Instance", nil) forKey: @"instanceName"];
-                [autoQRInstances addObject: preset];
-            }
-            
-            self.window.title = [NSString stringWithFormat: @"%@ : %@", NSLocalizedString( @"DICOM Auto Query/Retrieve", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]];
-            [self applyPresetDictionary: [autoQRInstances objectAtIndex: currentAutoQR]];
-            
-            if( autoQRInstances.count <= 1)
-                [autoQRNavigationControl setEnabled: NO];
-            else
-                [autoQRNavigationControl setEnabled: YES];
+            [self setCurrentAutoQRIndex: 0];
 		}
         
         DICOMFieldsArray = [[self prepareDICOMFieldsArrays] retain];
@@ -4299,7 +4290,14 @@ enum
         @synchronized( autoQRInstances)
         {
             [[autoQRInstances objectAtIndex: currentAutoQR] addEntriesFromDictionary: [self savePresetInDictionaryWithDICOMNodes: YES]];
-            [[NSUserDefaults standardUserDefaults] setObject: autoQRInstances forKey: @"savedAutoDICOMQuerySettingsArray"];
+            
+            NSArray *r = [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"resultArray"]; // We dont want to save the result array in the preferences
+            [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
+            
+            [[NSUserDefaults standardUserDefaults] setObject: [[autoQRInstances copy] autorelease] forKey: @"savedAutoDICOMQuerySettingsArray"];
+            
+            if( r)
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: r forKey: @"resultArray"];
         }
 	}
     else

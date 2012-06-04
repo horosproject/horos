@@ -116,9 +116,11 @@
 - (IBAction) ok:sender;
 - (void) refreshAutoQR: (id) sender;
 - (void) refreshList: (NSArray*) l;
+- (void) setCurrentAutoQRIndex: (int) index;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSDictionary*) dictionary;
 - (IBAction) selectUniqueSource:(id) sender;
+- (QueryFilter*) getModalityQueryFilderWithString:(NSString*) modalityFilterMatrixString;
 - (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;
