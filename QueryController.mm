@@ -3894,6 +3894,9 @@ enum
 			
             autoQRInstances = [[[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] mutableCopy];
             
+            if( autoQRInstances == nil)
+                autoQRInstances = [NSMutableArray new];
+            
             // retro compatibility
             NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
             if( d)

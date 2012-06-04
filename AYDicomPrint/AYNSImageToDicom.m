@@ -224,6 +224,8 @@ extern BOOL FULL32BITPIPELINE;
 	
 	BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
 	
+    FULL32BITPIPELINE = NO;
+    
 	for(NSNumber *imageIndex in fileList)
 	{
 		NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];

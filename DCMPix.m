@@ -70,7 +70,6 @@ BOOL gDisplayDICOMOverlays = YES;
 BOOL gUseVOILUT = NO;
 BOOL gUseJPEGColorSpace = NO;
 BOOL gUSEPAPYRUSDCMPIX = YES;
-BOOL gFULL32BITPIPELINE = NO;
 int gSUVAcquisitionTimeField = 0;
 NSDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
 BOOL	runOsiriXInProtectedMode = NO;
@@ -1246,7 +1245,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseVOILUT = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseVOILUT"];
 		gUSEPAPYRUSDCMPIX = [[NSUserDefaults standardUserDefaults] boolForKey:@"USEPAPYRUSDCMPIX4"];
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
-		gFULL32BITPIPELINE = [[NSUserDefaults standardUserDefaults] boolForKey:@"FULL32BITPIPELINE"];
 		gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
 		
 		[gCUSTOM_IMAGE_ANNOTATIONS release];
@@ -1265,7 +1263,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseShutter = NO;
 		gDisplayDICOMOverlays = NO;
 		gUseJPEGColorSpace = NO;
-		gFULL32BITPIPELINE = NO;
 		gSUVAcquisitionTimeField = 0;
 #endif
 		
