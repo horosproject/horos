@@ -2315,11 +2315,6 @@ extern "C"
 	[l release];
 }
 
-- (void) displayQueryResults
-{
-	[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesTable selectedRow]] byExtendingSelection: NO];
-}
-
 - (NSString*) exportDBListOnlySelected:(BOOL) onlySelected
 {
 	NSIndexSet *rowIndex;
@@ -2418,8 +2413,6 @@ extern "C"
 	[self queryWithDisplayingErrors: YES];
 	
 	queryButtonPressed = YES;
-	
-	[self displayQueryResults];
 	
 	if ([sender isKindOfClass:[NSSearchField class]])
 		[sender selectText: self];
@@ -2687,9 +2680,6 @@ extern "C"
 
 - (void) displayAndRetrieveQueryResults: (NSMutableDictionary*) instance
 {
-    if( autoQuery == NO || [autoQRInstances indexOfObject: instance] == currentAutoQR)
-        [self displayQueryResults];
-	
 	if( [[instance objectForKey: @"autoRetrieving"] boolValue] && autoQuery == YES)
 	{
 		NSThread *t = [[[NSThread alloc] initWithTarget: self selector:@selector( autoRetrieveThread:) object: instance] autorelease];
@@ -2708,9 +2698,7 @@ extern "C"
         int index = [[dictionary objectForKey: @"index"] intValue];
         
         if( [self queryWithDisplayingErrors: NO instance: instance index: index] == 0)
-        {
-            [self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults: ) withObject: instance waitUntilDone: NO];
-        }
+            [self displayAndRetrieveQueryResults: instance];
         else
         {
             [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
@@ -2720,7 +2708,7 @@ extern "C"
     else
     {
         if( [self queryWithDisplayingErrors: NO] == 0)
-            [self performSelectorOnMainThread: @selector( displayAndRetrieveQueryResults: ) withObject: nil waitUntilDone: NO];
+            [self displayAndRetrieveQueryResults: nil];
         else
         {
             [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Retrieve", nil) description: @"Failed..." name: @"autoquery"];
@@ -4472,6 +4460,14 @@ enum
 -(void)observeDatabaseAddNotification:(NSNotification*)notification
 {
 	[self performSelectorOnMainThread:@selector(refresh:) withObject:self waitUntilDone:NO];
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView shouldAdjustSizeOfSubview:(NSView *)subview
+{
+    if( [[splitView subviews] objectAtIndex: 0] == subview)
+        return NO;
+       
+    return YES;  
 }
 
 - (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex
