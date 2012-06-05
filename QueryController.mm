@@ -76,7 +76,7 @@ extern "C"
 
 @implementation QueryController
 
-@synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited;
+@synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited, currentAutoQR;
 
 + (void) queryTest: (NSDictionary*) aServer
 {
@@ -477,13 +477,17 @@ extern "C"
     // Delete the instance
     if (NSRunCriticalAlertPanel( NSLocalizedString(@"Delete Auto QR Instance", nil),  [NSString stringWithFormat: NSLocalizedString(@"Are you sure you want to delete the current Auto QR Instance (%@)?", nil), [[autoQRInstances objectAtIndex: currentAutoQR] objectForKey: @"instanceName"]], NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
     {
+        [self willChangeValueForKey: @"instancesMenuList"];
+        
         @synchronized( autoQRInstances)
         {
             int newIndex = currentAutoQR-1;
             [autoQRInstances removeObjectAtIndex: currentAutoQR];
             currentAutoQR = -1;
-            [self setCurrentAutoQRIndex: newIndex];
+            [self setCurrentAutoQR: newIndex];
         }
+        
+        [self didChangeValueForKey: @"instancesMenuList"];
     }
 }
 
@@ -509,13 +513,15 @@ extern "C"
         [addAutoQRInstanceWindow orderOut: sender];
         [NSApp endSheet: addAutoQRInstanceWindow returnCode: [sender tag]];
         
+        [self willChangeValueForKey: @"instancesMenuList"];
+        
         @synchronized( autoQRInstances)
         {
             NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
             [preset setObject: [autoQRInstanceName stringValue] forKey: @"instanceName"];
             [autoQRInstances addObject: preset];
             
-            [self setCurrentAutoQRIndex: [autoQRInstances count] -1];
+            [self setCurrentAutoQR: [autoQRInstances count] -1];
             
             [self emptyPreset: self];
             
@@ -525,12 +531,26 @@ extern "C"
             [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
             [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [NSNumber numberWithBool: NO] forKey: @"autoRetrieving"];
         }
+        
+        [self didChangeValueForKey: @"instancesMenuList"];
 	}
 	else
     {
         [addAutoQRInstanceWindow orderOut: sender];
         [NSApp endSheet: addAutoQRInstanceWindow returnCode: [sender tag]];
     }
+}
+
+- (NSArray*) instancesMenuList
+{
+    NSMutableArray *array = [NSMutableArray array];
+    
+    for( NSDictionary *d in autoQRInstances)
+    {
+        [array addObject: [d objectForKey: @"instanceName"]];
+    }
+    
+    return array;
 }
 
 - (IBAction) createAutoQRInstance:(id)sender
@@ -546,7 +566,7 @@ extern "C"
     [NSApp beginSheet: addAutoQRInstanceWindow modalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
-- (void) setCurrentAutoQRIndex: (int) index
+- (void) setCurrentAutoQR: (int) index
 {
     [self saveSettings];
     
@@ -603,7 +623,7 @@ extern "C"
     else
         i++;
     
-    [self setCurrentAutoQRIndex: i];
+    [self setCurrentAutoQR: i];
 }
 
 - (NSMutableDictionary*) savePresetInDictionaryWithDICOMNodes: (BOOL) includeDICOMNodes
@@ -4139,6 +4159,8 @@ enum
 			
 			currentAutoQueryController = self;
 			
+            [self willChangeValueForKey: @"instancesMenuList"];
+            
             autoQRInstances = [[[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] mutableCopy];
             
             if( autoQRInstances == nil)
@@ -4158,7 +4180,9 @@ enum
             }
             
             currentAutoQR = -1;
-            [self setCurrentAutoQRIndex: 0];
+            [self setCurrentAutoQR: 0];
+            
+            [self didChangeValueForKey: @"instancesMenuList"];
 		}
         
         DICOMFieldsArray = [[self prepareDICOMFieldsArrays] retain];

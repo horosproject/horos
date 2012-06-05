@@ -96,6 +96,7 @@
 @property (readonly) QueryOutlineView *outlineView;
 @property BOOL autoQuery, DatabaseIsEdited;
 @property NSInteger autoRefreshQueryResults;
+@property int currentAutoQR;
 
 + (QueryController*) currentQueryController;
 + (QueryController*) currentAutoQueryController;
@@ -116,7 +117,7 @@
 - (IBAction) ok:sender;
 - (void) refreshAutoQR: (id) sender;
 - (void) refreshList: (NSArray*) l;
-- (void) setCurrentAutoQRIndex: (int) index;
+- (void) setCurrentAutoQR: (int) index;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index;
 - (IBAction) selectUniqueSource:(id) sender;
