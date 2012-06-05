@@ -3663,7 +3663,7 @@ enum
 -(void) awakeFromNib
 {
     [authView setDelegate: self];
-    [authView setString: "com.rossetantoine.osirix.preferences.database"];
+    [authView setString: "com.rossetantoine.osirix.autoQRWindow"];
     [authView updateStatus: self];
     
 	[numberOfStudies setStringValue: @""];
