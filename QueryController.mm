@@ -2284,7 +2284,13 @@ extern "C"
                     [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
                 
                 if( index < [autoQRInstances count])
+                {
+                    // instance dictionary is a copy of autoQRInstances dictionary !
+                    
                     [[autoQRInstances objectAtIndex: index] setObject: tempResultArray forKey: @"resultArray"];
+                    
+                    [instance setObject: tempResultArray forKey: @"resultArray"];
+                }
             }
         }
     }
@@ -4322,7 +4328,7 @@ enum
 {
 	if( autoQuery)
     {
-        if( currentAutoQR >= 0)
+        if( currentAutoQR >= 0 && autoQRInstances)
         {
             @synchronized( autoQRInstances)
             {
@@ -4372,7 +4378,6 @@ enum
         [[NSUserDefaults standardUserDefaults] setInteger: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]] forKey: @"AutoQRPatientModeMatrixIndex"];
     else
         [[NSUserDefaults standardUserDefaults] setInteger: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]] forKey: @"QRPatientModeMatrixIndex"];
-
     
 	[[NSUserDefaults standardUserDefaults] setObject: sourcesArray forKey: queryArrayPrefs];
 	
