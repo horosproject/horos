@@ -156,4 +156,5 @@
 - (void) autoQueryThread:(NSDictionary*) d;
 - (void) autoQueryTimerFunction:(NSTimer*) t;
 - (void) executeRefresh: (id) sender;
+- (void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath;
 @end

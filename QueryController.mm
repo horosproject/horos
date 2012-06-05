@@ -4159,6 +4159,8 @@ enum
 		}
 		else
 		{
+            [self view: self.window.contentView recursiveBindEnableToObject:self withKeyPath: @"isUnlocked"];
+            
 			[self setDateQuery: dateFilterMatrix];
 			
 			currentAutoQueryController = self;
@@ -4531,9 +4533,54 @@ enum
 
 -(IBAction)authAction:(id)sender
 {
+    [self willChangeValueForKey:@"isUnlocked"];
+    
 	[authView buttonPressed: NULL];
     
     [authButton setImage: [NSImage imageNamed: [self isUnlocked]? @"NSLockLockedTemplate" : @"NSLockUnlockedTemplate"]];
+    
+    [self didChangeValueForKey:@"isUnlocked"];
 }
 
+-(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath
+{
+	if ([view isKindOfClass:[NSControl class]])
+    {
+		NSUInteger bki = 0;
+		NSString* bk = NULL;
+		BOOL doBind = YES;
+		
+		while (doBind)
+        {
+			++bki;
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+            
+			NSDictionary* b = [view infoForBinding:bk];
+			if (!b) break;
+			
+			if ([b objectForKey:NSObservedObjectKey] == obj && [[b objectForKey:NSObservedKeyPathKey] isEqualToString:keyPath])
+				doBind = NO; // already bound
+		}
+		
+		if (doBind)
+			@try
+            {
+				[view bind:bk toObject:obj withKeyPath:keyPath options:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:NSConditionallySetsEnabledBindingOption]];
+				return;
+			}
+            @catch (NSException* e)
+            {
+				NSLog(@"Warning: %@", e.description);
+			}
+	}
+	
+	for (NSView* subview in view.subviews)
+		[self view:subview recursiveBindEnableToObject:obj withKeyPath:keyPath];
+    
+    if( [view isKindOfClass: [NSTabView class]])
+    {
+        for (NSTabViewItem* tabItem in [(NSTabView*) view tabViewItems])
+            [self view: tabItem.view  recursiveBindEnableToObject:obj withKeyPath:keyPath];
+    }
+}
 @end
