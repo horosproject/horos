@@ -6610,7 +6610,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
 						{
-							if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
+                            // we need to avoid the situations where a localizer blocks two series from synchronizing
+                            // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
 							{
 								BOOL	noSlicePosition = NO, everythingLoaded = YES;
 								float   firstSliceLocation;
@@ -6622,7 +6623,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									float centerPix[ 3];
 									[oPix convertPixX: oPix.pwidth/2 pixY: oPix.pheight/2 toDICOMCoords: centerPix];
 									
-									index = [self findPlaneForPoint: centerPix localPoint: nil distanceWithPlane: &smallestdiff];
+                                    float oPixOrientation[9]; [oPix orientation:oPixOrientation];
+									index = [self findPlaneForPoint: centerPix preferParallelTo:oPixOrientation localPoint: nil distanceWithPlane: &smallestdiff];
 								}
 								else
 								{
@@ -7273,15 +7275,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self findPlaneForPoint: pt localPoint: location distanceWithPlane: nil];
 }
 
-- (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult
+- (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult
 {
 	int		ii = -1;
 	float	vectors[ 9], orig[ 3], locationTemp[ 3];
 	float	distance = 999999, tempDistance;
 	
+    BOOL vParallel = NO;
+    
 	for( int i = 0; i < [dcmPixList count]; i++)
 	{
 		[[dcmPixList objectAtIndex: i] orientation: vectors];
+        
+        BOOL currParallel = NO;
+        if (parto && parto[6] == vectors[6] && parto[7] == vectors[7] && parto[8] == vectors[8]) // are parallel!
+            currParallel = YES;
 		
 		orig[ 0] = [[dcmPixList objectAtIndex: i] originX];
 		orig[ 1] = [[dcmPixList objectAtIndex: i] originY];
@@ -7289,8 +7297,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		tempDistance = [DCMView pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		
-		if( tempDistance < distance)
+		if ((!vParallel && currParallel) || (currParallel == vParallel && tempDistance < distance))
 		{
+            vParallel = currParallel;
+            
 			if( location)
 			{
 				location[ 0] = locationTemp[ 0];
@@ -7312,6 +7322,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		*distanceResult = distance;
 	
 	return ii;
+}
+
+- (int) findPlaneForPoint:(float*) pt localPoint:(float*) location distanceWithPlane: (float*) distanceResult {
+    return [self findPlaneForPoint:pt preferParallelTo:nil localPoint:location distanceWithPlane:distanceResult];
 }
 
 - (void) drawOrientation:(NSRect) size
