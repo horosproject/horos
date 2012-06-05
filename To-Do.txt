@@ -10,6 +10,9 @@
 - Better Bonjour detection
 - Add up to 4 DICOM fields to populate DB Comments field
 - Auto Query Retrieve : multiple instances
+- Save default order for albums (OSIRIX-117)
+
+- ExportROIs plugin: add Length (OSIRIX-111)
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -18,7 +21,6 @@
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)
 - Shift+Cmd+Click to add series to viewer
-- ExportROIs plugin: add Length (OSIRIX-111)
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
 - CPR : adapt coloscopy path algo to CPR vessels (OSIRIX-108)
@@ -45,7 +47,6 @@
 - Custom DB time interval: floating panel (OSIRIX-116)
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
-- Save default order for albums (OSIRIX-117)
 - Save albums -> store contained StudyInstanceUIDs, when reloading re-add these to album, if not in DB then show 0 series (OSIRIX-118)
 - VTK Crash : PowerCrust
 - DICOM Network: DICOM Authentication
