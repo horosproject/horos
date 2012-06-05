@@ -1629,11 +1629,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 -(float) LengthFrom:(NSPoint) mesureA to:(NSPoint) mesureB inPixel: (BOOL) inPixel
 {
-	short yT, xT;
+//	short yT, xT;
 	float mesureLength;
 	
-	if( mesureA.x > mesureB.x) { yT = mesureA.y;  xT = mesureA.x;}
-	else {yT = mesureB.y;   xT = mesureB.x;}
+//	if( mesureA.x > mesureB.x) { yT = mesureA.y;  xT = mesureA.x;}
+//	else {yT = mesureB.y;   xT = mesureB.x;}
 	
 	{
 		double coteA, coteB;
@@ -6074,8 +6074,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (NSMutableDictionary*) dataString
 {
-	NSMutableDictionary*		array = nil;
-	NSMutableArray				*ptsTemp = self.points;
+	NSMutableDictionary* array = nil;
 		
 	switch( type)
 	{
@@ -6086,7 +6085,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		case tCPolygon:
 		case tOPolygon:
 		case tPencil:
-		case tPlain:
+		case tPlain: {
 			array = [NSMutableDictionary dictionaryWithCapacity:0];
 		
 			if( rtotal == -1) [[self pix] computeROI:self :&rmean :&rtotal :&rdev :&rmin :&rmax];
@@ -6113,8 +6112,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			[array setObject: [NSNumber numberWithFloat:rmin] forKey:@"Min"];
 			[array setObject: [NSNumber numberWithFloat:rmax] forKey:@"Max"];
 			
-			long length = 0;
+			float length = 0;
 			long i;
+            NSMutableArray* ptsTemp = self.points;
 			for( i = 0; i < [ptsTemp count]-1; i++ )
 			{
 				length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:i+1] point]];
@@ -6123,23 +6123,21 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			if( type != tOPolygon && [ptsTemp count] > 0) length += [self Length:[[ptsTemp objectAtIndex:i] point] :[[ptsTemp objectAtIndex:0] point]];
 			
 			[array setObject: [NSNumber numberWithFloat:length] forKey:@"Length"];
-		break;
+		} break;
 		
-		case tAngle:
-		{
+		case tAngle: {
 			array = [NSMutableDictionary dictionaryWithCapacity:0];
 			
 			float angle = [self Angle:[[points objectAtIndex: 0] point] :[[points objectAtIndex: 1] point] : [[points objectAtIndex: 2] point]];
 			[array setObject: [NSNumber numberWithFloat:angle] forKey:@"Angle"];
-		}
-		break;
+		} break;
 		
-		case tMesure:
+		case tMesure: {
 			array = [NSMutableDictionary dictionaryWithCapacity:0];
 			
-			length = [self Length: [[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]];
+			float length = [self Length: [[points objectAtIndex:0] point] :[[points objectAtIndex:1] point]];
 			[array setObject: [NSNumber numberWithFloat:length] forKey:@"Length"];
-		break;
+		} break;
 	}
 	
 	return array;
