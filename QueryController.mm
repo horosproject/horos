@@ -562,7 +562,7 @@ extern "C"
             [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"autoRetrieving"];
             
             NSMutableDictionary *preset = [self savePresetInDictionaryWithDICOMNodes: YES];
-            [preset setObject: NSLocalizedString( @"Default Instance", nil)  forKey: @"instanceName"];
+            [preset setObject: NSLocalizedString( @"Default Instance", nil) forKey: @"instanceName"];
             [autoQRInstances addObject: preset];
         }
         
@@ -4151,10 +4151,12 @@ enum
                 autoQRInstances = [NSMutableArray new];
             
             // retro compatibility
-            NSDictionary *d = [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"];
+            NSMutableDictionary *d = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] mutableCopy] autorelease];
             if( d)
             {
                 [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"savedAutoDICOMQuerySettings"];
+                
+                [d setObject: NSLocalizedString( @"Default Instance", nil) forKey: @"instanceName"];
                 
                 [autoQRInstances addObject: d];
                 
@@ -4470,6 +4472,27 @@ enum
 -(void)observeDatabaseAddNotification:(NSNotification*)notification
 {
 	[self performSelectorOnMainThread:@selector(refresh:) withObject:self waitUntilDone:NO];
+}
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex
+{
+    if( dividerIndex == 0)
+        return 100;
+    
+    return proposedMin;
+}
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex
+{
+    if( dividerIndex == 0)
+        return [splitView bounds].size.height-150;
+    
+    return proposedMax;
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
+{
+    return YES;
 }
 
 @end
