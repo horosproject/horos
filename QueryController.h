@@ -16,6 +16,7 @@
 #import "QueryOutlineView.h"
 #import "sourcesTableView.h"
 #import <AppKit/AppKit.h>
+#import "SFAuthorizationView+OsiriX.h"
 
 @class QueryArrayController;
 @class QueryFilter;
@@ -90,6 +91,9 @@
     IBOutlet NSWindow                       *addAutoQRInstanceWindow;
     IBOutlet NSTextField                    *autoQRInstanceName;
     IBOutlet NSSegmentedControl             *autoQRNavigationControl;
+    
+    IBOutlet SFAuthorizationView            *authView;
+    IBOutlet NSButton                       *authButton;
 }
 
 @property (readonly) NSRecursiveLock *autoQueryLock;
@@ -97,6 +101,7 @@
 @property BOOL autoQuery, DatabaseIsEdited;
 @property NSInteger autoRefreshQueryResults;
 @property int currentAutoQR;
+@property(readonly) SFAuthorizationView* authView;
 
 + (QueryController*) currentQueryController;
 + (QueryController*) currentAutoQueryController;

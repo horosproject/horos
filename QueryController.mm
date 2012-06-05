@@ -76,7 +76,7 @@ extern "C"
 
 @implementation QueryController
 
-@synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited, currentAutoQR;
+@synthesize autoQuery, autoQueryLock, outlineView, DatabaseIsEdited, currentAutoQR, authView;
 
 + (void) queryTest: (NSDictionary*) aServer
 {
@@ -3662,6 +3662,10 @@ enum
 
 -(void) awakeFromNib
 {
+    [authView setDelegate: self];
+    [authView setString: "com.rossetantoine.osirix.preferences.database"];
+    [authView updateStatus: self];
+    
 	[numberOfStudies setStringValue: @""];
 	
     if( autoQuery)
@@ -4518,6 +4522,18 @@ enum
 - (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
 {
     return YES;
+}
+
+-(BOOL)isUnlocked
+{
+	return !([authView authorizationState] == SFAuthorizationViewUnlockedState);
+}
+
+-(IBAction)authAction:(id)sender
+{
+	[authView buttonPressed: NULL];
+    
+    [authButton setImage: [NSImage imageNamed: [self isUnlocked]? @"NSLockLockedTemplate" : @"NSLockUnlockedTemplate"]];
 }
 
 @end
