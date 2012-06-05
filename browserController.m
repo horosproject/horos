@@ -193,6 +193,8 @@ void restartSTORESCP()
 -(void)initContextualMenus;
 -(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n;
 
+-(void)saveLoadAlbumsSortDescriptors;
+
 @end
 
 @interface BrowserControllerClassHelper : NSObject
@@ -1294,6 +1296,8 @@ static NSConditionLock *threadLock = nil;
         {
 			[self willChangeValueForKey:@"database"];
 			
+            [self saveLoadAlbumsSortDescriptors];
+            
 			[self waitForRunningProcesses];
 			[reportFilesToCheck removeAllObjects];
 
@@ -1364,6 +1368,7 @@ static NSConditionLock *threadLock = nil;
 //            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
             
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+            [self saveLoadAlbumsSortDescriptors];
             
 			NSString	*DBVersion;//, *DBFolderLocation, *curPath = [self.documentsDirectory stringByDeletingLastPathComponent];
 			
@@ -8605,16 +8610,124 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableViewSelectionDidChange: (NSNotification *)aNotification
+-(NSString*)databaseAlbumSortDescriptorsPlistPath {
+    return [_database.dataBaseDirPath stringByAppendingPathComponent:@"AlbumSortDescriptors.plist"];
+}
+
+-(void)saveSortDescriptors:(DicomAlbum*)album {
+    // save the sortDescriptor
+    if (_database) {
+        NSArray* albums = self.albumArray;
+        
+        NSArray* albumSortDescriptors = [databaseOutline sortDescriptors];
+        
+        NSMutableDictionary* plist = [NSMutableDictionary dictionaryWithContentsOfFile:self.databaseAlbumSortDescriptorsPlistPath];
+        if (!plist) plist = [NSMutableDictionary dictionary];
+        
+        NSArray* livingAlbumsXIDs = [albums valueForKeyPath:@"XID"];
+        for (NSString* key in plist.allKeys)
+            if (![key isEqualToString:@"Database"] && ![livingAlbumsXIDs containsObject:key])
+                [plist removeObjectForKey:key];
+        
+        NSString* key = nil;
+        if ([album isKindOfClass:[DicomAlbum class]])
+            key = album.XID;
+        else key = @"Database";
+        
+        NSMutableArray* cols = [NSMutableArray array];
+        for (NSTableColumn* column in [databaseOutline tableColumns])
+            if (![column isHidden]) {
+                NSArray* col = [NSArray arrayWithObjects: column.identifier, [NSNumber numberWithInteger:column.width], nil];
+                [cols addObject:col];
+            }
+        
+        [plist setObject:[NSArray arrayWithObjects: [NSKeyedArchiver archivedDataWithRootObject:albumSortDescriptors], cols, nil] forKey:key];
+        
+        [plist writeToFile:self.databaseAlbumSortDescriptorsPlistPath atomically:YES];
+    }
+}
+
+-(void)loadSortDescriptors:(DicomAlbum*)album {
+    if (_database) {
+        // load the sortDescriptor
+        
+        NSString* key = nil;
+        if ([album isKindOfClass:[DicomAlbum class]])
+            key = album.XID;
+        else key = @"Database";
+        
+        NSDictionary* plist = [NSDictionary dictionaryWithContentsOfFile:self.databaseAlbumSortDescriptorsPlistPath];
+        
+        NSArray* a = [plist objectForKey:key];
+        if (a) {
+            [databaseOutline setSortDescriptors:[NSKeyedUnarchiver unarchiveObjectWithData:[a objectAtIndex:0]]];
+            NSArray* cols = [a objectAtIndex:1];
+            
+            NSArray* allColumns = [databaseOutline allColumns];
+            NSMutableArray* unvisitedColumns = [[allColumns mutableCopy] autorelease];
+            NSInteger index = 0;
+            for (NSArray* col in cols) {
+                NSTableColumn* column = nil;
+                for (NSTableColumn* icolumn in allColumns)
+                    if ([icolumn.identifier isEqualToString:[col objectAtIndex:0]]) {
+                        column = icolumn;
+                        break;
+                    }
+                if (column)
+                    [unvisitedColumns removeObject:column];
+                if ([databaseOutline columnWithIdentifier:column.identifier] == -1)
+                    [databaseOutline addTableColumn:column];
+                [column setHidden:NO];
+                [column setWidth:[[col objectAtIndex:1] integerValue]];
+                [databaseOutline moveColumn:[databaseOutline columnWithIdentifier:column.identifier] toColumn:index++];
+            }
+            for (NSTableColumn* column in unvisitedColumns)
+                [column setHidden:YES];
+        }
+    }
+}
+
+-(void)saveLoadAlbumsSortDescriptors {
+    if (!databaseOutline)
+        return;
+    
+    static NSInteger previousSelection = -1;
+    static void* previousDatabase = nil;
+    if (_database != previousDatabase)
+        previousSelection = -1;
+    previousDatabase = _database;
+    
+    NSArray* albums = self.albumArray;
+    
+    if (previousSelection != -1)
+        [self saveSortDescriptors:[albums objectAtIndex:previousSelection]];
+    
+    NSInteger selection = albumTable.selectedRow;
+    if (selection == previousSelection)
+        return;
+    
+    if (!_database)
+        previousSelection = -1;
+    else previousSelection = selection;
+    
+    if (previousSelection != -1)
+        [self loadSortDescriptors:[albums objectAtIndex:previousSelection]];
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification*)aNotification
 {
     @try
     {
-        if( [[aNotification object] isEqual: albumTable])
+        if (aNotification.object == albumTable)
         {
             // Clear search field
             [self setSearchString: nil];
             
             [self refreshAlbums];
+
+            // outlineview sortdescriptors
+            
+            [self saveLoadAlbumsSortDescriptors];
         }
     }
     @catch (NSException *e)
@@ -11015,6 +11128,8 @@ static NSArray*	openSubSeriesArray = nil;
 		else
 			[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 		
+        [self loadSortDescriptors:nil];
+        
 		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 		[databaseOutline scrollRowToVisible: 0];
 		[self buildColumnsMenu];
