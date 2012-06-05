@@ -4528,18 +4528,28 @@ enum
 
 -(BOOL)isUnlocked
 {
-	return !([authView authorizationState] == SFAuthorizationViewUnlockedState);
+	return ([authView authorizationState] == SFAuthorizationViewUnlockedState);
+}
+
+-(void)authorizationViewDidAuthorize:(SFAuthorizationView*)view
+{
+    [self willChangeValueForKey:@"isUnlocked"];
+    [self didChangeValueForKey:@"isUnlocked"];
+    
+    [authButton setImage: [NSImage imageNamed: [self isUnlocked]? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate"]];
+}
+
+-(void)authorizationViewDidDeauthorize:(SFAuthorizationView*)view
+{    
+    [self willChangeValueForKey:@"isUnlocked"];
+    [self didChangeValueForKey:@"isUnlocked"];
+    
+    [authButton setImage: [NSImage imageNamed: [self isUnlocked]? @"NSLockUnlockedTemplate" : @"NSLockLockedTemplate"]];
 }
 
 -(IBAction)authAction:(id)sender
 {
-    [self willChangeValueForKey:@"isUnlocked"];
-    
 	[authView buttonPressed: NULL];
-    
-    [authButton setImage: [NSImage imageNamed: [self isUnlocked]? @"NSLockLockedTemplate" : @"NSLockUnlockedTemplate"]];
-    
-    [self didChangeValueForKey:@"isUnlocked"];
 }
 
 -(void)view:(NSView*)view recursiveBindEnableToObject:(id)obj withKeyPath:(NSString*)keyPath
