@@ -9,14 +9,11 @@
 - Add supports for private SOP Class UIDs: Philips, GE, Siemens
 - Better Bonjour detection
 - Add up to 4 DICOM fields to populate DB Comments field
-- Auto Query Retrieve : multiple instances
-- Save default order for albums (OSIRIX-117)
-
-- ExportROIs plugin: add Length (OSIRIX-111)
+- Auto Query Retrieve : multiple instances, option to lock
+- Save default order for albums
 
 ------------------------------------------------------------------------------------------------------------------------
 
-- Lock auto query retrieve
 - Catch KDU DIVZERO exception
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 - Generate Movies with AVAssetWriter (10.7 SDK)
