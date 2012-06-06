@@ -8708,6 +8708,8 @@ static BOOL needToRezoom;
     previousDatabase = _database;
     
     NSArray* albums = self.albumArray;
+    if (albums.count == 0)
+        return;
     
     if (previousSelectedAlbumId)
         [self saveSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
@@ -16160,7 +16162,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 - (NSArray *)toolbarDefaultItemIdentifiers: (NSToolbar *)toolbar
 {
     return [NSArray arrayWithObjects:
-            ToggleDrawerToolbarItemIdentifier,
+//          ToggleDrawerToolbarItemIdentifier, // removed from default items because we have a dedicated button on the bottom left of this window
 			ImportToolbarItemIdentifier,
 			ExportToolbarItemIdentifier,
 			MailToolbarItemIdentifier,
