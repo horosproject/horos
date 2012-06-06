@@ -1118,8 +1118,16 @@ extern "C"
 - (void) refreshAutoQR: (id) sender
 {
 	queryButtonPressed = YES;
-	autoQueryRemainingSecs[ currentAutoQR] = 1;
-	[self autoQueryTimerFunction: QueryTimer]; 
+    
+    if( autoQuery)
+    {
+        for( int i = 0; i < autoQRInstances.count; i++)
+            autoQueryRemainingSecs[ i] = 2;
+    }
+    else
+        autoQueryRemainingSecs[ currentAutoQR] = 2;
+        
+    [self autoQueryTimerFunction: QueryTimer]; 
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
@@ -2760,28 +2768,18 @@ extern "C"
             @synchronized( autoQRInstances)
             {
                 int i = 0;
+                
                 for( NSDictionary *QRInstance in autoQRInstances)
                 {
                     if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue])
                     {
                         if( --autoQueryRemainingSecs[ i] <= 0)
                         {
-                            [self saveSettings];
-                            break;
-                        }
-                    }
-                    i++;
-                }
-                
-                i = 0;
-                for( NSDictionary *QRInstance in autoQRInstances)
-                {
-                    if( [[QRInstance objectForKey: @"autoRefreshQueryResults"] intValue])
-                    {
-                        if( autoQueryRemainingSecs[ i] <= 0)
-                        {
                             if( [autoQueryLock tryLock])
                             {
+                                if( i == currentAutoQR)
+                                    [self saveSettings];
+                                
                                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
                                 
                                 NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: [NSDictionary dictionaryWithObjectsAndKeys: [[QRInstance mutableCopy] autorelease], @"instance", [NSNumber numberWithInt: i], @"index", nil]] autorelease];
@@ -4187,6 +4185,9 @@ enum
             
             currentAutoQR = -1;
             [self setCurrentAutoQR: 0];
+            
+            for( int i = 0; i < autoQRInstances.count; i++)
+                autoQueryRemainingSecs[ i] = 60 * [[[autoQRInstances objectAtIndex: i] valueForKey: @"autoRefreshQueryResults"] intValue];
             
             [self didChangeValueForKey: @"instancesMenuList"];
 		}

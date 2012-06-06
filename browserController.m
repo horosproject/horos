@@ -11228,7 +11228,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[self refreshMatrix: self];
 	
 	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettings"] != nil)
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] != nil)
 	{
 		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"autoquery"];
 		NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
