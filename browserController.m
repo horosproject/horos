@@ -8616,7 +8616,7 @@ static BOOL needToRezoom;
 
 -(void)saveSortDescriptors:(DicomAlbum*)album {
     // save the sortDescriptor
-    if (_database) {
+    if (_database && album) {
         NSArray* albums = self.albumArray;
         
         NSArray* albumSortDescriptors = [databaseOutline sortDescriptors];
@@ -8648,7 +8648,7 @@ static BOOL needToRezoom;
 }
 
 -(void)loadSortDescriptors:(DicomAlbum*)album {
-    if (_database) {
+    if (_database && album) {
         // load the sortDescriptor
         
         NSString* key = nil;
@@ -8687,31 +8687,43 @@ static BOOL needToRezoom;
     }
 }
 
+-(DicomAlbum*)_albumWithID:(id)theId {
+    if ([theId isKindOfClass:[NSManagedObjectID class]])
+        return [_database objectWithID:theId];
+    if (theId)
+        return [NSDictionary dictionary];
+    return nil;
+}
+
 -(void)saveLoadAlbumsSortDescriptors {
     if (!databaseOutline)
         return;
     
-    static NSInteger previousSelection = -1;
+    static id previousSelectedAlbumId = nil;
     static void* previousDatabase = nil;
-    if (_database != previousDatabase)
-        previousSelection = -1;
+    if (_database != previousDatabase) {
+        [previousSelectedAlbumId release];
+        previousSelectedAlbumId = nil;
+    }
     previousDatabase = _database;
     
     NSArray* albums = self.albumArray;
     
-    if (previousSelection != -1)
-        [self saveSortDescriptors:[albums objectAtIndex:previousSelection]];
+    if (previousSelectedAlbumId)
+        [self saveSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
     
     NSInteger selection = albumTable.selectedRow;
-    if (selection == previousSelection)
+    DicomAlbum* selectedAlbum = [albums objectAtIndex:selection];
+    if ([selectedAlbum isEqual:previousSelectedAlbumId])
         return;
     
+    [previousSelectedAlbumId release];
     if (!_database)
-        previousSelection = -1;
-    else previousSelection = selection;
+        previousSelectedAlbumId = nil;
+    else previousSelectedAlbumId = [selectedAlbum isKindOfClass:[DicomAlbum class]]? [selectedAlbum.objectID retain] : [[NSDictionary dictionary] retain];
     
-    if (previousSelection != -1)
-        [self loadSortDescriptors:[albums objectAtIndex:previousSelection]];
+    if (previousSelectedAlbumId)
+        [self loadSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification*)aNotification
