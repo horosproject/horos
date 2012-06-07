@@ -8434,14 +8434,18 @@ END_CREATE_ROIS:
                                 else
                                 {
 //                                    int xx = 1;
-//                                    int yy = 0;
+//                                    static int yy = 0;
 //                                    
+//                                    if( yy == 0)
+//                                        yy = 1;
+//                                    else
+//                                        yy = 0;
 //                                    xx = xx / yy; // Test the divide by zero exception
                                     
                                     oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, gUseJPEGColorSpace, &fPlanarConf);
                                 }
                                 
-                                signal( SIGFPE, SIG_DFL );    /* Restore default action */
+                                signal( SIGFPE, SIG_DFL);    /* Restore default action */
                             
 //                                int xx = 1;
 //                                int yy = 0;
