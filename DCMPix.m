@@ -27,6 +27,7 @@
 #import "N2Debug.h"
 #import "NSUserDefaults+OsiriX.h"
 #import "DicomDatabase.h"
+#include <signal.h>
 
 #ifdef OSIRIX_VIEWER
 #import "DCMUSRegion.h"   // US Regions
@@ -1050,6 +1051,17 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			}
 		}
 	}
+}
+
+void (*signal(int signum, void (*sighandler)(int)))(int);
+
+sigjmp_buf mark;
+
+void signal_EXC_ARITHMETIC(int sig_num)
+{
+    NSLog( @"******** Signal %d - DCMPix / EXC_ARITHMETIC / divide by zero exception in JPEG decoder? Catch the exception and resume function", sig_num);
+    
+    siglongjmp( mark, -1 );
 }
 
 @interface PixThread : NSObject
@@ -8415,8 +8427,27 @@ END_CREATE_ROIS:
 								if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
 									bitsAllocated = 8;
 								
-								oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, gUseJPEGColorSpace, &fPlanarConf);
-								
+                                signal(SIGFPE , signal_EXC_ARITHMETIC);
+                                
+                                if( sigsetjmp( mark, 1) != 0)
+                                    oImage = 0L;
+                                else
+                                {
+//                                    int xx = 1;
+//                                    int yy = 0;
+//                                    
+//                                    xx = xx / yy; // Test the divide by zero exception
+                                    
+                                    oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, gUseJPEGColorSpace, &fPlanarConf);
+                                }
+                                
+                                signal( SIGFPE, SIG_DFL );    /* Restore default action */
+                            
+//                                int xx = 1;
+//                                int yy = 0;
+//                                    
+//                                xx = xx / yy; // Test the divide by zero exception
+                            
 								[PapyrusLock unlock];
 								toBeUnlocked = NO;
 								
