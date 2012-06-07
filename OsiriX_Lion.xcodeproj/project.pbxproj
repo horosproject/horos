@@ -2868,6 +2868,10 @@
 		CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
+		CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3B7E591580F518003CB266 /* Quaternion.h */; };
+		CE3B7E5E1580F534003CB266 /* FlyAssistant+Histo.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3B7E5C1580F534003CB266 /* FlyAssistant+Histo.h */; };
+		CE3B7E5F1580F534003CB266 /* FlyAssistant+Histo.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE3B7E5D1580F534003CB266 /* FlyAssistant+Histo.mm */; };
+		CE3B7E641580F762003CB266 /* Quaternion.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE3B7E631580F761003CB266 /* Quaternion.mm */; };
 		CE3DDDAF0D8AC94C00AE9588 /* QueryOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */; };
 		CE3DDDB00D8AC94C00AE9588 /* QueryOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */; };
 		CE3F99430C84724B00CB38F1 /* Survey.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE3F98E20C84724B00CB38F1 /* Survey.xib */; };
@@ -10409,6 +10413,10 @@
 		CE2C82E20C708B310093C162 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
+		CE3B7E591580F518003CB266 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
+		CE3B7E5C1580F534003CB266 /* FlyAssistant+Histo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FlyAssistant+Histo.h"; sourceTree = "<group>"; };
+		CE3B7E5D1580F534003CB266 /* FlyAssistant+Histo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "FlyAssistant+Histo.mm"; sourceTree = "<group>"; };
+		CE3B7E631580F761003CB266 /* Quaternion.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Quaternion.mm; sourceTree = "<group>"; };
 		CE3DDDAD0D8AC94C00AE9588 /* QueryOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryOutlineView.h; sourceTree = "<group>"; };
 		CE3DDDAE0D8AC94C00AE9588 /* QueryOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryOutlineView.m; sourceTree = "<group>"; };
 		CE3F98E30C84724B00CB38F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Survey.xib; sourceTree = "<group>"; };
@@ -15285,6 +15293,10 @@
 		A90D665D094D7071000B425B /* Endoscopy */ = {
 			isa = PBXGroup;
 			children = (
+				CE3B7E591580F518003CB266 /* Quaternion.h */,
+				CE3B7E631580F761003CB266 /* Quaternion.mm */,
+				CE3B7E5C1580F534003CB266 /* FlyAssistant+Histo.h */,
+				CE3B7E5D1580F534003CB266 /* FlyAssistant+Histo.mm */,
 				EC9BD81A11EDF349007421B2 /* FlyAssistant.h */,
 				EC9BD81B11EDF349007421B2 /* FlyAssistant.mm */,
 				A932B957094D722D0085B58A /* EndoscopyViewer.h */,
@@ -25530,6 +25542,8 @@
 				CE594409155E3838007BDF5B /* NSApplication-Dock.h in Headers */,
 				CE59440B155E3838007BDF5B /* NSString+SymlinksAndAliases.h in Headers */,
 				CE59440D155E3838007BDF5B /* PFMoveApplication.h in Headers */,
+				CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */,
+				CE3B7E5E1580F534003CB266 /* FlyAssistant+Histo.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28607,6 +28621,8 @@
 				CE59440A155E3838007BDF5B /* NSApplication-Dock.m in Sources */,
 				CE59440C155E3838007BDF5B /* NSString+SymlinksAndAliases.m in Sources */,
 				CE59440E155E3838007BDF5B /* PFMoveApplication.m in Sources */,
+				CE3B7E5F1580F534003CB266 /* FlyAssistant+Histo.mm in Sources */,
+				CE3B7E641580F762003CB266 /* Quaternion.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

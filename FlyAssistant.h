@@ -32,6 +32,7 @@
  
 
 #import <Foundation/Foundation.h>
+#import <Accelerate/Accelerate.h>
 #import "Point3D.h"
 #import "OSIVoxel.h"
 #define ERROR_NOENOUGHMEM 1
@@ -59,6 +60,12 @@
 	float threshold;
 	BOOL isDistanceTransformFinished;
 	
+    unsigned long inputImageSize, inputVolumeSize;
+    float thresholdA, thresholdB;
+    float inputMinValue, inputMaxValue;
+    
+    vImagePixelCount * inputHisto;
+    unsigned int histoSize;
 }
 @property  float centerlineResampleStepLength;
 - (id) initWithVolume:(float*)data WidthDimension:(int*)dim Spacing:(float*)spacing ResampleVoxelSize:(float)vsize;
@@ -78,4 +85,11 @@
 - (void) createSmoothedCenterlin:(NSMutableArray*)centerline withStepLength:(float)len;
 - (float) radiusAtPoint:(OSIVoxel *)pt;
 - (float) averageRadiusAt:(int)index On:(NSMutableArray*)centerline InRange:(int) nrange;
+- (void) computeHistogram;
+- (void) determineImageRange;
+- (OSIVoxel*) computeMaximizingViewDirectionFrom:(OSIVoxel*) center LookingAt:(OSIVoxel*) direction;
+- (unsigned int) traceLineFrom:(Point3D *) center accordingTo:(Point3D *) direction;
+- (BOOL) point:(Point3D *)p InVolumeX:(int)x Y:(int)y Z:(int)z;
+- (int) input3DCoords2LineCoords:(const int)x :(const int)y :(const int)z;
+- (int) distMap3DCoords2LineCoords:(const int)x :(const int)y :(const int)z;
 @end

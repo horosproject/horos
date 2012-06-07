@@ -30,12 +30,15 @@
  =========================================================================*/
 
 #import "FlyAssistant.h"
-#include <functional>
-#include <queue>
-
+#import "FlyAssistant+Histo.h"
+#import "Quaternion.h"
+#import <algorithm>
+#import <functional>
+#import <queue>
+#import <cstdlib>
 #import "Spline3D.h"
 
-//#include <dispatch/dispatch.h> //need OSX 10.6 sdk
+#import <dispatch/dispatch.h> //need OSX 10.6 sdk
 
 #define SLICES1BLOCK 32
 #define CROSSECTIONIMSIZE 64
@@ -57,10 +60,21 @@
 	inputWidth = dim[0];
 	inputHeight = dim[1];
 	inputDepth = dim[2];
+
+    inputImageSize = inputWidth * inputHeight;
+    inputVolumeSize = inputWidth * inputHeight * inputDepth;
 	
 	inputSpacing_x = spacing[0];
 	inputSpacing_y = spacing[1];
 	inputSpacing_z = spacing[2];
+
+    /**
+     * Get input image range and compute histogram.
+     */
+//    [self medianFilter];
+    [self determineImageRange];
+    [self computeHistogram];
+	
 	int err = [self setResampleVoxelSize:vsize];
 	if (err) {
 		[self autorelease];
@@ -71,7 +85,7 @@
 		[self autorelease];
 		return nil;
 	}
-	
+    
 	return self;
 }
 - (void) dealloc {
@@ -79,6 +93,8 @@
 		free(distmap);
 	if( csmap)
 		free(csmap);
+    if (inputHisto)
+        free(inputHisto);
 	[super dealloc];
 }
 - (int) setResampleVoxelSize:(float)vsize
@@ -108,6 +124,7 @@
 }
 - (void) setThreshold:(float)thres Asynchronous:(BOOL)async
 {
+    NSLog(@"setThreshold");
 	threshold = thres;
 	if (async) {
 		[NSThread detachNewThreadSelector: @selector(distanceTransformWithThreshold:) toTarget: self withObject: nil];
@@ -135,7 +152,7 @@
 {
 	
 	if(	!distmap )
-		return;
+		return; // todo{l'allouer à la place ?}
 
 	int x,y,z;
 	int inputx,inputy,inputz;
@@ -147,7 +164,8 @@
 				inputx = x/resampleScale_x;
 				inputy = y/resampleScale_y;
 				inputz = z/resampleScale_z;
-				if (input[inputz*inputWidth*inputHeight+inputy*inputWidth+inputx]>threshold) {
+                float inValue = input[inputz*inputWidth*inputHeight+inputy*inputWidth+inputx];
+                if (inValue > thresholdB || inValue < thresholdA) {
 					distmap[z*distmapImageSize+y*distmapWidth+x]=0;
 				}
 				else {
@@ -157,30 +175,134 @@
 		}
 	}
 	
-	
 	int its=0;
 	
 	
-//need OSX 10.6 sdk	
-//	__block int changedpoints=1;
-//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//	
-//	while (changedpoints>0) {
-//		its++;
-//		changedpoints=0;
-//		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
-//			int starti,endi;
-//			starti=j*SLICES1BLOCK;
-//			endi=starti+SLICES1BLOCK;
-//			if (starti==0) {
-//				starti=1;
-//			}
-//			if (endi>=distmapDepth-1) {
-//				endi=distmapDepth-1;
-//			}
-//			int x,y,z;
-//			int dx,dy,dz;
-//			for (z=starti; z<endi; z++) {
+//need OSX 10.6 sdk
+    /**
+      Multithreaded distance transform.
+     \todo{Improve the structuring element.
+            Pour la passe aller :
+            for (z = -1; z <= 0; ++z)
+                for (y = -1; y <= -z; ++y)
+                    for (x = -1; x <= -min(y,z); ++x)
+            Pour la passe retour :
+                for (z = 0; z <= 1; ++z)
+                    for (y = -z; y <= 1; ++y)
+                        for (x = -max(y,z); x <= 1; ++x)
+     }
+     */
+	__block int changedpoints=1;
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+	
+	while (changedpoints>0) {
+		its++;
+		changedpoints=0;
+		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
+            float deltamt[4]={0,1,1.414213,1.73205};
+			int starti,endi;
+			starti=j*SLICES1BLOCK;
+			endi=starti+SLICES1BLOCK;
+			if (starti==0) {
+				starti=1;
+			}
+			if (endi>=distmapDepth-1) {
+				endi=distmapDepth-1;
+			}
+			int x,y,z;
+			int dx,dy,dz;
+			for (z=starti; z<endi; z++) {
+				for (y=1; y<distmapHeight-1; y++) {
+					for (x=1; x<distmapWidth-1; x++) {
+						int changed=0;
+						float currentdist= distmap[z*distmapImageSize+y*distmapWidth+x];
+						if (currentdist>0) {
+							float newdist;
+							for (dz=-1; dz<=1; dz++) {
+								for (dy=-1; dy<=1; dy++) {
+									for (dx=-1; dx<=1; dx++) {
+										//int di=abs(dx)+abs(dy)+abs(dz);
+										newdist=distmap[(z+dz)*distmapImageSize+(y+dy)*distmapWidth+x+dx]+deltamt[abs(dx)+abs(dy)+abs(dz)];
+										if(newdist<currentdist)
+										{
+											currentdist=newdist;
+//											changed=1;
+										}
+									}
+								}
+							}
+//							if (changed) {
+								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
+//								changedpoints++;
+//							}
+							
+						}
+						
+						
+					}
+				}
+			}
+			
+		});
+//		printf("changed pionts: %d",changedpoints);
+		if (changedpoints==0) {
+			break;
+		}
+		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
+            float deltamt[4]={0,1,1.414213,1.73205};
+			int starti,endi;
+			starti=j*SLICES1BLOCK;
+			endi=starti+SLICES1BLOCK;
+			
+			if (endi>=distmapDepth-1) {
+				endi=distmapDepth-2;
+			}
+			
+			int x,y,z;
+			int dx,dy,dz;
+			for (z=endi; z>starti; z--) {
+				for (y=distmapHeight-2; y>0; y--) {
+					for (x=distmapWidth-2; x>0; x--) {
+						int changed=0;
+						float currentdist= distmap[z*distmapImageSize+y*distmapWidth+x];
+						if (currentdist>0) {
+							float newdist;
+							for (dz=-1; dz<=1; dz++) {
+								for (dy=-1; dy<=1; dy++) {
+									for (dx=-1; dx<=1; dx++) {
+										newdist=distmap[(z+dz)*distmapImageSize+(y+dy)*distmapWidth+x+dx]+deltamt[abs(dx)+abs(dy)+abs(dz)];
+										if(newdist<currentdist)
+										{
+											currentdist=newdist;
+//											changed=1;
+										}
+									}
+								}
+							}
+//							if (changed) {
+								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
+//								changedpoints++;
+//							}
+							
+						}
+						
+						
+					}
+				}
+			}
+			
+		});
+//		printf("changed pionts: %d\n",changedpoints);
+		
+	}
+//		//single thread
+//		int changedpoints=1;
+//
+//		int dx,dy,dz;
+////		while (changedpoints>0) {
+//			its++;
+//			changedpoints=0;
+//			for (z=1; z<distmapDepth-1; z++) {
 //				for (y=1; y<distmapHeight-1; y++) {
 //					for (x=1; x<distmapWidth-1; x++) {
 //						int changed=0;
@@ -190,7 +312,7 @@
 //							for (dz=-1; dz<=1; dz++) {
 //								for (dy=-1; dy<=1; dy++) {
 //									for (dx=-1; dx<=1; dx++) {
-//										int di=abs(dx)+abs(dy)+abs(dz);
+//										//int di=abs(dx)+abs(dy)+abs(dz);
 //										newdist=distmap[(z+dz)*distmapImageSize+(y+dy)*distmapWidth+x+dx]+delta[abs(dx)+abs(dy)+abs(dz)];
 //										if(newdist<currentdist)
 //										{
@@ -200,35 +322,21 @@
 //									}
 //								}
 //							}
-//							if (changed) {
+//							//if (changed) {
 //								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-//								changedpoints++;
-//							}
+//							//	changedpoints++;
+//							//}
 //							
 //						}
-//						
+//											
 //						
 //					}
 //				}
 //			}
-//			
-//		});
-//		printf("changed pionts: %d",changedpoints);
-//		if (changedpoints==0) {
-//			break;
-//		}
-//		dispatch_apply(distmapDepth/SLICES1BLOCK, queue, ^(size_t j) {
-//			int starti,endi;
-//			starti=j*SLICES1BLOCK;
-//			endi=starti+SLICES1BLOCK;
-//			
-//			if (endi>=distmapDepth-1) {
-//				endi=distmapDepth-2;
+//			if (changedpoints==0) {
+//				break;
 //			}
-//			
-//			int x,y,z;
-//			int dx,dy,dz;
-//			for (z=endi; z>starti; z--) {
+//			for (z=distmapDepth-2; z>0; z--) {
 //				for (y=distmapHeight-2; y>0; y--) {
 //					for (x=distmapWidth-2; x>0; x--) {
 //						int changed=0;
@@ -247,10 +355,10 @@
 //									}
 //								}
 //							}
-//							if (changed) {
+//							//if (changed) {
 //								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-//								changedpoints++;
-//							}
+//							//	changedpoints++;
+//							//}
 //							
 //						}
 //						
@@ -258,87 +366,12 @@
 //					}
 //				}
 //			}
-//			
-//		});
-//		printf("changed pionts: %d\n",changedpoints);
-//		
-//	}
-		//single thread
-		int changedpoints=1;
-
-		int dx,dy,dz;
-//		while (changedpoints>0) {
-			its++;
-			changedpoints=0;
-			for (z=1; z<distmapDepth-1; z++) {
-				for (y=1; y<distmapHeight-1; y++) {
-					for (x=1; x<distmapWidth-1; x++) {
-						int changed=0;
-						float currentdist= distmap[z*distmapImageSize+y*distmapWidth+x];
-						if (currentdist>0) {
-							float newdist;
-							for (dz=-1; dz<=1; dz++) {
-								for (dy=-1; dy<=1; dy++) {
-									for (dx=-1; dx<=1; dx++) {
-										int di=abs(dx)+abs(dy)+abs(dz);
-										newdist=distmap[(z+dz)*distmapImageSize+(y+dy)*distmapWidth+x+dx]+delta[abs(dx)+abs(dy)+abs(dz)];
-										if(newdist<currentdist)
-										{
-											currentdist=newdist;
-											changed=1;
-										}
-									}
-								}
-							}
-							if (changed) {
-								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-								changedpoints++;
-							}
-							
-						}
-											
-						
-					}
-				}
-			}
-//			if (changedpoints==0) {
-//				break;
-//			}
-			for (z=distmapDepth-2; z>0; z--) {
-				for (y=distmapHeight-2; y>0; y--) {
-					for (x=distmapWidth-2; x>0; x--) {
-						int changed=0;
-						float currentdist= distmap[z*distmapImageSize+y*distmapWidth+x];
-						if (currentdist>0) {
-							float newdist;
-							for (dz=-1; dz<=1; dz++) {
-								for (dy=-1; dy<=1; dy++) {
-									for (dx=-1; dx<=1; dx++) {
-										newdist=distmap[(z+dz)*distmapImageSize+(y+dy)*distmapWidth+x+dx]+delta[abs(dx)+abs(dy)+abs(dz)];
-										if(newdist<currentdist)
-										{
-											currentdist=newdist;
-											changed=1;
-										}
-									}
-								}
-							}
-							if (changed) {
-								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-								changedpoints++;
-							}
-							
-						}
-						
-						
-					}
-				}
-			}
 //			printf("changed pionts: %d\n",changedpoints);
 //		}
 	
 //	printf("interation: %d\n",its);
-	isDistanceTransformFinished = YES;
+
+    isDistanceTransformFinished = YES;
 }
 - (int) calculateSampleMetric:(float) a :(float) b :(float) c
 {
@@ -713,6 +746,33 @@ typedef GreaterPathNodeOnF NodeCompare;
 		NSLog( @"no enough memory");
 		return ERROR_NOENOUGHMEM;
 	}
+    
+    // check that origin != destination
+    if (pta.x == ptb.x &&
+        pta.y == ptb.y &&
+        pta.z == ptb.z ) {
+        NSLog(@"Can not define path from point to itself.");
+        return ERROR_CANNOTFINDPATH;
+    }
+
+    // get the boundaries for threshold
+    int posA = (int)pta.z*inputWidth*inputHeight+(int)pta.y*inputWidth+(int)pta.x,
+        posB = (int)ptb.z*inputWidth*inputHeight+(int)ptb.y*inputWidth+(int)ptb.x;
+    float pixVal = 0;
+    for (int i = -1; i < 2; ++i) {
+        for (int j = -1; j < 2; ++j) {
+            for (int k = -1; k < 2; ++k) {
+                posA += (k * inputWidth * inputHeight + j * inputWidth + i);
+                posB += (k * inputWidth * inputHeight + j * inputWidth + i);
+                pixVal += input[posA]; 
+                pixVal += input[posB];
+            }
+        }
+    }
+    pixVal /= 54;
+    [self computeIntervalThresholdsFrom:pixVal];
+    NSLog(@"Opt. thresholds from %f : Min = %f / Max = %f", pixVal, thresholdA, thresholdB);
+    [self distanceTransformWithThreshold:nil];
 	
 	unsigned char* labelmap=(unsigned char*)malloc(distmapVolumeSize*sizeof(char));
 	if(!labelmap)
@@ -1014,4 +1074,143 @@ typedef GreaterPathNodeOnF NodeCompare;
 	
 	
 }
+
+- (OSIVoxel*) computeMaximizingViewDirectionFrom:(OSIVoxel*) center LookingAt:(OSIVoxel*) direction
+{
+    OSIVoxel * bestView = [[[OSIVoxel alloc] init] autorelease];
+    // calcul de la direction maximisant la vue. Mise de côté pour le moment, en attendant que les quaternions fonctionnent correctement
+    int window = 45;
+    
+    unsigned int maxView = 0;
+    short i = 1;
+    
+    Point3D * origin = [[[Point3D alloc] initWithValues:center.x :center.y :center.z] autorelease];
+    [self converPoint2ResampleCoordinate:origin];
+    Quaternion currentDir(direction.x-center.x, direction.y-center.y, direction.z-center.z, 0);
+    N3Vector cdir, vxAxis, vyAxis;
+    cdir.x = direction.x-center.x;
+    cdir.y = direction.y-center.y;
+    cdir.z = direction.z-center.z;
+    
+    // compute xAxis and yAxis so (xAxis, yAxis) is a base for the plan normal to currentDir
+    // http://fr.wikipedia.org/wiki/Plan_%28math%C3%A9matiques%29#Approche_analytique_en_dimension_3
+    if (currentDir.getX() != 0) {
+        vxAxis.x = -currentDir.getY()/currentDir.getX();
+        vxAxis.y = 1;
+        vxAxis.z = 0;
+        
+        vyAxis.x = -currentDir.getZ()/currentDir.getX();
+        vyAxis.y = 0;
+        vyAxis.z = 1;
+    } else if (currentDir.getY() != 0) {
+        vxAxis.x = 1;
+        vxAxis.y = -currentDir.getX()/currentDir.getY();
+        vxAxis.z = 0;
+        
+        vyAxis.x = 0;
+        vyAxis.y = -currentDir.getZ()/currentDir.getY();
+        vyAxis.z = 1;
+    } else {
+        vxAxis.x = 1;
+        vxAxis.y = 0;
+        vxAxis.z = -currentDir.getX()/currentDir.getZ();
+        
+        vyAxis.x = 0;
+        vyAxis.y = 1;
+        vyAxis.z = -currentDir.getY()/currentDir.getZ();
+    }
+    
+    Quaternion xAxisRot( vxAxis, -window );
+    Quaternion yAxisRot( vyAxis, -window );
+
+    // Put the currentDir to the first angle for "raytracing"
+    cdir = yAxisRot * xAxisRot * cdir;
+    
+    Point3D * newDirection = [[[Point3D alloc] initWithValues:cdir.x :cdir.y :cdir.z] autorelease];
+
+    // get the unit vector that maximizes the view
+    for (int x = -window; x <= window; x+=3) {
+        for (int y = -window; y <= window; y+=3) {
+            [newDirection setX:cdir.x];
+            [newDirection setY:cdir.y];
+            [newDirection setZ:cdir.z];
+            unsigned int viewDistance = [self traceLineFrom:origin
+                                                accordingTo:newDirection];
+            if (viewDistance > maxView) {
+                maxView = viewDistance;
+                [newDirection add:origin];  
+                bestView.x = newDirection.x;
+                bestView.y = newDirection.y;
+                bestView.z = newDirection.z;
+            }
+            yAxisRot.fromAxis(vyAxis, i);
+            cdir = yAxisRot * cdir;
+        }
+        i *= -1;
+        yAxisRot.fromAxis(vyAxis, i);
+        xAxisRot.fromAxis(vxAxis, 1);
+        cdir = yAxisRot * xAxisRot * cdir;
+    }
+    
+    return bestView;
+}
+
+- (void) computeHistogram;
+{
+    vImage_Buffer buffer;
+    buffer.data = input;
+    buffer.height = 1;
+    buffer.width = inputVolumeSize;
+    buffer.rowBytes = inputVolumeSize * sizeof(float);
+    
+    histoSize = inputMaxValue - inputMinValue;
+    if (inputHisto) {
+        free(inputHisto);
+    }
+    inputHisto = (vImagePixelCount *)malloc(histoSize * sizeof(vImagePixelCount));
+    if (inputHisto && buffer.data) {
+        vImageHistogramCalculation_PlanarF( &buffer, inputHisto, histoSize, inputMinValue, inputMaxValue, kvImageNoFlags);
+    }
+}
+
+- (void) determineImageRange;
+{
+    inputMinValue = MAXFLOAT;
+    inputMaxValue = - MAXFLOAT;
+    
+    for (unsigned int i = 0; i < inputVolumeSize; ++i) {
+        if (input[ i ] < inputMinValue)
+            inputMinValue = input[ i ];
+        if (input[ i ] > inputMaxValue)
+            inputMaxValue = input[ i ];
+    }
+}
+
+- (unsigned int) traceLineFrom:(Point3D *) center accordingTo:(Point3D *) direction
+{
+    std::vector<unsigned int> line;
+    unsigned int viewDistance = 0;
+    
+    Point3D * current = center;
+    
+    do {
+        [current add:direction];
+        ++viewDistance;
+    } while ( [self point:current InVolumeX:distmapWidth Y:distmapHeight Z:distmapDepth]
+             && distmap[(int)current.x + distmapWidth*(int)current.y + distmapImageSize*(int)current.z] != 0);
+    
+    return viewDistance;
+}
+
+- (BOOL) point:(Point3D *)p InVolumeX:(int)x Y:(int)y Z:(int)z
+{
+    return (p.x > 0 && p.x < x && p.y > 0 && p.y < y && p.z > 0 && p.z < z);
+}
+
+- (int) input3DCoords2LineCoords:(const int)x :(const int)y :(const int)z;
+{ return x + y * inputWidth + z * inputImageSize; }
+
+- (int) distMap3DCoords2LineCoords:(const int)x :(const int)y :(const int)z;
+{ return x + y * distmapWidth + z * distmapImageSize; }
+
 @end

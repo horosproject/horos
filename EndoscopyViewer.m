@@ -1466,7 +1466,15 @@ return YES;
 		{
 			// move camera
 			OSIVoxel* cpos = [centerline objectAtIndex:flyAssistantPositionIndex];
-			OSIVoxel * fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
+			OSIVoxel * fpos;
+            if (/*NO*/YES) {
+                fpos = [assistant computeMaximizingViewDirectionFrom:cpos
+                                                           LookingAt:[centerline objectAtIndex:flyAssistantPositionIndex+1]];
+            }
+            else
+            {
+                fpos = [centerline objectAtIndex:flyAssistantPositionIndex+1];
+            }
 			[self setCameraAtPosition:cpos TowardsPosition:fpos];
 			
 			// add current camera to Fly Thru
@@ -1531,7 +1539,7 @@ return YES;
 	centerlineResampleStepLength = 3.0; //mm
 	if(assistant)
 	{
-		[assistant setThreshold:-600.0 Asynchronous:YES];
+		//[assistant setThreshold:-600.0 Asynchronous:YES];
 		
 		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
 	}
