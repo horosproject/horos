@@ -533,13 +533,16 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	// custom migration
 	
-	NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
-	if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
-	
     BOOL rebuildSaidYes = NO;
-	if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
-		rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
-        [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+    
+    if (!self.managedObjectContext) { // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes
+        NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
+        if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
+        
+        if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
+            rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
+            [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+        }
     }
 	
 	// super + spec

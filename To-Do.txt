@@ -11,6 +11,7 @@
 - Add up to 4 DICOM fields to populate DB Comments field
 - Auto Query Retrieve : multiple instances, option to lock
 - Save default order for albums
+- XMLRPC interface enhancements
 
 ------------------------------------------------------------------------------------------------------------------------
 
