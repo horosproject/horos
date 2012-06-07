@@ -386,7 +386,10 @@ static int hotKeyToolCrossTable[] =
     
     for( NSWindow *w in [NSApp orderedWindows])
     {
-        if( [[w windowController] isKindOfClass:[ViewerController class]])
+        if( [w isKindOfClass: [NSFullScreenWindow class]])
+        {
+        }
+        else if( [[w windowController] isKindOfClass:[ViewerController class]])
         {
             if( [(ViewerController*) [w windowController] windowWillClose] == NO)
                 [viewersList addObject: [w windowController]];

@@ -4890,6 +4890,16 @@ static BOOL initialized = NO;
 
 - (IBAction) closeAllViewers: (id) sender
 {
+    // Is there a full screen window displayed?
+    for( id window in [NSApp orderedWindows])
+    {
+        if( [window isKindOfClass: [NSFullScreenWindow class]])
+        {
+            NSBeep();
+            return;
+        }
+    }
+    
 	[ViewerController closeAllWindows];
 }
 

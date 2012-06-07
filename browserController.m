@@ -98,6 +98,7 @@
 #import "PrettyCell.h"
 #import "N2Stuff.h"
 #import "NSNotificationCenter+N2.h"
+#import "NSFullScreenWindow.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -11481,6 +11482,16 @@ static NSArray*	openSubSeriesArray = nil;
 
 - (BOOL)shouldTerminate: (id)sender
 {
+    // Is there a full screen window displayed?
+    for( id window in [NSApp orderedWindows])
+    {
+        if( [window isKindOfClass: [NSFullScreenWindow class]])
+        {
+            NSBeep();
+            return NO;
+        }
+    }
+    
 	[_database save:NULL];
 	
 	if(/* newFilesInIncoming ||*/ [[ThreadsManager defaultManager] threadsCount] > 0)
