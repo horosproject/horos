@@ -421,9 +421,9 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	
 	self.deleteValue = minimumValue;
 	
-	if( [[viewer2D modality] isEqualToString: @"CT"] && maximumValue - minimumValue > 8192)
+	if( [[viewer2D modality] isEqualToString: @"CT"] && maximumValue - minimumValue > 16384) // 8192 -- 16384
 	{
-		NSLog( @"-- modality is CT && pixel dynamic > 8192 -> clip values to -1024 && +7168");
+		NSLog( @"-- modality is CT && pixel dynamic > 8192 -> clip values to -1024 && +15360"); // 7168 -- 15360
 		
 		NSLog( @"-- current maxValueOfSeries = %f", maximumValue);
 		NSLog( @"-- current minValueOfSeries = %f", minimumValue);
@@ -439,7 +439,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 			srcf.rowBytes = [firstObject pwidth] * sizeof(float);
 			srcf.data = (void*) [volumeData[ x] bytes];
 			
-			vImageClip_PlanarF( &srcf, &srcf, 7168, -1024, 0);
+			vImageClip_PlanarF( &srcf, &srcf, 15360, -1024, 0); // 7168 -- 15360
 		}
 		
 		[viewer2D recomputePixMinMax];
