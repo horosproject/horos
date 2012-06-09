@@ -1055,7 +1055,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 void (*signal(int signum, void (*sighandler)(int)))(int);
 
-sigjmp_buf mark;
+static sigjmp_buf mark;
 
 void signal_EXC_ARITHMETIC(int sig_num)
 {
@@ -8430,7 +8430,12 @@ END_CREATE_ROIS:
                                 signal(SIGFPE , signal_EXC_ARITHMETIC);
                                 
                                 if( sigsetjmp( mark, 1) != 0)
+                                {
                                     oImage = 0L;
+                                    
+                                    NSLog( @"%@", [NSThread callStackSymbols]);
+                                    NSLog( @"***** file: %@", srcFile);
+                                }
                                 else
                                 {
 //                                    int xx = 1;

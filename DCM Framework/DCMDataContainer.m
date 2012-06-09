@@ -15,7 +15,18 @@
 #import "DCMDataContainer.h"
 #import "DCM.h"
 
+static NSString *signalCatch = @"signalCatch";
 
+void (*signal(int signum, void (*sighandler)(int)))(int);
+
+static sigjmp_buf mark;
+
+void signal_EXC(int sig_num)
+{
+    NSLog( @"******** Signal %d - DCMDataContainer - Catch the exception and resume function", sig_num);
+    
+    siglongjmp( mark, -1 );
+}
 
 @implementation DCMDataContainer
 
@@ -63,33 +74,51 @@
 	return [[[DCMDataContainer alloc] initWithData:aData transferSyntax:syntax] autorelease];
 }
 
-
-
 - (id) initWithData:(NSData *)data
 {
+    id object = nil;
+    
 	if (self = [super init])
     {
-		void *ptr = malloc( data.length);
-        if( ptr)
+        @synchronized( signalCatch)
         {
-            memcpy( ptr, data.bytes, data.length);
+            signal( SIGBUS , signal_EXC);
+            signal( SIGFPE , signal_EXC);
             
-            void *tempPtr = malloc( data.length);
-            if( tempPtr)
+            if( sigsetjmp( mark, 1) != 0)
             {
-                free( tempPtr);
-                
-                dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
-                _ptr = (unsigned char *)[dicomData bytes];
-                
-                if (![self determineTransferSyntax])
-                    [dicomData release];
-                else
-                    return self;
+                // signal catch
+                NSLog( @"%@", [NSThread callStackSymbols]);
             }
+            else
+            {        
+                void *ptr = malloc( data.length);
+                if( ptr)
+                {
+                    memcpy( ptr, data.bytes, data.length);
+                    
+                    void *tempPtr = malloc( data.length);
+                    if( tempPtr)
+                    {
+                        free( tempPtr);
+                        
+                        dicomData = [[NSMutableData alloc] initWithBytesNoCopy: ptr length: data.length freeWhenDone: YES];
+                        _ptr = (unsigned char *)[dicomData bytes];
+                        
+                        if (![self determineTransferSyntax])
+                            [dicomData release];
+                        else
+                            object = self;
+                    }
+                }
+            }
+            
+            signal( SIGBUS, SIG_DFL);
+            signal( SIGFPE, SIG_DFL);
         }
 	}
-	return nil;
+    
+    return object;
 }
 
 - (id)initWithData:(NSData *)data transferSyntax:(DCMTransferSyntax *)syntax{
