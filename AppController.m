@@ -421,67 +421,6 @@ NSString* convertDICOM( NSString *inputfile)
 	return outputfile;
 }
 
-//NSString* convertDICOM( NSString *inputfile)
-//{
-//	NSString		*tempString, *outputfile = [documentsDirectory() stringByAppendingFormat:@"/TEMP.noindex/%@", filenameWithDate( inputfile)];
-//    NSMutableArray  *theArguments = [NSMutableArray array];
-//	long			i = 0;
-//	
-//	while( converting)
-//	{
-//		[NSThread sleepForTimeInterval:0.002];
-//	}
-//	
-//	NSLog(inputfile);
-//	if ([[NSFileManager defaultManager] fileExistsAtPath:outputfile])
-//	{
-//		//[[NSFileManager defaultManager] removeFileAtPath:outputfile handler: nil];
-//		//NSLog(@"Already converted...");
-//		return outputfile;
-//	}
-//	
-//	converting = YES;
-//	NSLog(@"IN");
-//	NSTask *convertTask = [[NSTask alloc] init];
-//    
-////    [convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-////    [convertTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/dcmdjpeg"]];
-//
-//	[convertTask setEnvironment:[NSDictionary dictionaryWithObject:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingPathComponent:@"/dicom.dic"] forKey:@"DCMDICTPATH"]];
-//	[convertTask setLaunchPath:[[[NSBundle bundleForClass:[AppController class]] resourcePath] stringByAppendingPathComponent:@"/dcmdjpeg"]]; 
-//	
-//    [theArguments addObject:inputfile];
-//    [theArguments addObject:outputfile];
-//	
-//    [convertTask setArguments:theArguments];
-//    
-//	NS_DURING
-//		// launch traceroute
-//		[convertTask launch];
-//		//[convertTask waitUntilExit];
-//		
-//		while( [convertTask isRunning] == YES)
-//		{
-//			//	NSLog(@"CONVERSION WORK");
-//			[NSThread sleepForTimeInterval:0.002];
-//		}
-//		
-//		[convertTask interrupt];
-//		[convertTask release];
-//		
-//		NSLog(@"OUT");
-//		
-//		converting = NO;
-//		
-//	NS_HANDLER
-//		NSLog( [localException name]);
-//		converting = NO;
-//	NS_ENDHANDLER
-//	
-//	return outputfile ;
-//}
-
-
 int dictSort(id num1, id num2, void *context)
 {
     return [[num1 objectForKey:@"AETitle"] caseInsensitiveCompare: [num2 objectForKey:@"AETitle"]];
@@ -639,68 +578,68 @@ static NSString *getResolvedAliasPath(NSData* inData)
 
 static void dumpLSArchitecturesForX86_64()  
 { 
-		// The path of the com.apple.LaunchServices.plist file.  
-		NSString *prefsPath = @"~/Library/Preferences/com.apple.LaunchServices.plist";  
-		prefsPath = [prefsPath stringByExpandingTildeInPath];  
-		
-		NSDictionary *mainDict = [NSDictionary dictionaryWithContentsOfFile:prefsPath];  
-		if(mainDict != nil)  
-		{  
-			// We are only interested by the  
-			// "LSArchitecturesForX86_64" dictionary.  
-			NSDictionary *architectureDict = [mainDict objectForKey:@"LSArchitecturesForX86_64"];  
-			
-			// Get the list of applications.  
-			// The array is ordered by applicationID.  
-			NSArray *applicationIDArray = [architectureDict allKeys];  
-			if(applicationIDArray != nil)  
-			{  
-				// For each applicationID  
-				NSUInteger i = 0;  
-				for(i = 0 ; i < [applicationIDArray count] ; i++)  
-				{  
-					NSString *applicationID = [applicationIDArray objectAtIndex:i];
-					NSArray *appArray = [architectureDict objectForKey:applicationID];
-					
-					// For each instance of the application,  
-					// there is a pair (Alias, architecture).  
-					// The alias is stored as a NSData  
-					// and the architecture as a NSString.  
-					NSUInteger j = 0;  
-					for(j = 0 ; j < [appArray count] / 2 ; j++)  
-					{  
-						// Just for safety  
-						if(j * 2 + 1 < [appArray count])  
-						{  
-							NSData *aliasData = [appArray objectAtIndex:j * 2];  
-							
-							NSString *theArch = [appArray objectAtIndex:j * 2 + 1];  
-							
-							if(aliasData != nil && theArch != nil)  
-							{  
-								// Get the path of the application  
-								NSString *resolvedPath = getResolvedAliasPath(aliasData);  
-								
-								if( [resolvedPath isEqualToString: [[NSBundle mainBundle] bundlePath]])
-								{
-									if( [theArch isEqualToString: @"i386"])
-									{										
-										NSAlert* alert = [[NSAlert new] autorelease];
-										[alert setMessageText: NSLocalizedString(@"64-bit", nil)];
-										[alert setInformativeText: NSLocalizedString(@"This version of OsiriX can run in 64-bit, but it is set to run in 32-bit. You can change this setting, by selecting the OsiriX icon in Applications folder, select 'Get Info' in Finder File menu and UNCHECK 'run in 32-bit mode'.", nil)];
-										[alert setShowsSuppressionButton:YES ];
-										[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-										[alert runModal];
-										if ([[alert suppressionButton] state] == NSOnState)
-											[[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideAlertRunIn32bit"];
-									}
-								}
-							}  
-						}  
-					}  
-				}  
-			}  
-		}
+    // The path of the com.apple.LaunchServices.plist file.  
+    NSString *prefsPath = @"~/Library/Preferences/com.apple.LaunchServices.plist";  
+    prefsPath = [prefsPath stringByExpandingTildeInPath];  
+    
+    NSDictionary *mainDict = [NSDictionary dictionaryWithContentsOfFile:prefsPath];  
+    if(mainDict != nil)  
+    {  
+        // We are only interested by the  
+        // "LSArchitecturesForX86_64" dictionary.  
+        NSDictionary *architectureDict = [mainDict objectForKey:@"LSArchitecturesForX86_64"];  
+        
+        // Get the list of applications.  
+        // The array is ordered by applicationID.  
+        NSArray *applicationIDArray = [architectureDict allKeys];  
+        if(applicationIDArray != nil)  
+        {  
+            // For each applicationID  
+            NSUInteger i = 0;  
+            for(i = 0 ; i < [applicationIDArray count] ; i++)  
+            {  
+                NSString *applicationID = [applicationIDArray objectAtIndex:i];
+                NSArray *appArray = [architectureDict objectForKey:applicationID];
+                
+                // For each instance of the application,  
+                // there is a pair (Alias, architecture).  
+                // The alias is stored as a NSData  
+                // and the architecture as a NSString.  
+                NSUInteger j = 0;  
+                for(j = 0 ; j < [appArray count] / 2 ; j++)  
+                {  
+                    // Just for safety  
+                    if(j * 2 + 1 < [appArray count])  
+                    {  
+                        NSData *aliasData = [appArray objectAtIndex:j * 2];  
+                        
+                        NSString *theArch = [appArray objectAtIndex:j * 2 + 1];  
+                        
+                        if(aliasData != nil && theArch != nil)  
+                        {  
+                            // Get the path of the application  
+                            NSString *resolvedPath = getResolvedAliasPath(aliasData);  
+                            
+                            if( [resolvedPath isEqualToString: [[NSBundle mainBundle] bundlePath]])
+                            {
+                                if( [theArch isEqualToString: @"i386"])
+                                {										
+                                    NSAlert* alert = [[NSAlert new] autorelease];
+                                    [alert setMessageText: NSLocalizedString(@"64-bit", nil)];
+                                    [alert setInformativeText: NSLocalizedString(@"This version of OsiriX can run in 64-bit, but it is set to run in 32-bit. You can change this setting, by selecting the OsiriX icon in Applications folder, select 'Get Info' in Finder File menu and UNCHECK 'run in 32-bit mode'.", nil)];
+                                    [alert setShowsSuppressionButton:YES ];
+                                    [alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+                                    [alert runModal];
+                                    if ([[alert suppressionButton] state] == NSOnState)
+                                        [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideAlertRunIn32bit"];
+                                }
+                            }
+                        }  
+                    }  
+                }  
+            }  
+        }  
+    }
 }  
 
 void exceptionHandler(NSException *exception)
@@ -940,10 +879,10 @@ static NSDate *lastWarningDate = nil;
     
 	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16) // 16 hours
 	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device (FDA or CE-1) for primary diagnostic imaging.\r\rFor a FDA / CE-1 certified version, please check our web page:\r\rhttp://www.osirix-viewer.com/Certifications.html\r", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"Certifications", nil));
+		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"OsiriX MD", nil));
 		
 		if( result == NSAlertOtherReturn)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.osirix-viewer.com/Certifications.html"]];
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXMD"]];
 			
 		else if( result != NSAlertDefaultReturn)
 			[[AppController sharedAppController] terminate: self];
@@ -1679,7 +1618,8 @@ static NSDate *lastWarningDate = nil;
 }
 #endif
 
-+(NSString*)UID {
++(NSString*)UID
+{
     return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
 }
 
@@ -1763,7 +1703,8 @@ static NSDate *lastWarningDate = nil;
 	// This should be performed only if OsiriX is to handle storescp, depending on what is defined in the preferences
 	// Key:@"STORESCP" is the corresponding switch
 	
-	@try {
+	@try
+    {
 		quitting = YES;
 		
 		// The Built-In StoreSCP is now the default and only storescp available in OsiriX.... Antoine 4/9/06

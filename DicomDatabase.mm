@@ -1670,8 +1670,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							if (newObject || inParseExistingObject)
 							{
 								if (DICOMSR == NO)
+                                {
 									[seriesTable setValue:today forKey:@"dateAdded"];
-								
+                                    study.dateAdded = today;
+                                }
+                                
 								if (numberOfFrames > 1)
 								{
 									[image setValue: [NSNumber numberWithInt: f] forKey:@"frameID"];
@@ -1883,6 +1886,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 									}
 								}
 							}
+                            else
+                            {
+                                if (DICOMSR == NO)
+                                {
+									[seriesTable setValue:today forKey:@"dateAdded"];
+                                    study.dateAdded = today;
+                                }
+                            }
 						}
 					}
 				}

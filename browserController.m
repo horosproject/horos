@@ -4727,7 +4727,8 @@ static NSConditionLock *threadLock = nil;
 	if ([item isFault])
 		return nil;
 	
-    @try {
+    @try
+    {
         if ([[tableColumn identifier] isEqualToString:@"name"])
         {
             NSRect imageFrame = NSMakeRect(rect->origin.x, rect->origin.y, rect->size.height, rect->size.height);
