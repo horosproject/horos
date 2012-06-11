@@ -352,10 +352,22 @@ static float deg2rad = M_PI / 180.0f;
         result = dataset->putAndInsertString(DCM_Modality, "OT");
     
 	dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
-	if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID, [[dict objectForKey: @"studyUID"] UTF8String]);
+	if (result.good())
+    {
+        if( [dict objectForKey: @"studyUID"])
+            result = dataset->putAndInsertString(DCM_StudyInstanceUID, [[dict objectForKey: @"studyUID"] UTF8String]);
+        else
+            result = dataset->putAndInsertString(DCM_StudyInstanceUID, buf);
+    }
 	
 	dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-	if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID, [[dict objectForKey: @"seriesUID"] UTF8String]);
+	if (result.good())
+    {
+        if( [dict objectForKey: @"seriesUID"])
+            result = dataset->putAndInsertString(DCM_SeriesInstanceUID, [[dict objectForKey: @"seriesUID"] UTF8String]);
+        else
+            result = dataset->putAndInsertString(DCM_SeriesInstanceUID, buf);
+    }
 	
 	dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
 	if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID, buf);

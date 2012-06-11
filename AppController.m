@@ -663,7 +663,315 @@ static NSDate *lastWarningDate = nil;
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
 
-- (void) pause { // __deprecated
++(BOOL) hasMacOSXLion
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1070UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
+
++(BOOL) hasMacOSXSnowLeopard
+{
+	OSErr						err;
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1060UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
++(BOOL) hasMacOSXLeopard
+{
+	OSErr						err;       
+	SInt32						osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );       
+	if ( err == noErr)       
+	{
+		if ( osVersion < 0x1050UL )
+		{
+			return NO;
+		}
+	}
+	return YES;                   
+}
+
++ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
+	[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
+}
+
++ (void) pause
+{
+	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
+}
+
++ (void) resetToolbars
+{
+	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
+	
+	for( int i = 0; i < numberOfScreens; i++)
+	{
+		if( toolbarPanel[ i]) [toolbarPanel[ i] release];
+	}
+	
+	for( int i = 0; i < numberOfScreens; i++)
+		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
+	
+/*	for( int i = 0; i < numberOfScreens; i++)
+		[toolbarPanel[ i] fixSize];*/
+}
+
++ (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
+{
+	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
+	{
+		@try
+		{
+			NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          window, NSViewAnimationTargetKey,
+                                          [NSValue valueWithRect: newWindowFrame],
+                                          NSViewAnimationEndFrameKey,
+                                          nil];
+			
+			if( accumulateAnimations)
+			{
+				if( accumulateAnimationsArray == nil) accumulateAnimationsArray = [[NSMutableArray array] retain];
+				[accumulateAnimationsArray addObject: windowResize];
+			}
+			else
+			{
+				[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
+				
+				NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
+				[animation setAnimationBlockingMode: NSAnimationBlocking];
+				[animation setDuration: 0.15];
+				[animation startAnimation];
+                
+				[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
+			}
+		}
+		@catch( NSException *e)
+		{
+			NSLog( @"resizeWindowWithAnimation exception: %@", e);
+		}
+	}
+	else
+	{
+		[window setFrame: newWindowFrame display: YES];
+	}
+}
+
++(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen
+{
+    NSArray* screens = [NSScreen screens];
+    NSInteger i = [screens indexOfObject:screen];
+    return toolbarPanel[i];
+}
+
++ (void) displayImportantNotice:(id) sender
+{
+    if( [AppController isFDACleared])
+        return;
+    
+	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60)
+	{
+		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"OsiriX MD", nil));
+		
+		if( result == NSAlertOtherReturn)
+			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXMD"]];
+			
+		else if( result != NSAlertDefaultReturn)
+			[[AppController sharedAppController] terminate: self];
+	}
+	
+	[lastWarningDate release];
+	lastWarningDate = [[NSDate date] retain];
+}
+
++ (BOOL) isKDUEngineAvailable
+{
+	return kdu_available();
+}
+
++ (void) checkForPreferencesUpdate: (BOOL) b
+{
+	checkForPreferencesUpdate = b;
+}
+
++ (int) numberOfSubOsiriXProcesses
+{
+	const int kPIDArrayLength = 100;
+    
+    pid_t MyArray [kPIDArrayLength];
+    unsigned int NumberOfMatches;
+    int Counter, Error;
+	int number = 0;
+	
+    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+	
+	if (Error == 0)
+    {
+        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+        {
+			if( MyArray[ Counter] != getpid())
+				number++;
+        } 
+    }
+	
+	return number;
+}
+
++ (void) cleanOsiriXSubProcesses
+{
+	const int kPIDArrayLength = 100;
+    
+    pid_t MyArray [kPIDArrayLength];
+    unsigned int NumberOfMatches;
+    int Counter, Error;
+	
+    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
+	
+	if (Error == 0)
+    {
+        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
+        {
+			if( MyArray[ Counter] != getpid())
+			{
+				NSLog( @"Child Process to kill: %d (PID)", MyArray[ Counter]);
+				kill( MyArray[ Counter], 15);
+				
+				char dir[ 1024];
+				sprintf( dir, "%s-%d", "/tmp/lock_process", MyArray[ Counter]);
+				unlink( dir);
+			}
+        } 
+    }
+}
+
++(NSString*)UID
+{
+    return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
+}
+
++ (void) setUSETOOLBARPANEL: (BOOL) b
+{
+	USETOOLBARPANEL = b;
+}
+
++ (BOOL) USETOOLBARPANEL
+{
+	return USETOOLBARPANEL;
+}
+
++ (AppController*) sharedAppController
+{
+	return appController;
+}
+
++ (void) DNSResolve:(id) o
+{
+	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
+	
+	NSLog( @"start DNSResolve");
+	
+	for( NSString *s in [[DefaultsOsiriX currentHost] names])
+	{
+		NSLog( @"%@", s);
+	}
+	
+	NSLog( @"end DNSResolve");
+	
+	[p release];
+}
+
++ (NSString*) printStackTrace: (NSException*) e
+{
+	NSMutableString *r = [NSMutableString string];
+	
+	@try 
+	{
+		NSArray * addresses = [e callStackReturnAddresses];
+		if( [addresses count])
+		{
+			void * backtrace_frames[[addresses count]];
+			int i = 0;
+			for (NSNumber * address in addresses)
+			{
+				backtrace_frames[i] = (void *)[address unsignedLongValue];
+				i++;
+			}
+			
+			char **frameStrings = backtrace_symbols(&backtrace_frames[0], [addresses count]);
+			
+			if(frameStrings != NULL)
+			{
+				int x;
+				for(x = 0; x < [addresses count]; x++)
+				{
+					NSString *frame_description = [NSString stringWithUTF8String:frameStrings[ x]];
+					NSLog( @"------- %@", frame_description);
+					[r appendFormat: @"%@\r", frame_description];
+				}
+				free( frameStrings);
+				frameStrings = nil;
+			}
+		}
+	}
+	@catch (NSException * e) 
+	{
+		N2LogExceptionWithStackTrace(e);
+	}
+	
+	return r;
+}
+
++ (BOOL) willExecutePlugin
+{
+	BOOL returnValue = YES;
+	
+	if( [AppController isFDACleared])
+	{
+		NSString *alertSuppress = @"FDA Plugin warning";
+		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+		{
+			NSAlert* alert = [[NSAlert new] autorelease];
+			[alert setMessageText: NSLocalizedString(@"FDA & Plugins", nil)];
+			[alert setInformativeText: NSLocalizedString(@"Plugins are not covered by the FDA clearance of OsiriX MD. Check with the plugin manufacturer, if it is cleared for a primary diagnostic usage.", nil)];
+			[alert setShowsSuppressionButton:YES ];
+			[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
+			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
+			
+			if( [alert runModal] == NSAlertFirstButtonReturn)
+				returnValue = YES;
+			else
+				returnValue = NO;
+			
+			if ([[alert suppressionButton] state] == NSOnState)
+				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
+		}
+	}
+	
+	return returnValue;
+}
+
+- (void) pause
+{ // __deprecated
 	[[[BrowserController currentBrowser] database] lock]; // was checkIncomingLock
 	sleep( 2);
 	[[[BrowserController currentBrowser] database] unlock]; // was checkIncomingLock
@@ -752,151 +1060,6 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 
-+(BOOL) hasMacOSXLion
-{
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1070UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
-
-+(BOOL) hasMacOSXSnowLeopard
-{
-	OSErr						err;
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1060UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
-+(BOOL) hasMacOSXLeopard
-{
-	OSErr						err;       
-	SInt32						osVersion;
-	
-	err = Gestalt ( gestaltSystemVersion, &osVersion );       
-	if ( err == noErr)       
-	{
-		if ( osVersion < 0x1050UL )
-		{
-			return NO;
-		}
-	}
-	return YES;                   
-}
-
-+ (void) createNoIndexDirectoryIfNecessary:(NSString*) path { // __deprecated
-	[[NSFileManager defaultManager] confirmNoIndexDirectoryAtPath:path];
-}
-
-+ (void) pause
-{
-	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
-}
-
-+ (void) resetToolbars
-{
-	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
-	
-	for( int i = 0; i < numberOfScreens; i++)
-	{
-		if( toolbarPanel[ i]) [toolbarPanel[ i] release];
-	}
-	
-	for( int i = 0; i < numberOfScreens; i++)
-		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
-	
-/*	for( int i = 0; i < numberOfScreens; i++)
-		[toolbarPanel[ i] fixSize];*/
-}
-
-+(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen {
-    NSArray* screens = [NSScreen screens];
-    NSInteger i = [screens indexOfObject:screen];
-    return toolbarPanel[i];
-}
-
-+ (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
-{
-	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"NSWindowsSetFrameAnimate"])
-	{
-		@try
-		{
-			NSDictionary *windowResize = [NSDictionary dictionaryWithObjectsAndKeys:
-										 window, NSViewAnimationTargetKey,
-										 [NSValue valueWithRect: newWindowFrame],
-										 NSViewAnimationEndFrameKey,
-										 nil];
-			
-			if( accumulateAnimations)
-			{
-				if( accumulateAnimationsArray == nil) accumulateAnimationsArray = [[NSMutableArray array] retain];
-				[accumulateAnimationsArray addObject: windowResize];
-			}
-			else
-			{
-				[OSIWindowController setDontEnterWindowDidChangeScreen: YES];
-				
-				NSViewAnimation * animation = [[[NSViewAnimation alloc]  initWithViewAnimations: [NSArray arrayWithObjects: windowResize, nil]] autorelease];
-				[animation setAnimationBlockingMode: NSAnimationBlocking];
-				[animation setDuration: 0.15];
-				[animation startAnimation];
-			
-				[OSIWindowController setDontEnterWindowDidChangeScreen: NO];
-			}
-		}
-		@catch( NSException *e)
-		{
-			NSLog( @"resizeWindowWithAnimation exception: %@", e);
-		}
-	}
-	else
-	{
-		[window setFrame: newWindowFrame display: YES];
-	}
-}
-
-+ (void) displayImportantNotice:(id) sender
-{
-    if( [AppController isFDACleared])
-        return;
-    
-	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60*16) // 16 hours
-	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"OsiriX MD", nil));
-		
-		if( result == NSAlertOtherReturn)
-			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXMD"]];
-			
-		else if( result != NSAlertDefaultReturn)
-			[[AppController sharedAppController] terminate: self];
-	}
-	
-	[lastWarningDate release];
-	lastWarningDate = [[NSDate date] retain];
-}
-
-+ (BOOL) isKDUEngineAvailable
-{
-	return kdu_available();
-}
-
 - (NSString *)computerName
 {
 	return [(id)SCDynamicStoreCopyComputerName(NULL, NULL) autorelease];
@@ -911,7 +1074,6 @@ static NSDate *lastWarningDate = nil;
 {
     [NSApp abortModal];
 }
-
 
 //———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
@@ -985,7 +1147,7 @@ static NSDate *lastWarningDate = nil;
 				threadStateChanged = YES;
 			}
 		}
-	
+        
 		rc = waitpid( pid, &state, WNOHANG);
 		[NSThread sleepForTimeInterval: 0.1];
 	}
@@ -994,55 +1156,6 @@ static NSDate *lastWarningDate = nil;
 	[pool release];
 }
 
-+ (int) numberOfSubOsiriXProcesses
-{
-	const int kPIDArrayLength = 100;
-
-    pid_t MyArray [kPIDArrayLength];
-    unsigned int NumberOfMatches;
-    int Counter, Error;
-	int number = 0;
-	
-    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
-	
-	if (Error == 0)
-    {
-        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
-        {
-			if( MyArray[ Counter] != getpid())
-				number++;
-        } 
-    }
-	
-	return number;
-}
-
-+ (void) cleanOsiriXSubProcesses
-{
-	const int kPIDArrayLength = 100;
-
-    pid_t MyArray [kPIDArrayLength];
-    unsigned int NumberOfMatches;
-    int Counter, Error;
-	
-    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
-	
-	if (Error == 0)
-    {
-        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
-        {
-			if( MyArray[ Counter] != getpid())
-			{
-				NSLog( @"Child Process to kill: %d (PID)", MyArray[ Counter]);
-				kill( MyArray[ Counter], 15);
-				
-				char dir[ 1024];
-				sprintf( dir, "%s-%d", "/tmp/lock_process", MyArray[ Counter]);
-				unlink( dir);
-			}
-        } 
-    }
-}
 
 - (void) setAETitleToHostname
 {
@@ -1345,11 +1458,6 @@ static NSDate *lastWarningDate = nil;
 	NS_ENDHANDLER
 }
 
-+ (void) checkForPreferencesUpdate: (BOOL) b
-{
-	checkForPreferencesUpdate = b;
-}
-
 - (void) preferencesUpdated: (NSNotification*) note
 {
 	if( [NSThread isMainThread] == NO) return;
@@ -1617,11 +1725,6 @@ static NSDate *lastWarningDate = nil;
 	}
 }
 #endif
-
-+(NSString*)UID
-{
-    return [NSString stringWithFormat:@"%@|%@", [N2Shell serialNumber], NSUserName()];
-}
 
 - (void) startDICOMBonjour:(NSTimer*) t
 {
@@ -2430,120 +2533,6 @@ static NSDate *lastWarningDate = nil;
 	return self;
 }
 
-+ (void) setUSETOOLBARPANEL: (BOOL) b
-{
-	USETOOLBARPANEL = b;
-}
-
-+ (BOOL) USETOOLBARPANEL
-{
-	return USETOOLBARPANEL;
-}
-
-+ (AppController*) sharedAppController
-{
-	return appController;
-}
-//
-//#define EXTRACT_LONG_BIG(A,B)	{			\
-//	(B) = (unsigned long)(A)[3]				\
-//	  | (((unsigned long)(A)[2]) << 8)		\
-//	  | (((unsigned long)(A)[1]) << 16)		\
-//	  | (((unsigned long)(A)[0]) << 24);	\
-//	}
-//
-//#define EXTRACT_LONG_BIG2(A,B)	{			\
-//	(B) = (unsigned int)(A)[3]				\
-//	  | (((unsigned int)(A)[2]) << 8)		\
-//	  | (((unsigned int)(A)[1]) << 16)		\
-//	  | (((unsigned int)(A)[0]) << 24);		\
-//	}
-
-+ (void) DNSResolve:(id) o
-{
-	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
-	
-	NSLog( @"start DNSResolve");
-	
-	for( NSString *s in [[DefaultsOsiriX currentHost] names])
-	{
-		NSLog( @"%@", s);
-	}
-	
-	NSLog( @"end DNSResolve");
-	
-	[p release];
-}
-
-+ (NSString*) printStackTrace: (NSException*) e
-{
-	NSMutableString *r = [NSMutableString string];
-	
-	@try 
-	{
-		NSArray * addresses = [e callStackReturnAddresses];
-		if( [addresses count])
-		{
-			void * backtrace_frames[[addresses count]];
-			int i = 0;
-			for (NSNumber * address in addresses)
-			{
-				backtrace_frames[i] = (void *)[address unsignedLongValue];
-				i++;
-			}
-			
-			char **frameStrings = backtrace_symbols(&backtrace_frames[0], [addresses count]);
-			
-			if(frameStrings != NULL)
-			{
-				int x;
-				for(x = 0; x < [addresses count]; x++)
-				{
-					NSString *frame_description = [NSString stringWithUTF8String:frameStrings[ x]];
-					NSLog( @"------- %@", frame_description);
-					[r appendFormat: @"%@\r", frame_description];
-				}
-				free( frameStrings);
-				frameStrings = nil;
-			}
-		}
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-	
-	return r;
-}
-
-+ (BOOL) willExecutePlugin
-{
-	BOOL returnValue = YES;
-	
-	if( [AppController isFDACleared])
-	{
-		NSString *alertSuppress = @"FDA Plugin warning";
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-		{
-			NSAlert* alert = [[NSAlert new] autorelease];
-			[alert setMessageText: NSLocalizedString(@"FDA & Plugins", nil)];
-			[alert setInformativeText: NSLocalizedString(@"Plugins are not covered by the FDA clearance of OsiriX MD. Check with the plugin manufacturer, if it is cleared for a primary diagnostic usage.", nil)];
-			[alert setShowsSuppressionButton:YES ];
-			[alert addButtonWithTitle: NSLocalizedString(@"Continue", nil)];
-			[alert addButtonWithTitle: NSLocalizedString(@"Cancel", nil)];
-			
-			if( [alert runModal] == NSAlertFirstButtonReturn)
-				returnValue = YES;
-			else
-				returnValue = NO;
-			
-			if ([[alert suppressionButton] state] == NSOnState)
-				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:alertSuppress];
-		}
-	}
-	
-	return returnValue;
-}
 
 static BOOL initialized = NO;
 + (void) initialize
