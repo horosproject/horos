@@ -71,6 +71,7 @@
     /**
      * Get input image range and compute histogram.
      */
+//    [NSThread detachNewThreadSelector: @selector(determineImageRange) toTarget: self withObject: nil];
 //    [self medianFilter];
     [self determineImageRange];
     [self computeHistogram];
@@ -124,7 +125,6 @@
 }
 - (void) setThreshold:(float)thres Asynchronous:(BOOL)async
 {
-    NSLog(@"setThreshold");
 	threshold = thres;
 	if (async) {
 		[NSThread detachNewThreadSelector: @selector(distanceTransformWithThreshold:) toTarget: self withObject: nil];
@@ -504,12 +504,25 @@
 
 	if(	!distmap )
 		return ERROR_NOENOUGHMEM;
-	if (!isDistanceTransformFinished) {
-		return ERROR_DISTTRANSNOTFINISH;
-	}
 	//convert to resampled coordinate
 	[self converPoint2ResampleCoordinate:pt];
 	[self converPoint2ResampleCoordinate:dir];
+	if (!isDistanceTransformFinished) {
+        //		return ERROR_DISTTRANSNOTFINISH;
+        float pixVal = 0;
+        int pos = (int)pt.z*inputWidth*inputHeight+(int)pt.y*inputWidth+(int)pt.x;
+        for (int i = -1; i < 2; ++i) {
+            for (int j = -1; j < 2; ++j) {
+                for (int k = -1; k < 2; ++k) {
+                    pos += (k * inputWidth * inputHeight + j * inputWidth + i);
+                    pixVal += input[pos];
+                }
+            }
+        }
+        pixVal /= 27;
+        [self computeIntervalThresholdsFrom:pixVal];
+        [self distanceTransformWithThreshold:nil];        
+	}
 	
 	//cacluate next step
 	Point3D* newpos;
