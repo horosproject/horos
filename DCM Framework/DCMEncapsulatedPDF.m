@@ -38,7 +38,8 @@
 	[dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"NO"] forName:@"BurnedInAnnotation"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"AcquisitionDatetime"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"DocumentTitle"];
-	[dcmObject setCharacterSet:[[[DCMCharacterSet alloc] initWithCode:@"ISO_IR 192"] autorelease]];
+    [dcmObject setAttributeValues:[NSMutableArray arrayWithObject:@"ISO_IR 192"] forName:@"SpecificCharacterSet"]; // UTF-8
+	[dcmObject setCharacterSet:[[[DCMCharacterSet alloc] initWithCode:@"ISO_IR 192"] autorelease]]; // UTF-8
 	//Patient Info
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"PatientsName"];
 	[dcmObject setAttributeValues:[NSMutableArray array] forName:@"PatientID"];

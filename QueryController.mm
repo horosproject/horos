@@ -435,17 +435,27 @@ extern "C"
 	
 	if( result != NSRunStoppedResponse) // Cancel
 	{
-		[[NSUserDefaults standardUserDefaults] setObject: NumberOfPreviousStudyToRetrieve forKey: @"NumberOfPreviousStudyToRetrieve"];
-		[[NSUserDefaults standardUserDefaults] setObject: retrieveSameModality forKey: @"retrieveSameModality"];
-		[[NSUserDefaults standardUserDefaults] setObject: retrieveSameDescription forKey: @"retrieveSameDescription"];
+        if( NumberOfPreviousStudyToRetrieve)
+            [[NSUserDefaults standardUserDefaults] setObject: NumberOfPreviousStudyToRetrieve forKey: @"NumberOfPreviousStudyToRetrieve"];
+        
+        if( retrieveSameModality)
+            [[NSUserDefaults standardUserDefaults] setObject: retrieveSameModality forKey: @"retrieveSameModality"];
+        
+        if( retrieveSameDescription)
+            [[NSUserDefaults standardUserDefaults] setObject: retrieveSameDescription forKey: @"retrieveSameDescription"];
 	}
     else
     {
         @synchronized( autoQRInstances)
         {
-            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"] forKey: @"NumberOfPreviousStudyToRetrieve"];
-            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
-            [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"])
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject:[[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"]  forKey: @"NumberOfPreviousStudyToRetrieve"];
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"])
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"])
+                [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
         }
         
         [self saveSettings];
@@ -679,10 +689,18 @@ extern "C"
 	
 	[presets setValue: [NSNumber numberWithInt: self.autoRefreshQueryResults] forKey: @"autoRefreshQueryResults"];
     
-    [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"autoRetrieving"] forKey: @"autoRetrieving"];
-    [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"] forKey: @"NumberOfPreviousStudyToRetrieve"];
-    [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
-    [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
+    if( [[NSUserDefaults standardUserDefaults] objectForKey: @"autoRetrieving"])
+        [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"autoRetrieving"] forKey: @"autoRetrieving"];
+    
+    if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"])
+        [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"NumberOfPreviousStudyToRetrieve"] forKey: @"NumberOfPreviousStudyToRetrieve"];
+    
+    if( [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"])
+        [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameModality"] forKey: @"retrieveSameModality"];
+    
+    if( [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"])
+        [presets setValue: [[NSUserDefaults standardUserDefaults] objectForKey: @"retrieveSameDescription"] forKey: @"retrieveSameDescription"];
+    
 	return presets;
 }
 

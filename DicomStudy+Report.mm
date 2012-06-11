@@ -203,6 +203,7 @@
     if( [[NSUserDefaults standardUserDefaults] objectForKey: @"ReportName"])
         reportName = [[NSUserDefaults standardUserDefaults] objectForKey: @"ReportName"];
     
+//    [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output alternatively:@"ISO_IR 100"];
     [self _ifAvailableCopyAttributeWithName:@"SpecificCharacterSet" from:source to:output];
     [self _ifAvailableCopyAttributeWithName:@"StudyInstanceUID" from:source to:output];
     [output setAttributeValues:[NSArray arrayWithObject: reportName] forName:@"SeriesDescription"];
