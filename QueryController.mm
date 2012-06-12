@@ -2695,7 +2695,7 @@ extern "C"
 				[item setShowErrorMessage: NO];
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
-			t.name = NSLocalizedString( @"Retrieving images...", nil);
+            t.name = NSLocalizedString( @"Retrieving images...", nil);
             t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
             if ([selectedItems count] > 1)
                 t.progress = 0;
@@ -2801,7 +2801,12 @@ extern "C"
                                 [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Q&R Auto-Query", nil) description: NSLocalizedString( @"Refreshing...", nil) name: @"autoquery"];
                                 
                                 NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( autoQueryThread: ) object: [NSDictionary dictionaryWithObjectsAndKeys: [[QRInstance mutableCopy] autorelease], @"instance", [NSNumber numberWithInt: i], @"index", nil]] autorelease];
-                                t.name = NSLocalizedString( @"Auto-Querying images...", nil);
+                                
+                                if( [[QRInstance objectForKey: @"instanceName"] length] && autoQRInstances.count > 1)
+                                    t.name = [NSString stringWithFormat: NSLocalizedString( @"Auto-Querying images (%@)...", nil), [QRInstance objectForKey: @"instanceName"]];
+                                else
+                                    t.name = NSLocalizedString( @"Auto-Querying images...", nil);
+                                
                                 t.supportsCancel = YES;
                                 [[ThreadsManager defaultManager] addThreadAndStart: t];
                                 
