@@ -2361,8 +2361,7 @@ extern "C"
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
     
-    if( [resultArray count] <= 1) [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d study found", nil), [resultArray count]]];
-	else [numberOfStudies setStringValue: [NSString stringWithFormat: NSLocalizedString( @"%d studies found", nil), [resultArray count]]];
+    [numberOfStudies setStringValue:N2LocalizedSingularPluralCount(resultArray.count, @"study found", @"studies found")];
     
 	[l release];
 }
