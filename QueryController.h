@@ -49,6 +49,8 @@
 	IBOutlet	NSDatePicker				*fromDate, *toDate, *searchBirth;
 	IBOutlet	NSTextField					*yearOldBirth;
     IBOutlet	NSPopUpButton				*sendToPopup;
+    
+    IBOutlet NSView*                        refreshGroup;
 	
     BOOL                                    autoRefreshQueryInSeconds;
 	int										autoQueryRemainingSecs[ MAXINSTANCE];

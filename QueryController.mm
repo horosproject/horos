@@ -3689,6 +3689,12 @@ enum
     
 	[numberOfStudies setStringValue: @""];
 	
+    if (autoQuery) {
+        NSRect frame = [refreshGroup frame];
+        frame.origin.y += 6;
+        [refreshGroup setFrame:frame];
+    }
+    
     if( autoQuery)
         [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"AutoQRPatientModeMatrixIndex"]];
     else
