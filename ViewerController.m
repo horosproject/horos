@@ -17108,7 +17108,7 @@ int i,j,l;
 		
 		[exportDCM setSourceFile: [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKey:@"completePath"]];
 		
-		if( [[exportDCM seriesDescription] isEqualToString: [dcmSeriesName stringValue]] == NO)
+		if( [[exportDCM seriesDescription] isEqualToString: name] == NO)
 		{
 			[exportDCM setSeriesDescription: name];
 			[exportDCM setSeriesNumber: 8200 + [[NSCalendarDate date] minuteOfHour] + [[NSCalendarDate date] secondOfMinute]];
