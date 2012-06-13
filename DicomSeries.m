@@ -318,9 +318,9 @@
                                 thumbnail = [NSImage imageNamed: @"SpectroIcon.jpg"];
                                 thumbnailData = [[thumbnail TIFFRepresentation] retain]; // autoreleased when returning
                             }
-                            else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID])
+                            else if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF: seriesSOPClassUID])
                             {
-                                NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"];
+                                NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"];
                                 
                                 thumbnail = [[[NSImage alloc] initWithSize: NSMakeSize( 70, 70)] autorelease];
                                 
