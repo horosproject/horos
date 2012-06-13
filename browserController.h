@@ -149,12 +149,13 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSMatrix				*rebuildType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
 	
+    int								timeIntervalType;
 	IBOutlet NSPopUpButton			*timeIntervalPopup;
-	IBOutlet NSWindow				*customTimeIntervalWindow;
-	IBOutlet NSDatePicker			*customStart, *customEnd, *customStart2, *customEnd2;
-	IBOutlet NSView					*timeIntervalView;
-	int								timeIntervalType;
-	NSDate							*timeIntervalStart, * timeIntervalEnd;
+    NSDate							*timeIntervalStart, *timeIntervalEnd;
+    IBOutlet NSView					*timeIntervalView;
+    
+//	IBOutlet NSWindow				*customTimeIntervalWindow;
+//	IBOutlet NSDatePicker			*customStart, *customEnd, *customStart2, *customEnd2;
 	
 	IBOutlet NSView					*searchView;
 	IBOutlet NSSearchField			*searchField;
@@ -427,8 +428,6 @@ extern NSString* O2AlbumDragType;
 - (IBAction)setSearchType: (id)sender;
 //- (void) setDraggedItems:(NSArray*) pbItems;
 - (IBAction)setTimeIntervalType: (id)sender;
-- (IBAction) endCustomInterval:(id) sender;
-- (IBAction) customIntervalNow:(id) sender;
 - (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
 - (void) checkReportsDICOMSRConsistency __deprecated;

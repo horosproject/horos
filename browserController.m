@@ -99,6 +99,7 @@
 #import "N2Stuff.h"
 #import "NSNotificationCenter+N2.h"
 #import "NSFullScreenWindow.h"
+#import "CustomIntervalPanel.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -2416,33 +2417,33 @@ static NSConditionLock *threadLock = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
 }
 
-- (IBAction)customIntervalNow:(id) sender
-{
-	if( [sender tag] == 0)	{
-		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-	}
-	
-	if( [sender tag] == 1)	{
-		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-	}
-}
-
-- (IBAction)endCustomInterval: (id)sender
-{
-	if( [sender tag] == 1)	{
-		[timeIntervalStart release];		timeIntervalStart = [[customStart dateValue] retain];
-		[timeIntervalEnd release];			timeIntervalEnd = [[customEnd dateValue] retain];
-	}
-	
-	[NSApp endSheet: customTimeIntervalWindow];
-	[customTimeIntervalWindow orderOut: self];
-	
-	NSLog(@"from: %@ to: %@", [timeIntervalStart description], [timeIntervalEnd description]);
-	
-	[self outlineViewRefresh];
-}
+//- (IBAction)customIntervalNow:(id) sender
+//{
+//	if( [sender tag] == 0)	{
+//		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//	}
+//	
+//	if( [sender tag] == 1)	{
+//		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//	}
+//}
+//
+//- (IBAction)endCustomInterval: (id)sender
+//{
+//	if( [sender tag] == 1)	{
+//		[timeIntervalStart release];		timeIntervalStart = [[customStart dateValue] retain];
+//		[timeIntervalEnd release];			timeIntervalEnd = [[customEnd dateValue] retain];
+//	}
+//	
+//	[NSApp endSheet: customTimeIntervalWindow];
+//	[customTimeIntervalWindow orderOut: self];
+//	
+//	NSLog(@"from: %@ to: %@", [timeIntervalStart description], [timeIntervalEnd description]);
+//	
+//	[self outlineViewRefresh];
+//}
 
 - (void) computeTimeInterval
 {
@@ -2521,16 +2522,14 @@ static NSConditionLock *threadLock = nil;
 	
 	if( [[sender selectedItem] tag] == 100)
 	{
-		[customEnd2 setLocale: [NSLocale currentLocale]];
-		[customStart2 setLocale: [NSLocale currentLocale]];
-		[customEnd setLocale: [NSLocale currentLocale]];
-		[customStart setLocale: [NSLocale currentLocale]];
-		
-		[NSApp beginSheet: customTimeIntervalWindow
-		   modalForWindow: self.window
-			modalDelegate: nil
-		   didEndSelector: nil
-			  contextInfo: nil];
+        static CustomIntervalPanel *sharedCustomIntervalPanel = nil;
+        
+        if( sharedCustomIntervalPanel == nil)
+        {
+            sharedCustomIntervalPanel = [[CustomIntervalPanel alloc] initWithWindowNibName: @"CustomIntervalPanel"];
+        }
+        
+        [sharedCustomIntervalPanel.window makeKeyAndOrderFront: self];
 	}
 	else
 	{
@@ -11085,10 +11084,10 @@ static NSArray*	openSubSeriesArray = nil;
 		[albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
 		[albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
 		
-		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+//		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 		
 		statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), NSLocalizedString(@"validated", nil), nil] retain];
 		

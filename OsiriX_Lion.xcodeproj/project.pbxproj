@@ -530,6 +530,12 @@
 		8404B193129F9FD200C57EA4 /* dcmqrcbs.cc in Sources */ = {isa = PBXBuildFile; fileRef = 8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */; };
 		8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
 		8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8406956210B6800E00C37AD0 /* SystemConfiguration.framework */; };
+		840C2D5E1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */; };
+		840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */; };
+		840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
+		840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
+		840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */; };
+		840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */; };
 		841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841721B810D8D745001A833F /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A410D8D745001A833F /* AsyncSocket.h */; };
@@ -8780,6 +8786,9 @@
 		8404168614CF195800242C63 /* Tiling3x3.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling3x3.pdf; path = Binaries/Icons/Tiling/Tiling3x3.pdf; sourceTree = "<group>"; };
 		8404B192129F9FD200C57EA4 /* dcmqrcbs.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dcmqrcbs.cc; sourceTree = "<group>"; };
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomIntervalPanel.h; sourceTree = "<group>"; };
+		840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomIntervalPanel.m; sourceTree = "<group>"; };
+		840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		841721A410D8D745001A833F /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = cocoahttpserver/AsyncSocket.h; sourceTree = "<group>"; };
 		841721A510D8D745001A833F /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncSocket.m; path = cocoahttpserver/AsyncSocket.m; sourceTree = "<group>"; };
@@ -16278,6 +16287,9 @@
 				7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */,
 				CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */,
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
+				840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */,
+				840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */,
+				840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -25544,6 +25556,7 @@
 				CE59440D155E3838007BDF5B /* PFMoveApplication.h in Headers */,
 				CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */,
 				CE3B7E5E1580F534003CB266 /* FlyAssistant+Histo.h in Headers */,
+				840C2D5E1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26170,6 +26183,7 @@
 				714D3BB2152AE40C003EB087 /* O2ScreensPrefsView.h in Headers */,
 				714D3BC5152B2410003EB087 /* NSArray+N2.h in Headers */,
 				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
+				840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26875,6 +26889,7 @@
 				71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 				CE2BFE57153B177C00037546 /* iPad.png in Resources */,
 				71CE3C19157F489C00AC0112 /* List.pdf in Resources */,
+				840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27258,6 +27273,7 @@
 				71512E9F1523552400B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 				CE2BFE58153B177C00037546 /* iPad.png in Resources */,
 				71CE3C1A157F489C00AC0112 /* List.pdf in Resources */,
+				840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28623,6 +28639,7 @@
 				CE59440E155E3838007BDF5B /* PFMoveApplication.m in Sources */,
 				CE3B7E5F1580F534003CB266 /* FlyAssistant+Histo.mm in Sources */,
 				CE3B7E641580F762003CB266 /* Quaternion.mm in Sources */,
+				840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29869,6 +29886,7 @@
 				714D3BC7152B2410003EB087 /* NSScreen+N2.m in Sources */,
 				84D7BBE6154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
 				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
+				840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
