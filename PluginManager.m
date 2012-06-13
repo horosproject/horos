@@ -560,7 +560,12 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                         {
                             [pluginsBundleDictionnary setObject: plugin forKey: pathResolved];
                             
-                            NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey], path);
+                            NSString *version = [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey];
+                            
+                            if( version == nil)
+                                version = [[plugin infoDictionary] valueForKey: @"CFBundleShortVersionString"];
+                            
+                            NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], version, path);
                             
                             if( filterClass == NSClassFromString( @"ARGS")) return;
                             
