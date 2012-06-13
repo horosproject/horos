@@ -7329,8 +7329,8 @@ static BOOL withReset = NO;
                 }
 
                 if (dcmPix) {
-                    if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID]) {
-                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[[NSWorkspace sharedWorkspace] iconForFileType: @"pdf"] index:i context:context];
+                    if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF:image.series.seriesSOPClassUID]) {
+                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[[NSWorkspace sharedWorkspace] iconForFileType: @"txt"] index:i context:context];
                     } else {
                         NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
                         [dcmPix revert:NO];	// <- Kill the raw data
