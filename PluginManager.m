@@ -560,7 +560,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
                         {
                             [pluginsBundleDictionnary setObject: plugin forKey: pathResolved];
                             
-                            NSLog( @"Plugin loaded: %@", [path stringByAppendingPathComponent: name]);
+                            NSLog( @"Loaded: %@, vers: %@ (%@)", [name stringByDeletingPathExtension], [[plugin infoDictionary] valueForKey: (NSString*) kCFBundleVersionKey], path);
                             
                             if( filterClass == NSClassFromString( @"ARGS")) return;
                             
