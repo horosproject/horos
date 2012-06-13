@@ -791,12 +791,12 @@ static NSDate *lastWarningDate = nil;
     
 	if( lastWarningDate == nil || [lastWarningDate timeIntervalSinceNow] < -60*60)
 	{
-		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil), NSLocalizedString( @"OsiriX MD", nil));
+		int result = NSRunCriticalAlertPanel( NSLocalizedString( @"Important Notice", nil), NSLocalizedString( @"This version of OsiriX, being a free open-source software (FOSS), is not certified as a commercial medical device for primary diagnostic imaging.\r\rFor a certified version and to get rid of this message, please update to 'OsiriX MD' certified version.", nil), NSLocalizedString( @"OsiriX MD", nil), NSLocalizedString( @"I agree", nil), NSLocalizedString( @"Quit", nil));
 		
-		if( result == NSAlertOtherReturn)
+		if( result == NSAlertDefaultReturn)
 			[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://pixmeo.pixmeo.com/products.html#OsiriXMD"]];
 			
-		else if( result != NSAlertDefaultReturn)
+		else if( result == NSAlertOtherReturn)
 			[[AppController sharedAppController] terminate: self];
 	}
 	
