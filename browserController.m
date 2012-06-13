@@ -6841,40 +6841,39 @@ static BOOL withReset = NO;
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"])
 				{
-					long count = [[curFile valueForKey:@"noFiles"] intValue];
-					
-					if( count == 1)
-					{
-						long frames = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-						
-						if( frames > 1) [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Frames", nil), name, frames]];
-						else [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Image", nil), name, count]];
-					}
-					else
-					{
-						if( count == 0)
-						{
-							count = [[curFile valueForKey: @"rawNoFiles"] intValue];
-							if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] > 1)
-								count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-								
-							[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Objects", nil), name, count]];
-						}
-						else
-							[cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%d Images", nil), name, count]];
-					}
-					
-//					if( [[curFile valueForKey: @"keySeries"] boolValue])
-//					{
-//						[cell setBordered: NO];
-//						[cell setBackgroundColor: [NSColor yellowColor]];
-//					}
-//					else
-//					{
-//						[cell setBordered: YES];
-//						[cell setBackgroundColor: [NSColor whiteColor]];
-//					}
-
+					int count = [[curFile valueForKey:@"noFiles"] intValue];
+					NSString *singleType = nil, *pluralType = nil;
+                    
+                    if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF: seriesSOPClassUID])
+                    {
+                        if( count <= 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
+                            count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+                        
+                        singleType = @"Page";
+                        pluralType = @"Pages";
+                    }
+                    else if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
+                    {
+                        count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+                        singleType = @"Frame";
+                        pluralType = @"Frames";
+                    }
+                    else if( count == 0)
+                    {
+                        count = [[curFile valueForKey: @"rawNoFiles"] intValue];
+                        if( count <= 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
+                            count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
+                        
+                        singleType = @"Object";
+                        pluralType = @"Objects";
+                    }
+                    else
+                    {
+                        singleType = @"Image";
+                        pluralType = @"Images";
+                    }
+                    
+                    [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), name, N2LocalizedSingularPluralCount( count, singleType, pluralType)]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
@@ -6882,17 +6881,6 @@ static BOOL withReset = NO;
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
 					else
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];
-					
-//					if( [[curFile valueForKey: @"isKeyImage"] boolValue])
-//					{
-//						[cell setBordered: NO];
-//						[cell setBackgroundColor: [NSColor yellowColor]];
-//					}
-//					else
-//					{
-//						[cell setBordered: YES];
-//						[cell setBackgroundColor: [NSColor whiteColor]];
-//					}
 				}
 				
 				[cell setButtonType:NSPushOnPushOffButton];
