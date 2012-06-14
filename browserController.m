@@ -6872,7 +6872,7 @@ static BOOL withReset = NO;
                         pluralType = NSLocalizedString(@"Images", nil);
                     }
                     
-                    [cell setTitle:[NSString stringWithFormat: @"%@\r%@", name, N2LocalizedSingularPluralCount( count, singleType, pluralType)]];
+                    [cell setTitle:[NSString stringWithFormat: @"%@\r%@", name, N2SingularPluralCount(count, singleType, pluralType)]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
