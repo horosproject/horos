@@ -30,4 +30,6 @@
 + (CustomIntervalPanel*) sharedCustomIntervalPanel;
 - (IBAction) nowFrom:(id)sender;
 - (IBAction) nowTo:(id) sender;
+- (void) sizeWindowAccordingToSettings;
+
 @end
