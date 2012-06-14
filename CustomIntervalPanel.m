@@ -30,6 +30,9 @@
     if( sharedCustomIntervalPanel == nil)
     {
         sharedCustomIntervalPanel = [[CustomIntervalPanel alloc] initWithWindowNibName: @"CustomIntervalPanel"];
+        
+        sharedCustomIntervalPanel.fromDate = [NSDate date];
+        sharedCustomIntervalPanel.toDate = [NSDate date];
     }
     
     return sharedCustomIntervalPanel;
@@ -59,7 +62,21 @@
     if( [fromDate isEqualToDate: date] == NO)
     {
         [fromDate release];
-        fromDate = [date copy];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"])
+        {
+            fromDate = [date copy];
+        }
+        else
+        {
+            unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
+            NSDateComponents *components = [[NSCalendar currentCalendar] components: unitFlags fromDate: date];
+            
+            fromDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] == NO)
+                self.toDate = date;
+        }
         
         [[BrowserController currentBrowser] outlineViewRefresh];
     }
@@ -70,7 +87,22 @@
     if( [toDate isEqualToDate: date] == NO)
     {
         [toDate release];
-        toDate = [date copy];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"])
+        {
+            toDate = [date copy];
+        }
+        else
+        {
+            unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
+            NSDateComponents *components = [[NSCalendar currentCalendar] components: unitFlags fromDate: date];
+            
+            [components setHour: 23];
+            [components setMinute: 59];
+            [components setSecond: 59];
+            
+            toDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
+        }
         
         [[BrowserController currentBrowser] outlineViewRefresh];
     }

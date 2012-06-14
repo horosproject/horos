@@ -307,7 +307,6 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 									<string key="NSContents">On a specific date</string>
 									<reference key="NSSupport" ref="26"/>
 									<reference key="NSControlView" ref="763931177"/>
-									<int key="NSTag">1</int>
 									<int key="NSButtonFlags">1211912703</int>
 									<int key="NSButtonFlags2">0</int>
 									<object class="NSButtonImageSource" key="NSAlternateImage" id="1023452931">
@@ -324,6 +323,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 									<string key="NSContents">Between two dates</string>
 									<reference key="NSSupport" ref="26"/>
 									<reference key="NSControlView" ref="763931177"/>
+									<int key="NSTag">1</int>
 									<int key="NSButtonFlags">1211912703</int>
 									<int key="NSButtonFlags2">0</int>
 									<object class="NSImage" key="NSNormalImage">
@@ -473,7 +473,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSNextKeyView" ref="763931177"/>
 					<string key="NSReuseIdentifierKey">_NS:21</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">CustomIntervalWindow</string>
 				<bool key="NSWindowIsRestorable">NO</bool>
@@ -582,6 +582,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.betweenDatesMode</string>
+						<reference key="source" ref="849736426"/>
+						<reference key="destination" ref="591085468"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="849736426"/>
+							<reference key="NSDestination" ref="591085468"/>
+							<string key="NSLabel">enabled: values.betweenDatesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.betweenDatesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1250</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.betweenDatesMode</string>
+						<reference key="source" ref="504216294"/>
+						<reference key="destination" ref="591085468"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="504216294"/>
+							<reference key="NSDestination" ref="591085468"/>
+							<string key="NSLabel">enabled: values.betweenDatesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.betweenDatesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1252</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: self.fromDate</string>
 						<reference key="source" ref="111139660"/>
 						<reference key="destination" ref="1001"/>
@@ -614,19 +646,35 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">selectedTag: values.customIntervalMode</string>
+						<string key="label">enabled: values.betweenDatesMode</string>
+						<reference key="source" ref="228266193"/>
+						<reference key="destination" ref="591085468"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="228266193"/>
+							<reference key="NSDestination" ref="591085468"/>
+							<string key="NSLabel">enabled: values.betweenDatesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.betweenDatesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1247</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectedTag: values.betweenDatesMode</string>
 						<reference key="source" ref="763931177"/>
 						<reference key="destination" ref="591085468"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="763931177"/>
 							<reference key="NSDestination" ref="591085468"/>
-							<string key="NSLabel">selectedTag: values.customIntervalMode</string>
+							<string key="NSLabel">selectedTag: values.betweenDatesMode</string>
 							<string key="NSBinding">selectedTag</string>
-							<string key="NSKeyPath">values.customIntervalMode</string>
+							<string key="NSKeyPath">values.betweenDatesMode</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">951</int>
+					<int key="connectionID">1245</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -643,6 +691,22 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">950</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">enabled: values.betweenDatesMode</string>
+						<reference key="source" ref="869400966"/>
+						<reference key="destination" ref="591085468"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="869400966"/>
+							<reference key="NSDestination" ref="591085468"/>
+							<string key="NSLabel">enabled: values.betweenDatesMode</string>
+							<string key="NSBinding">enabled</string>
+							<string key="NSKeyPath">values.betweenDatesMode</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1246</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -882,7 +946,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1244</int>
+			<int key="maxID">1252</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
