@@ -71,19 +71,31 @@
             [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
             [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
             
-            [textualFromPicker setDatePickerElements: NSYearMonthDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
-            [textualToPicker setDatePickerElements: NSYearMonthDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+            [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+            [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
         }
         else
         {
             [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
             [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
             
-            [textualFromPicker setDatePickerElements: NSYearMonthDatePickerElementFlag];
-            [textualToPicker setDatePickerElements: NSYearMonthDatePickerElementFlag];
+            [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+            [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
         }
         
-        [self.window display];
+        NSRect frame = self.window.frame;
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"])
+            frame = NSMakeRect( frame.origin.x, frame.origin.y - (498 - frame.size.height), frame.size.width, 498);
+        else
+            frame = NSMakeRect( frame.origin.x, frame.origin.y - (287 - frame.size.height), frame.size.width, 287);
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
+            frame = NSMakeRect( frame.origin.x, frame.origin.y, 288, frame.size.height);
+        else
+            frame = NSMakeRect( frame.origin.x, frame.origin.y, 166, frame.size.height);
+        
+        [self.window setFrame: frame display: YES animate: YES];
         
         self.fromDate = fromPicker.dateValue;
         self.toDate = toPicker.dateValue;
