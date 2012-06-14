@@ -15,7 +15,7 @@
 
 #import "NSFileManager+N2.h"
 #import "NSString+N2.h"
-
+#import <sys/stat.h>
 
 @implementation NSFileManager (N2)
 
@@ -207,6 +207,17 @@
 	}
 
 	return success;
+}
+
+-(BOOL)applyFileModeOfParentToItemAtPath:(NSString*)path {
+    struct stat st;
+    if (stat([[path stringByDeletingLastPathComponent] fileSystemRepresentation], &st) == -1)
+        return NO;
+    
+    if (chmod(path.fileSystemRepresentation, st.st_mode&0777) == -1)
+        return NO;
+        
+    return YES;
 }
 
 -(NSString*)destinationOfAliasAtPath:(NSString*)inPath {

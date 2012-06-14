@@ -29,6 +29,8 @@
 -(NSUInteger)sizeAtFSRef:(FSRef*)theFileRef;
 -(BOOL)copyItemAtPath:(NSString*)srcPath toPath:(NSString*)dstPath byReplacingExisting:(BOOL)replace error:(NSError**)err;
 
+-(BOOL)applyFileModeOfParentToItemAtPath:(NSString*)path;
+
 -(NSString*)destinationOfAliasAtPath:(NSString*)path;
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path;
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r;

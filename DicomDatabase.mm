@@ -399,8 +399,10 @@ static DicomDatabase* activeLocalDatabase = nil;
         
         for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
             NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-            if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp])
+            if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp]) {
                 [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
+                [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfp];
+            }
         }
         
         NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];

@@ -15,6 +15,7 @@
 #import "N2ManagedDatabase.h"
 #import "NSMutableDictionary+N2.h"
 #import "N2Debug.h"
+#import "NSFileManager+N2.h"
 
 //#import "DicomDatabase.h" // for debug purposes, REMOVE
 
@@ -104,6 +105,9 @@
     [self.persistentStoreCoordinator lock];
     @try {
         return [super save:error];
+        for (NSPersistentStore* ps in [[self persistentStoreCoordinator] persistentStores])
+            if (ps.URL.isFileURL)
+                [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:ps.URL.path];
     } @catch (...) {
         @throw;
     } @finally {
