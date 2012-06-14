@@ -2511,7 +2511,10 @@ static NSConditionLock *threadLock = nil;
 			break;
 			
 		case 100:	// Custom
-			
+            [timeIntervalStart release];
+            [timeIntervalEnd release];
+			timeIntervalStart = [[CustomIntervalPanel sharedCustomIntervalPanel].fromDate copy];
+            timeIntervalEnd = [[CustomIntervalPanel sharedCustomIntervalPanel].toDate copy];
 			break;
 	}
 }
@@ -2521,20 +2524,10 @@ static NSConditionLock *threadLock = nil;
 	timeIntervalType = [[sender selectedItem] tag];
 	
 	if( [[sender selectedItem] tag] == 100)
-	{
-        static CustomIntervalPanel *sharedCustomIntervalPanel = nil;
-        
-        if( sharedCustomIntervalPanel == nil)
-        {
-            sharedCustomIntervalPanel = [[CustomIntervalPanel alloc] initWithWindowNibName: @"CustomIntervalPanel"];
-        }
-        
-        [sharedCustomIntervalPanel.window makeKeyAndOrderFront: self];
-	}
+        [[[CustomIntervalPanel sharedCustomIntervalPanel] window] makeKeyAndOrderFront: self];
 	else
 	{
 		[self computeTimeInterval];
-		
 		[self outlineViewRefresh];
 	}
 }
@@ -10609,7 +10602,6 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		searchType = 7;
 		timeIntervalType = 0;
-		timeIntervalStart = timeIntervalEnd = nil;
 		
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;

@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "CustomIntervalPanel.h"
+#import "browserController.h"
 
 @interface CustomIntervalPanel ()
 
@@ -22,6 +23,18 @@
 
 @synthesize fromDate, toDate;
 
++ (CustomIntervalPanel*) sharedCustomIntervalPanel
+{
+    static CustomIntervalPanel *sharedCustomIntervalPanel = nil;
+    
+    if( sharedCustomIntervalPanel == nil)
+    {
+        sharedCustomIntervalPanel = [[CustomIntervalPanel alloc] initWithWindowNibName: @"CustomIntervalPanel"];
+    }
+    
+    return sharedCustomIntervalPanel;
+}
+    
 - (id)initWithWindow:(NSWindow *)window
 {
     self = [super initWithWindow:window];
@@ -41,6 +54,27 @@
     [super windowDidLoad];
 }
 
+- (void) setFromDate:(NSDate *) date
+{
+    if( [fromDate isEqualToDate: date] == NO)
+    {
+        [fromDate release];
+        fromDate = [date copy];
+        
+        [[BrowserController currentBrowser] outlineViewRefresh];
+    }
+}
+
+- (void) setToDate:(NSDate *) date
+{
+    if( [toDate isEqualToDate: date] == NO)
+    {
+        [toDate release];
+        toDate = [date copy];
+        
+        [[BrowserController currentBrowser] outlineViewRefresh];
+    }
+}
 - (IBAction) nowFrom:(id)sender;
 {
     self.fromDate = [NSDate date];
@@ -49,5 +83,13 @@
 - (IBAction) nowTo:(id) sender;
 {
      self.toDate = [NSDate date];
+}
+
+- (void) dealloc
+{
+    [fromDate release];
+    [toDate release];
+    
+    [super dealloc];
 }
 @end

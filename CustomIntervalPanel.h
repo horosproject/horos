@@ -25,8 +25,9 @@
     IBOutlet NSDatePicker *textualToPicker;
 }
 
-@property (retain) NSDate *fromDate, *toDate;
+@property (nonatomic, retain) NSDate *fromDate, *toDate;
 
++ (CustomIntervalPanel*) sharedCustomIntervalPanel;
 - (IBAction) nowFrom:(id)sender;
 - (IBAction) nowTo:(id) sender;
 @end

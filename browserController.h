@@ -51,19 +51,12 @@ extern NSString* O2AlbumDragType;
 <NSTableViewDelegate, NSDrawerDelegate, NSMatrixDelegate, NSToolbarDelegate, NSMenuDelegate>   //NSObject
 #endif
 {
-//	NSManagedObjectModel			*managedObjectModel;//, *userManagedObjectModel;
-//    NSManagedObjectContext			*managedObjectContext;//, *userManagedObjectContext;
-//	NSPersistentStoreCoordinator	*userPersistentStoreCoordinator;
-//	NSMutableDictionary				*persistentStoreCoordinatorDictionary;
 	DicomDatabase*					_database;
 	NSMutableDictionary				*databaseIndexDictionary;
 	
 	NSDateFormatter			*TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
 	
 	NSRect					visibleScreenRect[ 40];
-//	NSString				*currentDatabasePath;
-//	BOOL					isCurrentDatabaseBonjour;
-//	NSManagedObjectContext	*bonjourManagedObjectContext;
 	NSString				*transferSyntax;
     NSArray                 *dirArray;
     NSToolbar               *toolbar;
@@ -78,17 +71,16 @@ extern NSString* O2AlbumDragType;
 	NSMutableDictionary		*activeReceives;
 	NSMutableArray			*receiveLog;
 	
-	LogWindowController			*logWindowController;
+	LogWindowController		*logWindowController;
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, /**IncomingTimer,*/ /**matrixDisplayIcons,*/ *refreshTimer, *databaseCleanerTimer/*, *bonjourTimer*/, *deleteQueueTimer;
+    NSTimer                 *timer, *refreshTimer, *databaseCleanerTimer, *deleteQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
 	long					previousBonjourIndex;
 	
-//    long                    COLUMN;
 	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums, *splitDrawer;
     CGFloat _splitViewVertDividerRatio;
     
@@ -97,8 +89,6 @@ extern NSString* O2AlbumDragType;
 	NSMutableArray*         _albumNoOfStudiesCache;
     NSArray*                _cachedAlbums;
     NSManagedObjectContext* _cachedAlbumsContext;
-	
- //   volatile BOOL			bonjourDownloading;
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
@@ -154,9 +144,6 @@ extern NSString* O2AlbumDragType;
     NSDate							*timeIntervalStart, *timeIntervalEnd;
     IBOutlet NSView					*timeIntervalView;
     
-//	IBOutlet NSWindow				*customTimeIntervalWindow;
-//	IBOutlet NSDatePicker			*customStart, *customEnd, *customStart2, *customEnd2;
-	
 	IBOutlet NSView					*searchView;
 	IBOutlet NSSearchField			*searchField;
 	NSToolbarItem					*toolbarSearchItem;
@@ -176,10 +163,9 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSView					*exportAccessoryView;
 	IBOutlet NSMatrix				*compressionMatrix, *folderTree;
 	
-//	NSRecursiveLock					/**checkIncomingLock,*/ *checkBonjourUpToDateThreadLock;
 	NSPredicate						*testPredicate;
 	
-    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;//, displayEmptyDatabase;
+    BOOL							showAllImages, DatabaseIsEdited, isNetworkLogsActive;
 	NSConditionLock					*queueLock;
 	
 	IBOutlet NSScrollView			*thumbnailsScrollView;
@@ -187,20 +173,14 @@ extern NSString* O2AlbumDragType;
 	NSPredicate						*_fetchPredicate, *_filterPredicate;
 	NSString						*_filterPredicateDescription;
 	
-	NSString						/**fixedDocumentsDirectory,*/ *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
+	NSString						*CDpassword, *pathToEncryptedFile, *passwordForExportEncryption;
 	
-//	char							cfixedDocumentsDirectory[ 4096], cfixedIncomingDirectory[ 4096], cfixedTempNoIndexDirectory[ 4096], cfixedIncomingNoIndexDirectory[ 4096];
-	
-//	NSTimeInterval					databaseLastModification;
 	NSUInteger						previousFlags;
-//	StructuredReportController		*structuredReportController;
-	
+    
 	NSMutableArray					*deleteQueueArray;
 	NSRecursiveLock					*deleteQueue, *deleteInProgress;
 	
 	NSConditionLock					*processorsLock;
-//	NSRecursiveLock					*decompressArrayLock, *decompressThreadRunning;
-//	NSMutableArray					*decompressArray;
 	
 	NSMutableString					*pressedKeys;
 	
@@ -214,10 +194,6 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSArrayController		*notificationEmailArrayController;
 	NSString						*temporaryNotificationEmail, *customTextNotificationEmail;
 	
-//	NSConditionLock					*newFilesConditionLock;
-//	NSMutableArray					*viewersListToReload, *viewersListToRebuild;
-	
-//	volatile BOOL					newFilesInIncoming;
 	NSImage							*notFoundImage;
 	
 	BOOL							ROIsAndKeyImagesButtonAvailable;
@@ -228,26 +204,17 @@ extern NSString* O2AlbumDragType;
 	BOOL							avoidRecursive, openSubSeriesFlag, openReparsedSeriesFlag;
 	
 	IBOutlet PluginManagerController *pluginManagerController;
-//	NSTimeInterval					lastCheckIncoming;
 	
 	WaitRendering					*waitOpeningWindow;
-//	Wait							*waitCompressionWindow;
 	BOOL							waitCompressionAbort;
-	
-//	BOOL							checkForMountedFiles;
 	
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
     BOOL                            _computingNumberOfStudiesForAlbums;
-    
-//	NSArray							*mountedVolumes;
 	
-	IBOutlet NSTableView* _activityTableView;//AtableView;
-//	IBOutlet NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
-//	IBOutlet NSTextField* AstatusLabel;
-//	NSThread* AupdateStatsThread;
+	IBOutlet NSTableView* _activityTableView;
 	id _activityHelper;
     
     IBOutlet NSSplitView *bannerSplit;
@@ -262,20 +229,13 @@ extern NSString* O2AlbumDragType;
 @property(readonly) NSArrayController* sources;
 
 @property(readonly) NSDateFormatter *DateTimeFormat __deprecated, *DateOfBirthFormat __deprecated, *TimeFormat, *TimeWithSecondsFormat, *DateTimeWithSecondsFormat;
-/*@property(readonly) NSRecursiveLock *checkIncomingLock;*/
 @property(readonly) NSArray *matrixViewArray;
 @property(readonly) NSMatrix *oMatrix;
-//@property(readonly) long COLUMN /*currentBonjourService*/;
 @property(readonly) BOOL is2DViewer, isCurrentDatabaseBonjour;
 @property(readonly) MyOutlineView *databaseOutline;
 @property(readonly) NSTableView *albumTable;
 @property(readonly) NSString *currentDatabasePath __deprecated, *localDatabasePath __deprecated, *documentsDirectory __deprecated, *fixedDocumentsDirectory __deprecated;
 
-//@property(readonly) NSTableView* AtableView;
-//@property(readonly) NSImageView* AcpuActiView, *AhddActiView, *AnetActiView;
-//@property(readonly) NSTextField* AstatusLabel;
-
-//@property volatile BOOL bonjourDownloading;
 @property(readonly) NSBox *bonjourSourcesBox;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
@@ -288,8 +248,6 @@ extern NSString* O2AlbumDragType;
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
-//@property(readonly) NSMutableArray *viewersListToReload, *viewersListToRebuild;
-//@property(readonly) NSConditionLock* newFilesConditionLock;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
 
@@ -373,7 +331,6 @@ extern NSString* O2AlbumDragType;
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand;
 - (BOOL) findAndSelectFile: (NSString*) path image: (NSManagedObject*) curImage shouldExpand: (BOOL) expand extendingSelection: (BOOL) extendingSelection;
 - (void) selectServer: (NSArray*) files;
-//- (void) loadDICOMFromiPod __deprecated;
 - (long) saveDatabase __deprecated;
 - (long) saveDatabase:(NSString*) path __deprecated;
 - (long) saveDatabase: (NSString*)path context: (NSManagedObjectContext*) context __deprecated;
@@ -472,14 +429,8 @@ extern NSString* O2AlbumDragType;
 - (void)selectStudyWithObjectID:(NSManagedObjectID*)oid;
 - (void) selectThisStudy: (id)study;
 
-//- (short) createAnonymizedFile:(NSString*) srcFile :(NSString*) dstFile;
-
-//- (void)runSendQueue:(id)object;
-//- (void)addToQueue:(NSArray *)array;
-
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
-//- (void)reloadSendLog:(id)sender;
 
 - (NSArray*) KeyImages: (id) sender;
 - (NSArray*) ROIImages: (id) sender;
@@ -502,18 +453,9 @@ extern NSString* O2AlbumDragType;
 - (void) refreshDatabase:(id) sender;
 - (void) syncReportsIfNecessary;
 
-//- (void) removeAllMounted __deprecated;
-//- (void) removeMountedImages: (NSString*) sNewDrive __deprecated;
-
 //bonjour
 -(NSManagedObjectContext*)bonjourManagedObjectContext __deprecated;
 - (void) setBonjourDatabaseValue:(NSManagedObject*) obj value:(id) value forKey:(NSString*) key __deprecated;
-//- (void) setServiceName:(NSString*) title;
-//- (NSString*) serviceName;
-//- (IBAction)toggleBonjourSharing:(id) sender;
-//- (void) setBonjourSharingEnabled:(BOOL) boo;
-//- (void) bonjourWillPublish;
-//- (void) bonjourDidStop;
 - (IBAction) bonjourServiceClicked:(id)sender;
 - (NSString*) getLocalDCMPath: (NSManagedObject*) obj :(long) no;
 - (void) displayBonjourServices;
@@ -538,7 +480,6 @@ extern NSString* O2AlbumDragType;
 
 + (NSString*) defaultDocumentsDirectory  __deprecated;
 - (NSString *)documentsDirectoryFor:(int) mode url:(NSString*) url  __deprecated;
-// - (NSString *)setFixedDocumentsDirectory  __deprecated; // this is commented out but still available, so it causes compilation errors
 - (IBAction)showLogWindow: (id)sender;
 - (void) resetLogWindowController;
 
@@ -557,11 +498,6 @@ extern NSString* O2AlbumDragType;
 
 - (NSArray *)databaseSelection;
 
-
-//- (void) newFilesGUIUpdateRun:(int) state __deprecated;
-//- (void) newFilesGUIUpdateRun: (int) state viewersListToReload: (NSMutableArray*) cReload viewersListToRebuild: (NSMutableArray*) cRebuild  __deprecated;
-//- (void) newFilesGUIUpdate:(id) sender __deprecated;
-
 - (void) refreshMatrix:(id) sender;
 - (void)updateReportToolbarIcon:(NSNotification *)note;
 
@@ -569,9 +505,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) paste: (id)sender;
 - (IBAction) pasteImageForSourceFile: (NSString*) sourceFile;
 - (void) decompressDICOMJPEG: (NSArray*) array __deprecated;
-//- (void) decompressWaitIncrementation: (NSNumber*) n;
 - (void) compressDICOMJPEG:(NSArray*) array __deprecated;
-//- (void) decompressThread: (NSNumber*) typeOfWork __deprecated;
 - (void) decompressArrayOfFiles: (NSArray*) array work:(NSNumber*) work __deprecated;
 - (IBAction) compressSelectedFiles:(id) sender;
 - (IBAction) decompressSelectedFiles:(id) sender;
