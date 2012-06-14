@@ -45,7 +45,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{0, 0}, {605, 282}}</string>
 				<int key="NSWTFlags">611845120</int>
-				<string key="NSWindowTitle">Custom Interval</string>
+				<string key="NSWindowTitle">Custom Date</string>
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
@@ -59,7 +59,7 @@
 							<string key="NSFrame">{{14, 50}, {278, 148}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="111139660"/>
+							<reference key="NSNextKeyView" ref="849736426"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSDatePickerCell" key="NSCell" id="786792095">
 								<int key="NSCellFlags">71433728</int>
@@ -120,7 +120,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<string key="NSFrame">{{309, 50}, {277, 148}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="228266193"/>
+							<reference key="NSNextKeyView" ref="111139660"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSDatePickerCell" key="NSCell" id="376411990">
 								<int key="NSCellFlags">71433728</int>
@@ -168,7 +168,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<string key="NSFrame">{{306, 206}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="849736426"/>
+							<reference key="NSNextKeyView" ref="504216294"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="848547148">
 								<int key="NSCellFlags">67239424</int>
@@ -221,7 +221,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<string key="NSFrame">{{81, 199}, {80, 28}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="504216294"/>
+							<reference key="NSNextKeyView" ref="265826803"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="521458092">
 								<int key="NSCellFlags">67239424</int>
@@ -246,7 +246,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 							<string key="NSFrame">{{66, 20}, {171, 27}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
+							<reference key="NSNextKeyView" ref="228266193"/>
 							<string key="NSHuggingPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSDatePickerCell" key="NSCell" id="741738730">
@@ -438,7 +438,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="869400966">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{161, 252}, {141, 18}}</string>
+							<string key="NSFrame">{{161, 231}, {226, 18}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1040101245"/>
