@@ -6848,14 +6848,14 @@ static BOOL withReset = NO;
                         if( count <= 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
                             count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
                         
-                        singleType = @"Page";
-                        pluralType = @"Pages";
+                        singleType = NSLocalizedString(@"Page", nil);
+                        pluralType = NSLocalizedString(@"Pages", nil);
                     }
                     else if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
                     {
                         count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
-                        singleType = @"Frame";
-                        pluralType = @"Frames";
+                        singleType = NSLocalizedString(@"Frame", nil);
+                        pluralType = NSLocalizedString(@"Frames", nil);
                     }
                     else if( count == 0)
                     {
@@ -6863,20 +6863,22 @@ static BOOL withReset = NO;
                         if( count <= 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
                             count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
                         
-                        singleType = @"Object";
-                        pluralType = @"Objects";
+                        singleType = NSLocalizedString(@"Object", nil);
+                        pluralType = NSLocalizedString(@"Objects", nil);
                     }
                     else
                     {
-                        singleType = @"Image";
-                        pluralType = @"Images";
+                        singleType = NSLocalizedString(@"Image", nil);
+                        pluralType = NSLocalizedString(@"Images", nil);
                     }
                     
-                    [cell setTitle:[NSString stringWithFormat: NSLocalizedString(@"%@\r%@", nil), name, N2LocalizedSingularPluralCount( count, singleType, pluralType)]];
+                    [cell setTitle:[NSString stringWithFormat: @"%@\r%@", name, N2LocalizedSingularPluralCount( count, singleType, pluralType)]];
 				}
 				else if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"])
 				{
-					if( [[curFile valueForKey: @"sliceLocation"] floatValue])
+                    if( [DCMAbstractSyntaxUID isStructuredReport: seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF: seriesSOPClassUID])
+                        [cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Page %d", nil), i+1]];
+					else if( [[curFile valueForKey: @"sliceLocation"] floatValue])
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d\r%.2f", nil), i+1, [[curFile valueForKey: @"sliceLocation"] floatValue]]];
 					else
 						[cell setTitle:[NSString stringWithFormat:NSLocalizedString(@"Image %d", nil), i+1]];

@@ -11,14 +11,15 @@
 - Add up to 4 DICOM fields to populate DB Comments field
 - Auto Query Retrieve : multiple instances, option to lock
 - Save default order for albums
-- XMLRPC interface enhancements
+- XML-RPC interface enhancements
+- New 'Custom Interval Panel' for the database
 
 ------------------------------------------------------------------------------------------------------------------------
 
-- Mountain Lion: Notifications Center, iCloud sync, Retina Display
+- 10.8: Notifications Center, iCloud sync, Retina Display,
+- 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
 - SPECT-CT JP2-KDU bug
 - High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
-- Generate Movies with AVAssetWriter (10.7 SDK)
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
