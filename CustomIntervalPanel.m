@@ -47,14 +47,47 @@
 		[toPicker setLocale: [NSLocale currentLocale]];
 		[textualFromPicker setLocale: [NSLocale currentLocale]];
 		[textualToPicker setLocale: [NSLocale currentLocale]];
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forKeyPath: @"values.customIntervalWithHoursAndMinutes"
+                                                                   options: NSKeyValueObservingOptionNew
+                                                                   context: NULL];
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver: self
+                                                                forKeyPath: @"values.betweenDatesMode"
+                                                                   options: NSKeyValueObservingOptionNew
+                                                                   context: NULL];
     }
     
     return self;
 }
 
-- (void)windowDidLoad
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [super windowDidLoad];
+    if( [keyPath isEqual:@"values.betweenDatesMode"] || [keyPath isEqual:@"values.customIntervalWithHoursAndMinutes"])
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
+        {
+            [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+            [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+            
+            [textualFromPicker setDatePickerElements: NSYearMonthDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+            [textualToPicker setDatePickerElements: NSYearMonthDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+        }
+        else
+        {
+            [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+            [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+            
+            [textualFromPicker setDatePickerElements: NSYearMonthDatePickerElementFlag];
+            [textualToPicker setDatePickerElements: NSYearMonthDatePickerElementFlag];
+        }
+        
+        [self.window display];
+        
+        self.fromDate = fromPicker.dateValue;
+        self.toDate = toPicker.dateValue;
+    }
 }
 
 - (void) setFromDate:(NSDate *) date

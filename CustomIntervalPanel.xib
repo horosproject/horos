@@ -43,7 +43,7 @@
 			<object class="NSWindowTemplate" id="495221356">
 				<int key="NSWindowStyleMask">287</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{0, 0}, {605, 282}}</string>
+				<string key="NSWindowRect">{{0, 0}, {605, 296}}</string>
 				<int key="NSWTFlags">611845120</int>
 				<string key="NSWindowTitle">Custom Date</string>
 				<string key="NSWindowClass">NSPanel</string>
@@ -218,7 +218,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						<object class="NSButton" id="889907497">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{81, 199}, {80, 28}}</string>
+							<string key="NSFrame">{{79, 199}, {80, 28}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="265826803"/>
@@ -243,7 +243,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						<object class="NSDatePicker" id="111139660">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{66, 20}, {171, 27}}</string>
+							<string key="NSFrame">{{14, 20}, {143, 27}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="228266193"/>
@@ -268,10 +268,9 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						<object class="NSDatePicker" id="228266193">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">256</int>
-							<string key="NSFrame">{{363, 20}, {171, 27}}</string>
+							<string key="NSFrame">{{309, 20}, {144, 27}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSDatePickerCell" key="NSCell" id="1044381352">
 								<int key="NSCellFlags">71433728</int>
@@ -292,7 +291,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						<object class="NSMatrix" id="763931177">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{14, 231}, {142, 38}}</string>
+							<string key="NSFrame">{{14, 258}, {142, 38}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="869400966"/>
@@ -438,7 +437,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="869400966">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{161, 231}, {226, 18}}</string>
+							<string key="NSFrame">{{31, 239}, {226, 18}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1040101245"/>
@@ -467,7 +466,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</object>
 						</object>
 					</array>
-					<string key="NSFrameSize">{605, 282}</string>
+					<string key="NSFrameSize">{605, 296}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="763931177"/>
@@ -751,12 +750,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="849736426"/>
 							<reference ref="1040101245"/>
 							<reference ref="265826803"/>
-							<reference ref="111139660"/>
-							<reference ref="228266193"/>
 							<reference ref="889907497"/>
 							<reference ref="504216294"/>
 							<reference ref="763931177"/>
 							<reference ref="869400966"/>
+							<reference ref="111139660"/>
+							<reference ref="228266193"/>
 						</array>
 						<reference key="parent" ref="495221356"/>
 					</object>

@@ -6893,7 +6893,7 @@ static BOOL withReset = NO;
 						setDCMDone = YES;
 					}
 				}
-			}		
+			}
 			else
 			{  // Show Error Button
                 NSInteger rows, cols; [oMatrix getNumberOfRows:&rows columns:&cols];
