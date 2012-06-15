@@ -34,6 +34,7 @@
         sharedCustomIntervalPanel.fromDate = [NSDate date];
         sharedCustomIntervalPanel.toDate = [NSDate date];
         [sharedCustomIntervalPanel sizeWindowAccordingToSettings];
+        [sharedCustomIntervalPanel setFormatAccordingToSettings];
     }
     
     return sharedCustomIntervalPanel;
@@ -85,26 +86,31 @@
     [self.window setFrame: frame display: YES animate: YES];
 }
 
+- (void) setFormatAccordingToSettings
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
+    {
+        [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+        [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+        
+        [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+        [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
+    }
+    else
+    {
+        [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+        [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+        
+        [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+        [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
+    }
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if( [keyPath isEqual:@"values.betweenDatesMode"] || [keyPath isEqual:@"values.customIntervalWithHoursAndMinutes"])
     {
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"betweenDatesMode"] && [[NSUserDefaults standardUserDefaults] boolForKey: @"customIntervalWithHoursAndMinutes"])
-        {
-            [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
-            [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
-            
-            [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
-            [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag | NSHourMinuteDatePickerElementFlag];
-        }
-        else
-        {
-            [toPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
-            [fromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
-            
-            [textualFromPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
-            [textualToPicker setDatePickerElements: NSYearMonthDayDatePickerElementFlag];
-        }
+        [self setFormatAccordingToSettings];
         
         [self sizeWindowAccordingToSettings];
         

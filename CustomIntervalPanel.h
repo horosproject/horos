@@ -31,5 +31,6 @@
 - (IBAction) nowFrom:(id)sender;
 - (IBAction) nowTo:(id) sender;
 - (void) sizeWindowAccordingToSettings;
+- (void) setFormatAccordingToSettings;
 
 @end
