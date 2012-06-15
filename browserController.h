@@ -140,7 +140,6 @@ extern NSString* O2AlbumDragType;
 	IBOutlet NSTextField			*estimatedTime, *noOfFilesToRebuild, *warning;
 	
     int								timeIntervalType;
-	IBOutlet NSPopUpButton			*timeIntervalPopup;
     NSDate							*timeIntervalStart, *timeIntervalEnd;
     IBOutlet NSView					*timeIntervalView;
     
@@ -245,6 +244,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 
+@property int timeIntervalType;
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
@@ -383,8 +383,6 @@ extern NSString* O2AlbumDragType;
 - (IBAction)addSmartAlbum: (id)sender;
 - (IBAction)search: (id)sender;
 - (IBAction)setSearchType: (id)sender;
-//- (void) setDraggedItems:(NSArray*) pbItems;
-- (IBAction)setTimeIntervalType: (id)sender;
 - (IBAction) saveDBListAs:(id) sender;
 - (IBAction) openDatabase:(id) sender;
 - (void) checkReportsDICOMSRConsistency __deprecated;

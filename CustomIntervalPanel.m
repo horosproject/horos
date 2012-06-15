@@ -38,7 +38,12 @@
     
     return sharedCustomIntervalPanel;
 }
-    
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+    [BrowserController currentBrowser].timeIntervalType = 0;
+}
+
 - (id)initWithWindow:(NSWindow *)window
 {
     self = [super initWithWindow:window];

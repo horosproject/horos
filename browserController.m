@@ -263,8 +263,7 @@ static NSString*	ViewersToolbarItemIdentifier	= @"windows.tif";
 static NSString*	WebServerSingleNotification	= @"Safari.tif";
 static NSString*	AddStudiesToUserItemIdentifier	= @"NSUserAccounts";
 
-static NSTimeInterval gLastActivity = 0;//, gLastCoreDataReset = 0;
-//static BOOL DICOMDIRCDMODE = NO;
+static NSTimeInterval gLastActivity = 0;
 static BOOL dontShowOpenSubSeries = NO;
 
 static NSArray*	statesArray = nil;
@@ -286,19 +285,15 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize database = _database;
 @synthesize sources = _sourcesArrayController;
 
-@synthesize /*checkIncomingLock, */CDpassword, passwordForExportEncryption, databaseIndexDictionary;
+@synthesize CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable;
-//@synthesize currentDatabasePath;
-//@synthesize ![database isLocal], bonjourDownloading
-@synthesize bonjourSourcesBox;
+@synthesize bonjourSourcesBox, timeIntervalType;
 @synthesize bonjourBrowser, pathToEncryptedFile;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
-@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;//, userManagedObjectContext, userManagedObjectModel;
-//@synthesize viewersListToReload, viewersListToRebuild;//, newFilesConditionLock; //, databaseLastModification;
-//@synthesize AtableView/*, AcpuActiView, AhddActiView, AnetActiView, AstatusLabel*/;
+@synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
@@ -1323,7 +1318,7 @@ static NSConditionLock *threadLock = nil;
 	//				
 	//				selectedItem = [[selectedItem copy] autorelease];
 	//			}
-	//			timeInt = timeIntervalType;
+	//			timeInt = self.timeIntervalType;
 	//		}
 			
 			[_database save:nil];
@@ -1572,7 +1567,7 @@ static NSConditionLock *threadLock = nil;
 //					}
 //				}
 //				
-//				timeIntervalType = timeInt;
+//				self.timeIntervalType = timeInt;
 //				[timeIntervalPopup selectItemWithTag: 0];
 //				
 //				[self setSearchString: nil];
@@ -1662,8 +1657,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void)showEntireDatabase
 {
-	timeIntervalType = 0;
-	[timeIntervalPopup selectItemWithTag: 0];
+	self.timeIntervalType = 0;
 	
 	[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
 	self.searchString = @"";
@@ -2447,7 +2441,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) computeTimeInterval
 {
-	switch( timeIntervalType)
+	switch( self.timeIntervalType)
 	{
 		case 0:	// None
 			[timeIntervalStart release];		timeIntervalStart = nil;
@@ -2519,11 +2513,11 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (IBAction) setTimeIntervalType: (id)sender
+- (void) setTimeIntervalType: (int) t
 {
-	timeIntervalType = [[sender selectedItem] tag];
+	timeIntervalType = t;
 	
-	if( [[sender selectedItem] tag] == 100)
+	if( t == 100)
         [[[CustomIntervalPanel sharedCustomIntervalPanel] window] makeKeyAndOrderFront: self];
 	
     [self computeTimeInterval];
@@ -10599,7 +10593,7 @@ static NSArray*	openSubSeriesArray = nil;
 		previousItem = nil;
 		
 		searchType = 7;
-		timeIntervalType = 0;
+		self.timeIntervalType = 0;
 		
 		outlineViewArray = [[NSArray array] retain];
 		browserWindow = self;
