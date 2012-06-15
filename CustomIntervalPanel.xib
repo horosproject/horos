@@ -41,7 +41,7 @@
 				<string key="NSClassName">NSApplication</string>
 			</object>
 			<object class="NSWindowTemplate" id="495221356">
-				<int key="NSWindowStyleMask">4375</int>
+				<int key="NSWindowStyleMask">4119</int>
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{0, 0}, {294, 488}}</string>
 				<int key="NSWTFlags">611845120</int>
@@ -292,7 +292,7 @@ U1QAQ0VUAAAAAQEAAAEBA</bytes>
 						<object class="NSMatrix" id="763931177">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{6, 450}, {142, 38}}</string>
+							<string key="NSFrame">{{6, 446}, {142, 38}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="869400966"/>
@@ -438,7 +438,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<object class="NSButton" id="869400966">
 							<reference key="NSNextResponder" ref="917221064"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{23, 431}, {226, 18}}</string>
+							<string key="NSFrame">{{23, 427}, {226, 18}}</string>
 							<reference key="NSSuperview" ref="917221064"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1040101245"/>
@@ -473,11 +473,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSNextKeyView" ref="763931177"/>
 					<string key="NSReuseIdentifierKey">_NS:21</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1280, 938}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">CustomIntervalWindow</string>
-				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
-				<double key="NSContentBorderThicknessMinY">22</double>
 				<bool key="NSWindowIsRestorable">NO</bool>
 			</object>
 			<object class="NSUserDefaultsController" id="591085468">
