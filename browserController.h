@@ -244,7 +244,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 
-@property int timeIntervalType;
+@property(nonatomic) int timeIntervalType;
 @property BOOL rtstructProgressBar;
 @property float rtstructProgressPercent;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
