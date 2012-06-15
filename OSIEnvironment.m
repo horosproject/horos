@@ -35,7 +35,7 @@ static OSIEnvironment *sharedEnvironment = nil;
 
 + (OSIEnvironment*)sharedEnvironment
 {
-    return nil; // because this is too slow on remote DBs, sorry... you're forcing us to load the complete series' DCMPix before showing the window :(
+//    return nil; // because this is too slow on remote DBs, sorry... you're forcing us to load the complete series' DCMPix before showing the window :(
     
 	@synchronized (self) {
 		if (sharedEnvironment == nil)
