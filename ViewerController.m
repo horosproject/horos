@@ -2709,7 +2709,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	[splitView saveDefault:@"SPLITVIEWER"];
+    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
 	
 	[highLightedTimer invalidate];
 	[highLightedTimer release];
@@ -3973,8 +3973,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[self buildMatrixPreview];
 			}
 		}
-		
-		[splitView saveDefault:@"SPLITVIEWER"];
+        
+        [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
 	}
 }
 
@@ -4040,7 +4040,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return proposedPosition;
 }
 
--(BOOL)matrixIsVisible {
+-(BOOL)matrixIsVisible
+{
     NSView* v = [[splitView subviews] objectAtIndex:0];
     return ![v isHidden] && [v frame].size.width > 0; 
 }
@@ -18972,7 +18973,9 @@ int i,j,l;
 	
 	// SplitView
 	[[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications:YES]; 
-	[splitView restoreDefault:@"SPLITVIEWER"];
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"AUTOHIDEMATRIX"] == NO)
+        [self setMatrixVisible: [[NSUserDefaults standardUserDefaults] boolForKey: @"SeriesListVisible"]];
 	
 	if( matrixPreviewBuilt == NO)
 		[self buildMatrixPreview];
