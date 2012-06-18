@@ -1858,8 +1858,27 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	// filter by user rights
-	if (self.user) {
-		studies = (NSMutableArray*) [WebPortalUser studiesForUser: self.user predicate:[NSPredicate predicateWithValue:YES] sortBy:nil];// is not mutable, but we won't mutate it anymore
+	if (self.user)
+    {
+        NSArray *authorizedStudies = [WebPortalUser studiesForUser: self.user predicate:nil sortBy:nil];
+        
+        for( int i = studies.count-1; i >= 0; i--)
+        {
+            BOOL authorized = NO;
+            DicomStudy *currentStudy = [studies objectAtIndex: i];
+            
+            for( DicomStudy *s in authorizedStudies)
+            {
+                if( [[s XID] isEqualToString: currentStudy.XID])
+                {
+                    authorized = YES;
+                    break;
+                }
+            }
+            
+            if( authorized == NO)
+                [studies removeObjectAtIndex: i];
+        }
 	}
 	
 	// produce XML
