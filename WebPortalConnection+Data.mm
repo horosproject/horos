@@ -1877,7 +1877,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             }
             
             if( authorized == NO)
+            {
+                NSLog( @"******** Trying to load a not authorized study through a Weasis JNLP request? %@", [studies objectAtIndex: i]);
                 [studies removeObjectAtIndex: i];
+            }
         }
 	}
 	
