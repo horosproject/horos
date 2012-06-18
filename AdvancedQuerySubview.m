@@ -61,7 +61,7 @@
 		}
 		
 		dateRangePopup = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(287,18,135,26) pullsDown:NO];
-		[dateRangePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"the last day", nil), NSLocalizedString(@"the last 2 days", nil), NSLocalizedString(@"the last week", nil), NSLocalizedString(@"the last month", nil), NSLocalizedString(@"the last 2 months", nil), NSLocalizedString(@"the last 3 month", nil), NSLocalizedString(@"the last year", nil), nil]];
+		[dateRangePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"the last day", nil), NSLocalizedString(@"the last 2 days", nil), NSLocalizedString(@"the last 7 days", nil), NSLocalizedString(@"the last  31 days", nil), NSLocalizedString(@"the last 2 months", nil), NSLocalizedString(@"the last 3 month", nil), NSLocalizedString(@"the last year", nil), nil]];
 		[self addSubview:dateRangePopup];
 		[dateRangePopup setHidden:YES];
 		[dateRangePopup release];
