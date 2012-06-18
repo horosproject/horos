@@ -344,6 +344,9 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
                     } @catch (NSException* e) {
                         N2LogExceptionWithStackTrace(e);
                     }
+                    
+                    if (length < maxLength)
+                        break;
                 } else {
                     if (length < 0) {
                         NSLog(@"Warning: [NSInputStream read:maxLength:] returned %d", (int)length);

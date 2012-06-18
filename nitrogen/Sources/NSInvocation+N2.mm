@@ -39,55 +39,55 @@
 			[self setArgument:&o atIndex:i];
 		} break;
         case 'c': {
-            char v = [o charValue];
+            char v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o charValue]; // string converted to long, then to char
             [self setArgument:&v atIndex:i];
 		} break;
         case 'i': {
-            int v = [o integerValue];
+            int v = [o integerValue]; // is NSString-safe
             [self setArgument:&v atIndex:i];
 		} break;
         case 's': {
-            short v = [o shortValue];
+            short v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o shortValue]; // string converted to long, then to short
             [self setArgument:&v atIndex:i];
 		} break;
         case 'l': {
-            long v = [o longValue];
+            long v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o longValue];
             [self setArgument:&v atIndex:i];
 		} break;
         case 'q': {
-            long long v = [o longLongValue];
+            long long v = [o longLongValue]; // is NSString-safe
             [self setArgument:&v atIndex:i];
 		} break;
         case 'C': {
-            unsigned char v = [o unsignedCharValue];
+            unsigned char v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o unsignedCharValue]; // string converted to long, then to unsigned char
             [self setArgument:&v atIndex:i];
 		} break;
         case 'I': {
-            unsigned int v = [o unsignedIntegerValue];
+            unsigned int v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o unsignedIntegerValue]; // string converted to long, then to unsigned int
             [self setArgument:&v atIndex:i];
 		} break;
         case 'S': {
-            unsigned short v = [o unsignedShortValue];
+            unsigned short v = [o isKindOfClass:[NSString class]]? strtol([o UTF8String], NULL, 0) : [o unsignedShortValue]; // string converted to long, then to unsigned short
             [self setArgument:&v atIndex:i];
 		} break;
         case 'L': {
-            unsigned long v = [o unsignedLongValue];
+            unsigned long v = [o isKindOfClass:[NSString class]]? strtoul([o UTF8String], NULL, 0) : [o unsignedLongValue];
             [self setArgument:&v atIndex:i];
 		} break;
         case 'Q': {
-            unsigned long long v = [o unsignedLongLongValue];
+            unsigned long long v = [o isKindOfClass:[NSString class]]? strtoull([o UTF8String], NULL, 0) : [o unsignedLongLongValue];
             [self setArgument:&v atIndex:i];
 		} break;
         case 'f': {
-            float v = [o floatValue];
+            float v = [o floatValue]; // is NSString-safe
             [self setArgument:&v atIndex:i];
 		} break;
         case 'd': {
-            double v = [o doubleValue];
+            double v = [o doubleValue]; // is NSString-safe
             [self setArgument:&v atIndex:i];
 		} break;
         case 'B': {
-            bool v = [o boolValue];
+            bool v = [o boolValue]; // is NSString-safe
             [self setArgument:&v atIndex:i];
 		} break;
         case 'v': {
