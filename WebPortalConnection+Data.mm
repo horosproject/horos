@@ -1858,7 +1858,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	}
 	
 	// filter by user rights
-	if (self.user)
+	if( self.user)
     {
         NSArray *authorizedStudies = [WebPortalUser studiesForUser: self.user predicate:nil sortBy:nil];
         
