@@ -3808,7 +3808,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     BOOL currentlyVisible = [self matrixIsVisible];
     
-    if (currentlyVisible != visible) {
+    if (currentlyVisible != visible)
+    {
         NSView* v = [[splitView subviews] objectAtIndex:0];
         [v setHidden:!visible];
         if (visible) {
@@ -3816,6 +3817,8 @@ static volatile int numberOfThreadsForRelisce = 0;
             [v setFrame:f];
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
+        
+        [[NSUserDefaults standardUserDefaults] setBool: visible forKey: @"SeriesListVisible"];
     }
 /*    
     NSRect	frameLeft, frameRight, previous;
@@ -3969,9 +3972,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		if ([note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
 		{
 			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
-			{
 				[self buildMatrixPreview];
-			}
 		}
         
         [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
