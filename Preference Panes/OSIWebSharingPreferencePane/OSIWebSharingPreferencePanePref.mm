@@ -239,8 +239,11 @@
 	[NSApp endSheet:usersPanel];
 }
 
-- (void)editUsersSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+- (void)editUsersSheetDidEnd:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
 	[sheet orderOut:NULL];
+    
+    [[self managedObjectContext] save: NULL];
 }
 
 @end
