@@ -2975,6 +2975,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView sendSyncMessage: 0];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
+    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
 }
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
@@ -2982,7 +2983,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[imageView stopROIEditingForce: YES];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
-	
+	[[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
+    
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
 }
 
@@ -3817,8 +3819,6 @@ static volatile int numberOfThreadsForRelisce = 0;
             [v setFrame:f];
         }
         [splitView resizeSubviewsWithOldSize:splitView.bounds.size];
-        
-        [[NSUserDefaults standardUserDefaults] setBool: visible forKey: @"SeriesListVisible"];
     }
 /*    
     NSRect	frameLeft, frameRight, previous;
@@ -3865,6 +3865,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey:@"AUTOHIDEMATRIX"];
     [self setMatrixVisible:![self matrixIsVisible]];
+    
+    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
 }
 
 - (void) autoHideMatrix
@@ -3974,8 +3976,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
 				[self buildMatrixPreview];
 		}
-        
-        [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
 	}
 }
 
@@ -4028,8 +4028,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 				{
 					if( [[loopItem windowController] isKindOfClass:[ViewerController class]] && [loopItem windowController] != self)
 					{
-						if (proposedPosition) [[loopItem windowController] setMatrixVisible: YES];
-						else [[loopItem windowController] setMatrixVisible: NO];
+						if (proposedPosition)
+                            [[loopItem windowController] setMatrixVisible: YES];
+						else
+                            [[loopItem windowController] setMatrixVisible: NO];
 					}
 				}
 			}
