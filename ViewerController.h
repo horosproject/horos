@@ -315,7 +315,7 @@ enum
 	
 	NSMutableArray			*undoQueue, *redoQueue;
 	
-	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry, updateTilingViews, stopViewFrameDidChangeNotification;
+	BOOL					SyncButtonBehaviorIsBetweenStudies, titledGantry, updateTilingViews;
 	
 	volatile BOOL			checkEverythingLoaded;
 	

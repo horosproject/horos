@@ -2386,16 +2386,20 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else
 		{
 			NSDate	*bod = [curImage valueForKeyPath:@"series.study.dateOfBirth"];
-			NSString* windowTitle;
-			
+			NSString *windowTitle;
+			NSString *seriesName = [curImage valueForKeyPath:@"series.name"];
+            
+            if( seriesName == nil)
+                seriesName = @"";
+            
 			if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] == annotFull)
 			{
 				if( [curImage valueForKeyPath:@"series.study.dateOfBirth"])
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@) - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [BrowserController DateOfBirthFormat: bod], [curImage valueForKeyPath:@"series.study.yearOld"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 				else
-					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+					windowTitle = [NSString stringWithFormat: @"%@ - %@ (%@)", [curImage valueForKeyPath:@"series.study.name"], seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			}	
-			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", [curImage valueForKeyPath:@"series.name"], [[curImage valueForKeyPath:@"series.id"] stringValue]];
+			else windowTitle = [NSString stringWithFormat: @"%@ (%@)", seriesName, [[curImage valueForKeyPath:@"series.id"] stringValue]];
 			
 			if( [[pixList[ curMovieIndex] objectAtIndex:0] generated] && [[pixList[ curMovieIndex] objectAtIndex:0] generatedName])
 				windowTitle = [windowTitle stringByAppendingString: [NSString stringWithFormat: @" - %@", [[pixList[ curMovieIndex] objectAtIndex:0] generatedName]]];
@@ -3777,32 +3781,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(BOOL) checkFrameSize
 {
-//	NSRect	frameRight, frame;
 	BOOL	visible = [self matrixIsVisible];
-	
-	stopViewFrameDidChangeNotification = YES;
-	
-//	frame = [[[splitView subviews] objectAtIndex: 0] frame];
-	
-//	if ([[[splitView subviews] objectAtIndex: 0] frame].size.width > 0)
-//	{
-//		frame.size.width = [previewMatrix cellSize].width+13;
-//		visible = YES;
-//	}
-	
-/*	[[[splitView subviews] objectAtIndex: 0] setFrameSize: frame.size];
-	
-	if( [[splitView subviews] count] > 1)
-	{
-		frameRight = [[[splitView subviews] objectAtIndex: 1] frame];
-		frameRight.size.width = [splitView frame].size.width - frame.size.width - [splitView dividerThickness];
-		[[[splitView subviews] objectAtIndex: 1] setFrame: frameRight];
-	}
-	
-	[splitView adjustSubviews];
-	*/
-	stopViewFrameDidChangeNotification = NO;
-	
+    
 	return visible;
 }
 
@@ -3971,7 +3951,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( [[splitView subviews] count] > 1)
 	{
-		if ([note object] == [[splitView subviews] objectAtIndex: 1] && stopViewFrameDidChangeNotification == NO)
+		if ([note object] == [[splitView subviews] objectAtIndex: 1])
 		{
 			if( [self matrixIsVisible] && matrixPreviewBuilt == NO)
 				[self buildMatrixPreview];
@@ -4043,13 +4023,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 	return proposedPosition;
 }
 
--(BOOL)matrixIsVisible
+-(BOOL) matrixIsVisible
 {
     NSView* v = [[splitView subviews] objectAtIndex:0];
     return ![v isHidden] && [v frame].size.width > 0; 
 }
 
--(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+-(void) splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
+{
     CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
     dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
     
@@ -4059,7 +4040,8 @@ static volatile int numberOfThreadsForRelisce = 0;
     [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
 }
 
--(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n {
+-(void) observeScrollerStyleDidChangeNotification:(NSNotification*)n
+{
     [splitView resizeSubviewsWithOldSize:[splitView bounds].size];
 }
 
@@ -4284,6 +4266,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 						}
 						else type = NSLocalizedString( @"Images", nil);
 						
+                        if( name == nil)
+                            name = @"";
+                        
 						[cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
 						
 						[previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rRight mouse button to\ropen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
@@ -4324,7 +4309,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 									{
 										img = [dcmPix generateThumbnailImageWithWW:0 WL:0];
 										
-										if (img) {
+										if (img)
+                                        {
 											[cell setImage:img];
 											
 											if ([[NSUserDefaults standardUserDefaults] boolForKey:@"StoreThumbnailsInDB"])
@@ -4337,7 +4323,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 									
 									[dcmPix release];
 								}
-								@catch (NSException* e) {
+								@catch (NSException* e)
+                                {
 									N2LogExceptionWithStackTrace(e);
 									[cell setImage:[NSImage imageNamed:@"FileNotFound.tif"]];
 								}
