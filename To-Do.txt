@@ -14,8 +14,6 @@
 - XML-RPC interface enhancements
 - New 'Custom Interval Panel' for the database
 
-- CheckIncoming: no files: no independent DB (CD?)
-
 ------------------------------------------------------------------------------------------------------------------------
 
 - 10.8: Notifications Center, iCloud sync, Retina Display,
