@@ -166,15 +166,31 @@
 	storeSCU = nil;
 }
 
--(void)_routingThread {
+-(void)_routingThread
+{
 	NSAutoreleasePool* pool = [NSAutoreleasePool new];
-	@try {
-		NSThread* thread = [NSThread currentThread];
-		thread.name = NSLocalizedString(@"Routing...", nil);
-		[self.independentDatabase routing];
-	} @catch (NSException * e) {
+	@try
+    {
+        BOOL isQueueEmpty = YES;
+        @synchronized (_routingSendQueues)
+        {
+			if( _routingSendQueues.count)
+                isQueueEmpty = NO;
+        }
+        
+        if( isQueueEmpty == NO)
+        {
+            NSThread* thread = [NSThread currentThread];
+            thread.name = NSLocalizedString(@"Routing...", nil);
+            [self.independentDatabase routing];
+        }
+	}
+    @catch (NSException * e)
+    {
 		N2LogExceptionWithStackTrace(e);
-	} @finally {
+	}
+    @finally
+    {
 		[pool release];
 	}
 }

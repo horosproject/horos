@@ -2238,6 +2238,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[AppController.sharedAppController growlTitle:NSLocalizedString(@"New Study", nil) description:message name:@"newstudy"];
 }
 
+-(BOOL) hasFilesToImport
+{
+    NSDirectoryEnumerator *enumer = [NSFileManager.defaultManager enumeratorAtPath:self.incomingDirPath limitTo:-1];
+    
+    if( [enumer nextObject])
+        return YES;
+    
+    return NO;
+}
+
 -(NSInteger)importFilesFromIncomingDir {
 	NSMutableArray* compressedPathArray = [NSMutableArray array];
 	NSThread* thread = [NSThread currentThread];
@@ -2246,7 +2256,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	BOOL activityFeedbackShown = NO;
     
 	[thread enterOperation];
-	thread.status = NSLocalizedString(@"Listing files...", nil);
 	
 	[NSFileManager.defaultManager confirmNoIndexDirectoryAtPath:self.decompressionDirPath];
 	
@@ -2429,7 +2438,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
 		}
 		
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
+        if( filesArray.count)
+            thread.status = [NSString stringWithFormat:NSLocalizedString(@"Listing files... %d", nil), (int)(filesArray.count)];
         
 		if ([filesArray count] > 0)
 		{
@@ -2549,15 +2559,23 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     [_importFilesFromIncomingDirLock lock];
 	@try
     {
-		NSThread* thread = [NSThread currentThread];
-		thread.name = NSLocalizedString(@"Adding incoming files...", nil);
-		NSInteger importCount = [self.independentDatabase importFilesFromIncomingDir];
-        thread.status = NSLocalizedString(@"Finishing...", nil);
-        thread.progress = -1;
-		
+        NSInteger importCount = 0;
+        if( [self hasFilesToImport])
+        {
+            NSThread* thread = [NSThread currentThread];
+            thread.name = NSLocalizedString(@"Adding incoming files...", nil);
+            importCount = [self.independentDatabase importFilesFromIncomingDir];
+            thread.status = NSLocalizedString(@"Finishing...", nil);
+            thread.progress = -1;
+		}
         DicomDatabase* theDatabase = self.isMainDatabase? self : self.mainDatabase;
 		if (theDatabase == DicomDatabase.activeLocalDatabase)
-			[AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject:(importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil) waitUntilDone:NO];
+        {
+            NSString *newBadge = (importCount? [[NSNumber numberWithInteger:importCount] stringValue] : nil);
+            
+            if( [newBadge isEqualToString: [[NSApp dockTile] badgeLabel]] == NO)
+                [AppController.sharedAppController performSelectorOnMainThread:@selector(setBadgeLabel:) withObject: newBadge waitUntilDone:NO];
+        }
 		
 	}
     @catch (NSException* e)

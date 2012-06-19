@@ -125,6 +125,7 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 
 #pragma mark Incoming
 -(BOOL)isFileSystemFreeSizeLimitReached;
+-(BOOL) hasFilesToImport;
 -(NSInteger)importFilesFromIncomingDir; // this method should be private, but is declared because called from deprecated api
 -(void)initiateImportFilesFromIncomingDirUnlessAlreadyImporting;
 +(void)syncImportFilesFromIncomingDirTimerWithUserDefaults; // called from deprecated API
