@@ -39,6 +39,13 @@
 #define ERROR_CANNOTFINDPATH 2
 #define ERROR_DISTTRANSNOTFINISH 3
 
+enum PathAssistantMode {
+    None,
+    Basic,
+    AtoB
+};
+typedef enum PathAssistantMode PathAssistantMode;
+
 @interface FlyAssistant : NSObject {
 	float* input;
 	float* distmap;
@@ -75,7 +82,7 @@
 - (void) converPoint2InputCoordinate:(Point3D*)pt;
 - (void) distanceTransformWithThreshold: (id) sender;
 - (int) caculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir;
-- (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb;
+- (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb withSmoothing:(BOOL)smoothFlag;
 - (Point3D*) caculateNextCenterPointFrom: (Point3D*) pt Towards:(Point3D*)dir WithStepLength:(float)steplen;
 - (int) calculateSampleMetric:(float) a :(float) b :(float) c;
 - (int) resamplecrosssection:(Point3D*) pt : (Point3D*) dir :(float) steplength;

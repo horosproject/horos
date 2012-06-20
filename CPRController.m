@@ -57,7 +57,7 @@ static float deg2rad = M_PI / 180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView, assistantPathMode;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -146,6 +146,39 @@ static float deg2rad = M_PI / 180.0;
 		for( int i = 0; i < [popupRoi numberOfItems]; i++)
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
 		
+        assistantPathMode = NO;
+        int dim[3];
+        DCMPix* firstObject = [pix objectAtIndex:0];
+        dim[0] = [firstObject pwidth];
+        dim[1] = [firstObject pheight];
+        dim[2] = [pix count];
+        float spacing[3];
+        spacing[0]=[firstObject pixelSpacingX];
+        spacing[1]=[firstObject pixelSpacingY];
+        float sliceThickness = [firstObject sliceInterval];   
+        if( sliceThickness == 0)
+        {
+            NSLog(@"Slice interval = slice thickness!");
+            sliceThickness = [firstObject sliceThickness];
+        }
+        spacing[2]=sliceThickness;
+        float resamplesize=spacing[0];
+        if(dim[0]>256 || dim[1]>256)
+        {
+            if(spacing[0]*(float)dim[0]>spacing[1]*(float)dim[1])
+                resamplesize = spacing[0]*(float)dim[0]/256.0;
+            else {
+                resamplesize = spacing[1]*(float)dim[1]/256.0;
+            }
+            
+        }
+        assistant = [[FlyAssistant alloc] initWithVolume:(float*)[volume bytes] WidthDimension:dim Spacing:spacing ResampleVoxelSize:resamplesize];
+        [assistant setCenterlineResampleStepLength:3.0];
+        centerline = [[NSMutableArray alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver: self
+                                                 selector: @selector(assistantOnAddNode:)
+                                                     name: OsirixNodeAdded2CurvePathNotification
+                                                   object: nil];
         curvedPath = [[CPRCurvedPath alloc] init];
         displayInfo = [[CPRDisplayInfo alloc] init];
         
@@ -549,6 +582,9 @@ static float deg2rad = M_PI / 180.0;
 	_delegateCurveViewDebugging = nil;
 	[_delegateDisplayInfoDebugging release];
 	_delegateDisplayInfoDebugging = nil;
+    
+    [assistant release];
+    [centerline release];
 	
 	[super dealloc];
 	
@@ -928,6 +964,96 @@ static float deg2rad = M_PI / 180.0;
 		[self setToolIndex: tag];
 		[self setROIToolTag: tag];
 	}
+}
+
+- (void) assistantOnAddNode:(NSNotification*) note
+{
+    if (assistantPathMode && [curvedPath.nodes count] > 1) {
+        NSLog(@"CurvedPath count = %d", [curvedPath.nodes count]);
+        N3Vector node, na, nb;
+        N3AffineTransform patient2VolumeDataTransform = cprVolumeData.volumeTransform;
+        N3AffineTransform volumeData2PatientTransform = N3AffineTransformInvert(patient2VolumeDataTransform);
+        na = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:0] N3VectorValue], patient2VolumeDataTransform);
+        nb = N3VectorApplyTransform([[curvedPath.nodes lastObject] N3VectorValue], patient2VolumeDataTransform);
+        WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
+        [waiting showWindow:self];
+        
+        Point3D *pta, *ptb;
+        pta = [[Point3D alloc] initWithX:na.x y:na.y z:na.z];
+        ptb = [[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z];
+        
+        int err = [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
+        NSLog(@"Centerline count = %d", [centerline count]);
+        CPRCurvedPath * newCP = [[CPRCurvedPath alloc] init];
+        NSMutableArray * nodeList = [[NSMutableArray alloc] init];
+        if(!err)
+        {
+            // vider le curvedPath et le remplir avec les points de la centerline
+            for(unsigned int i=0;i<[centerline count];i++)
+            {
+                OSIVoxel * pt = [centerline objectAtIndex:i];
+                node.x = pt.x;
+                node.y = pt.y;
+                node.z = pt.z;
+                [nodeList addObject:[NSValue valueWithN3Vector:node]];
+                [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
+                curvedPath = newCP;
+            }
+        }
+        else if(err == ERROR_NOENOUGHMEM)
+        {
+            NSRunAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        }
+        else if(err == ERROR_CANNOTFINDPATH)
+        {
+            NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+        }
+        else if(err==ERROR_DISTTRANSNOTFINISH)
+        {
+            int i;
+            waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+            [waiting showWindow:self];
+            
+            for(i=0; i<5; i++)
+            {
+                sleep(2);
+                err= [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
+                if(err!=ERROR_DISTTRANSNOTFINISH)
+                    break;
+                // vider le curvedPath et le remplir avec les points de la centerline
+                for(unsigned int i=0;i<[centerline count];i++)
+                {
+                    OSIVoxel * pt = [centerline objectAtIndex:i];
+                    node.x = pt.x;
+                    node.y = pt.y;
+                    node.z = pt.z;
+                    [curvedPath addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
+                    [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
+                    curvedPath = newCP;
+                }
+            }
+            [waiting close];
+            [waiting release];
+            if(err==ERROR_CANNOTFINDPATH)
+            {
+                NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                return;
+            }
+            else if(err==ERROR_DISTTRANSNOTFINISH)
+            {
+                NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                return;
+            }        
+        }
+        [pta release];
+        [ptb release];
+        [waiting close];
+        [waiting release];
+        [nodeList release];
+    }
+    else {
+        NSLog(@"Not enough points to launch assistant");
+    }    
 }
 
 #pragma mark ROI
@@ -3615,6 +3741,21 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbSyncZoomLevel];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbSyncZoomLevel frame]), NSHeight([tbSyncZoomLevel frame]))];
     }
+    // bd : assistant
+	else if ([itemIdent isEqualToString:@"PathAssistant"])
+	{
+		// Set up the standard properties 
+		[toolbarItem setLabel:NSLocalizedString(@"Path Assistant", nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString(@"Path Assistant", nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Automatically finds a path between two points", nil)];
+		
+		// Use a custom view, a text field, for the search item 
+		[toolbarItem setImage:[NSImage imageNamed:@"PathAssistant"]];
+		// target is not set, it will be the first responder
+		[toolbarItem setTarget:self];
+		[toolbarItem setAction:@selector(switchPathAssistantMode:)];
+    }
+    // \bd assistant
 	else
 	{
 		[toolbarItem release];
@@ -3626,7 +3767,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3635,7 +3776,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -4302,8 +4443,7 @@ static float deg2rad = M_PI / 180.0;
 	assert([[self _delegateCurveViewDebugging] containsObject:[NSValue valueWithPointer:CPRMPRDCMView]] == NO);
 	
 	[[self _delegateCurveViewDebugging] addObject:[NSValue valueWithPointer:CPRMPRDCMView]];
-	
-	
+    	
 	[self addToUndoQueue:@"curvedPath"];
     if ([curvedPath.nodes count] == 0) {
         if (mprView1 != CPRMPRDCMView) {
@@ -4483,5 +4623,38 @@ static float deg2rad = M_PI / 180.0;
 	
 	[self delayedFullLODRendering: CPRMPRDCMView];
 }
+
+- (IBAction)switchPathAssistantMode:(id)sender;
+{
+    assistantPathMode = !assistantPathMode;
+    mprView1.pathAssistantMode = assistantPathMode;
+    mprView2.pathAssistantMode = assistantPathMode;
+    mprView3.pathAssistantMode = assistantPathMode;
+    if (assistantPathMode) {
+        NSLog(@"Path Assistant enabled.");
+	}
+    else
+        NSLog(@"Path Assistant disabled.");
+}
+
+- (void)CPRViewDidEditAssistedCurvedPath:(id)CPRMPRDCMView
+{
+	assert([[self _delegateCurveViewDebugging] containsObject:[NSValue valueWithPointer:CPRMPRDCMView]] == YES);
+	[[self _delegateCurveViewDebugging] removeObject:[NSValue valueWithPointer:CPRMPRDCMView]];
+
+	// this is a bit of a hack, but the -[self setCurvedPath] will change the initial angle if it was N3VectortZero
+	if (N3VectorEqualToVector([[CPRMPRDCMView curvedPath] initialNormal], N3VectorZero)) {
+		[CPRMPRDCMView setCurvedPath:self.curvedPath];
+	}
+    
+    mprView1.curvedPath = curvedPath;
+    mprView2.curvedPath = curvedPath;
+    mprView3.curvedPath = curvedPath;
+    cprView.curvedPath = curvedPath;
+    topTransverseView.curvedPath = curvedPath;
+    middleTransverseView.curvedPath = curvedPath;
+    bottomTransverseView.curvedPath = curvedPath;
+}
+
 
 @end

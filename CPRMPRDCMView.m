@@ -70,6 +70,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 - (void)sendWillEditCurvedPath;
 - (void)sendDidUpdateCurvedPath;
 - (void)sendDidEditCurvedPath;
+- (void)sendDidEditAssistedCurvedPath;
 - (void)sendWillEditDisplayInfo;
 - (void)sendDidEditDisplayInfo;
 @end
@@ -81,6 +82,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 @synthesize displayInfo;
 @synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
 @synthesize CPRType = _CPRType;
+@synthesize pathAssistantMode;
 
 - (BOOL)becomeFirstResponder
 {
@@ -1728,10 +1730,20 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                                 viewToDicomTransform = N3AffineTransformConcat(N3AffineTransformMakeTranslation(0, 0,
                                                              N3VectorApplyTransform(lastPoint, N3AffineTransformInvert(viewToDicomTransform)).z), viewToDicomTransform);
                             }
-                            
-							[curvedPath addNode:mouseLocation transform:viewToDicomTransform];
-							[self sendDidUpdateCurvedPath];
-							[self sendDidEditCurvedPath];
+                            [curvedPath addNode:mouseLocation transform:viewToDicomTransform];
+                            [self sendDidUpdateCurvedPath];
+                            if (pathAssistantMode) {
+                                // 1. ajouter le point au curvedPath local (addNode appelle la création de courbe de Bézier, pas utile dans ce cas.
+                                // 2. mettre à jour le curvedPath du CPRController (fait ici avec sendDidUpdateCurvedPath)
+                                // 3. lancer l'algo du flyAssistant
+                                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixNodeAdded2CurvePathNotification object:self userInfo:nil];
+                                // 4. mettre à jour tous les curvedPath
+                                [self sendDidEditAssistedCurvedPath];
+                            }
+                            else
+                            {
+                                [self sendDidEditCurvedPath];
+                            }
 							[self setNeedsDisplay:YES];
 							
 							// Center the views to the last point
@@ -1769,7 +1781,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 							return;
 						}
 						
-						relativePositionOnCurve = [curvedPath relativePositionForPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])
+						relativePositionOnCurve = [curvedPath relativePositionForPoint:mouseLocation
+                                                                             transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])
 																	   distanceToPoint:&distanceToCurve];
 						
 						if (distanceToCurve < 5) {
@@ -1895,7 +1908,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	}
 	
     if (displayInfo.draggedPositionHidden == NO) {
-        relativePositionOnCurve = [curvedPath relativePositionForPoint:viewPoint transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])
+        relativePositionOnCurve = [curvedPath relativePositionForPoint:viewPoint
+                                                             transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])
                                                        distanceToPoint:&distanceToCurve];
 
 		[self sendWillEditDisplayInfo];
@@ -2249,6 +2263,26 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	if (editingCurvedPathCount == 0) {
 		if ([delegate respondsToSelector:@selector(CPRViewDidEditCurvedPath:)]) {
 			[delegate CPRViewDidEditCurvedPath:self];
+		}
+	}
+}
+
+//- (void)sendWillEditAssistedCurvedPath
+//{
+//	if (editingCurvedPathCount == 0) {
+//		if ([delegate respondsToSelector:@selector(CPRViewWillEditCurvedPath:)]) {
+//			[delegate CPRViewWillEditCurvedPath:self];
+//		}
+//	}
+//	editingCurvedPathCount++;
+//}
+
+- (void)sendDidEditAssistedCurvedPath
+{
+	editingCurvedPathCount--;
+	if (editingCurvedPathCount == 0) {
+		if ([delegate respondsToSelector:@selector(CPRViewDidEditCurvedPath:)]) {
+			[delegate CPRViewDidEditAssistedCurvedPath:self];
 		}
 	}
 }

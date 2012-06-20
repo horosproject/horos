@@ -17,6 +17,7 @@
 #import "CPRMPRDCMView.h"
 #import "VRController.h"
 #import "VRView.h"
+#import "FlyAssistant.h"
 
 enum _ViewsPosition {
     NormalPosition = 0,
@@ -92,7 +93,11 @@ typedef NSInteger CPRExportRotationSpan;
     N3Vector baseNormal; // this value will depend on which view gets clicked first, it will be used as the basis for deciding what normal to use for what angle
     NSColor *curvedPathColor;
     BOOL curvedPathCreationMode;
-	
+    
+    FlyAssistant * assistant;
+    NSMutableArray * centerline;
+    BOOL assistantPathMode;
+ 	
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
 	float blendingPercentage;
@@ -187,6 +192,8 @@ typedef NSInteger CPRExportRotationSpan;
 @property (nonatomic) ViewsPosition viewsPosition;
 @property (nonatomic, readonly) CPRView *cprView;
 
+@property (nonatomic) BOOL assistantPathMode;
+
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;
 @property (nonatomic) CPRExportImageFormat exportImageFormat;
@@ -239,4 +246,7 @@ typedef NSInteger CPRExportRotationSpan;
 - (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
 - (void) setupToolbar;
+// bd
+- (void) assistantOnAddNode:(NSNotification*) note;
+- (IBAction)switchPathAssistantMode:(id)sender;
 @end

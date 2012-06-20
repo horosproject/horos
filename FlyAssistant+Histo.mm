@@ -38,10 +38,11 @@
 
 - (void) computeIntervalThresholdsFrom:(float)pixValue;
 {
+    NSLog(@"Compute Interval");
     if (!inputHisto) {
         [self computeHistogram];
+        [self smoothHistogramWith:5]; // \todo{Trouver une meilleure définition ?}
     }
-    [self smoothHistogramWith:5]; // \todo{Trouver une meilleure définition ?}
     
     const int delta = 10; // \todo{Trouver une meilleure définition ?}
     int value;
@@ -58,9 +59,10 @@
     // get out of peak if local maxima
     while (prev <= x && next <= x)
     {
-        prev = value;
-        value = next;
-        next = inputHisto[value+delta];
+        value += delta;
+        prev = x;
+        x = next;
+        next = inputHisto[value];
     }
     
     if (prev <= x)

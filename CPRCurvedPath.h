@@ -48,6 +48,7 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 - (id)init;
 
 - (void)addNode:(NSPoint)point transform:(N3AffineTransform)transform; // adds the point to z = 0 in the arbitrary coordinate space
+- (void)addPatientNode:(N3Vector)node;
 - (NSInteger)insertNodeAtRelativePosition:(CGFloat)relativePosition; // returns the node index of the inserted node
 - (void)removeNodeAtIndex:(NSInteger)index;
 

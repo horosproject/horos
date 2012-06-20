@@ -94,6 +94,9 @@ extern NSString* const OsiriXLogEvent;
 
 extern NSString* const OsirixActiveLocalDatabaseDidChangeNotification;
 
+extern NSString* const OsirixNodeAdded2CurvePathNotification;
+extern NSString* const OsirixNodeRemovedFromCurvePathNotification;
+
 /**
  * OsirixPopulatedContextualMenuNotification
  * object: NSMenu*

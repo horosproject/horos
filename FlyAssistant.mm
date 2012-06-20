@@ -75,6 +75,7 @@
 //    [self medianFilter];
     [self determineImageRange];
     [self computeHistogram];
+    [self smoothHistogramWith:5]; // \todo{Trouver une meilleure définition ?}
 	
 	int err = [self setResampleVoxelSize:vsize];
 	if (err) {
@@ -751,7 +752,7 @@ public:
 typedef std::vector<PathNode> PathContainer;
 typedef GreaterPathNodeOnF NodeCompare;
 
-- (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb;
+- (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb withSmoothing:(BOOL)smoothFlag;
 {
 	float* costmap=(float*)malloc(distmapVolumeSize*sizeof(float));
 	if(!costmap)
@@ -953,7 +954,9 @@ typedef GreaterPathNodeOnF NodeCompare;
 			pt.z /= resampleScale_z;
 		}
 		[self downSampleCenterlineWithLocalRadius:centerline];
-		[self createSmoothedCenterlin:centerline withStepLength:centerlineResampleStepLength];
+        if (smoothFlag) {
+            [self createSmoothedCenterlin:centerline withStepLength:centerlineResampleStepLength];
+        }
 		
 		free(labelmap);
 		return	0;

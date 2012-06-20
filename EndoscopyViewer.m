@@ -1321,7 +1321,7 @@ return YES;
 	
 	WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
 	[waiting showWindow:self];		
-	int err=[assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
+	int err=[assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB withSmoothing:YES];
 	[waiting close];
 	[waiting release];
 	
@@ -1350,7 +1350,7 @@ return YES;
 		for(i=0; i<5; i++)
 		{
 			sleep(2);
-			err= [assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB];
+			err= [assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB withSmoothing:YES];
 			if(err!=ERROR_DISTTRANSNOTFINISH)
 				break;
 		}

@@ -96,3 +96,6 @@ NSString* const OsirixActiveLocalDatabaseDidChangeNotification = @"OsirixActiveL
 
 NSString* const OsirixPopulatedContextualMenuNotification = @"OsirixPopulatedContextualMenuNotification";
 NSString* const OsiriXLogEvent = @"OsiriXLogEvent";
+
+NSString* const OsirixNodeAdded2CurvePathNotification = @"OsirixNodeAdded2CurvePath";
+NSString* const OsirixNodeRemovedFromCurvePathNotification = @"OsirixNodeRemovedFromCurvePath";
