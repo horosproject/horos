@@ -52,7 +52,7 @@
 	IBOutlet NSTextView			*validatorText;
 	
 	BOOL						dontListenToIndexChange;
-    NSMutableArray              *modificationsToApplyArray;
+    NSMutableArray              *modificationsToApplyArray, *modifiedFields, *modifiedValues;
 }
 
 - (BOOL) modificationsToApply;

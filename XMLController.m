@@ -633,6 +633,10 @@ extern int delayedTileWindows;
 	[toolbar setDelegate: nil];
 	[toolbar release];
 	
+    [modificationsToApplyArray release];
+    [modifiedFields release];
+    [modifiedValues release];
+    
     [super dealloc];
 }
 
@@ -803,6 +807,9 @@ extern int delayedTileWindows;
 		[cell setFont:[NSFont systemFontOfSize:12]];
 	}
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
+    
+     if( [modifiedFields containsObject: item])
+         [cell setTextColor: [NSColor redColor]];
 }
 
 - (void) traverse: (NSXMLNode*) node string:(NSMutableString*) string
@@ -835,7 +842,8 @@ extern int delayedTileWindows;
 
 - (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    NSString    *identifier = [tableColumn identifier];
+    NSString *identifier = [tableColumn identifier];
+    
 	if ([identifier isEqualToString:@"attributeTag"])
 	{
 		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
@@ -844,9 +852,15 @@ extern int delayedTileWindows;
 	else if( [identifier isEqualToString:@"stringValue"])
 	{
 		if( [outlineView rowForItem: item] != 0)
-			return [self stringsSeparatedForNode: item];
+        {
+            if( [modifiedFields containsObject: item])
+                return [modifiedValues objectAtIndex: [modifiedFields indexOfObject: item]];
+			else
+                return [self stringsSeparatedForNode: item];
+        }
 	}
-	else return [item valueForKey:identifier];
+    else
+        return [item valueForKey:identifier];
 		
 	return nil;
 }
@@ -932,9 +946,28 @@ extern int delayedTileWindows;
 		if( modificationsToApplyArray == nil)
             modificationsToApplyArray = [[NSMutableArray alloc] init];
         
+        if( modifiedFields == nil)
+            modifiedFields = [[NSMutableArray alloc] init];
+        
+        if( modifiedValues == nil)
+            modifiedValues = [[NSMutableArray alloc] init];
+        
         [self willChangeValueForKey: @"modificationsToApply"];
         [modificationsToApplyArray addObjectsFromArray: groupsAndElements];
+        
+        if( [modifiedFields containsObject: item])
+        {
+            NSUInteger index = [modifiedFields indexOfObject: item];
+            
+            [modifiedFields removeObjectAtIndex: index];
+            [modifiedValues removeObjectAtIndex: index];
+        }
+        
+        [modifiedFields addObject: item];
+        [modifiedValues addObject: object];
         [self didChangeValueForKey: @"modificationsToApply"];
+        
+        [table reloadData];
 	}
 	
 	allowSelectionChange = YES;
@@ -993,6 +1026,10 @@ extern int delayedTileWindows;
 			
 			[self reload: self];
 		}
+        
+        [modificationsToApplyArray removeAllObjects];
+        [modifiedFields removeAllObjects];
+        [modifiedValues removeAllObjects];
     }
 }
 
