@@ -2352,6 +2352,6 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (NSString*) description
 {
-    NSLog( @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality);
+    return [NSString stringWithFormat: @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality];
 }
 @end
