@@ -13,6 +13,8 @@
 - Save default order for albums
 - XML-RPC interface enhancements
 - New 'Custom Interval Panel' for the database
+- Apply multiple DICOM fields modifications in a single step (Meta-Data Editor window)
+- Curved MPR: Path Assistant available 
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -23,9 +25,7 @@
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
-- CPR : adapt coloscopy path algo to CPR vessels (OSIRIX-108)
 - DICOM ECG (Ginkgo CADx) (OSIRIX-113)
-- Two Steps DICOM Editing (OSIRIX-114)
 - Tool to create a new series from key images+-images with ROIs of a study
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support

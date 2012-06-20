@@ -52,7 +52,10 @@
 	IBOutlet NSTextView			*validatorText;
 	
 	BOOL						dontListenToIndexChange;
+    NSMutableArray              *modificationsToApplyArray;
 }
+
+- (BOOL) modificationsToApply;
 
 + (XMLController*) windowForViewer: (ViewerController*) v;
 

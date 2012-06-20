@@ -929,9 +929,32 @@ extern int delayedTileWindows;
 	
 	if( [groupsAndElements count])
 	{
-		NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
+		if( modificationsToApplyArray == nil)
+            modificationsToApplyArray = [[NSMutableArray alloc] init];
+        
+        [self willChangeValueForKey: @"modificationsToApply"];
+        [modificationsToApplyArray addObjectsFromArray: groupsAndElements];
+        [self didChangeValueForKey: @"modificationsToApply"];
+	}
+	
+	allowSelectionChange = YES;
+}
+
+- (BOOL) modificationsToApply
+{
+    if( modificationsToApplyArray.count)
+        return YES;
+    else
+        return NO;
+}
+
+- (IBAction) applyModifications:(id)sender
+{
+    if( modificationsToApplyArray.count)
+    {
+        NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 		
-		[params addObjectsFromArray:  groupsAndElements];
+		[params addObjectsFromArray: modificationsToApplyArray];
 		
 		NSArray *objects = [self arrayOfFiles];
 		NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
@@ -939,7 +962,7 @@ extern int delayedTileWindows;
 		if( files)
 		{
 			[files removeDuplicatedStrings];
-		
+            
 			[params addObjectsFromArray: files];
 			
 			WaitRendering *wait = nil;
@@ -951,6 +974,8 @@ extern int delayedTileWindows;
 			
 			@try
 			{
+                NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: srcFile] objectAtIndex: 0]];
+                
 				[XMLController modifyDicom: params encoding: encoding];
 				
 				for( id loopItem in files)
@@ -968,9 +993,7 @@ extern int delayedTileWindows;
 			
 			[self reload: self];
 		}
-	}
-	
-	allowSelectionChange = YES;
+    }
 }
 
 - (BOOL)selectionShouldChangeInOutlineView:(NSOutlineView *)outlineView
