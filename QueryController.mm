@@ -2655,26 +2655,34 @@ extern "C"
 						// We dont want current study
 						if( [[study valueForKey:@"uid"] isEqualToString: [item valueForKey:@"uid"]] == NO)
 						{
-							BOOL found = YES;
+							BOOL found = NO;
 							
 							if( numberOfStudiesAssociated > 0)
 							{
 								if( [[instance objectForKey:@"retrieveSameModality"] boolValue])
 								{
-									if( [item valueForKey:@"modality"] && [study valueForKey:@"modality"])
-									{
-										if( [[study valueForKey:@"modality"] rangeOfString: [item valueForKey:@"modality"]].location == NSNotFound) found = NO;						
-									}
-									else found = NO;
+                                    NSArray *modalities = [[item valueForKey:@"modality"] componentsSeparatedByString: @"\\"];
+                                    NSArray *relatedStudyModalities = [[study valueForKey:@"modality"] componentsSeparatedByString: @"\\"];
+                                    
+                                    for( NSString *modality in modalities)
+                                    {
+                                        if( [modality isEqualToString: @"SR"] == NO &&
+                                            [modality isEqualToString: @"SC"] == NO &&
+                                            [modality isEqualToString: @"PR"] == NO &&
+                                            [modality isEqualToString: @"KO"] == NO)
+                                        {
+                                            if( [relatedStudyModalities containsObject: modality])
+                                                found = YES;
+                                        }
+                                    }
 								}
 								
 								if( [[instance objectForKey:@"retrieveSameDescription"] boolValue])
 								{
 									if( [item valueForKey:@"theDescription"] && [study valueForKey:@"theDescription"])
 									{
-										if( [[study valueForKey:@"theDescription"] rangeOfString: [item valueForKey:@"theDescription"]].location == NSNotFound) found = NO;
+										if( [[study valueForKey:@"theDescription"] rangeOfString: [item valueForKey:@"theDescription"]].location != NSNotFound) found = YES;
 									}
-									else found = NO;
 								}
 								
 								if( found)

@@ -2349,4 +2349,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[_logEntry release];
 	_logEntry = [logEntry retain];
 }
+
+- (NSString*) description
+{
+    NSLog( @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality);
+}
 @end

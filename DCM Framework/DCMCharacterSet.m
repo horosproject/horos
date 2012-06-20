@@ -136,6 +136,7 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 87"]) encoding = NSISO2022JPStringEncoding;
 	else if( [characterSet isEqualToString:@"ISO IR 166"]) encoding = -2147483125;	//[characterSet numberFromLocalizedStringEncodingName :@"Thai (ISO 8859-11)"];
 	else if( [characterSet isEqualToString:@"ISO 2022 IR 6"])	encoding = NSISOLatin1StringEncoding;
+    else if( [characterSet isEqualToString:@"ISO IR 6"])	encoding = NSISOLatin1StringEncoding;
 	else if( [characterSet isEqualToString:@"UTF 8"])	encoding = NSUTF8StringEncoding;
 	else
 	{
