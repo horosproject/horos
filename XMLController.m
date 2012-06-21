@@ -1081,6 +1081,8 @@ extern int delayedTileWindows;
 				[wait showWindow:self];
 			}
 			
+            [self retain];
+            
 			@try
 			{
                 NSStringEncoding encoding = [NSString encodingForDICOMCharacterSet: [[DicomFile getEncodingArrayForFile: srcFile] objectAtIndex: 0]];
@@ -1100,7 +1102,10 @@ extern int delayedTileWindows;
 			[wait release];
 			wait = nil;
 			
-			[self reload: self];
+            if( [self.window isVisible]) // If DB fields were modified : the database window will close the XML editor
+                [self reload: self];
+            
+            [self autorelease];
 		}
         
         [modificationsToApplyArray removeAllObjects];

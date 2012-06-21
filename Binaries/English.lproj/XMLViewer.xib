@@ -87,7 +87,7 @@
 												<reference key="NSSuperview" ref="869097989"/>
 												<reference key="NSTableView" ref="65889533"/>
 											</object>
-											<object class="_NSCornerView" key="NSCornerView" id="87300508">
+											<object class="_NSCornerView" key="NSCornerView" id="915517548">
 												<reference key="NSNextResponder" ref="38749907"/>
 												<int key="NSvFlags">-2147483392</int>
 												<string key="NSFrame">{{-26, 0}, {16, 17}}</string>
@@ -279,7 +279,7 @@
 									<reference key="NSBGColor" ref="880435823"/>
 									<int key="NScvFlags">4</int>
 								</object>
-								<reference ref="87300508"/>
+								<reference ref="915517548"/>
 							</array>
 							<string key="NSFrame">{{-1, 0}, {935, 670}}</string>
 							<reference key="NSSuperview" ref="298317333"/>
@@ -289,7 +289,7 @@
 							<reference key="NSHScroller" ref="764277682"/>
 							<reference key="NSContentView" ref="45091073"/>
 							<reference key="NSHeaderClipView" ref="869097989"/>
-							<reference key="NSCornerView" ref="87300508"/>
+							<reference key="NSCornerView" ref="915517548"/>
 							<bytes key="NSScrollAmts">AAAAAAAAAABBkAAAQZAAAA</bytes>
 						</object>
 					</array>
@@ -742,15 +742,15 @@
 				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
-					<object class="NSTextField" id="200421249">
+					<object class="NSTextField" id="543632669">
 						<reference key="NSNextResponder" ref="207547712"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{81, 5}, {35, 17}}</string>
 						<reference key="NSSuperview" ref="207547712"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="521877694"/>
+						<reference key="NSNextKeyView" ref="80043574"/>
 						<bool key="NSEnabled">YES</bool>
-						<object class="NSTextFieldCell" key="NSCell" id="347638805">
+						<object class="NSTextFieldCell" key="NSCell" id="507166725">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">138412032</int>
 							<string key="NSContents">Apply</string>
@@ -759,12 +759,12 @@
 								<double key="NSSize">9</double>
 								<int key="NSfFlags">3614</int>
 							</object>
-							<reference key="NSControlView" ref="200421249"/>
+							<reference key="NSControlView" ref="543632669"/>
 							<reference key="NSBackgroundColor" ref="511503974"/>
 							<reference key="NSTextColor" ref="482004723"/>
 						</object>
 					</object>
-					<object class="NSButton" id="521877694">
+					<object class="NSButton" id="80043574">
 						<reference key="NSNextResponder" ref="207547712"/>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{82, 21}, {33, 30}}</string>
@@ -772,7 +772,7 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="539338869"/>
 						<bool key="NSEnabled">YES</bool>
-						<object class="NSButtonCell" key="NSCell" id="528335673">
+						<object class="NSButtonCell" key="NSCell" id="222137617">
 							<int key="NSCellFlags">67239424</int>
 							<int key="NSCellFlags2">134217728</int>
 							<string key="NSContents"/>
@@ -781,7 +781,7 @@
 								<double key="NSSize">10</double>
 								<int key="NSfFlags">16</int>
 							</object>
-							<reference key="NSControlView" ref="521877694"/>
+							<reference key="NSControlView" ref="80043574"/>
 							<int key="NSButtonFlags">138690815</int>
 							<int key="NSButtonFlags2">130</int>
 							<object class="NSCustomResource" key="NSNormalImage">
@@ -1042,7 +1042,7 @@ Z2h0IEFwcGxlLCBJbmMuLCAyMDA5AA</bytes>
 						<string key="NSFrame">{{45, 21}, {33, 30}}</string>
 						<reference key="NSSuperview" ref="207547712"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="200421249"/>
+						<reference key="NSNextKeyView" ref="543632669"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSButtonCell" key="NSCell" id="96646565">
 							<int key="NSCellFlags">67239424</int>
@@ -1499,14 +1499,6 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<int key="connectionID">74</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">switchDICOMEditing:</string>
-						<reference key="source" ref="563127511"/>
-						<reference key="destination" ref="480667006"/>
-					</object>
-					<int key="connectionID">80</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">addWindow</string>
 						<reference key="source" ref="563127511"/>
@@ -1614,9 +1606,17 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<object class="IBActionConnection" key="connection">
 						<string key="label">applyModifications:</string>
 						<reference key="source" ref="563127511"/>
-						<reference key="destination" ref="521877694"/>
+						<reference key="destination" ref="80043574"/>
 					</object>
 					<int key="connectionID">167</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">switchDICOMEditing:</string>
+						<reference key="source" ref="563127511"/>
+						<reference key="destination" ref="480667006"/>
+					</object>
+					<int key="connectionID">80</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1733,10 +1733,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled: editingActivated</string>
-						<reference key="source" ref="521877694"/>
+						<reference key="source" ref="80043574"/>
 						<reference key="destination" ref="563127511"/>
 						<object class="NSNibBindingConnector" key="connector" id="1020199155">
-							<reference key="NSSource" ref="521877694"/>
+							<reference key="NSSource" ref="80043574"/>
 							<reference key="NSDestination" ref="563127511"/>
 							<string key="NSLabel">enabled: editingActivated</string>
 							<string key="NSBinding">enabled</string>
@@ -1749,10 +1749,10 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">enabled2: self.modificationsToApply</string>
-						<reference key="source" ref="521877694"/>
+						<reference key="source" ref="80043574"/>
 						<reference key="destination" ref="563127511"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="521877694"/>
+							<reference key="NSSource" ref="80043574"/>
 							<reference key="NSDestination" ref="563127511"/>
 							<string key="NSLabel">enabled2: self.modificationsToApply</string>
 							<string key="NSBinding">enabled2</string>
@@ -2040,8 +2040,8 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<reference ref="658956456"/>
 							<reference ref="51626534"/>
 							<reference ref="933940518"/>
-							<reference ref="521877694"/>
-							<reference ref="200421249"/>
+							<reference ref="80043574"/>
+							<reference ref="543632669"/>
 						</array>
 						<reference key="parent" ref="0"/>
 						<string key="objectName">editTool</string>
@@ -2302,29 +2302,29 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">162</int>
-						<reference key="object" ref="521877694"/>
+						<reference key="object" ref="80043574"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="528335673"/>
+							<reference ref="222137617"/>
 						</array>
 						<reference key="parent" ref="207547712"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">163</int>
-						<reference key="object" ref="528335673"/>
-						<reference key="parent" ref="521877694"/>
+						<reference key="object" ref="222137617"/>
+						<reference key="parent" ref="80043574"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">168</int>
-						<reference key="object" ref="200421249"/>
+						<reference key="object" ref="543632669"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="347638805"/>
+							<reference ref="507166725"/>
 						</array>
 						<reference key="parent" ref="207547712"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">169</int>
-						<reference key="object" ref="347638805"/>
-						<reference key="parent" ref="200421249"/>
+						<reference key="object" ref="507166725"/>
+						<reference key="parent" ref="543632669"/>
 					</object>
 				</array>
 			</object>
@@ -2382,8 +2382,8 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<string key="NS.key.0">ToolTip</string>
 					<object class="IBToolTipAttribute" key="NS.object.0">
 						<string key="name">ToolTip</string>
-						<reference key="object" ref="521877694"/>
-						<string key="toolTip">Add a new group/element</string>
+						<reference key="object" ref="80043574"/>
+						<string key="toolTip">Save the modifications to the file</string>
 					</object>
 				</object>
 				<string key="162.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2504,7 +2504,6 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						<string key="setGroupElement:">id</string>
 						<string key="setSearchString:">id</string>
 						<string key="setTagName:">id</string>
-						<string key="switchDICOMEditing:">id</string>
 						<string key="validatorWebSite:">id</string>
 						<string key="verify:">id</string>
 					</dictionary>
@@ -2527,10 +2526,6 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 						</object>
 						<object class="IBActionInfo" key="setTagName:">
 							<string key="name">setTagName:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchDICOMEditing:">
-							<string key="name">switchDICOMEditing:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="validatorWebSite:">

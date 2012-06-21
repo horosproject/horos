@@ -69,7 +69,6 @@
 - (IBAction) setTagName:(id) sender;
 - (IBAction) setGroupElement: (id) sender;
 - (IBAction) executeAdd:(id) sender;
-- (IBAction) switchDICOMEditing:(id) sender;
 - (IBAction) validatorWebSite:(id) sender;
 - (IBAction) verify:(id) sender;
 - (void) reload:(id) sender;
