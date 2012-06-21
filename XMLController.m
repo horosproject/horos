@@ -52,7 +52,7 @@ extern int delayedTileWindows;
 
 @implementation XMLController
 
-@synthesize imObj;
+@synthesize imObj, editingActivated;
 @synthesize viewer;
 
 // To be 'compatible' with TileWindows in AppController
@@ -639,6 +639,16 @@ extern int delayedTileWindows;
     [super dealloc];
 }
 
+- (BOOL)windowShouldClose:(id)sender
+{
+    if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to close the window? The modifications to DICOM fields have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Close Window", nil), NSLocalizedString(@"Continue", nil), nil) == NSAlertDefaultReturn)
+    {
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (void)windowWillClose:(NSNotification *)notification
 {
 	[[self window] setAcceptsMouseMovedEvents: NO];
@@ -881,7 +891,7 @@ extern int delayedTileWindows;
 	
 	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO) return NO;
 	
-	if( editingActivated == NO) return NO;
+	if( self.editingActivated == NO) return NO;
 	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
@@ -907,9 +917,9 @@ extern int delayedTileWindows;
 		return NO;
 }
 
-- (void) setEditingActivated: (BOOL) v
+- (IBAction) switchEditing: (id) sender
 {
-    if( editingActivated == NO && v == YES)
+    if( self.editingActivated == NO)
     {
         if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO)
         {
@@ -952,12 +962,12 @@ extern int delayedTileWindows;
                 showWarning = NO;
             }
             
-            editingActivated = v;
+            editingActivated = !editingActivated;
         }
     }
-    else if( editingActivated == YES && v == NO && modifiedValues.count > 0)
+    else if( editingActivated == YES && modifiedValues.count > 0)
     {
-        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Editing", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Continue", nil), nil) == NSAlertDefaultReturn)
 		{
             [modificationsToApplyArray removeAllObjects];
             [modifiedValues removeAllObjects];
@@ -965,13 +975,15 @@ extern int delayedTileWindows;
             
             [self reload: self];
             
-            editingActivated = v;
+            editingActivated = !editingActivated;
         }
         else
             editingActivated = YES;
     }
     else
-        editingActivated = v;
+        editingActivated = !editingActivated;
+    
+    [sender setState: editingActivated];
 }
 
 - (void) setObject:(NSArray*) array
@@ -1133,14 +1145,14 @@ extern int delayedTileWindows;
 	
 	if( [previousValue isEqual: object] == NO)
 	{
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]])
+		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && self.editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]])
 		{
 			allowSelectionChange = NO;
 			[self performSelector:@selector(setObject:) withObject: [NSArray arrayWithObjects: item, object, nil] afterDelay: 0];
 		}
 		else
 		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO || editingActivated == NO)
+			if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO || self.editingActivated == NO)
 				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"Activate DICOM editing to change the values.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 			else
 				NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing not possible for this file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -1235,7 +1247,7 @@ extern int delayedTileWindows;
     
 	unichar c = [[event characters] characterAtIndex:0];
 	
-	if( editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
+	if( self.editingActivated && [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] && [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] && isDICOM && (c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey))
 	{
 		if( NSRunInformationalAlertPanel( NSLocalizedString( @"DICOM Editing", nil), NSLocalizedString(@"Are you sure you want to delete selected field(s)?", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
 		{

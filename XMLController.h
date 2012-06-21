@@ -87,5 +87,5 @@
 
 @property(readonly) NSManagedObject *imObj;
 @property(readonly) ViewerController *viewer;
-
+@property(nonatomic) BOOL editingActivated;
 @end
