@@ -641,12 +641,17 @@ extern int delayedTileWindows;
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to close the window? The modifications to DICOM fields have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Close Window", nil), NSLocalizedString(@"Continue", nil), nil) == NSAlertDefaultReturn)
+    if( editingActivated == YES && modifiedValues.count > 0)
     {
-        return YES;
+        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to close the window? The modifications to DICOM fields have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Close Window", nil), NSLocalizedString(@"Continue Editing", nil), nil) == NSAlertDefaultReturn)
+        {
+            return YES;
+        }
+        else
+            return NO;
     }
     
-    return NO;
+    return YES;
 }
 
 - (void)windowWillClose:(NSNotification *)notification
@@ -967,7 +972,7 @@ extern int delayedTileWindows;
     }
     else if( editingActivated == YES && modifiedValues.count > 0)
     {
-        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Cancel", nil), NSLocalizedString(@"Continue", nil), nil) == NSAlertDefaultReturn)
+        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Cancel Modifications", nil), NSLocalizedString(@"Continue Editing", nil), nil) == NSAlertDefaultReturn)
 		{
             [modificationsToApplyArray removeAllObjects];
             [modifiedValues removeAllObjects];
@@ -984,6 +989,9 @@ extern int delayedTileWindows;
         editingActivated = !editingActivated;
     
     [sender setState: editingActivated];
+    
+    [self willChangeValueForKey: @"editingActivated"];
+    [self didChangeValueForKey: @"editingActivated"];
 }
 
 - (void) setObject:(NSArray*) array
