@@ -44,7 +44,6 @@
 - Tomographie rotational angio (OSIRIX-115)
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
 - 'Archived' field (comments?)
-- Custom DB time interval: floating panel (OSIRIX-116)
 - 3D ROI -> 2D Viewer
 - Front/Back button: SR
 - Save albums -> store contained StudyInstanceUIDs, when reloading re-add these to album, if not in DB then show 0 series (OSIRIX-118)
