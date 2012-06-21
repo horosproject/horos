@@ -18,6 +18,7 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
+- WebPortal: share by email
 - 10.8: Notifications Center, iCloud sync, Retina Display,
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
 - SPECT-CT JP2-KDU bug

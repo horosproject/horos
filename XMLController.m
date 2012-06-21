@@ -23,7 +23,6 @@
 #import "DicomFileDCMTKCategory.h"
 #import "BrowserController.h"
 #import "ViewerController.h"
-#import <OsiriX/DCMObject.h>
 #import "AppController.h"
 #import "DCMPix.h"
 #import "MutableArrayCategory.h"
@@ -33,6 +32,9 @@
 #import "DicomStudy.h"
 #import "DicomSeries.h"
 #import "DicomImage.h"
+#import "OsiriX/DCMObject.h"
+#import "OsiriX/DCMAttribute.h"
+#import "OsiriX/DCMAttributeTag.h"
 
 static NSString* 	XMLToolbarIdentifier					= @"XML Toolbar Identifier";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";
@@ -282,45 +284,49 @@ extern int delayedTileWindows;
 			NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
 			[params addObjectsFromArray:  groupsAndElements];
 			
-			NSArray *objects = [self arrayOfFiles];
-			NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
-			
-			if( files)
-			{
-				[files removeDuplicatedStrings];
-			
-				[params addObjectsFromArray: files];
-				
-				WaitRendering		*wait = nil;
-				if( [files count] > 1)
-				{
-					wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
-					[wait showWindow:self];
-				}
-				
-				[XMLController modifyDicom: params encoding: encoding];
-				
-				for( int i = 0; i < [files count]; i++)
-					[[NSFileManager defaultManager] removeFileAtPath:[[files objectAtIndex: i] stringByAppendingString:@".bak"] handler:nil];
-				
-				[self updateDB: files objects: objects];
-				
-				[wait close];
-				[wait release];
-				wait = nil;
-				
-				[self reload: self];
-				
-				NSString *searchGpEl = [NSString stringWithFormat:@"%@,%@", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
-				
-				for( int i = 0 ; i < [table numberOfRows]; i++)
-				{
-					if( [[[[table itemAtRow: i] attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
-					{
-						[table selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
-					}
-				}
-			}
+            if( modificationsToApplyArray == nil)
+                modificationsToApplyArray = [[NSMutableArray alloc] init];
+            
+            if( modifiedFields == nil)
+                modifiedFields = [[NSMutableArray alloc] init];
+            
+            if( modifiedValues == nil)
+                modifiedValues = [[NSMutableArray alloc] init];
+            
+            [self willChangeValueForKey: @"modificationsToApply"];
+            [modificationsToApplyArray addObjectsFromArray: groupsAndElements];
+            
+            DCMAttributeTag *tag = [DCMAttributeTag tagWithGroup: group element: element];
+            DCMAttribute *attribute = [DCMAttribute attributeWithAttributeTag: tag];
+            [attribute setValues: [NSMutableArray arrayWithObject: [addValue stringValue]]];
+            
+            [dcmDocument setAttribute: attribute];
+            [self didChangeValueForKey: @"modificationsToApply"];
+            
+            [self reloadFromDCMDocument];
+            
+            NSString *searchGpEl = [NSString stringWithFormat:@"%@,%@", [NSString stringWithFormat:@"%04x", group], [NSString stringWithFormat:@"%04x", element]];
+            
+            for( int i = 0 ; i < [table numberOfRows]; i++)
+            {
+                if( [[[[table itemAtRow: i] attributeForName:@"attributeTag"] stringValue] isEqualToString: searchGpEl])
+                {
+                    [table selectRowIndexes: [NSIndexSet indexSetWithIndex: i] byExtendingSelection: NO];
+                    
+                    if( [modifiedFields containsObject: [self getPath: [table itemAtRow: i]]])
+                    {
+                        NSUInteger index = [modifiedFields indexOfObject: [self getPath: [table itemAtRow: i]]];
+                        
+                        [modifiedFields removeObjectAtIndex: index];
+                        [modifiedValues removeObjectAtIndex: index];
+                    }
+                    
+                    [modifiedFields addObject: [self getPath: [table itemAtRow: i]]];
+                    [modifiedValues addObject: [addValue stringValue]];
+                }
+            }
+            
+            [table reloadData];
 		}
 		else
 		{
@@ -340,59 +346,50 @@ extern int delayedTileWindows;
 	[NSApp beginSheet: addWindow modalForWindow:[self window] modalDelegate:self didEndSelector: nil contextInfo:nil];
 }
 
-- (IBAction) switchDICOMEditing:(id) sender
+- (void) reloadFromDCMDocument
 {
-	if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO)
+	NSMutableDictionary	*previousOutline = [NSMutableDictionary dictionary];
+	
+	for( int i = 1; i < [table numberOfRows]; i++)
 	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"This file is not editable. It is a read-only file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		[self willChangeValueForKey:@"editingActivated"];
-		editingActivated = NO;
-		[self didChangeValueForKey:@"editingActivated"];
-	}
-	else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is deactivated.\r\rSee General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-		[self willChangeValueForKey:@"editingActivated"];
-		editingActivated = NO;
-		[self didChangeValueForKey:@"editingActivated"];
-	}
-	else if( isDICOM == NO)
-	{
-		NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is allowed only on DICOM files.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+		id item = [table itemAtRow: i];
 		
-		[self willChangeValueForKey:@"editingActivated"];
-		editingActivated = NO;
-		[self didChangeValueForKey:@"editingActivated"];
-	}
-	else
-	{
-		if( editingActivated && showWarning)
+		if( [table isExpandable: item])
 		{
-			NSString *exampleAlertSuppress = @"DICOM Editing Warning";
-			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-			if ([defaults boolForKey:exampleAlertSuppress])
-			{
-			}
-			else
-			{
-				NSAlert* alert = [[NSAlert new] autorelease];
-				[alert setMessageText: NSLocalizedString(@"DICOM Editing", nil)];
-				[alert setInformativeText: NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil)];
-				[alert setShowsSuppressionButton:YES];
-				[alert runModal];
-				if ([[alert suppressionButton] state] == NSOnState)
-				{
-					[defaults setBool:YES forKey:exampleAlertSuppress];
-				}
-			}
-			
-			showWarning = NO;
+			[previousOutline setValue: [NSNumber numberWithBool: [table isItemExpanded: item]] forKey: [self getPath: item]];
 		}
 	}
+    
+    [xmlDocument release];
+    xmlDocument = [[dcmDocument xmlDocument] retain];
+    
+    int selectedRow = [table selectedRow];
+	
+	NSPoint origin = [[table superview] bounds].origin;
+	
+	[table reloadData];
+	[table expandItem:[table itemAtRow:0] expandChildren:NO];
+	
+	for( int i = 1; i < [table numberOfRows]; i++)
+	{
+		id item = [table itemAtRow: i];
+		
+		if( [table isExpandable: item])
+		{
+			NSNumber *num = [previousOutline valueForKey: [self getPath: item]];
+			
+			if( [num boolValue]) [table expandItem: item];
+		}
+	}
+	
+	[table selectRowIndexes: [NSIndexSet indexSetWithIndex: selectedRow] byExtendingSelection: NO];
+	[[tableScrollView contentView] scrollToPoint: origin];
+	[tableScrollView reflectScrolledClipView: [tableScrollView contentView]];
+	[table setNeedsDisplay];
+	[[self window] makeFirstResponder: table];
 }
 
-
--(void) reload:(id) sender
+-(void) reload:(id) sender // reloadFromFile
 {
 	NSMutableDictionary	*previousOutline = [NSMutableDictionary dictionary];
 	int i;
@@ -408,8 +405,9 @@ extern int delayedTileWindows;
 	}
 
 	[xmlDocument release];
-	DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-	xmlDocument = [[dcmObject xmlDocument] retain];
+    [dcmDocument release];
+	dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
+	xmlDocument = [[dcmDocument xmlDocument] retain];
 	
 	int selectedRow = [table selectedRow];
 	
@@ -470,8 +468,7 @@ extern int delayedTileWindows;
     
     if( [panel runModalForDirectory:nil file:[[self window]title]] == NSFileHandlingPanelOKButton)
     {
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		[[dcmObject description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
+		[[dcmDocument description] writeToFile: [panel filename] atomically:NO encoding : NSUTF8StringEncoding error: nil];
     }
 }
 
@@ -507,11 +504,13 @@ extern int delayedTileWindows;
 	
 	[xmlDocument release];
 	xmlDocument = nil;
+    [dcmDocument release];
+    dcmDocument = nil;
 	
 	if([DicomFile isDICOMFile:srcFile])
 	{
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
-		xmlDocument = [[dcmObject xmlDocument] retain];
+		dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
+		xmlDocument = [[dcmDocument xmlDocument] retain];
 		
 		isDICOM = YES;
 	}
@@ -527,11 +526,11 @@ extern int delayedTileWindows;
 	#endif
 	else
 	{
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
+		dcmDocument = [[DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO] retain];
 		
-		if( dcmObject)
+		if( dcmDocument)
 		{
-			xmlDocument = [[dcmObject xmlDocument] retain];
+			xmlDocument = [[dcmDocument xmlDocument] retain];
 			isDICOM = YES;
 		}
 		else
@@ -629,7 +628,7 @@ extern int delayedTileWindows;
     [xmlData release];
 	
 	[xmlDocument release];
-    
+    [dcmDocument release];
 	[toolbar setDelegate: nil];
 	[toolbar release];
 	
@@ -808,7 +807,7 @@ extern int delayedTileWindows;
 	}
 	[cell setLineBreakMode: NSLineBreakByTruncatingMiddle];
     
-     if( [modifiedFields containsObject: item])
+     if( [modifiedFields containsObject: [self getPath: item]])
          [cell setTextColor: [NSColor redColor]];
 }
 
@@ -853,15 +852,22 @@ extern int delayedTileWindows;
 	{
 		if( [outlineView rowForItem: item] != 0)
         {
-            if( [modifiedFields containsObject: item])
-                return [modifiedValues objectAtIndex: [modifiedFields indexOfObject: item]];
+            if( [modifiedFields containsObject: [self getPath: item]])
+                return [modifiedValues objectAtIndex: [modifiedFields indexOfObject: [self getPath: item]]];
 			else
                 return [self stringsSeparatedForNode: item];
         }
 	}
     else
+    {
+        if( [modifiedFields containsObject: [self getPath: item]])
+        {
+            if( [modifiedValues objectAtIndex: [modifiedFields indexOfObject: [self getPath: item]]] == [NSNull null])
+                return [NSString stringWithFormat: NSLocalizedString( @"%@ (to be deleted)", nil), [item valueForKey:identifier]];
+        }
+        
         return [item valueForKey:identifier];
-		
+	}	
 	return nil;
 }
 
@@ -879,23 +885,93 @@ extern int delayedTileWindows;
 	
 	if( [[tableColumn identifier] isEqualToString: @"stringValue"])
 	{
-		if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
-		{
-			if( [[[item attributeForName:@"group"] stringValue] intValue] != 0)	//[[[item attributeForName:@"group"] stringValue] intValue] != 2 && 
-			{
-				return YES;
-			}
+        if( [xmlDocument rootElement] == [item parent]) // Only elements at root level
+        {
+            if( [item attributeForName:@"group"] && [item attributeForName:@"element"])
+            {
+                if( [[[item attributeForName:@"group"] stringValue] intValue] != 0)	//[[[item attributeForName:@"group"] stringValue] intValue] != 2 && 
+                {
+                    return YES;
+                }
+            }
+            else if( [[[[item children] objectAtIndex: 0] children] count] == 0)	// A multiple value
+            {
+                return YES;
+            }
+            else NSLog( @"Sequence");
 		}
-		else if( [[[[item children] objectAtIndex: 0] children] count] == 0)	// A multiple value
-		{
-			return YES;
-		}
-		else NSLog( @"Sequence");
-		
+        
 		return NO;
 	}
 	else
 		return NO;
+}
+
+- (void) setEditingActivated: (BOOL) v
+{
+    if( editingActivated == NO && v == YES)
+    {
+        if( [[NSFileManager defaultManager] isWritableFileAtPath: [imObj valueForKey:@"completePath"]] == NO)
+        {
+            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"This file is not editable. It is a read-only file.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            editingActivated = NO;
+        }
+        else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"ALLOWDICOMEDITING"] == NO)
+        {
+            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is deactivated.\r\rSee General - Preferences to activate it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            editingActivated = NO;
+        }
+        else if( isDICOM == NO)
+        {
+            NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Editing", nil), NSLocalizedString(@"DICOM editing is allowed only on DICOM files.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            
+            editingActivated = NO;
+        }
+        else
+        {
+            if( showWarning)
+            {
+                NSString *exampleAlertSuppress = @"DICOM Editing Warning";
+                NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                if ([defaults boolForKey:exampleAlertSuppress])
+                {
+                }
+                else
+                {
+                    NSAlert* alert = [[NSAlert new] autorelease];
+                    [alert setMessageText: NSLocalizedString(@"DICOM Editing", nil)];
+                    [alert setInformativeText: NSLocalizedString(@"DICOM editing is now activated. You can edit any DICOM fields.\r\rSelect at which level you want to apply the changes (this image only, this series or the entire study.\r\rWarning !\rModifying DICOM fields can corrupt the DICOM files!\r\"With Great Power, Comes Great Responsibility\"", nil)];
+                    [alert setShowsSuppressionButton:YES];
+                    [alert runModal];
+                    if ([[alert suppressionButton] state] == NSOnState)
+                    {
+                        [defaults setBool:YES forKey:exampleAlertSuppress];
+                    }
+                }
+                
+                showWarning = NO;
+            }
+            
+            editingActivated = v;
+        }
+    }
+    else if( editingActivated == YES && v == NO && modifiedValues.count > 0)
+    {
+        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Editing", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Cancel", nil), nil) == NSAlertDefaultReturn)
+		{
+            [modificationsToApplyArray removeAllObjects];
+            [modifiedValues removeAllObjects];
+            [modifiedFields removeAllObjects];
+            
+            [self reload: self];
+            
+            editingActivated = v;
+        }
+        else
+            editingActivated = YES;
+    }
+    else
+        editingActivated = v;
 }
 
 - (void) setObject:(NSArray*) array
@@ -911,7 +987,7 @@ extern int delayedTileWindows;
 	
 	if( [table rowForItem: item] > 0)
 	{
-		NSString	*path = [self getPath: item];
+		NSString *path = [self getPath: item];
 		
 		if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 		{
@@ -936,7 +1012,7 @@ extern int delayedTileWindows;
 			}
 			else
 			{
-				NSLog( @"A sequence");
+				NSLog( @"A sequence: not editable");
 			}
 		}
 	}
@@ -955,15 +1031,15 @@ extern int delayedTileWindows;
         [self willChangeValueForKey: @"modificationsToApply"];
         [modificationsToApplyArray addObjectsFromArray: groupsAndElements];
         
-        if( [modifiedFields containsObject: item])
+        if( [modifiedFields containsObject: [self getPath: item]])
         {
-            NSUInteger index = [modifiedFields indexOfObject: item];
+            NSUInteger index = [modifiedFields indexOfObject: [self getPath: item]];
             
             [modifiedFields removeObjectAtIndex: index];
             [modifiedValues removeObjectAtIndex: index];
         }
         
-        [modifiedFields addObject: item];
+        [modifiedFields addObject: [self getPath: item]];
         [modifiedValues addObject: object];
         [self didChangeValueForKey: @"modificationsToApply"];
         
@@ -1160,7 +1236,7 @@ extern int delayedTileWindows;
 		{
 			NSIndexSet*			selectedRowIndexes = [table selectedRowIndexes];
 			NSInteger			index;
-			NSMutableArray		*groupsAndElements = [NSMutableArray array];
+			
 			
 			for (index = [selectedRowIndexes firstIndex]; 1+[selectedRowIndexes lastIndex] != index; ++index)
 			{
@@ -1170,7 +1246,8 @@ extern int delayedTileWindows;
 					
 					if( index > 0)
 					{
-						NSString	*path = [self getPath: item];
+                        NSMutableArray *groupsAndElements = [NSMutableArray array];
+						NSString *path = [self getPath: item];
 						
 						if( [[item attributeForName:@"group"] stringValue] && [[item attributeForName:@"element"] stringValue])
 						{
@@ -1195,56 +1272,40 @@ extern int delayedTileWindows;
 							}
 							else
 							{
-								NSLog( @"A sequence");
-//								
-//								NSString	*path = [self getPath: (NSXMLElement*) [item parent]];
-//								[groupsAndElements addObjectsFromArray: [NSArray arrayWithObjects: @"-e", path, nil]];
+								NSLog( @"A sequence : not editable");
 							}
 						}
-					}
-				}
-			}
-			
-			if( [groupsAndElements count])
-			{
-				NSMutableArray	*params = [NSMutableArray arrayWithObjects:@"dcmodify", @"--verbose", @"--ignore-errors", nil];
-				
-				[params addObjectsFromArray:  groupsAndElements];
-				
-				NSArray *objects = [self arrayOfFiles];
-				NSMutableArray *files = [NSMutableArray arrayWithArray: [objects valueForKey:@"completePath"]];
-				
-				if( files)
-				{
-					[files removeDuplicatedStrings];
-					
-					[params addObjectsFromArray: files];
-					
-					WaitRendering		*wait = nil;
-					if( [files count] > 1)
-					{
-						wait = [[WaitRendering alloc] init: NSLocalizedString(@"Updating Files...", nil)];
-						[wait showWindow:self];
-					}
-					
-					@try
-					{
-						[XMLController modifyDicom: params encoding: NSUTF8StringEncoding];
-						for( id loopItem in files)
-							[[NSFileManager defaultManager] removeFileAtPath: [loopItem stringByAppendingString:@".bak"] handler:nil];
-					
-						[self updateDB: files objects: objects];
-					}
-					@catch (NSException * e)
-					{
-						NSLog(@"xml keydown :%@", e);
-					}
-					[wait close];
-					[wait release];
-					wait = nil;
-					
-					[self reload: self];
-				}
+                        
+                        if( [groupsAndElements count])
+                        {
+                            if( modificationsToApplyArray == nil)
+                                modificationsToApplyArray = [[NSMutableArray alloc] init];
+                            
+                            if( modifiedFields == nil)
+                                modifiedFields = [[NSMutableArray alloc] init];
+                            
+                            if( modifiedValues == nil)
+                                modifiedValues = [[NSMutableArray alloc] init];
+                            
+                            [self willChangeValueForKey: @"modificationsToApply"];
+                            [modificationsToApplyArray addObjectsFromArray: groupsAndElements];
+                            
+                            if( [modifiedFields containsObject: [self getPath: item]])
+                            {
+                                NSUInteger index = [modifiedFields indexOfObject: [self getPath: item]];
+                                
+                                [modifiedFields removeObjectAtIndex: index];
+                                [modifiedValues removeObjectAtIndex: index];
+                            }
+                            
+                            [modifiedFields addObject: [self getPath: item]];
+                            [modifiedValues addObject: [NSNull null]];
+                            [self didChangeValueForKey: @"modificationsToApply"];
+                            
+                            [table reloadData];
+                        }
+                    }
+                }
 			}
 		}
 	}

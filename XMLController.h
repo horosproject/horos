@@ -16,6 +16,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "OSIWindowController.h"
+#import "OsiriX/DCMObject.h"
 
 @class ViewerController;
 
@@ -33,6 +34,7 @@
     NSToolbar					*toolbar;	
 	NSString					*srcFile;
 	NSXMLDocument				*xmlDocument;
+    DCMObject                   *dcmDocument;
 	NSManagedObject				*imObj;
 	NSMutableArray				*dictionaryArray;
 	
@@ -71,6 +73,7 @@
 - (IBAction) validatorWebSite:(id) sender;
 - (IBAction) verify:(id) sender;
 - (void) reload:(id) sender;
+- (void) reloadFromDCMDocument;
 - (BOOL) item: (id) item containsString: (NSString*) s;
 - (void) expandAllItems: (id) sender;
 - (void) deepExpandAllItems: (id) sender;
