@@ -1053,16 +1053,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	}
 }
 
-void (*signal(int signum, void (*sighandler)(int)))(int);
-
-static sigjmp_buf mark;
-
-void signal_EXC_ARITHMETIC(int sig_num)
-{
-    NSLog( @"******** Signal %d - DCMPix / EXC_ARITHMETIC / divide by zero exception in JPEG decoder? Catch the exception and resume function", sig_num);
-    
-    siglongjmp( mark, -1 );
-}
+//void (*signal(int signum, void (*sighandler)(int)))(int);
+//
+//static sigjmp_buf mark;
+//
+//void signal_EXC_ARITHMETIC(int sig_num)
+//{
+//    NSLog( @"******** Signal %d - DCMPix / EXC_ARITHMETIC / divide by zero exception in JPEG decoder? Catch the exception and resume function", sig_num);
+//    
+//    siglongjmp( mark, -1 );
+//}
 
 @interface PixThread : NSObject
 {
@@ -8427,16 +8427,16 @@ END_CREATE_ROIS:
 								if( bitsStored == 8 && bitsAllocated == 16 && gArrPhotoInterpret[ fileNb] == RGB)
 									bitsAllocated = 8;
 								
-                                signal(SIGFPE , signal_EXC_ARITHMETIC);
-                                
-                                if( sigsetjmp( mark, 1) != 0)
-                                {
-                                    oImage = 0L;
-                                    
-                                    NSLog( @"%@", [NSThread callStackSymbols]);
-                                    NSLog( @"***** file: %@", srcFile);
-                                }
-                                else
+//                                signal(SIGFPE , signal_EXC_ARITHMETIC);
+//                                
+//                                if( sigsetjmp( mark, 1) != 0)
+//                                {
+//                                    oImage = 0L;
+//                                    
+//                                    NSLog( @"%@", [NSThread callStackSymbols]);
+//                                    NSLog( @"***** file: %@", srcFile);
+//                                }
+//                                else
                                 {
 //                                    int xx = 1;
 //                                    static int yy = 0;
@@ -8450,7 +8450,7 @@ END_CREATE_ROIS:
                                     oImage = (short*) Papy3GetPixelData (fileNb, imageNb, theGroupP, gUseJPEGColorSpace, &fPlanarConf);
                                 }
                                 
-                                signal( SIGFPE, SIG_DFL);    /* Restore default action */
+//                                signal( SIGFPE, SIG_DFL);    /* Restore default action */
                             
 //                                int xx = 1;
 //                                int yy = 0;
