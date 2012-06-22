@@ -401,7 +401,7 @@ OFCondition DJCompressJP2K::encode(
 			bits++;
 		}
 		
-		if( minUsed < 0)
+//		if( minUsed < 0) // K A10009536850 22.06.12
 			bits++;
 		
 		if( bits < 9)

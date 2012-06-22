@@ -110,7 +110,8 @@
 	return [self decompressDicomFilesAtPaths:paths intoDirAtPath:nil];
 }
 
-+(BOOL)compressDicomFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)dest {
++(BOOL)compressDicomFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)dest
+{
 	if (dest == nil)
 		dest = @"sameAsDestination";
 	
@@ -156,6 +157,7 @@
 	[thread exitOperation];
 	return YES;
 	
+//    #ifndef OSIRIX_LIGHT
 //	@synchronized( [BrowserController currentBrowser])
 //	{
 //		for( NSString *path in paths)
@@ -173,7 +175,7 @@
 //				DcmXfer original_xfer(dataset->getOriginalXfer());
 //				
 //				DcmRepresentationParameter *params = &lossyParams;
-//				E_TransferSyntax tSyntax = EXS_JPEGLSLossless;
+//				E_TransferSyntax tSyntax = EXS_JPEG2000;	// EXS_JPEGLSLossless;
 //				
 ////				DcmRepresentationParameter *params = &losslessParams;
 ////				E_TransferSyntax tSyntax = EXS_JPEGProcess14TransferSyntax;	//EXS_JPEG2000; //EXS_JPEG2000LosslessOnly
@@ -201,6 +203,7 @@
 //			else NSLog( @"err");
 //		}
 //	}
+//    #endif
 //	return YES;
 //
 //	@synchronized( [BrowserController currentBrowser])

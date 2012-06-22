@@ -16,8 +16,6 @@
 - Apply multiple DICOM fields modifications in a single step (Meta-Data Editor window)
 - Curved MPR: Path Assistant available 
 
-- KDU KOENIG 22.6
-
 ------------------------------------------------------------------------------------------------------------------------
 - WebPortal: share by email
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
