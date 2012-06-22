@@ -7,6 +7,7 @@
 
 #import "SMTPClient.h"
 #import "NSData+N2.h"
+#import "N2Debug.h"
 //#import <iconv.h>
 #include <CommonCrypto/CommonDigest.h>
 
@@ -248,43 +249,50 @@ enum {
 }
 
 -(void)start {
-    NSException* exception = nil;
-	for (NSNumber* port in self.client.ports) {
-		@try {
-            [self reset];
-            
-            self.connectionStatus = ConnectionStatusConnecting;
-            [NSStream getStreamsToHost:[NSHost hostWithName:self.client.address] port:port.integerValue inputStream:&_istream outputStream:&_ostream];
-            [_istream retain];
-            [_ostream retain];
-            [_istream setDelegate:self];
-            [_ostream setDelegate:self];
-            [_istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            [_ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    @try {
+        NSException* exception = nil;
+        for (NSNumber* port in self.client.ports) {
+            @try {
+                [self reset];
+                
+                self.connectionStatus = ConnectionStatusConnecting;
+                [NSStream getStreamsToHost:[NSHost hostWithName:self.client.address] port:port.integerValue inputStream:&_istream outputStream:&_ostream];
+                [_istream retain];
+                [_ostream retain];
+                [_istream setDelegate:self];
+                [_ostream setDelegate:self];
+                [_istream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+                [_ostream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
-            self.openTimeoutTimer = [[[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10] interval:0 target:self selector:@selector(_openTimeoutCallback:) userInfo:nil repeats:NO] autorelease];
-            [[NSRunLoop currentRunLoop] addTimer:self.openTimeoutTimer forMode:NSDefaultRunLoopMode];
+                self.openTimeoutTimer = [[[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:10] interval:0 target:self selector:@selector(_openTimeoutCallback:) userInfo:nil repeats:NO] autorelease];
+                [[NSRunLoop currentRunLoop] addTimer:self.openTimeoutTimer forMode:NSDefaultRunLoopMode];
 
-            [_istream open];
-            [_ostream open];
-            
-            while (self.connectionStatus != ConnectionStatusClosed/* && !_launchThread.isCancelled*/) {
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-                // [NSThread sleepForTimeInterval:0.01];
+                [_istream open];
+                [_ostream open];
+                
+                while (self.connectionStatus != ConnectionStatusClosed/* && !_launchThread.isCancelled*/) {
+                    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+                    // [NSThread sleepForTimeInterval:0.01];
+                }
+                
+                if (!_istream.streamError && !_ostream.streamError && _success) {
+                    exception = nil;
+                    break;
+                }
+            } @catch (NSException* e) {
+                NSLog(@"SMTP Exception: %@", e.reason);
+                exception = e;
             }
-			
-            if (!_istream.streamError && !_ostream.streamError && _success) {
-                exception = nil;
-                break;
-            }
-		} @catch (NSException* e) {
-			NSLog(@"SMTP Exception: %@", e.reason);
-            exception = e;
-		}
-	}
-    
-    if (exception)
-		NSLog( @"******* SMTPClient exception: %@", exception);
+        }
+        
+        if (exception)
+            NSLog( @"******* SMTPClient exception: %@", exception);
+    } @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    } @finally {
+        [pool release];
+    }
 }
 
 -(void)startTLS {

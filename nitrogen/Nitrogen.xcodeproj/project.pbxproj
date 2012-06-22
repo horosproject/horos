@@ -159,6 +159,8 @@
 		59F5F88D11F5D9A10047A90D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59F5F88C11F5D9A10047A90D /* QuartzCore.framework */; };
 		71060F6F13A5015600DEB093 /* NSException+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 71060F6D13A5015600DEB093 /* NSException+N2.h */; };
 		71060F7013A5015600DEB093 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 71060F6E13A5015600DEB093 /* NSException+N2.mm */; };
+		7118497E1590A3F3006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 7118497C1590A3F3006AB447 /* SMTPClient.h */; };
+		7118497F1590A3F3006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 7118497D1590A3F3006AB447 /* SMTPClient.m */; };
 		713A1BE5146ABEFE00AB433C /* NSAppleScript+N2.h in Headers */ = {isa = PBXBuildFile; fileRef = 713A1BE3146ABEFE00AB433C /* NSAppleScript+N2.h */; };
 		713A1BE6146ABEFE00AB433C /* NSAppleScript+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 713A1BE4146ABEFE00AB433C /* NSAppleScript+N2.mm */; };
 		71854F1A146D7DC400081915 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71854F19146D7DC400081915 /* IOKit.framework */; };
@@ -330,6 +332,8 @@
 		59F5F88C11F5D9A10047A90D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		71060F6D13A5015600DEB093 /* NSException+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+N2.h"; sourceTree = "<group>"; };
 		71060F6E13A5015600DEB093 /* NSException+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSException+N2.mm"; sourceTree = "<group>"; };
+		7118497C1590A3F3006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
+		7118497D1590A3F3006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
 		713A1BE3146ABEFE00AB433C /* NSAppleScript+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSAppleScript+N2.h"; sourceTree = "<group>"; };
 		713A1BE4146ABEFE00AB433C /* NSAppleScript+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSAppleScript+N2.mm"; sourceTree = "<group>"; };
 		71854F19146D7DC400081915 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
@@ -657,6 +661,8 @@
 				59CF83811069301700A4444F /* N2ConnectionListener.h */,
 				59CF83801069301700A4444F /* N2ConnectionListener.mm */,
 				592CFCFC1212892B00176E39 /* Web Services */,
+				7118497C1590A3F3006AB447 /* SMTPClient.h */,
+				7118497D1590A3F3006AB447 /* SMTPClient.m */,
 			);
 			name = Connections;
 			sourceTree = "<group>";
@@ -789,6 +795,7 @@
 				592FD7FC13390188008BADC7 /* N2DirectoryEnumerator.h in Headers */,
 				71060F6F13A5015600DEB093 /* NSException+N2.h in Headers */,
 				713A1BE5146ABEFE00AB433C /* NSAppleScript+N2.h in Headers */,
+				7118497E1590A3F3006AB447 /* SMTPClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1011,6 +1018,7 @@
 				592FD7FD13390188008BADC7 /* N2DirectoryEnumerator.mm in Sources */,
 				71060F7013A5015600DEB093 /* NSException+N2.mm in Sources */,
 				713A1BE6146ABEFE00AB433C /* NSAppleScript+N2.mm in Sources */,
+				7118497F1590A3F3006AB447 /* SMTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

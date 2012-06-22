@@ -407,6 +407,8 @@
 		59FB643C1230EE4100EBA136 /* libpng12OsiriX.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 59FB64371230EE4100EBA136 /* libpng12OsiriX.a */; };
 		59FB64DD1231295400EBA136 /* NSUserDefaultsController+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5997899111B7B48E002DB107 /* NSUserDefaultsController+N2.mm */; };
 		59FB654F12312D8900EBA136 /* weasis in Resources */ = {isa = PBXBuildFile; fileRef = 59FB652912312D8900EBA136 /* weasis */; };
+		711849771590A377006AB447 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 711849751590A377006AB447 /* SMTPClient.h */; };
+		711849781590A377006AB447 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 711849761590A377006AB447 /* SMTPClient.m */; };
 		7128FD771487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */; };
 		7128FD781487D54A00AB54A1 /* BrowserBottomSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */; };
 		7128FD791487D54A00AB54A1 /* BrowserBottomSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */; };
@@ -564,8 +566,6 @@
 		8428200013BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */; };
 		8428200113BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */; };
 		84321F23147E9BDA00C86CC1 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84321F22147E9BDA00C86CC1 /* Quartz.framework */; };
-		843DE35D14D0385D00878891 /* SMTPClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 843DE35B14D0385D00878891 /* SMTPClient.h */; };
-		843DE35E14D0385D00878891 /* SMTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 843DE35C14D0385D00878891 /* SMTPClient.m */; };
 		843F847B12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
@@ -8685,6 +8685,8 @@
 		59FB64771231101B00EBA136 /* mingpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mingpp.h; path = Binaries/Ming/mingpp.h; sourceTree = "<group>"; };
 		59FB647D1231106000EBA136 /* ming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ming.h; path = Binaries/Ming/ming.h; sourceTree = "<group>"; };
 		59FB652912312D8900EBA136 /* weasis */ = {isa = PBXFileReference; lastKnownFileType = folder; name = weasis; path = Binaries/weasis; sourceTree = "<group>"; };
+		711849751590A377006AB447 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMTPClient.h; path = nitrogen/Sources/SMTPClient.h; sourceTree = "<group>"; };
+		711849761590A377006AB447 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMTPClient.m; path = nitrogen/Sources/SMTPClient.m; sourceTree = "<group>"; };
 		7128FD751487D54A00AB54A1 /* BrowserBottomSplitView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserBottomSplitView.h; sourceTree = "<group>"; };
 		7128FD761487D54A00AB54A1 /* BrowserBottomSplitView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserBottomSplitView.m; sourceTree = "<group>"; };
 		71353C4F1469260B00359CAB /* NSDate+N2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+N2.h"; path = "nitrogen/Sources/NSDate+N2.h"; sourceTree = "<group>"; };
@@ -8815,8 +8817,6 @@
 		84281FFC13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N2OpenGLViewWithSplitsWindow.m; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.m; sourceTree = "<group>"; };
 		84281FFD13BC91380093BA26 /* N2OpenGLViewWithSplitsWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2OpenGLViewWithSplitsWindow.h; path = nitrogen/Sources/N2OpenGLViewWithSplitsWindow.h; sourceTree = "<group>"; };
 		84321F22147E9BDA00C86CC1 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = ../../../../System/Library/Frameworks/Quartz.framework; sourceTree = "<group>"; };
-		843DE35B14D0385D00878891 /* SMTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMTPClient.h; sourceTree = "<group>"; };
-		843DE35C14D0385D00878891 /* SMTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMTPClient.m; sourceTree = "<group>"; };
 		843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = SOURCE_ROOT; };
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -14879,8 +14879,6 @@
 				8417219210D8D707001A833F /* HTTP-HTTPS Server */,
 				CE2119C710E4C25300F9C50C /* CSMailMailClient.h */,
 				CE2119C810E4C25300F9C50C /* CSMailMailClient.m */,
-				843DE35B14D0385D00878891 /* SMTPClient.h */,
-				843DE35C14D0385D00878891 /* SMTPClient.m */,
 				597BB90912A7D3C000D0A172 /* WebPortal.h */,
 				597BB90A12A7D3C000D0A172 /* WebPortal.mm */,
 				59EBFDDA12BA5A1A00809C61 /* WebPortal+Email+Log.h */,
@@ -14915,6 +14913,8 @@
 		592CFEEF1212F84F00176E39 /* Connections */ = {
 			isa = PBXGroup;
 			children = (
+				711849751590A377006AB447 /* SMTPClient.h */,
+				711849761590A377006AB447 /* SMTPClient.m */,
 				592CFEF41212F84F00176E39 /* Web Services */,
 				592CFEF01212F84F00176E39 /* N2Connection.h */,
 				592CFEF11212F84F00176E39 /* N2Connection.mm */,
@@ -22247,7 +22247,6 @@
 				AB45185D149F47C0006674BF /* djcodece.h in Headers */,
 				AB45185F149F47C0006674BF /* djcparam.h in Headers */,
 				714943D214D3008B008BCC08 /* NSHost+N2.h in Headers */,
-				843DE35D14D0385D00878891 /* SMTPClient.h in Headers */,
 				7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */,
 				CEBD86BC14F1ADD9000DA1FE /* A.h in Headers */,
 				CEBD86BD14F1ADD9000DA1FE /* afangles.h in Headers */,
@@ -25557,6 +25556,7 @@
 				CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */,
 				CE3B7E5E1580F534003CB266 /* FlyAssistant+Histo.h in Headers */,
 				840C2D5E1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
+				711849771590A377006AB447 /* SMTPClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28643,7 +28643,6 @@
 				AB451855149F47C0006674BF /* djencode.cc in Sources */,
 				AB451861149F47C0006674BF /* djrparam.cc in Sources */,
 				714943D414D3008B008BCC08 /* NSHost+N2.mm in Sources */,
-				843DE35E14D0385D00878891 /* SMTPClient.m in Sources */,
 				71512E9E15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */,
 				714D3BB3152AE40C003EB087 /* O2ScreensPrefsView.m in Sources */,
 				714D3BC6152B2410003EB087 /* NSScreen+N2.m in Sources */,
@@ -28655,6 +28654,7 @@
 				CE3B7E5F1580F534003CB266 /* FlyAssistant+Histo.mm in Sources */,
 				CE3B7E641580F762003CB266 /* Quaternion.mm in Sources */,
 				840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
+				711849781590A377006AB447 /* SMTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -4335,24 +4335,33 @@ static NSConditionLock *threadLock = nil;
 	{
 		NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
 		[item setRepresentedObject: [col identifier]];
-		
-		NSInteger index = [columnIdentifiers indexOfObject: [col identifier]];
-		
-		if( [[col identifier] isEqualToString:@"name"])
-		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
-				[item setState: NSOffState];
-			else
-				[item setState: NSOnState];
-		}
-		else
-		{
-			if( index != NSNotFound) [item setState: NSOnState];
-			else [item setState: NSOffState];
-		}
 	}
 	
 	[[databaseOutline headerView] setMenu: columnsMenu];
+    
+    [columnsMenu setDelegate:self];
+}
+
+-(void)columnsMenuWillOpen {
+	NSArray* columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
+    for (NSMenuItem* mi in [columnsMenu itemArray]) {
+        id ro = [mi representedObject];
+        
+		
+		if ([ro isEqualToString:@"name"])
+		{
+			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+				[mi setState: NSOffState];
+			else
+				[mi setState: NSOnState];
+		}
+		else
+		{
+            NSInteger index = [columnIdentifiers indexOfObject: ro];
+			if( index != NSNotFound) [mi setState: NSOnState];
+			else [mi setState: NSOffState];
+		}
+    }
 }
 
 - (void) columnsMenuAction: (id)sender
@@ -10815,6 +10824,11 @@ static NSArray*	openSubSeriesArray = nil;
 
 -(void)menuWillOpen:(NSMenu*)menu // DATABASE contextual menu and ALBUMS contextualMenu
 {
+    if (menu == columnsMenu) {
+        [self columnsMenuWillOpen];
+        return;
+    }
+    
     [menu removeAllItems];
 
     BOOL isWritable = ![self.database isReadOnly];
