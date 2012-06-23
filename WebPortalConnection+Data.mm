@@ -1183,6 +1183,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				webUser.uploadDICOMAddToSpecificStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"uploadDICOMAddToSpecificStudies"] isEqual:@"on"]];
 				webUser.sendDICOMtoAnyNodes = [NSNumber numberWithBool:[[parameters objectForKey:@"sendDICOMtoAnyNodes"] isEqual:@"on"]];
 				webUser.shareStudyWithUser = [NSNumber numberWithBool:[[parameters objectForKey:@"shareStudyWithUser"] isEqual:@"on"]];
+                webUser.createTemporaryUser = [NSNumber numberWithBool:[[parameters objectForKey:@"createTemporaryUser"] isEqual:@"on"]];
 				webUser.canAccessPatientsOtherStudies = [NSNumber numberWithBool:[[parameters objectForKey:@"canAccessPatientsOtherStudies"] isEqual:@"on"]];
 				webUser.canSeeAlbums = [NSNumber numberWithBool:[[parameters objectForKey:@"canSeeAlbums"] isEqual:@"on"]];
 				

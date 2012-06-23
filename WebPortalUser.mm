@@ -48,6 +48,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 @dynamic sendDICOMtoAnyNodes;
 @dynamic sendDICOMtoSelfIP;
 @dynamic shareStudyWithUser;
+@dynamic createTemporaryUser;
 @dynamic studyPredicate;
 @dynamic uploadDICOM;
 @dynamic downloadReport;

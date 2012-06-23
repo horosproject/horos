@@ -41,6 +41,7 @@
 @property (nonatomic, retain) NSNumber * sendDICOMtoAnyNodes;
 @property (nonatomic, retain) NSNumber * sendDICOMtoSelfIP;
 @property (nonatomic, retain) NSNumber * shareStudyWithUser;
+@property (nonatomic, retain) NSNumber * createTemporaryUser;
 @property (nonatomic, retain) NSString * studyPredicate;
 @property (nonatomic, retain) NSNumber * uploadDICOM;
 @property (nonatomic, retain) NSNumber * downloadReport;

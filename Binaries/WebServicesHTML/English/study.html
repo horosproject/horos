@@ -270,9 +270,10 @@ function shareDestinationChange(select) {
 							%[FOREACH:ShareDestinations:Dest%
 							<option value="%Dest.XID%">%X:Dest.name%</option>
 							%]FOREACH:ShareDestinations:Dest%
-							%[IF:User.isAdmin%
+							%[IF:User.createTemporaryUser%
+                            <option value="-" disabled>------------</option>
 							<option value="NEW">Create a Temporary User</option>
-							%]IF:User.isAdmin%
+							%]IF:User.createTemporaryUser%
 						</select>
 						<span id="shareDestinationCreateTemp" style="display: none;">
 							<label>with email: <input type="text" name="shareDestinationCreateTempEmail" style="width: 200px;" /></label> (this user will last %Defaults.temporaryUserDuration% days)

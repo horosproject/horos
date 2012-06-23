@@ -10420,6 +10420,7 @@
 		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
 		CE2C82E20C708B310093C162 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
+		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
 		CE3B7E591580F518003CB266 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
@@ -32023,6 +32024,7 @@
 		59526F301281ACA90016F6C0 /* WebPortalDB.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */,
 				AB58260314BAF5EE00FACC12 /* WebPortalDB 6.xcdatamodel */,
 				59526F311281ACA90016F6C0 /* WebPortalDB 1.xcdatamodel */,
 				59526F321281ACA90016F6C0 /* WebPortalDB 2.xcdatamodel */,
@@ -32030,7 +32032,7 @@
 				59263540132E476B0055E3AB /* WebPortalDB 4.xcdatamodel */,
 				CE58A260146ECCE800F50080 /* WebPortalDB 5.xcdatamodel */,
 			);
-			currentVersion = AB58260314BAF5EE00FACC12 /* WebPortalDB 6.xcdatamodel */;
+			currentVersion = CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */;
 			path = WebPortalDB.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
