@@ -2484,10 +2484,10 @@ static NSDate *lastWarningDate = nil;
 	[dcmtkQRSCPTLS abort];
 	#endif
 	
-	[NSThread sleepForTimeInterval: 1];
-	
 	for( NSWindow *w in [NSApp windows])
 		[w orderOut:sender];
+    
+    [NSThread sleepForTimeInterval: 1];
     
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] release];
@@ -2501,6 +2501,9 @@ static NSDate *lastWarningDate = nil;
                 [thread cancel];
         [NSThread sleepForTimeInterval:0.05];
     }
+    
+    for( NSWindow *w in [NSApp windows])
+		[w close];
     
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
