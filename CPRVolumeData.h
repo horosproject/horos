@@ -159,9 +159,9 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolume
     outside |= floorX < 0;
     outside |= floorY < 0;
     outside |= floorZ < 0;
-    outside |= ceilX > inlineBuffer->pixelsWide;
-    outside |= ceilY > inlineBuffer->pixelsHigh;
-    outside |= ceilZ > inlineBuffer->pixelsDeep;
+    outside |= ceilX >= inlineBuffer->pixelsWide;
+    outside |= ceilY >= inlineBuffer->pixelsHigh;
+    outside |= ceilZ >= inlineBuffer->pixelsDeep;
     
     if (outside || !inlineBuffer->floatBytes) {
         returnValue = inlineBuffer->outOfBoundsValue;
