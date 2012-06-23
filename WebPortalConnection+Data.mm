@@ -785,36 +785,52 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[response.tokens addError: NSLocalizedString(@"WADO URL Retrieve failed: no images selected. Select one or more series.", @"Web Portal, study, dicom send, error")];
 	}
 	
-	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study) {
-		NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
-		WebPortalUser* destUser = NULL;
-		
-		if ([shareStudyDestination isEqual:@"NEW"])
-			@try {
-				destUser = [self.portal newUserWithEmail:[parameters objectForKey:@"shareDestinationCreateTempEmail"]];
-			} @catch (NSException* e) {
-				[self.response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't create temporary user: %@", nil), e.reason]];
-			}
-		else destUser = [self objectWithXID:shareStudyDestination ofClass: [WebPortalUser class]];
-		
-		if ([destUser isKindOfClass: [WebPortalUser class]]) {
-			// add study to specific study list for this user
-			if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
-				WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
-				wpStudy.user = destUser;
-				wpStudy.patientUID = study.patientUID;
-				wpStudy.studyInstanceUID = study.studyInstanceUID;
-				wpStudy.dateAdded = [NSDate dateWithTimeIntervalSinceReferenceDate:[[NSUserDefaults standardUserDefaults] doubleForKey:@"lastNotificationsDate"]];
-				[self.portal.database save:NULL];
-			}
-			
-			// Send the email
-			[self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL customText: [parameters objectForKey:@"message"] from: user];
-			[self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
-			
-			[response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
-		} else
-			[response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
+	if ([[parameters objectForKey:@"shareStudy"] isEqual:@"shareStudy"] && study)
+    {
+        if( !user || user.shareStudyWithUser.boolValue)
+        {
+            NSString* shareStudyDestination = [parameters objectForKey:@"shareStudyDestination"];
+            WebPortalUser* destUser = NULL;
+            
+            if ([shareStudyDestination isEqual:@"NEW"])
+            {
+                if( !user || user.createTemporaryUser.boolValue)
+                {
+                    @try
+                    {
+                        destUser = [self.portal newUserWithEmail:[parameters objectForKey:@"shareDestinationCreateTempEmail"]];
+                    }
+                    @catch (NSException* e)
+                    {
+                        [self.response.tokens addError:[NSString stringWithFormat:NSLocalizedString(@"Couldn't create temporary user: %@", nil), e.reason]];
+                    }
+                }
+                else
+                    [response.tokens addError: NSLocalizedString(@"Study share failed: not authorized.", @"Web Portal, study, share, error")];
+            }
+            else destUser = [self objectWithXID:shareStudyDestination ofClass: [WebPortalUser class]];
+            
+            if ([destUser isKindOfClass: [WebPortalUser class]]) {
+                // add study to specific study list for this user
+                if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
+                    WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
+                    wpStudy.user = destUser;
+                    wpStudy.patientUID = study.patientUID;
+                    wpStudy.studyInstanceUID = study.studyInstanceUID;
+                    wpStudy.dateAdded = [NSDate dateWithTimeIntervalSinceReferenceDate:[[NSUserDefaults standardUserDefaults] doubleForKey:@"lastNotificationsDate"]];
+                    [self.portal.database save:NULL];
+                }
+                
+                // Send the email
+                [self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL customText: [parameters objectForKey:@"message"] from: user];
+                [self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
+                
+                [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
+            } else
+                [response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
+        }
+        else
+            [response.tokens addError: NSLocalizedString(@"Study share failed: not authorized.", @"Web Portal, study, share, error")];
 	}
 	
     
