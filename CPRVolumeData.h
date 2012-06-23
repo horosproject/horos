@@ -144,7 +144,6 @@ CF_INLINE float CPRVolumeDataGetFloatAtPixelCoordinate(CPRVolumeDataInlineBuffer
     }
 }
 
-
 CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolumeDataInlineBuffer *inlineBuffer, CGFloat x, CGFloat y, CGFloat z) // coordinate in the pixel space
 {
     float returnValue;
@@ -157,35 +156,76 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolume
     NSInteger ceilZ = floorZ+1.0;
     
     bool outside = false;
-    outside |= floorX < -1;
-    outside |= floorY < -1;
-    outside |= floorZ < -1;
+    outside |= floorX < 0;
+    outside |= floorY < 0;
+    outside |= floorZ < 0;
     outside |= ceilX > inlineBuffer->pixelsWide;
     outside |= ceilY > inlineBuffer->pixelsHigh;
     outside |= ceilZ > inlineBuffer->pixelsDeep;
     
-    if (outside) {
+    if (outside || !inlineBuffer->floatBytes) {
         returnValue = inlineBuffer->outOfBoundsValue;
     } else {
         float xd = x - floorf((float)x);
         float yd = y - floorf((float)y);
         float zd = z - floorf((float)z);
+//        
+//        float xda = 1.0f - xd;
+//        float yda = 1.0f - yd;
+//        float zda = 1.0f - zd;
+//        
+//        float i1 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, floorY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, floorY, ceilZ)*zd;
+//        float i2 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, ceilY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, ceilY, ceilZ)*zd;
+//        
+//        float w1 = i1*yda + i2*yd;
+//        
+//        float j1 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, floorY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, floorY, ceilZ)*zd;
+//        float j2 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, ceilY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, ceilY, ceilZ)*zd;
+//        
+//        float w2 = j1*yda + j2*yd;
+//        
+//        returnValue = w1*xda + w2*xd;
         
-        float xda = 1.0f - xd;
-        float yda = 1.0f - yd;
-        float zda = 1.0f - zd;
         
-        float i1 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, floorY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, floorY, ceilZ)*zd;
-        float i2 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, ceilY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, floorX, ceilY, ceilZ)*zd;
+#define trilinFuncMacro(v,x,y,z,a,b,c,d,e,f,g,h)         \
+t00 =   a + (x)*(b-a);      \
+t01 =   c + (x)*(d-c);      \
+t10 =   e + (x)*(f-e);      \
+t11 =   g + (x)*(h-g);      \
+t0  = t00 + (y)*(t01-t00);  \
+t1  = t10 + (y)*(t11-t10);  \
+v   =  t0 + (z)*(t1-t0);
+
+        float A, B, C, D, E, F, G, H;
+        float t00, t01, t10, t11, t0, t1;
+        int Binc, Cinc, Dinc, Einc, Finc, Ginc, Hinc;
+        int xinc, yinc, zinc;
         
-        float w1 = i1*yda + i2*yd;
+        xinc = 1;
+        yinc = inlineBuffer->pixelsWide;
+        zinc = inlineBuffer->pixelsWideTimesPixelsHigh;
         
-        float j1 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, floorY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, floorY, ceilZ)*zd;
-        float j2 = CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, ceilY, floorZ)*zda + CPRVolumeDataGetFloatAtPixelCoordinate(inlineBuffer, ceilX, ceilY, ceilZ)*zd;
+        // Compute the increments to get to the other 7 voxel vertices from A
+        Binc = xinc;
+        Cinc = yinc;
+        Dinc = xinc + yinc;
+        Einc = zinc;
+        Finc = zinc + xinc;
+        Ginc = zinc + yinc;
+        Hinc = zinc + xinc + yinc;
         
-        float w2 = j1*yda + j2*yd;
+        // Set values for the first pass through the loop
+        const float *dptr = inlineBuffer->floatBytes + floorZ * zinc + floorY * yinc + floorX;
+        A = *(dptr);
+        B = *(dptr + Binc);
+        C = *(dptr + Cinc);
+        D = *(dptr + Dinc);
+        E = *(dptr + Einc);
+        F = *(dptr + Finc);
+        G = *(dptr + Ginc);
+        H = *(dptr + Hinc);
         
-        returnValue = w1*xda + w2*xd;
+        trilinFuncMacro( returnValue, xd, yd, zd, A, B, C, D, E, F, G, H );
     }
     
     return returnValue;

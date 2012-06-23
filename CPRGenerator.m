@@ -41,7 +41,12 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
     @synchronized (self) {
         if (_synchronousRequestQueue == nil) {
             _synchronousRequestQueue = [[NSOperationQueue alloc] init];
-			[_synchronousRequestQueue setMaxConcurrentOperationCount:1];
+            
+            int threads = [[NSProcessInfo processInfo] processorCount];
+            if( threads > 2)
+                threads = 2;
+            
+			[_synchronousRequestQueue setMaxConcurrentOperationCount: threads];
         }
     }
     
@@ -57,7 +62,7 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
     CPRVolumeData *generatedVolume;
     
     operation = [[[request operationClass] alloc] initWithRequest:request volumeData:volumeData];
-	[operation setQueuePriority:NSOperationQueuePriorityHigh];
+	[operation setQueuePriority:NSOperationQueuePriorityVeryHigh];
     operationQueue = [self _synchronousRequestQueue];
     [operationQueue addOperation:operation];
     [operationQueue waitUntilAllOperationsAreFinished];
@@ -74,7 +79,12 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
     if ( (self = [super init]) ) {
         _volumeData = [volumeData retain];
         _generatorQueue = [[NSOperationQueue alloc] init];
-        [_generatorQueue setMaxConcurrentOperationCount:1];
+        
+        int threads = [[NSProcessInfo processInfo] processorCount];
+        if( threads > 2)
+            threads = 2;
+        
+        [_generatorQueue setMaxConcurrentOperationCount: threads];
         _observedOperations = [[NSMutableSet alloc] init];
         _finishedOperations = [[NSMutableArray alloc] init];
         _generatedFrameTimes = [[NSMutableArray alloc] init];
@@ -121,7 +131,7 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
     }
     
     operation = [[[request operationClass] alloc] initWithRequest:[[request copy] autorelease] volumeData:_volumeData];
-	[operation setQueuePriority:NSOperationQueuePriorityLow];
+	[operation setQueuePriority:NSOperationQueuePriorityNormal];
     [self retain]; // so that the generator can't disappear while the operation is running
     [operation addObserver:self forKeyPath:@"isFinished" options:0 context:&self->_generatorQueue];
     [_observedOperations addObject:operation];

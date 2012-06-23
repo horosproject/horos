@@ -63,7 +63,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="345868235">
@@ -161,6 +161,7 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{730, 443}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="345868235"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -1632,7 +1633,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="322188120">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">14</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSView" id="37273739">
@@ -1644,6 +1645,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">258</int>
 								<string key="NSFrame">{{61, 3}, {114, 16}}</string>
 								<reference key="NSSuperview" ref="37273739"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="671843752">
 									<int key="NSCellFlags">604372736</int>
@@ -1668,6 +1671,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">258</int>
 								<string key="NSFrame">{{44, 21}, {133, 15}}</string>
 								<reference key="NSSuperview" ref="37273739"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="244926888"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSPopUpButtonCell" key="NSCell" id="175922870">
 									<int key="NSCellFlags">-2076049856</int>
@@ -1743,6 +1748,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{-4, 8}, {65, 11}}</string>
 								<reference key="NSSuperview" ref="37273739"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="60364984"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="126864937">
 									<int key="NSCellFlags">67239424</int>
@@ -1792,6 +1799,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{8, 23}, {38, 11}}</string>
 								<reference key="NSSuperview" ref="37273739"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="488887598"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="927302219">
 									<int key="NSCellFlags">68288064</int>
@@ -1806,9 +1815,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{184, 40}</string>
 						<reference key="NSSuperview" ref="322188120"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="1055582127"/>
 					</object>
 				</array>
 				<string key="NSFrameSize">{184, 40}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView" ref="37273739"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
 					<int key="NSCellFlags">67239424</int>
@@ -2984,7 +2998,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSTransparent">NO</bool>
 			</object>
 			<object class="NSBox" id="492845847">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">12</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSView" id="511388850">
@@ -2996,6 +3010,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{-1, 14}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="511388850"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="926677960"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="605604509">
 									<int key="NSCellFlags">67239424</int>
@@ -3012,6 +3028,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{1, 2}, {117, 16}}</string>
 								<reference key="NSSuperview" ref="511388850"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView" ref="57652591"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSSliderCell" key="NSCell" id="493209715">
 									<int key="NSCellFlags">67501824</int>
@@ -3036,6 +3054,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<int key="NSvFlags">256</int>
 								<string key="NSFrame">{{51, 14}, {69, 17}}</string>
 								<reference key="NSSuperview" ref="511388850"/>
+								<reference key="NSWindow"/>
+								<reference key="NSNextKeyView"/>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSTextFieldCell" key="NSCell" id="289349410">
 									<int key="NSCellFlags">67239424</int>
@@ -3050,9 +3070,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</array>
 						<string key="NSFrameSize">{120, 35}</string>
 						<reference key="NSSuperview" ref="492845847"/>
+						<reference key="NSWindow"/>
+						<reference key="NSNextKeyView" ref="170089609"/>
 					</object>
 				</array>
 				<string key="NSFrameSize">{120, 35}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
+				<reference key="NSNextKeyView" ref="511388850"/>
 				<string key="NSOffsets">{0, 0}</string>
 				<object class="NSTextFieldCell" key="NSTitleCell">
 					<int key="NSCellFlags">67239424</int>
@@ -7385,8 +7410,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="endDCMExportSettings:">id</string>
 						<string key="loadBezierPath:">id</string>
 						<string key="roiGetInfo:">id</string>
+						<string key="runFlyAssistant:">id</string>
 						<string key="saveBezierPath:">id</string>
 						<string key="setTool:">id</string>
+						<string key="switchPathAssistantMode:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="editShadingValues:">
@@ -7405,12 +7432,20 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">roiGetInfo:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="runFlyAssistant:">
+							<string key="name">runFlyAssistant:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="saveBezierPath:">
 							<string key="name">saveBezierPath:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setTool:">
 							<string key="name">setTool:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="switchPathAssistantMode:">
+							<string key="name">switchPathAssistantMode:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
@@ -7658,6 +7693,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="alwaysSyncMenu:">id</string>
 						<string key="flipHorizontal:">id</string>
 						<string key="flipVertical:">id</string>
+						<string key="realSize:">id</string>
 						<string key="roiLoadFromXMLFiles:">NSArray</string>
 						<string key="scaleToFit:">id</string>
 						<string key="sliderRGBFactor:">id</string>
@@ -7677,6 +7713,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="flipVertical:">
 							<string key="name">flipVertical:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="realSize:">
+							<string key="name">realSize:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">

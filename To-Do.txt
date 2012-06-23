@@ -19,12 +19,12 @@
 
 - Check Columns bug
 - COLONIX: CPR no image bug
+- High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 
 ------------------------------------------------------------------------------------------------------------------------
 
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
-- 10.8: Notifications Center, iCloud sync, Retina Display,
-- High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
+- 10.8: Notifications Center, iCloud sync, Retina Display
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)

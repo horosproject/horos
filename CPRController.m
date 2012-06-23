@@ -2594,6 +2594,8 @@ static float deg2rad = M_PI / 180.0;
 			
 			if( self.exportSeriesType == CPRRotationExportSeriesType) // 3D rotation
 			{
+                NSTimeInterval start = [NSDate timeIntervalSinceReferenceDate];
+                
                 if( cprType == CPRStraightenedType)
                 {
                     requestStraightened = [[[CPRStraightenedGeneratorRequest alloc] init] autorelease];
@@ -2706,6 +2708,8 @@ static float deg2rad = M_PI / 180.0;
 				
 				[progress close];
 				[progress release];
+                
+                NSLog( @"Export Rotation: %f",  (float) ([NSDate timeIntervalSinceReferenceDate] - start));
 			}
 			else if(self.exportSeriesType == CPRSlabExportSeriesType)
 			{
@@ -3674,6 +3678,7 @@ static float deg2rad = M_PI / 180.0;
 		
 		[toolbarItem setView: tbThickSlab];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbThickSlab frame]), NSHeight([tbThickSlab frame]))];
+        [toolbarItem setMaxSize: NSMakeSize(2*NSWidth([tbThickSlab frame]), NSHeight([tbThickSlab frame]))];
     }
 	else if ([itemIdent isEqualToString: @"tbWLWW"])
 	{
