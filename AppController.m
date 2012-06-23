@@ -2479,15 +2479,15 @@ static NSDate *lastWarningDate = nil;
 {
 	if( [[BrowserController currentBrowser] shouldTerminate: sender] == NO) return;
 	
+    for( NSWindow *w in [NSApp windows])
+		[w orderOut:sender];
+    
 	#ifndef OSIRIX_LIGHT
 	[dcmtkQRSCP abort];
 	[dcmtkQRSCPTLS abort];
 	#endif
 	
-	for( NSWindow *w in [NSApp windows])
-		[w orderOut:sender];
-    
-    [NSThread sleepForTimeInterval: 1];
+    [NSThread sleepForTimeInterval: 0.5];
     
 	#ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] release];
