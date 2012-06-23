@@ -968,88 +968,95 @@ static float deg2rad = M_PI / 180.0;
 
 - (void) assistantOnAddNode:(NSNotification*) note
 {
-    if (assistantPathMode && [curvedPath.nodes count] > 1) {
-        NSLog(@"CurvedPath count = %d", [curvedPath.nodes count]);
-        N3Vector node, na, nb;
-        N3AffineTransform patient2VolumeDataTransform = cprVolumeData.volumeTransform;
-        N3AffineTransform volumeData2PatientTransform = N3AffineTransformInvert(patient2VolumeDataTransform);
-        na = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:0] N3VectorValue], patient2VolumeDataTransform);
-        nb = N3VectorApplyTransform([[curvedPath.nodes lastObject] N3VectorValue], patient2VolumeDataTransform);
+    unsigned int nodeCount = [curvedPath.nodes count];
+    if ( nodeCount > 1) {
         WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
         [waiting showWindow:self];
+        N3AffineTransform patient2VolumeDataTransform = cprVolumeData.volumeTransform;
+        N3AffineTransform volumeData2PatientTransform = N3AffineTransformInvert(patient2VolumeDataTransform);
         
-        Point3D *pta, *ptb;
-        pta = [[Point3D alloc] initWithX:na.x y:na.y z:na.z];
-        ptb = [[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z];
-        
-        int err = [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
-        NSLog(@"Centerline count = %d", [centerline count]);
         CPRCurvedPath * newCP = [[CPRCurvedPath alloc] init];
-        NSMutableArray * nodeList = [[NSMutableArray alloc] init];
-        if(!err)
+        N3Vector node;
+        OSIVoxel * pt;
+
+        for (unsigned int i = 0; i < nodeCount - 1; ++i)
         {
-            // vider le curvedPath et le remplir avec les points de la centerline
-            for(unsigned int i=0;i<[centerline count];i++)
-            {
-                OSIVoxel * pt = [centerline objectAtIndex:i];
-                node.x = pt.x;
-                node.y = pt.y;
-                node.z = pt.z;
-                [nodeList addObject:[NSValue valueWithN3Vector:node]];
-                [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
-                curvedPath = newCP;
-            }
-        }
-        else if(err == ERROR_NOENOUGHMEM)
-        {
-            NSRunAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-        }
-        else if(err == ERROR_CANNOTFINDPATH)
-        {
-            NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-        }
-        else if(err==ERROR_DISTTRANSNOTFINISH)
-        {
-            int i;
-            waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
-            [waiting showWindow:self];
+            N3Vector na = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:i] N3VectorValue], patient2VolumeDataTransform);
+            N3Vector nb = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:i+1] N3VectorValue], patient2VolumeDataTransform);
             
-            for(i=0; i<5; i++)
+            Point3D *pta = [[Point3D alloc] initWithX:na.x y:na.y z:na.z];
+            Point3D *ptb = [[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z];
+            
+            [centerline removeAllObjects];
+
+            int err = [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
+            if(!err)
             {
-                sleep(2);
-                err= [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
-                if(err!=ERROR_DISTTRANSNOTFINISH)
-                    break;
-                // vider le curvedPath et le remplir avec les points de la centerline
-                for(unsigned int i=0;i<[centerline count];i++)
+                unsigned int lineCount = [centerline count] - 1;
+                for( unsigned int i = 0; i < lineCount ; ++i)
                 {
-                    OSIVoxel * pt = [centerline objectAtIndex:i];
+                    pt = [centerline objectAtIndex:i];
                     node.x = pt.x;
                     node.y = pt.y;
                     node.z = pt.z;
-                    [curvedPath addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
                     [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
-                    curvedPath = newCP;
                 }
             }
-            [waiting close];
-            [waiting release];
-            if(err==ERROR_CANNOTFINDPATH)
+            else if(err == ERROR_NOENOUGHMEM)
             {
-                NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-                return;
+                NSRunAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+            }
+            else if(err == ERROR_CANNOTFINDPATH)
+            {
+                NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from A to B.", nil), NSLocalizedString(@"OK", nil), nil, nil);
             }
             else if(err==ERROR_DISTTRANSNOTFINISH)
             {
-                NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-                return;
-            }        
+                [waiting close];
+                [waiting release];
+                waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+                [waiting showWindow:self];
+                
+                for(unsigned int i=0; i<5; i++)
+                {
+                    sleep(2);
+                    [centerline removeAllObjects];
+                    err= [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
+                    if(err!=ERROR_DISTTRANSNOTFINISH)
+                        break;
+                    
+                    for(unsigned int i=0;i<[centerline count];i++)
+                    {
+                        pt = [centerline objectAtIndex:i];
+                        node.x = pt.x;
+                        node.y = pt.y;
+                        node.z = pt.z;
+                        [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
+                    }
+                }
+                if(err==ERROR_CANNOTFINDPATH)
+                {
+                    NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    return;
+                }
+                else if(err==ERROR_DISTTRANSNOTFINISH)
+                {
+                    NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    return;
+                }        
+            }
+            [pta release];
+            [ptb release];
         }
-        [pta release];
-        [ptb release];
+        pt = [centerline lastObject];
+        node.x = pt.x;
+        node.y = pt.y;
+        node.z = pt.z;
+        [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
+        curvedPath = newCP;
+        
         [waiting close];
         [waiting release];
-        [nodeList release];
     }
     else {
         NSLog(@"Not enough points to launch assistant");
@@ -3753,7 +3760,7 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setImage:[NSImage imageNamed:@"PathAssistant"]];
 		// target is not set, it will be the first responder
 		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(switchPathAssistantMode:)];
+		[toolbarItem setAction:@selector(runFlyAssistant:)];
     }
     // \bd assistant
 	else
@@ -4623,6 +4630,23 @@ static float deg2rad = M_PI / 180.0;
 	
 	[self delayedFullLODRendering: CPRMPRDCMView];
 }
+
+- (IBAction)runFlyAssistant:(id)sender;
+{
+    if ([curvedPath.nodes count] > 1) {
+        [self assistantOnAddNode:nil];
+        mprView1.curvedPath = curvedPath;
+        mprView2.curvedPath = curvedPath;
+        mprView3.curvedPath = curvedPath;
+        cprView.curvedPath = curvedPath;
+        topTransverseView.curvedPath = curvedPath;
+        middleTransverseView.curvedPath = curvedPath;
+        bottomTransverseView.curvedPath = curvedPath;    
+    }
+    else
+         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant can not find a path with less than two points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+}
+
 
 - (IBAction)switchPathAssistantMode:(id)sender;
 {

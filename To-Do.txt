@@ -16,6 +16,9 @@
 - Apply multiple DICOM fields modifications in a single step (Meta-Data Editor window)
 - Curved MPR: Path Assistant available 
 - WebPortal: preference to authorize sharing a study by email (temporary user)
+
+- Check Columns bug
+
 ------------------------------------------------------------------------------------------------------------------------
 
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
