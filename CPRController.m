@@ -1053,7 +1053,20 @@ static float deg2rad = M_PI / 180.0;
         node.y = pt.y;
         node.z = pt.z;
         [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
-        curvedPath = newCP;
+        
+        
+        
+        self.curvedPath = newCP;
+        
+        mprView1.curvedPath = curvedPath;
+        mprView2.curvedPath = curvedPath;
+        mprView3.curvedPath = curvedPath;
+        cprView.curvedPath = curvedPath;
+        topTransverseView.curvedPath = curvedPath;
+        middleTransverseView.curvedPath = curvedPath;
+        bottomTransverseView.curvedPath = curvedPath;
+        
+        
         
         [waiting close];
         [waiting release];
@@ -4644,7 +4657,7 @@ static float deg2rad = M_PI / 180.0;
         bottomTransverseView.curvedPath = curvedPath;    
     }
     else
-         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant can not find a path with less than two points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant can not find a path with at least two points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
 

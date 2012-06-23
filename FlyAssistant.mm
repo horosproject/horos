@@ -960,8 +960,6 @@ typedef GreaterPathNodeOnF NodeCompare;
 		
 		free(labelmap);
 		return	0;
-		
-		
 	}
 	else {
 		free(labelmap);

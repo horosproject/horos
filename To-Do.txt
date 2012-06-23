@@ -18,6 +18,7 @@
 - WebPortal: preference to authorize sharing a study by email (temporary user)
 
 - Check Columns bug
+- COLONIX: CPR no image bug
 
 ------------------------------------------------------------------------------------------------------------------------
 

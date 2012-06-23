@@ -77,7 +77,7 @@
 }
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"OSIPoint\nx = %2.1f y = %2.1f z = %2.1f value: %@", _x, _y, _z, _value];
+	return [NSString stringWithFormat:@"OSIVoxel: x = %2.1f y = %2.1f z = %2.1f value: %@", _x, _y, _z, _value];
 }
 
 

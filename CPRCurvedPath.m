@@ -241,6 +241,8 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
         return; // don't bother adding the point if it is already the last point
     }
     
+    assert(N3VectorIsZero(node) == false);
+    
     [_nodes addObject:[NSValue valueWithN3Vector:node]];
     
     if ([_nodes count] >= 2) {
@@ -256,6 +258,8 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
         NSLog(@"Warning, CPRCurvedPath trying to add a node too close to the last node");
         return; // don't bother adding the point if it is already the last point
     }
+    
+    assert(N3VectorIsZero(node) == false);
     
     [_nodes addObject:[NSValue valueWithN3Vector:node]];
     
