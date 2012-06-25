@@ -18,11 +18,9 @@
 - WebPortal: preference to authorize sharing a study by email (temporary user)
 - High-Res mode for curved MPR
 
-- Check Columns bug
 - COLONIX: CPR no image bug
 
 ------------------------------------------------------------------------------------------------------------------------
-
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
 - 10.8: Notifications Center, iCloud sync, Retina Display
 - Shift+Cmd+Click to add series to viewer
@@ -66,5 +64,4 @@
 - Password DB in keychain
 - Preferences for Status menu in DB
 - Reporter for Word
-
 ------------------------------------------------------------------------------------------------------------------------
