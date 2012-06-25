@@ -4326,39 +4326,43 @@ static NSConditionLock *threadLock = nil;
 - (void)buildColumnsMenu
 {
 	[columnsMenu release];
-	columnsMenu = [[NSMenu alloc] initWithTitle:@"columns"];
+	columnsMenu = [[NSMenu alloc] initWithTitle:@""];
+    [columnsMenu setDelegate:self];
 	
-	
-	NSArray	*columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
-	
-	for( NSTableColumn *col in [databaseOutline allColumns])
+    NSMutableArray* cols = [NSMutableArray array];
+    for (NSTableColumn* col in [databaseOutline allColumns])
+        [cols addObject:[NSArray arrayWithObjects: col, [[col headerCell] stringValue], nil]];
+//    [cols sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
+  //      return [[obj1 objectAtIndex:1] compare:[obj2 objectAtIndex:1]];
+    //}];
+    
+	for (NSArray* a in cols)
 	{
-		NSMenuItem	*item = [columnsMenu insertItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@"" atIndex: [columnsMenu numberOfItems]];
-		[item setRepresentedObject: [col identifier]];
+        NSTableColumn* col = [a objectAtIndex:0];
+		NSMenuItem* item = [columnsMenu addItemWithTitle:[[col headerCell] stringValue] action:@selector(columnsMenuAction:) keyEquivalent:@""];
+		[item setRepresentedObject:[col identifier]];
 	}
 	
-	[[databaseOutline headerView] setMenu: columnsMenu];
-    
-    [columnsMenu setDelegate:self];
+	[[databaseOutline headerView] setMenu:columnsMenu];
 }
 
 -(void)columnsMenuWillOpen {
-	NSArray* columnIdentifiers = [[databaseOutline tableColumns] valueForKey:@"identifier"];
+    NSArray* cols = [databaseOutline tableColumns];
+	NSArray* columnIdentifiers = [cols valueForKey:@"identifier"];
     for (NSMenuItem* mi in [columnsMenu itemArray]) {
         id ro = [mi representedObject];
-        
 		
 		if ([ro isEqualToString:@"name"])
 		{
-			if ([[NSUserDefaults standardUserDefaults] boolForKey: @"HIDEPATIENTNAME"])
+			if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HIDEPATIENTNAME"])
 				[mi setState: NSOffState];
-			else
-				[mi setState: NSOnState];
+			else [mi setState: NSOnState];
 		}
 		else
 		{
-            NSInteger index = [columnIdentifiers indexOfObject: ro];
-			if( index != NSNotFound) [mi setState: NSOnState];
+            NSInteger index = [columnIdentifiers indexOfObject:ro];
+			if (index != NSNotFound && ![[cols objectAtIndex:index] isHidden])
+                [mi setState: NSOnState];
 			else [mi setState: NSOffState];
 		}
     }
