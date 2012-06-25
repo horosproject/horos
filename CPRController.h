@@ -70,7 +70,7 @@ typedef NSInteger CPRExportRotationSpan;
 	IBOutlet NSObjectController *ob;
 	
 	// To be able to use Cocoa bindings with toolbar...
-	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel;
+	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution;
 	
 	NSToolbar *toolbar;
 	
@@ -111,11 +111,15 @@ typedef NSInteger CPRExportRotationSpan;
 	VRController *hiddenVRController;
 	VRView *hiddenVRView;
     
-	NSMutableArray *filesList[ MAX4D], *pixList[ MAX4D];
+    NSMutableArray *HR_PixList, *HR_FileList;
+    NSData *HR_Data;
+    
+    NSMutableArray *filesList[ MAX4D], *pixList[ MAX4D];
 	DCMPix *originalPix;
 	NSData *volumeData[ MAX4D];
 	BOOL avoidReentry;
-	
+	BOOL highResolutionMode;
+    
 	// 4D Data support
 	NSTimeInterval lastMovieTime;
     NSTimer	*movieTimer;
@@ -148,7 +152,7 @@ typedef NSInteger CPRExportRotationSpan;
     BOOL exportSliceIntervalSameAsVolumeSliceInterval;
     CGFloat exportSliceInterval, exportTransverseSliceInterval;
     
-	int dcmmN;
+//	int dcmmN;
 	
 	// Clipping Range
 	float clippingRangeThickness;
@@ -185,7 +189,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property (readonly) NSSplitView *horizontalSplit1, *horizontalSplit2, *verticalSplit;
 @property (nonatomic, readonly, copy) CPRCurvedPath *curvedPath;
 @property (readonly, copy) CPRDisplayInfo *displayInfo;
-@property (nonatomic) BOOL curvedPathCreationMode;
+@property (nonatomic) BOOL curvedPathCreationMode, highResolutionMode;
 @property (retain) NSColor *curvedPathColor;
 @property (nonatomic) double straightenedCPRAngle;
 @property (nonatomic) CPRType cprType;

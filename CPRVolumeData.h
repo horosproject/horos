@@ -148,11 +148,11 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolume
 {
     float returnValue;
     
-    NSInteger floorX = floorf(x);
+    NSInteger floorX = (x);
     NSInteger ceilX = floorX+1.0;
-    NSInteger floorY = floorf(y);
+    NSInteger floorY = (y);
     NSInteger ceilY = floorY+1.0;
-    NSInteger floorZ = floorf(z);
+    NSInteger floorZ = (z);
     NSInteger ceilZ = floorZ+1.0;
     
     bool outside = false;
@@ -166,9 +166,9 @@ CF_INLINE float CPRVolumeDataLinearInterpolatedFloatAtVolumeCoordinate(CPRVolume
     if (outside || !inlineBuffer->floatBytes) {
         returnValue = inlineBuffer->outOfBoundsValue;
     } else {
-        float xd = x - floorf((float)x);
-        float yd = y - floorf((float)y);
-        float zd = z - floorf((float)z);
+        float xd = x - floorX;
+        float yd = y - floorY;
+        float zd = z - floorZ;
 //        
 //        float xda = 1.0f - xd;
 //        float yda = 1.0f - yd;

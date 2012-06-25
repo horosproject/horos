@@ -16,10 +16,10 @@
 - Apply multiple DICOM fields modifications in a single step (Meta-Data Editor window)
 - Curved MPR: Path Assistant available 
 - WebPortal: preference to authorize sharing a study by email (temporary user)
+- High-Res mode for curved MPR
 
 - Check Columns bug
 - COLONIX: CPR no image bug
-- High-Res mode for curved MPR ? Lanczos realtime versus pre-processed
 
 ------------------------------------------------------------------------------------------------------------------------
 

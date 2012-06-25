@@ -34,6 +34,7 @@
 #import "CPRUnsignedInt16ImageRep.h"
 #import "CPRMPRDCMView.h"
 #import "N2OpenGLViewWithSplitsWindow.h"
+#import "AppController.h"
 
 #define PRESETS_DIRECTORY @"/3DPRESETS/"
 #define CLUTDATABASE @"/CLUTs/"
@@ -56,7 +57,7 @@ static float deg2rad = M_PI / 180.0;
 
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
-@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable;
+@synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable, highResolutionMode;
 @synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView, assistantPathMode;
 
 // export related synthesize
@@ -100,6 +101,78 @@ static float deg2rad = M_PI / 180.0;
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	
 	return [emptyPix autorelease];
+}
+
+- (void) setHighResolutionMode: (BOOL) newValue
+{
+    highResolutionMode = newValue;
+    
+    if( highResolutionMode)
+    {
+        if( HR_PixList == nil)
+        {
+            HR_PixList = [[NSMutableArray array] retain];
+            HR_FileList = [[NSMutableArray array] retain];
+            HR_Data = nil;
+            
+            DCMPix* firstObject = [pixList[0] objectAtIndex:0];
+            float originalSliceInterval = [firstObject sliceInterval];
+            
+            float factor = 1.0 / 1.5;
+            
+            WaitRendering *www = [[[WaitRendering alloc] init:NSLocalizedString( @"Computing High Resolution data...", nil)] autorelease];
+            [www start];
+            
+            BOOL succeed = [ViewerController resampleDataFromPixArray: pixList[0] fileArray: filesList[0] inPixArray: HR_PixList fileArray: HR_FileList data: &HR_Data withXFactor: factor yFactor: factor zFactor: factor];
+            
+            [www end];
+			[www close];
+            
+            if( succeed == NO)
+            {
+                if( NSRunAlertPanel( NSLocalizedString(@"32-bit",nil), NSLocalizedString( @"Cannot compute the high resolution data.\r\rUpgrade to OsiriX 64-bit or OsiriX MD to solve this issue.",nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"OsiriX 64-bit", nil), nil) == NSAlertAlternateReturn)
+                    [[AppController sharedAppController] osirix64bit: self];
+                
+                [HR_PixList release];
+                HR_PixList = nil;
+                
+                [HR_FileList release];
+                HR_FileList = nil;
+                
+                HR_Data = nil;
+                
+                [self performSelector: @selector( setHighResolutionMode:) withObject: nil afterDelay: 0.1];
+            }
+            else
+            {
+                for( DCMPix *p in HR_PixList)
+                    p.sliceInterval = originalSliceInterval*factor;
+                
+                [HR_Data retain];
+            }
+        }
+        
+        if( HR_PixList)
+        {
+            [cprVolumeData release];
+            
+            cprVolumeData = [[CPRVolumeData alloc] initWithWithPixList:HR_PixList volume:HR_Data];
+            cprView.volumeData = cprVolumeData;
+            topTransverseView.volumeData = cprView.volumeData;
+            middleTransverseView.volumeData = cprView.volumeData;
+            bottomTransverseView.volumeData = cprView.volumeData;
+        }
+    }
+    else
+    {
+        [cprVolumeData release];
+        
+        cprVolumeData = [[CPRVolumeData alloc] initWithWithPixList: pixList[0] volume: volumeData[0]];
+        cprView.volumeData = cprVolumeData;
+        topTransverseView.volumeData = cprView.volumeData;
+        middleTransverseView.volumeData = cprView.volumeData;
+        bottomTransverseView.volumeData = cprView.volumeData;
+    }
 }
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
@@ -586,6 +659,10 @@ static float deg2rad = M_PI / 180.0;
     [assistant release];
     [centerline release];
 	
+    [HR_PixList release];
+    [HR_FileList release];
+    [HR_Data release];
+    
 	[super dealloc];
 	
 	NSLog( @"dealloc CPRController");
@@ -3696,6 +3773,14 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbTools];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbTools frame]), NSHeight([tbTools frame]))];
     }
+    else if ([itemIdent isEqualToString: @"tbHighRes"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Resolution",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Resolution",nil)];
+		
+		[toolbarItem setView: tbHighResolution];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbHighResolution frame]), NSHeight([tbHighResolution frame]))];
+    }
 //	else if ([itemIdent isEqualToString: @"tbMovie"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"4D Player",nil)];
@@ -3792,7 +3877,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3801,7 +3886,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
