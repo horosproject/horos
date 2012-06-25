@@ -25,7 +25,7 @@
 
 
 //static BOOL isHcugeCh = NO, isUnigeCh = NO, testIsHugDone = NO, testIsUniDone = NO;
-static NSString *hostName = @"";
+//static NSString *hostName = @"";
 static NSHost *currentHost = nil;
 
 @implementation DefaultsOsiriX
@@ -41,10 +41,10 @@ static NSHost *currentHost = nil;
 }
 
 // Test if the computer is in the HUG (domain name == hcuge.ch)
-+ (NSString*) hostName
-{
-	return hostName;
-}
+//+ (NSString*) hostName
+//{
+//	return hostName;
+//}
 
 //+ (BOOL) isHUG
 //{

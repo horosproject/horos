@@ -39,7 +39,7 @@
 #import "DicomDatabase+Scan.h"
 #import "DCMPix.h"
 #import "NSHost+N2.h"
-
+#import "DefaultsOsiriX.h"
 #import "NSString+N2.h"
 
 /*
@@ -423,7 +423,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (context == RemoteBrowserSourcesContext)
     {
-        NSHost* currentHost = [NSHost currentHost];
+        NSHost* currentHost = [DefaultsOsiriX currentHost];
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"OSIRIXSERVERS"];
 		// remove old items
 		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
@@ -465,7 +465,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	if (context == DicomBrowserSourcesContext)
     {
-        NSHost* currentHost = [NSHost currentHost];
+        NSHost* currentHost = [DefaultsOsiriX currentHost];
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
 		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
 		for (NSDictionary* ai in a)
