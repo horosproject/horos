@@ -4330,11 +4330,11 @@ static NSConditionLock *threadLock = nil;
     [columnsMenu setDelegate:self];
 	
     NSMutableArray* cols = [NSMutableArray array];
-    for (NSTableColumn* col in [databaseOutline allColumns])
+    for (NSTableColumn* col in [databaseOutline tableColumns])
         [cols addObject:[NSArray arrayWithObjects: col, [[col headerCell] stringValue], nil]];
-//    [cols sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
-  //      return [[obj1 objectAtIndex:1] compare:[obj2 objectAtIndex:1]];
-    //}];
+    [cols sortUsingComparator: ^NSComparisonResult(id obj1, id obj2) {
+        return [[obj1 objectAtIndex:1] compare:[obj2 objectAtIndex:1]];
+    }];
     
 	for (NSArray* a in cols)
 	{
@@ -4403,11 +4403,11 @@ static NSConditionLock *threadLock = nil;
     {
 		while( key = [enumerator nextObject])
 		{
-			NSInteger index = [[[[databaseOutline allColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
+			NSInteger index = [[[[databaseOutline tableColumns] valueForKey:@"headerCell"] valueForKey:@"title"] indexOfObject: key];
 			
 			if( index != NSNotFound)
 			{
-				NSString	*identifier = [[[databaseOutline allColumns] objectAtIndex: index] identifier];
+				NSString	*identifier = [[[databaseOutline tableColumns] objectAtIndex: index] identifier];
 				
 				if( [databaseOutline isColumnWithIdentifierVisible: identifier] != [[columnsDatabase valueForKey: key] intValue])
 				{
@@ -8652,23 +8652,26 @@ static BOOL needToRezoom;
             [databaseOutline setSortDescriptors:[NSKeyedUnarchiver unarchiveObjectWithData:[a objectAtIndex:0]]];
             NSArray* cols = [a objectAtIndex:1];
             
-            NSArray* allColumns = [databaseOutline allColumns];
-            NSMutableArray* unvisitedColumns = [[allColumns mutableCopy] autorelease];
+            NSArray* tableColumns = [databaseOutline tableColumns];
+            NSMutableArray* unvisitedColumns = [[tableColumns mutableCopy] autorelease];
             NSInteger index = 0;
             for (NSArray* col in cols) {
                 NSTableColumn* column = nil;
-                for (NSTableColumn* icolumn in allColumns)
+                for (NSTableColumn* icolumn in tableColumns)
                     if ([icolumn.identifier isEqualToString:[col objectAtIndex:0]]) {
                         column = icolumn;
                         break;
                     }
-                if (column)
+                if (column) {
                     [unvisitedColumns removeObject:column];
-                if ([databaseOutline columnWithIdentifier:column.identifier] == -1)
-                    [databaseOutline addTableColumn:column];
-                [column setHidden:NO];
-                [column setWidth:[[col objectAtIndex:1] integerValue]];
-                [databaseOutline moveColumn:[databaseOutline columnWithIdentifier:column.identifier] toColumn:index++];
+                    if ([databaseOutline columnWithIdentifier:column.identifier] == -1)
+                        [databaseOutline addTableColumn:column];
+                    [column setHidden:NO];
+                    [column setWidth:[[col objectAtIndex:1] integerValue]];
+                    [databaseOutline moveColumn:[databaseOutline columnWithIdentifier:column.identifier] toColumn:index++];
+                } else {
+                    NSLog(@"? %@", col);
+                }
             }
             for (NSTableColumn* column in unvisitedColumns)
                 [column setHidden:YES];
@@ -11002,6 +11005,8 @@ static NSArray*	openSubSeriesArray = nil;
 //	{
 //		printf("%u\n",i);
 //	});
+    
+    [self saveLoadAlbumsSortDescriptors];
     
 	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
 	

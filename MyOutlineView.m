@@ -17,69 +17,62 @@
 #import "browserController.h"
 #import "DicomDatabase.h"
 #import "DicomStudy.h"
+#import "N2Debug.h"
 
 @implementation MyOutlineView
 
-- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent
+- (void)removeTableColumn:(NSTableColumn*)tableColumn {
+    N2LogStackTrace(@"this is not allowed");
+}
+
+- (BOOL)acceptsFirstMouse:(NSEvent*)theEvent
 {
 	return YES;
 }
 
-- (void)keyDown:(NSEvent *)event
+- (void)keyDown:(NSEvent*)event
 {
-    if( [[event characters] length] == 0) return;
+    if ([[event characters] length] == 0) return;
     
 	unichar c = [[event characters] characterAtIndex:0];
 	 
-	if( (c >= 0xF700 && c <= 0xF8FF) || c == 9) // Functions keys, 9 == Tab Key
-		[super keyDown: event];
+	if ((c >= 0xF700 && c <= 0xF8FF) || c == 9) // Functions keys, 9 == Tab Key
+		[super keyDown:event];
 	else
-		[[[self window] windowController] keyDown: event];
+		[[[self window] windowController] keyDown:event];
 }
 
-- (NSObject < NSCoding > *)columnState
+- (NSObject<NSCoding>*)columnState
 {
-    NSMutableArray    *state;
-    NSArray            *columns;
-    NSTableColumn    *column;
+    NSArray* columns = [self tableColumns];
+    NSMutableArray* state = [NSMutableArray arrayWithCapacity:[columns count]];
 
-    columns = [self tableColumns];
-    state = [NSMutableArray arrayWithCapacity:[columns count]];
-
-    for( column in columns )
-    {
-        [state addObject:
-            [NSDictionary dictionaryWithObjectsAndKeys:
-                [column identifier], @"Identifier",
-                [NSNumber numberWithFloat:[column width]], @"Width",
-                nil]];
-    }
+    for (NSTableColumn* column in columns)
+        if (![column isHidden])
+            [state addObject:
+                [NSDictionary dictionaryWithObjectsAndKeys:
+                    [column identifier], @"Identifier",
+                    [NSNumber numberWithFloat:[column width]], @"Width",
+                    nil]];
 
     return state;
 }
 
-- (void)restoreColumnState:(NSObject *)columnState
+- (void)restoreColumnState:(NSArray*)state
 {
-    NSArray                *state;
-    NSDictionary        *params;
-    NSTableColumn        *column;
-
-    NSAssert( columnState != nil, @"nil columnState!" );
-    NSAssert( [columnState isKindOfClass:[NSArray class]], @"columnState is not an NSArray!" );
-
-    state = (NSArray *)columnState;
+    NSAssert(state != nil, @"nil columnState!" );
+    NSAssert([state isKindOfClass:[NSArray class]], @"columnState is not an NSArray!" );
 
     [self removeAllColumns];
-    for( params in state )
+    for (NSDictionary* params in state )
     {
-		if( [[params objectForKey:@"Identifier"] isEqualToString:@"name"] == NO)
+		if ([[params objectForKey:@"Identifier"] isEqualToString:@"name"] == NO)
 		{
-			column = [self initialColumnWithIdentifier:[params objectForKey:@"Identifier"]];
-
-			if( column != nil )
+			NSTableColumn* column = [self tableColumnWithIdentifier:[params objectForKey:@"Identifier"]];
+			if (column != nil)
 			{
+				[column setHidden:NO];
 				[column setWidth:[[params objectForKey:@"Width"] floatValue]];
-				[self addTableColumn:column];
 				[self setIndicatorImage:nil inTableColumn:column];
 				[self setNeedsDisplay:YES];
 			}
@@ -96,73 +89,56 @@
 
 - (void)setColumnWithIdentifier:(id)identifier visible:(BOOL)visible
 {
-    NSTableColumn    *column;
+	if ([identifier isEqualToString:@"name"])
+        return;
 
-	if( [identifier isEqualToString:@"name"]) return;
+    NSTableColumn* column = [self tableColumnWithIdentifier:identifier];// [self initialColumnWithIdentifier:identifier];
+    NSAssert(column != nil, @"nil column!");
 
-    column = [self initialColumnWithIdentifier:identifier];
-
-    NSAssert( column != nil, @"nil column!" );
-
-    if( visible )
-    {
-        if( ![self isColumnWithIdentifierVisible:identifier] )
-        {
-            [self addTableColumn:column];
-            [self sizeLastColumnToFit];
-			[self moveColumn: [self columnWithIdentifier: [column identifier]] toColumn: 1];
-            [self setNeedsDisplay:YES];
-        }
-    }
-    else
-    {
-        if( [self isColumnWithIdentifierVisible:identifier] )
-        {
-            [self removeTableColumn:column];
-            [self sizeLastColumnToFit];
-            [self setNeedsDisplay:YES];
-        }
+    BOOL hidden = !visible;
+    
+    if (column.isHidden != hidden) {
+        [column setHidden:hidden];
+        
+        if (visible)
+            [self moveColumn:[self columnWithIdentifier:identifier] toColumn:1];
+        
+        [self sizeLastColumnToFit];
+        [self setNeedsDisplay:YES];
     }
 }
 
 - (BOOL)isColumnWithIdentifierVisible:(id)identifier
 {
-    return [self columnWithIdentifier:identifier] != -1;
+    NSTableColumn* column = [self tableColumnWithIdentifier:identifier];
+    return column && !column.isHidden;
 }
 
 - (NSTableColumn *)initialColumnWithIdentifier:(id)identifier
 {
-    NSTableColumn    *column = nil;
-
-
-    for( column in allColumns )
-        if( [[column identifier] isEqual:identifier] )
-            break;
-
-    return column;
+    return [self tableColumnWithIdentifier:identifier];
 }
 
-- (void)removeAllColumns
+- (void)hideAllColumns
 {
-    NSArray            *columns;
-    NSTableColumn    *column;
-
-    columns = [NSArray arrayWithArray:[self tableColumns]];
-
-    for( column in columns )
-	{
-		if( [[column identifier] isEqualToString:@"name"] == NO) [self removeTableColumn:column];
-	}
+    for (NSTableColumn* column in [self tableColumns])
+		if ([[column identifier] isEqualToString:@"name"] == NO)
+            [column setHidden:YES];
 }
 
-- (NSArray*) allColumns
+- (void)removeAllColumns // __deprecated
 {
-	return allColumns;
+    [self hideAllColumns];
 }
 
-- (void)setInitialState
+- (NSArray*)allColumns // __deprecated
 {
-    allColumns = [[NSArray arrayWithArray:[self tableColumns]] retain];
+	return [self tableColumns];
+}
+
+- (void)setInitialState // __deprecated
+{
+    //allColumns = [[NSArray arrayWithArray:[self tableColumns]] retain];
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
