@@ -173,6 +173,8 @@ static float deg2rad = M_PI / 180.0;
         middleTransverseView.volumeData = cprView.volumeData;
         bottomTransverseView.volumeData = cprView.volumeData;
     }
+    
+    self.straightenedCPRAngle = self.straightenedCPRAngle + 0.1; // To force the update...
 }
 
 - (id)initWithDCMPixList:(NSMutableArray*)pix filesList:(NSMutableArray*)files volumeData:(NSData*)volume viewerController:(ViewerController*)viewer fusedViewerController:(ViewerController*)fusedViewer;
