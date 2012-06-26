@@ -81,6 +81,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 //  US Regions
     NSMutableArray      *usRegions;
     
+//  image type
+    NSString*           imageType;
+    
 //--------------------------------------
 
 // DICOM params needed for SUV calculations
@@ -206,6 +209,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property(setter=setID:) long ID;
 @property (readonly) NSRecursiveLock *checking;
 @property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
+
+@property(readonly,retain) NSString* imageType;
 
 // Dimensions in pixels
 @property (nonatomic) long pwidth, pheight;

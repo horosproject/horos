@@ -7276,6 +7276,41 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self findPlaneForPoint: pt localPoint: location distanceWithPlane: nil];
 }
 
++ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input {
+    // separate DCMPix into different arrays with common imageType
+    NSMutableDictionary* dcmPixByImageType = [NSMutableDictionary dictionary];
+    for (DCMPix* pix in input) {
+        NSString* pixImageType = [pix imageType];
+        NSMutableArray* dcmPixByImageTypeArray = [dcmPixByImageType objectForKey:pixImageType];
+        if (!dcmPixByImageTypeArray)
+            [dcmPixByImageType setObject:(dcmPixByImageTypeArray = [NSMutableArray array]) forKey:pixImageType];
+        [dcmPixByImageTypeArray addObject:pix];
+    }
+    
+    // is there more than one imageType?
+    if (dcmPixByImageType.count > 1) {
+        // yes, find the most common one
+        NSInteger maxCountIndex = 0;
+        NSArray* dcmPixByImageTypeArrays = [dcmPixByImageType allValues];
+        for (NSInteger i = 1; i < dcmPixByImageType.count; ++i)
+            if ([[dcmPixByImageTypeArrays objectAtIndex:i] count] > [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count])
+                maxCountIndex = i;
+        
+        // how many DCMPix have the most common imageType?
+        NSInteger maxCount = [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count];
+        
+        // retain all DCMPix from groups with at least half the number of images with the most common imageType
+        NSMutableArray* r = [NSMutableArray array];
+        for (NSArray* group in dcmPixByImageTypeArrays)
+            if (group.count >= maxCount/2)
+                [r addObjectsFromArray:group];
+
+        return r;
+    }
+    
+    return input;
+}
+
 - (int) findPlaneForPoint:(float*) pt preferParallelTo:(float*)parto localPoint:(float*) location distanceWithPlane: (float*) distanceResult
 {
 	int		ii = -1;
@@ -7284,28 +7319,21 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
     BOOL vParallel = NO;
     
-    // we have unwanted behaviors when synching a series with a scout in it.. try to exclude scouts ///// ImageType (0008,0008) may do the trick
-//    NSMutableDictionary* dcmPixByImageType = [NSMutableDictionary dictionary];
-//    for (DCMPix* pix in dcmPixList) {
-//       // NSString* pixImageType = [pix ];
-//        
-//    }
+    NSArray* pixes = [[self class] cleanedOutDcmPixArray:dcmPixList];
     
-//    NSMutableArray* ldcmPixList = [NSMutableArray array];
-    
-//    NSLog(@"hey hooooo %@", [dcmPixList valueForKey:@"imageType"]);
-    
-	for( int i = 0; i < [dcmPixList count]; i++)
+	for( int i = 0; i < [pixes count]; i++)
 	{
-		[[dcmPixList objectAtIndex: i] orientation: vectors];
+		DCMPix* pix = [pixes objectAtIndex:i];
+        
+        [pix orientation: vectors];
         
         BOOL currParallel = NO;
         if (parto && parto[6] == vectors[6] && parto[7] == vectors[7] && parto[8] == vectors[8]) // are parallel!
             currParallel = YES;
 		
-		orig[ 0] = [[dcmPixList objectAtIndex: i] originX];
-		orig[ 1] = [[dcmPixList objectAtIndex: i] originY];
-		orig[ 2] = [[dcmPixList objectAtIndex: i] originZ];
+		orig[ 0] = [pix originX];
+		orig[ 1] = [pix originY];
+		orig[ 2] = [pix originZ];
 		
 		tempDistance = [DCMView pbase_Plane: pt :orig :&(vectors[ 6]) :locationTemp];
 		

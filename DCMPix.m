@@ -1196,6 +1196,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 @end
 
+@interface DCMPix ()
+
+@property(readwrite,retain) NSString* imageType;
+
+@end
+
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
@@ -1203,6 +1209,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
+@synthesize imageType;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -5543,6 +5550,8 @@ END_CREATE_ROIS:
 	
 	//-----------------------common----------------------------------------------------------	
 	
+    self.imageType = [[dcmObject attributeArrayWithName:@"ImageType"] componentsJoinedByString:@"\\"];
+    
 	short maxFrame = 1;
 	short imageNb = frameNo;
 	
@@ -5728,49 +5737,46 @@ END_CREATE_ROIS:
 				DCMObject *sequenceItem = [[perFrameFunctionalGroupsSequence sequence] objectAtIndex:imageNb];
 				if( sequenceItem)
 				{
-					if( [sequenceItem attributeArrayWithName:@"MREchoSequence"])
+                    DCMSequenceAttribute* seq;
+                    DCMObject* object;
+                    
+					if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"ImageType"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
+                    {
+                        self.imageType = [[seq sequence] componentsJoinedByString:@"\\"];
+                    }
+                    
+					if ((seq = (DCMSequenceAttribute *)[sequenceItem attributeWithName:@"MREchoSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
-						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"MREchoSequence"];
-						DCMObject *object = [[seq sequence] objectAtIndex: 0];
-						if( object)
-							[self dcmFrameworkLoad0x0018: object];
+						if ((object = [[seq sequence] objectAtIndex:0]))
+							[self dcmFrameworkLoad0x0018:object];
 					}
 					
-					if( [sequenceItem attributeArrayWithName:@"PixelMeasuresSequence"])
+					if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PixelMeasuresSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
-						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelMeasuresSequence"];
-						DCMObject *object = [[seq sequence] objectAtIndex: 0];
-						if( object)
-							[self dcmFrameworkLoad0x0018: object];
-						if( object)
-							[self dcmFrameworkLoad0x0028: object];
+						if ((object = [[seq sequence] objectAtIndex:0])) {
+							[self dcmFrameworkLoad0x0018:object];
+							[self dcmFrameworkLoad0x0028:object];
+                        }
 					}
 					
-					if( [sequenceItem attributeArrayWithName:@"PlanePositionSequence"])
+                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlanePositionSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
-						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlanePositionSequence"];
-						DCMObject *object = [[seq sequence] objectAtIndex: 0];
-						
-						if( object)
-							[self dcmFrameworkLoad0x0020: object];
-						if( object)
-							[self dcmFrameworkLoad0x0028: object];
+						if ((object = [[seq sequence] objectAtIndex:0])) {
+							[self dcmFrameworkLoad0x0020:object];
+							[self dcmFrameworkLoad0x0028:object];
+                        }
 					}
 						
-					if( [sequenceItem attributeArrayWithName:@"PlaneOrientationSequence"])
+                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PlaneOrientationSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
-						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PlaneOrientationSequence"];
-						DCMObject *object = [[seq sequence] objectAtIndex: 0];
-						if( object)
-							[self dcmFrameworkLoad0x0020: object];
+						if ((object = [[seq sequence] objectAtIndex:0]))
+							[self dcmFrameworkLoad0x0020:object];
 					}
                     
-                    if( [sequenceItem attributeArrayWithName:@"PixelValueTransformationSequence"])
+                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"PixelValueTransformationSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
 					{
-						DCMSequenceAttribute *seq = (DCMSequenceAttribute *) [sequenceItem attributeWithName:@"PixelValueTransformationSequence"];
-						DCMObject *object = [[seq sequence] objectAtIndex: 0];
-						if( object)
-							[self dcmFrameworkLoad0x0028: object];
+						if ((object = [[seq sequence] objectAtIndex:0]))
+							[self dcmFrameworkLoad0x0028:object];
 					}
 				}
 			}
@@ -7653,7 +7659,19 @@ END_CREATE_ROIS:
 				
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &elemType);
 				if ( val && val->a && validAPointer( elemType)) self.SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
-			}
+
+                if ((val = Papy3GetElement(theGroupP, papImageTypeGr, &nbVal, &elemType))) {
+                    NSMutableArray* imageTypeArray = [NSMutableArray array];
+                    
+                    tmp = val;
+                    for (int i = 0; i < nbVal; ++i) {
+                        [imageTypeArray addObject:[NSString stringWithCString:tmp->a encoding:NSASCIIStringEncoding]];
+                        tmp++;
+                    }
+                
+                    self.imageType = [imageTypeArray componentsJoinedByString:@"\\"];
+                }
+            }
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0010];
 			if( theGroupP)
@@ -8030,7 +8048,21 @@ END_CREATE_ROIS:
 												
 												switch( gr->group)
 												{
-													case 0x0018:
+													case 0x0008:
+                                                        if ((val = Papy3GetElement(theGroupP, papImageTypeGr, &nbVal, &elemType))) {
+                                                            NSMutableArray* imageTypeArray = [NSMutableArray array];
+                                                            
+                                                            tmp = val;
+                                                            for (int i = 0; i < nbVal; ++i) {
+                                                                [imageTypeArray addObject:[NSString stringWithCString:tmp->a encoding:NSASCIIStringEncoding]];
+                                                                tmp++;
+                                                            }
+                                                            
+                                                            self.imageType = [imageTypeArray componentsJoinedByString:@"\\"];
+                                                        }
+                                                    break;
+                                                        
+                                                    case 0x0018:
 														val = Papy3GetElement (gr, papMREchoSequence, &nbVal, &elemType);
 														if (val != NULL && nbVal >= 1)
 														{
@@ -12391,6 +12423,8 @@ END_CREATE_ROIS:
 	[generatedName release];
 	[SOPClassUID release];
 	[frameofReferenceUID release];
+    
+    [imageType release];
 	
 	if( fExternalOwnedImage == nil)
 	{
@@ -12507,6 +12541,7 @@ END_CREATE_ROIS:
 {
 	NSMutableString *description = [NSMutableString string];
 	[description appendString:NSStringFromClass([self class])];
+	[description appendString:[NSString stringWithFormat:@" <%x>", (NSInteger)self]];
 	[description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
 	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
 	[description appendString:[NSString stringWithFormat: @"width: %d\n", width]];
