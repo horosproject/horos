@@ -570,6 +570,9 @@
 		843F847C12439E00004FBBF6 /* AYDicomPrintPref.h in Headers */ = {isa = PBXBuildFile; fileRef = 843F847A12439E00004FBBF6 /* AYDicomPrintPref.h */; };
 		8440039A0E8CF99500A00EBD /* dciodvfy in Resources */ = {isa = PBXBuildFile; fileRef = 844003990E8CF99500A00EBD /* dciodvfy */; };
 		8459A7270F5D63EF00146B28 /* VREmpty.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459A7250F5D63EF00146B28 /* VREmpty.xib */; };
+		8476BC2F1599D4B200451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
+		8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
+		8476BC321599D51300451331 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC2E1599D4B200451331 /* AVFoundation.framework */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
 		848A6BEB14C5BBA700C936C3 /* Tiling1x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */; };
@@ -8821,6 +8824,7 @@
 		844003990E8CF99500A00EBD /* dciodvfy */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = dciodvfy; path = Binaries/dciodvfy; sourceTree = "<group>"; };
 		844719AF0FD8EF50003BFDF8 /* OsiriX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
+		8476BC2E1599D4B200451331 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848631C10FE77E1F00B96E99 /* jpeg_memdest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memdest.h; path = Papyrus3/jpeg_memdest.h; sourceTree = "<group>"; };
 		848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x1.pdf; path = Binaries/Icons/Tiling/Tiling1x1.pdf; sourceTree = "<group>"; };
@@ -14393,6 +14397,7 @@
 				CEB7E9E514F31458001C64EA /* libITKBiasCorrection-4.1.a in Frameworks */,
 				CEB5B18E14F5507F0043457F /* libvtkOsiriX.a in Frameworks */,
 				CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */,
+				8476BC2F1599D4B200451331 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14418,6 +14423,7 @@
 				84321F23147E9BDA00C86CC1 /* Quartz.framework in Frameworks */,
 				AB451871149F4B2C006674BF /* libCharLS.a in Frameworks */,
 				CEBD93A814F1AE96000DA1FE /* libvtkzlib.a in Frameworks */,
+				8476BC321599D51300451331 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14464,6 +14470,7 @@
 				84A9D48D12F7F8EB00DA1F99 /* libkdu_v71R.a in Frameworks */,
 				AB451814149F464B006674BF /* libCharLS.a in Frameworks */,
 				CEBD93A914F1AEDA000DA1FE /* libvtkzlib.a in Frameworks */,
+				8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14538,6 +14545,7 @@
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
+				8476BC2E1599D4B200451331 /* AVFoundation.framework */,
 				CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,

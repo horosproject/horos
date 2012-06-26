@@ -16,6 +16,7 @@
 #import "DicomImage.h"
 #import "Papyrus3/Papyrus3.h"
 #import <QuickTime/QuickTime.h>
+#import <AVFoundation/AVFoundation.h>
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
 #import "BrowserController.h"
@@ -9173,60 +9174,60 @@ END_CREATE_ROIS:
     }
 }
 
-- (void) getFrameFromMovie:(NSString*) extension
-{
-	
-	if( [extension isEqualToString:@"mov"] == YES ||
-	   [extension isEqualToString:@"mpg"] == YES ||
-	   [extension isEqualToString:@"mpeg"] == YES ||
-	   [extension isEqualToString:@"avi"] == YES)
-	{
-		if( quicktimeThreadLock == nil) quicktimeThreadLock = [[NSLock alloc] init];
-		
-		[quicktimeThreadLock lock];
-		[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
-		
-		@try 
-		{
-			NSError	*error = nil;
-		
-			QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
-			
-			if( movie)
-			{
-				[movie attachToCurrentThread];
-				
-				int curFrame = 0;
-				[movie gotoBeginning];
-				
-				QTTime previousTime = [movie currentTime];
-				
-				curFrame = 0;
-				
-				while( curFrame != frameNo)
-				{
-					previousTime = [movie currentTime];
-					curFrame++;
-					[movie stepForward];
-					
-					if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
-				}
-				
-				[self getDataFromNSImage: [movie currentFrameImage]];
-				
-				[movie release];
-			}
-			else NSLog( @"movie == nil, %@", [error description]);
-		}
-		@catch (NSException * e) 
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-		
-		[QTMovie exitQTKitOnThread];
-		[quicktimeThreadLock unlock];
-	}
-}
+//- (void) getFrameFromMovie:(NSString*) extension
+//{
+//	
+//	if( [extension isEqualToString:@"mov"] == YES ||
+//	   [extension isEqualToString:@"mpg"] == YES ||
+//	   [extension isEqualToString:@"mpeg"] == YES ||
+//	   [extension isEqualToString:@"avi"] == YES)
+//	{
+//		if( quicktimeThreadLock == nil) quicktimeThreadLock = [[NSLock alloc] init];
+//		
+//		[quicktimeThreadLock lock];
+//		[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
+//		
+//		@try 
+//		{
+//			NSError	*error = nil;
+//		
+//			QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
+//			
+//			if( movie)
+//			{
+//				[movie attachToCurrentThread];
+//				
+//				int curFrame = 0;
+//				[movie gotoBeginning];
+//				
+//				QTTime previousTime = [movie currentTime];
+//				
+//				curFrame = 0;
+//				
+//				while( curFrame != frameNo)
+//				{
+//					previousTime = [movie currentTime];
+//					curFrame++;
+//					[movie stepForward];
+//					
+//					if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
+//				}
+//				
+//				[self getDataFromNSImage: [movie currentFrameImage]];
+//				
+//				[movie release];
+//			}
+//			else NSLog( @"movie == nil, %@", [error description]);
+//		}
+//		@catch (NSException * e) 
+//		{
+//            N2LogExceptionWithStackTrace(e);
+//		}
+//		
+//		[QTMovie exitQTKitOnThread];
+//		[quicktimeThreadLock unlock];
+//	}
+//}
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
 - (void) CheckLoadIn
@@ -10105,19 +10106,41 @@ END_CREATE_ROIS:
 			}
 			else	// It's a Movie ??
 			{
-			#if !__LP64__
-				NSMovie *movie = nil;
-				
 				if( [extension isEqualToString:@"mov"] == YES ||
 				   [extension isEqualToString:@"mpg"] == YES ||
 				   [extension isEqualToString:@"mpeg"] == YES ||
 				   [extension isEqualToString:@"avi"] == YES)
 				{
-					movie = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath:srcFile] byReference:NO];
-				}
-				
-				if( movie)
-				{
+                    NSError *error = nil;
+                    AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: srcFile]];
+                    AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
+                    
+                    NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
+                    if( video_tracks.count)
+                    {
+                        AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
+                        
+                        NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
+                        [dictionary setObject: [NSNumber numberWithInt: kCVPixelFormatType_32ARGB] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+                        
+                        AVAssetReaderTrackOutput* asset_reader_output = [[[AVAssetReaderTrackOutput alloc] initWithTrack:video_track outputSettings:dictionary] autorelease];
+                        [asset_reader addOutput:asset_reader_output];
+                        
+                        [asset_reader startReading];
+                        
+                        CMSampleBufferRef buffer;
+                        while ( [asset_reader status] == AVAssetReaderStatusReading)
+                        {
+                            buffer = [asset_reader_output copyNextSampleBuffer];
+                        }
+                    }
+                }
+            }
+                    
+                    
+                    
+                    
+                    
 //					Movie			mov = [movie QTMovie];
 //					TimeValue		aTime = 0;
 //					OSType			mediatype = 'eyes';
@@ -10201,11 +10224,11 @@ END_CREATE_ROIS:
 //					DisposeGWorld( ftheGWorld);
 //					
 //					[movie release];
-				}
-#else
-				[self getFrameFromMovie: extension];
-#endif
-			}
+//				}
+//#else
+//				[self getFrameFromMovie: extension];
+//#endif
+//			}
 			
 #ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
