@@ -21,7 +21,7 @@
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
 
 ------------------------------------------------------------------------------------------------------------------------
-- 10.7: Core Layout for xib,
+- 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, Retina Display
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
