@@ -10128,108 +10128,57 @@ END_CREATE_ROIS:
                         
                         [asset_reader startReading];
                         
-                        CMSampleBufferRef buffer;
-                        while ( [asset_reader status] == AVAssetReaderStatusReading)
+                        long curFrame = 0;
+                        while( [asset_reader status] == AVAssetReaderStatusReading)
                         {
-                            buffer = [asset_reader_output copyNextSampleBuffer];
-                        }
+                            CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
+                            
+                            if( curFrame == frameNo)
+                            {        
+                                CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
+                                
+                                CVPixelBufferLockBaseAddress(pixelBuffer,0); 
+                                /*Get information about the image*/
+                                uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(pixelBuffer); 
+                                size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer); 
+                                size_t w = CVPixelBufferGetWidth(pixelBuffer); 
+                                size_t h = CVPixelBufferGetHeight(pixelBuffer); 
+                                
+                                NSLog(@"Display Frame : %zu %zu %zu", w, h, bytesPerRow);
+                                
+                                unsigned char *argbImage, *tmpPtr, *srcPtr, *srcImage;
+                                long totSize;
+                                
+                                totSize = height * width * 4;
+                                
+                                if ( fExternalOwnedImage)
+                                    argbImage =	(unsigned char*) fExternalOwnedImage;
+                                else
+                                    argbImage = malloc( totSize);
+                                
+                                tmpPtr = argbImage;
+                                for( long y = 0 ; y < height; y++)
+                                {
+                                    srcPtr = srcImage + y * bytesPerRow;
+                                    memcpy( tmpPtr, srcPtr, width*4);
+                                    tmpPtr += width*4;
+                                }
+                                
+                                fImage = (float*) argbImage;
+                                isRGB = YES;
+                                
+                                /*We unlock the  image buffer*/
+                                CVPixelBufferUnlockBaseAddress(pixelBuffer,0);
+                                
+                                CMSampleBufferInvalidate(sampleBufferRef);
+                                CFRelease(sampleBufferRef);
+                            }
+                            curFrame++;
+                        }				
                     }
                 }
             }
-                    
-                    
-                    
-                    
-                    
-//					Movie			mov = [movie QTMovie];
-//					TimeValue		aTime = 0;
-//					OSType			mediatype = 'eyes';
-//					long			curFrame;
-//					Rect			tempRect;
-//					GWorldPtr		ftheGWorld = nil;
-//					PixMapHandle 	pixMapHandle;
-//					Ptr				pixBaseAddr;
-//					
-//					GetMovieBox( mov, &tempRect);
-//					OffsetRect( &tempRect, -tempRect.left, -tempRect.top);
-//
-//					NewGWorld( &ftheGWorld,
-//							   32,			// 32 Bits color !
-//							   &tempRect,
-//							   0,
-//							   NULL,
-//							   (GWorldFlags) keepLocal);
-//					
-//					SetMovieGWorld (mov, ftheGWorld, nil);
-//					SetMovieActive (mov, TRUE);
-//					SetMovieBox (mov, &tempRect);
-//					
-//					curFrame = 0;
-//					while (aTime != -1 && curFrame != frameNo)
-//					{
-//						GetMovieNextInterestingTime (   mov,
-//													 nextTimeMediaSample,
-//													 1,
-//													 &mediatype,
-//													 aTime,
-//													 1,
-//													 &aTime,
-//													 nil);
-//						if (aTime != -1) curFrame++;
-//					}
-//					
-//					SetMovieTimeValue (mov, aTime);
-//					UpdateMovie (mov);
-//					MoviesTask (mov, 0);
-//					
-//					// We have the image...
-//					
-//					pixMapHandle = GetGWorldPixMap(ftheGWorld);
-//					LockPixels (pixMapHandle);
-//					pixBaseAddr = GetPixBaseAddr(pixMapHandle);
-//					
-//					unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
-//					long			totSize;
-//					
-//					height = tempRect.bottom;
-//					width = tempRect.right;
-//					
-//					oImage = nil;
-//					srcImage = (unsigned char*) pixBaseAddr;
-//					
-//					totSize = height * width * 4;
-//					
-//					if ( fExternalOwnedImage)
-//					{
-//						argbImage =	(unsigned char*) fExternalOwnedImage;
-//					}
-//					else
-//					{
-//						argbImage = malloc( totSize);
-//					}
-//					
-//					tmpPtr = argbImage;
-//					for( long y = 0 ; y < height; y++)
-//					{
-//						srcPtr = srcImage + y*GetPixRowBytes(pixMapHandle);
-//						memcpy( tmpPtr, srcPtr, width*4);
-//						tmpPtr += width*4;
-//					}
-//					
-//					UnlockPixels (pixMapHandle);
-//					
-//					fImage = (float*) argbImage;
-//					isRGB = YES;
-//					
-//					DisposeGWorld( ftheGWorld);
-//					
-//					[movie release];
-//				}
-//#else
-//				[self getFrameFromMovie: extension];
-//#endif
-//			}
-			
+            
 #ifdef OSIRIX_VIEWER
 			[self loadCustomImageAnnotationsPapyLink:-1 DCMLink:nil];
 #endif
