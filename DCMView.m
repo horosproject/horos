@@ -6608,7 +6608,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				{
 					if( volumicSeries == YES && [otherView volumicSeries] == YES)
 					{
-						if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
+                        // even if the orthogonalOrientation isn't the same, sync should be possible
+						//if( [[self windowController] orthogonalOrientation] == [[otherView windowController] orthogonalOrientation])
 						{
                             // we need to avoid the situations where a localizer blocks two series from synchronizing
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
@@ -7282,6 +7283,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	float	distance = 999999, tempDistance;
 	
     BOOL vParallel = NO;
+    
+    // we have unwanted behaviors when synching a series with a scout in it.. try to exclude scouts ///// ImageType (0008,0008) may do the trick
+//    NSMutableDictionary* dcmPixByImageType = [NSMutableDictionary dictionary];
+//    for (DCMPix* pix in dcmPixList) {
+//       // NSString* pixImageType = [pix ];
+//        
+//    }
+    
+//    NSMutableArray* ldcmPixList = [NSMutableArray array];
+    
+    NSLog(@"hey hooooo %@", [dcmPixList valueForKey:@"imageType"]);
     
 	for( int i = 0; i < [dcmPixList count]; i++)
 	{
