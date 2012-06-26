@@ -927,82 +927,87 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"mpg"] == YES ||
 		[extension isEqualToString:@"mpeg"] == YES ||
 		[extension isEqualToString:@"avi"] == YES)
-		{
-            name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            patientID = [[NSString alloc] initWithString:name];
-            studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            
-            
-            study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            Modality = [[NSString alloc] initWithString:extension];
-            date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
-            serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-            fileType = [[NSString stringWithString:@"IMAGE"] retain];
+    {
+        name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        patientID = [[NSString alloc] initWithString:name];
+        studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        
+        
+        study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        Modality = [[NSString alloc] initWithString:extension];
+        date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
+        serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+        fileType = [[NSString stringWithString:@"IMAGE"] retain];
 
-            NoOfFrames = 1;
-            NoOfSeries = 1;
+        NoOfFrames = 1;
+        NoOfSeries = 1;
+        
+        NSError *error = nil;
+        AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: filePath]];
+        AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
+        
+        NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
+        if( video_tracks.count)
+        {
+            AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
             
-            NSError *error = nil;
-            AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: filePath]];
-            AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
+            NSLog(@"%f %f", video_track.naturalSize.width, video_track.naturalSize.height);
             
-            NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
-            if( video_tracks.count)
+            NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
+            [dictionary setObject: [NSNumber numberWithInt: kCVPixelFormatType_32ARGB] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+            
+            AVAssetReaderTrackOutput* asset_reader_output = [[[AVAssetReaderTrackOutput alloc] initWithTrack:video_track outputSettings:dictionary] autorelease];
+            [asset_reader addOutput:asset_reader_output];
+            
+            [asset_reader startReading];
+            
+            NoOfFrames = 0;
+            while( [asset_reader status] == AVAssetReaderStatusReading)
             {
-                AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
+                CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
                 
-                NSLog(@"%f %f", video_track.naturalSize.width, video_track.naturalSize.height);
-                
-                NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
-                [dictionary setObject: [NSNumber numberWithInt: kCVPixelFormatType_32ARGB] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
-                
-                AVAssetReaderTrackOutput* asset_reader_output = [[[AVAssetReaderTrackOutput alloc] initWithTrack:video_track outputSettings:dictionary] autorelease];
-                [asset_reader addOutput:asset_reader_output];
-                
-                [asset_reader startReading];
-                
-                long curFrame = 0;
-                while( [asset_reader status] == AVAssetReaderStatusReading)
+                if( NoOfFrames == 0)
                 {
-                    CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
+                    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
+                    size_t w = CVPixelBufferGetWidth(pixelBuffer); 
+                    size_t h = CVPixelBufferGetHeight(pixelBuffer);
                     
-                    if( NoOfFrames == 0)
-                    {
-                        CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
-                        size_t w = CVPixelBufferGetWidth(pixelBuffer); 
-                        size_t h = CVPixelBufferGetHeight(pixelBuffer);
-                        
-                        height = h;
-                        width = w;
-                        
-                        NSLog(@"%ld %ld", width, height);
-                    }
+                    height = h;
+                    width = w;
                     
+                    NSLog(@"%ld %ld", width, height);
+                }
+                
+                if( sampleBufferRef)
+                {
                     CMSampleBufferInvalidate(sampleBufferRef);
                     CFRelease(sampleBufferRef);
-                    
-                    NoOfFrames++;
                 }
+                
+                NoOfFrames++;
             }
-            
-            if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
-            
-            [dicomElements setObject:studyID forKey:@"studyID"];
-            [dicomElements setObject:study forKey:@"studyDescription"];
-            [dicomElements setObject:date forKey:@"studyDate"];
-            [dicomElements setObject:Modality forKey:@"modality"];
-            [dicomElements setObject:patientID forKey:@"patientID"];
-            [dicomElements setObject:name forKey:@"patientName"];
-            [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-            [dicomElements setObject:serieID forKey:@"seriesID"];
-            [dicomElements setObject:name forKey:@"seriesDescription"];
-            [dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-            [dicomElements setObject:imageID forKey:@"SOPUID"];
-            [dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-            [dicomElements setObject:fileType forKey:@"fileType"];
-	}
+        }
+        
+        if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
+        
+        [dicomElements setObject:studyID forKey:@"studyID"];
+        [dicomElements setObject:study forKey:@"studyDescription"];
+        [dicomElements setObject:date forKey:@"studyDate"];
+        [dicomElements setObject:Modality forKey:@"modality"];
+        [dicomElements setObject:patientID forKey:@"patientID"];
+        [dicomElements setObject:name forKey:@"patientName"];
+        [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+        [dicomElements setObject:serieID forKey:@"seriesID"];
+        [dicomElements setObject:name forKey:@"seriesDescription"];
+        [dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+        [dicomElements setObject:imageID forKey:@"SOPUID"];
+        [dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+        [dicomElements setObject:fileType forKey:@"fileType"];
+        
+        return 0;
+    }
 	
 	return -1;
 }

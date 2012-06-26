@@ -1261,7 +1261,7 @@ static inline int int_ceildivpow2(int a, int b) {
 		int processors = 0;
 		
 		if( [jpegData length] > 512*1024)
-			processors = MPProcessors()/2;
+			processors = [[NSProcessInfo processInfo] processorCount] /2;
 		
 		int colorModel;
 		
@@ -1567,7 +1567,7 @@ static inline int int_ceildivpow2(int a, int b) {
 		int processors = 0;
 		
 		if( _rows*_columns > 256*1024) // 512 * 512
-			processors = MPProcessors()/2;
+			processors = [[NSProcessInfo processInfo] processorCount]/2;
 		
 		void *outBuffer = kdu_compressJPEG2K( (void*) [data bytes], _samplesPerPixel, _rows, _columns, precision, false, rate, &compressedLength, processors);
 		

@@ -10169,10 +10169,14 @@ END_CREATE_ROIS:
                                 
                                 /*We unlock the  image buffer*/
                                 CVPixelBufferUnlockBaseAddress(pixelBuffer,0);
-                                
+                            }
+                            
+                            if( sampleBufferRef)
+                            {
                                 CMSampleBufferInvalidate(sampleBufferRef);
                                 CFRelease(sampleBufferRef);
                             }
+                            
                             curFrame++;
                         }				
                     }

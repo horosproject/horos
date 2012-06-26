@@ -801,7 +801,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"useDCMTKForDicomExport"];
     [defaultValues setObject:@"1" forKey:@"SupportQRModalitiesinStudy"];
 	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
-	if( MPProcessors() >= 4)
+	if( [[NSProcessInfo processInfo] processorCount] >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];
 	else
 		[defaultValues setObject:@"1.4" forKey:@"superSampling"];
