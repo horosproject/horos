@@ -3700,6 +3700,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) matrixPreviewPressed:(id) sender
 {
+    [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
+    
 	ThumbnailCell *c = [sender selectedCell];
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
