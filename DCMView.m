@@ -7293,7 +7293,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
 //    NSMutableArray* ldcmPixList = [NSMutableArray array];
     
-    NSLog(@"hey hooooo %@", [dcmPixList valueForKey:@"imageType"]);
+//    NSLog(@"hey hooooo %@", [dcmPixList valueForKey:@"imageType"]);
     
 	for( int i = 0; i < [dcmPixList count]; i++)
 	{
