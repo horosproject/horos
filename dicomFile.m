@@ -40,6 +40,9 @@
 #import "N2Debug.h"
 #include "NSFileManager+N2.h"
 
+#import <QuickTime/QuickTime.h>
+#import <AVFoundation/AVFoundation.h>
+
 #ifndef DECOMPRESS_APP
 #include "nifti1.h"
 #include "nifti1_io.h"
@@ -925,133 +928,80 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		[extension isEqualToString:@"mpeg"] == YES ||
 		[extension isEqualToString:@"avi"] == YES)
 		{
-			#if !__LP64__
-			NSMovie *movie = [[NSMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] byReference:NO];
-			if( movie)
-			{
-				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				patientID = [[NSString alloc] initWithString:name];
-				studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				
-				
-				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
-				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				fileType = [[NSString stringWithString:@"IMAGE"] retain];
-				
-				Movie			mov = [movie QTMovie];
-				TimeValue		aTime = 0;
-				OSType			mediatype = 'eyes';
-				Rect			tempRect;
-				
-				GetMovieBox (mov, &tempRect);
-				tempRect.right -= tempRect.left;
-				tempRect.bottom -= tempRect.top;
-				tempRect.left = 0;
-				tempRect.top = 0;
-				
-				height = tempRect.bottom;
-				width = tempRect.right;
-				
-				NoOfFrames = 1;
-				NoOfSeries = 1;
-				do
-				{
-					GetMovieNextInterestingTime (   mov,
-												   nextTimeMediaSample,
-												   1,
-												   &mediatype,
-												   aTime,
-												   1,
-												   &aTime,
-												   nil);
-					if (aTime != -1) NoOfFrames++;
-				} while (aTime != -1);
-				
-				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
-				
-				[dicomElements setObject:studyID forKey:@"studyID"];
-				[dicomElements setObject:study forKey:@"studyDescription"];
-				[dicomElements setObject:date forKey:@"studyDate"];
-				[dicomElements setObject:Modality forKey:@"modality"];
-				[dicomElements setObject:patientID forKey:@"patientID"];
-				[dicomElements setObject:name forKey:@"patientName"];
-				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-				[dicomElements setObject:serieID forKey:@"seriesID"];
-				[dicomElements setObject:name forKey:@"seriesDescription"];
-				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-				[dicomElements setObject:imageID forKey:@"SOPUID"];
-				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-				[dicomElements setObject:fileType forKey:@"fileType"];
-				
-				[movie release];
-				
-				return 0;
-			}
-			#else
-			[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
-			
-			QTMovie *movie = [[QTMovie alloc] initWithURL:[NSURL fileURLWithPath:filePath] error: nil];
-			if( movie)
-			{
-				name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				patientID = [[NSString alloc] initWithString:name];
-				studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				
-				
-				study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				Modality = [[NSString alloc] initWithString:extension];
-				date = [[[[NSFileManager defaultManager] fileAttributesAtPath:filePath traverseLink:NO ] fileCreationDate] retain];
-				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				fileType = [[NSString stringWithString:@"IMAGE"] retain];
-				
-				[movie gotoBeginning];
-				
-				height = [[movie currentFrameImage] size].height;
-				width = [[movie currentFrameImage] size].width;
-				
-				NoOfFrames = 0;
-				NoOfSeries = 1;
-				
-				QTTime previousTime;
-				
-				do
-				{
-					previousTime = [movie currentTime];
-					NoOfFrames++;
-					[movie stepForward];
-				}
-				while( QTTimeCompare( previousTime, [movie currentTime]) == NSOrderedAscending && NoOfFrames < QUICKTIMETIMEFRAMELIMIT);
-				
-				if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
-				
-				[dicomElements setObject:studyID forKey:@"studyID"];
-				[dicomElements setObject:study forKey:@"studyDescription"];
-				[dicomElements setObject:date forKey:@"studyDate"];
-				[dicomElements setObject:Modality forKey:@"modality"];
-				[dicomElements setObject:patientID forKey:@"patientID"];
-				[dicomElements setObject:name forKey:@"patientName"];
-				[dicomElements setObject:[self patientUID] forKey:@"patientUID"];
-				[dicomElements setObject:serieID forKey:@"seriesID"];
-				[dicomElements setObject:name forKey:@"seriesDescription"];
-				[dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
-				[dicomElements setObject:imageID forKey:@"SOPUID"];
-				[dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
-				[dicomElements setObject:fileType forKey:@"fileType"];
-				
-				[movie release];
-				
-				[QTMovie exitQTKitOnThread];
-				
-				return 0;
-			}
-			[QTMovie exitQTKitOnThread];
-			#endif
+            name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            patientID = [[NSString alloc] initWithString:name];
+            studyID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            serieID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            imageID = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            
+            
+            study = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            Modality = [[NSString alloc] initWithString:extension];
+            date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
+            serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
+            fileType = [[NSString stringWithString:@"IMAGE"] retain];
+
+            NoOfFrames = 1;
+            NoOfSeries = 1;
+            
+            NSError *error = nil;
+            AVAsset *asset = [AVAsset assetWithURL: [NSURL fileURLWithPath: filePath]];
+            AVAssetReader *asset_reader = [[[AVAssetReader alloc] initWithAsset: asset error: &error] autorelease];
+            
+            NSArray* video_tracks = [asset tracksWithMediaType: AVMediaTypeVideo];
+            if( video_tracks.count)
+            {
+                AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
+                
+                NSLog(@"%f %f", video_track.naturalSize.width, video_track.naturalSize.height);
+                
+                NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
+                [dictionary setObject: [NSNumber numberWithInt: kCVPixelFormatType_32ARGB] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
+                
+                AVAssetReaderTrackOutput* asset_reader_output = [[[AVAssetReaderTrackOutput alloc] initWithTrack:video_track outputSettings:dictionary] autorelease];
+                [asset_reader addOutput:asset_reader_output];
+                
+                [asset_reader startReading];
+                
+                long curFrame = 0;
+                while( [asset_reader status] == AVAssetReaderStatusReading)
+                {
+                    CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
+                    
+                    if( NoOfFrames == 0)
+                    {
+                        CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
+                        size_t w = CVPixelBufferGetWidth(pixelBuffer); 
+                        size_t h = CVPixelBufferGetHeight(pixelBuffer);
+                        
+                        height = h;
+                        width = w;
+                        
+                        NSLog(@"%ld %ld", width, height);
+                    }
+                    
+                    CMSampleBufferInvalidate(sampleBufferRef);
+                    CFRelease(sampleBufferRef);
+                    
+                    NoOfFrames++;
+                }
+            }
+            
+            if( NoOfFrames > QUICKTIMETIMEFRAMELIMIT) NoOfFrames = QUICKTIMETIMEFRAMELIMIT;   // Limit number of images !
+            
+            [dicomElements setObject:studyID forKey:@"studyID"];
+            [dicomElements setObject:study forKey:@"studyDescription"];
+            [dicomElements setObject:date forKey:@"studyDate"];
+            [dicomElements setObject:Modality forKey:@"modality"];
+            [dicomElements setObject:patientID forKey:@"patientID"];
+            [dicomElements setObject:name forKey:@"patientName"];
+            [dicomElements setObject:[self patientUID] forKey:@"patientUID"];
+            [dicomElements setObject:serieID forKey:@"seriesID"];
+            [dicomElements setObject:name forKey:@"seriesDescription"];
+            [dicomElements setObject:[NSNumber numberWithInt: 0] forKey:@"seriesNumber"];
+            [dicomElements setObject:imageID forKey:@"SOPUID"];
+            [dicomElements setObject:[NSNumber numberWithInt:[imageID intValue]] forKey:@"imageID"];
+            [dicomElements setObject:fileType forKey:@"fileType"];
 	}
 	
 	return -1;

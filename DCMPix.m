@@ -10142,7 +10142,7 @@ END_CREATE_ROIS:
                                 uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(pixelBuffer); 
                                 size_t bytesPerRow = CVPixelBufferGetBytesPerRow(pixelBuffer); 
                                 size_t w = CVPixelBufferGetWidth(pixelBuffer); 
-                                size_t h = CVPixelBufferGetHeight(pixelBuffer); 
+                                size_t h = CVPixelBufferGetHeight(pixelBuffer);
                                 
                                 NSLog(@"Display Frame : %zu %zu %zu", w, h, bytesPerRow);
                                 
