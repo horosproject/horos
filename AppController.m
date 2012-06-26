@@ -4808,12 +4808,16 @@ static BOOL initialized = NO;
 				[v autoHideMatrix];
 		}
 		
-		[[[viewersList objectAtIndex: keyWindow] imageView] becomeMainWindow];
-		[[viewersList objectAtIndex: keyWindow] refreshToolbar];
-		
+        ViewerController *v = [viewersList objectAtIndex: keyWindow];
+        if( [v isKindOfClass: [ViewerController class]])
+        {
+            [[v imageView] becomeMainWindow];
+            [v refreshToolbar];
+		}
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncPreviewList"])
 			[[viewersList objectAtIndex: keyWindow] syncThumbnails];
-			
+        
 		NSEnableScreenUpdates();
 	}
 }
