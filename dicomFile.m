@@ -953,14 +953,13 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         {
             AVAssetTrack* video_track = [video_tracks objectAtIndex:0];
             
-            NSLog(@"%f %f", video_track.naturalSize.width, video_track.naturalSize.height);
+//            NSLog(@"%f %f", video_track.naturalSize.width, video_track.naturalSize.height);
             
             NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
             [dictionary setObject: [NSNumber numberWithInt: kCVPixelFormatType_32ARGB] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
             
             AVAssetReaderTrackOutput* asset_reader_output = [[[AVAssetReaderTrackOutput alloc] initWithTrack:video_track outputSettings:dictionary] autorelease];
             [asset_reader addOutput:asset_reader_output];
-            
             [asset_reader startReading];
             
             NoOfFrames = 0;
@@ -976,17 +975,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     height = h;
                     width = w;
-                    
-                    NSLog(@"%ld %ld", width, height);
                 }
                 
                 if( sampleBufferRef)
                 {
                     CMSampleBufferInvalidate(sampleBufferRef);
                     CFRelease(sampleBufferRef);
+                    
+                    NoOfFrames++;
                 }
-                
-                NoOfFrames++;
             }
         }
         

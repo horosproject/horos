@@ -10133,7 +10133,7 @@ END_CREATE_ROIS:
                         {
                             CMSampleBufferRef sampleBufferRef = [asset_reader_output copyNextSampleBuffer];
                             
-                            if( curFrame == frameNo)
+                            if( curFrame == frameNo && sampleBufferRef)
                             {        
                                 CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBufferRef);
                                 
@@ -10146,8 +10146,11 @@ END_CREATE_ROIS:
                                 
                                 NSLog(@"Display Frame : %zu %zu %zu", w, h, bytesPerRow);
                                 
-                                unsigned char *argbImage, *tmpPtr, *srcPtr, *srcImage;
+                                unsigned char *argbImage, *tmpPtr, *srcPtr, *srcImage = baseAddress;
                                 long totSize;
+                                
+                                height = h;
+                                width = w;
                                 
                                 totSize = height * width * 4;
                                 
