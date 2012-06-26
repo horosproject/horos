@@ -17,6 +17,7 @@
 - Curved-MPR: Path Assistant available 
 - WebPortal: preference to authorize sharing a study by email (temporary user)
 - High-Res mode for Curved-MPR Viewer
+- Require MacOS 10.7 or higher
 
 ------------------------------------------------------------------------------------------------------------------------
 - 10.7: Core Layout for xib, Generate Movies with AVAssetWriter
