@@ -19,6 +19,7 @@ NSString* const SMTPServerAuthFlagKey = @"SMTPServerAuthFlag";
 NSString* const SMTPServerAuthUsernameKey = @"SMTPServerAuthUsername";
 NSString* const SMTPServerAuthPasswordKey = @"SMTPServerAuthPassword";
 NSString* const SMTPToKey = @"SMTPTo";
+NSString* const SMTPHeadersKey = @"SMTPHeaders";
 NSString* const SMTPSubjectKey = @"SMTPSubject";
 NSString* const SMTPMessageKey = @"SMTPMessage";
 
@@ -40,6 +41,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	NSString* _from;
 	NSString* _fromDescription;
 	NSArray* _to;
+    NSDictionary* _headers;
     // connection
 	NSInputStream* _istream;
     NSOutputStream* _ostream;
@@ -65,6 +67,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 @property(retain) NSString* from;
 @property(retain) NSString* fromDescription;
 @property(retain) NSArray* to;
+@property(retain) NSDictionary* headers;
 
 -(void)start;
 
@@ -93,12 +96,13 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	NSString* serverPassword = [params SMTP_objectForKey:SMTPServerAuthPasswordKey ofClass:NSString.class];
 	NSString* from = [params SMTP_objectForKey:SMTPFromKey ofClass:NSString.class];
 	NSString* to = [params SMTP_objectForKey:SMTPToKey ofClass:NSString.class];
+	NSDictionary* headers = [params SMTP_objectForKey:SMTPHeadersKey ofClass:NSDictionary.class];
 	NSString* subject = [params SMTP_objectForKey:SMTPSubjectKey ofClass:NSString.class];
 	NSString* message = [params SMTP_objectForKey:SMTPMessageKey ofClass:NSString.class];
 	
 	BOOL auth = [serverAuthFlag boolValue];
 	
-	[[[self class] clientWithServerAddress:serverAddress ports:serverPorts tlsMode:[serverTlsMode integerValue] username: auth? serverUsername : nil password: auth? serverPassword : nil ] sendMessage:message withSubject:subject from:from to:to];
+	[[[self class] clientWithServerAddress:serverAddress ports:serverPorts tlsMode:[serverTlsMode integerValue] username: auth? serverUsername : nil password: auth? serverPassword : nil ] sendMessage:message withSubject:subject from:from to:to headers:headers];
 }
 
 +(SMTPClient*)clientWithServerAddress:(NSString*)address ports:(NSArray*)ports tlsMode:(SMTPClientTLSMode)tlsMode username:(NSString*)authUsername password:(NSString*)authPassword {
@@ -149,6 +153,10 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 }
 
 -(void)sendMessage:(NSString*)message withSubject:(NSString*)subject from:(NSString*)from to:(NSString*)toAddresses {
+    [self sendMessage:message withSubject:subject from:from to:toAddresses headers:nil];
+}
+
+-(void)sendMessage:(NSString*)message withSubject:(NSString*)subject from:(NSString*)from to:(NSString*)toAddresses headers:(NSDictionary*)headers {
 	if (!from.length) [NSException raise:NSInvalidArgumentException format:@"Empty sender email address"];
 	if (!toAddresses.length) [NSException raise:NSInvalidArgumentException format:@"Empty destination email address"];
 	
@@ -175,6 +183,8 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 	}
 	
 	connector.to = to;
+    
+    connector.headers = headers;
 	
 	[connector performSelectorInBackground:@selector(start) withObject:nil];
 }
@@ -222,6 +232,7 @@ NSString* const SMTPMessageKey = @"SMTPMessage";
 @synthesize from = _from;
 @synthesize fromDescription = _fromDescription;
 @synthesize to = _to;
+@synthesize headers = _headers;
 
 @synthesize istream = _istream;
 @synthesize ostream = _ostream;
@@ -430,6 +441,7 @@ enum {
 	self.from = nil;
 	self.fromDescription = nil;
 	self.to = nil;
+	self.headers = nil;
     
     [_ibuffer release];
     [_obuffer release];
@@ -710,17 +722,14 @@ enum SMTPSubstatuses {
 					[self writeLine:@"Mime-Version: 1.0"];
 					[self writeLine:@"Content-Type: text/html; charset=\"UTF-8\""];
 					[self writeLine:@"Content-Transfer-Encoding: base64"];
-					
-//					[self writeLine:[NSString stringWithFormat:@"Subject: =?UTF-8?B?%@?=", [[self.subject dataUsingEncoding:NSUTF8StringEncoding] base64]]];
-//					[self writeLine:@"Mime-Version: 1.0"];
-//					[self writeLine:@"Content-Type: text/html; charset=utf-8"];
-//					[self writeLine:@"Content-Transfer-Encoding: 8bit"];
+                    
+                    for (NSString* key in self.headers)
+                        if (![[NSArray arrayWithObjects: @"from", @"to", @"subject", @"mime-version", @"content-type", @"content-transfer-encoding", nil] containsObject:[key lowercaseString]]) // these headers are specified by the SMTPClient class and cannot be overridden
+                            [self writeLine:[NSString stringWithFormat:@"%@: %@", key, [self.headers objectForKey:key]]];
                     
 					[self writeLine:@""];
-					
-//					NSString* message = [self.message stringByReplacingOccurrencesOfString:@"\r\n." withString:@"\r\n.."];
                     
-                    [self writeLine: [[self.message dataUsingEncoding:NSUTF8StringEncoding] base64]];
+                    [self writeLine:[[self.message dataUsingEncoding:NSUTF8StringEncoding] base64]];
 					
 					[self writeLine:@"."];
                     
