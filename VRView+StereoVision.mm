@@ -225,7 +225,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 		
 		advancedCLUT = NO;
 		
-		if( MPProcessors() >= 4)
+		if( [[NSProcessInfo processInfo] processorCount]ors() >= 4)
 			lowResLODFactor = 1.5;
 		else
 			lowResLODFactor = 2.5;

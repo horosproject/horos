@@ -2053,7 +2053,7 @@ static float deg2rad = M_PI / 180.0;
 		hiddenVRView.lowResLODFactor = 1.0;
 	else
 	{
-		if( MPProcessors() >= 4)
+		if( [[NSProcessInfo processInfo] processorCount] >= 4)
 			hiddenVRView.lowResLODFactor = 1.5;
 		else
 			hiddenVRView.lowResLODFactor = 2.5;

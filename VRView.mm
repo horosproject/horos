@@ -732,7 +732,7 @@ public:
         {
             [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
             
-            if( MPProcessors() > 12)
+            if( [[NSProcessInfo processInfo] processorCount] > 12)
                 [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
             else
                 [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
@@ -794,7 +794,7 @@ public:
                 
                 LOD = 2.0;
                 
-                if( MPProcessors() >= 4)
+                if( [[NSProcessInfo processInfo] processorCount] >= 4)
                     lowResLODFactor = 1.5;
                 else
                     lowResLODFactor = 2.5;

@@ -469,7 +469,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	{
 		if (![[NSFileManager defaultManager] fileExistsAtPath: outFile] || ([[dict objectForKey: @"rows"] intValue] > 0 && [[dict objectForKey: @"columns"] intValue] > 0))
 		{
-			int noOfThreads = MPProcessors();
+			int noOfThreads = [[NSProcessInfo processInfo] processorCount];
 			
 			NSRange range = NSMakeRange( 0, 1+ ([dicomImageArray count] / noOfThreads));
 						

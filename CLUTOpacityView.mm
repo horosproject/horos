@@ -523,7 +523,8 @@
 
 			[pointsColor set];
 			[dot stroke];
-			[[[pointColors objectAtIndex:i] objectAtIndex:j] set];
+            NSColor *c = [[pointColors objectAtIndex:i] objectAtIndex:j];
+			[c set];
 			[dot fill];
 			
 			if(selected) selectedPointForLabel = pt;

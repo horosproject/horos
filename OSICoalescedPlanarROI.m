@@ -18,6 +18,7 @@
 #import "CPRGenerator.h"
 #import "CPRGeneratorRequest.h"
 #import "OSIGeometry.h"
+#include <OpenGL/CGLMacro.h>
 
 @interface OSICoalescedPlanarROI ()
 

@@ -360,7 +360,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 
 + (NSMutableArray*) extractContour:(unsigned char*) map width:(long) width height:(long) height numPoints:(long) numPoints largestRegion:(BOOL) largestRegion
 {
-	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+	itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 	
 	NSMutableArray	*tempArray = [NSMutableArray array];
 	int				dataExtent[ 6];
@@ -475,7 +475,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 {
     if (self = [super init])
 	{
-		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( MPProcessors());
+		itk::MultiThreader::SetGlobalDefaultNumberOfThreads( [[NSProcessInfo processInfo] processorCount]);
 		_resampledData = resampleData;
 		NSLog(@"slice ID: %d", (int) slice);
 		itkImage = [[ITK alloc] initWithPix :(NSMutableArray*) pix volume:(float*) volumeData sliceCount:(long) slice resampleData:(BOOL)resampleData];

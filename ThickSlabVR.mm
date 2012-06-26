@@ -295,7 +295,7 @@ extern short Altivec;
 {
 	long			x, i, from, to, size, pos, threads, slicesize;
 	
-	threads = MPProcessors ();
+	threads = [[NSProcessInfo processInfo] processorCount];
 	pos = [[dict valueForKey:@"pos"] intValue];
 	slicesize = [[dict valueForKey:@"size"] intValue];
 
@@ -465,8 +465,8 @@ extern short Altivec;
 			if( processorsLock == nil)
 				processorsLock = [[NSLock alloc] init];
 			
-			numberOfThreadsForCompute = MPProcessors ();
-			for( i = 0; i < MPProcessors ()-1; i++)
+			numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
+			for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
 			{
 				[NSThread detachNewThreadSelector: @selector( subRender:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: size], @"size", [NSNumber numberWithInt: i], @"pos", nil]];
 			}

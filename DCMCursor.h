@@ -20,14 +20,14 @@
 /** \brief  Cursors */
 @interface NSCursor(DCMCursor) 
 
-+(id)zoomCursor;
-+(id)rotateCursor;
-+(id)stackCursor;
-+(id)contrastCursor;
-+(id)rotate3DCursor;
-+(id)rotate3DCameraCursor;
-+(id)bonesRemovalCursor;
-+(id)crossCursor;
-+(id)rotateAxisCursor;
++(NSCursor*)zoomCursor;
++(NSCursor*)rotateCursor;
++(NSCursor*)stackCursor;
++(NSCursor*)contrastCursor;
++(NSCursor*)rotate3DCursor;
++(NSCursor*)rotate3DCameraCursor;
++(NSCursor*)bonesRemovalCursor;
++(NSCursor*)crossCursor;
++(NSCursor*)rotateAxisCursor;
 
 @end

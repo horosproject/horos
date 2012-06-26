@@ -30793,7 +30793,7 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 			};
 			name = Development;
 		};
@@ -30969,7 +30969,7 @@
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 			};
 			name = "Deployment 32-bit";
 		};
@@ -31259,7 +31259,7 @@
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
 				PROVISIONING_PROFILE = "";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				WARNING_CFLAGS = "";
 			};
 			name = "Deployment 64-bit";

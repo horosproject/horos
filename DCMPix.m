@@ -1120,7 +1120,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
 	NSConditionLock *threadLock = [dict valueForKey:@"threadLock"];
 	
-	int p = MPProcessors ();
+	int p = [[NSProcessInfo processInfo] processorCount];
 	
 	do
 	{
@@ -10118,89 +10118,89 @@ END_CREATE_ROIS:
 				
 				if( movie)
 				{
-					Movie			mov = [movie QTMovie];
-					TimeValue		aTime = 0;
-					OSType			mediatype = 'eyes';
-					long			curFrame;
-					Rect			tempRect;
-					GWorldPtr		ftheGWorld = nil;
-					PixMapHandle 	pixMapHandle;
-					Ptr				pixBaseAddr;
-					
-					GetMovieBox( mov, &tempRect);
-					OffsetRect( &tempRect, -tempRect.left, -tempRect.top);
-
-					NewGWorld( &ftheGWorld,
-							   32,			// 32 Bits color !
-							   &tempRect,
-							   0,
-							   NULL,
-							   (GWorldFlags) keepLocal);
-					
-					SetMovieGWorld (mov, ftheGWorld, nil);
-					SetMovieActive (mov, TRUE);
-					SetMovieBox (mov, &tempRect);
-					
-					curFrame = 0;
-					while (aTime != -1 && curFrame != frameNo)
-					{
-						GetMovieNextInterestingTime (   mov,
-													 nextTimeMediaSample,
-													 1,
-													 &mediatype,
-													 aTime,
-													 1,
-													 &aTime,
-													 nil);
-						if (aTime != -1) curFrame++;
-					}
-					
-					SetMovieTimeValue (mov, aTime);
-					UpdateMovie (mov);
-					MoviesTask (mov, 0);
-					
-					// We have the image...
-					
-					pixMapHandle = GetGWorldPixMap(ftheGWorld);
-					LockPixels (pixMapHandle);
-					pixBaseAddr = GetPixBaseAddr(pixMapHandle);
-					
-					unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
-					long			totSize;
-					
-					height = tempRect.bottom;
-					width = tempRect.right;
-					
-					oImage = nil;
-					srcImage = (unsigned char*) pixBaseAddr;
-					
-					totSize = height * width * 4;
-					
-					if ( fExternalOwnedImage)
-					{
-						argbImage =	(unsigned char*) fExternalOwnedImage;
-					}
-					else
-					{
-						argbImage = malloc( totSize);
-					}
-					
-					tmpPtr = argbImage;
-					for( long y = 0 ; y < height; y++)
-					{
-						srcPtr = srcImage + y*GetPixRowBytes(pixMapHandle);
-						memcpy( tmpPtr, srcPtr, width*4);
-						tmpPtr += width*4;
-					}
-					
-					UnlockPixels (pixMapHandle);
-					
-					fImage = (float*) argbImage;
-					isRGB = YES;
-					
-					DisposeGWorld( ftheGWorld);
-					
-					[movie release];
+//					Movie			mov = [movie QTMovie];
+//					TimeValue		aTime = 0;
+//					OSType			mediatype = 'eyes';
+//					long			curFrame;
+//					Rect			tempRect;
+//					GWorldPtr		ftheGWorld = nil;
+//					PixMapHandle 	pixMapHandle;
+//					Ptr				pixBaseAddr;
+//					
+//					GetMovieBox( mov, &tempRect);
+//					OffsetRect( &tempRect, -tempRect.left, -tempRect.top);
+//
+//					NewGWorld( &ftheGWorld,
+//							   32,			// 32 Bits color !
+//							   &tempRect,
+//							   0,
+//							   NULL,
+//							   (GWorldFlags) keepLocal);
+//					
+//					SetMovieGWorld (mov, ftheGWorld, nil);
+//					SetMovieActive (mov, TRUE);
+//					SetMovieBox (mov, &tempRect);
+//					
+//					curFrame = 0;
+//					while (aTime != -1 && curFrame != frameNo)
+//					{
+//						GetMovieNextInterestingTime (   mov,
+//													 nextTimeMediaSample,
+//													 1,
+//													 &mediatype,
+//													 aTime,
+//													 1,
+//													 &aTime,
+//													 nil);
+//						if (aTime != -1) curFrame++;
+//					}
+//					
+//					SetMovieTimeValue (mov, aTime);
+//					UpdateMovie (mov);
+//					MoviesTask (mov, 0);
+//					
+//					// We have the image...
+//					
+//					pixMapHandle = GetGWorldPixMap(ftheGWorld);
+//					LockPixels (pixMapHandle);
+//					pixBaseAddr = GetPixBaseAddr(pixMapHandle);
+//					
+//					unsigned char   *argbImage, *tmpPtr, *srcPtr, *srcImage;
+//					long			totSize;
+//					
+//					height = tempRect.bottom;
+//					width = tempRect.right;
+//					
+//					oImage = nil;
+//					srcImage = (unsigned char*) pixBaseAddr;
+//					
+//					totSize = height * width * 4;
+//					
+//					if ( fExternalOwnedImage)
+//					{
+//						argbImage =	(unsigned char*) fExternalOwnedImage;
+//					}
+//					else
+//					{
+//						argbImage = malloc( totSize);
+//					}
+//					
+//					tmpPtr = argbImage;
+//					for( long y = 0 ; y < height; y++)
+//					{
+//						srcPtr = srcImage + y*GetPixRowBytes(pixMapHandle);
+//						memcpy( tmpPtr, srcPtr, width*4);
+//						tmpPtr += width*4;
+//					}
+//					
+//					UnlockPixels (pixMapHandle);
+//					
+//					fImage = (float*) argbImage;
+//					isRGB = YES;
+//					
+//					DisposeGWorld( ftheGWorld);
+//					
+//					[movie release];
 				}
 #else
 				[self getFrameFromMovie: extension];
@@ -11821,7 +11821,7 @@ END_CREATE_ROIS:
 			{
 				minmaxThreads = [[NSMutableArray array] retain];
 				
-				for( int i = 0; i < MPProcessors(); i++)
+				for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
 				{
 					[minmaxThreads addObject: [[NSMutableDictionary dictionaryWithObjectsAndKeys: [[NSConditionLock alloc] initWithCondition: 0], @"threadLock", nil] retain]];
 					
@@ -11831,7 +11831,7 @@ END_CREATE_ROIS:
 				[NSThread sleepForTimeInterval: 0.2];
 			}
 			
-			int numberOfThreadsForCompute = MPProcessors ();
+			int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
 			
 			[processorsLock lock];
 			[processorsLock unlockWithCondition: numberOfThreadsForCompute];
@@ -11988,14 +11988,14 @@ END_CREATE_ROIS:
 						{
 							nonLinearWLWWThreads = [[NSMutableArray array] retain];
 							
-							for( int i = 0; i < MPProcessors(); i++)
+							for( int i = 0; i <[[NSProcessInfo processInfo] processorCount]; i++)
 							{
 								[nonLinearWLWWThreads addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [[[NSConditionLock alloc] initWithCondition: 0] autorelease], @"threadLock", nil]];
 								[NSThread detachNewThreadSelector: @selector( applyNonLinearWLWWThread:) toTarget:[[PixThread alloc] init] withObject: [nonLinearWLWWThreads lastObject]];
 							}
 						} 
 						
-						int numberOfThreadsForCompute = MPProcessors ();
+						int numberOfThreadsForCompute =[[NSProcessInfo processInfo] processorCount];
 						
 						NSValue *srcNSValue = [NSValue valueWithPointer: srcf.data];
 						

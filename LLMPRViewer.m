@@ -1070,9 +1070,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (void)removeBonesAtX:(int)x y:(int)y z:(int)z;
 {
-	#if !__LP64__
-	QDDisplayWaitCursor( true);
-	#endif
+//	#if !__LP64__
+//	QDDisplayWaitCursor( true);
+//	#endif
 	
 	[[injectedMPRController reslicer] freeYCache];
 	
@@ -1126,9 +1126,9 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 	[self refreshSubtractedViews];
 	
-	#if !__LP64__
-	QDDisplayWaitCursor( true);
-	#endif
+//	#if !__LP64__
+//	QDDisplayWaitCursor( true);
+//	#endif
 }
 
 #pragma mark-
