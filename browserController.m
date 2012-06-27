@@ -3348,7 +3348,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
-	if( treeManagedObjects == nil) treeManagedObjects = [NSMutableArray array];
+	if( treeManagedObjects == nil) treeManagedObjects = [NSMutableSet set];
 	
 	[context retain];
 	[context lock];
