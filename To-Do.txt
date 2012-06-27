@@ -21,6 +21,9 @@
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
+- WebPortal: writeMovie -> AVFoundation
+- ExportQuicktime: performSelector on main thread?
+
 ------------------------------------------------------------------------------------------------------------------------
 
 - 10.7: Core Layout for xib
