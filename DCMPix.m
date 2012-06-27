@@ -10273,8 +10273,9 @@ END_CREATE_ROIS:
 		NSLog( @"Exception : %@", [ne description]);
 		NSLog( @"Exception for this file: %@", srcFile);
 	}
-	
-	[checking unlock];
+    @finally {
+        [checking unlock];
+    }
 }
 
 - (void)setBaseAddr: (char*) ptr

@@ -2551,7 +2551,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(BOOL) acceptsFirstMouse:(NSEvent*) theEvent
 {
-	if( currentTool >= 5) return NO;  // A ROI TOOL !
+	if (currentTool >= 5) return NO;  // A ROI TOOL !
 	else return YES;
 }
 

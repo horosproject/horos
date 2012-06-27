@@ -209,6 +209,7 @@ extern NSString* O2AlbumDragType;
 	
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionSelectedFiles;
 	NSMutableArray					*cachedFilesForDatabaseOutlineSelectionCorrespondingObjects;
+    NSMutableSet                    *cachedFilesForDatabaseOutlineSelectionTreeObjects;
 	NSIndexSet						*cachedFilesForDatabaseOutlineSelectionIndex;
 	
     BOOL                            _computingNumberOfStudiesForAlbums;

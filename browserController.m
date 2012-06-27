@@ -1332,6 +1332,7 @@ static NSConditionLock *threadLock = nil;
 			
 			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
 			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+			[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
 			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 			
             _cachedAlbumsContext = nil;
@@ -2297,6 +2298,7 @@ static NSConditionLock *threadLock = nil;
 //
 //			[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
 //			[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+//			[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
 //			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 //			
 //			displayEmptyDatabase = NO;
@@ -3326,7 +3328,7 @@ static NSConditionLock *threadLock = nil;
 
 #define BONJOURPACKETS 50
 
-- (NSMutableArray *) filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects onlyImages:(BOOL) onlyImages
+- (NSMutableArray*)filesForDatabaseOutlineSelection:(NSMutableArray*)correspondingManagedObjects treeObjects:(NSMutableSet*)treeManagedObjects onlyImages:(BOOL)onlyImages 
 {
 	NSMutableArray *selectedFiles = [NSMutableArray array];
 	NSIndexSet *rowEnumerator = [databaseOutline selectedRowIndexes];
@@ -3337,24 +3339,26 @@ static NSConditionLock *threadLock = nil;
 		
 		if( correspondingManagedObjects)
 			[correspondingManagedObjects addObjectsFromArray: cachedFilesForDatabaseOutlineSelectionCorrespondingObjects];
+		if( treeManagedObjects)
+			[treeManagedObjects addObjectsFromArray: cachedFilesForDatabaseOutlineSelectionTreeObjects.allObjects];
 		
-		return selectedFiles;
+        return selectedFiles;
 	}
 	
 	NSManagedObjectContext	*context = self.managedObjectContext;
 	
 	if( correspondingManagedObjects == nil) correspondingManagedObjects = [NSMutableArray array];
+	if( treeManagedObjects == nil) treeManagedObjects = [NSMutableArray array];
 	
 	[context retain];
 	[context lock];
 	
 	@try
 	{
-		NSUInteger row = [rowEnumerator firstIndex];
-		while (row != NSNotFound)
+		for (NSUInteger row = [rowEnumerator firstIndex]; row != NSNotFound; row = [rowEnumerator indexGreaterThanIndex: row])
 		{
 			NSManagedObject *curObj = [databaseOutline itemAtRow: row];
-			
+
 			if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
 			{
 				NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
@@ -3367,20 +3371,26 @@ static NSConditionLock *threadLock = nil;
 				NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
 				
 				int totImage = 0;
+                BOOL dontDelete = NO;
 				
-				for( NSManagedObject *obj in seriesArray)
+				for (DicomSeries* obj in seriesArray)
 				{
 					NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
 					
 					totImage += [imagesArray count];
 					
 					[correspondingManagedObjects addObjectsFromArray: imagesArray];
+                    
+                    if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
+                        dontDelete = YES;
 				}
 				
-				if( onlyImages == NO && totImage == 0)							// We don't want empty studies
+				if (onlyImages == NO && totImage == 0 && dontDelete == NO)							// We don't want empty studies, with exceptions...
 					[context deleteObject: curObj];
 			}
-			row = [rowEnumerator indexGreaterThanIndex: row];
+            
+            if (![curObj isDeleted])
+                [treeManagedObjects addObject:curObj];
 		}
 		
 		[correspondingManagedObjects removeDuplicatedObjects];
@@ -3434,14 +3444,20 @@ static NSConditionLock *threadLock = nil;
 	{
 		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release];
 		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release];
+		[cachedFilesForDatabaseOutlineSelectionTreeObjects release];
 		[cachedFilesForDatabaseOutlineSelectionIndex release];
 		
 		cachedFilesForDatabaseOutlineSelectionIndex = [[NSIndexSet alloc] initWithIndexSet: [databaseOutline selectedRowIndexes]];
 		cachedFilesForDatabaseOutlineSelectionSelectedFiles = [[NSMutableArray alloc] initWithArray:selectedFiles];
+		cachedFilesForDatabaseOutlineSelectionTreeObjects = [[NSMutableSet alloc] initWithSet:treeManagedObjects];
 		cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = [[NSMutableArray alloc] initWithArray:correspondingManagedObjects];
 	}
 	
 	return selectedFiles;
+}
+
+- (NSMutableArray*)filesForDatabaseOutlineSelection:(NSMutableArray*)correspondingManagedObjects onlyImages:(BOOL)onlyImages {
+    return [self filesForDatabaseOutlineSelection:correspondingManagedObjects treeObjects:nil onlyImages:onlyImages];
 }
 
 - (NSMutableArray *)filesForDatabaseOutlineSelection :(NSMutableArray*) correspondingManagedObjects
@@ -3496,6 +3512,7 @@ static NSConditionLock *threadLock = nil;
 	{
 		[cachedFilesForDatabaseOutlineSelectionSelectedFiles release]; cachedFilesForDatabaseOutlineSelectionSelectedFiles = nil;
 		[cachedFilesForDatabaseOutlineSelectionCorrespondingObjects release]; cachedFilesForDatabaseOutlineSelectionCorrespondingObjects = nil;
+		[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
 		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 		
 		NSIndexSet *index = [databaseOutline selectedRowIndexes];
@@ -3867,12 +3884,12 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (void) proceedDeleteObjects: (NSArray*) objectsToDelete
+- (void) proceedDeleteObjects: (NSArray*) objectsToDelete tree:(NSSet*)treeObjs
 {
 	DicomDatabase* database = [_database retain];
     
-    NSMutableArray *seriesArray = [NSMutableArray array], *studiesArray = [NSMutableArray array];
-	
+    NSMutableSet *seriesSet = [NSMutableSet set], *studiesSet = [NSMutableSet set];
+            
 	[reportFilesToCheck removeAllObjects];
 	
 //    [self setDatabase:nil];
@@ -3889,16 +3906,15 @@ static NSConditionLock *threadLock = nil;
 		
 		for( NSManagedObject *obj in objectsToDelete)
 		{
-			if( [obj valueForKey:@"series"] != series)
+            // ********* SERIES
+            if( [obj valueForKey:@"series"] != series)
 			{
-				// ********* SERIES
-				
 				series = [obj valueForKey:@"series"];
 				
-				if([seriesArray containsObject: series] == NO)
+				if([seriesSet containsObject: series] == NO)
 				{
 					if( series)
-						[seriesArray addObject: series];
+						[seriesSet addObject: series];
 					
 					// Is a viewer containing this series opened? -> close it
 					for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
@@ -3909,15 +3925,14 @@ static NSConditionLock *threadLock = nil;
 				}
 				
 				// ********* STUDY
-				
 				if( [series valueForKey:@"study"] != study)
 				{
 					study = [series valueForKey:@"study"];
 					
-					if([studiesArray containsObject: study] == NO)
+					if([studiesSet containsObject: study] == NO)
 					{
 						if( study)
-							[studiesArray addObject: study];
+							[studiesSet addObject: study];
 						
 						// Is a viewer containing this series opened? -> close it
 						for( ViewerController *vc in [ViewerController getDisplayed2DViewers])
@@ -3946,25 +3961,32 @@ static NSConditionLock *threadLock = nil;
 	{	
         N2LogExceptionWithStackTrace(e/*, @"context save"*/);
     }
+    
+    for (NSManagedObject* o in treeObjs)
+        if ([o isKindOfClass:[DicomSeries class]])
+            [studiesSet addObject:o];
+        else if ([o isKindOfClass:[DicomStudy class]])
+            [studiesSet addObject:o];
 	
 	@try
 	{
 		// Remove series without images !
-		for( NSManagedObject *series in seriesArray)
+		for (DicomSeries* series in seriesSet)
 		{
 			@try
 			{
-				if( [series isDeleted] == NO && [series isFault] == NO && [[series valueForKey:@"images"] count] == 0)
-				{
-					[database.managedObjectContext deleteObject:series];
-				}
-				else if( [series isDeleted] == NO && [series isFault] == NO)
-				{
-					[series setValue: [NSNumber numberWithInt:0] forKey:@"numberOfImages"];
-					[series setValue: nil forKey:@"thumbnail"];	
-				}
+				if ([series isDeleted] == NO && [series isFault] == NO)
+                    if ([series.images count] == 0)
+                    {
+                        [database.managedObjectContext deleteObject:series];
+                    }
+                    else 
+                    {
+                        series.numberOfImages = [NSNumber numberWithInt:0];
+                        series.thumbnail = nil;
+                    }
 			}
-			@catch( NSException *e)
+			@catch (NSException* e)
 			{
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
 			}
@@ -3980,7 +4002,7 @@ static NSConditionLock *threadLock = nil;
         }
 			
 		// Remove studies without series !
-		for( NSManagedObject *study in studiesArray)
+		for( NSManagedObject *study in studiesSet)
 		{
 			@try
 			{
@@ -4029,7 +4051,11 @@ static NSConditionLock *threadLock = nil;
     [self saveDatabase];
 }
 
-- (void) delObjects:(NSMutableArray*) objectsToDelete
+- (void) proceedDeleteObjects:(NSArray*)objectsToDelete {
+    [self proceedDeleteObjects:objectsToDelete tree:nil];
+}
+
+- (void) delObjects:(NSMutableArray*) objectsToDelete tree:(NSMutableSet*)treeObjs
 {
 	int result;
 	NSMutableArray *studiesArray = [NSMutableArray array] , *seriesArray = [NSMutableArray array];
@@ -4116,7 +4142,7 @@ static NSConditionLock *threadLock = nil;
                 else
                 {
                     if( result == NSAlertDefaultReturn || result == NSAlertOtherReturn)
-                        [self proceedDeleteObjects: objectsToDelete];
+                        [self proceedDeleteObjects:objectsToDelete tree:treeObjs];
                     
                     if( result == NSAlertOtherReturn)
                     {
@@ -4158,6 +4184,10 @@ static NSConditionLock *threadLock = nil;
 	[[QueryController currentQueryController] executeRefresh: self];
 	[[QueryController currentAutoQueryController] executeRefresh: self];
 #endif
+}
+
+- (void) delObjects:(NSMutableArray*) objectsToDelete {
+    [self delObjects:objectsToDelete tree:nil];
 }
 
 - (IBAction)delItem: (id)sender
@@ -4293,6 +4323,7 @@ static NSConditionLock *threadLock = nil;
 	if( result == NSAlertDefaultReturn)	// REMOVE AND DELETE IT FROM THE DATABASE
 	{
 		NSMutableArray *objectsToDelete = [NSMutableArray array];
+		NSMutableSet *objectsToDeleteTree = [NSMutableSet set];
 		
 		if( matrixThumbnails)
 		{
@@ -4300,7 +4331,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		else
 		{
-			[self filesForDatabaseOutlineSelection: objectsToDelete onlyImages: NO];
+			[self filesForDatabaseOutlineSelection: objectsToDelete treeObjects:objectsToDeleteTree onlyImages: NO];
 		}
 		
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
@@ -4309,7 +4340,7 @@ static NSConditionLock *threadLock = nil;
 		{
             NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
             
-			[self delObjects: objectsToDelete];
+			[self delObjects:objectsToDelete tree:objectsToDeleteTree];
             
             [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [selectedRows firstIndex]] byExtendingSelection:NO];
 		}
@@ -7778,13 +7809,35 @@ static BOOL withReset = NO;
 		
 		if( [albumArray count])
 		{
-			NSManagedObject *album;
-			for( album in albumArray)
+			for (DicomAlbum* album in albumArray)
 			{
-				[albums addObject: [NSDictionary dictionaryWithObjectsAndKeys:	[album valueForKey: @"name"], @"name", 
-																				[album valueForKey: @"predicateString"], @"predicateString", 
-																				[album valueForKey: @"smartAlbum"], @"smartAlbum",
-																				nil ]];
+				NSMutableDictionary* entry = [NSMutableDictionary dictionaryWithObject:album.name forKey:@"name"];
+                
+                if (album.smartAlbum.boolValue)
+                {
+                    [entry setObject:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
+                    [entry setObject:album.predicateString forKey:@"predicateString"];
+                }
+                else
+                {
+                    NSMutableArray* studies = [NSMutableArray array];
+                    for (DicomStudy* study in album.studies) {
+                        NSMutableDictionary* entry = [NSMutableDictionary dictionary];
+                        [entry setObject:study.studyInstanceUID forKey:@"studyInstanceUID"];
+                        [entry setObject:study.name forKey:@"patientName"];
+                        [entry setObject:study.patientID forKey:@"patientID"];
+                        [entry setObject:study.dateOfBirth forKey:@"dateOfBirth"];
+                        [entry setObject:study.studyName forKey:@"name"];
+                        [entry setObject:study.date forKey:@"date"];
+                        [entry setObject:study.modality forKey:@"modality"];
+                        [entry setObject:study.accessionNumber forKey:@"accessionNumber"];
+                        [studies addObject:entry];
+                    }
+                    
+                    [entry setObject:studies forKey:@"studies"];
+                }
+                
+                [albums addObject:entry];
 			}
 			
 			NSSavePanel *sPanel	= [NSSavePanel savePanel];
@@ -7793,7 +7846,8 @@ static BOOL withReset = NO;
 			
 			if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
 			{
-				[albums writeToFile: [sPanel filename] atomically: YES];
+				BOOL r = [albums writeToFile:[sPanel filename] atomically:YES];
+                r = 0;
 			}
 		}
 		else NSRunInformationalAlertPanel(NSLocalizedString(@"Save Albums", nil), NSLocalizedString(@"There are no albums to save.", nil), NSLocalizedString(@"OK",nil), nil, nil);
@@ -7808,10 +7862,9 @@ static BOOL withReset = NO;
 
 - (void) addAlbumsFile: (NSString*) file
 {
-	NSArray *albums = [NSArray arrayWithContentsOfFile: file];
-		
+	NSArray* albums = [NSArray arrayWithContentsOfFile:file];
+    if (albums) {
 		[self.managedObjectContext lock];
-	
 		@try 
 		{
 			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -7820,34 +7873,72 @@ static BOOL withReset = NO;
 			NSError *error = nil;
 			NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
 			
-			for( NSDictionary *dict in albums)
+			for (NSDictionary* dict in albums)
 			{
-				if( [[albumArray valueForKey: @"name"] containsString: [dict valueForKey: @"name"]] == NO)
+                DicomAlbum* a = nil;
+				
+                NSInteger index = [[albumArray valueForKey:@"name"] indexOfObject:[dict valueForKey:@"name"]];
+                if (index == NSNotFound)
 				{
-					NSManagedObject	*a = [NSEntityDescription insertNewObjectForEntityForName:@"Album" inManagedObjectContext: self.managedObjectContext];
+					a = [self.database newObjectForEntity:self.database.albumEntity];
 					
-					[a setValue: [dict valueForKey: @"name"] forKey:@"name"];
+					a.name = [dict objectForKey: @"name"];
 					
-					if( [dict valueForKey: @"smartAlbum"])
-						[a setValue: [dict valueForKey: @"smartAlbum"] forKey:@"smartAlbum"];
-					else
-						[a setValue: [NSNumber numberWithBool: NO]  forKey:@"smartAlbum"];
-						
-					[a setValue: [dict valueForKey: @"predicateString"] forKey:@"predicateString"];
+					if ([[dict objectForKey: @"smartAlbum"] boolValue])
+                    {
+						a.smartAlbum = [NSNumber numberWithBool:YES];
+                        a.predicateString = [dict valueForKey: @"predicateString"];
+					}
 				}
+                else {
+                    a = [albumArray objectAtIndex:index];
+                }
+                
+                if (!a.smartAlbum.boolValue) {
+                    a.smartAlbum = [NSNumber numberWithBool:NO];
+                    for (NSDictionary* entry in [dict objectForKey:@"studies"]) {
+                        NSString* studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
+                        NSArray* qr = [self.database objectsForEntity:self.database.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@", studyInstanceUID]];
+                        if (qr.count)
+                        {
+                            [[a mutableSetValueForKey:@"studies"] addObjectsFromArray:qr];
+                        } 
+                        else
+                        {
+                            DicomStudy* s = [self.database newObjectForEntity:self.database.studyEntity];
+                            s.studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
+                            s.name = [entry objectForKey:@"patientName"];
+                            s.patientID = [entry objectForKey:@"patientID"];
+                            s.dateOfBirth = [entry objectForKey:@"dateOfBirth"];
+                            s.studyName = [entry objectForKey:@"name"];
+                            s.date = [entry objectForKey:@"date"];
+                            s.modality = [entry objectForKey:@"modality"];
+                            s.accessionNumber = [entry objectForKey:@"accessionNumber"];
+                            [[a mutableSetValueForKey:@"studies"] addObject:s];
+                            DicomSeries* se = [self.database newObjectForEntity:self.database.seriesEntity];
+                            se.name = @"OsiriX No Autodeletion";
+                            se.id = [NSNumber numberWithInt:5005];
+                            [[s mutableSetValueForKey:@"series"] addObject:se];
+                            NSLog(@"lshflsh");
+                        }
+                    }
+                }
 			}
 			
+            [self.managedObjectContext save:NULL];
 			[self refreshAlbums];
 		}
 		@catch (NSException * e) 
 		{
             N2LogExceptionWithStackTrace(e);
 		}
+        @finally
+        {
+            [self.managedObjectContext unlock];
+        }
+	}	
 		
-        [self.managedObjectContext save:NULL];
-		[self.managedObjectContext unlock];
-		
-		[self outlineViewRefresh];
+    [self outlineViewRefresh];
 }
 
 - (IBAction) addAlbums:(id) sender
@@ -14385,6 +14476,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 				
 				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
+				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
+				
+				predicate = [NSPredicate predicateWithFormat: @"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
 				dicomFiles2Export = [[[dicomFiles2Export filteredArrayUsingPredicate: predicate] mutableCopy] autorelease];
 			}
 			@catch (NSException *e)
