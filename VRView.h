@@ -490,7 +490,7 @@ typedef char* VTKStereoVRView;
 - (void) setBlendingPixSource:(ViewerController*) bC;
 - (IBAction) endQuicktimeSettings:(id) sender;
 - (IBAction) endDCMExportSettings:(id) sender;
-- (IBAction) endQuicktimeVRSettings:(id) sender;
+//- (IBAction) endQuicktimeVRSettings:(id) sender;
 - (IBAction) exportQuicktime :(id) sender;
 - (float) rotation;
 - (float) numberOfFrames;

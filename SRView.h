@@ -351,7 +351,7 @@ typedef struct renderSurface
 -(void) BdeleteActor:(long) actor;
 -(IBAction) endQuicktimeSettings:(id) sender;
 -(IBAction) exportQuicktime :(id) sender;
--(IBAction) endQuicktimeVRSettings:(id) sender;
+//-(IBAction) endQuicktimeVRSettings:(id) sender;
 - (IBAction) setCurrentdcmExport:(id) sender;
 -(IBAction) endDCMExportSettings:(id) sender;
 -(void) exportDICOMFile:(id) sender;
