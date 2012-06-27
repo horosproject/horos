@@ -450,51 +450,51 @@ typedef struct _xyzArray
 	}
 }
 
--(IBAction) endQuicktimeVRSettings:(id) sender
-{
-	[export3DVRWindow orderOut:sender];
-	
-	[NSApp endSheet:export3DVRWindow returnCode:[sender tag]];
-	
-	numberOfFrames = [[VRFrames selectedCell] tag];
-	
-	rotationValue = 360;
-	
-	if( [sender tag])
-	{
-		NSString			*path, *newpath;
-		QuicktimeExport		*mov;
-		
-		[self setViewSizeToMatrix3DExport];
-		
-		if( numberOfFrames == 10 || numberOfFrames == 20)
-			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
-		else
-			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
-		
-		//[mov setCodec:kJPEGCodecType :codecHighQuality];
-		
-		path = [mov createMovieQTKit: NO  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
-		
-		if( path)
-		{
-			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
-				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
-			else
-				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
-			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
-			
-			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
-			[NSThread sleepForTimeInterval: 1];
-		}
-		
-		[mov release];
-		
-		[self restoreViewSizeAfterMatrix3DExport];
-	}
-}
+//-(IBAction) endQuicktimeVRSettings:(id) sender
+//{
+//	[export3DVRWindow orderOut:sender];
+//	
+//	[NSApp endSheet:export3DVRWindow returnCode:[sender tag]];
+//	
+//	numberOfFrames = [[VRFrames selectedCell] tag];
+//	
+//	rotationValue = 360;
+//	
+//	if( [sender tag])
+//	{
+//		NSString			*path, *newpath;
+//		QuicktimeExport		*mov;
+//		
+//		[self setViewSizeToMatrix3DExport];
+//		
+//		if( numberOfFrames == 10 || numberOfFrames == 20)
+//			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
+//		else
+//			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
+//		
+//		//[mov setCodec:kJPEGCodecType :codecHighQuality];
+//		
+//		path = [mov createMovieQTKit: NO  :NO :[[[[[self window] windowController] fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+//		
+//		if( path)
+//		{
+//			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
+//				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
+//			else
+//				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
+//			
+//			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
+//			
+//			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
+//			[NSThread sleepForTimeInterval: 1];
+//		}
+//		
+//		[mov release];
+//		
+//		[self restoreViewSizeAfterMatrix3DExport];
+//	}
+//}
 
 -(IBAction) exportQuicktime3DVR:(id) sender
 {

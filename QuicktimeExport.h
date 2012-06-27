@@ -12,17 +12,12 @@
      PURPOSE.
 =========================================================================*/
 
-//#import <AVFoundation/AVFoundation.h>
-//#import <CoreMedia/CoreMedia.h>
-
-
 #import <Foundation/Foundation.h>
 #import <QuickTime/QuickTime.h>
 
-
 /** \brief QuickTime export */
-@interface QuicktimeExport : NSObject {
-
+@interface QuicktimeExport : NSObject
+{
 	id						object;
 	SEL						selector;
 	long					numberOfFrames;
@@ -34,15 +29,10 @@
 	
 	IBOutlet NSView			*view;
 	IBOutlet NSPopUpButton	*type;
-    
-//    CMTime                  frameDuration;
-//    CMTime                  nextPresentationTimeStamp;
 }
 
-+ (NSString*) generateQTVR:(NSString*) srcPath frames:(int) frames;
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)framesPerSecond;
-- (IBAction) changeExportType:(id) sender;
 @end
 

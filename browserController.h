@@ -514,7 +514,6 @@ extern NSString* O2AlbumDragType;
 - (void) burnDICOM:(id) sender;
 - (IBAction) anonymizeDICOM:(id) sender;
 - (void) queryDICOM:(id) sender;
-- (IBAction) sendiDisk:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
 #endif
 

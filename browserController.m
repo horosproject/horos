@@ -238,9 +238,7 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
 static NSString*	ImportToolbarItemIdentifier			= @"Import.icns";
-static NSString*	iDiskSendToolbarItemIdentifier		= @"iDiskSend.icns";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
-static NSString*	iDiskGetToolbarItemIdentifier		= @"iDiskGet.icns";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.icns";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.icns";
@@ -7889,7 +7887,6 @@ static BOOL withReset = NO;
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action:@selector(exportJPEG:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action:@selector(exportTIFF:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action:@selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to iDisk", nil) action:@selector(sendiDisk:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Compress DICOM files", nil) action:@selector(compressSelectedFiles:) keyEquivalent:@""] autorelease]];
@@ -10905,7 +10902,6 @@ static NSArray*	openSubSeriesArray = nil;
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to iDisk", nil) action: @selector(sendiDisk:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Email", nil)  action:@selector(sendMail:) keyEquivalent:@""] autorelease]];
 	
     if (isWritable) {
@@ -11632,7 +11628,6 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( exportJPEG:) || 
 			[menuItem action] == @selector( exportTIFF:) || 
 			[menuItem action] == @selector( exportDICOMFile:) || 
-			[menuItem action] == @selector( sendiDisk:) || 
 			[menuItem action] == @selector( sendMail:) || 
 			[menuItem action] == @selector( addStudiesToUser:) || 
 			[menuItem action] == @selector( sendEmailNotification:) || 
@@ -14654,60 +14649,60 @@ static volatile int numberOfThreadsForJPEG = 0;
 }*/
 
 #ifndef OSIRIX_LIGHT
-- (void)loadDICOMFromiDisk: (id)sender
-{
-	if (![_database isLocal]) return;
-	
-	int delete = 0;
-
-	if( NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk", nil), NSLocalizedString(@"Should I delete the files on the iDisk after the copy?", nil), NSLocalizedString(@"Delete the files", nil), NSLocalizedString(@"Leave them", nil), nil) == NSAlertDefaultReturn)
-	{
-		delete = 1;
-	}
-	else
-	{
-		delete = 0;
-	}
-	
-	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Receiving files from iDisk", nil)];
-	[wait setCancel: YES];
-	[wait showWindow:self];
-	
-	NSTask *theTask = [[NSTask alloc] init];
-	
-	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], nil]];
-	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
-	[theTask launch];
-	
-	[wait start];
-	
-	while( [theTask isRunning] && [wait run])
-		[NSThread sleepForTimeInterval: 0.1];
-	
-	if( [wait run])
-		[theTask waitUntilExit];
-	else
-		[theTask interrupt];
-	
-	[wait end];
-	
-	[theTask release];
-	
-	NSArray	*filesArray = [NSArray arrayWithContentsOfFile: @"/tmp/files2load"];
-	
-	if( [filesArray count])
-	{
-		NSString *incomingFolder = [self INCOMINGPATH];
-		
-		for( NSString *path in filesArray)
-		{
-			[[NSFileManager defaultManager] movePath: path toPath: [incomingFolder stringByAppendingPathComponent: [path lastPathComponent]] handler: nil];
-		}
-	}
-	
-	[wait close];
-	[wait release];
-}
+//- (void)loadDICOMFromiDisk: (id)sender
+//{
+//	if (![_database isLocal]) return;
+//	
+//	int delete = 0;
+//
+//	if( NSRunInformationalAlertPanel( NSLocalizedString(@"iDisk", nil), NSLocalizedString(@"Should I delete the files on the iDisk after the copy?", nil), NSLocalizedString(@"Delete the files", nil), NSLocalizedString(@"Leave them", nil), nil) == NSAlertDefaultReturn)
+//	{
+//		delete = 1;
+//	}
+//	else
+//	{
+//		delete = 0;
+//	}
+//	
+//	WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Receiving files from iDisk", nil)];
+//	[wait setCancel: YES];
+//	[wait showWindow:self];
+//	
+//	NSTask *theTask = [[NSTask alloc] init];
+//	
+//	[theTask setArguments: [NSArray arrayWithObjects: @"getFilesFromiDisk", [NSString stringWithFormat:@"%d", delete], nil]];
+//	[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+//	[theTask launch];
+//	
+//	[wait start];
+//	
+//	while( [theTask isRunning] && [wait run])
+//		[NSThread sleepForTimeInterval: 0.1];
+//	
+//	if( [wait run])
+//		[theTask waitUntilExit];
+//	else
+//		[theTask interrupt];
+//	
+//	[wait end];
+//	
+//	[theTask release];
+//	
+//	NSArray	*filesArray = [NSArray arrayWithContentsOfFile: @"/tmp/files2load"];
+//	
+//	if( [filesArray count])
+//	{
+//		NSString *incomingFolder = [self INCOMINGPATH];
+//		
+//		for( NSString *path in filesArray)
+//		{
+//			[[NSFileManager defaultManager] movePath: path toPath: [incomingFolder stringByAppendingPathComponent: [path lastPathComponent]] handler: nil];
+//		}
+//	}
+//	
+//	[wait close];
+//	[wait release];
+//}
 
 //- (void) cThread
 //{
@@ -14742,124 +14737,124 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	[p release];
 //}
 
-- (IBAction)sendiDisk: (id)sender
-{
-	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
-	{
-//        NSDictionary *server = nil;
+//- (IBAction)sendiDisk: (id)sender
+//{
+//	if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask)
+//	{
+////        NSDictionary *server = nil;
+////        
+////        for ( NSDictionary *aServer in [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"])
+////        {
+////            if ([[aServer objectForKey:@"Description"] isEqualToString: @"GEPACS"]) 
+////            {
+////                server = aServer;
+////                break;
+////            }
+////        }
+////        
+////        if( server)
+////            [QueryController queryTest: server];
 //        
-//        for ( NSDictionary *aServer in [[NSUserDefaults standardUserDefaults] arrayForKey: @"SERVERS"])
-//        {
-//            if ([[aServer objectForKey:@"Description"] isEqualToString: @"GEPACS"]) 
-//            {
-//                server = aServer;
-//                break;
-//            }
-//        }
+////      *******************************
 //        
-//        if( server)
-//            [QueryController queryTest: server];
-        
-//      *******************************
-        
-//		[self reduceCoreDataFootPrint];
+////		[self reduceCoreDataFootPrint];
+////		
+////		[managedObjectContext release];
+////		managedObjectContext = nil;
+////		
+////		[self managedObjectContext];
+////		
+////		[self outlineViewRefresh];
+////		[self refreshMatrix: self];
 //		
-//		[managedObjectContext release];
-//		managedObjectContext = nil;
+//		return;
+//	}
+////
+////	
+////	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
+////	
+////	return;
+////	
+////	
+////	
+//	int success;
+//	
+//	// Zip the files, and copy them!
+//	
+//	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
+//	NSMutableArray *filesToExport;
+//	
+//	[self checkResponder];
+//	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: NO];
+//	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
+//	
+//	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
+//	
+//	if( filesToExport)
+//	{
+//		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForIdisk" error: nil];
+//		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForIdisk" attributes: nil];
 //		
-//		[self managedObjectContext];
+//		BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
+//		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
+//		self.passwordForExportEncryption = @"";
 //		
-//		[self outlineViewRefresh];
-//		[self refreshMatrix: self];
-		
-		return;
-	}
-//
-//	
-//	[NSThread detachNewThreadSelector: @selector( cThread) toTarget: self withObject:nil];
-//	
-//	return;
-//	
-//	
-//	
-	int success;
-	
-	// Zip the files, and copy them!
-	
-	NSMutableArray *dicomFiles2Export = [NSMutableArray array];
-	NSMutableArray *filesToExport;
-	
-	[self checkResponder];
-	if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix) filesToExport = [self filesForDatabaseMatrixSelection: dicomFiles2Export onlyImages: NO];
-	else filesToExport = [self filesForDatabaseOutlineSelection: dicomFiles2Export onlyImages: NO];
-	
-	[filesToExport removeDuplicatedStringsInSyncWithThisArray: dicomFiles2Export];
-	
-	if( filesToExport)
-	{
-		[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/zipFilesForIdisk" error: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: @"/tmp/zipFilesForIdisk" attributes: nil];
-		
-		BOOL encrypt = [[NSUserDefaults standardUserDefaults] boolForKey: @"encryptForExport"];
-		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"encryptForExport"];
-		self.passwordForExportEncryption = @"";
-		
-		NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForIdisk/" files: filesToExport objects: dicomFiles2Export];
-		
-		[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
-		
-		if( [r count] > 0)
-		{
-			NSString *path = nil;
-			NSString *root = @"/tmp/zipFilesForIdisk";
-			NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
-			for( int x = 0; x < [files count]; x++)
-			{
-				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
-				{
-					path = [root stringByAppendingPathComponent: [files objectAtIndex: x]];
-					
-					[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: nil];
-					[path writeToFile: @"/tmp/files2send" atomically: YES];
-					
-					NSTask *theTask = [[NSTask alloc] init];
-					
-					long long fileSize = [[[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink: YES] objectForKey:NSFileSize] longLongValue];
-					
-					fileSize /= 1024;
-					fileSize /= 1024;
-					
-					WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending zip file (%d MB) to iDisk", nil), fileSize]];
-					[wait showWindow:self];
-					[wait setCancel: YES];
-					
-					[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
-					[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
-					[theTask launch];
-					
-					[wait start];
-					
-					while( [theTask isRunning] && [wait run])
-						[NSThread sleepForTimeInterval: 0.1];
-					
-					if( [wait run])
-						[theTask waitUntilExit];
-					else
-						[theTask interrupt];
-					
-					[wait end];
-					
-					[theTask release];
-					
-					[wait close];
-					[wait release];
-				}
-			}
-			
-			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zipFilesForIdisk" handler: nil];
-		}
-	}
-}
+//		NSArray *r = [self exportDICOMFileInt: @"/tmp/zipFilesForIdisk/" files: filesToExport objects: dicomFiles2Export];
+//		
+//		[[NSUserDefaults standardUserDefaults] setBool: encrypt forKey: @"encryptForExport"];
+//		
+//		if( [r count] > 0)
+//		{
+//			NSString *path = nil;
+//			NSString *root = @"/tmp/zipFilesForIdisk";
+//			NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil];
+//			for( int x = 0; x < [files count]; x++)
+//			{
+//				if( [[[files objectAtIndex: x] pathExtension] isEqualToString: @"zip"])
+//				{
+//					path = [root stringByAppendingPathComponent: [files objectAtIndex: x]];
+//					
+//					[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/files2send" handler: nil];
+//					[path writeToFile: @"/tmp/files2send" atomically: YES];
+//					
+//					NSTask *theTask = [[NSTask alloc] init];
+//					
+//					long long fileSize = [[[[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink: YES] objectForKey:NSFileSize] longLongValue];
+//					
+//					fileSize /= 1024;
+//					fileSize /= 1024;
+//					
+//					WaitRendering *wait = [[WaitRendering alloc] init: [NSString stringWithFormat: NSLocalizedString(@"Sending zip file (%d MB) to iDisk", nil), fileSize]];
+//					[wait showWindow:self];
+//					[wait setCancel: YES];
+//					
+//					[theTask setArguments: [NSArray arrayWithObjects: @"sendFilesToiDisk", @"/tmp/files2send", nil]];
+//					[theTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/32-bit shell.app/Contents/MacOS/32-bit shell"]];
+//					[theTask launch];
+//					
+//					[wait start];
+//					
+//					while( [theTask isRunning] && [wait run])
+//						[NSThread sleepForTimeInterval: 0.1];
+//					
+//					if( [wait run])
+//						[theTask waitUntilExit];
+//					else
+//						[theTask interrupt];
+//					
+//					[wait end];
+//					
+//					[theTask release];
+//					
+//					[wait close];
+//					[wait release];
+//				}
+//			}
+//			
+//			[[NSFileManager defaultManager] removeFileAtPath: @"/tmp/zipFilesForIdisk" handler: nil];
+//		}
+//	}
+//}
 
 #endif
 
@@ -16001,26 +15996,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(export2PACS:)];
     }
-	else if ([itemIdent isEqualToString: iDiskGetToolbarItemIdentifier])
-	{
-        
-		[toolbarItem setLabel: NSLocalizedString(@"iDisk Get",nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"iDisk Get",nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Load DICOM files from iDisk",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: iDiskGetToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(loadDICOMFromiDisk:)];
-	}
-	else if ([itemIdent isEqualToString: iDiskSendToolbarItemIdentifier])
-	{
-        
-		[toolbarItem setLabel: NSLocalizedString(@"iDisk Send",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"iDisk Send",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Send selected study/series to your iDisk",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: iDiskSendToolbarItemIdentifier]];
-		[toolbarItem setTarget: self];
-		[toolbarItem setAction: @selector(sendiDisk:)];
-	}
     else if ([itemIdent isEqualToString: ViewerToolbarItemIdentifier])
 	{
         
@@ -16215,8 +16190,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			 ExportToolbarItemIdentifier,
 			 AnonymizerToolbarItemIdentifier,
 			 SendToolbarItemIdentifier,
-			 iDiskSendToolbarItemIdentifier,
-			 iDiskGetToolbarItemIdentifier,
 			 ViewerToolbarItemIdentifier,
 			 OpenKeyImagesAndROIsToolbarItemIdentifier,
 			 MovieToolbarItemIdentifier,
@@ -16563,7 +16536,6 @@ static volatile int numberOfThreadsForJPEG = 0;
             [toolbarItem.itemIdentifier isEqualToString:WebServerSingleNotification] || 
             [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier] || 
             [toolbarItem.itemIdentifier isEqualToString:AnonymizerToolbarItemIdentifier] || 
-            [toolbarItem.itemIdentifier isEqualToString:iDiskGetToolbarItemIdentifier] || 
             [toolbarItem.itemIdentifier isEqualToString:TrashToolbarItemIdentifier] || 
             [toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier] || // TODO: if report already exists, allow user to view it
             [toolbarItem.itemIdentifier isEqualToString:BurnerToolbarItemIdentifier] || 
@@ -16587,7 +16559,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( exportJPEG:) || 
 			[toolbarItem action] == @selector( exportTIFF:) || 
 			[toolbarItem action] == @selector( exportDICOMFile:) || 
-			[toolbarItem action] == @selector( sendiDisk:) || 
 			[toolbarItem action] == @selector( sendMail:) || 
 			[toolbarItem action] == @selector( addStudiesToUser:) || 
 			[toolbarItem action] == @selector( sendEmailNotification:) || 
@@ -16610,8 +16581,6 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if (![_database isLocal])
 	{
 		if ([[toolbarItem itemIdentifier] isEqualToString: ImportToolbarItemIdentifier]) return NO;
-		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskSendToolbarItemIdentifier]) return NO;
-		if ([[toolbarItem itemIdentifier] isEqualToString: iDiskGetToolbarItemIdentifier]) return NO;
 //		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: TrashToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: QueryToolbarItemIdentifier]) return NO;

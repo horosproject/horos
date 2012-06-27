@@ -1494,52 +1494,52 @@ public:
 	aCamera->OrthogonalizeViewUp();
 }
 
--(IBAction) endQuicktimeVRSettings:(id) sender
-{
-	[export3DVRWindow orderOut:sender];
-	
-	[NSApp endSheet:export3DVRWindow returnCode:[sender tag]];
-	
-	numberOfFrames = [[VRFrames selectedCell] tag];
-	bestRenderingMode = [[VRquality selectedCell] tag];
-	
-	rotationValue = 360;
-	
-	if( [sender tag])
-	{
-		NSString			*path, *newpath;
-		QuicktimeExport		*mov;
-		
-		[self setViewSizeToMatrix3DExport];
-		
-		verticalAngleForVR = 0;
-		rotateDirectionForVR = 1;
-		
-		if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
-			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
-		else
-			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
-		
-		path = [mov createMovieQTKit: NO  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
-		if( path)
-		{
-			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
-				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
-			else
-				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
-			
-			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
-			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
-			
-			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
-			[NSThread sleepForTimeInterval: 1];
-		}
-		
-		[mov release];
-		
-		[self restoreViewSizeAfterMatrix3DExport];
-	}
-}
+//-(IBAction) endQuicktimeVRSettings:(id) sender
+//{
+//	[export3DVRWindow orderOut:sender];
+//	
+//	[NSApp endSheet:export3DVRWindow returnCode:[sender tag]];
+//	
+//	numberOfFrames = [[VRFrames selectedCell] tag];
+//	bestRenderingMode = [[VRquality selectedCell] tag];
+//	
+//	rotationValue = 360;
+//	
+//	if( [sender tag])
+//	{
+//		NSString			*path, *newpath;
+//		QuicktimeExport		*mov;
+//		
+//		[self setViewSizeToMatrix3DExport];
+//		
+//		verticalAngleForVR = 0;
+//		rotateDirectionForVR = 1;
+//		
+//		if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
+//			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames*numberOfFrames];
+//		else
+//			mov = [[QuicktimeExport alloc] initWithSelector: self : @selector(imageForFrameVR: maxFrame:) :numberOfFrames];
+//		
+//		path = [mov createMovieQTKit: NO  :NO :[[[controller fileList] objectAtIndex:0] valueForKeyPath:@"series.study.name"]];
+//		if( path)
+//		{
+//			if( numberOfFrames == 10 || numberOfFrames == 20 || numberOfFrames == 40)
+//				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames*numberOfFrames];
+//			else
+//				newpath = [QuicktimeExport generateQTVR: path frames: numberOfFrames];
+//			
+//			[[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+//			[[NSFileManager defaultManager] movePath: newpath  toPath: path handler: nil];
+//			
+//			[[NSWorkspace sharedWorkspace] openFile: path withApplication: nil andDeactivate: YES];
+//			[NSThread sleepForTimeInterval: 1];
+//		}
+//		
+//		[mov release];
+//		
+//		[self restoreViewSizeAfterMatrix3DExport];
+//	}
+//}
 
 - (void) setShadingValues:(float) ambient :(float) diffuse :(float) specular :(float) specularpower
 {
