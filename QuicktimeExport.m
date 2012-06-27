@@ -175,8 +175,8 @@
             [writer addInput:writerInput];
             [writer startWriting];
             
-            __block BOOL aborted = NO;
-            __block CMTime nextPresentationTimeStamp;
+            BOOL aborted = NO;
+            CMTime nextPresentationTimeStamp;
             
             nextPresentationTimeStamp = kCMTimeZero;
             
@@ -187,69 +187,50 @@
             [wait setCancel:YES];
             [[wait progress] setMaxValue: numberOfFrames];
             
-            dispatch_queue_t mediaDataRequestQueue = dispatch_queue_create("Media data request queue", NULL);
-            
-            __block int curSample;
-            
-            curSample = 0;
-            
-            [writerInput requestMediaDataWhenReadyOnQueue:mediaDataRequestQueue usingBlock:^{
-                while (writerInput.isReadyForMoreMediaData)
+            for( int curSample = 0; curSample < numberOfFrames; curSample++)
+            {
+                NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                
+                CVPixelBufferRef buffer = nil;
+                
+                if( curSample < numberOfFrames)
                 {
-                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                    NSDisableScreenUpdates();
+                    NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
                     
-                    CVPixelBufferRef buffer = nil;
+                    buffer = [self CVPixelBufferFromNSImage: im];
+                    NSEnableScreenUpdates();
+                }
+                
+                [pool release];
+                
+                if( buffer)
+                {
+                    CVPixelBufferLockBaseAddress(buffer, 0);
+                    [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                    CVPixelBufferUnlockBaseAddress(buffer, 0);
+                    CVPixelBufferRelease(buffer);
+                    buffer = nil;
                     
-                    if( curSample < numberOfFrames)
+                    nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                    
+                    CVPixelBufferRelease(buffer);                    
+                    
+                    [wait incrementBy: 1];
+                    if( [wait aborted])
                     {
-                        NSDisableScreenUpdates();
-                        @synchronized( self)
-                        {
-                            NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample++] withObject:[NSNumber numberWithLong: numberOfFrames]];    
-                            
-                            buffer = [self CVPixelBufferFromNSImage: im];
-                        }
-                        NSEnableScreenUpdates();
-                    }
-                    
-                    [pool release];
-                    
-                    if (buffer)
-                    {
-                        CVPixelBufferLockBaseAddress(buffer, 0);
-                        [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
-                        CVPixelBufferUnlockBaseAddress(buffer, 0);
-                        CVPixelBufferRelease(buffer);
-                        buffer = nil;
-                        
-                        nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
-                        
-                        CVPixelBufferRelease(buffer);                    
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [wait incrementBy:1];
-                            
-                            if( [wait aborted])
-                            {
-                                curSample = numberOfFrames;
-                                aborted = YES;
-                            }
-                        });
-                    }
-                    else
-                    {
-                        [writerInput markAsFinished];
-                        [writer finishWriting];
                         curSample = numberOfFrames;
-                        break;
+                        aborted = YES;
                     }
                 }
-            }];
-            
-            while( curSample < numberOfFrames)
-                [[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];
-            
-            dispatch_sync( mediaDataRequestQueue, ^{});
-            dispatch_release( mediaDataRequestQueue);
+                else
+                {
+                    curSample = numberOfFrames;
+                    break;
+                }
+            }
+            [writerInput markAsFinished];
+            [writer finishWriting];
             
             [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
             

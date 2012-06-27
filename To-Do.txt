@@ -22,7 +22,6 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
 - WebPortal: writeMovie -> AVFoundation
-- ExportQuicktime: performSelector on main thread?
 
 ------------------------------------------------------------------------------------------------------------------------
 
