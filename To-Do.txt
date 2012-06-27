@@ -23,6 +23,7 @@
 ------------------------------------------------------------------------------------------------------------------------
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, Retina Display
+- Time Sync on %
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
