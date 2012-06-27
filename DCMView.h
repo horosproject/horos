@@ -71,7 +71,7 @@ extern NSString *pasteBoardOsiriXPlugin;
 
 enum { annotNone = 0, annotGraphics, annotBase, annotFull };
 enum { barHide = 0, barOrigin, barFused, barBoth };
-enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3};
+enum { syncroOFF = 0, syncroABS = 1, syncroREL = 2, syncroLOC = 3, syncroRatio = 4};
 
 typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRight} DCMViewTextAlign;
 

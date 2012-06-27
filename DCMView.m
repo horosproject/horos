@@ -6570,7 +6570,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					// Double-Click -> find the nearest point on our plane, go to this plane and draw the intersection!
 					if( point3D)
 					{
-						float	resultPoint[ 3];
+						float resultPoint[ 3];
 						
 						int newIndex = [self findPlaneAndPoint: destPoint3D :resultPoint];
 						
@@ -6597,7 +6597,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					if( flippedData) curImage = [dcmPixList count] -1 -pos;
 					else curImage = pos;
 					
-					//NSLog(@"Abs");
+					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
+					if( curImage < 0) curImage = 0;
+				}
+                
+                // Absolute Ratio
+				if( syncro == syncroRatio && point3D == NO && syncSeriesIndex == -1)
+				{
+                    float ratio = (float) pos / (float) [[otherView dcmPixList] count];
+
+                    int ratioPos = round( ratio * (float) [dcmPixList count]);
+                    
+					if( flippedData) curImage = [dcmPixList count] -1 -ratioPos;
+					else curImage = ratioPos;
 					
 					if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
 					if( curImage < 0) curImage = 0;
@@ -6701,17 +6713,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 					else if( volumicSeries == NO && [otherView volumicSeries] == NO)	// For example time or functional series
 					{
-						if( flippedData) curImage = [dcmPixList count] -1 -pos;
-						else curImage = pos;
-						
-						//NSLog(@"Not volumic...");
-						
-						if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
-						if( curImage < 0) curImage = 0;
+                        if( [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroRatio)
+                        {
+                            float ratio = (float) pos / (float) [[otherView dcmPixList] count];
+                            int ratioPos = round( ratio * (float) [dcmPixList count]);
+                            
+                            if( flippedData) curImage = [dcmPixList count] -1 -ratioPos;
+                            else curImage = ratioPos;
+                        }
+                        else if( [[NSUserDefaults standardUserDefaults] integerForKey: @"DefaultModeForNonVolumicSeries"] == syncroABS)
+                        {
+                            if( flippedData) curImage = [dcmPixList count] -1 -pos;
+                            else curImage = pos;
+                        }
+                        
+                        if( curImage >= [dcmPixList count]) curImage = [dcmPixList count] - 1;
+                        if( curImage < 0) curImage = 0;
 					}
 				}
 
-				// Relative
+				 // Relative
 				 if( syncro == syncroREL && point3D == NO && syncSeriesIndex == -1)
 				 {
 					if( flippedData) curImage -= diff;

@@ -800,6 +800,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"useDCMTKForAnonymization"];
 	[defaultValues setObject:@"1" forKey:@"useDCMTKForDicomExport"];
     [defaultValues setObject:@"1" forKey:@"SupportQRModalitiesinStudy"];
+    [defaultValues setObject:[NSString stringWithFormat:@"%d", syncroRatio] forKey:@"DefaultModeForNonVolumicSeries"];
 	[defaultValues setObject:@"2" forKey:@"drawerState"]; // NSDrawerOpenState
 	if( [[NSProcessInfo processInfo] processorCount] >= 4)
 		[defaultValues setObject:@"2.0" forKey:@"superSampling"];

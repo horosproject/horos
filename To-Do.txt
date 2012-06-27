@@ -19,11 +19,12 @@
 - WebPortal: preference to authorize sharing a study by email (temporary user)
 - High-Res mode for Curved-MPR Viewer
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
+- New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
 ------------------------------------------------------------------------------------------------------------------------
+
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, Retina Display
-- Time Sync on %
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
