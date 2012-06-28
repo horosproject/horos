@@ -3371,7 +3371,7 @@ static NSConditionLock *threadLock = nil;
 				NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
 				
 				int totImage = 0;
-                BOOL dontDelete = NO;
+                DicomSeries* dontDelete = nil;
 				
 				for (DicomSeries* obj in seriesArray)
 				{
@@ -3382,10 +3382,13 @@ static NSConditionLock *threadLock = nil;
 					[correspondingManagedObjects addObjectsFromArray: imagesArray];
                     
                     if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
-                        dontDelete = YES;
+                        dontDelete = obj;
 				}
+                
+                if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
+                    [context deleteObject:dontDelete];
 				
-				if (onlyImages == NO && totImage == 0 && dontDelete == NO)							// We don't want empty studies, with exceptions...
+				if (onlyImages == NO && totImage == 0 && dontDelete == nil)							// We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
 					[context deleteObject: curObj];
 			}
             
@@ -5445,12 +5448,18 @@ static NSConditionLock *threadLock = nil;
 {
 	if( [sender clickedRow] != -1)
 	{			
-		NSManagedObject		*item;
-		
-		if( [databaseOutline clickedRow] != -1) item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
+		id item;
+		if ([databaseOutline clickedRow] != -1)
+            item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
 		else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
-		[self databaseOpenStudy: item];
+        if ([[item numberOfImages] intValue] > 0)
+            [self databaseOpenStudy: item];
+        else {
+#ifndef OSIRIX_LIGHT
+            [self querySelectedStudy:self];
+#endif
+        }
 	}
 }
 
