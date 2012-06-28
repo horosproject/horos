@@ -82,6 +82,7 @@
 - (NSString *)modality;
 - (NSNumber *)numberImages;
 - (NSMutableArray *)children;
+- (void) setChildren: (NSMutableArray *) c;
 - (void)purgeChildren;
 - (void)addChild:(DcmDataset *)dataset;
 - (DcmDataset *)queryPrototype;

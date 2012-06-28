@@ -1235,6 +1235,9 @@ extern "C"
 						[item queryWithValues:nil];
 						[progressIndicator stopAnimation:nil];
 						performingCFind = NO;
+                        
+                        if( [(DCMTKQueryNode *)item children] == nil) // It failed... put an empty children...
+                            [item setChildren: [NSMutableArray array]];
 					}
 				}
 			}

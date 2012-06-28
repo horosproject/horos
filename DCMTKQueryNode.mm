@@ -490,6 +490,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     return _children;
 }
+- (void) setChildren: (NSMutableArray *) c
+{
+    @synchronized( self)
+    {
+        [_children release];
+        _children = [c retain];
+    }
+}
 - (void)purgeChildren
 {
     @synchronized( self)

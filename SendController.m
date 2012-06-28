@@ -249,7 +249,7 @@ static volatile int sendControllerObjects = 0;
 			objectsToSend = [objectsToSend filteredArrayUsingPredicate:predicate];
 		}
 
-		NSMutableArray	*files2Send = [objectsToSend valueForKey: @"completePath"];
+		NSMutableArray *files2Send = [objectsToSend valueForKey: @"completePath"];
 		
 		if( files2Send != nil && [files2Send count] > 0)
 		{
