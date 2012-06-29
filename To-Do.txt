@@ -21,10 +21,9 @@
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
-- BrowserController: writeMovieToPath -> AVFoundation
 - iOS movies
 
-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib
@@ -67,4 +66,3 @@
 - Password DB in keychain
 - Preferences for Status menu in DB
 - Reporter for Word
-------------------------------------------------------------------------------------------------------------------------
