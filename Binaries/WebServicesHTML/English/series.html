@@ -33,13 +33,16 @@
 									document.getElementById("flashwarning").style.display = "none";
 							</script>
 						%ELSE:Info.proposeFlash%
-							<object style="z-index:100" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="%X:Series.width%" height="%X:Series.height%" codebase="http://www.apple.com/qtactivex/qtplugin.cab">
-								<param name="src" value="/image.jpg?xid=%Series.XID%&previewForMovie=true" />
-								<param name="href" value="/movie.mov?xid=%Series.XID%" />
-								<param name="type" value="video/quicktime" />
-								<embed style="z-index:100" src="/image.jpg?xid=%Series.XID%%[IF:!Info.isIOS%&previewForMovie=true%]IF:!Info.isIOS%" id="series_AQT" EnableJavaScript="true" type="video/quicktime" href="/movie.mov?xid=%Series.XID%" width="%X:Series.width%" height="%X:Series.height%" target="myself" swLiveConnect="true" />
-							</object>
-							%[IF:!Info.isIOS%<div class="smaller">Viewing this series requires <a href="http://www.apple.com/quicktime/">Apple Quicktime</a></div>%]IF:!Info.isIOS%
+							<video src=	/movie.m4v?xid=%Series.XID%
+										controls
+										autoplay
+										height=%X:Series.height%
+										width=%X:Series.width%
+										poster="/image.jpg?xid=%Series.XID%%[IF:!Info.isIOS%&previewForMovie=true%]IF:!Info.isIOS%"
+										>
+							</video>
+							
+										
 						%]IF:Info.proposeFlash%
 					%]IF:Series.images.count<2%
 				</div>

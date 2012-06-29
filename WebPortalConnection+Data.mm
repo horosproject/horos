@@ -673,7 +673,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 
 
--(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL {
+-(NSData*)produceMovieForSeries:(DicomSeries*)series fileURL:(NSString*)fileURL
+{
 	NSString* path = @"/tmp/osirixwebservices";
 	[NSFileManager.defaultManager confirmDirectoryAtPath:path];
     
@@ -2203,21 +2204,26 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if (destFile)
 			[NSFileManager.defaultManager removeItemAtPath:destFile error:nil];
 	}
-	@catch(NSException* e) {
+	@catch(NSException* e)
+    {
 		NSLog(@"**** web seriesAsZIP exception : %@", e);
 	}
 }
 
--(void)processImage {
+-(void)processImage
+{
 	id object = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:Nil];
 	if (!object)
 		return;
 	
 	NSArray* images = nil;
 	
-	if ([object isKindOfClass:[DicomSeries class]]) {
+	if ([object isKindOfClass:[DicomSeries class]])
+    {
 		images = [[object images] allObjects];
-	} else if ([object isKindOfClass: [DicomImage class]]) {
+	}
+    else if ([object isKindOfClass: [DicomImage class]])
+    {
 		images = [NSArray arrayWithObject:object];
 	}
 	
@@ -2241,14 +2247,16 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	float curWW = 0;
 	float curWL = 0;
 	
-	if (dicomImage.series.windowWidth) {
+	if (dicomImage.series.windowWidth)
+    {
 		curWW = dicomImage.series.windowWidth.floatValue;
 		curWL = dicomImage.series.windowLevel.floatValue;
 	}
 	
 	if (curWW != 0)
 		[dcmPix checkImageAvailble:curWW :curWL];
-	else [dcmPix checkImageAvailble:dcmPix.savedWW :dcmPix.savedWL];
+	else
+        [dcmPix checkImageAvailble:dcmPix.savedWW :dcmPix.savedWL];
 	
 	NSImage* image = [dcmPix image];
 	
@@ -2257,7 +2265,8 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	if (size != image.size)
 		image = [image imageByScalingProportionallyToSize:size];
 	
-	if ([parameters objectForKey:@"previewForMovie"]) {
+	if ([parameters objectForKey:@"previewForMovie"])
+    {
 		[image lockFocus];
 		
 		NSImage* r = [NSImage imageNamed:@"PlayTemplate.png"];
@@ -2269,18 +2278,22 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSBitmapImageRep* imageRep = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
 	
 	NSDictionary *imageProps = [NSDictionary dictionaryWithObject: [NSNumber numberWithFloat: 0.8] forKey:NSImageCompressionFactor];
-	if ([requestedPath.pathExtension isEqualToString:@"png"]){
+	if ([requestedPath.pathExtension isEqualToString:@"png"])
+    {
 		response.data = [imageRep representationUsingType:NSPNGFileType properties:imageProps];
 		response.mimeType = @"image/png";
 		
-	} else if ([requestedPath.pathExtension isEqualToString:@"jpg"]) {
+	}
+    else if ([requestedPath.pathExtension isEqualToString:@"jpg"])
+    {
 		response.data = [imageRep representationUsingType:NSJPEGFileType properties:imageProps];
 		response.mimeType = @"image/jpeg";
 	}
     // else NSLog( @"***** unknown path extension: %@", [fileURL pathExtension]);
 }
 
--(void)processMovie {
+-(void)processMovie
+{
 	DicomSeries* series = [self objectWithXID:[parameters objectForKey:@"xid"] ofClass:[DicomSeries class]];
 	if (!series)
 		return;
@@ -2293,8 +2306,4 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 
 
 @end
-
-
-
-
 
