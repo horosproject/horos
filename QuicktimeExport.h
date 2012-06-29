@@ -13,7 +13,6 @@
 =========================================================================*/
 
 #import <Foundation/Foundation.h>
-#import <QuickTime/QuickTime.h>
 
 /** \brief QuickTime export */
 @interface QuicktimeExport : NSObject

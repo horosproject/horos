@@ -1055,7 +1055,6 @@
 		AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0A95056D97800066794C /* ApplicationServices.framework */; };
 		AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		AB28B93605B79D5E00A9906C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
 		AB2C24E20677861300A08910 /* PluginFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AB2C24E00677861300A08910 /* PluginFilter.m */; };
 		AB2C24E30677861300A08910 /* PluginFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = AB2C24E10677861300A08910 /* PluginFilter.h */; };
@@ -1313,7 +1312,6 @@
 		AB724FE90ADE6ECB00A212A0 /* jutils.c in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3C5F09B6828300545F5E /* jutils.c */; };
 		AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		AB724FF00ADE6ECB00A212A0 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		AB72503A0ADE6F5D00A212A0 /* Decompress in Resources */ = {isa = PBXBuildFile; fileRef = AB7250370ADE6F5D00A212A0 /* Decompress */; };
@@ -1640,8 +1638,6 @@
 		ABBB64DC063587B200D9531F /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
 		ABBB64DD063587B200D9531F /* Zoom.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tif */; };
 		ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tif */; };
-		ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
-		ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
 		ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3E5500B330A58006704E3 /* DNDArrayController.m */; };
 		ABC3E5530B330A58006704E3 /* DNDArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3E5510B330A58006704E3 /* DNDArrayController.h */; };
 		ABC3E55A0B330A69006704E3 /* sourcesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3E5580B330A68006704E3 /* sourcesTableView.m */; };
@@ -7527,7 +7523,6 @@
 		CEC7071E10A5C844008935EA /* MutableArrayCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = AB94E72306343D91003E4C48 /* MutableArrayCategory.m */; };
 		CEC7071F10A5C844008935EA /* QuicktimeExport.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0128630635991400A74AA1 /* QuicktimeExport.m */; };
 		CEC7072110A5C844008935EA /* AdvancedQuerySubview.m in Sources */ = {isa = PBXBuildFile; fileRef = ABE33387063D627800C8E087 /* AdvancedQuerySubview.m */; };
-		CEC7072210A5C844008935EA /* VRMakeObject.m in Sources */ = {isa = PBXBuildFile; fileRef = ABBDAEB906407CF90016210A /* VRMakeObject.m */; };
 		CEC7072310A5C844008935EA /* PreviewView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB73E13706497EDA00545980 /* PreviewView.m */; };
 		CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E569398065007D6001A9762 /* SmartWindowController.m */; };
 		CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0186065320A800BAFCF7 /* ImageAndTextCell.m */; };
@@ -7775,7 +7770,6 @@
 		CEC709BF10A5C844008935EA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CEC709C010A5C844008935EA /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0A95056D97800066794C /* ApplicationServices.framework */; };
 		CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
-		CEC709C210A5C844008935EA /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB5E1A300595697700C48BEB /* Accelerate.framework */; };
 		CEC709C510A5C844008935EA /* Message.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E4BB06AEC91F001FF9E5 /* Message.framework */; };
 		CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */; };
@@ -7817,7 +7811,6 @@
 		CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0128620635991400A74AA1 /* QuicktimeExport.h */; };
 		CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */ = {isa = PBXBuildFile; fileRef = ABE33386063D627800C8E087 /* AdvancedQuerySubview.h */; };
 		CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */ = {isa = PBXBuildFile; fileRef = AB695A1D063D8261002BDF78 /* Analyze.h */; };
-		CEC7FC9D10A5C844008935EA /* VRMakeObject.h in Headers */ = {isa = PBXBuildFile; fileRef = ABBDAEBC06407D080016210A /* VRMakeObject.h */; };
 		CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB73E13606497EDA00545980 /* PreviewView.h */; };
 		CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E569397065007D6001A9762 /* SmartWindowController.h */; };
 		CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */ = {isa = PBXBuildFile; fileRef = BF5C0185065320A800BAFCF7 /* ImageAndTextCell.h */; };
@@ -8167,7 +8160,6 @@
 		CEDEF7D80D020E9100CADB15 /* JPEGSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */; };
 		CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B97325FDCFA39411CA2CEA /* Foundation.framework */; };
 		CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		CEDF6DCA0B46FE99008B45B8 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABFF0970056D92460066794C /* QuickTime.framework */; };
 		CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6D320C05B3159D0002F793 /* IOKit.framework */; };
 		CEDF6DCC0B46FE99008B45B8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
 		CEDF6E010B46FED2008B45B8 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
@@ -9345,8 +9337,6 @@
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
 		ABBB64AB063587B200D9531F /* Zoom.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Zoom.tif; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
-		ABBDAEB906407CF90016210A /* VRMakeObject.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = VRMakeObject.m; sourceTree = "<group>"; };
-		ABBDAEBC06407D080016210A /* VRMakeObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRMakeObject.h; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DNDArrayController.m; sourceTree = "<group>"; };
 		ABC3E5510B330A58006704E3 /* DNDArrayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DNDArrayController.h; sourceTree = "<group>"; };
@@ -9415,7 +9405,6 @@
 		ABFA7CD2056056F300963FF8 /* dicomData.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = dicomData.m; sourceTree = "<group>"; };
 		ABFA7CD3056056F300963FF8 /* dicomData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = dicomData.h; sourceTree = "<group>"; };
 		ABFDE81610A8003100E33E0F /* Deployment-Info OsiriXLite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Deployment-Info OsiriXLite.plist"; sourceTree = "<group>"; };
-		ABFF0970056D92460066794C /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		ABFF0A95056D97800066794C /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		B78490F90B4BE86400BA93EF /* MenuDictionary.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MenuDictionary.h; sourceTree = "<group>"; };
 		B78490FA0B4BE86400BA93EF /* MenuDictionary.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = MenuDictionary.m; sourceTree = "<group>"; };
@@ -14211,7 +14200,6 @@
 				AB28B93305B79D5B00A9906C /* Cocoa.framework in Frameworks */,
 				AB28B93405B79D5C00A9906C /* ApplicationServices.framework in Frameworks */,
 				AB28B93505B79D5D00A9906C /* IOKit.framework in Frameworks */,
-				AB28B93605B79D5E00A9906C /* QuickTime.framework in Frameworks */,
 				AB28B93705B79D5E00A9906C /* Accelerate.framework in Frameworks */,
 				CEF0E4BC06AEC91F001FF9E5 /* Message.framework in Frameworks */,
 				CEF0E6DC06AEF5CB001FF9E5 /* Carbon.framework in Frameworks */,
@@ -14369,7 +14357,6 @@
 			files = (
 				AB724FEC0ADE6ECB00A212A0 /* Foundation.framework in Frameworks */,
 				AB724FEF0ADE6ECB00A212A0 /* Cocoa.framework in Frameworks */,
-				AB724FF00ADE6ECB00A212A0 /* QuickTime.framework in Frameworks */,
 				AB724FF10ADE6ECB00A212A0 /* IOKit.framework in Frameworks */,
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
@@ -14409,7 +14396,6 @@
 				CEC709BF10A5C844008935EA /* Cocoa.framework in Frameworks */,
 				CEC709C010A5C844008935EA /* ApplicationServices.framework in Frameworks */,
 				CEC709C110A5C844008935EA /* IOKit.framework in Frameworks */,
-				CEC709C210A5C844008935EA /* QuickTime.framework in Frameworks */,
 				CEC709C310A5C844008935EA /* Accelerate.framework in Frameworks */,
 				CEC709C510A5C844008935EA /* Message.framework in Frameworks */,
 				CEC709C610A5C844008935EA /* Carbon.framework in Frameworks */,
@@ -14444,7 +14430,6 @@
 			files = (
 				CEDF6DC60B46FE99008B45B8 /* Foundation.framework in Frameworks */,
 				CEDF6DC90B46FE99008B45B8 /* Cocoa.framework in Frameworks */,
-				CEDF6DCA0B46FE99008B45B8 /* QuickTime.framework in Frameworks */,
 				CEDF6DCB0B46FE99008B45B8 /* IOKit.framework in Frameworks */,
 				CEDF6DCC0B46FE99008B45B8 /* libz.dylib in Frameworks */,
 				CEDF6E010B46FED2008B45B8 /* libxerces-c.27.dylib in Frameworks */,
@@ -14518,7 +14503,6 @@
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
 				AB6B75DE0A53F60600F0CA8F /* QTKit.framework */,
-				ABFF0970056D92460066794C /* QuickTime.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
 				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,
@@ -15903,8 +15887,6 @@
 				ABDC3C720670FF440042069D /* ToolBarNSWindow.m */,
 				AB866038066E40970015E1C4 /* ToolbarPanel.h */,
 				AB866037066E40970015E1C4 /* ToolbarPanel.m */,
-				ABBDAEBC06407D080016210A /* VRMakeObject.h */,
-				ABBDAEB906407CF90016210A /* VRMakeObject.m */,
 				AB6F34FB0574081F00CDCA47 /* Wait.h */,
 				AB6F34FC0574081F00CDCA47 /* Wait.m */,
 				ABB218B705CF1E9300D8B619 /* WaitRendering.h */,
@@ -21383,7 +21365,6 @@
 				ABE3336B063D624400C8E087 /* QueryFilter.h in Headers */,
 				ABE3338D063D629300C8E087 /* AdvancedQuerySubview.h in Headers */,
 				AB695A1F063D8261002BDF78 /* Analyze.h in Headers */,
-				ABBDAEBE06407D080016210A /* VRMakeObject.h in Headers */,
 				AB73E13A06497EDA00545980 /* PreviewView.h in Headers */,
 				7E569399065007D6001A9762 /* SmartWindowController.h in Headers */,
 				BF5C0187065320A800BAFCF7 /* ImageAndTextCell.h in Headers */,
@@ -25617,7 +25598,6 @@
 				CEC7FC8D10A5C844008935EA /* QuicktimeExport.h in Headers */,
 				CEC7FC9B10A5C844008935EA /* AdvancedQuerySubview.h in Headers */,
 				CEC7FC9C10A5C844008935EA /* Analyze.h in Headers */,
-				CEC7FC9D10A5C844008935EA /* VRMakeObject.h in Headers */,
 				CEC7FC9E10A5C844008935EA /* PreviewView.h in Headers */,
 				CEC7FC9F10A5C844008935EA /* SmartWindowController.h in Headers */,
 				CEC7FCA010A5C844008935EA /* ImageAndTextCell.h in Headers */,
@@ -27690,7 +27670,6 @@
 				AB0128650635991400A74AA1 /* QuicktimeExport.m in Sources */,
 				ABE3336C063D624400C8E087 /* QueryFilter.m in Sources */,
 				ABE3338E063D629400C8E087 /* AdvancedQuerySubview.m in Sources */,
-				ABBDAEBB06407CF90016210A /* VRMakeObject.m in Sources */,
 				AB73E13B06497EDA00545980 /* PreviewView.m in Sources */,
 				7E56939A065007D6001A9762 /* SmartWindowController.m in Sources */,
 				BF5C0188065320A800BAFCF7 /* ImageAndTextCell.m in Sources */,
@@ -29205,7 +29184,6 @@
 				CEC7071E10A5C844008935EA /* MutableArrayCategory.m in Sources */,
 				CEC7071F10A5C844008935EA /* QuicktimeExport.m in Sources */,
 				CEC7072110A5C844008935EA /* AdvancedQuerySubview.m in Sources */,
-				CEC7072210A5C844008935EA /* VRMakeObject.m in Sources */,
 				CEC7072310A5C844008935EA /* PreviewView.m in Sources */,
 				CEC7072410A5C844008935EA /* SmartWindowController.m in Sources */,
 				CEC7072510A5C844008935EA /* ImageAndTextCell.m in Sources */,

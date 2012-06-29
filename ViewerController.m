@@ -29,7 +29,6 @@
 #import "ViewerController.h"
 #import "browserController.h"
 #import "wait.h"
-#import <QuickTime/QuickTime.h>
 #import "XMLController.h"
 #include <Accelerate/Accelerate.h>
 #import "WaitRendering.h"

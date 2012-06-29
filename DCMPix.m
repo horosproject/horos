@@ -15,7 +15,6 @@
 #import <DCMPix.h>
 #import "DicomImage.h"
 #import "Papyrus3/Papyrus3.h"
-#import <QuickTime/QuickTime.h>
 #import <AVFoundation/AVFoundation.h>
 #import <OsiriX/DCM.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>

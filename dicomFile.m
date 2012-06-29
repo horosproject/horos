@@ -22,7 +22,6 @@
 #import "Papyrus3/Papyrus3.h"
 #import "ViewerController.h"
 #import "PluginFileFormatDecoder.h"
-#include <QuickTime/QuickTime.h>
 #import <OsiriX/DCMObject.h>
 #import <OsiriX/DCMCalendarDate.h>
 #import <OsiriX/DCMAbstractSyntaxUID.h>
@@ -40,7 +39,6 @@
 #import "N2Debug.h"
 #include "NSFileManager+N2.h"
 
-#import <QuickTime/QuickTime.h>
 #import <AVFoundation/AVFoundation.h>
 
 #ifndef DECOMPRESS_APP

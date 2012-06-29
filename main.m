@@ -17,18 +17,12 @@
 #import "Papyrus3/Papyrus3.h"
 #import "NSFont_OpenGL.h"
 
-#include "QuickTime/QuickTime.h"
-
 #ifndef OSIRIX_LIGHT
 #include "FVTiff.h"
 #endif
 
 int main(int argc, const char *argv[])
 {
-	#if !__LP64__
-    EnterMovies();
-    #endif
-	
     Papy3Init();
 	
 	#ifndef OSIRIX_LIGHT
