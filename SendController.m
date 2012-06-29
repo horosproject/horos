@@ -50,8 +50,7 @@ static volatile int sendControllerObjects = 0;
 	[[NSUserDefaults standardUserDefaults] setInteger: syntax forKey:@"syntaxListOffis"];
 	
 	SendController *sendController = [[SendController alloc] initWithFiles: files];
-	
-	[sendController sendToNode: node objects: nil];
+	[sendController sendToNode: node];
 	
 	[[NSUserDefaults standardUserDefaults] setBool: s forKey: @"sendROIs"];
 }
@@ -269,25 +268,123 @@ static volatile int sendControllerObjects = 0;
 		[self autorelease];
 }
 
+- (void) addArray: (NSMutableArray*) a toArraysOfFiles: (NSMutableArray*) arraysOfFiles andArrayOfPatientNames: (NSMutableArray*) arrayOfPatientNames
+{
+    if( a.count == 0)
+        return;
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"] == NO)
+    {
+        @try
+        {
+            NSPredicate *predicate = nil;
+            
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
+            [a filterUsingPredicate:predicate];
+            
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Report SR", @"5003"];
+            [a filterUsingPredicate:predicate];
+            
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
+            [a filterUsingPredicate:predicate];
+            
+            predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
+            [a filterUsingPredicate:predicate];
+        }
+        
+        @catch( NSException *e)
+        {
+            NSLog( @"***** executeSend exception: %@", e);
+        }
+    }
+    
+    [arrayOfPatientNames addObject: [[a lastObject] valueForKeyPath: @"series.study.name"]];
+    [arraysOfFiles addObject: [a valueForKey: @"completePathResolved"]];
+}
+
+- (void) sendToNode: (NSDictionary*) node
+{
+    [self sendToNode: node objects: nil];
+}
+
 - (void) sendToNode: (NSDictionary*) node objects:(NSArray*) objects
 {
 	if( objects == nil)
 		objects = _files;
 	
+    NSMutableArray *objectsToSend = [NSMutableArray arrayWithArray: objects];
+    
 	[_lock lock];
 	[NSThread detachNewThreadSelector: @selector(releaseSelfWhenDone:) toTarget: self withObject: nil];
 	
 	[_destinationServer release];
 	_destinationServer = [node retain];
 	
-	sendROIs = [[NSUserDefaults standardUserDefaults] boolForKey:@"sendROIs"];
+    NSMutableArray *arraysOfFiles = [NSMutableArray array];
+    NSMutableArray *arrayOfPatientNames = [NSMutableArray array];
+    DicomDatabase *database = nil;
+    
+    [[DicomStudy dbModifyLock] lock];
 	
-	NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: _files] autorelease];
-	t.name = NSLocalizedString( @"Sending...", nil);
-	t.supportsCancel = YES;
-	t.progress = 0;
-	t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [_files count]];
-	[[ThreadsManager defaultManager] addThreadAndStart: t];
+	@try
+	{
+        [objectsToSend sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor  sortDescriptorWithKey:@"series.study.patientUID" ascending:YES]]];
+        
+		// Remove duplicated files 
+		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
+		[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
+		
+        if( objectsToSend.count)
+        {
+            if( database == nil)
+                database = [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]];
+            else if( database != [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]])
+                NSLog( @"*********** database != [DicomDatabase databaseForContext:[[a lastObject] managedObjectContext]");
+            
+            NSString *previousPatientUID = nil;
+            NSMutableArray *samePatientArray = [NSMutableArray array];
+            
+            for( DicomImage *image in objectsToSend)
+            {
+                NSString *patientUID = [image valueForKeyPath:@"series.study.patientUID"];
+                BOOL newPatient = NO;
+                
+                if( [previousPatientUID isEqualToString: patientUID])
+                    [samePatientArray addObject: image];
+                
+                else
+                {
+                    [self addArray: samePatientArray toArraysOfFiles: arraysOfFiles andArrayOfPatientNames: arrayOfPatientNames];
+                    
+                    // Reset
+                    samePatientArray = [NSMutableArray array];
+                    [samePatientArray addObject: image];
+                    
+                    previousPatientUID = [[patientUID copy] autorelease];
+                }
+            }
+            
+            [self addArray: samePatientArray toArraysOfFiles: arraysOfFiles andArrayOfPatientNames: arrayOfPatientNames];
+        }
+	}
+	@catch (NSException *e)
+	{
+		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
+	}
+    
+    [[DicomStudy dbModifyLock] unlock];
+    
+    if( arraysOfFiles.count)
+    {
+        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: arraysOfFiles, @"arraysOfFiles", arrayOfPatientNames, @"arrayOfPatientNames", database, @"database", nil];
+        
+        NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: dict] autorelease];
+        t.name = NSLocalizedString( @"Sending...", nil);
+        t.supportsCancel = YES;
+        t.progress = 0;
+        t.status = [NSString stringWithFormat: NSLocalizedString( @"%d file(s)", nil), [_files count]];
+        [[ThreadsManager defaultManager] addThreadAndStart: t];
+    }
 }
 
 #pragma mark Sending functions	
@@ -299,42 +396,13 @@ static volatile int sendControllerObjects = 0;
 	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
 }
 
-- (void) executeSend :(NSArray*) samePatientArray
+- (void) executeSend:(NSArray*) files patientName: (NSString*) patientName context: (DicomDatabase*) database
 {
 	if( [NSThread currentThread].isCancelled)
 		return;
 	
-    DicomDatabase* database = [DicomDatabase databaseForContext:[[samePatientArray objectAtIndex:0] managedObjectContext]];
+	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), patientName];
     
-	[NSThread currentThread].name = [NSString stringWithFormat: @"%@ %@", NSLocalizedString( @"Sending...", nil), [[samePatientArray lastObject] valueForKeyPath: @"series.study.name"]];
-		
-	if( sendROIs == NO)
-	{
-		@try
-		{
-			NSPredicate *predicate = nil;
-			
-			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX ROI SR", @"5002"];
-			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
-			
-			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Report SR", @"5003"];
-			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
-			
-			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX Annotations SR", @"5004"];
-			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
-			
-			predicate = [NSPredicate predicateWithFormat:@"!(series.name CONTAINS[c] %@) AND !(series.id == %@)", @"OsiriX No Autodeletion", @"5005"];
-			samePatientArray = [samePatientArray filteredArrayUsingPredicate:predicate];
-		}
-		
-		@catch( NSException *e)
-		{
-			NSLog( @"***** executeSend exception: %@", e);
-		}
-	}
-	
-	NSArray	*files = [samePatientArray valueForKey: @"completePathResolved"];
-	
 	// Send the collected files from the same patient
 	
 	NSString *calledAET = [[self server] objectForKey:@"AETitle"];
@@ -367,67 +435,22 @@ static volatile int sendControllerObjects = 0;
 	storeSCU = nil;
 }
 
-- (void) sendDICOMFilesOffis:(NSArray *) tempObjectsToSend 
+- (void) sendDICOMFilesOffis:(NSDictionary *) dict 
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSMutableArray *samePatientArray = 0L;
-    NSMutableArray *objectsToSend = 0L;
-    NSString *calledAET = [[self server] objectForKey:@"AETitle"];
+    
+    NSArray *arraysOfFiles = [dict objectForKey: @"arraysOfFiles"];
+    NSArray *arrayOfPatientNames = [dict objectForKey: @"arrayOfPatientNames"];
+    DicomDatabase *database = [dict objectForKey: @"database"];
     
 	[[DicomStudy dbModifyLock] lock];
 	
 	@try
 	{
-		NSSortDescriptor	*sort = [[[NSSortDescriptor alloc] initWithKey:@"series.study.patientUID" ascending:YES] autorelease];
-		NSArray				*sortDescriptors = [NSArray arrayWithObject: sort];
-		
-		tempObjectsToSend = [tempObjectsToSend sortedArrayUsingDescriptors: sortDescriptors];
-        
-		if( calledAET == nil)
-			calledAET = @"AETITLE";
-		
-		// Remove duplicated files 
-		objectsToSend = [NSMutableArray arrayWithArray: tempObjectsToSend];
-        
-		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
-		
-		[paths removeDuplicatedStringsInSyncWithThisArray: objectsToSend];
-		
-		NSLog(@"Server destination: %@", [[self server] description]);	
-				
-		NSString *previousPatientUID = nil;
-        
-        samePatientArray = [NSMutableArray arrayWithCapacity: [objectsToSend count]];
-		
-		for( id loopItem in objectsToSend)
-		{
-			[[[BrowserController currentBrowser] managedObjectContext] lock];
-			NSString *patientUID = [loopItem valueForKeyPath:@"series.study.patientUID"];
-			[[[BrowserController currentBrowser] managedObjectContext] unlock];
-			
-			if( [previousPatientUID isEqualToString: patientUID])
-			{
-				[samePatientArray addObject: loopItem];
-			}
-			else
-			{
-				if( [samePatientArray count])
-				{
-					[[DicomStudy dbModifyLock] unlock];
-					
-					[self executeSend: samePatientArray];
-					
-					[[DicomStudy dbModifyLock] lock];
-				}
-				// Reset
-				[samePatientArray removeAllObjects];
-				[samePatientArray addObject: loopItem];
-				
-				previousPatientUID = [[patientUID copy] autorelease];
-			}
-		}
-		
-		
+        for( int i = 0;i < arraysOfFiles.count;i++)
+        {
+            [self executeSend: [arraysOfFiles objectAtIndex: i] patientName: [arrayOfPatientNames objectAtIndex: i] context: database];
+        }
 	}
 	@catch (NSException *e)
 	{
@@ -436,19 +459,10 @@ static volatile int sendControllerObjects = 0;
     
     [[DicomStudy dbModifyLock] unlock];
     
-    if( [samePatientArray count])
-        [self executeSend: samePatientArray];
-    
-    NSMutableDictionary *info = [NSMutableDictionary dictionary];
-    [info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"SendTotal"];
-    [info setObject:[NSNumber numberWithInt:[objectsToSend count]] forKey:@"NumberSent"];
-    [info setObject:[NSNumber numberWithBool:YES] forKey:@"Sent"];
-    [info setObject:calledAET forKey:@"CalledAET"];
-	
-	[pool release];
-	
 	//need to unlock to allow release of self after send complete
-	[_lock performSelectorOnMainThread:@selector(unlock) withObject:nil waitUntilDone: NO];
+	[_lock performSelectorOnMainThread:@selector( unlock) withObject:nil waitUntilDone: NO];
+    
+    [pool release];
 }
 
 #pragma mark serversArray functions
