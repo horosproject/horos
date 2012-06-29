@@ -305,41 +305,6 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return [NSArray arrayWithArray:array];
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-
-+ (NSString*)unbreakableStringWithString:(NSString*)aString;
-{
-	NSMutableString* newString = [NSMutableString stringWithString:aString];
-	[newString replaceOccurrencesOfString:@" " withString:@"&nbsp;"];
-	return [NSString stringWithString:newString];
-}
-*/
-
-
 - (void) movieWithFile:(NSMutableDictionary*) dict
 {
 	QTMovie *e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];

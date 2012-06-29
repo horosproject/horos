@@ -666,47 +666,7 @@ int main(int argc, const char *argv[])
 		{
 			if( ![path hasSuffix:@".swf"])
 			{
-				NSString *root = [NSString stringWithUTF8String: argv[fileListFirstItemIndex++]];
-				
-				long rateValue = 10;
-				
-				if( fileListFirstItemIndex <= argc)
-				{
-					rateValue = [[NSString stringWithUTF8String:argv[ fileListFirstItemIndex]] integerValue];
-					
-					if( rateValue <= 0)
-						rateValue = 10;
-					
-					fileListFirstItemIndex++;
-				}
-				
-				QTMovie *mMovie = nil;
-				
-				[[QTMovie movie] writeToFile: [path stringByAppendingString:@"temp"] withAttributes: nil];
-				mMovie = [QTMovie movieWithFile:[path stringByAppendingString:@"temp"] error:nil];
-				
-				[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-				
-				long timeScale = 600; // The default time scale for a new track is 600
-				long long timeValue = timeScale / rateValue;
-				QTTime curTime = QTMakeTime(timeValue, timeScale);
-				
-				NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: @"jpeg", QTAddImageCodecType, [NSNumber numberWithInt: codecNormalQuality], QTAddImageCodecQuality, nil];
-				
-				for( NSString *img in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
-				{
-					NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-					
-					[mMovie addImage: [[[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: img]] autorelease] forDuration:curTime withAttributes: myDict];
-					
-					[pool release];
-				}
-				
-				[mMovie writeToFile: path withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
-				[[NSFileManager defaultManager] removeItemAtPath:[path stringByAppendingString:@"temp"] error: nil];
-				
-				if( root)
-					[[NSFileManager defaultManager] removeItemAtPath: root error: nil];
+                NSLog( @"******** writeMovie Decompress - not available");
 			}
 			else
 			{ // SWF!!
@@ -717,57 +677,7 @@ int main(int argc, const char *argv[])
                 [[NSFileManager defaultManager] removeItemAtPath: inputDir error: nil];
 			}
 		}
-		
-# pragma mark writeMovieiPhone
-		if( [what isEqualToString: @"writeMovieiPhone"])
-		{
-			NSError *error = nil;
-			
-			NSString *inFile = [NSString stringWithUTF8String: argv[fileListFirstItemIndex++]];
-			NSString *outFile = path;
-			
-			QTMovie *aMovie = [QTMovie movieWithFile: inFile error:&error];
-			
-			if (aMovie && error == nil)
-			{
-				if (NO == [aMovie attributeForKey:QTMovieHasApertureModeDimensionsAttribute])
-				{
-					[aMovie generateApertureModeDimensions];
-				}
 				
-				[aMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
-				
-				long exportType = 'M4VP';
-				if (fileListFirstItemIndex <= argc)
-				{
-					if (!strcmp(argv[fileListFirstItemIndex], "iPad"))
-						exportType = 'M4VH';
-					if (!strcmp(argv[fileListFirstItemIndex], "iPod"))
-						exportType = 'M4V ';
-					
-					fileListFirstItemIndex++;
-				}
-				
-				NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-												   [NSNumber numberWithBool: YES], QTMovieExport,
-												   [NSNumber numberWithBool: YES] ,QTMovieFlatten,
-												   [NSNumber numberWithLong: exportType], QTMovieExportType, nil]; // 'M4VP'
-				
-				BOOL status = [aMovie writeToFile:outFile withAttributes:dictionary];
-				
-				if (NO == status)
-				{
-					// something didn't go right during the export process
-					NSLog(@"%@ encountered a problem when writeMovieiPhone.\n", [outFile lastPathComponent]);
-				}
-			}
-			else
-				NSLog(@"writeMovieiPhone Error : %@", error);
-			
-			if( inFile)
-				[[NSFileManager defaultManager] removeItemAtPath: inFile error: nil];
-		}
-		
 # pragma mark pdfFromURL
 		if( [what isEqualToString: @"pdfFromURL"])
 		{

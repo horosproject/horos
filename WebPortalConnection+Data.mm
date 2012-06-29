@@ -46,6 +46,8 @@
 #import "NSImage+OsiriX.h"
 #import "N2Debug.h"
 #import "MutableArrayCategory.h"
+#import <CoreMedia/CoreMedia.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -427,6 +429,45 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 }
 
+- (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image
+{
+    CVPixelBufferRef buffer = NULL;
+    
+    // config
+    size_t width = [image size].width;
+    size_t height = [image size].height;
+    size_t bitsPerComponent = 8;
+    CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+    CGBitmapInfo bi = kCGImageAlphaNoneSkipFirst;
+    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
+    
+    // create pixel buffer
+    CVPixelBufferCreate(kCFAllocatorDefault, width, height, k32ARGBPixelFormat, (CFDictionaryRef)d, &buffer);
+    CVPixelBufferLockBaseAddress(buffer, 0);
+    void *rasterData = CVPixelBufferGetBaseAddress(buffer);
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
+    
+    // context to draw in, set to pixel buffer's address
+    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, bi);
+    if(ctxt == NULL)
+    {
+        NSLog(@"could not create context");
+        return NULL;
+    }
+    
+    // draw
+    NSGraphicsContext *nsctxt = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:nsctxt];
+    [image compositeToPoint:NSMakePoint(0.0, 0.0) operation:NSCompositeCopy];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    CVPixelBufferUnlockBaseAddress(buffer, 0);
+    CFRelease(ctxt);
+    
+    return buffer;
+}
+
 const NSString* const GenerateMovieOutFileParamKey = @"outFile";
 const NSString* const GenerateMovieFileNameParamKey = @"fileName";
 const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
@@ -542,60 +583,107 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                 fps = [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultFrameRate"];
             if (fps <= 0)
                 fps = 10;
-						
-			NSTask *theTask = [[[NSTask alloc] init] autorelease];
-			
+            
 			NSLog( @"generateMovie: start writeMovie process");
-			
-			if (self.requestIsIOS)
-			{
-				@try
-				{
-					[theTask setArguments: [NSArray arrayWithObjects: fileName, @"writeMovie", [fileName stringByAppendingString: @" dir"], [[NSNumber numberWithInteger:fps] stringValue], nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovie exception : %@", e);
-				}
-				
-				theTask = [[[NSTask alloc] init] autorelease];
-				
-				@try
-				{
-					NSString* type = @"iPhone";
-					if (self.requestIsIPad) type = @"iPad";
-					if (self.requestIsIPod) type = @"iPod";
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovieiPhone", fileName, type, nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovieiPhone exception : %@", e);
-				}
-			}
-			else
-			{
-				@try
-				{
-					[theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSNumber numberWithInteger:fps] stringValue], nil]];
-					[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
-					[theTask launch];
-					
-					while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
-				}
-				@catch (NSException *e)
-				{
-					NSLog( @"***** writeMovie exception : %@", e);
-				}
-			}
-			
+            
+            if( [outFile hasSuffix:@".swf"]) // FLASH
+            {
+                @try
+                {
+                    NSTask *theTask = [[[NSTask alloc] init] autorelease];
+                    
+                    [theTask setArguments: [NSArray arrayWithObjects: outFile, @"writeMovie", [outFile stringByAppendingString: @" dir"], [[NSNumber numberWithInteger:fps] stringValue], nil]];
+                    [theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
+                    [theTask launch];
+                    
+                    while( [theTask isRunning]) [NSThread sleepForTimeInterval: 0.01];
+                }
+                @catch (NSException *e)
+                {
+                    NSLog( @"***** writeMovie exception : %@", e);
+                }
+            }
+            else
+            {
+                @try
+                {
+                    NSString *root = [fileName stringByAppendingString: @" dir"];
+                    
+                    CMTimeValue timeValue = 600 / fps;
+                    CMTime frameDuration = CMTimeMake( timeValue, 600);
+                    
+                    NSError *error = nil;
+                    AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: outFile] fileType: AVFileTypeQuickTimeMovie error:&error];
+                    
+                    if (!error)
+                    {
+                        NSDictionary *videoSettings = nil;
+                        
+                        if (self.requestIsIOS)
+                        {
+                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                AVVideoCodecH264, AVVideoCodecKey, 
+                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
+                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
+                        }
+                        else
+                        {
+                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                AVVideoCodecJPEG, AVVideoCodecKey, 
+                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
+                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
+                        }
+                            
+                        // Instanciate the AVAssetWriterInput
+                        AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+                        // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
+                        AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
+                        // Add the writer input to the writer and begin writing
+                        [writer addInput:writerInput];
+                        [writer startWriting];
+                        
+                        BOOL aborted = NO;
+                        CMTime nextPresentationTimeStamp;
+                        
+                        nextPresentationTimeStamp = kCMTimeZero;
+                        
+                        [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+                        
+                        for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
+                        {
+                            NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                            
+                            CVPixelBufferRef buffer = nil;
+                            
+                            NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
+                            if( im)
+                               buffer = [self CVPixelBufferFromNSImage: im];
+                            
+                            [pool release];
+                            
+                            if( buffer)
+                            {
+                                CVPixelBufferLockBaseAddress(buffer, 0);
+                                [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                                CVPixelBufferUnlockBaseAddress(buffer, 0);
+                                CVPixelBufferRelease(buffer);
+                                buffer = nil;
+                                
+                                nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                                
+                                CVPixelBufferRelease(buffer);
+                            }
+                        }
+                        [writerInput markAsFinished];
+                        [writer finishWriting];
+                    }
+                    [[NSFileManager defaultManager] removeItemAtPath: root error: nil];
+                }
+                @catch (NSException *e)
+                {
+                    NSLog( @"***** writeMovie exception : %@", e);
+                }
+            }
 			NSLog( @"generateMovie: end");
 		}
 	}
@@ -606,8 +694,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	
 	[[self.portal.locks objectForKey:outFile] unlock];
 	
-	@synchronized(self.portal.locks) {
-		if ([[self.portal.locks objectForKey:outFile] tryLock]) {
+	@synchronized(self.portal.locks)
+    {
+		if ([[self.portal.locks objectForKey:outFile] tryLock])
+        {
 			[[self.portal.locks objectForKey: outFile] unlock];
 			[self.portal.locks removeObjectForKey: outFile];
 		}
