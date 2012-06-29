@@ -12,6 +12,8 @@
  PURPOSE.
  =========================================================================*/
 
+#import <CoreMedia/CoreMedia.h>
+#import <AVFoundation/AVFoundation.h>
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
@@ -99,6 +101,7 @@
 #import "NSNotificationCenter+N2.h"
 #import "NSFullScreenWindow.h"
 #import "CustomIntervalPanel.h"
+#import "QuicktimeExport.h"
 
 #ifndef OSIRIX_LIGHT
 #import "Anonymization.h"
@@ -12719,56 +12722,69 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 	@try
 	{
-		
-//		NSString* tempFileName = [fileName stringByAppendingString:@"temp"];
-//		QTMovie *mMovie = nil;
-//		
-//		if (![NSThread isMainThread])
-//		{
-//			NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-//			[self performSelectorOnMainThread: @selector(createEmptyMovie:) withObject: dict waitUntilDone: YES];
-//			QTMovie *empty = [dict objectForKey:@"movie"];
-//			
-//			[empty attachToCurrentThread];
-//			[empty writeToFile:tempFileName withAttributes:NULL];
-//			[empty detachFromCurrentThread];
-//			
-//			dict = [NSMutableDictionary dictionaryWithObject:tempFileName forKey:@"file"];
-//			[self performSelectorOnMainThread:@selector(movieWithFile:) withObject:dict waitUntilDone:YES];
-//			mMovie = [dict objectForKey:@"movie"];
-//			[mMovie attachToCurrentThread];
-//		}
-//		else
-//		{
-//			// Life is so much simplier in a single thread application...
-//			[[QTMovie movie] writeToFile:tempFileName withAttributes:NULL];
-//			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
-//		}
-//		
-//		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-//		
-//		if (fps <= 0)
-//            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
-//		if (fps <= 0)
-//			fps = 10;
-//		
-//		long timeScale = 600;
-//		long long timeValue = timeScale / fps;
-//		QTTime curTime = QTMakeTime(timeValue, timeScale);
-//		
-//		NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
-//		
-//		for ( id img in imagesArray)
-//		{
-//			NSAutoreleasePool *a = [[NSAutoreleasePool alloc] init];
-//			
-//			[mMovie addImage: img forDuration:curTime withAttributes: myDict];
-//			
-//			[a release];
-//		}
-//		
-//		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
-//		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
+        if (fps <= 0)
+            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
+        if (fps <= 0)
+            fps = 10;
+        
+        CMTimeValue timeValue = 600 / fps;
+        CMTime frameDuration = CMTimeMake( timeValue, 600);
+        
+        NSError *error = nil;
+        AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
+        
+        if (!error)
+        {
+            NSImage *im = [imagesArray lastObject];
+            
+            NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 AVVideoCodecJPEG, AVVideoCodecKey, 
+                                 [NSNumber numberWithInt: im.size.width], AVVideoWidthKey, 
+                                 [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+            
+            // Instanciate the AVAssetWriterInput
+            AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+            // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
+            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
+            // Add the writer input to the writer and begin writing
+            [writer addInput:writerInput];
+            [writer startWriting];
+            
+            BOOL aborted = NO;
+            CMTime nextPresentationTimeStamp;
+            
+            nextPresentationTimeStamp = kCMTimeZero;
+            
+            [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+            
+            for( NSImage *im in imagesArray)
+            {
+                NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                
+                CVPixelBufferRef buffer = nil;
+                
+                buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                
+                [pool release];
+                
+                if( buffer)
+                {
+                    CVPixelBufferLockBaseAddress(buffer, 0);
+                    while( ![writerInput isReadyForMoreMediaData])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                    CVPixelBufferUnlockBaseAddress(buffer, 0);
+                    CVPixelBufferRelease(buffer);
+                    buffer = nil;
+                    
+                    nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                    
+                    CVPixelBufferRelease(buffer);
+                }
+            }
+            [writerInput markAsFinished];
+            [writer finishWriting];
+        }
 	}
 	@catch( NSException *e)
 	{

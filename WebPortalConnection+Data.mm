@@ -48,6 +48,7 @@
 #import "MutableArrayCategory.h"
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
+#import "QuicktimeExport.h"
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -429,44 +430,6 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 	}
 }
 
-- (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image
-{
-    CVPixelBufferRef buffer = NULL;
-    
-    // config
-    size_t width = [image size].width;
-    size_t height = [image size].height;
-    size_t bitsPerComponent = 8;
-    CGColorSpaceRef cs = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
-    CGBitmapInfo bi = kCGImageAlphaNoneSkipFirst;
-    NSDictionary *d = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey, [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey, nil];
-    
-    // create pixel buffer
-    CVPixelBufferCreate(kCFAllocatorDefault, width, height, k32ARGBPixelFormat, (CFDictionaryRef)d, &buffer);
-    CVPixelBufferLockBaseAddress(buffer, 0);
-    void *rasterData = CVPixelBufferGetBaseAddress(buffer);
-    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
-    
-    // context to draw in, set to pixel buffer's address
-    CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, bi);
-    if(ctxt == NULL)
-    {
-        NSLog(@"could not create context");
-        return NULL;
-    }
-    
-    // draw
-    NSGraphicsContext *nsctxt = [NSGraphicsContext graphicsContextWithGraphicsPort:ctxt flipped:NO];
-    [NSGraphicsContext saveGraphicsState];
-    [NSGraphicsContext setCurrentContext:nsctxt];
-    [image compositeToPoint:NSMakePoint(0.0, 0.0) operation:NSCompositeCopy];
-    [NSGraphicsContext restoreGraphicsState];
-    
-    CVPixelBufferUnlockBaseAddress(buffer, 0);
-    CFRelease(ctxt);
-    
-    return buffer;
-}
 
 const NSString* const GenerateMovieOutFileParamKey = @"outFile";
 const NSString* const GenerateMovieFileNameParamKey = @"fileName";
@@ -657,13 +620,15 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             
                             NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
                             if( im)
-                               buffer = [self CVPixelBufferFromNSImage: im];
+                               buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
                             
                             [pool release];
                             
                             if( buffer)
                             {
                                 CVPixelBufferLockBaseAddress(buffer, 0);
+                                while( ![writerInput isReadyForMoreMediaData])
+                                    [NSThread sleepForTimeInterval: 0.1];
                                 [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
                                 CVPixelBufferUnlockBaseAddress(buffer, 0);
                                 CVPixelBufferRelease(buffer);

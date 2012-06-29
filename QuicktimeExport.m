@@ -63,7 +63,7 @@
     return [self createMovieQTKit:openIt :produceFiles :name :0];
 }
 
-- (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image
++ (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image
 {
     CVPixelBufferRef buffer = NULL;
     
@@ -197,7 +197,7 @@
                     NSDisableScreenUpdates();
                     NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
                     
-                    buffer = [self CVPixelBufferFromNSImage: im];
+                    buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
                     NSEnableScreenUpdates();
                 }
                 
@@ -206,6 +206,8 @@
                 if( buffer)
                 {
                     CVPixelBufferLockBaseAddress(buffer, 0);
+                    while( ![writerInput isReadyForMoreMediaData])
+                        [NSThread sleepForTimeInterval: 0.1];
                     [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
                     CVPixelBufferUnlockBaseAddress(buffer, 0);
                     CVPixelBufferRelease(buffer);

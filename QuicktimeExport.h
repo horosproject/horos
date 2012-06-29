@@ -13,6 +13,8 @@
 =========================================================================*/
 
 #import <Foundation/Foundation.h>
+#import <CoreMedia/CoreMedia.h>
+#import <AVFoundation/AVFoundation.h>
 
 /** \brief QuickTime export */
 @interface QuicktimeExport : NSObject
@@ -30,6 +32,7 @@
 	IBOutlet NSPopUpButton	*type;
 }
 
++ (CVPixelBufferRef) CVPixelBufferFromNSImage:(NSImage *)image;
 - (id) initWithSelector:(id) o :(SEL) s :(long) f;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name;
 - (NSString*) createMovieQTKit:(BOOL) openIt :(BOOL) produceFiles :(NSString*) name :(NSInteger)framesPerSecond;
