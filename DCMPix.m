@@ -52,8 +52,6 @@
 #include <Accelerate/Accelerate.h>
 #include "AppController.h"
 #include "NSFileManager+N2.h"
-
-#import <QTKit/QTKit.h>
 #import "Point3D.h"
 
 #import "math.h"
@@ -9204,61 +9202,6 @@ END_CREATE_ROIS:
         [pool release];
     }
 }
-
-//- (void) getFrameFromMovie:(NSString*) extension
-//{
-//	
-//	if( [extension isEqualToString:@"mov"] == YES ||
-//	   [extension isEqualToString:@"mpg"] == YES ||
-//	   [extension isEqualToString:@"mpeg"] == YES ||
-//	   [extension isEqualToString:@"avi"] == YES)
-//	{
-//		if( quicktimeThreadLock == nil) quicktimeThreadLock = [[NSLock alloc] init];
-//		
-//		[quicktimeThreadLock lock];
-//		[QTMovie enterQTKitOnThreadDisablingThreadSafetyProtection];
-//		
-//		@try 
-//		{
-//			NSError	*error = nil;
-//		
-//			QTMovie *movie = [[QTMovie alloc] initWithFile:srcFile error: &error];
-//			
-//			if( movie)
-//			{
-//				[movie attachToCurrentThread];
-//				
-//				int curFrame = 0;
-//				[movie gotoBeginning];
-//				
-//				QTTime previousTime = [movie currentTime];
-//				
-//				curFrame = 0;
-//				
-//				while( curFrame != frameNo)
-//				{
-//					previousTime = [movie currentTime];
-//					curFrame++;
-//					[movie stepForward];
-//					
-//					if( QTTimeCompare( previousTime, [movie currentTime]) != NSOrderedAscending) curFrame = frameNo;
-//				}
-//				
-//				[self getDataFromNSImage: [movie currentFrameImage]];
-//				
-//				[movie release];
-//			}
-//			else NSLog( @"movie == nil, %@", [error description]);
-//		}
-//		@catch (NSException * e) 
-//		{
-//            N2LogExceptionWithStackTrace(e);
-//		}
-//		
-//		[QTMovie exitQTKitOnThread];
-//		[quicktimeThreadLock unlock];
-//	}
-//}
 
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"					
 - (void) CheckLoadIn

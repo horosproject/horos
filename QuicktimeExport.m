@@ -12,7 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-#import <QTKit/QTKit.h>
 #import "QuicktimeExport.h"
 #import "Wait.h"
 #import "WaitRendering.h"

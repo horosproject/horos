@@ -29,7 +29,6 @@
 #import "DCMObjectDBImport.h"
 #import "DICOMToNSString.h"
 #import "DefaultsOsiriX.h"
-#import <QTKit/QTKit.h>
 #ifndef OSIRIX_LIGHT
 #include "tiffio.h"
 #endif

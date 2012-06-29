@@ -62,7 +62,6 @@
 #import "Reports.h"
 #import "LogManager.h"
 #import "DCMTKStoreSCU.h"
-#import <QTKit/QTKit.h>
 #import "BonjourPublisher.h"
 #import "BonjourBrowser.h"
 #import "WindowLayoutManager.h"
@@ -12714,106 +12713,69 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 }
 
-+ (void) createEmptyMovie:(NSMutableDictionary*)dict
-{
-	QTMovie* e = [QTMovie movie];
-	[dict setObject:e forKey:@"movie"];
-	
-	[e detachFromCurrentThread];
-}
-
-- (void) createEmptyMovie:(NSMutableDictionary*)dict
-{
-	return [BrowserController createEmptyMovie:dict];
-}
-
-
-+ (void) movieWithFile:(NSMutableDictionary*)dict
-{
-	QTMovie* e = [QTMovie movieWithFile:[dict objectForKey:@"file"] error:nil];
-	[dict setObject:e forKey:@"movie"];
-	
-	[e detachFromCurrentThread];
-}
-
-- (void) movieWithFile:(NSMutableDictionary*)dict
-{
-	return [BrowserController movieWithFile:dict];
-}
-
 + (void)writeMovieToPath:(NSString*)fileName images:(NSArray*)imagesArray framesPerSecond:(NSInteger)fps
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	if (![NSThread isMainThread])
-		 [QTMovie enterQTKitOnThread];
 
 	@try
 	{
 		
-		NSString* tempFileName = [fileName stringByAppendingString:@"temp"];
-		QTMovie *mMovie = nil;
-		
-		if (![NSThread isMainThread])
-		{
-			NSMutableDictionary* dict = [NSMutableDictionary dictionary];
-			[self performSelectorOnMainThread: @selector(createEmptyMovie:) withObject: dict waitUntilDone: YES];
-			QTMovie *empty = [dict objectForKey:@"movie"];
-			
-			[empty attachToCurrentThread];
-			[empty writeToFile:tempFileName withAttributes:NULL];
-			[empty detachFromCurrentThread];
-			
-			dict = [NSMutableDictionary dictionaryWithObject:tempFileName forKey:@"file"];
-			[self performSelectorOnMainThread:@selector(movieWithFile:) withObject:dict waitUntilDone:YES];
-			mMovie = [dict objectForKey:@"movie"];
-			[mMovie attachToCurrentThread];
-		}
-		else
-		{
-			// Life is so much simplier in a single thread application...
-			[[QTMovie movie] writeToFile:tempFileName withAttributes:NULL];
-			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
-		}
-		
-		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
-		
-		if (fps <= 0)
-            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
-		if (fps <= 0)
-			fps = 10;
-		
-		long timeScale = 600;
-		long long timeValue = timeScale / fps;
-		QTTime curTime = QTMakeTime(timeValue, timeScale);
-		
-		NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
-		
-		for ( id img in imagesArray)
-		{
-			NSAutoreleasePool *a = [[NSAutoreleasePool alloc] init];
-			
-			[mMovie addImage: img forDuration:curTime withAttributes: myDict];
-			
-			[a release];
-		}
-		
-		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
-		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
-
-		if(![[NSThread currentThread] isMainThread])
-		{
-			[mMovie detachFromCurrentThread];
-		}
+//		NSString* tempFileName = [fileName stringByAppendingString:@"temp"];
+//		QTMovie *mMovie = nil;
+//		
+//		if (![NSThread isMainThread])
+//		{
+//			NSMutableDictionary* dict = [NSMutableDictionary dictionary];
+//			[self performSelectorOnMainThread: @selector(createEmptyMovie:) withObject: dict waitUntilDone: YES];
+//			QTMovie *empty = [dict objectForKey:@"movie"];
+//			
+//			[empty attachToCurrentThread];
+//			[empty writeToFile:tempFileName withAttributes:NULL];
+//			[empty detachFromCurrentThread];
+//			
+//			dict = [NSMutableDictionary dictionaryWithObject:tempFileName forKey:@"file"];
+//			[self performSelectorOnMainThread:@selector(movieWithFile:) withObject:dict waitUntilDone:YES];
+//			mMovie = [dict objectForKey:@"movie"];
+//			[mMovie attachToCurrentThread];
+//		}
+//		else
+//		{
+//			// Life is so much simplier in a single thread application...
+//			[[QTMovie movie] writeToFile:tempFileName withAttributes:NULL];
+//			mMovie = [QTMovie movieWithFile:[fileName stringByAppendingString:@"temp"] error:nil];
+//		}
+//		
+//		[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieEditableAttribute];
+//		
+//		if (fps <= 0)
+//            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
+//		if (fps <= 0)
+//			fps = 10;
+//		
+//		long timeScale = 600;
+//		long long timeValue = timeScale / fps;
+//		QTTime curTime = QTMakeTime(timeValue, timeScale);
+//		
+//		NSMutableDictionary *myDict = [NSMutableDictionary dictionaryWithObject: @"jpeg" forKey: QTAddImageCodecType];
+//		
+//		for ( id img in imagesArray)
+//		{
+//			NSAutoreleasePool *a = [[NSAutoreleasePool alloc] init];
+//			
+//			[mMovie addImage: img forDuration:curTime withAttributes: myDict];
+//			
+//			[a release];
+//		}
+//		
+//		[mMovie writeToFile: fileName withAttributes: [NSDictionary dictionaryWithObject: [NSNumber numberWithBool: YES] forKey: QTMovieFlatten]];
+//		[[NSFileManager defaultManager] removeFileAtPath:[fileName stringByAppendingString:@"temp"] handler: nil];
 	}
 	@catch( NSException *e)
 	{
         N2LogExceptionWithStackTrace(e);
 	}
-	
 	@finally
 	{
-		if (![NSThread isMainThread])
-			[QTMovie exitQTKitOnThread];
 		[pool release];
 	}
 }

@@ -1155,7 +1155,6 @@
 		AB6AC6470624AC5200AFC7AF /* VRView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6430624AC5200AFC7AF /* VRView.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		AB6AC6480624AC5200AFC7AF /* VRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6AC6440624AC5200AFC7AF /* VRController.h */; };
 		AB6AC6490624AC5200AFC7AF /* VRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB6AC6450624AC5200AFC7AF /* VRController.mm */; };
-		AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		AB6FF59B0A47D08000C501F0 /* DefaultsOsiriX.h in Headers */ = {isa = PBXBuildFile; fileRef = AB6FF5950A47D08000C501F0 /* DefaultsOsiriX.h */; };
 		AB6FF59C0A47D08000C501F0 /* DefaultsOsiriX.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6FF5960A47D08000C501F0 /* DefaultsOsiriX.m */; };
 		AB724F4F0ADE6ECB00A212A0 /* dcfilefo.cc in Sources */ = {isa = PBXBuildFile; fileRef = BFBF3AD809B6827D00545F5E /* dcfilefo.cc */; };
@@ -2871,7 +2870,6 @@
 		CE2BFE58153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
-		CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
 		CE3B7E5A1580F518003CB266 /* Quaternion.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3B7E591580F518003CB266 /* Quaternion.h */; };
@@ -7776,7 +7774,6 @@
 		CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
 		CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
 		CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */; };
-		CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB6B75DE0A53F60600F0CA8F /* QTKit.framework */; };
 		CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
@@ -9202,7 +9199,6 @@
 		AB6AC6430624AC5200AFC7AF /* VRView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRView.mm; sourceTree = "<group>"; };
 		AB6AC6440624AC5200AFC7AF /* VRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRController.h; sourceTree = "<group>"; };
 		AB6AC6450624AC5200AFC7AF /* VRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRController.mm; sourceTree = "<group>"; };
-		AB6B75DE0A53F60600F0CA8F /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Wait.m; sourceTree = "<group>"; };
@@ -14207,7 +14203,6 @@
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
 				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
-				AB6B75EC0A53F60600F0CA8F /* QTKit.framework in Frameworks */,
 				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
@@ -14361,7 +14356,6 @@
 				AB724FF20ADE6ECB00A212A0 /* libz.dylib in Frameworks */,
 				CE8D062A0FD8731B00165DDE /* libDCM StaticLibrary.a in Frameworks */,
 				CE8D062C0FD8733C00165DDE /* Accelerate.framework in Frameworks */,
-				CE30BB1D10D97E8A009E297C /* QTKit.framework in Frameworks */,
 				84DE8CD311AC227B0029396D /* WebKit.framework in Frameworks */,
 				CEED780812303C8E00258D00 /* libPapyrusToolkit.a in Frameworks */,
 				59FB64391230EE4100EBA136 /* libfreetypeOsiriX.a in Frameworks */,
@@ -14402,7 +14396,6 @@
 				CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */,
 				CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */,
 				CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */,
-				CEC709CB10A5C844008935EA /* QTKit.framework in Frameworks */,
 				CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */,
 				CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */,
 				CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */,
@@ -14502,7 +14495,6 @@
 				CEF0E4BB06AEC91F001FF9E5 /* Message.framework */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
-				AB6B75DE0A53F60600F0CA8F /* QTKit.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
 				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,
