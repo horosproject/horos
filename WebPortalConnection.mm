@@ -254,7 +254,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	return self.user.password;
 }
 
--(BOOL)isPasswordProtected:(NSString*)path {
+-(BOOL)isPasswordProtected:(NSString*)path
+{
 	if ([path hasPrefix: @"/wado"]
 	|| [path hasPrefix: @"/images/"]
 	|| [path isEqual: @"/"]
@@ -265,6 +266,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	|| [path hasPrefix:@"/weasis/"]
 	|| [path isEqualToString: @"/favicon.ico"])
 		return NO;
+    
 	return self.portal.authenticationRequired;
 }
 
@@ -462,7 +464,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([requestedPath hasPrefix:@"/image."])
 				[self processImage];
 			else
-			if ([requestedPath isEqual:@"/movie.mov"] || [requestedPath isEqual:@"/movie.m4v"] || [requestedPath isEqual:@"/movie.swf"])
+			if ([requestedPath isEqual:@"/movie.mov"] || [requestedPath isEqual:@"/movie.m4v"] || [requestedPath isEqual:@"/movie.mp4"] || [requestedPath isEqual:@"/movie.swf"])
 				[self processMovie];
 			else
 			if ([requestedPath isEqual:@"/password_forgotten"])
@@ -927,15 +929,22 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
-	if ([method isEqualToString:@"GET"]) { // no session, GET... check for tokens
+	if ([method isEqualToString:@"GET"])
+    { // GET... check for tokens
 		NSString* url = [[NSMakeCollectable(CFHTTPMessageCopyRequestURL(request)) autorelease] relativeString];
 		NSArray* urlComponenents = [url componentsSeparatedByString:@"?"];
-		if (urlComponenents.count > 1) {
+		if (urlComponenents.count > 1)
+        {
 			NSDictionary* params = [WebPortalConnection ExtractParams:urlComponenents.lastObject];
 			NSString* username = [params objectForKey:@"username"];
 			NSString* token = [params objectForKey:@"token"];
 			if (username && token) // has token, user exists
-				self.session = [self.portal sessionForUsername:username token:token];
+            {
+				if( [url hasPrefix: @"/movie."])
+                    self.session = [self.portal sessionForUsername:username token:token doConsume: NO]; //We keep the token valid for video players...iOS uses multiple range GET requests
+                else
+                    self.session = [self.portal sessionForUsername:username token:token];
+            }
 		}
 	}
 	

@@ -556,7 +556,24 @@ static NSMutableDictionary *studiesForUserCache = nil;
             if( [object isKindOfClass: [DicomStudy class]] || [object isKindOfClass: [WebPortalUser class]] || [object isKindOfClass: [WebPortalStudy class]])
             {
                 [studiesForUserCache removeAllObjects];
-                break;
+                return;
+                
+            }
+        }
+        
+        // WebPortal User updated ?
+        
+        set = [NSMutableSet set];
+        
+        if( [n.userInfo objectForKey: NSUpdatedObjectsKey])
+            [set unionSet: [n.userInfo objectForKey: NSUpdatedObjectsKey]];
+        
+        for( NSManagedObject *object in set)
+        {
+            if( [object isKindOfClass: [WebPortalUser class]])
+            {
+                [studiesForUserCache removeAllObjects];
+                return;
             }
         }
     }

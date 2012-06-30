@@ -45,7 +45,7 @@ static NSString* 	VRPanelToolbarIdentifier = @"VRPanel Toolbar Identifier";
 
 static NSString*	QTExportToolbarItemIdentifier = @"QTExport.icns";
 static NSString*	iPhotoToolbarItemIdentifier = @"iPhoto.icns";
-static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
+//static NSString*	QTExportVRToolbarItemIdentifier = @"QTExportVR.icns";
 static NSString*	StereoIdentifier = @"Stereo.icns";
 static NSString*	CaptureToolbarItemIdentifier = @"Capture.icns";
 static NSString*	CroppingToolbarItemIdentifier = @"Cropping.icns";
@@ -173,17 +173,18 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
     // Required delegate method:  Given an item identifier, this method returns an item 
     // The toolbar will use this method to obtain toolbar items that can be displayed in the customization sheet, or in the toolbar itself 
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier: itemIdent];
-    
-	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier])
-	{
-		[toolbarItem setLabel: NSLocalizedString(@"Export QTVR",nil)];
-		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export QTVR",nil)];
-		[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a Quicktime VR file",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: QTExportVRToolbarItemIdentifier]];
-		[toolbarItem setTarget: view];
-		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
-    }
-	else if ([itemIdent isEqualToString: StereoIdentifier])
+//    
+//	if ([itemIdent isEqualToString: QTExportVRToolbarItemIdentifier])
+//	{
+//		[toolbarItem setLabel: NSLocalizedString(@"Export QTVR",nil)];
+//		[toolbarItem setPaletteLabel: NSLocalizedString(@"Export QTVR",nil)];
+//		[toolbarItem setToolTip: NSLocalizedString(@"Export this image in a Quicktime VR file",nil)];
+//		[toolbarItem setImage: [NSImage imageNamed: QTExportVRToolbarItemIdentifier]];
+//		[toolbarItem setTarget: view];
+//		[toolbarItem setAction: @selector(exportQuicktime3DVR:)];
+//    }
+//	else
+        if ([itemIdent isEqualToString: StereoIdentifier])
 	{
         [toolbarItem setLabel: NSLocalizedString(@"Stereo",nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Stereo",nil)];
@@ -510,7 +511,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 												ClippingRangeViewToolbarItemIdentifier,
 												NSToolbarFlexibleSpaceItemIdentifier,
 												QTExportToolbarItemIdentifier,
-												QTExportVRToolbarItemIdentifier,
+//												QTExportVRToolbarItemIdentifier,
 												OrientationsViewToolbarItemIdentifier,
 												ResetToolbarItemIdentifier,
 												RevertToolbarItemIdentifier,
@@ -562,7 +563,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 											StereoIdentifier,						// <- added with respect to "VRController.mm" (P. Thevenaz)
 											QTExportToolbarItemIdentifier,
 											iPhotoToolbarItemIdentifier,
-											QTExportVRToolbarItemIdentifier,
+											//QTExportVRToolbarItemIdentifier,
 											MailToolbarItemIdentifier,
 											ResetToolbarItemIdentifier,
 											RevertToolbarItemIdentifier,

@@ -626,18 +626,36 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return session;
 }
 
--(id)sessionForUsername:(NSString*)username token:(NSString*)token {
-	[sessionsArrayLock lock];
+
+-(id)sessionForUsername:(NSString*)username token:(NSString*)token
+{
+	return [self sessionForUsername: username token: token doConsume: YES];
+}
+
+-(id)sessionForUsername:(NSString*)username token:(NSString*)token doConsume: (BOOL) doConsume
+{
+    [sessionsArrayLock lock];
 	WebPortalSession* session = NULL;
 	
 	for (WebPortalSession* isession in sessions)
-		if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
-			session = isession;
-			break;
-		}
-	
+    {
+        if( doConsume)
+        {
+            if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession consumeToken:token]) {
+                session = isession;
+                break;
+            }
+        }
+        else
+        {
+            if ([[isession objectForKey:SessionUsernameKey] isEqual:username] && [isession containsToken:token]) {
+                session = isession;
+                break;
+            }
+        }
+	}
 	[sessionsArrayLock unlock];
-	return session;
+	return session;    
 }
 
 -(id)newSession {

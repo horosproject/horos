@@ -217,7 +217,7 @@
 			htmlName = [NSMutableString stringWithFormat:@"%@.html", fileName];
 			
 			tempListItemTemplate = [NSMutableString stringWithString:listItemTemplate];
-			extension = (imagesCount>1)? @"mov": @"jpg";
+			extension = (imagesCount>1)? @"mp4": @"jpg";
 			
 			if( [DCMAbstractSyntaxUID isPDF: [[series objectAtIndex:i] valueForKey: @"seriesSOPClassUID"]])
 			{
@@ -360,7 +360,7 @@
 	
 	[fileName appendFormat: @"_%d", uniqueSeriesID];
 	
-	NSString *extension = (imagesCount>1)? @"mov": @"jpg";
+	NSString *extension = (imagesCount>1)? @"mp4": @"jpg";
 	
 	NSString* tempXXXPath = [self imagePathForSeriesId:[seriesId intValue] kind:extension];
 	if (tempXXXPath) // tempXXXPath is in patient/study/series format, should be series

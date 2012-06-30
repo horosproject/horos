@@ -7985,7 +7985,7 @@ static BOOL withReset = NO;
 	[contextual addItem: [NSMenuItem separatorItem]];
 	
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action:@selector(export2PACS:) keyEquivalent:@""] autorelease]];
-	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Quicktime", nil) action:@selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
+	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Movie", nil) action:@selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action:@selector(exportJPEG:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action:@selector(exportTIFF:) keyEquivalent:@""] autorelease]];
 	[contextual addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action:@selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
@@ -8035,7 +8035,7 @@ static BOOL withReset = NO;
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Open ROIs and Key Images", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
-	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to Quicktime", nil)];
+	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to Movie", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
 	indx = [contextualRT indexOfItemWithTitle: NSLocalizedString( @"Export to JPEG", nil)];
 	if ( indx >= 0) [contextualRT removeItemAtIndex: indx];
@@ -11000,7 +11000,7 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[menu addItem: [NSMenuItem separatorItem]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM Network Node", nil) action: @selector(export2PACS:) keyEquivalent:@""] autorelease]];
-	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Quicktime", nil) action: @selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
+	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to Movie", nil) action: @selector(exportQuicktime:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to JPEG", nil) action: @selector(exportJPEG:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to TIFF", nil) action: @selector(exportTIFF:) keyEquivalent:@""] autorelease]];
 	[menu addItem: [[[NSMenuItem alloc] initWithTitle: NSLocalizedString(@"Export to DICOM File(s)", nil) action: @selector(exportDICOMFile:) keyEquivalent:@""] autorelease]];
@@ -12723,7 +12723,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	@try
 	{
         if (fps <= 0)
-            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"defaultFrameRate"];
+            fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
         if (fps <= 0)
             fps = 10;
         
@@ -12737,10 +12737,16 @@ static volatile int numberOfThreadsForJPEG = 0;
         {
             NSImage *im = [imagesArray lastObject];
             
+            double bitsPerSecond = im.size.width * im.size.height * fps * 4;
+            
             NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 AVVideoCodecJPEG, AVVideoCodecKey, 
-                                 [NSNumber numberWithInt: im.size.width], AVVideoWidthKey, 
-                                 [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                           AVVideoCodecH264, AVVideoCodecKey, 
+                                           [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                            [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                            nil], AVVideoCompressionPropertiesKey,
+                                           [NSNumber numberWithInt: im.size.width], AVVideoWidthKey, 
+                                           [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
             
             // Instanciate the AVAssetWriterInput
             AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
@@ -12958,9 +12964,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 						}
 					}
 					
-					NSString* fullPath = [previousPath stringByAppendingPathExtension: @"mov"];
+					NSString* fullPath = [previousPath stringByAppendingPathExtension: @"mp4"];
 					[BrowserController writeMovieToPath:fullPath images:imagesArray];
-					[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
+					[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mp4" toSeriesPaths:seriesPaths];
 				}
 				else if( [imagesArray count] == 1)
 				{
@@ -13172,9 +13178,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 				}
 			}
 			
-			NSString* fullPath = [previousPath stringByAppendingPathExtension:@"mov"];
+			NSString* fullPath = [previousPath stringByAppendingPathExtension:@"mp4"];
 			[BrowserController writeMovieToPath:fullPath images:imagesArray framesPerSecond:fps];
-			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mov" toSeriesPaths:seriesPaths];
+			[BrowserController setPath:fullPath relativeTo:path forSeriesId:previousSeries kind:@"mp4" toSeriesPaths:seriesPaths];
 		}
 		else if( [imagesArray count] == 1)
 		{
@@ -13230,7 +13236,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	[sPanel setCanChooseDirectories:YES];
 	[sPanel setCanChooseFiles:NO];
 	[sPanel setAllowsMultipleSelection:NO];
-	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the Quicktime files:",nil)];
+	[sPanel setMessage: NSLocalizedString(@"Select the location where to export the Movie files:",nil)];
 	[sPanel setPrompt: NSLocalizedString(@"Choose",nil)];
 	[sPanel setTitle: NSLocalizedString(@"Export",nil)];
 	[sPanel setCanCreateDirectories:YES];

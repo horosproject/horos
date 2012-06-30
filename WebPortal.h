@@ -96,6 +96,7 @@
 -(WebPortalSession*)newSession;
 -(WebPortalSession*)sessionForId:(NSString*)sid;
 -(WebPortalSession*)sessionForUsername:(NSString*)username token:(NSString*)token;
+-(id)sessionForUsername:(NSString*)username token:(NSString*)token doConsume: (BOOL) doConsume;
 
 -(NSString*)URL;
 //-(NSString*)URLForAddress:(NSString*)address;

@@ -4966,7 +4966,7 @@ static ViewerController *draggedController = nil;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Movie Export", nil)];
-        [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Quicktime file", nil)];
+        [toolbarItem setToolTip: NSLocalizedString(@"Export this series in a Movie file", nil)];
 		[toolbarItem setImage: [NSImage imageNamed: QTSaveToolbarItemIdentifier]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector(exportQuicktime:)];

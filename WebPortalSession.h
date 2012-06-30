@@ -35,7 +35,7 @@ extern NSString* const SessionLastActivityDateKey; // NSDate
 
 -(NSString*)createToken;
 -(BOOL)consumeToken:(NSString*)token;
-
+-(BOOL)containsToken:(NSString*)token;
 -(NSString*)newChallenge;
 -(NSString*)challenge;
 -(void)deleteChallenge;

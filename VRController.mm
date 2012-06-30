@@ -1745,7 +1745,7 @@ return YES;
         
 	[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 	[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-        [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Quicktime file",nil)];
+        [toolbarItem setToolTip:NSLocalizedString(@"Export this image in a Movie file",nil)];
 	[toolbarItem setImage: [NSImage imageNamed: QTExportToolbarItemIdentifier]];
 	[toolbarItem setTarget: view];
 	[toolbarItem setAction: @selector(exportQuicktime:)];

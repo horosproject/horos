@@ -19,9 +19,10 @@
 - WebPortal: preference to authorize sharing a study by email (temporary user)
 - High-Res mode for Curved-MPR Viewer
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
+- Movies files produces for HTML pages (CD Burning, WebPortal) are now MPEG4 HTML5 files
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
-- iOS movies
+- full background CD burning
 
 -------------------------------------------------------------
 

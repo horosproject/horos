@@ -543,7 +543,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			[DCMPixLoadingLock unlock];
             
             if (fps <= 0)
-                fps = [[NSUserDefaults standardUserDefaults] integerForKey:@"defaultFrameRate"];
+                fps = [[NSUserDefaults standardUserDefaults] integerForKey: @"quicktimeExportRateValue"];
             if (fps <= 0)
                 fps = 10;
             
@@ -580,22 +580,16 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     
                     if (!error)
                     {
-                        NSDictionary *videoSettings = nil;
+                        double bitsPerSecond = width * height * fps * 4;
                         
-                        if (self.requestIsIOS)
-                        {
-                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                AVVideoCodecH264, AVVideoCodecKey, 
-                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
-                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
-                        }
-                        else
-                        {
-                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                                AVVideoCodecJPEG, AVVideoCodecKey, 
-                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
-                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
-                        }
+                        NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            AVVideoCodecH264, AVVideoCodecKey, 
+                                            [NSDictionary dictionaryWithObjectsAndKeys:
+                                             [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                             [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                             nil], AVVideoCompressionPropertiesKey,
+                                            [NSNumber numberWithInt: width], AVVideoWidthKey, 
+                                            [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
                             
                         // Instanciate the AVAssetWriterInput
                         AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
@@ -691,7 +685,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSString *outFile;
 	
 	if (self.requestIsIOS)
-		outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+		outFile = [NSString stringWithFormat:@"%@2.mp4", [fileName stringByDeletingPathExtension]];
 	else
 		outFile = fileName;
 	
@@ -1735,7 +1729,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					
 					NSString *outFile;
 					if (self.requestIsIOS)
-						outFile = [NSString stringWithFormat:@"%@2.m4v", [fileName stringByDeletingPathExtension]];
+						outFile = [NSString stringWithFormat:@"%@2.mp4", [fileName stringByDeletingPathExtension]];
 					else
 						outFile = fileName;
 					

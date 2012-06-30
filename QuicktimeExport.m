@@ -40,8 +40,8 @@
 {
     NSMutableArray *compressors = [NSMutableArray array];
     
-    [compressors addObject: [NSDictionary dictionaryWithObjectsAndKeys: AVVideoCodecJPEG, @"videoCodec", @"JPEG Video", @"name", @"mov", @"extension", nil]];
-    [compressors addObject: [NSDictionary dictionaryWithObjectsAndKeys: AVVideoCodecH264, @"videoCodec", @"H264", @"name", @"m4v", @"extension", nil]];
+    [compressors addObject: [NSDictionary dictionaryWithObjectsAndKeys: AVVideoCodecJPEG, @"videoCodec", @"JPEG Quicktime Movie", @"name", @"mov", @"extension", nil]];
+    [compressors addObject: [NSDictionary dictionaryWithObjectsAndKeys: AVVideoCodecH264, @"videoCodec", @"H264 Movie", @"name", @"mp4", @"extension", nil]];
     
     return compressors;
 }
@@ -162,10 +162,33 @@
             NSImage	*firstImage = [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]]; 
             
             // Define video settings to be passed to the AVAssetWriterInput instance
-            NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"], AVVideoCodecKey, 
+            
+            NSString *c = [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"];
+            
+            NSDictionary *videoSettings = nil;
+            
+            if( [c isEqualToString: AVVideoCodecH264])
+            {
+                double bitsPerSecond = firstImage.size.width * firstImage.size.height * fps * 4; //Maximum bit rate for best quality
+                
+                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                           c, AVVideoCodecKey, 
+                                           [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                            [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                            nil], AVVideoCompressionPropertiesKey,
                                            [NSNumber numberWithInt: firstImage.size.width], AVVideoWidthKey, 
                                            [NSNumber numberWithInt: firstImage.size.height], AVVideoHeightKey, nil];
+            }
+            else if( [c isEqualToString: AVVideoCodecJPEG])
+            {
+                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 c, AVVideoCodecKey,
+                                 [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
+                                 [NSNumber numberWithInt: firstImage.size.width], AVVideoWidthKey, 
+                                 [NSNumber numberWithInt: firstImage.size.height], AVVideoHeightKey, nil];
+            }
+            
             // Instanciate the AVAssetWriterInput
             AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
             // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input

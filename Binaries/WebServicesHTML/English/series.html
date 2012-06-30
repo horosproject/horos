@@ -33,13 +33,13 @@
 									document.getElementById("flashwarning").style.display = "none";
 							</script>
 						%ELSE:Info.proposeFlash%
-							<video src=	/movie.m4v?xid=%Series.XID%
-										controls
-										autoplay
-										height=%X:Series.height%
-										width=%X:Series.width%
-										poster="/image.jpg?xid=%Series.XID%%[IF:!Info.isIOS%&previewForMovie=true%]IF:!Info.isIOS%"
-										>
+							<video 	src="/movie.m4v?xid=%Series.XID%&username=%User.name%&token=%Info.newToken%"
+									controls
+                                    autoplay
+									height="%X:Series.height%"
+									width="%X:Series.width%"
+									poster="/image.jpg?xid=%Series.XID%"
+							>
 							</video>
 							
 										

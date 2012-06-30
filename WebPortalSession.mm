@@ -85,12 +85,37 @@ NSString* const SessionLastActivityDateKey = @"LastActivityDate"; // NSDate
 	return token;
 }
 
+-(BOOL)containsToken:(NSString*)token {
+	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
+	[dictLock lock];
+	
+	NSDate *date = [tokensDictionary objectForKey: token];
+	BOOL ok = NO;
+    if( date)
+    {
+        if( [date timeIntervalSinceNow] > -30*60) // Token are valid for 30 min
+            ok = YES;
+        else
+            [tokensDictionary removeObjectForKey:token];
+    }
+    
+	[dictLock unlock];
+	return ok;
+}
+
 -(BOOL)consumeToken:(NSString*)token {
 	NSMutableDictionary* tokensDictionary = [self tokensDictionary];
 	[dictLock lock];
 	
-	BOOL ok = [[tokensDictionary allKeys] containsObject:token];
-	if (ok) [tokensDictionary removeObjectForKey:token];
+	NSDate *date = [tokensDictionary objectForKey: token];
+	BOOL ok = NO;
+    if( date)
+    {
+        if( [date timeIntervalSinceNow] > -30*60) // Token are valid for 30 min
+            ok = YES;
+        
+        [tokensDictionary removeObjectForKey:token];
+    }
 	
 	[dictLock unlock];
 	return ok;
