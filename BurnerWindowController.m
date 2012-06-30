@@ -941,7 +941,8 @@
 		{
             thread.name = NSLocalizedString( @"Burning...", nil);
             thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
-			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
+            [self produceHtml: burnFolder];
+//			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
 		}
 			
 		// Look for and if present copy a second folder for eg windows viewer or html files.
