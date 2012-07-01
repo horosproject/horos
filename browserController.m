@@ -439,7 +439,7 @@ static NSConditionLock *threadLock = nil;
 
 + (void) multiThreadedImageConvert: (NSString*) what :(vImage_Buffer*) src :(vImage_Buffer *) dst :(float) offset :(float) scale
 {
-	int mpprocessors = MPProcessors();
+	int mpprocessors = [[NSProcessInfo processInfo] processorCount];
 	
 	if( threadLock == nil)
 		threadLock = [[NSConditionLock alloc] initWithCondition: 0];
