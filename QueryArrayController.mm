@@ -186,7 +186,7 @@
 - (NSDictionary *)parameters
 {
 	NSMutableDictionary *params = [NSMutableDictionary dictionary];
-	NS_DURING
+	@try {
 		
 		[params setObject: [NSNumber numberWithInt:1] forKey:@"debugLevel"];
 		[params setObject:callingAET forKey:@"callingAET"];
@@ -196,13 +196,13 @@
 		
 		[params setObject:[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] forKey:@"transferSyntax"];		//
 		[params setObject:[DCMAbstractSyntaxUID  studyRootQueryRetrieveInformationModelFind] forKey:@"affectedSOPClassUID"];
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSAlert *alert = [NSAlert alertWithMessageText:@"Query Error" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", @"Unable to perform Q/R. There was a missing parameter. Make sure you have AE Titles, IP addresses and ports for the queried computer"];
 	
 		[alert runModal];
 		NSLog(@"Missing parameter for Query/retrieve: %@", [localException name]);
 		params = nil;
-	NS_ENDHANDLER
+	}
 	return params;
 }
 @end

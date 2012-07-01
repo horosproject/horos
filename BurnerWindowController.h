@@ -35,7 +35,7 @@
 	volatile BOOL runBurnAnimation, isExtracting, isSettingUpBurn, isThrobbing, windowWillClose;
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
-	BOOL writeDMG;
+	BOOL writeDMG, cancelled;
     NSString *writeDMGPath;
 	NSArray *anonymizationTags;
     NSRecursiveLock *destinationCompleteLock;
@@ -71,7 +71,7 @@
 - (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
-- (void)addDicomdir;
+- (void)prepareCDContent;
 - (IBAction)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;
 - (void)irisAnimation:(NSTimer*)object;

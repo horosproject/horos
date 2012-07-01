@@ -1212,7 +1212,7 @@ static NSDate *lastWarningDate = nil;
 	
 	if( [dictionaryRepresentation isEqualToDictionary: previousDefaults]) return;
 	
-	NS_DURING
+	@try {
 	
 	if( [[previousDefaults valueForKey: @"DisplayDICOMOverlays"] intValue] != [defaults integerForKey: @"DisplayDICOMOverlays"])
 		revertViewer = YES;
@@ -1453,9 +1453,9 @@ static NSDate *lastWarningDate = nil;
 		}
 	}
 	
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Exception updating prefs: %@", [localException description]);
-	NS_ENDHANDLER
+	}
 }
 
 - (void) preferencesUpdated: (NSNotification*) note

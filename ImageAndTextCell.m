@@ -145,7 +145,7 @@
 - (void)drawWithFrame:(NSRect)cellFrameIn inView:(NSView *)controlView {
 	NSRect cellFrame = cellFrameIn;
     
-    NS_DURING
+    @try {
 	
     if (image != nil)
 	{
@@ -191,9 +191,9 @@
         [lastImage compositeToPoint:imageFrame.origin operation:NSCompositeSourceOver];
 	}
 
-    NS_HANDLER
+    } @catch( NSException *localException) {
     N2LogExceptionWithStackTrace(localException);
-    NS_ENDHANDLER
+    }
 	
 	[super drawWithFrame:cellFrame inView:controlView];
     

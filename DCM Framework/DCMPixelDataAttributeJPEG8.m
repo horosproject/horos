@@ -535,7 +535,7 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	int rows = _rows;
 	int samplesPerPixel = _samplesPerPixel;
 	struct jpeg_compress_struct cinfo;
-	NS_DURING
+	@try {
 	JPEG8ErrorStruct jerr;
 	cinfo.err = jpeg_std_error(&jerr.pub);
 	jerr.instance = self;
@@ -634,11 +634,11 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 	//NSLog(@"scan line %d", scanrow++);
   }
   
-  NS_HANDLER
+  } @catch( NSException *localException) {
 	jpegData = nil;
 	if (localException)
 	NSLog( @"%@", [localException  reason]);
-  NS_ENDHANDLER
+  }
   jpeg_finish_compress(&cinfo);
   jpeg_destroy_compress(&cinfo);
 

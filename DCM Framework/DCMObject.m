@@ -938,7 +938,7 @@ PixelRepresentation
 	BOOL undefinedLength = lengthToRead == 0xFFFFFFFF;
 	int endByteOffset = (undefinedLength) ? 0xFFFFFFFF : *byteOffset+lengthToRead-1;
 	NSException *myException;
-	NS_DURING
+	@try {
 		if (DCMDEBUG)
 			NSLog(@"Read newSequence:%@  lengthtoRead:%d byteOffset:%d, characterSet: %@", [attr description], lengthToRead, *byteOffset, [aSpecificCharacterSet characterSet] );
 		while (undefinedLength || *byteOffset < endByteOffset) {
@@ -975,10 +975,10 @@ PixelRepresentation
 		}
 		
 		
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Error");
 		*byteOffset = -1;
-	NS_ENDHANDLER
+	}
 		return *byteOffset;
 	
 	
@@ -1826,7 +1826,7 @@ PixelRepresentation
 - (BOOL)writeToFile:(NSString *)path withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality AET:(NSString *)aet atomically:(BOOL)flag
 {
 	BOOL status = NO;
-	NS_DURING		
+	@try {		
 		DCMDataContainer *container = [[[DCMDataContainer alloc] init] autorelease];
 		//if ([self writeToDataContainer:container withTransferSyntax:ts quality:quality]) {
 			if ([self writeToDataContainer:(DCMDataContainer *)container 
@@ -1840,10 +1840,10 @@ PixelRepresentation
 		else
 			status  = NO;
 		
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Writing to %@ failed", path);
 		status = NO;
-	NS_ENDHANDLER
+	}
 	
 		return status;
 }
@@ -1855,7 +1855,7 @@ PixelRepresentation
 
 - (BOOL)writeToURL:(NSURL *)aURL withTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality AET:(NSString *)aet atomically:(BOOL)flag{
 	BOOL status = NO;
-	NS_DURING
+	@try {
 	DCMDataContainer *container = [[[DCMDataContainer alloc] init] autorelease];
 	//if ([self writeToDataContainer:container withTransferSyntax:ts quality:quality])
 	if ([self writeToDataContainer:(DCMDataContainer *)container 
@@ -1867,9 +1867,9 @@ PixelRepresentation
 		status =  [[container dicomData] writeToURL:aURL atomically:flag];
 	else
 		status =  NO;
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		
-	NS_ENDHANDLER
+	}
 		return status;
 }
 
@@ -1879,7 +1879,7 @@ PixelRepresentation
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	DCMDataContainer *container = [[[DCMDataContainer alloc] init] autorelease];
 	NSData *data;
-	NS_DURING
+	@try {
 	if ([self writeToDataContainer:(DCMDataContainer *)container 
 			withTransferSyntax:(DCMTransferSyntax *)ts 
 			quality:(int)quality 
@@ -1889,9 +1889,9 @@ PixelRepresentation
 				data = [[container dicomData] retain];
 	else
 		data = nil; 
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		data = nil;
-	NS_ENDHANDLER
+	}
 	[pool release];
 	//put data in next autorelease pool
 	[data autorelease];

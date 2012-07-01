@@ -8955,7 +8955,7 @@ static BOOL needToRezoom;
     
 	@try
 	{
-		// NS_DURING (1) keyImages
+		//  (1) keyImages
 		
 		NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
 		
@@ -8995,7 +8995,7 @@ static BOOL needToRezoom;
 			}
 		}
 		
-		// NS_DURING (2) Compute Required Memory
+		//  (2) Compute Required Memory
 		
 		BOOL	enoughMemory = NO;
 		long	subSampling = 1;
@@ -9126,7 +9126,7 @@ static BOOL needToRezoom;
 			result = NSRunInformationalAlertPanel( NSLocalizedString(@"32-bit", nil),  [NSString stringWithFormat: NSLocalizedString(@"This 32-bit version cannot load this series, but I can load a subset of the series: 1 on %d images.", nil), subSampling], NSLocalizedString(@"OK",nil), NSLocalizedString(@"Cancel",nil), nil);
 		}
 		
-		// NS_DURING (3) Load Images (memory allocation)
+		//  (3) Load Images (memory allocation)
 		
 		BOOL notEnoughMemory = NO;
 		
@@ -9185,7 +9185,7 @@ static BOOL needToRezoom;
 		}
 		else notEnoughMemory = YES;
 		
-		// NS_DURING (4) Load Images loop
+		//  (4) Load Images loop
 		
 		if( notEnoughMemory == NO)
 		{
@@ -9390,7 +9390,7 @@ static BOOL needToRezoom;
 			} //end for
 		}
 		
-		// NS_DURING (5) movieController activation
+		//  (5) movieController activation
 		
 		if( movieController)
 		{

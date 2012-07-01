@@ -3699,7 +3699,8 @@ enum
     
 	[numberOfStudies setStringValue: @""];
 	
-    if (autoQuery) {
+    if (autoQuery)
+    {
         NSRect frame = [refreshGroup frame];
         frame.origin.y += 6;
         [refreshGroup setFrame:frame];

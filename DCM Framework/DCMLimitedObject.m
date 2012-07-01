@@ -97,7 +97,7 @@
 	BOOL isShort = NO;
 	BOOL pixelRepresentationIsSigned = NO;
 	int group = 0x0000;
-	NS_DURING
+	@try {
 	while ((group < lastGroup || group == 0xFFFE )) {
 		NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
 
@@ -303,11 +303,11 @@
 	}
 	[transferSyntax release];
 	transferSyntax = [[dicomData transferSyntaxForDataset] retain];
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Error reading data for dicom object");
 		//exception = [NSException exceptionWithName:@"DCMReadingError" reason:@"Cannot read Dicom Object" userInfo:nil];
 		*byteOffset = 0xFFFFFFFF;
-	NS_ENDHANDLER
+	}
 	//NSLog(@"DCMObject  End readDataSet: %f", -[timestamp  timeIntervalSinceNow]);
 	[pool release];
 	//[exception raise];

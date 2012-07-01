@@ -8379,7 +8379,7 @@ public:
 
 - (void) startDrag:(NSTimer*)theTimer
 {
-	NS_DURING
+	@try {
 	_dragInProgress = YES;
 	
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
@@ -8452,9 +8452,9 @@ public:
 			slideBack:YES];
 	}
 	
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
-	NS_ENDHANDLER
+	}
 	
 	_dragInProgress = NO;
 }

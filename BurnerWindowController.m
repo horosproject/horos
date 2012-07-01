@@ -78,7 +78,7 @@
 
 -(id) initWithFiles:(NSArray *)theFiles
 {
-    if (self = [super initWithWindowNibName:@"BurnViewer"]) {
+    if( self = [super initWithWindowNibName:@"BurnViewer"]) {
 		
 		[self copyDefaultsSettings];
 		
@@ -96,7 +96,7 @@
 
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects
 {
-	if (self = [super initWithWindowNibName:@"BurnViewer"])
+	if( self = [super initWithWindowNibName:@"BurnViewer"])
 	{
 		[self copyDefaultsSettings];
 		
@@ -120,9 +120,9 @@
 		{
 			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
-			if (patient == nil)
+			if( patient == nil)
 				patient = newPatient;
-			else if (![patient isEqualToString:newPatient])
+			else if( ![patient isEqualToString:newPatient])
 			{
 				_multiplePatients = YES;
 				break;
@@ -212,16 +212,16 @@
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		//NSLog(@"fname %@", fname);
         NSFileManager *manager = [NSFileManager defaultManager];
-        if ([manager fileExistsAtPath:fname isDirectory:&isDir] && isDir)
+        if( [manager fileExistsAtPath:fname isDirectory:&isDir] && isDir)
 		{
             NSDirectoryEnumerator *direnum = [manager enumeratorAtPath:fname];
             //Loop Through directories
             while (pname = [direnum nextObject])
 			{
                 pathName = [fname stringByAppendingPathComponent:pname]; //make pathanme
-                if ([manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir)
+                if( [manager fileExistsAtPath:pathName isDirectory:&isDir] && !isDir)
 				{ //check for directory
-					if ([DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO])
+					if( [DCMObject objectWithContentsOfFile:pathName decodingPixelData:NO])
 					{
                         [fileNames addObject:pathName];
 					}
@@ -229,8 +229,8 @@
             } //while pname
                 
         } //if
-        //else if ([dicomDecoder dicomCheckForFile:fname] > 0) {
-		else if ([DCMObject objectWithContentsOfFile:fname decodingPixelData:NO]) {	//Pathname
+        //else if( [dicomDecoder dicomCheckForFile:fname] > 0) {
+		else if( [DCMObject objectWithContentsOfFile:fname decodingPixelData:NO]) {	//Pathname
 				[fileNames addObject:fname];
         }
 		[pool release];
@@ -241,8 +241,10 @@
 //Actions
 -(IBAction) burn: (id)sender
 {
-	if (!(isExtracting || isSettingUpBurn || burning))
+	if( !(isExtracting || isSettingUpBurn || burning))
 	{
+        cancelled = NO;
+        
 		[sizeField setStringValue: @""];
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
@@ -262,7 +264,7 @@
         [writeDMGPath release];
         writeDMGPath = nil;
 		writeDMG = NO;
-		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
+		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"saveAsDMGFile"]) writeDMG = YES;
 		        
         [anonymizationTags release];
@@ -272,7 +274,7 @@
 		{
 			AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
 			
-			if (panelController.end == AnonymizationPanelCancel)
+			if( panelController.end == AnonymizationPanelCancel)
 				return;
 			
             anonymizationTags = [panelController.anonymizationViewController.tagsValues retain];
@@ -288,7 +290,7 @@
         destinationCompleteLock = [NSRecursiveLock new];
         [destinationCompleteLock lock];
         
-		if (cdName != nil && [cdName length] > 0)
+		if( cdName != nil && [cdName length] > 0)
 		{
 			runBurnAnimation = YES;
             
@@ -297,7 +299,10 @@
 			[[ThreadsManager defaultManager] addThreadAndStart: t];
 		}
 		else
+        {
 			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
+            return;
+        }
         
         if( writeDMG)
         {
@@ -307,7 +312,43 @@
             [savePanel setTitle:@"Save as DMG"];
             
             if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
+            {
                 writeDMGPath = [[[savePanel URL] path] retain];
+                [[NSFileManager defaultManager] removeItemAtPath: writeDMGPath error: nil];
+            }
+            else cancelled = YES;
+        }
+        
+        self.password = @"";
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
+        {
+            int result = 0;
+            do
+            {
+                [NSApp beginSheet: passwordWindow
+                   modalForWindow: self.window
+                    modalDelegate: nil
+                   didEndSelector: nil
+                      contextInfo: nil];
+                
+                result = [NSApp runModalForWindow: passwordWindow];
+                [passwordWindow makeFirstResponder: nil];
+                
+                [NSApp endSheet: passwordWindow];
+                [passwordWindow orderOut: self];
+            }
+            while( [self.password length] < 8 && result == NSRunStoppedResponse);
+            
+            if( result == NSRunStoppedResponse)
+            {
+                
+            }
+            else
+            {
+                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
+                NSRunCriticalAlertPanel( NSLocalizedString( @"Encryption", nil), NSLocalizedString( @"The content will NOT be encrypted in a ZIP file.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            }
         }
         [destinationCompleteLock unlock];
 	}
@@ -316,6 +357,7 @@
 - (void)performBurn: (id) object
 {	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
 	isSettingUpBurn = YES;
 	
     if( anonymizationTags)
@@ -326,7 +368,7 @@
         anonymizedFiles = [[anonOut allValues] mutableCopy];
     }
     
-	[self addDicomdir];
+	[self prepareCDContent];
 	
 	isSettingUpBurn = NO;
 	
@@ -335,7 +377,7 @@
 	if( anonymizedFiles) no = [anonymizedFiles count];
 	else no = [files count];
 		
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]])
+	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]] && cancelled == NO)
 	{
         [destinationCompleteLock lock]; // Did the user finished entering the CD or the DMG path?
         
@@ -355,7 +397,17 @@
     self.buttonsDisabled = NO;
     runBurnAnimation = NO;
 	burning = NO;
-	
+    
+    if( cancelled == NO)
+    {
+        // Finished ! Close the window....
+        
+        [[NSSound soundNamed: @"Glass.aiff"] play];
+        [self.window performSelectorOnMainThread: @selector( performClose:) withObject: self waitUntilDone: NO];
+    }
+    
+	cancelled = NO;
+    
 	[pool release];
 }
 
@@ -373,10 +425,10 @@
 
 - (void)setCDTitle: (NSString *)title
 {
-	if (title)
+	if( title)
 	{
 		[cdName release];
-		//if ([title length] > 8)
+		//if( [title length] > 8)
 		//	title = [title substringToIndex:8];
 		cdName = [[[title uppercaseString] filenameString] retain];
 		[nameField setStringValue: cdName];
@@ -406,7 +458,7 @@
         
         [bsp setDelegate: self];
         
-        if ([bsp runSetupPanel] == NSOKButton)
+        if( [bsp runSetupPanel] == NSOKButton)
         {
             DRBurnProgressPanel *bpp = [DRBurnProgressPanel progressPanel];
             [bpp setDelegate: self];
@@ -420,7 +472,7 @@
 
 - (BOOL) validateMenuItem:(id)sender
 {
-	if ([sender action] == @selector(terminate:))
+	if( [sender action] == @selector(terminate:))
 		return (burning == NO);		// No quitting while a burn is going on
 
 	return YES;
@@ -462,7 +514,7 @@
 	NSDictionary*	burnStatus = [burn status];
 	NSString*		state = [burnStatus objectForKey:DRStatusStateKey];
 	
-	if ([state isEqualToString:DRStatusStateFailed])
+	if( [state isEqualToString:DRStatusStateFailed])
 	{
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
 		NSString*		errorString = [errorStatus objectForKey:DRErrorStatusErrorStringKey];
@@ -472,7 +524,7 @@
 	else
 		[sizeField setStringValue: NSLocalizedString( @"Burning is finished !", nil)];
 	
-	if ([self.window isSheet])
+	if( [self.window isSheet])
 		[NSApp endSheet:self.window];
 	[[self window] performClose:nil];
 	
@@ -511,7 +563,7 @@
 {
 	NSLog(@"Burner windowShouldClose");
 	
-	if ((isExtracting || isSettingUpBurn || burning))
+	if( (isExtracting || isSettingUpBurn || burning))
 		return NO;
 	else
 	{
@@ -529,7 +581,7 @@
 		
 		//[filesTableView reloadData];
 		
-		if ([self.window isSheet])
+		if( [self.window isSheet])
 			[NSApp endSheet:self.window];
 		NSLog(@"Burner windowShouldClose YES");
 		
@@ -554,7 +606,7 @@
 {
 	NSString *title = nil;
 	
-	if ([files count] > 0)
+	if( [files count] > 0)
 	{
 		NSString *file = [files objectAtIndex:0];
 		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
@@ -590,7 +642,7 @@
 	
 	NSString *title = nil;
 	
-	if (_multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
+	if( _multiplePatients || [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 	{
 		NSDate *date = [NSDate date];
 		title = [NSString stringWithFormat:@"Archive-%@",  [date descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
@@ -610,7 +662,7 @@
     NSInteger width = scaledDownSize.width, height = scaledDownSize.height;
     
     static CGColorSpaceRef grayColorSpace = nil;
-    if (!grayColorSpace) grayColorSpace = CGColorSpaceCreateDeviceGray();
+    if( !grayColorSpace) grayColorSpace = CGColorSpaceCreateDeviceGray();
     
     CGContextRef cgContext = CGBitmapContextCreate(NULL, width, height, 8, width, grayColorSpace, 0);
     uint8* data = CGBitmapContextGetData(cgContext);
@@ -709,251 +761,214 @@
 	return s;	
 }
 
-- (void) addDicomdir
+- (void) prepareCDContent
 {
     NSThread* thread = [NSThread currentThread];
     
 	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:@"" waitUntilDone:YES];
     
-	NS_DURING
-	NSEnumerator *enumerator;
-	if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
-	else enumerator = [files objectEnumerator];
-	
-	NSString *file;
-	NSString *burnFolder = [self folderToBurn];
-	NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
-	NSString *subFolder = [NSString stringWithFormat:@"%@/DICOM",burnFolder];
-	NSFileManager *manager = [NSFileManager defaultManager];
-	int i = 0;
-
-	//create burn Folder and dicomdir.
-	
-	if (![manager fileExistsAtPath:burnFolder])
-		[manager createDirectoryAtPath:burnFolder attributes:nil];
-	if (![manager fileExistsAtPath:subFolder])
-		[manager createDirectoryAtPath:subFolder attributes:nil];
-	if (![manager fileExistsAtPath:dicomdirPath])
-		[manager copyPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath handler:nil];
-		
-	NSMutableArray *newFiles = [NSMutableArray array];
-	NSMutableArray *compressedArray = [NSMutableArray array];
-	
-	while (file = [enumerator nextObject])
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
-		DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
-		//Don't want Big Endian, May not be readable
-		if ([[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
-			[dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
-		else
-			[manager copyPath:file toPath:newPath handler:nil];
-			
-		if( dcmObject)	// <- it's a DICOM file
-		{
-			switch( [compressionMode selectedTag])
-			{
-				case 0:
-				break;
-				
-				case 1:
-					[compressedArray addObject: newPath];
-				break;
-				
-				case 2:
-					[compressedArray addObject: newPath];
-				break;
-			}
-		}
-		
-		[newFiles addObject:newPath];
-		[pool release];
-	}
-	
-	if( [newFiles count] > 0)
-	{
-		switch( [compressionMode selectedTag])
-		{
-			case 1:
-				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
-			break;
-			
-			case 2:
-				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
-			break;
-		}
-		
-        thread.name = NSLocalizedString( @"Burning...", nil);
-        thread.status = NSLocalizedString( @"Writing DICOMDIR...", nil);
-		[self addDICOMDIRUsingDCMTK_forFilesAtPaths:newFiles dicomImages:dbObjects];
-		
-		// Both these supplementary burn data are optional and controlled from a preference panel [DDP]
-		
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
-		{
-            thread.name = NSLocalizedString( @"Burning...", nil);
-            thread.status = NSLocalizedString( @"Adding Weasis...", nil);
-			NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
-			for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
-				[[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
-		}
-			
-		
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
-		{
-            thread.name = NSLocalizedString( @"Burning...", nil);
-            thread.status = NSLocalizedString( @"Adding OsiriX Lite...", nil);
-			// unzip the file
-			NSTask *unzipTask = [[NSTask alloc] init];
-			[unzipTask setLaunchPath: @"/usr/bin/unzip"];
-			[unzipTask setCurrentDirectoryPath: burnFolder];
-			[unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Launcher.zip"], nil]]; // -o to override existing report w/ same name
-			[unzipTask launch];
-			[unzipTask waitUntilExit];
-			[unzipTask release];
-		}
-		
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
-		{
-            thread.name = NSLocalizedString( @"Burning...", nil);
-            thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
-            [self produceHtml: burnFolder];
-//			[self performSelectorOnMainThread:@selector( produceHtml:) withObject:burnFolder waitUntilDone:YES];
-		}
-			
-		// Look for and if present copy a second folder for eg windows viewer or html files.
-
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
-		{
-            thread.name = NSLocalizedString( @"Burning...", nil);
-            thread.status = NSLocalizedString( @"Adding Supplementary folder...", nil);
-			NSString *supplementaryBurnPath = [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
-			if (supplementaryBurnPath)
-			{
-				supplementaryBurnPath = [supplementaryBurnPath stringByExpandingTildeInPath];
-				if ([manager fileExistsAtPath: supplementaryBurnPath])
-				{
-					NSEnumerator *enumerator = [manager enumeratorAtPath: supplementaryBurnPath];
-					while (file=[enumerator nextObject])
-					{
-						[manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
-					}
-				}
-			}
-		}
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO)
-		{
-            thread.name = NSLocalizedString( @"Burning...", nil);
-            thread.status = NSLocalizedString( @"Adding Reports...", nil);
-            
-			NSMutableArray *studies = [NSMutableArray array];
-			
-			[idatabase lock];
-			
-			for( NSManagedObject *im in dbObjects)
-			{
-				if( [im valueForKeyPath:@"series.study.reportURL"])
-				{
-					if( [studies containsObject: [im valueForKeyPath:@"series.study"]] == NO)
-						[studies addObject: [im valueForKeyPath:@"series.study"]];
-				}
-			}
-			
-			for( DicomStudy *study in studies)
-			{
-				if( [[study valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[study valueForKey: @"reportURL"] hasPrefix: @"https://"])
-				{
-					NSString *urlContent = [NSString stringWithContentsOfURL: [NSURL URLWithString: [study valueForKey: @"reportURL"]]];
-					
-					[urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES];
-				}
-				else
-				{
-					// Convert to PDF
-					
-					NSString *pdfPath = [study saveReportAsPdfInTmp];
-					
-					if( [manager fileExistsAtPath: pdfPath] == NO)
-						[manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
-					else
-						[manager copyPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] handler: nil];
-				}
-			}
-			
-			[idatabase unlock];
-		}
-	}
-	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
-	{
-        thread.name = NSLocalizedString( @"Burning...", nil);
-        thread.status = NSLocalizedString( @"Encrypting CD...", nil);
+	@try
+    {
+        NSEnumerator *enumerator;
+        if( anonymizedFiles) enumerator = [anonymizedFiles objectEnumerator];
+        else enumerator = [files objectEnumerator];
         
-		self.password = @"";
-		int result = 0;
-		do
-		{
-			[NSApp beginSheet: passwordWindow
-				modalForWindow: self.window
-				modalDelegate: nil
-				didEndSelector: nil
-				contextInfo: nil];
-		
-			result = [NSApp runModalForWindow: passwordWindow];
-			[passwordWindow makeFirstResponder: nil];
-			
-			[NSApp endSheet: passwordWindow];
-			[passwordWindow orderOut: self];
-		}
-		while( [self.password length] < 8 && result == NSRunStoppedResponse);
-		
-		if( result == NSRunStoppedResponse)
-		{
-			// ZIP method - zip test.zip /testFolder -r -e -P hello
-			
-			[BrowserController encryptFileOrFolder: burnFolder inZIPFile: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] password: self.password];
-			self.password = @"";
-			
-			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
-			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
-			
-			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
-			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted with a password in this ZIP file. On MacOS it requires Stuffit Expander to decompress it. On Windows, use WinZIP.", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
-			
-//			NSTask *t;
-//			NSArray *args;
-//			
-//			[[NSFileManager defaultManager] removeItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"] error: nil];
-//			
-//			t = [[[NSTask alloc] init] autorelease];
-//			[t setLaunchPath: @"/usr/bin/hdiutil"];
-//			args = [NSArray arrayWithObjects: @"create", [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg"], @"-srcfolder", burnFolder, @"-fs", @"MS-DOS", @"-format", @"UDTO", nil]; // @"-encryption", @"-passphrase", self.password
-//			[t setArguments: args];
-//			[t launch];
-//			[t waitUntilExit];
-//			
-//			[[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
-//			[[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
-//			
-//			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.cdr"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
-//			[[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.dmg.iso"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.iso"] error: nil];
-//			[[NSString stringWithString: NSLocalizedString( @"The images are encrypted in this ISO file. On Mac, simply double-click on the file. On Windows, you need to install an ISO mounter, such as Gizmo Drive : http://arainia.com/software/gizmo/overview.php?nID=4", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
-		}
-		else [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
-	}
-	
-    thread.name = NSLocalizedString( @"Burning...", nil);
-    thread.status = [NSString stringWithFormat: NSLocalizedString( @"Writing %3.2fMB...", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)];
-    
-	[finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
-	
-	NS_HANDLER
-		NSLog(@"Exception while creating DICOMDIR: %@", [localException name]);
-	NS_ENDHANDLER
+        NSString *file;
+        NSString *burnFolder = [self folderToBurn];
+        NSString *dicomdirPath = [NSString stringWithFormat:@"%@/DICOMDIR",burnFolder];
+        NSString *subFolder = [NSString stringWithFormat:@"%@/DICOM",burnFolder];
+        NSFileManager *manager = [NSFileManager defaultManager];
+        int i = 0;
+
+        //create burn Folder and dicomdir.
+        
+        if( ![manager fileExistsAtPath:burnFolder])
+            [manager createDirectoryAtPath:burnFolder attributes:nil];
+        if( ![manager fileExistsAtPath:subFolder])
+            [manager createDirectoryAtPath:subFolder attributes:nil];
+        if( ![manager fileExistsAtPath:dicomdirPath])
+            [manager copyPath:[[NSBundle mainBundle] pathForResource:@"DICOMDIR" ofType:nil] toPath:dicomdirPath handler:nil];
+            
+        NSMutableArray *newFiles = [NSMutableArray array];
+        NSMutableArray *compressedArray = [NSMutableArray array];
+        
+        while((file = [enumerator nextObject]) && cancelled == NO)
+        {
+            NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+            NSString *newPath = [NSString stringWithFormat:@"%@/%05d", subFolder, i++];
+            DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:file decodingPixelData:NO];
+            //Don't want Big Endian, May not be readable
+            if( [[dcmObject transferSyntax] isEqualToTransferSyntax:[DCMTransferSyntax ExplicitVRBigEndianTransferSyntax]])
+                [dcmObject writeToFile:newPath withTransferSyntax:[DCMTransferSyntax ImplicitVRLittleEndianTransferSyntax] quality: DCMLosslessQuality atomically:YES];
+            else
+                [manager copyPath:file toPath:newPath handler:nil];
+                
+            if( dcmObject)	// <- it's a DICOM file
+            {
+                switch( [compressionMode selectedTag])
+                {
+                    case 0:
+                    break;
+                    
+                    case 1:
+                        [compressedArray addObject: newPath];
+                    break;
+                    
+                    case 2:
+                        [compressedArray addObject: newPath];
+                    break;
+                }
+            }
+            
+            [newFiles addObject:newPath];
+            [pool release];
+        }
+        
+        if( [newFiles count] > 0 && cancelled == NO)
+        {
+            switch( [compressionMode selectedTag])
+            {
+                case 1:
+                    [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+                break;
+                
+                case 2:
+                    [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+                break;
+            }
+            
+            thread.name = NSLocalizedString( @"Burning...", nil);
+            thread.status = NSLocalizedString( @"Writing DICOMDIR...", nil);
+            [self addDICOMDIRUsingDCMTK_forFilesAtPaths:newFiles dicomImages:dbObjects];
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"] && cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Adding Weasis...", nil);
+                NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
+                for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
+                    [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"] && cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Adding OsiriX Lite...", nil);
+                // unzip the file
+                NSTask *unzipTask = [[NSTask alloc] init];
+                [unzipTask setLaunchPath: @"/usr/bin/unzip"];
+                [unzipTask setCurrentDirectoryPath: burnFolder];
+                [unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Launcher.zip"], nil]]; // -o to override existing report w/ same name
+                [unzipTask launch];
+                [unzipTask waitUntilExit];
+                [unzipTask release];
+            }
+            
+            if(  [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO && cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Adding HTML pages...", nil);
+                [self produceHtml: burnFolder];
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"] && cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Adding Supplementary folder...", nil);
+                NSString *supplementaryBurnPath = [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"];
+                if( supplementaryBurnPath)
+                {
+                    supplementaryBurnPath = [supplementaryBurnPath stringByExpandingTildeInPath];
+                    if( [manager fileExistsAtPath: supplementaryBurnPath])
+                    {
+                        NSEnumerator *enumerator = [manager enumeratorAtPath: supplementaryBurnPath];
+                        while (file=[enumerator nextObject])
+                        {
+                            [manager copyPath: [NSString stringWithFormat:@"%@/%@", supplementaryBurnPath,file] toPath: [NSString stringWithFormat:@"%@/%@", burnFolder,file] handler:nil]; 
+                        }
+                    }
+                }
+            }
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"copyReportsToCD"] == YES && [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"] == NO && cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Adding Reports...", nil);
+                
+                NSMutableArray *studies = [NSMutableArray array];
+                
+                [idatabase lock];
+                
+                for( NSManagedObject *im in dbObjects)
+                {
+                    if( [im valueForKeyPath:@"series.study.reportURL"])
+                    {
+                        if( [studies containsObject: [im valueForKeyPath:@"series.study"]] == NO)
+                            [studies addObject: [im valueForKeyPath:@"series.study"]];
+                    }
+                }
+                
+                for( DicomStudy *study in studies)
+                {
+                    if( [[study valueForKey: @"reportURL"] hasPrefix: @"http://"] || [[study valueForKey: @"reportURL"] hasPrefix: @"https://"])
+                    {
+                        NSString *urlContent = [NSString stringWithContentsOfURL: [NSURL URLWithString: [study valueForKey: @"reportURL"]]];
+                        
+                        [urlContent writeToFile: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] atomically: YES];
+                    }
+                    else
+                    {
+                        // Convert to PDF
+                        
+                        NSString *pdfPath = [study saveReportAsPdfInTmp];
+                        
+                        if( [manager fileExistsAtPath: pdfPath] == NO)
+                            [manager copyPath: [study valueForKey:@"reportURL"] toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.%@", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]], [self cleanStringForFile: [[study valueForKey:@"reportURL"] pathExtension]]] handler:nil]; 
+                        else
+                            [manager copyPath: pdfPath toPath: [NSString stringWithFormat:@"%@/Report-%@ %@.pdf", burnFolder, [self cleanStringForFile: [study valueForKey:@"modality"]], [self cleanStringForFile: [BrowserController DateTimeWithSecondsFormat: [study valueForKey:@"date"]]]] handler: nil];
+                    }
+                    
+                    if( cancelled)
+                        break;
+                }
+                
+                [idatabase unlock];
+            }
+        }
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"] && cancelled == NO)
+        {
+            [destinationCompleteLock lock];
+            
+            if( cancelled == NO)
+            {
+                thread.name = NSLocalizedString( @"Burning...", nil);
+                thread.status = NSLocalizedString( @"Encrypting...", nil);
+                
+                // ZIP method - zip test.zip /testFolder -r -e -P hello
+                
+                [BrowserController encryptFileOrFolder: burnFolder inZIPFile: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] password: self.password];
+                self.password = @"";
+                
+                [[NSFileManager defaultManager] removeItemAtPath: burnFolder error: nil];
+                [[NSFileManager defaultManager] createDirectoryAtPath: burnFolder attributes: nil];
+                
+                [[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
+                [[NSString stringWithString: NSLocalizedString( @"The images are encrypted with a password in this ZIP file: first, unzip this file to read the content. Use an Unzip application to extract the files.", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
+            }
+            
+            [destinationCompleteLock unlock];
+        }
+        
+        thread.name = NSLocalizedString( @"Burning...", nil);
+        thread.status = [NSString stringWithFormat: NSLocalizedString( @"Writing %3.2fMB...", nil), (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)];
+        
+        [finalSizeField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSString stringWithFormat:@"Final files size to burn: %3.2fMB", (float) ([[self getSizeOfDirectory: burnFolder] longLongValue] / 1024)] waitUntilDone:YES];
+    }
+    @catch( NSException * e)
+    {
+        NSLog(@"Exception while creating DICOMDIR: %@", e);
+    }
 }
 
 - (IBAction) estimateFolderSize: (id) sender
@@ -969,17 +984,17 @@
 		size += [fattrs fileSize]/1024;
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"])
 	{
 		size += 17 * 1024; // About 17MB
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"])
 	{
 		size += 8 * 1024; // About 8MB
 	}
 	
-	if ([[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"])
 	{
 		size += [[self getSizeOfDirectory: [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"]] longLongValue];
 	}

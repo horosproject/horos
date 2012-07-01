@@ -123,7 +123,7 @@ static LogManager *currentLogManager = nil;
 			NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath: logFolder];
 			NSString *path;
 			
-			NS_DURING
+			@try {
 			while (path = [enumerator nextObject])
 			{
 				if ([[path pathExtension] isEqualToString: @"log"])
@@ -220,9 +220,9 @@ static LogManager *currentLogManager = nil;
 				}
 			}
 
-			NS_HANDLER
+			} @catch( NSException *localException) {
 				NSLog(@"Exception while checking logs: %@", [localException description]);
-			NS_ENDHANDLER
+			}
 			
 			[context unlock];
 		}

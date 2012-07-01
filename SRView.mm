@@ -3374,7 +3374,7 @@ typedef struct _xyzArray
 #pragma mark-  Drag and Drop
 
 - (void) startDrag:(NSTimer*)theTimer{
-	NS_DURING
+	@try {
 	_dragInProgress = YES;
 	
 	NSEvent *event = (NSEvent *)[theTimer userInfo];
@@ -3444,9 +3444,9 @@ typedef struct _xyzArray
 			slideBack:YES];
 	}
 	
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
-	NS_ENDHANDLER
+	}
 	
 	_dragInProgress = NO;
 }

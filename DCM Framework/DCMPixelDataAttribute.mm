@@ -870,7 +870,7 @@ static inline int int_ceildivpow2(int a, int b) {
 - (void)writeBaseToData:(DCMDataContainer *)dcmData transferSyntax:(DCMTransferSyntax *)ts{
 	//base class cannot convert encapsulted syntaxes yet.
 	NSException *exception;
-	//NS_DURING
+    
 	if (DCMDEBUG)
 		NSLog(@"Write Pixel Data %@", transferSyntax.description );
 
@@ -904,7 +904,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	BOOL status = NO;
 	if (DCMDEBUG) 
 		NSLog(@"Write PixelData with TS:%@  vr: %@ encapsulated: %d", ts.description, _vr, ts.isEncapsulated );
-	//NS_DURING
+    
 	if ( ts.isEncapsulated && [transferSyntax isEqualToTransferSyntax:ts])
 	{
 		[self writeBaseToData:container transferSyntax:ts];
@@ -943,7 +943,7 @@ static inline int int_ceildivpow2(int a, int b) {
 - (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality
 {
 	BOOL status = NO;
-	NS_DURING
+	@try {
 	if (DCMDEBUG)
 		NSLog(@"Convert Syntax %@ to %@", transferSyntax.description, ts.description);
 		
@@ -1052,9 +1052,9 @@ static inline int int_ceildivpow2(int a, int b) {
 	
 	finishedConversion:
 	status = status;
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		status = NO;
-	NS_ENDHANDLER
+	}
 	if (DCMDEBUG)
 		NSLog(@"Converted to Syntax %@ status:%d", transferSyntax.description, status);
 	return status;
@@ -1431,7 +1431,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	*/
 	NSMutableData *decompressedData = [NSMutableData data];
 	
-	NS_DURING	
+	@try {	
 	int j,k, position;
 	int decompressedLength = _rows * _columns;
 	if (_pixelDepth > 8)
@@ -1523,10 +1523,10 @@ static inline int int_ceildivpow2(int a, int b) {
 		
 	}
 	//NSLog(@"Decompressed RLE data");
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Error deompressing RLE");
 		decompressedData = nil;
-	NS_ENDHANDLER
+	}
 	return decompressedData;
 }
 
@@ -2581,7 +2581,7 @@ static inline int int_ceildivpow2(int a, int b) {
 	long depth = _pixelDepth;
 	int j;
 	NSMutableData *rgbData = nil;
-	NS_DURING
+	@try {
 	//PhotoInterpret
 	if ([[_dcmObject attributeValueWithName:@"PhotometricInterpretation"] rangeOfString:@"PALETTE"].location != NSNotFound)
 	{
@@ -3007,10 +3007,10 @@ static inline int int_ceildivpow2(int a, int b) {
 		
 
 	} //done converting Palette
-NS_HANDLER
+} @catch( NSException *localException) {
 	rgbData = nil;
 	NSLog(@"Exception converting Palette to RGB: %@", localException.name);
-NS_ENDHANDLER
+}
 	if( clutRed != nil)
 		free(clutRed);
 	if ( clutGreen != nil)

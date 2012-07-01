@@ -90,7 +90,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 
 - (void) startDrag:(NSEvent *) event
 {
-	NS_DURING
+	@try {
 	
 	NSSize dragOffset = NSMakeSize(0.0, 0.0);
     
@@ -165,9 +165,9 @@ static NSString *albumDragType = @"Osirix Album drag";
 				slideBack:YES];
 	}
 	
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging: %@", [localException description]);
-	NS_ENDHANDLER
+	}
 }
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination
@@ -236,7 +236,7 @@ static NSString *albumDragType = @"Osirix Album drag";
 	NSManagedObject *selectedObject = [[[BrowserController currentBrowser] matrixViewArray] objectAtIndex: [selectedButtonCell tag]];
 	if ([[selectedObject valueForKey:@"type"] isEqualToString:@"Image"])
 	{
-		NS_DURING
+		@try {
 		
 		NSPoint event_location = [event locationInWindow];
 		NSPoint local_point = [self convertPoint:event_location fromView:nil];
@@ -276,9 +276,9 @@ static NSString *albumDragType = @"Osirix Album drag";
 				 source:self
 			  slideBack:YES];
 		
-		NS_HANDLER
+		} @catch( NSException *localException) {
 		NSLog(@"Exception while dragging frame: %@", [localException description]);
-		NS_ENDHANDLER
+		}
 	}
 }
 

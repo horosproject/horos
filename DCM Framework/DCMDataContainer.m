@@ -1036,12 +1036,12 @@ void signal_EXC(int sig_num)
 		}
 	}
 	NSLog(@"Not a valid DICOM file");
-	NS_DURING
+	@try {
 	exception = [NSException exceptionWithName:@"DCMNotDicomError" reason:@"File is not DICOM" userInfo:nil];
 	[exception raise];
-	NS_HANDLER
+	} @catch( NSException *localException) {
 		NSLog(@"ERROR:%@  REASON:%@", [exception name], [exception reason]);
-	NS_ENDHANDLER
+	}
 	return NO;			
 }
 

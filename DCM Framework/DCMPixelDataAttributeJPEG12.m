@@ -509,7 +509,7 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 //	cinfo.err = jpeg_std_error(&jerr.pub);
 //	jerr.instance = self;
 //
-//	NS_DURING
+//	@try {
 //	jpeg_create_compress(&cinfo);
 //	jerr.pub.error_exit = JPEG12ErrorExit;
 //	jerr.pub.output_message = JPEG12OutputMessage;
@@ -586,11 +586,11 @@ jpeg12_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 //    jpeg_write_scanlines(&cinfo, row_pointer, 1);
 //  }
 //  
-//NS_HANDLER
+//} @catch( NSException *localException) {
 //	jpegData = nil;
 //	if (dcmException)
 //		NSLog([dcmException  reason]);
-//  NS_ENDHANDLER
+//  }
 //  
 //  jpeg_finish_compress(&cinfo);
 //  jpeg_destroy_compress(&cinfo);
