@@ -1075,7 +1075,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL) waitForAProcessor
 {
-	int processors =  MPProcessors ();
+	int processors =  [[NSProcessInfo processInfo] processorCount];
 	
 	[processorsLock lockWhenCondition: 1];
 	BOOL result = numberOfThreadsForRelisce >= processors;
@@ -7545,7 +7545,7 @@ return YES;
 		{
 			if( pixList[ x] && fileList[ x])
 			{
-				int mpprocessors = MPProcessors();
+				int mpprocessors = [[NSProcessInfo processInfo] processorCount];
 				if( mpprocessors < 1)
 					mpprocessors = 1;
 				
@@ -8756,7 +8756,7 @@ return YES;
 	
 	if( no > 50)
 	{
-		int mpprocessors = MPProcessors();
+		int mpprocessors = [[NSProcessInfo processInfo] processorCount];
 		
 		if( flipDataThread == nil)
 			flipDataThread = [[NSConditionLock alloc] initWithCondition: 0];
@@ -9676,7 +9676,7 @@ static float oldsetww, oldsetwl;
 	
 	if( [curConvMenu isEqualToString:NSLocalizedString(@"No Filter", nil)] == NO)
 	{
-		int mpprocessors = MPProcessors();
+		int mpprocessors = [[NSProcessInfo processInfo] processorCount];
 		
 		if( flipDataThread == nil)
 			flipDataThread = [[NSConditionLock alloc] initWithCondition: 0];

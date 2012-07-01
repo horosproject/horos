@@ -435,7 +435,7 @@
 	
 	int total = [files count];
 	
-	CHUNK_SIZE = total / MPProcessors();
+	CHUNK_SIZE = total / [[NSProcessInfo processInfo] processorCount];
 	if( CHUNK_SIZE > 500)
 		CHUNK_SIZE = 500;
 	else

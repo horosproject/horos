@@ -35,7 +35,7 @@
 }
 
 -(id)initForSchedulableObject:(NSObject <Schedulable> *) schedObj {
-    return [self initForSchedulableObject:schedObj andNumberOfThreads: MPProcessors ()];
+    return [self initForSchedulableObject:schedObj andNumberOfThreads: [[NSProcessInfo processInfo] processorCount]];
 }
 
 -(void)dealloc {

@@ -12521,7 +12521,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 - (BOOL) waitForAProcessor
 {
-	int processors =  MPProcessors();
+	int processors =  [[NSProcessInfo processInfo] processorCount];
 	
 //	processors--;
 	if( processors < 1)

@@ -172,7 +172,7 @@
 - (void) subReslice:(NSNumber*) posNumber
 {
 	int i, x, y, stack, pos = [posNumber intValue];
-	int threads = MPProcessors ();
+	int threads = [[NSProcessInfo processInfo] processorCount];
 	int from, to;
 	
 	from = (pos * newY) / threads;
@@ -544,8 +544,8 @@
 	if( processorsLock == nil)
 		processorsLock = [[NSLock alloc] init];
 	
-	numberOfThreadsForCompute = MPProcessors ();
-	for( i = 0; i < MPProcessors ()-1; i++)
+	numberOfThreadsForCompute = [[NSProcessInfo processInfo] processorCount];
+	for( i = 0; i < [[NSProcessInfo processInfo] processorCount]-1; i++)
 	{
 		[NSThread detachNewThreadSelector: @selector( subReslice:) toTarget:self withObject: [NSNumber numberWithInt: i]];
 	}
