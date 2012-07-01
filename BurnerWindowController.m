@@ -40,9 +40,7 @@
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
-	NSFileManager *manager = [NSFileManager defaultManager];
-	
-	[manager removeFileAtPath:imagePath handler:nil];
+	[[NSFileManager defaultManager] removeFileAtPath:imagePath handler:nil];
 	
 	NSTask* makeImageTask = [[[NSTask alloc] init] autorelease];
 
@@ -60,37 +58,6 @@
 	[makeImageTask setArguments:args];
 	[makeImageTask launch];
 	[makeImageTask waitUntilExit];
-}
-
-- (void)writeDMG:(id)object
-{
-	NSSavePanel *savePanel = [NSSavePanel savePanel];
-	[savePanel setCanSelectHiddenExtension:YES];
-	[savePanel setRequiredFileType:@"dmg"];
-	[savePanel setTitle:@"Save as DMG"];
-	
-	if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
-	{
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Writing DMG file...", nil)];
-		[wait showWindow:self];
-		        
-		@try
-		{
-			[self createDMG:[[savePanel URL] path] withSource:[self folderToBurn]];
-		}
-		@catch (NSException * e)
-		{
-			NSLog( @"******** exception during writeDMG: %@", e);
-		}
-		
-		[wait close];
-		[wait release];
-	}
-	
-	NSFileManager *manager = [NSFileManager defaultManager];
-	[manager removeFileAtPath:[self folderToBurn] handler:nil];
-	
-	self.buttonsDisabled = NO;
 }
 
 - (void) copyDefaultsSettings
@@ -196,9 +163,11 @@
 	[originalDbObjects release];
 	[cdName release];
 	[password release];
-    
+    [writeDMGPath release];
     [idatabase release];
-	
+	[anonymizationTags release];
+    [destinationCompleteLock release];
+    
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
 }
@@ -290,10 +259,15 @@
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
 		
+        [writeDMGPath release];
+        writeDMGPath = nil;
 		writeDMG = NO;
 		if ([[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"saveAsDMGFile"]) writeDMG = YES;
-		
+		        
+        [anonymizationTags release];
+        anonymizationTags = nil;
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
 		{
 			AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
@@ -301,10 +275,7 @@
 			if (panelController.end == AnonymizationPanelCancel)
 				return;
 			
-			NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags:panelController.anonymizationViewController.tagsValues];
-			
-			[anonymizedFiles release];
-			anonymizedFiles = [[anonOut allValues] mutableCopy];
+            anonymizationTags = [panelController.anonymizationViewController.tagsValues retain];
 		}
 		else
 		{
@@ -314,6 +285,9 @@
 		
 		self.buttonsDisabled = YES;
 		
+        destinationCompleteLock = [NSRecursiveLock new];
+        [destinationCompleteLock lock];
+        
 		if (cdName != nil && [cdName length] > 0)
 		{
 			runBurnAnimation = YES;
@@ -324,6 +298,18 @@
 		}
 		else
 			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
+        
+        if( writeDMG)
+        {
+            NSSavePanel *savePanel = [NSSavePanel savePanel];
+            [savePanel setCanSelectHiddenExtension:YES];
+            [savePanel setRequiredFileType:@"dmg"];
+            [savePanel setTitle:@"Save as DMG"];
+            
+            if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
+                writeDMGPath = [[[savePanel URL] path] retain];
+        }
+        [destinationCompleteLock unlock];
 	}
 }
 
@@ -332,6 +318,14 @@
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	isSettingUpBurn = YES;
 	
+    if( anonymizationTags)
+    {
+        NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags: anonymizationTags];
+        
+        [anonymizedFiles release];
+        anonymizedFiles = [[anonOut allValues] mutableCopy];
+    }
+    
 	[self addDicomdir];
 	
 	isSettingUpBurn = NO;
@@ -343,29 +337,24 @@
 		
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]])
 	{
+        [destinationCompleteLock lock]; // Did the user finished entering the CD or the DMG path?
+        
 		if( no)
 		{
 			if( writeDMG)
-            {
-                [self performSelectorOnMainThread:@selector( writeDMG:) withObject:nil waitUntilDone:YES];
-                runBurnAnimation = NO;
-            }
+                [self createDMG: writeDMGPath withSource:[self folderToBurn]];
+            
 			else
-            {
                 [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
-            }
 		}
-        else
-            runBurnAnimation = NO;
-	}
-	else
-	{
-		self.buttonsDisabled = NO;
-        runBurnAnimation = NO;
+        
+        [destinationCompleteLock unlock];
 	}
 	
+    [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+    self.buttonsDisabled = NO;
+    runBurnAnimation = NO;
 	burning = NO;
-	
 	
 	[pool release];
 }
@@ -398,7 +387,6 @@
 {
 	NSString *name = [[nameField stringValue] uppercaseString];
 	[self setCDTitle:name];
-	NSLog( @"%@", cdName);
 }
 
 -(NSString *)folderToBurn
@@ -408,104 +396,35 @@
 
 - (void)burnCD:(id)object
 {
-	sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
-	
-    DRTrack*	track = [self createTrack];
-
-    if (track)
+    sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
+    
+	DRTrack* track = [DRTrack trackForRootFolder: [DRFolder folderWithPath: [self folderToBurn]]];
+    
+    if( track)
     {
-        DRBurnSetupPanel*	bsp = [DRBurnSetupPanel setupPanel];
-
-        // We'll be the delegate for the setup panel. This allows us to show off some 
-        // of the customization you can do.
-        [bsp setDelegate:self];
+        DRBurnSetupPanel *bsp = [DRBurnSetupPanel setupPanel];
+        
+        [bsp setDelegate: self];
         
         if ([bsp runSetupPanel] == NSOKButton)
         {
-            DRBurnProgressPanel*	bpp = [DRBurnProgressPanel progressPanel];
-
-            [bpp setDelegate:self];
-            
-            // If you wanted to run this as a sheet you would have sent
+            DRBurnProgressPanel *bpp = [DRBurnProgressPanel progressPanel];
+            [bpp setDelegate: self];
             [bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
         }
-        else
-            runBurnAnimation = NO;
-    }
-    else
-        runBurnAnimation = NO;
-	
-	self.buttonsDisabled = NO;
+	}
 }
-
-
-- (DRTrack *) createTrack
-{
-	DRFolder* rootFolder = [DRFolder folderWithPath:[self folderToBurn]];		
-	return [DRTrack trackForRootFolder:rootFolder];
-}
-
 
 //------------------------------------------------------------------------------------------------------------------------------------
 #pragma mark•
 
 - (BOOL) validateMenuItem:(id)sender
 {
-
 	if ([sender action] == @selector(terminate:))
 		return (burning == NO);		// No quitting while a burn is going on
 
 	return YES;
 }
-
-
-//#pragma mark Setup Panel Delegate Methods
-/* We're implementing some of these setup panel delegate methods to illustrate what you could do to control a
-	burn setup. */
-	
-
-/* This delegate method is called when a device is plugged in and becomes available for use. It's also
-	called for each device connected to the machine when the panel is first shown. 
-	
-	Its's possible to query the device and ask it just about anything to determine if it's a device
-	that should be used.
-	
-	Just return YES for a device you want and NO for those you don't. */
-	
-/*
-- (BOOL) setupPanel:(DRSetupPanel*)aPanel deviceCouldBeTarget:(DRDevice*)device
-{
-
-#if 0
-	// This bit of code shows how to filter devices bases on the properties of the device
-	// For example, it's possible to limit the drives displayed to only those hooked up over
-	// firewire, or converesely, you could NOT show drives if there was some reason to. 
-	NSDictionary*	deviceInfo = [device info];
-	if ([[deviceStatus objectForKey:DRDevicePhysicalInterconnectKey] isEqualToString:DRDevicePhysicalInterconnectFireWire])
-		return YES;
-	else
-		return NO;
-#else
-	return YES;
-#endif
-
-}
- */ 
- 
-/*" This delegate method is called whenever the state of the media changes. This includes
-	not only inserting and ejecting media, but also if some other app grabs the reservation,
-	starts using it, etc.
-	
-	When we get sent this we're going to do a little bit of work to try to play nice with
-	the rest of the world, but it essentially comes down to "is it a CDR or CDRW" that we
-	care about. We could also check to see if there's enough room for our data (maybe the
-	user stuck in a mini 2" CD or we need an 80 min CD).
-	
-	allows the delegate to determine if the media inserted in the 
-	device is suitable for whatever operation is to be performed. The delegate should
-	return a string to be used in the setup panel to inform the user of the 
-	media status. If this method returns %NO, the default button will be disabled.
-"*/
 
 - (BOOL) setupPanel:(DRSetupPanel*)aPanel deviceContainsSuitableMedia:(DRDevice*)device promptString:(NSString**)prompt; 
 {
@@ -527,13 +446,6 @@
 
 }
 
-//#pragma mark Progress Panel Delegate Methods
-
-/* Here we are setting up this nice little instance variable that prevents the app from
-	quitting while a burn is in progress. This gets checked up in validateMenu: and we'll
-	set it to NO in burnProgressPanelDidFinish: */
-	
-	
 - (void) burnProgressPanelWillBegin:(NSNotification*)aNotification
 {
 	burning = YES;	// Keep the app from being quit from underneath the burn.
@@ -543,10 +455,6 @@
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
 {
-	NSFileManager *manager = [NSFileManager defaultManager];
-	[manager removeFileAtPath:[self folderToBurn] handler:nil];
-	burning = NO;	// OK we can quit now.
-	runBurnAnimation = NO;
 }
 
 - (BOOL) burnProgressPanel:(DRBurnProgressPanel*)theBurnPanel burnDidFinish:(DRBurn*)burn
@@ -564,14 +472,10 @@
 	else
 		[sizeField setStringValue: NSLocalizedString( @"Burning is finished !", nil)];
 	
-	burning = NO;
-	
 	if ([self.window isSheet])
 		[NSApp endSheet:self.window];
 	[[self window] performClose:nil];
 	
-    runBurnAnimation = NO;
-    
 	return YES;
 }
 
@@ -869,24 +773,6 @@
 	
 	if( [newFiles count] > 0)
 	{
-		NSArray *copyCompressionSettings = nil;
-		int copyCompressionResolutionLimit = 0;
-		
-		// Change the JPEG2000 settings
-		if( [compressionMode selectedTag] == 1 && [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] == YES)
-		{
-			copyCompressionSettings = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettings"];
-			copyCompressionResolutionLimit = [[NSUserDefaults standardUserDefaults] integerForKey: @"CompressionResolutionLimit"];
-			
-			// 2 == compression_JPEG
-			[[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", @"2", @"compression", @"1", @"quality", nil]] forKey: @"CompressionSettings"];
-			[[NSUserDefaults standardUserDefaults] setObject: @"1" forKey: @"CompressionResolutionLimit"];
-			[[NSUserDefaults standardUserDefaults] synchronize]; // We need this, because compression/decompression is done in a separate process
-			
-			// First decompress them, if compressed
-			[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
-		}
-		
 		switch( [compressionMode selectedTag])
 		{
 			case 1:
@@ -896,13 +782,6 @@
 			case 2:
 				[[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
 			break;
-		}
-		
-		// Restore the settings
-		if( copyCompressionSettings)
-		{
-			[[NSUserDefaults standardUserDefaults] setObject: copyCompressionSettings forKey: @"CompressionSettings"];
-			[[NSUserDefaults standardUserDefaults] setInteger: copyCompressionResolutionLimit forKey: @"CompressionResolutionLimit"];
 		}
 		
         thread.name = NSLocalizedString( @"Burning...", nil);

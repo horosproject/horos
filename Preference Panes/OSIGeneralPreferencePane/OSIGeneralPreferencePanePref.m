@@ -212,6 +212,18 @@
 {
 	if ([self isUnlocked])
 	{
+        if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] count] < 14)
+        {
+            NSLog( @"*** reset compression settings");
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettings"];
+        }
+        
+        if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] count] < 14)
+        {
+            NSLog( @"*** reset compression settings");
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettingsLowRes"];
+        }
+        
 		compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
 		compressionSettingsLowResCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] copy];
 		

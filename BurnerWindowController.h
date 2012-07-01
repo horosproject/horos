@@ -12,9 +12,6 @@
      PURPOSE.
 =========================================================================*/
 
-
-
-
 #import <Cocoa/Cocoa.h>
 
 @class DRTrack;
@@ -39,7 +36,10 @@
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
 	BOOL writeDMG;
-	int sizeInMb;
+    NSString *writeDMGPath;
+	NSArray *anonymizationTags;
+    NSRecursiveLock *destinationCompleteLock;
+    int sizeInMb;
 	NSString *password;
 	IBOutlet NSWindow *passwordWindow;
 	
@@ -58,26 +58,22 @@
 
 - (IBAction) ok:(id)sender;
 - (IBAction) cancel:(id)sender;
-
 - (IBAction) setAnonymizedCheck: (id) sender;
 - (id) initWithFiles:(NSArray *)theFiles;
 - (id)initWithFiles:(NSArray *)theFiles managedObjects:(NSArray *)managedObjects;
-- (DRTrack*) createTrack;
--(IBAction)burn:(id)sender;
+- (IBAction)burn:(id)sender;
 - (void)setCDTitle: (NSString *)title;
--(IBAction)setCDName:(id)sender;
--(NSString *)folderToBurn;
+- (IBAction)setCDName:(id)sender;
+- (NSString *)folderToBurn;
 - (void)setFilesToBurn:(NSArray *)theFiles;
 - (void)burnCD:(id)object;
 - (NSArray *)extractFileNames:(NSArray *)filenames;
 - (BOOL)dicomCheck:(NSString *)filename;
 - (void)importFiles:(NSArray *)fileNames;
 - (void)setup:(id)sender;
-//- (void)addDICOMDIRUsingDCMTK;
 - (void)addDicomdir;
 - (IBAction)estimateFolderSize:(id)object;
 - (void)performBurn:(id)object;
-//- (void)reloadData:(id)object;
 - (void)irisAnimation:(NSTimer*)object;
 - (NSNumber*)getSizeOfDirectory:(NSString*)path;
 - (NSString*) defaultTitle;

@@ -316,11 +316,15 @@ static NSString *templateDicomFile = nil;
 	NSString* tempDirPath = [dirPath stringByAppendingPathComponent:@".temp"];
 	[[NSFileManager defaultManager] confirmDirectoryAtPath:tempDirPath];
 	
-	Wait *splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
-	[splash showWindow: self];
-	[[splash progress] setMaxValue: [files count]];
-	[splash setCancel: YES];
-	
+    Wait *splash = nil;
+    if( [NSThread isMainThread])
+    {
+        Wait *splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
+        [splash showWindow: self];
+        [[splash progress] setMaxValue: [files count]];
+        [splash setCancel: YES];
+	}
+    
 	NSMutableArray* producedFiles = [NSMutableArray arrayWithCapacity: files.count];
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useDCMTKForAnonymization"])
