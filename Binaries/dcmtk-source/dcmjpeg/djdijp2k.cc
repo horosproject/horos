@@ -3,7 +3,8 @@
 #include "djcparam.h"
 #include "ofconsol.h"
 
-
+#include <sys/types.h>
+#include <sys/sysctl.h>
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
@@ -107,7 +108,13 @@ OFCondition DJDecompressJP2k::decode(
 		int processors = 0;
 		
 		if( compressedFrameBufferSize > 512*1024)
-			processors = MPProcessors()/2;
+        {
+            int mib[2] = {CTL_HW, HW_NCPU};
+            size_t dataLen = sizeof(int); // 'num' is an 'int'
+            int result = sysctl(mib, 2, &processors, &dataLen, NULL, 0);
+            if (result == -1)
+                processors = 1;
+        }
 		
 		long decompressedBufferSize = 0;
 		int colorModel;

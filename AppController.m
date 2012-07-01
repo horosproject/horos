@@ -2636,7 +2636,14 @@ static BOOL initialized = NO;
                     }
                 }
 				
-				NSLog(@"Number of processors: %lu", MPProcessors());
+                int processors;
+                int mib[2] = {CTL_HW, HW_NCPU};
+                size_t dataLen = sizeof(int); // 'num' is an 'int'
+                int result = sysctl(mib, 2, &processors, &dataLen, NULL, 0);
+                if (result == -1)
+                    processors = 1;
+                
+				NSLog(@"Number of processors: %d/%d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
 				
 				#ifdef NDEBUG
 				#else

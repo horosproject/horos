@@ -38,6 +38,9 @@
 #import "Accelerate/Accelerate.h"
 #include "ofconsol.h"
 
+#include <sys/types.h>
+#include <sys/sysctl.h>
+
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
 #include "ofstdinc.h"
@@ -453,7 +456,13 @@ OFCondition DJCompressJP2K::encode(
 		int processors = 0;
 		
 		if( rows*columns > 256*1024) // 512 * 512
-			processors = MPProcessors()/2;
+        {
+            int mib[2] = {CTL_HW, HW_NCPU};
+            size_t dataLen = sizeof(int); // 'num' is an 'int'
+            int result = sysctl(mib, 2, &processors, &dataLen, NULL, 0);
+            if (result == -1)
+                processors = 1;
+        }
 		
 		void *outBuffer = kdu_compressJPEG2K( (void*) image_buffer, samplesPerPixel, rows, columns, bitsstored, false, rate, &compressedLength, processors);
 		
