@@ -23,6 +23,8 @@
 - DVD/CD Burning: preparation process is now 100% in a separate background thread
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
+- WebPortal migration
+
 -------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm
