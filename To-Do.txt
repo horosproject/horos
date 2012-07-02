@@ -24,7 +24,6 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
 - Check GPU activation?
-- Test forward compatibility
 - BullEye: at least one segment score !
 - BullEye: export/import presets
 
