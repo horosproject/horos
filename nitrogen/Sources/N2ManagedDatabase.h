@@ -40,6 +40,8 @@
 //-(BOOL)tryWriteLock;
 //-(void)writeUnlock;
 
++(NSString*) modelName;
+-(BOOL) deleteSQLFileIfOpeningFailed;
 -(NSManagedObjectModel*)managedObjectModel;
 //-(NSMutableDictionary*)persistentStoreCoordinatorsDictionary;
 -(BOOL)migratePersistentStoresAutomatically; // default implementation returns YES

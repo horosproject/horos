@@ -201,6 +201,16 @@
     }
 }
 
++(NSString*)modelName {
+	[NSException raise:NSGenericException format:@"[class modelName] must be defined"];
+	return NULL;
+}
+
+-(BOOL) deleteSQLFileIfOpeningFailed
+{
+    return NO;
+}
+
 -(NSManagedObjectModel*)managedObjectModel {
 	[NSException raise:NSGenericException format:@"[%@ managedObjectModel] must be defined", self.className];
 	return NULL;
@@ -241,9 +251,23 @@
 			if (isNewFile)
 				moc.persistentStoreCoordinator = nil;
 			
-			if (!moc.persistentStoreCoordinator) {
-				NSPersistentStoreCoordinator* persistentStoreCoordinator = moc.persistentStoreCoordinator = [[[N2PersistentStoreCoordinator alloc] initWithManagedObjectModel:self.managedObjectModel] autorelease];
-                //				[persistentStoreCoordinatorsDictionary setObject:persistentStoreCoordinator forKey:sqlFilePath];
+			if (!moc.persistentStoreCoordinator)
+            {
+                NSString *localModelsPath = [[sqlFilePath stringByDeletingPathExtension] stringByAppendingPathExtension: @"momd"];
+                NSManagedObjectModel *models = self.managedObjectModel;
+                
+                @try
+                {
+                    NSManagedObjectModel *localModels = [[[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: localModelsPath]] autorelease]; //Forward compatibility !
+                    models = [NSManagedObjectModel modelByMergingModels: [NSArray arrayWithObjects: self.managedObjectModel, localModels, nil]]; //warning localModels can be nil: put it at last position
+                }
+                @catch (NSException *exception)
+                {
+                    models = self.managedObjectModel;
+                }
+                
+				NSPersistentStoreCoordinator* persistentStoreCoordinator = moc.persistentStoreCoordinator = [[[N2PersistentStoreCoordinator alloc] initWithManagedObjectModel: models] autorelease];
+                //[persistentStoreCoordinatorsDictionary setObject:persistentStoreCoordinator forKey:sqlFilePath];
 				
 				NSPersistentStore* pStore = nil;
 				int i = 0;
@@ -264,18 +288,23 @@
 						
 						// error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 						
-						// delete the old file...
-						[NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:NULL];
-						// [NSFileManager.defaultManager removeItemAtPath: [defaultPortalUsersDatabasePath.stringByExpandingTildeInPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:@"WebUsers.vers"] error:NULL];
+						// delete the old file... for the Database.sql model ONLY(Dont do this for the WebUser db)
+                        if( self.deleteSQLFileIfOpeningFailed)
+                            [NSFileManager.defaultManager removeItemAtPath:sqlFilePath error:NULL];
 					}
 				} while (!pStore && i < 2);
+                
+                // Save the models for forward compatibility with old OsiriX versions that don't know the current model
+                NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
+                [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
+                [[NSFileManager defaultManager] copyPath: modelsPath toPath: localModelsPath handler: nil];
 			}
 			
 			if (isNewFile) {
                 [moc save:NULL];
 				NSLog(@"New database file created at %@", sqlFilePath);
             }
-
+            
 		} else {
             if (self.mainDatabase)
                 NSLog(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");

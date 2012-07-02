@@ -328,10 +328,20 @@ static DicomDatabase* activeLocalDatabase = nil;
 	return [NSString stringWithFormat:@"<%@ 0x%08x> \"%@\"", self.className, self, self.name];
 }
 
++(NSString*)modelName
+{
+    return @"OsiriXDB_DataModel.momd";
+}
+
+-(BOOL) deleteSQLFileIfOpeningFailed
+{
+    return YES;
+}
+
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* managedObjectModel = NULL;
 	if (!managedObjectModel)
-		managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:@"OsiriXDB_DataModel.momd"]]];
+		managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent: DicomDatabase.modelName]]];
     return managedObjectModel;
 }
 

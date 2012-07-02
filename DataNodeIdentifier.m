@@ -215,9 +215,10 @@
     if (![dni isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
         return NO;
     
-    NSHost* selfHost; NSInteger selfPort;
+    NSHost* selfHost = nil; NSInteger selfPort;
     [[self class] location:self.location toHost:&selfHost port:&selfPort];
-    NSHost* dniHost; NSInteger dniPort;
+    
+    NSHost* dniHost = nil; NSInteger dniPort;
     [[self class] location:dni.location toHost:&dniHost port:&dniPort];
     
     if (selfPort == dniPort && [selfHost isEqualToHost:dniHost])

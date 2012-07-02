@@ -19,10 +19,15 @@
 
 @implementation WebPortalDatabase
 
++(NSString*) modelName
+{
+    return @"WebPortalDB.momd";
+}
+
 -(NSManagedObjectModel*)managedObjectModel {
 	static NSManagedObjectModel* model = NULL;
 	if (!model)
-		model = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:@"WebPortalDB.momd"]]];
+		model = [[NSManagedObjectModel alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent: WebPortalDatabase.modelName]]];
     return model;
 }
 

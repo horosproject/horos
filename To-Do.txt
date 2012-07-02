@@ -23,7 +23,10 @@
 - DVD/CD Burning: preparation process is now 100% in a separate background thread
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
-- WebPortal migration
+- Check GPU activation?
+- Test forward compatibility
+- BullEye: at least one segment score !
+- BullEye: export/import presets
 
 -------------------------------------------------------------
 
