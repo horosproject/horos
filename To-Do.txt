@@ -32,7 +32,6 @@
 - Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, Retina Display, unzip .app with password
-- For a selected patient: automatically display previous studies available on a PACS
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
