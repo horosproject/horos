@@ -23,9 +23,7 @@
 - DVD/CD Burning: preparation process is now 100% in a separate background thread
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 
-- BullEye: at least one segment score !
-- BullEye: export/import presets
-
+- Web Testing XMLRPC
 -------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm
