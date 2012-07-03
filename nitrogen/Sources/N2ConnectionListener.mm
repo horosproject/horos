@@ -149,7 +149,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		if (ipv6socket) CFRelease(ipv6socket);
 		ipv4socket = NULL;
 		ipv6socket = NULL;
-		return NO;
+		return nil;
 	}
 	
 	if (0 == port) {
@@ -176,7 +176,7 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 		if (ipv6socket) CFRelease(ipv6socket);
 		ipv4socket = NULL;
 		ipv6socket = NULL;
-		return NO;
+		return nil;
 	}
 	
 	// set up the run loop sources for the sockets

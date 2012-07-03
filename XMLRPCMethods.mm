@@ -48,6 +48,9 @@
         _listener = [[N2ConnectionListener alloc] initWithPort:port connectionClass:[XMLRPCInterfaceConnection class]];
         _listener.threadPerConnection = YES;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionOpened:) name:N2ConnectionListenerOpenedConnectionNotification object:_listener];
+        
+        if( _listener)
+            NSLog( @"--- XML-RPC interface activated on port: %d", port);
     }
 	
 	return self;
