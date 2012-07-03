@@ -728,19 +728,15 @@ public:
     
     if( [[NSUserDefaults standardUserDefaults] integerForKey: @"VRAMAmount"] != vram)
     {
-        if( vram >= 1000 && [AppController hasMacOSXLion])
+        if( vram >= 2000 && [AppController hasMacOSXLion])
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"]; // full screen
-            
-            if( [[NSProcessInfo processInfo] processorCount] > 12)
-                [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
-            else
-                [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];      // gpu
+            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"VRDefaultViewSize"];     // full screen
+            [[NSUserDefaults standardUserDefaults] setInteger: 1 forKey: @"MAPPERMODEVR"];          // gpu
         }
         else
         {
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"VRDefaultViewSize"]; // square
-            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];      // cpu
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"VRDefaultViewSize"];     // square
+            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"MAPPERMODEVR"];          // cpu
         }
         
         [[NSUserDefaults standardUserDefaults] setInteger: vram forKey: @"VRAMAmount"];
