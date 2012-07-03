@@ -20,6 +20,7 @@
 
 @class QueryArrayController;
 @class QueryFilter;
+@class DicomStudy;
 
 #define MAXINSTANCE 40
 
@@ -111,6 +112,8 @@
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
++ (void) retrieveStudies:(NSArray*) studies server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
++ (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName servers: (NSArray*) serversList showErrors: (BOOL) showErrors;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
 - (void) autoRetrieveSettings: (id) sender;
@@ -128,7 +131,7 @@
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index;
 - (IBAction) selectUniqueSource:(id) sender;
-- (QueryFilter*) getModalityQueryFilderWithString:(NSString*) modalityFilterMatrixString;
+- (QueryFilter*) getModalityQueryFilterWithString:(NSString*) modalityFilterMatrixString;
 - (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;

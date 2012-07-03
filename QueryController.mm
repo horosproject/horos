@@ -244,6 +244,84 @@ extern "C"
 	return error;
 }
 
++ (void) retrieveStudies:(NSArray*) studies server: (NSDictionary*) aServer showErrors: (BOOL) showErrors
+{
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: aServer];
+    
+    for( DCMTKQueryNode	*object in studies)
+    {
+        [object setShowErrorMessage: showErrors];
+        
+        [dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
+        [dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
+        [dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
+        [dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+        
+        FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+        if( pFile)
+            fclose (pFile);
+        else
+            [object move: aServer];
+    }
+}
+
++ (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName servers: (NSArray*) serversList showErrors: (BOOL) showErrors
+{
+	QueryArrayController *qm = nil;
+	NSMutableArray *studies = [NSMutableArray array];
+	
+    if( usePatientID == NO && usePatientName == NO)
+    {
+        NSLog( @"****** QR: usePatientID == NO && usePatientName == NO");
+        return 0;
+    }
+    
+	@try
+	{
+        for( NSDictionary *server in serversList)
+        {
+            qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer: server];
+            
+            NSString *patientName = nil;
+            
+            if( usePatientName)
+                [qm addFilter: study.name forDescription: PatientName];
+            
+            if( usePatientID)
+                [qm addFilter: study.patientID forDescription: PatientID];
+            
+            [qm performQuery: showErrors];
+            
+            NSArray *studiesForThisNode = [qm queries];
+            NSArray *uidArray = [studies valueForKey: @"uid"];
+            
+            for( NSUInteger x = 0 ; x < [studiesForThisNode count] ; x++)
+            {
+                NSUInteger index = [uidArray indexOfObject: [[studiesForThisNode objectAtIndex: x] valueForKey:@"uid"]];
+                
+                if( index == NSNotFound) // not found
+                    [studies addObject: [studiesForThisNode objectAtIndex: x]];
+                else 
+                {
+                    if( [[studies objectAtIndex: index] valueForKey: @"numberImages"] && [[studiesForThisNode objectAtIndex: x] valueForKey: @"numberImages"])
+                    {
+                        if( [[[studies objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[studiesForThisNode objectAtIndex: x] valueForKey: @"numberImages"] intValue])
+                            [studies replaceObjectAtIndex: index withObject: [studiesForThisNode objectAtIndex: x]];
+                    }
+                }
+            }
+            
+            [qm release];
+        }
+	}
+	@catch (NSException * e)
+	{
+		NSLog( @"%@",  [e description]);
+	}
+	
+	return studies;
+}
+
 + (QueryController*) currentQueryController
 {
 	return currentQueryController;
@@ -1725,18 +1803,6 @@ extern "C"
 	else NSRunCriticalAlertPanel( NSLocalizedString(@"No Study Selected", nil), NSLocalizedString(@"Select a study to query all studies of this patient.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
 }
 
-- (int) array: uidArray containsObject: (NSString*) uid
-{
-	BOOL result = NO;
-	
-	for( NSUInteger x = 0 ; x < [uidArray count]; x++)
-	{
-		if( [[uidArray objectAtIndex: x] isEqualToString: uid]) return x;
-	}
-	
-	return -1;
-}
-
 - (NSArray*) queryPatientIDwithoutGUI: (NSString*) patientID
 {
 	NSString			*theirAET;
@@ -1810,9 +1876,9 @@ extern "C"
                     
                     for( NSUInteger x = 0 ; x < [curResult count] ; x++)
                     {
-                        int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                        NSUInteger index = [uidArray indexOfObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
                         
-                        if( index == -1) // not found
+                        if( index == NSNotFound) // not found
                             [temporaryCFindResultArray addObject: [curResult objectAtIndex: x]];
                         else 
                         {
@@ -2197,7 +2263,7 @@ extern "C"
                 queryItem = YES;
             }
             
-            modalityQueryFilter = [self getModalityQueryFilderWithString: [instance objectForKey: @"modalityFilterMatrixString"]];
+            modalityQueryFilter = [self getModalityQueryFilterWithString: [instance objectForKey: @"modalityFilterMatrixString"]];
             
             if ([modalityQueryFilter object])
             {
@@ -2278,9 +2344,9 @@ extern "C"
                 
                 for( NSUInteger x = 0 ; x < [curResult count] ; x++)
                 {
-                    int index = [self array: uidArray containsObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
+                    NSUInteger index = [uidArray indexOfObject: [[curResult objectAtIndex: x] valueForKey:@"uid"]];
                     
-                    if( index == -1) // not found
+                    if( index == NSNotFound) // not found
                         [tempResultArray addObject: [curResult objectAtIndex: x]];
                     else 
                     {
@@ -3505,7 +3571,7 @@ extern "C"
 	}
 }
 
-- (QueryFilter*) getModalityQueryFilderWithString:(NSString*) modalityFilterMatrixString
+- (QueryFilter*) getModalityQueryFilterWithString:(NSString*) modalityFilterMatrixString
 {
     NSScanner *scan = [NSScanner scannerWithString: modalityFilterMatrixString];
     NSMutableString *m = [NSMutableString stringWithString: @""];
