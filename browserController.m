@@ -3517,25 +3517,28 @@ static NSConditionLock *threadLock = nil;
         
         @try
         {
-            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
-            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
-            
-            // Servers
-            NSMutableArray* servers = [NSMutableArray array];
-            NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-            for (NSDictionary* si in sources)
-            {
-                if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
-                {
-                    [servers addObject: si];
-                }
-            }
-            
-            // Distant studies
             NSArray *distantStudies = nil;
-            #ifndef OSIRIX_LIGHT
-            distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName servers: servers showErrors: YES];
-            #endif
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
+            {
+                BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
+                BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
+                
+                // Servers
+                NSMutableArray* servers = [NSMutableArray array];
+                NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+                for (NSDictionary* si in sources)
+                {
+                    if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
+                    {
+                        [servers addObject: si];
+                    }
+                }
+                
+                // Distant studies
+                #ifndef OSIRIX_LIGHT
+                distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName servers: servers showErrors: YES];
+                #endif
+            }
             
             // Local studies
             NSArray *localStudies = nil;
@@ -3581,10 +3584,9 @@ static NSConditionLock *threadLock = nil;
 //            }
             
             if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
-            {
-                self.comparativeStudies = mergedStudies;
-                [comparativeTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
-            }
+                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
+            
+            NSLog( @"--- Search for comparative studies finished");
         }
         @catch (NSException* e)
         {
@@ -3594,6 +3596,26 @@ static NSConditionLock *threadLock = nil;
     [searchForComparativeStudiesLock unlock];
     
     [pool release];
+}
+
+- (void) refreshComparativeStudies: (NSArray*) newStudies
+{
+    if( self.comparativeStudies != newStudies)
+    {
+        self.comparativeStudies = newStudies;
+        [comparativeTable reloadData];
+    }
+    
+    NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+    DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+    
+    NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
+    
+    if( index != NSNotFound)
+    {
+        [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
+        [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
+    }
 }
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
@@ -3701,17 +3723,26 @@ static NSConditionLock *threadLock = nil;
                 // COMPARATIVE STUDIES
                 
 //                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"searchForComparativeStudiesOnDICOMNodes"];
-//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientIDForComparativeSearch"];
-//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientNameForComparativeSearch"];
-//                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: @"MINIPACS"] forKey: @"comparativeSearchDICOMNodes"];
+                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientIDForComparativeSearch"];
+                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"usePatientNameForComparativeSearch"];
+                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObjects: @"MINIPACS", @"GEPACS", nil] forKey: @"comparativeSearchDICOMNodes"];
                 
-                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
+                
+                if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)
                 {
-                    if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)
+                    self.comparativePatientUID = studySelected.patientUID;
+                    self.comparativeStudies = nil;
+                    [comparativeTable reloadData];
+                    
+                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
+                }
+                else
+                {
+                    NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
+                    if( index != NSNotFound)
                     {
-                        self.comparativePatientUID = studySelected.patientUID;
-                        
-                        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
+                        [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
+                        [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
                     }
                 }
 			}

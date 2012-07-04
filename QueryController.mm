@@ -293,6 +293,10 @@ extern "C"
             [qm performQuery: showErrors];
             
             NSArray *studiesForThisNode = [qm queries];
+            
+            if( studiesForThisNode == nil)
+                NSLog( @"QueryStudiesForPatient failed for this node: %@", [server valueForKey: @"Description"]);
+            
             NSArray *uidArray = [studies valueForKey: @"uid"];
             
             for( NSUInteger x = 0 ; x < [studiesForThisNode count] ; x++)
