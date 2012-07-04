@@ -20,16 +20,24 @@ Super Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU
 
 #import <Cocoa/Cocoa.h>
 
+#ifdef __cplusplus
 #undef verify
-
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 #include "dcdatset.h"
 #include "dimse.h"
 #include "dccodec.h"
-//#include "tlstrans.h"
-//#include "tlslayer.h"
-//#include "ofstring.h"
 
+#else
+
+typedef int E_TransferSyntax;
+typedef int T_DIMSE_BlockingMode;
+typedef char* OFCondition;
+typedef char* T_ASC_Parameters;
+typedef char* DcmDataset;
+typedef char* T_ASC_Association;
+typedef char* T_ASC_Network;
+
+#endif
 
 /** \brief  Base Class for SCU classes such as verifySCU, storeSCU, moveSCU, findSCU 
 *

@@ -223,6 +223,9 @@ extern NSString* O2AlbumDragType;
     NSTimeInterval _timeIntervalOfLastLoadIconsDisplayIcons;
     
     BOOL subSeriesWindowIsOn;
+    
+    NSString *comparativePatientUID;
+    NSArray *comparativeStudies;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -240,7 +243,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;

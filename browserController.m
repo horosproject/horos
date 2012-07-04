@@ -17,6 +17,7 @@
 #import "DicomDatabase.h"
 #import "DicomDatabase+Routing.h"
 #import "DicomDatabase+DCMTK.h"
+#import "DCMTKStudyQueryNode.h"
 #import "DicomDatabase+Scan.h"
 #import "RemoteDicomDatabase.h"
 #import "SRAnnotation.h"
@@ -280,15 +281,13 @@ static volatile BOOL waitForRunningProcess = NO;
 //	[decimalNumberFormatter setHasThousandSeparators: YES];
 }
 
-@class DCMTKStudyQueryNode;
-
 @synthesize database = _database;
 @synthesize sources = _sourcesArrayController;
 
 @synthesize CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize databaseOutline, albumTable;
+@synthesize databaseOutline, albumTable, comparativePatientUID;
 @synthesize bonjourSourcesBox, timeIntervalType;
 @synthesize bonjourBrowser, pathToEncryptedFile;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
@@ -3472,34 +3471,123 @@ static NSConditionLock *threadLock = nil;
 
 - (void) resetROIsAndKeysButton
 {
-	ROIsAndKeyImagesButtonAvailable = YES;
+	ROIsAndKeyImagesButtonAvailable = NO;
 		
-//	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
-//	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && [database isLocal])
-//	{
-//		if( [[databaseOutline selectedRowIndexes] count] >= 5)	//[[self window] firstResponder] == databaseOutline && 
-//			ROIsAndKeyImagesButtonAvailable = YES;
-//		else
-//		{
-//			NSEvent *event = [[NSApplication sharedApplication] currentEvent];
-//			
-//			if([event modifierFlags] & NSAlternateKeyMask)
-//			{
-//				if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-//				else ROIsAndKeyImagesButtonAvailable = YES;
-//			}
-//			else if([event modifierFlags] & NSShiftKeyMask)
-//			{
-//				if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-//				else ROIsAndKeyImagesButtonAvailable = YES;
-//			}
-//			else
-//			{
-//				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
-//				else ROIsAndKeyImagesButtonAvailable = YES;
-//			}
-//		}
-//	}
+	NSMutableArray *i = [NSMutableArray arrayWithArray: [[toolbar items] valueForKey: @"itemIdentifier"]];
+	if( [i containsString: OpenKeyImagesAndROIsToolbarItemIdentifier] && [_database isLocal])
+	{
+		if( [[databaseOutline selectedRowIndexes] count] >= 5)	//[[self window] firstResponder] == databaseOutline && 
+			ROIsAndKeyImagesButtonAvailable = YES;
+		else
+		{
+			NSEvent *event = [[NSApplication sharedApplication] currentEvent];
+			
+			if([event modifierFlags] & NSAlternateKeyMask)
+			{
+				if( [[self KeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+			else if([event modifierFlags] & NSShiftKeyMask)
+			{
+				if( [[self ROIImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+			else
+			{
+				if( [[self ROIsAndKeyImages: nil] count] == 0) ROIsAndKeyImagesButtonAvailable = NO;
+				else ROIsAndKeyImagesButtonAvailable = YES;
+			}
+		}
+	}
+}
+
+- (void) searchForComparativeStudies: (DicomStudy*) studySelected
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    static NSRecursiveLock *searchForComparativeStudiesLock = nil;
+    
+    if( !searchForComparativeStudiesLock)
+        searchForComparativeStudiesLock = [NSRecursiveLock new];
+    
+    [searchForComparativeStudiesLock lock];
+    if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... 
+    {
+        NSLog( @"--- Search for comparative studies: %@", studySelected.patientUID);
+        
+        @try
+        {
+            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
+            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
+            
+            // Servers
+            NSMutableArray* servers = [NSMutableArray array];
+            NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+            for (NSDictionary* si in sources)
+            {
+                if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
+                {
+                    [servers addObject: si];
+                }
+            }
+            
+            // Distant studies
+            NSArray *distantStudies = nil;
+            #ifndef OSIRIX_LIGHT
+            distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName servers: servers showErrors: YES];
+            #endif
+            
+            // Local studies
+            NSArray *localStudies = nil;
+            @try
+            {
+                NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID];
+                localStudies = [_database objectsForEntity:_database.studyEntity predicate:predicate];
+            }
+            @catch (NSException* e)
+            {
+                NSLog( @"*** Comparative Studies exception: %@", e);
+            }
+            
+            // Merge local and distant studies
+            NSMutableArray *mergedStudies = [NSMutableArray arrayWithArray: localStudies];
+            #ifndef OSIRIX_LIGHT
+            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+            {
+                if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                {
+                    [mergedStudies addObject: distantStudy];
+                }
+            }
+            #endif
+            
+            [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
+            
+            for( id study in mergedStudies)
+            {
+                BOOL distant = NO;
+                
+                #ifndef OSIRIX_LIGHT
+                distant = [study isKindOfClass: [DCMTKStudyQueryNode class]];
+                
+                DCMTKStudyQueryNode *qrStudy = study;
+                DicomStudy *xcStudy = study;
+                
+                [xcStudy name]; [xcStudy modality]; [xcStudy date]; [xcStudy studyName]; //For warnings report
+                [qrStudy name]; [qrStudy modality]; [qrStudy date], [qrStudy studyName]; //For warnings report
+                #endif
+                
+                NSLog( @"%d Patient name: %@ - %@ - %@ - %@", distant, [study name], [study modality], [[NSUserDefaults dateTimeFormatter] stringFromDate: [study date]], [study studyName]);
+            } 
+        }
+        @catch (NSException* e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+    }
+    [searchForComparativeStudiesLock unlock];
+    
+    [pool release];
 }
 
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
@@ -3534,7 +3622,7 @@ static NSConditionLock *threadLock = nil;
 			/**********
 			 post notification of new selected item. Can be used by plugins to update RIS connection
 			 **********/
-			NSManagedObject *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+			DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
 			
 			NSDictionary *userInfo = nil;
 			if( studySelected)
@@ -3603,6 +3691,23 @@ static NSConditionLock *threadLock = nil;
 			{
 				[previousItem release];
 				previousItem = [item retain];
+                
+                // COMPARATIVE STUDIES
+                
+//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"searchForComparativeStudiesOnDICOMNodes"];
+//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientIDForComparativeSearch"];
+//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientNameForComparativeSearch"];
+//                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: @"MINIPACS"] forKey: @"comparativeSearchDICOMNodes"];
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
+                {
+                    if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)
+                    {
+                        self.comparativePatientUID = studySelected.patientUID;
+                        
+                        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
+                    }
+                }
 			}
 			
 			[self resetROIsAndKeysButton];
@@ -3619,8 +3724,6 @@ static NSConditionLock *threadLock = nil;
 		}
         
         [self splitView:splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
-
-		
 	}
 	@catch (NSException * e)
 	{ 
@@ -16675,7 +16778,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 	{
-		return YES;	//ROIsAndKeyImagesButtonAvailable;
+		return ROIsAndKeyImagesButtonAvailable;
 	}
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: ViewersToolbarItemIdentifier])

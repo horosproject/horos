@@ -20,4 +20,6 @@
 
 }
 
+- (NSString*) studyInstanceUID;
+- (NSString*) studyName;
 @end

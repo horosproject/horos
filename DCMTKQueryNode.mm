@@ -35,6 +35,8 @@
 #include <libkern/OSAtomic.h>
 
 #undef verify
+#include "dccodec.h"
+
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
 #include "dctag.h"

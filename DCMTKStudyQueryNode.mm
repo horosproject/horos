@@ -199,6 +199,20 @@
 	return dataset;
 }
 
+- (DCMCalendarDate*) date // Match DicomStudy
+{
+    return [DCMCalendarDate dicomDateTimeWithDicomDate: _date dicomTime: _time];
+}
+
+- (NSString*) studyInstanceUID // Match DicomStudy
+{
+    return _uid;
+}
+
+- (NSString*) studyName // Match DicomStudy
+{
+    return _theDescription;
+}
 
 - (void)addChild:(DcmDataset *)dataset
 {

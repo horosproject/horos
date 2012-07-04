@@ -16,18 +16,6 @@
 #import <Cocoa/Cocoa.h>
 #import "DCMTKServiceClassUser.h"
 
-#undef verify
-
-#include "osconfig.h" /* make sure OS specific configuration is included first */
-#include "dcdatset.h"
-#include "dimse.h"
-#include "dccodec.h"
-//#include "tlstrans.h"
-//#include "tlslayer.h"
-//#include "ofstring.h"
-
-
-
 @class DCMCalendarDate;
 /** \brief Base class for query nodes */
 @interface DCMTKQueryNode : DCMTKServiceClassUser
