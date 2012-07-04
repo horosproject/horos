@@ -42,6 +42,8 @@ extern NSString* const OsirixServerArrayChangedNotification;
 extern NSString* const OsirixStudyAnnotationsChangedNotification;
 extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
+extern NSString* const OsirixAddNewStudiesDBNotification;
+extern NSString* const OsirixAddNewStudiesDBNotificationNewStudiesArray;
 extern NSString* const OsirixAddToDBNotificationImagesArray;
 extern NSString* const OsirixAddToDBCompleteNotification;
 extern NSString* const OsirixAddToDBCompleteNotificationImagesArray __deprecated; // use OsirixAddToDBNotificationImagesArray

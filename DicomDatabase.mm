@@ -1341,7 +1341,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     
 	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
-
+    NSMutableArray* newStudies = [NSMutableArray array];
+    
     BOOL newStudy = NO;
 
   //  NSLog(@"Add: %@", dicomFilesArray);
@@ -1505,6 +1506,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							
 							study.dateAdded = today;
 							
+                            [newStudies addObject: study];
 							[studiesArray addObject: study];
 							[studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
 							
@@ -1978,6 +1980,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 
 				if (postNotifications)
                 {
+                    if( newStudy)
+                        [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddNewStudiesDBNotification object:self userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddNewStudiesDBNotificationNewStudiesArray]];
+                    
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
                     
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
