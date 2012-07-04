@@ -7297,38 +7297,47 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	return [self findPlaneForPoint: pt localPoint: location distanceWithPlane: nil];
 }
 
-+ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input {
-    // separate DCMPix into different arrays with common imageType
-    NSMutableDictionary* dcmPixByImageType = [NSMutableDictionary dictionary];
-    for (DCMPix* pix in input) {
-        NSString* pixImageType = [pix imageType];
-        NSMutableArray* dcmPixByImageTypeArray = [dcmPixByImageType objectForKey:pixImageType];
-        if (!dcmPixByImageTypeArray)
-            [dcmPixByImageType setObject:(dcmPixByImageTypeArray = [NSMutableArray array]) forKey:pixImageType];
-        [dcmPixByImageTypeArray addObject:pix];
-    }
-    
-    // is there more than one imageType?
-    if (dcmPixByImageType.count > 1) {
-        // yes, find the most common one
-        NSInteger maxCountIndex = 0;
-        NSArray* dcmPixByImageTypeArrays = [dcmPixByImageType allValues];
-        for (NSInteger i = 1; i < dcmPixByImageType.count; ++i)
-            if ([[dcmPixByImageTypeArrays objectAtIndex:i] count] > [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count])
-                maxCountIndex = i;
++ (NSArray*)cleanedOutDcmPixArray:(NSArray*)input
+{
+    @try
+    {
+        // separate DCMPix into different arrays with common imageType
+        NSMutableDictionary* dcmPixByImageType = [NSMutableDictionary dictionary];
+        for (DCMPix* pix in input)
+        {
+            NSString* pixImageType = [pix imageType];
+            NSMutableArray* dcmPixByImageTypeArray = [dcmPixByImageType objectForKey:pixImageType];
+            if (!dcmPixByImageTypeArray)
+                [dcmPixByImageType setObject:(dcmPixByImageTypeArray = [NSMutableArray array]) forKey:pixImageType];
+            [dcmPixByImageTypeArray addObject:pix];
+        }
         
-        // how many DCMPix have the most common imageType?
-        NSInteger maxCount = [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count];
-        
-        // retain all DCMPix from groups with at least half the number of images with the most common imageType
-        NSMutableArray* r = [NSMutableArray array];
-        for (NSArray* group in dcmPixByImageTypeArrays)
-            if (group.count >= maxCount/2)
-                [r addObjectsFromArray:group];
-
-        return r;
+        // is there more than one imageType?
+        if (dcmPixByImageType.count > 1)
+        {
+            // yes, find the most common one
+            NSInteger maxCountIndex = 0;
+            NSArray* dcmPixByImageTypeArrays = [dcmPixByImageType allValues];
+            for (NSInteger i = 1; i < dcmPixByImageType.count; ++i)
+                if ([[dcmPixByImageTypeArrays objectAtIndex:i] count] > [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count])
+                    maxCountIndex = i;
+            
+            // how many DCMPix have the most common imageType?
+            NSInteger maxCount = [[dcmPixByImageTypeArrays objectAtIndex:maxCountIndex] count];
+            
+            // retain all DCMPix from groups with at least half the number of images with the most common imageType
+            NSMutableArray* r = [NSMutableArray array];
+            for (NSArray* group in dcmPixByImageTypeArrays)
+                if (group.count >= maxCount/2)
+                    [r addObjectsFromArray:group];
+            
+            return r;
+        }
     }
-    
+    @catch (NSException *e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
     return input;
 }
 
