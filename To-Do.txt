@@ -22,6 +22,7 @@
 - Movies files produces for HTML pages (CD Burning, WebPortal) are now MPEG4 HTML5 files
 - DVD/CD Burning: preparation process is now 100% in a separate background thread
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
+- Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
 -------------------------------------------------------------
 

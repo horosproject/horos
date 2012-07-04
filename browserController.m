@@ -289,7 +289,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable, comparativePatientUID;
 @synthesize bonjourSourcesBox, timeIntervalType;
-@synthesize bonjourBrowser, pathToEncryptedFile;
+@synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
@@ -3511,7 +3511,7 @@ static NSConditionLock *threadLock = nil;
         searchForComparativeStudiesLock = [NSRecursiveLock new];
     
     [searchForComparativeStudiesLock lock];
-    if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... 
+    if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... Keep only the displayed patientUID
     {
         NSLog( @"--- Search for comparative studies: %@", studySelected.patientUID);
         
@@ -3563,22 +3563,28 @@ static NSConditionLock *threadLock = nil;
             
             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             
-            for( id study in mergedStudies)
+//            for( id study in mergedStudies)
+//            {
+//                BOOL distant = NO;
+//                
+//                #ifndef OSIRIX_LIGHT
+//                distant = [study isKindOfClass: [DCMTKStudyQueryNode class]];
+//                
+//                DCMTKStudyQueryNode *qrStudy = study;
+//                DicomStudy *xcStudy = study;
+//                
+//                [xcStudy name]; [xcStudy modality]; [xcStudy date]; [xcStudy studyName]; //For warnings report
+//                [qrStudy name]; [qrStudy modality]; [qrStudy date], [qrStudy studyName]; //For warnings report
+//                #endif
+//                
+//                NSLog( @"%d Patient name: %@ - %@ - %@ - %@", distant, [study name], [study modality], [[NSUserDefaults dateTimeFormatter] stringFromDate: [study date]], [study studyName]);
+//            }
+            
+            if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
             {
-                BOOL distant = NO;
-                
-                #ifndef OSIRIX_LIGHT
-                distant = [study isKindOfClass: [DCMTKStudyQueryNode class]];
-                
-                DCMTKStudyQueryNode *qrStudy = study;
-                DicomStudy *xcStudy = study;
-                
-                [xcStudy name]; [xcStudy modality]; [xcStudy date]; [xcStudy studyName]; //For warnings report
-                [qrStudy name]; [qrStudy modality]; [qrStudy date], [qrStudy studyName]; //For warnings report
-                #endif
-                
-                NSLog( @"%d Patient name: %@ - %@ - %@ - %@", distant, [study name], [study modality], [[NSUserDefaults dateTimeFormatter] stringFromDate: [study date]], [study studyName]);
-            } 
+                self.comparativeStudies = mergedStudies;
+                [comparativeTable performSelectorOnMainThread: @selector( reloadData) withObject: nil waitUntilDone: NO];
+            }
         }
         @catch (NSException* e)
         {
@@ -8069,9 +8075,6 @@ static BOOL withReset = NO;
 {
 	NSMenuItem		*item;
 	
-    PrettyCell* cell = [[[PrettyCell alloc] init] autorelease];
-	[[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
-
 	// ****************
 	
 	if ( contextual == nil) contextual	= [[NSMenu alloc] initWithTitle: NSLocalizedString(@"Tools", nil)];
@@ -8569,6 +8572,13 @@ static BOOL needToRezoom;
 		//if( displayEmptyDatabase) return 0;
 		return [self.albumArray count];
 	}
+    
+    if ([aTableView isEqual: comparativeTable])
+	{
+		//if( displayEmptyDatabase) return 0;
+		return [comparativeStudies count];
+	}
+    
 	return 0;
 }
 
@@ -8581,8 +8591,6 @@ static BOOL needToRezoom;
 {
     if ([aTableView isEqual:albumTable])
 	{
-		//if( displayEmptyDatabase) return;
-		
 		NSFont *txtFont;
 		
 		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
@@ -8608,8 +8616,6 @@ static BOOL needToRezoom;
         NSString *noOfStudies = nil;
 		@synchronized (_albumNoOfStudiesCache)
         {
-//            if ([[aCell title] isEqualToString:@"retest"])
-  //              NSLog(@"oiuhsilhfsf");
 			if (_albumNoOfStudiesCache == nil || rowIndex >= [_albumNoOfStudiesCache count] || [[_albumNoOfStudiesCache objectAtIndex: rowIndex] isEqualToString:@""] == YES)
             {
                 [self refreshAlbums];
@@ -8621,6 +8627,32 @@ static BOOL needToRezoom;
         }
 
         [aCell setRightText:noOfStudies];
+    }
+    
+    if ([aTableView isEqual: comparativeTable])
+	{
+        if (rowIndex >= 0 && rowIndex < comparativeStudies.count)
+        {
+            NSFont *txtFont;
+            BOOL local = NO;
+            
+            id study = [comparativeStudies objectAtIndex: rowIndex];
+        
+            if( [study isKindOfClass: [DicomStudy class]])
+                local = YES;
+        
+            if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
+            else txtFont = [NSFont systemFontOfSize:11];			
+		
+            [aCell setFont:txtFont];
+            [aCell setTitle: [NSString stringWithFormat: @"%@ %@", [[NSUserDefaults dateFormatter] stringFromDate: [study date]], [study studyName]]];
+            [aCell setRightText: [[comparativeStudies objectAtIndex:rowIndex] modality]];
+        }
+        else
+        {
+            [aCell setTitle: @""];
+            [aCell setRightText: @""];
+        }
     }
 }
 
@@ -11381,6 +11413,10 @@ static NSArray*	openSubSeriesArray = nil;
 		//	[databaseOutline setGridColor:[NSColor darkGrayColor]];
 		//	[databaseOutline setGridStyleMask:NSTableViewSolidHorizontalGridLineMask];
 		
+        [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
+        
+        [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
+        
 		[self initContextualMenus];
         
 		// opens a port for interapplication communication	

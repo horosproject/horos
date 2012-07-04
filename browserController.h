@@ -226,6 +226,7 @@ extern NSString* O2AlbumDragType;
     
     NSString *comparativePatientUID;
     NSArray *comparativeStudies;
+    IBOutlet NSTableView *comparativeTable;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -245,6 +246,7 @@ extern NSString* O2AlbumDragType;
 
 @property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
+@property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
 
