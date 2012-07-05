@@ -20,6 +20,7 @@
 
 }
 
-- (NSString*) studyInstanceUID;
-- (NSString*) studyName;
+- (NSString*) studyInstanceUID;// Match DicomStudy
+- (NSString*) studyName;// Match DicomStudy
+- (NSNumber*) numberOfImages;// Match DicomStudy
 @end

@@ -54,8 +54,8 @@
 -(id)copyWithZone:(NSZone *)zone {
     PrettyCell* copy = [super copyWithZone:zone];
     
-    copy->_rightText = [self.rightText retain];
-    copy->_textColor = [self.textColor retain];
+    copy->_rightText = [self.rightText copyWithZone:zone];
+    copy->_textColor = [self.textColor copyWithZone:zone];
     copy->_rightSubviews = [self.rightSubviews mutableCopyWithZone:zone];
     
     return copy;

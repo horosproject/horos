@@ -7145,6 +7145,10 @@
 		CEBEAD3310A6F27700E4C7C9 /* nifti1_io.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA770C06BEB200CD2976 /* nifti1_io.h */; };
 		CEBEAD3410A6F27800E4C7C9 /* nifti1_io.c in Sources */ = {isa = PBXBuildFile; fileRef = AB87FA760C06BEB200CD2976 /* nifti1_io.c */; };
 		CEBEAD3510A6F27800E4C7C9 /* nifti1.h in Headers */ = {isa = PBXBuildFile; fileRef = AB87FA750C06BEB200CD2976 /* nifti1.h */; };
+		CEC0BFA015A597DB0012D879 /* ComparativeCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC0BF9E15A597DB0012D879 /* ComparativeCell.h */; };
+		CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC0BF9E15A597DB0012D879 /* ComparativeCell.h */; };
+		CEC0BFA215A597DB0012D879 /* ComparativeCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEC0BF9F15A597DB0012D879 /* ComparativeCell.mm */; };
+		CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEC0BF9F15A597DB0012D879 /* ComparativeCell.mm */; };
 		CEC172040874839C0021C3FC /* burn_anim00.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F80874839C0021C3FC /* burn_anim00.tif */; };
 		CEC172050874839C0021C3FC /* burn_anim01.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171F90874839C0021C3FC /* burn_anim01.tif */; };
 		CEC172060874839C0021C3FC /* burn_anim02.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC171FA0874839C0021C3FC /* burn_anim02.tif */; };
@@ -14065,6 +14069,8 @@
 		CEBD86BB14F1ADD8000DA1FE /* zutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zutil.h; sourceTree = "<group>"; };
 		CEBD8E5B0B675A75008FD772 /* Propagate.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Propagate.tif; sourceTree = "<group>"; };
 		CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = PropagateOn.tif; sourceTree = "<group>"; };
+		CEC0BF9E15A597DB0012D879 /* ComparativeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ComparativeCell.h; sourceTree = "<group>"; };
+		CEC0BF9F15A597DB0012D879 /* ComparativeCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ComparativeCell.mm; sourceTree = "<group>"; };
 		CEC171F80874839C0021C3FC /* burn_anim00.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim00.tif; sourceTree = "<group>"; };
 		CEC171F90874839C0021C3FC /* burn_anim01.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim01.tif; sourceTree = "<group>"; };
 		CEC171FA0874839C0021C3FC /* burn_anim02.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim02.tif; sourceTree = "<group>"; };
@@ -16190,6 +16196,8 @@
 			children = (
 				59DB26FC14507ACA00E78E03 /* PrettyCell.h */,
 				59DB26FD14507ACA00E78E03 /* PrettyCell.mm */,
+				CEC0BF9E15A597DB0012D879 /* ComparativeCell.h */,
+				CEC0BF9F15A597DB0012D879 /* ComparativeCell.mm */,
 				CE9DD29A086B35740058DD2A /* CoreData */,
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				590A3DCF12A9293C004581C2 /* Web Portal */,
@@ -25478,6 +25486,7 @@
 				CE3B7E5E1580F534003CB266 /* FlyAssistant+Histo.h in Headers */,
 				840C2D5E1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 				711849771590A377006AB447 /* SMTPClient.h in Headers */,
+				CEC0BFA015A597DB0012D879 /* ComparativeCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26104,6 +26113,7 @@
 				714D3BC5152B2410003EB087 /* NSArray+N2.h in Headers */,
 				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 				840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
+				CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28540,6 +28550,7 @@
 				CE3B7E641580F762003CB266 /* Quaternion.mm in Sources */,
 				840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 				711849781590A377006AB447 /* SMTPClient.m in Sources */,
+				CEC0BFA215A597DB0012D879 /* ComparativeCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29786,6 +29797,7 @@
 				84D7BBE6154A941A007B5A86 /* NSNotificationCenter+N2.mm in Sources */,
 				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 				840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
+				CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -204,6 +204,11 @@
     return [DCMCalendarDate dicomDateTimeWithDicomDate: _date dicomTime: _time];
 }
 
+- (NSNumber*) numberOfImages // Match DicomStudy
+{
+    return _numberImages;
+}
+
 - (NSString*) studyInstanceUID // Match DicomStudy
 {
     return _uid;

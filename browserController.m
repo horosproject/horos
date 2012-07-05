@@ -98,6 +98,7 @@
 #import "NSManagedObject+N2.h"
 #import "DICOMExport.h"
 #import "PrettyCell.h"
+#import "ComparativeCell.h"
 #import "N2Stuff.h"
 #import "NSNotificationCenter+N2.h"
 #import "NSFullScreenWindow.h"
@@ -8618,31 +8619,32 @@ static BOOL needToRezoom;
 	return nil;
 }
 
-- (void)tableView:(NSTableView *)aTableView willDisplayCell:(PrettyCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
+- (void)tableView:(NSTableView *)aTableView willDisplayCell:(NSButtonCell*)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     if ([aTableView isEqual:albumTable])
 	{
 		NSFont *txtFont;
+        PrettyCell *cell = (PrettyCell*) aCell;
 		
 		if( rowIndex == 0) txtFont = [NSFont boldSystemFontOfSize: 11];
 		else txtFont = [NSFont systemFontOfSize:11];			
 		
-		[aCell setFont:txtFont];
+		[cell setFont:txtFont];
 		
         NSArray* albumArray = self.albumArray;
         
         if (albumArray.count > rowIndex && [[[albumArray objectAtIndex:rowIndex] valueForKey:@"smartAlbum"] boolValue])
             if (![_database isLocal])
-                [aCell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
-            else [aCell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
+                [cell setImage:[NSImage imageNamed:@"small_sharedSmartAlbum.tif"]];
+            else [cell setImage:[NSImage imageNamed:@"small_smartAlbum.tif"]];
         else
             if (![_database isLocal])
-                [aCell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
-            else [aCell setImage:[NSImage imageNamed:@"small_album.tif"]];
+                [cell setImage:[NSImage imageNamed:@"small_sharedAlbum.tif"]];
+            else [cell setImage:[NSImage imageNamed:@"small_album.tif"]];
         
-        [aCell setTitle:nil];
+        [cell setTitle:nil];
         if (rowIndex >= 0 && rowIndex < albumArray.count)
-            [aCell setTitle:[[albumArray objectAtIndex:rowIndex] valueForKey:@"name"]];
+            [cell setTitle:[[albumArray objectAtIndex:rowIndex] valueForKey:@"name"]];
         
         NSString *noOfStudies = nil;
 		@synchronized (_albumNoOfStudiesCache)
@@ -8657,11 +8659,13 @@ static BOOL needToRezoom;
                 noOfStudies = [[[_albumNoOfStudiesCache objectAtIndex: rowIndex] copy] autorelease];
         }
 
-        [aCell setRightText:noOfStudies];
+        [cell setRightText:noOfStudies];
     }
     
     if ([aTableView isEqual: comparativeTable])
 	{
+        ComparativeCell *cell = (ComparativeCell*) aCell;
+        
         if (rowIndex >= 0 && rowIndex < comparativeStudies.count)
         {
             NSFont *txtFont;
@@ -8675,14 +8679,18 @@ static BOOL needToRezoom;
             if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
             else txtFont = [NSFont systemFontOfSize:11];			
 		
-            [aCell setFont:txtFont];
-            [aCell setTitle: [NSString stringWithFormat: @"%@ %@", [[NSUserDefaults dateFormatter] stringFromDate: [study date]], [study studyName]]];
-            [aCell setRightText: [[comparativeStudies objectAtIndex:rowIndex] modality]];
+            [cell setFont:txtFont];
+            cell.title = [study studyName];
+            cell.rightTextFirstLine = [study modality];
+            cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
+            cell.rightTextSecondLine = N2LocalizedSingularPluralCount([[study numberOfImages] intValue], @"image", @"images");
         }
         else
         {
-            [aCell setTitle: @""];
-            [aCell setRightText: @""];
+            cell.title = @"";
+            cell.rightTextFirstLine = @"";
+            cell.leftTextSecondLine = @"";
+            cell.rightTextSecondLine =@"";
         }
     }
 }
@@ -11446,7 +11454,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
         [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
         
-        [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
+        [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[ComparativeCell alloc] init] autorelease]];
         
 		[self initContextualMenus];
         
