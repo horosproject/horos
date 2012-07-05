@@ -7306,6 +7306,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         for (DCMPix* pix in input)
         {
             NSString* pixImageType = [pix imageType];
+            if (!pixImageType) pixImageType = @""; // to avoid inserting nil keys in the dictionary
             NSMutableArray* dcmPixByImageTypeArray = [dcmPixByImageType objectForKey:pixImageType];
             if (!dcmPixByImageTypeArray)
                 [dcmPixByImageType setObject:(dcmPixByImageTypeArray = [NSMutableArray array]) forKey:pixImageType];

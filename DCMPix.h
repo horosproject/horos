@@ -638,11 +638,6 @@ Note setter is different to not break existing usage. :-( */
 - (void) revert;
 - (void) revert:(BOOL) reloadAnnotations;
 
-/** finds the min and max pixel values. 
-* Sets the appropriate values for fullWW and fullWL 
-*/
-- (void) computePixMinPixMax;
-
 /** Sets the ThickSlabController */
 - (void) setThickSlabController:( ThickSlabController*) ts;
 

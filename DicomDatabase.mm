@@ -1475,7 +1475,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							}
 							else
 							{
-								if ([[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+								if (![[studiesArray objectAtIndex: index] valueForKey: @"patientUID"])
+                                    [[studiesArray objectAtIndex: index] setPatientUID:[curDict objectForKey: @"patientUID"]];
+                                if ([[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
 									study = [studiesArray objectAtIndex: index];
 								else
 								{
