@@ -81,7 +81,7 @@ extern NSString* O2AlbumDragType;
     
 	long					previousBonjourIndex;
 	
-	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums, *splitDrawer;
+	IBOutlet NSSplitView	*splitViewHorz, *splitViewVert, *splitAlbums, *splitDrawer, *splitComparative;
     CGFloat _splitViewVertDividerRatio;
     
 	BOOL					setDCMDone, dontUpdatePreviewPane;

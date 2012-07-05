@@ -7569,6 +7569,12 @@ static BOOL withReset = NO;
         proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
     }
     
+    if (sender == splitComparative)
+    {
+        proposedPosition = MAX(proposedPosition, [sender minPossiblePositionOfDividerAtIndex:offset]);
+        proposedPosition = MIN(proposedPosition, [sender maxPossiblePositionOfDividerAtIndex:offset]);
+    }
+    
     if ([sender isEqual: bannerSplit])
     {
         return [sender frame].size.height - (banner.image.size.height+3);
@@ -7691,13 +7697,39 @@ static BOOL withReset = NO;
         leftFrame.size.height = splitFrame.size.height;
         [left setFrame:leftFrame];
         
-        if ([splitDrawer isSubviewCollapsed:0] || [left isHidden])
+        if ([splitDrawer isSubviewCollapsed: [[splitDrawer subviews] objectAtIndex:0]] || [left isHidden])
             leftFrame.size.width = 0;
         
         rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
         rightFrame.size.height = splitFrame.size.height;
         rightFrame.size.width = availableWidth - leftFrame.size.width;
         [right setFrame:rightFrame];
+        
+        return;
+    }
+    
+    if (sender == splitComparative)
+    {
+        NSView* left = [[sender subviews] objectAtIndex:0];
+        NSView* right = [[sender subviews] objectAtIndex:1];
+        
+        NSRect splitFrame = [sender frame];
+        CGFloat dividerThickness = [sender dividerThickness];
+        CGFloat availableWidth = splitFrame.size.width - dividerThickness;
+        
+        NSRect leftFrame = [left frame];
+        NSRect rightFrame = [right frame];
+        
+        if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
+            leftFrame.size.width = availableWidth;
+        
+        rightFrame.size.height = splitFrame.size.height;
+        rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
+        [right setFrame:rightFrame];
+        
+        leftFrame.size.height = splitFrame.size.height;
+        leftFrame.size.width = availableWidth - rightFrame.size.width;
+        [left setFrame:leftFrame];
         
         return;
     }
@@ -7763,6 +7795,9 @@ static BOOL withReset = NO;
 	
     if (sender == splitDrawer && subview == [[splitDrawer subviews] objectAtIndex:1])
         return NO;
+    
+    if (sender == splitComparative && subview == [[splitComparative subviews] objectAtIndex:0])
+        return NO;
 	
     if (sender == _bottomSplit)
         return NO;
@@ -7770,10 +7805,20 @@ static BOOL withReset = NO;
     return YES;
 }
 
-- (void)drawerToggle: (id)sender
+- (IBAction)comparativeToggle:(id)sender
+{
+    NSView* right = [[splitComparative subviews] objectAtIndex:1];
+    BOOL shouldExpand = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
+    
+    [right setHidden:!shouldExpand];
+    
+    [splitComparative resizeSubviewsWithOldSize:splitComparative.bounds.size];
+}
+
+- (IBAction)drawerToggle: (id)sender
 {
     NSView* left = [[splitDrawer subviews] objectAtIndex:0];
-    BOOL shouldExpand = [left isHidden] || [splitDrawer isSubviewCollapsed:0];
+    BOOL shouldExpand = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
     
     [left setHidden:!shouldExpand];
     
@@ -7802,6 +7847,9 @@ static BOOL withReset = NO;
 	if (sender == splitDrawer)
         return 160;
 	
+    if( sender == splitComparative)
+        return [sender bounds].size.width-300;
+    
     if ([sender isEqual: bannerSplit])
         return [sender frame].size.height - (banner.image.size.height+3);
 
@@ -7818,6 +7866,9 @@ static BOOL withReset = NO;
     
 	if (sender == splitDrawer)
 		return 300;
+    
+    if (sender == splitComparative)
+		return [sender bounds].size.width-160;
     
     if (sender == bannerSplit)
         return [sender frame].size.height - (banner.image.size.height+3);
@@ -11440,6 +11491,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[splitViewVert restoreDefault:@"SPLITVERT2"];
 		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
 		[splitAlbums restoreDefault:@"SPLITALBUMS"];
+        [splitComparative restoreDefault:@"SPLITCOMPARATIVE"];
 
         //		[self autoCleanDatabaseDate: self];
 		
@@ -11726,6 +11778,7 @@ static NSArray*	openSubSeriesArray = nil;
     [splitViewVert saveDefault:@"SPLITVERT2"];
     [splitViewHorz saveDefault:@"SPLITHORZ2"];
 	[splitAlbums saveDefault:@"SPLITALBUMS"];
+    [splitComparative saveDefault:@"SPLITCOMPARATIVE"];
 	
 	if( [[databaseOutline sortDescriptors] count] >= 1)
 	{
