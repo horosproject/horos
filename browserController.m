@@ -1363,6 +1363,8 @@ static NSConditionLock *threadLock = nil;
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseDidChangeContextNotification:) name:OsirixDicomDatabaseDidChangeContextNotification object:_database];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeDatabaseInvalidateAlbumsCacheNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:_database];
             
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_newStudiesRefreshComparativeStudies:) name:OsirixAddNewStudiesDBNotification object:_database];
+            
 //            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_observeManagedObjectContextObjectsDidChangeNotification:) name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
             
 			[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
@@ -2837,7 +2839,8 @@ static NSConditionLock *threadLock = nil;
 	[_database unlock];
 	
 	[databaseOutline reloadData];
-	
+	[comparativeTable reloadData];
+    
 	@try
 	{
 		for( id obj in outlineViewArray)
@@ -3048,6 +3051,7 @@ static NSConditionLock *threadLock = nil;
 		//For filters depending on time....
 		[self refreshAlbums];
 		[databaseOutline reloadData];
+        [comparativeTable reloadData];
 	}
 	
 	#ifndef OSIRIX_LIGHT
@@ -3619,6 +3623,23 @@ static NSConditionLock *threadLock = nil;
     }
 }
 
+- (void)_newStudiesRefreshComparativeStudies: (NSNotification *)aNotification
+{
+    NSArray *newStudies = [aNotification.userInfo objectForKey: OsirixAddToDBNotificationImagesArray];
+    
+    for( DicomStudy *newStudy in newStudies)
+    {
+        if( [self.comparativePatientUID isEqualToString: newStudy.patientUID])
+        {
+            NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+            DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+            
+            [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+            break;
+        }
+    }
+}
+
 - (void)outlineViewSelectionDidChange: (NSNotification *)aNotification
 {
 //	NSLog(@"outlineViewSelectionDidChange");
@@ -4033,6 +4054,7 @@ static NSConditionLock *threadLock = nil;
 - (void) proceedDeleteObjects: (NSArray*) objectsToDelete tree:(NSSet*)treeObjs
 {
 	DicomDatabase* database = [_database retain];
+    BOOL refreshComparative = NO;
     
     NSMutableSet *seriesSet = [NSMutableSet set], *studiesSet = [NSMutableSet set];
             
@@ -4146,12 +4168,15 @@ static NSConditionLock *threadLock = nil;
 		{
             N2LogExceptionWithStackTrace(e/*, @"context save: nil"*/);
         }
-			
+        
 		// Remove studies without series !
-		for( NSManagedObject *study in studiesSet)
+		for( DicomStudy *study in studiesSet)
 		{
 			@try
 			{
+                if( [self.comparativePatientUID isEqualToString: study.patientUID])
+                    refreshComparative = YES;
+                
 				if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
 				{
 					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
@@ -4192,12 +4217,19 @@ static NSConditionLock *threadLock = nil;
     
     [self outlineViewRefresh];
     [self refreshAlbums];
-    
-//    [self setDatabase:[database autorelease]];
     [self saveDatabase];
+    
+    if( refreshComparative)
+    {
+        NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+        DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+    
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+    }
 }
 
-- (void) proceedDeleteObjects:(NSArray*)objectsToDelete {
+- (void) proceedDeleteObjects:(NSArray*)objectsToDelete
+    {
     [self proceedDeleteObjects:objectsToDelete tree:nil];
 }
 

@@ -456,7 +456,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         // the followindo notifications look like the previous ones but they're not the same. do not remove them! viewercontroller needs them ot it won't update the preview matrix with the added images
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
-        
+        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddNewStudiesDBNotification object:self];
         [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:self];
     }
 
@@ -523,6 +523,14 @@ static DicomDatabase* activeLocalDatabase = nil;
         NSDictionary* userInfo = nil;
         
         NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
+        if (independentObjects) {
+            NSArray* selfObjects = [self objectsWithIDs:independentObjects];
+            if (selfObjects.count != independentObjects.count)
+                NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
+            userInfo = [NSDictionary dictionaryWithObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+        }
+        
+        independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
         if (independentObjects) {
             NSArray* selfObjects = [self objectsWithIDs:independentObjects];
             if (selfObjects.count != independentObjects.count)
@@ -1983,7 +1991,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				if (postNotifications)
                 {
                     if( newStudy)
-                        [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddNewStudiesDBNotification object:self userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddNewStudiesDBNotificationNewStudiesArray]];
+                    {
+                        [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddNewStudiesDBNotification object:self userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddToDBNotificationImagesArray]];
+                    }
                     
                     [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
                     

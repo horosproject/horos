@@ -43,7 +43,6 @@ NSString* const OsirixStudyAnnotationsChangedNotification = @"OsirixStudyAnnotat
 NSString* const OsirixGLFontChangeNotification = @"changeGLFontNotification";
 NSString* const OsirixAddToDBNotification = @"OsirixAddToDBNotification";
 NSString* const OsirixAddNewStudiesDBNotification = @"OsirixAddNewStudiesDBNotification";
-NSString* const OsirixAddNewStudiesDBNotificationNewStudiesArray = @"OsirixAddNewStudiesDBNotificationNewStudiesArray";
 NSString* const OsirixDicomDatabaseDidChangeContextNotification = @"OsirixDicomDatabaseDidChangeContextNotification";
 #define OsiriXAddToDBArrayKey @"OsiriXAddToDBArray"
 NSString* const OsirixAddToDBNotificationImagesArray = OsiriXAddToDBArrayKey;
