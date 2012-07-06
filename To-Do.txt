@@ -27,6 +27,7 @@
 - Comparative: Don't auto retrieve first item
 - Comparative: select distant: timer for XX secs
 - Comparative: refresh list after XX minutes
+- Double-Clicke
 -------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm

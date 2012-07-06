@@ -1818,19 +1818,24 @@ static NSConditionLock *threadLock = nil;
 
 - (void) selectThisStudy: (NSManagedObject*)study
 {
+    if( !study)
+        return;
+    
     if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
         [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
     
     [self outlineViewRefresh];
 	
     NSInteger index = [databaseOutline rowForItem:study];
-    if (index == -1 && albumTable.selectedRow > 0) {
+    if (index == -1 && albumTable.selectedRow > 0)
+    {
         [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
         [self outlineViewRefresh];
         index = [databaseOutline rowForItem:study];
     }
     
-    if (index != -1) {
+    if (index != -1)
+    {
         [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex:index] byExtendingSelection: NO];
         [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     }
@@ -3631,11 +3636,31 @@ static NSConditionLock *threadLock = nil;
     {
         if( [self.comparativePatientUID isEqualToString: newStudy.patientUID])
         {
-            NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
-            DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+            NSMutableArray *copy = [NSMutableArray arrayWithArray: self.comparativeStudies];
             
-            [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
-            break;
+            BOOL found = NO;
+            #ifndef OSIRIX_LIGHT
+            for( DCMTKStudyQueryNode *study in self.comparativeStudies)
+            {
+                if( [study isKindOfClass: [DCMTKStudyQueryNode class]] && [study.studyInstanceUID isEqualToString: newStudy.studyInstanceUID])
+                {
+                    NSUInteger index = [copy indexOfObject: study];
+                    if( index != NSNotFound)
+                    {
+                        found = YES;
+                        [copy replaceObjectAtIndex: index withObject: newStudy];
+                    }
+                }
+            }
+            if( found == NO)
+            {
+                [copy addObject: newStudy];
+                [copy sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
+            }
+            #endif
+            self.comparativeStudies = copy;
+            
+            [comparativeTable reloadData];
         }
     }
 }
@@ -4223,7 +4248,7 @@ static NSConditionLock *threadLock = nil;
     {
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
-    
+        
         [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
     }
 }
@@ -9095,6 +9120,24 @@ static BOOL needToRezoom;
     [pool release];
 }
 
+- (void) doubleClickComparativeStudy: (id) sender
+{
+    id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
+    
+    #ifndef OSIRIX_LIGHT
+    if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
+    {
+        // Check to see if already in retrieving mode
+        
+    }
+    else
+    #endif
+    {
+        [self selectThisStudy: study];
+        [self databaseOpenStudy: study];
+    }
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification*)aNotification
 {
     @try
@@ -9115,26 +9158,29 @@ static BOOL needToRezoom;
         {
             id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
             
-            #ifndef OSIRIX_LIGHT
-            if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
+            if( study)
             {
-                WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
-                [w showWindow:self];
-                
-                NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
-                t.name = NSLocalizedString( @"Retrieving images...", nil);
-                t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
-                t.supportsCancel = YES;
-                [[ThreadsManager defaultManager] addThreadAndStart: t];
-                
-                [NSThread sleepForTimeInterval: 2];
-                
-                [w close];
-            }
-            else // local study -> select it
-            #endif
-            {
-                
+                #ifndef OSIRIX_LIGHT
+                if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
+                {
+                    WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
+                    [w showWindow:self];
+                    
+                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
+                    t.name = NSLocalizedString( @"Retrieving images...", nil);
+                    t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
+                    t.supportsCancel = YES;
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
+                    
+                    [NSThread sleepForTimeInterval: 1];
+                    
+                    [w close];
+                }
+                else // local study -> select it
+                #endif
+                {
+                    [self selectThisStudy: study];
+                }
             }
         }
     }
@@ -11585,6 +11631,7 @@ static NSArray*	openSubSeriesArray = nil;
         [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
         
         [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[ComparativeCell alloc] init] autorelease]];
+        [comparativeTable setDoubleAction: @selector( doubleClickComparativeStudy:)];
         
 		[self initContextualMenus];
         
