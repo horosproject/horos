@@ -2152,7 +2152,32 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     val = Papy3GetElement (theGroupP, papStudyDescriptionGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType)) study = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
-                    else study = [[NSString alloc] initWithString: @"unnamed"];
+                    else
+                    {
+                        val = Papy3GetElement (theGroupP, papProcedureCodeSequenceGr, &nbVal, &itemType);
+                        if (val != NULL && nbVal >= 1 && val->sq)
+                        {
+                            // get a pointer to the first element of the list
+                            Papy_List *seq = val->sq->object->item;
+                            
+                            while (seq)
+                            {
+                                SElement * gr = (SElement *) seq->object->group;
+                                switch( gr->group)
+                                {
+                                    case 0x0008:
+                                    {
+                                        val = Papy3GetElement ( gr, papCodeMeaningGr, &nbVal, &itemType);
+                                        if (val != NULL && val->a && validAPointer( itemType))
+                                            study = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+                                    }
+                                }
+                                seq = seq->next;
+                            }
+                        }
+                    }
+                    if( !study)
+                        study = [[NSString alloc] initWithString: @"unnamed"];
                     [dicomElements setObject: study forKey: @"studyDescription"];
                     
                     val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &itemType);
@@ -2232,33 +2257,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     {
                         serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
                         [dicomElements setObject: serie forKey: @"seriesDescription"];
-                    }
-                    else
-                    {
-                        val = Papy3GetElement (theGroupP, papProcedureCodeSequenceGr, &nbVal, &itemType);
-                        if (val != NULL && nbVal >= 1 && val->sq)
-                        {
-                            // get a pointer to the first element of the list
-                            Papy_List *seq = val->sq->object->item;
-                            
-                            while (seq)
-                            {
-                                SElement * gr = (SElement *) seq->object->group;
-                                switch( gr->group)
-                                {
-                                    case 0x0008:
-                                    {
-                                        val = Papy3GetElement ( gr, papCodeMeaningGr, &nbVal, &itemType);
-                                        if (val != NULL && val->a && validAPointer( itemType))
-                                        {
-                                            serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
-                                            [dicomElements setObject: serie forKey: @"seriesDescription"];
-                                        }
-                                    }
-                                }
-                                seq = seq->next;
-                            }
-                        }
                     }
                     
                     val = Papy3GetElement (theGroupP, papInstitutionNameGr, &nbVal, &itemType);

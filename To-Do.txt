@@ -24,10 +24,9 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: Don't auto retrieve first item
-- Comparative: select distant: timer for XX secs
+- Comparative: select/double-click distant: timer for XX secs
 - Comparative: refresh list after XX minutes
-- Double-Clicke
+
 -------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm

@@ -227,6 +227,7 @@ extern NSString* O2AlbumDragType;
     NSString *comparativePatientUID;
     NSArray *comparativeStudies;
     IBOutlet NSTableView *comparativeTable;
+    BOOL dontSelectStudyFromComparativeStudies;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

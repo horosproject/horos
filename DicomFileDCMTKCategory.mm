@@ -471,7 +471,16 @@ extern NSRecursiveLock *PapyrusLock;
 		//Study Description
 		if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL)
 			study = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-		else
+        else
+        {
+            DcmItem *item = NULL;
+            if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good())
+            {
+                if( item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL)
+                    study = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+            }
+        }
+		if( !study)
 			study = [[NSString alloc] initWithString: @"unnamed"];
 		[dicomElements setObject:study forKey: @"studyDescription"];
 		
@@ -537,21 +546,13 @@ extern NSRecursiveLock *PapyrusLock;
 		//Series Description
 		if (dataset->findAndGetString(DCM_SeriesDescription, string, OFFalse).good() && string != NULL)
 			serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-		else if (dataset->findAndGetString(DCM_PerformedProcedureStepDescription, string, OFFalse).good() && string != NULL)
+        else if (dataset->findAndGetString(DCM_PerformedProcedureStepDescription, string, OFFalse).good() && string != NULL)
             serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
         else if (dataset->findAndGetString(DCM_AcquisitionDeviceProcessingDescription, string, OFFalse).good() && string != NULL)
             serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-        else 
-        {
-            DcmItem *item = NULL;
-            if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good())
-            {
-                if( item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL)
-                    serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-            }
-        }
-        if( serie == nil)
+        else if( serie == nil)
             serie = [[NSString alloc] initWithString: @"unnamed"];
+        
 		[dicomElements setObject:serie forKey:@"seriesDescription"];
 		
 		//Institution Name

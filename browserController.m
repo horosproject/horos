@@ -1821,6 +1821,12 @@ static NSConditionLock *threadLock = nil;
     if( !study)
         return;
     
+    NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+    DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+    
+    if( study == studySelected)
+        return;
+    
     if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
         [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
     
@@ -3610,22 +3616,27 @@ static NSConditionLock *threadLock = nil;
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
 {
+    NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+    DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+    
+    dontSelectStudyFromComparativeStudies = YES;
+    
     if( self.comparativeStudies != newStudies)
     {
         self.comparativeStudies = newStudies;
         [comparativeTable reloadData];
     }
     
-    NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
-    DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
-    
     NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
     
+    dontSelectStudyFromComparativeStudies = NO;
+    
     if( index != NSNotFound)
-    {
         [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
-        [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
-    }
+    else
+        [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
+    
+    [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
 }
 
 - (void)_newStudiesRefreshComparativeStudies: (NSNotification *)aNotification
@@ -3637,6 +3648,10 @@ static NSConditionLock *threadLock = nil;
         if( [self.comparativePatientUID isEqualToString: newStudy.patientUID])
         {
             NSMutableArray *copy = [NSMutableArray arrayWithArray: self.comparativeStudies];
+            
+            id selectedStudy = nil;
+            if( [comparativeTable selectedRow] >= 0)
+                selectedStudy = [copy objectAtIndex: [comparativeTable selectedRow]];
             
             BOOL found = NO;
             #ifndef OSIRIX_LIGHT
@@ -3661,6 +3676,9 @@ static NSConditionLock *threadLock = nil;
             self.comparativeStudies = copy;
             
             [comparativeTable reloadData];
+            
+            if( selectedStudy)
+                [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [copy indexOfObject: selectedStudy]] byExtendingSelection: NO];
         }
     }
 }
@@ -4420,7 +4438,7 @@ static NSConditionLock *threadLock = nil;
 		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [oMatrix menu]) || [[self window] firstResponder] == oMatrix)
 			matrixThumbnails = YES;
 		
-		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [databaseOutline menu]) || [[self window] firstResponder] == databaseOutline)
+		if( ([sender isKindOfClass:[NSMenuItem class]] && [sender menu] == [databaseOutline menu]) || [[self window] firstResponder] == databaseOutline || [[self window] firstResponder] == comparativeTable)
 			matrixThumbnails = NO;
 	}
 	
@@ -5653,7 +5671,7 @@ static NSConditionLock *threadLock = nil;
             item = [databaseOutline itemAtRow:[databaseOutline clickedRow]];
 		else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
-        if ([[item numberOfImages] intValue] > 0)
+        if ([[item numberOfImages] intValue] != 0)
             [self databaseOpenStudy: item];
         else {
 #ifndef OSIRIX_LIGHT
@@ -8800,7 +8818,7 @@ static BOOL needToRezoom;
             cell.title = [study studyName];
             cell.rightTextFirstLine = [study modality];
             cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
-            cell.rightTextSecondLine = N2LocalizedSingularPluralCount([[study numberOfImages] intValue], @"image", @"images");
+            cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), @"image", @"images");
         }
         else
         {
@@ -9134,6 +9152,7 @@ static BOOL needToRezoom;
     #endif
     {
         [self selectThisStudy: study];
+        [[self window] makeFirstResponder: databaseOutline];
         [self databaseOpenStudy: study];
     }
 }
@@ -9158,7 +9177,7 @@ static BOOL needToRezoom;
         {
             id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
             
-            if( study)
+            if( study && dontSelectStudyFromComparativeStudies == NO)
             {
                 #ifndef OSIRIX_LIGHT
                 if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
@@ -9180,6 +9199,7 @@ static BOOL needToRezoom;
                 #endif
                 {
                     [self selectThisStudy: study];
+                    [[self window] makeFirstResponder: databaseOutline];
                 }
             }
         }
@@ -12257,7 +12277,7 @@ static NSArray*	openSubSeriesArray = nil;
 		if( menuItem.menu == [oMatrix menu] || [[self window] firstResponder] == oMatrix)
 			matrixThumbnails = YES;
 			
-		if( menuItem.menu == [databaseOutline menu] || [[self window] firstResponder] == databaseOutline)
+		if( menuItem.menu == [databaseOutline menu] || [[self window] firstResponder] == databaseOutline || [[self window] firstResponder] == comparativeTable)
 			matrixThumbnails = NO;
 		
 		if( matrixThumbnails)
