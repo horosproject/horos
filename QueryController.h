@@ -112,7 +112,7 @@
 + (BOOL) echoServer:(NSDictionary*)serverParameters;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer;
 + (int) queryAndRetrieveAccessionNumber:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
-+ (void) retrieveStudies:(NSArray*) studies server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;
++ (void) retrieveStudies:(NSArray*) studies showErrors: (BOOL) showErrors;
 + (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName servers: (NSArray*) serversList showErrors: (BOOL) showErrors;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer;
 + (NSArray*) queryStudyInstanceUID:(NSString*) an server: (NSDictionary*) aServer showErrors: (BOOL) showErrors;

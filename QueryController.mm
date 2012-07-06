@@ -244,9 +244,9 @@ extern "C"
 	return error;
 }
 
-+ (void) retrieveStudies:(NSArray*) studies server: (NSDictionary*) aServer showErrors: (BOOL) showErrors
++ (void) retrieveStudies:(NSArray*) studies showErrors: (BOOL) showErrors
 {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithDictionary: aServer];
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     
     for( DCMTKQueryNode	*object in studies)
     {
@@ -261,7 +261,7 @@ extern "C"
         if( pFile)
             fclose (pFile);
         else
-            [object move: aServer];
+            [object move: dictionary retrieveMode: [[[object extraParameters] valueForKey: @"retrieveMode"] intValue]];
     }
 }
 

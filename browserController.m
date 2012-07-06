@@ -9085,6 +9085,15 @@ static BOOL needToRezoom;
         [self loadSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
 }
 
+- (void) comparativeRetrieve:(DicomStudy*) study
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
+    
+    [pool release];
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification*)aNotification
 {
     @try
@@ -9100,10 +9109,35 @@ static BOOL needToRezoom;
             
             [self saveLoadAlbumsSortDescriptors];
         }
+        
+        if (aNotification.object == comparativeTable)
+        {
+            id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
+            
+            if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
+            {
+                WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
+                [w showWindow:self];
+                
+                NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
+                t.name = NSLocalizedString( @"Retrieving images...", nil);
+                t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
+                t.supportsCancel = YES;
+                [[ThreadsManager defaultManager] addThreadAndStart: t];
+                
+                [NSThread sleepForTimeInterval: 2];
+                
+                [w close];
+            }
+            else // local study -> select it
+            {
+                
+            }
+        }
     }
     @catch (NSException *e)
     {
-        NSLog( @"viewerDICOMInt exception: %@", e);
+        NSLog( @"tableViewSelectionDidChange exception: %@", e);
 		[AppController printStackTrace: e];
     }
 }

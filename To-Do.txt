@@ -24,6 +24,8 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
+- If unnamed description, use PerformedProcedureStepDescription, AcquisitionDeviceProcessingDescription
+
 -------------------------------------------------------------
 
 - Overlays support group 6000 - see Overlay.dcm
