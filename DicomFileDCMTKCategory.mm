@@ -470,12 +470,10 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//Study Description
 		if (dataset->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != NULL)
-		{
 			study = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-		}
 		else
-			study = [[NSString alloc] initWithString:@"unnamed"];
-		[dicomElements setObject:study forKey:@"studyDescription"];
+			study = [[NSString alloc] initWithString: @"unnamed"];
+		[dicomElements setObject:study forKey: @"studyDescription"];
 		
 		//Modality
 		if (dataset->findAndGetString(DCM_Modality, string, OFFalse).good() && string != NULL)
@@ -538,11 +536,22 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//Series Description
 		if (dataset->findAndGetString(DCM_SeriesDescription, string, OFFalse).good() && string != NULL)
-		{
 			serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-		}
-		else
-			serie = [[NSString alloc] initWithString:@"unnamed"];
+		else if (dataset->findAndGetString(DCM_PerformedProcedureStepDescription, string, OFFalse).good() && string != NULL)
+            serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+        else if (dataset->findAndGetString(DCM_AcquisitionDeviceProcessingDescription, string, OFFalse).good() && string != NULL)
+            serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+        else 
+        {
+            DcmItem *item = NULL;
+            if (dataset->findAndGetSequenceItem(DCM_ProcedureCodeSequence, item).good())
+            {
+                if( item->findAndGetString(DCM_CodeMeaning, string, OFFalse).good() && string != NULL)
+                    serie = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
+            }
+        }
+        if( serie == nil)
+            serie = [[NSString alloc] initWithString: @"unnamed"];
 		[dicomElements setObject:serie forKey:@"seriesDescription"];
 		
 		//Institution Name
@@ -1045,9 +1054,14 @@ extern NSRecursiveLock *PapyrusLock;
 		}
 		
 		[dicomElements setObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
-		
-		//NSLog(@"DicomElements:  %@ %@" ,NSStringFromClass([dicomElements class]) ,[dicomElements description]);
-		
+        
+        if( [[dicomElements objectForKey: @"studyDescription"] isEqualToString: @"unnamed"])
+        {
+            [study release];
+            study = [[NSString alloc] initWithString: serie];
+            [dicomElements setObject:study forKey: @"studyDescription"];
+        }
+        
 		if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
 		{
 			return 0;   // success

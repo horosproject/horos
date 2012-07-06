@@ -9089,8 +9089,9 @@ static BOOL needToRezoom;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    #ifndef OSIRIX_LIGHT
     [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
-    
+    #endif
     [pool release];
 }
 
@@ -9114,6 +9115,7 @@ static BOOL needToRezoom;
         {
             id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
             
+            #ifndef OSIRIX_LIGHT
             if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
             {
                 WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
@@ -9130,6 +9132,7 @@ static BOOL needToRezoom;
                 [w close];
             }
             else // local study -> select it
+            #endif
             {
                 
             }

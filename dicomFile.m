@@ -2228,9 +2228,38 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         [dicomElements setObject:date forKey:@"studyDate"];
                     
                     val = Papy3GetElement (theGroupP, papSeriesDescriptionGr, &nbVal, &itemType);
-                    if (val != NULL && val->a && validAPointer( itemType)) serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
-                    else serie = [[NSString alloc] initWithString:@"unnamed"];
-                    [dicomElements setObject:serie forKey:@"seriesDescription"];
+                    if (val != NULL && val->a && validAPointer( itemType))
+                    {
+                        serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+                        [dicomElements setObject: serie forKey: @"seriesDescription"];
+                    }
+                    else
+                    {
+                        val = Papy3GetElement (theGroupP, papProcedureCodeSequenceGr, &nbVal, &itemType);
+                        if (val != NULL && nbVal >= 1 && val->sq)
+                        {
+                            // get a pointer to the first element of the list
+                            Papy_List *seq = val->sq->object->item;
+                            
+                            while (seq)
+                            {
+                                SElement * gr = (SElement *) seq->object->group;
+                                switch( gr->group)
+                                {
+                                    case 0x0008:
+                                    {
+                                        val = Papy3GetElement ( gr, papCodeMeaningGr, &nbVal, &itemType);
+                                        if (val != NULL && val->a && validAPointer( itemType))
+                                        {
+                                            serie = [[DicomFile stringWithBytes: (char*) val->a encodings:encoding] retain];
+                                            [dicomElements setObject: serie forKey: @"seriesDescription"];
+                                        }
+                                    }
+                                }
+                                seq = seq->next;
+                            }
+                        }
+                    }
                     
                     val = Papy3GetElement (theGroupP, papInstitutionNameGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType))
@@ -2277,11 +2306,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     study = [[NSString alloc] initWithString:@"unnamed"];
                     Modality = [[NSString alloc] initWithString:@"OT"];
                     date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
-                    serie = [[NSString alloc] initWithString:@"unnamed"];
                     
                     [dicomElements setObject:date forKey:@"studyDate"];
                     [dicomElements setObject:Modality forKey:@"modality"];
-                    [dicomElements setObject:serie forKey:@"seriesDescription"];
                     [dicomElements setObject:study forKey:@"studyDescription"];
                 }
                 
@@ -2375,8 +2402,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     val = Papy3GetElement (theGroupP, papProtocolNameGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType)) [dicomElements setObject: [DicomFile stringWithBytes: (char*) val->a encodings:encoding] forKey: @"protocolName"];
                     
-                    //Get TE for Dual Echo and multiecho MRI sequences
+                    if( serie == nil)
+                    {
+                        val = Papy3GetElement (theGroupP, papAcquisitionDeviceProcessingDescriptionGr, &nbVal, &itemType);
+                        if (val != NULL && val->a && validAPointer( itemType))
+                        {
+                            serie = [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
+                            [dicomElements setObject: serie forKey: @"seriesDescription"];
+                        }
+                    }
                     
+                    //Get TE for Dual Echo and multiecho MRI sequences
                     val = Papy3GetElement (theGroupP, papEchoTimeGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType)) echoTime = [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
                     
@@ -2629,6 +2665,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         val = Papy3GetElement (theGroupP, papStudyCommentsGr, &nbVal, &itemType);
                         if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && [dicomElements objectForKey: @"commentsAutoFill"] == nil)
                             [dicomElements setObject: [NSString stringWithCString: val->a encoding: NSASCIIStringEncoding] forKey: @"studyComments"];
+                        
+                        theErr = Papy3GroupFree (&theGroupP, TRUE);
+                    }
+                }
+                
+                if( serie == nil)
+                {
+                    theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0040);
+                    if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
+                    {
+                        val = Papy3GetElement (theGroupP, papPerformedProcedureStepDescriptionGr, &nbVal, &itemType);
+                        if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
+                        {
+                            serie = [[[NSString alloc] initWithCString:val->a encoding: NSASCIIStringEncoding] autorelease];
+                            [dicomElements setObject: serie forKey: @"seriesDescription"];
+                        }
                         
                         theErr = Papy3GroupFree (&theGroupP, TRUE);
                     }
@@ -3068,7 +3120,17 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             
             [dicomElements setObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
             
-            //NSLog(@"DicomElements:  %@ %@" ,NSStringFromClass([dicomElements class]) ,[dicomElements description]);
+            if( serie == nil)
+                serie = [[NSString stringWithString:@"unnamed"] retain];
+            
+            [dicomElements setObject:serie forKey:@"seriesDescription"];
+            
+            if( [[dicomElements objectForKey: @"studyDescription"] isEqualToString: @"unnamed"])
+            {
+                [study release];
+                study = [[NSString alloc] initWithString: serie];
+                [dicomElements setObject:study forKey: @"studyDescription"];
+            }
             
             if( name != nil && studyID != nil && serieID != nil && imageID != nil && width != 0 && height != 0)
             {
