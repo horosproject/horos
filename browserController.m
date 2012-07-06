@@ -7720,11 +7720,20 @@ static BOOL withReset = NO;
         NSRect leftFrame = [left frame];
         NSRect rightFrame = [right frame];
         
+        leftFrame.size.width -= oldSize.width - splitFrame.size.width;
+        rightFrame.size.width += oldSize.width - splitFrame.size.width;
+        
         if ([splitComparative isSubviewCollapsed: [[splitComparative subviews] objectAtIndex:1]] || [right isHidden])
+            leftFrame.size.width = availableWidth;
+        else if( rightFrame.size.width == 0)
+            leftFrame.size.width = availableWidth - 160;
+        
+        if( leftFrame.size.width > availableWidth)
             leftFrame.size.width = availableWidth;
         
         rightFrame.size.height = splitFrame.size.height;
         rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
+        rightFrame.size.width = availableWidth - leftFrame.size.width;
         [right setFrame:rightFrame];
         
         leftFrame.size.height = splitFrame.size.height;

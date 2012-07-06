@@ -2325,9 +2325,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *exportMenu = [[fileMenu itemWithTitle:NSLocalizedString(@"Export", nil)] submenu];
 		if( exportMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... exportMenu == nil -> exportMenu == itemAtIndex == 11");
+			NSLog( @"***** NSLocalization bug.... exportMenu == nil -> exportMenu == itemAtIndex == 12");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Export", nil));
-			exportMenu = [[fileMenu itemAtIndex: 11]  submenu];
+			exportMenu = [[fileMenu itemAtIndex: 12]  submenu];
 			NSLog( @"***** Selected item: %@", [exportMenu title]);
 		}
 		

@@ -3259,7 +3259,7 @@ static BOOL initialized = NO;
 	
 	NSMenu *fileMenu = [[mainMenu itemWithTitle:NSLocalizedString(@"File", nil)] submenu];
 	
-	if( [[[fileMenu itemAtIndex: 11] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
+	if( [[[fileMenu itemAtIndex: 12] title] isEqualToString: NSLocalizedString(@"Export", nil)] == NO)
         NSLog( @"******* WARNING MENU MOVED / RENAMED ! LOCALIZATION PROBLEMS 10");
     
     if( [[NSBundle bundleForClass:[self class]] pathForAuxiliaryExecutable:@"odt2pdf"] == nil)
