@@ -234,9 +234,6 @@ extern NSString* O2AlbumDragType;
     NSMutableArray *comparativeRetrieveQueue;
     DCMTKStudyQueryNode *comparativeStudyWaited;
     BOOL comparativeStudyWaitedToOpen;
-    
-    NSView *comparativeView;
-    NSProgressIndicator *comparativeProgressView;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

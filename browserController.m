@@ -3531,6 +3531,8 @@ static NSConditionLock *threadLock = nil;
     {
         NSLog( @"--- Search for comparative studies: %@", studySelected.patientUID);
         
+        [NSThread sleepForTimeInterval: 5];
+        
         @try
         {
             NSArray *distantStudies = nil;
@@ -3603,8 +3605,6 @@ static NSConditionLock *threadLock = nil;
             
             if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
                 [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
-            
-            NSLog( @"--- Search for comparative studies finished");
         }
         @catch (NSException* e)
         {
@@ -3618,12 +3618,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
 {
-    if( [[splitComparative subviews] objectAtIndex:1] == comparativeProgressView)
-    {
-        [comparativeProgressView stopAnimation: self];
-        [splitComparative replaceSubview: [[splitComparative subviews] objectAtIndex:1] with: comparativeView];
-    }
-    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -3855,19 +3849,6 @@ static NSConditionLock *threadLock = nil;
                     self.comparativePatientUID = studySelected.patientUID;
                     self.comparativeStudies = nil;
                     [comparativeTable reloadData];
-                    
-                    if( comparativeView == nil)
-                        comparativeView = [[[splitComparative subviews] objectAtIndex:1] retain];
-                    
-                    if( comparativeProgressView == nil)
-                    {
-                        comparativeProgressView = [[NSProgressIndicator alloc] initWithFrame: [[[splitComparative subviews] objectAtIndex:1] frame]];
-                        [comparativeProgressView setUsesThreadedAnimation: YES];
-                        [comparativeProgressView setStyle: NSProgressIndicatorSpinningStyle];
-                    }
-                    
-                    [comparativeProgressView startAnimation: self];
-                    [splitComparative replaceSubview: [[splitComparative subviews] objectAtIndex:1] with: comparativeProgressView];
                     
                     [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
                 }
