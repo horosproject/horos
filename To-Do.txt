@@ -24,8 +24,8 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: select/double-click distant: timer for XX secs
-- Comparative: refresh list after XX minutes
+- Comparative: check if a study is already in the retrieve queue
+- Comparative: thumbnail matrix for ViewerController
 
 -------------------------------------------------------------
 

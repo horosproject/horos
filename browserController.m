@@ -3599,6 +3599,8 @@ static NSConditionLock *threadLock = nil;
 //                NSLog( @"%d Patient name: %@ - %@ - %@ - %@", distant, [study name], [study modality], [[NSUserDefaults dateTimeFormatter] stringFromDate: [study date]], [study studyName]);
 //            }
             
+            lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];
+            
             if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
                 [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
             
@@ -3616,6 +3618,12 @@ static NSConditionLock *threadLock = nil;
 
 - (void) refreshComparativeStudies: (NSArray*) newStudies
 {
+    if( [[splitComparative subviews] objectAtIndex:1] == comparativeProgressView)
+    {
+        [comparativeProgressView stopAnimation: self];
+        [splitComparative replaceSubview: [[splitComparative subviews] objectAtIndex:1] with: comparativeView];
+    }
+    
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
@@ -3637,6 +3645,55 @@ static NSConditionLock *threadLock = nil;
         [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
     
     [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
+}
+
+- (void) refreshComparativeStudiesIfNeeded:(id) timer
+{
+    if( [NSDate timeIntervalSinceReferenceDate] - lastRefreshComparativeStudies > 3 * 60) // 3 min
+    {
+        NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
+        DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+        
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+    }
+    
+    if( comparativeStudyWaited) // Select it ! And open it if needed...
+    {
+        [self checkIncoming: self];
+        
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+        [request setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [comparativeStudyWaited studyInstanceUID]]];
+        
+        NSError *error = nil;
+        NSArray *studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if( [studyArray count] > 0)
+        {
+            NSManagedObject	*study = [studyArray objectAtIndex: 0];
+            NSArray *seriesArray = [self childrenArray: study];
+            
+            if( [seriesArray count])
+            {
+                NSManagedObject	*series =  [seriesArray objectAtIndex: 0];
+                BOOL success = NO;
+                
+                if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+                {
+                    [self showEntireDatabase];
+                    if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+                }
+                else success = YES;
+                
+                if( success && comparativeStudyWaitedToOpen)
+                    [self databaseOpenStudy: study];
+            }
+            
+            [[self window] makeFirstResponder: databaseOutline];
+        }
+        
+        [comparativeStudyWaited release];
+        comparativeStudyWaited = nil;
+    }
 }
 
 - (void)_newStudiesRefreshComparativeStudies: (NSNotification *)aNotification
@@ -3798,6 +3855,19 @@ static NSConditionLock *threadLock = nil;
                     self.comparativePatientUID = studySelected.patientUID;
                     self.comparativeStudies = nil;
                     [comparativeTable reloadData];
+                    
+                    if( comparativeView == nil)
+                        comparativeView = [[[splitComparative subviews] objectAtIndex:1] retain];
+                    
+                    if( comparativeProgressView == nil)
+                    {
+                        comparativeProgressView = [[NSProgressIndicator alloc] initWithFrame: [[[splitComparative subviews] objectAtIndex:1] frame]];
+                        [comparativeProgressView setUsesThreadedAnimation: YES];
+                        [comparativeProgressView setStyle: NSProgressIndicatorSpinningStyle];
+                    }
+                    
+                    [comparativeProgressView startAnimation: self];
+                    [splitComparative replaceSubview: [[splitComparative subviews] objectAtIndex:1] with: comparativeProgressView];
                     
                     [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
                 }
@@ -9095,13 +9165,15 @@ static BOOL needToRezoom;
     return nil;
 }
 
--(void)saveLoadAlbumsSortDescriptors {
+-(void)saveLoadAlbumsSortDescriptors
+{
     if (!databaseOutline)
         return;
     
     static id previousSelectedAlbumId = nil;
     static void* previousDatabase = nil;
-    if (_database != previousDatabase) {
+    if (_database != previousDatabase)
+    {
         [previousSelectedAlbumId release];
         previousSelectedAlbumId = nil;
     }
@@ -9132,10 +9204,55 @@ static BOOL needToRezoom;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    @synchronized( self)
+    {
+        if( comparativeRetrieveQueue == nil)
+            comparativeRetrieveQueue = [[NSMutableArray alloc] init];
+        
+        [comparativeRetrieveQueue addObject: study];
+    }
+    
     #ifndef OSIRIX_LIGHT
     [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
     #endif
+    
+    @synchronized( self)
+    {
+        [comparativeRetrieveQueue removeObject: study];
+    }
+    
     [pool release];
+}
+
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study
+{
+    WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
+    [w showWindow:self];
+    
+    BOOL retrieveStudy = YES;
+    @synchronized( self)
+    {
+        if( [comparativeRetrieveQueue containsObject: study])
+            retrieveStudy = NO;
+    }
+    
+    if( retrieveStudy)
+    {
+        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
+        t.name = NSLocalizedString( @"Retrieving images...", nil);
+        t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
+        t.supportsCancel = YES;
+        [[ThreadsManager defaultManager] addThreadAndStart: t];
+    }
+    
+    [NSThread sleepForTimeInterval: 1];
+    
+    [w close];
+    
+    // see refreshComparativeStudiesIfNeeded timer
+    comparativeStudyWaitedToOpen = NO;
+    [comparativeStudyWaited release];
+    comparativeStudyWaited = [study retain];
 }
 
 - (void) doubleClickComparativeStudy: (id) sender
@@ -9145,8 +9262,9 @@ static BOOL needToRezoom;
     #ifndef OSIRIX_LIGHT
     if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
     {
-        // Check to see if already in retrieving mode
-        
+        // Check to see if already in retrieving mode, if not download it
+        [self retrieveComparativeStudy: study];
+        comparativeStudyWaitedToOpen = YES;
     }
     else
     #endif
@@ -9182,18 +9300,8 @@ static BOOL needToRezoom;
                 #ifndef OSIRIX_LIGHT
                 if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
                 {
-                    WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
-                    [w showWindow:self];
-                    
-                    NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
-                    t.name = NSLocalizedString( @"Retrieving images...", nil);
-                    t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
-                    t.supportsCancel = YES;
-                    [[ThreadsManager defaultManager] addThreadAndStart: t];
-                    
-                    [NSThread sleepForTimeInterval: 1];
-                    
-                    [w close];
+                    [self retrieveComparativeStudy: study];
+                    comparativeStudyWaitedToOpen = NO;
                 }
                 else // local study -> select it
                 #endif
@@ -10974,18 +11082,6 @@ static NSArray*	openSubSeriesArray = nil;
 	NSRunCriticalAlertPanel(NSLocalizedString(@"Search", nil), NSLocalizedString(@"The search field is currently not displayed in the toolbar. Customize your toolbar to add it.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
-//- (void) autoTest:(id) sender
-//{
-//	if( autotestdone == NO)
-//	{
-//		autotestdone = YES;
-//		// AUTO TEST
-//		[self matrixDoublePressed: nil];
-//		[[[ViewerController getDisplayed2DViewers] lastObject] checkEverythingLoaded];
-//		[[[ViewerController getDisplayed2DViewers] lastObject] VRViewer: nil];
-//	}
-//}
-
 + (long) computeDATABASEINDEXforDatabase:(NSString*)path // __deprecated
 {
 	return [[DicomDatabase databaseAtPath:path] computeDataFileIndex];
@@ -11041,10 +11137,6 @@ static NSArray*	openSubSeriesArray = nil;
 		}
 		
 		_albumNoOfStudiesCache = [[NSMutableArray alloc] init];
-//		newFilesConditionLock = [[NSConditionLock alloc] initWithCondition: 0];
-//		viewersListToRebuild = [[NSMutableArray alloc] initWithCapacity: 0];
-//		viewersListToReload = [[NSMutableArray alloc] initWithCapacity: 0];
-	//	persistentStoreCoordinatorDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		databaseIndexDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		
 		notFoundImage = [[NSImage imageNamed:@"FileNotFound.tif"] retain];
@@ -11053,19 +11145,12 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		
-//		checkBonjourUpToDateThreadLock = [[NSRecursiveLock alloc] init];
-//		checkIncomingLock = [[NSRecursiveLock alloc] init];
-	//	decompressArrayLock = [[NSRecursiveLock alloc] init];
-	//	decompressThreadRunning = [[NSRecursiveLock alloc] init];
 		processorsLock = [[NSConditionLock alloc] initWithCondition: 1];
-	//	decompressArray = [[NSMutableArray alloc] initWithCapacity: 0];
 		
 		DatabaseIsEdited = NO;
 		
 		previousBonjourIndex = -1;
 		toolbarSearchItem = nil;
-	//	managedObjectModel = nil;
-	//	managedObjectContext = nil;
 		
 		_filterPredicateDescription = nil;
 		_filterPredicate = nil;
@@ -11113,104 +11198,26 @@ static NSArray*	openSubSeriesArray = nil;
         thread.name = oldThreadName;
         self.database = [theDatabase autorelease]; // explicitly retained earlier
         
-//		currentDatabasePath = [[[self documentsDirectory] stringByAppendingPathComponent:DATAFILEPATH] retain];
-//		
-//		NSString *dicomdir = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIR"];
-//		NSString *dicomdirPath = [[[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"/DICOMDIRPATH"];
-//		
-//		if ([[NSFileManager defaultManager] fileExistsAtPath:dicomdir])
-//		{
-//			DICOMDIRCDMODE = YES;
-//			
-//			[currentDatabasePath release];
-//			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
-//			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
-//			
-//			[self loadDatabase: currentDatabasePath];
-//			
-//			NSMutableArray *filesArray = [NSMutableArray array];
-//			[self addDICOMDIR:dicomdir: filesArray];
-//			[self addFilesAndFolderToDatabase: filesArray];
-//		}
-//		else  if ([[NSFileManager defaultManager] fileExistsAtPath: dicomdirPath])
-//		{
-//			DICOMDIRCDMODE = YES;
-//			
-//			[currentDatabasePath release];
-//			currentDatabasePath = [[NSString stringWithString: @"/tmp/OsiriXTemporaryDatabase"] retain];
-//			[[NSFileManager defaultManager] removeFileAtPath: currentDatabasePath handler: nil];
-//			
-//			[self loadDatabase: currentDatabasePath];
-//			
-//			NSMutableArray *filesArray = [NSMutableArray array];
-//			[self addDICOMDIR: [NSString stringWithContentsOfFile: dicomdirPath] :filesArray];
-//			[self addFilesAndFolderToDatabase: filesArray];
-//		}
-//		else 
-//			[self loadDatabase: currentDatabasePath];
-//		
-//		[self setFixedDocumentsDirectory];
-//		[self setNetworkLogs];
-		
-		// NSString *str = [[[NSBundle mainBundle] bundlePath] stringByDeletingLastPathComponent];
-		
-//		shouldDie = NO;
-//		bonjourDownloading = NO;
-		
 		previewPix = [[NSMutableArray alloc] initWithCapacity:0];
 		
-		timer = [[NSTimer scheduledTimerWithTimeInterval: 0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES] retain];
+        [NSTimer scheduledTimerWithTimeInterval: 0.15 target:self selector:@selector(previewPerformAnimation:) userInfo:self repeats:YES];
+        
 		if( [[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] < 1)
 			[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:@"LISTENERCHECKINTERVAL"];
 		
-//		IncomingTimer = [[NSTimer timerWithTimeInterval:[[NSUserDefaults standardUserDefaults] integerForKey:@"LISTENERCHECKINTERVAL"] target:self selector:@selector(checkIncoming:) userInfo:self repeats:YES] retain];
-//		
-//		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSModalPanelRunLoopMode];
-//		[[NSRunLoop currentRunLoop] addTimer: IncomingTimer forMode: NSDefaultRunLoopMode];
-		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain]; //
+			refreshTimer = [[NSTimer scheduledTimerWithTimeInterval: 5*60 target:self selector:@selector(refreshDatabase:) userInfo:self repeats:YES] retain];
 		
-//		bonjourTimer = [[NSTimer scheduledTimerWithTimeInterval: 120 target:self selector:@selector(checkBonjourUpToDate:) userInfo:self repeats:YES] retain];	//120
-//		databaseCleanerTimer = [[NSTimer scheduledTimerWithTimeInterval: 15*60 + 2.5 target:self selector:@selector(autoCleanDatabaseDate:) userInfo:self repeats:YES] retain]; // 20*60 + 2.5
-		deleteQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES] retain]; // 10
-//		autoroutingQueueTimer = [[NSTimer scheduledTimerWithTimeInterval: 30 target:self selector:@selector(emptyAutoroutingQueue:) userInfo:self repeats:YES] retain]; // 35
-		
-		
+        [NSTimer scheduledTimerWithTimeInterval: 10 target:self selector:@selector(emptyDeleteQueue:) userInfo:self repeats:YES]; // 10
+        [NSTimer scheduledTimerWithTimeInterval: 1 target:self selector:@selector(refreshComparativeStudiesIfNeeded:) userInfo:self repeats:YES];
+        
 		loadPreviewIndex = 0;
-//		matrixDisplayIcons = [[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(matrixDisplayIcons:) userInfo:self repeats:YES] retain];
-		
-//		[[NSTimer scheduledTimerWithTimeInterval: 1.0 target:self selector:@selector(newFilesGUIUpdate:) userInfo:self repeats:YES] retain]; // TODO: hmmm
-		
-		/* notifications from workspace */
-//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeMount:) name:NSWorkspaceDidMountNotification object:nil];
-//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(volumeUnmount:) name:NSWorkspaceDidUnmountNotification object:nil];
-//		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(willVolumeUnmount:) name:NSWorkspaceWillUnmountNotification object:nil];
-		
-		
-		//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(mainWindowHasChanged:) name:NSWindowDidBecomeMainNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rtstructNotification:) name:OsirixRTStructNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alternateButtonPressed:) name:OsirixAlternateButtonPressedNotification object:nil];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
-				
-//		[[NSNotificationCenter defaultCenter] addObserver: self
-//												selector: @selector(listChangedTest:)
-//												name: OsirixServerArrayChangedNotification
-//												object: nil];
-		
-//		[[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(autoTest:) userInfo:self repeats:NO] retain];
-		
-	//	displayEmptyDatabase = NO;
 	}
 	return self;
 }
-//
-//- (void) listChangedTest:(NSNotification*) n
-//{
-//	NSLog(@"********* NOTIF, %d", dontLoadSelectionSource);
-//}
-
 - (void) setDBDate
 {
 	[TimeFormat release];
@@ -11225,14 +11232,6 @@ static NSArray*	openSubSeriesArray = nil;
 	DateTimeWithSecondsFormat = [[NSDateFormatter alloc] init];
 	[DateTimeWithSecondsFormat setDateStyle: NSDateFormatterShortStyle];
 	[DateTimeWithSecondsFormat setTimeStyle: NSDateFormatterMediumStyle];
-	
-//	[DateTimeFormat release];
-//	DateTimeFormat = [[NSDateFormatter alloc] init];
-//	[DateTimeFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateFormat2"]];
-	
-//	[DateOfBirthFormat release];
-//	DateOfBirthFormat = [[NSDateFormatter alloc] init];
-//	[DateOfBirthFormat setDateFormat: [[NSUserDefaults standardUserDefaults] stringForKey: @"DBDateOfBirthFormat2"]];
 	
 	[[[databaseOutline tableColumnWithIdentifier: @"dateOpened"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];
 	[[[databaseOutline tableColumnWithIdentifier: @"date"] dataCell] setFormatter:[NSUserDefaults dateTimeFormatter]];

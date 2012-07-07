@@ -26,7 +26,7 @@
 @class MyOutlineView,DCMView,DCMPix;
 @class StructuredReportController,BrowserMatrix;
 @class PluginManagerController,WaitRendering, Wait, ActivityWindowController;
-@class WebPortalUser;
+@class WebPortalUser, DCMTKStudyQueryNode;
 
 enum RootTypes{PatientRootType, StudyRootType, RandomRootType};
 enum simpleSearchType {PatientNameSearch, PatientIDSearch};
@@ -75,7 +75,8 @@ extern NSString* O2AlbumDragType;
 	
     DCMPix                  *curPreviewPix;
     
-    NSTimer                 *timer, *refreshTimer, *databaseCleanerTimer, *deleteQueueTimer;
+    NSTimer                 *refreshTimer;
+//    NSTimer                 *timer, *refreshTimer, *databaseCleanerTimer, *deleteQueueTimer;
 	long					loadPreviewIndex, previousNoOfFiles;
 	NSManagedObject			*previousItem;
     
@@ -228,6 +229,14 @@ extern NSString* O2AlbumDragType;
     NSArray *comparativeStudies;
     IBOutlet NSTableView *comparativeTable;
     BOOL dontSelectStudyFromComparativeStudies;
+    NSTimeInterval lastRefreshComparativeStudies;
+    
+    NSMutableArray *comparativeRetrieveQueue;
+    DCMTKStudyQueryNode *comparativeStudyWaited;
+    BOOL comparativeStudyWaitedToOpen;
+    
+    NSView *comparativeView;
+    NSProgressIndicator *comparativeProgressView;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
