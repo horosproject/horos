@@ -3529,15 +3529,32 @@ static NSConditionLock *threadLock = nil;
     [searchForComparativeStudiesLock lock];
     if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... Keep only the displayed patientUID
     {
-        NSLog( @"--- Search for comparative studies: %@", studySelected.patientUID);
-        
-        [NSThread sleepForTimeInterval: 5];
+        NSLog( @"--- Search history: %@", studySelected.patientUID);
         
         @try
         {
+            // Local studies
+            NSArray *localStudies = nil;
+            @try
+            {
+                NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID];
+                localStudies = [_database objectsForEntity:_database.studyEntity predicate: predicate];
+            }
+            @catch (NSException* e)
+            {
+                NSLog( @"*** Comparative Studies exception: %@", e);
+            }
+            
+            NSMutableArray *mergedStudies = [NSMutableArray arrayWithArray: localStudies];
+            
+            [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
+            
             NSArray *distantStudies = nil;
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
             {
+                if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
+                    [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: localStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
+                
                 BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
                 BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
                 
@@ -3556,33 +3573,21 @@ static NSConditionLock *threadLock = nil;
                 #ifndef OSIRIX_LIGHT
                 distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName servers: servers showErrors: YES];
                 #endif
-            }
-            
-            // Local studies
-            NSArray *localStudies = nil;
-            @try
-            {
-                NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID];
-                localStudies = [_database objectsForEntity:_database.studyEntity predicate:predicate];
-            }
-            @catch (NSException* e)
-            {
-                NSLog( @"*** Comparative Studies exception: %@", e);
-            }
-            
-            // Merge local and distant studies
-            NSMutableArray *mergedStudies = [NSMutableArray arrayWithArray: localStudies];
-            #ifndef OSIRIX_LIGHT
-            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
-            {
-                if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                
+                // Merge local and distant studies
+                
+                #ifndef OSIRIX_LIGHT
+                for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                 {
-                    [mergedStudies addObject: distantStudy];
+                    if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                    {
+                        [mergedStudies addObject: distantStudy];
+                    }
                 }
+                #endif
+                
+                [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             }
-            #endif
-            
-            [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             
 //            for( id study in mergedStudies)
 //            {
@@ -3653,36 +3658,39 @@ static NSConditionLock *threadLock = nil;
     
     if( comparativeStudyWaited) // Select it ! And open it if needed...
     {
-        [self checkIncoming: self];
-        
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        [request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
-        [request setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [comparativeStudyWaited studyInstanceUID]]];
-        
-        NSError *error = nil;
-        NSArray *studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if( [studyArray count] > 0)
+        if( [NSDate timeIntervalSinceReferenceDate] - comparativeStudyWaitedTime < 10) // Only try during 10 secs
         {
-            NSManagedObject	*study = [studyArray objectAtIndex: 0];
-            NSArray *seriesArray = [self childrenArray: study];
+            [self checkIncoming: self];
             
-            if( [seriesArray count])
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Study"]];
+            [request setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [comparativeStudyWaited studyInstanceUID]]];
+            
+            NSError *error = nil;
+            NSArray *studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if( [studyArray count] > 0)
             {
-                NSManagedObject	*series =  [seriesArray objectAtIndex: 0];
-                BOOL success = NO;
+                NSManagedObject	*study = [studyArray objectAtIndex: 0];
+                NSArray *seriesArray = [self childrenArray: study];
                 
-                if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+                if( [seriesArray count])
                 {
-                    [self showEntireDatabase];
-                    if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+                    NSManagedObject	*series =  [seriesArray objectAtIndex: 0];
+                    BOOL success = NO;
+                    
+                    if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+                    {
+                        [self showEntireDatabase];
+                        if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+                    }
+                    else success = YES;
+                    
+                    if( success && comparativeStudyWaitedToOpen)
+                        [self databaseOpenStudy: study];
                 }
-                else success = YES;
                 
-                if( success && comparativeStudyWaitedToOpen)
-                    [self databaseOpenStudy: study];
+                [[self window] makeFirstResponder: databaseOutline];
             }
-            
-            [[self window] makeFirstResponder: databaseOutline];
         }
         
         [comparativeStudyWaited release];
@@ -9234,6 +9242,7 @@ static BOOL needToRezoom;
     comparativeStudyWaitedToOpen = NO;
     [comparativeStudyWaited release];
     comparativeStudyWaited = [study retain];
+    comparativeStudyWaitedTime = [NSDate timeIntervalSinceReferenceDate];
 }
 
 - (void) doubleClickComparativeStudy: (id) sender

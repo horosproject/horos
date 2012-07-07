@@ -233,6 +233,7 @@ extern NSString* O2AlbumDragType;
     
     NSMutableArray *comparativeRetrieveQueue;
     DCMTKStudyQueryNode *comparativeStudyWaited;
+    NSTimeInterval comparativeStudyWaitedTime;
     BOOL comparativeStudyWaitedToOpen;
 }
 
