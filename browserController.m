@@ -3521,6 +3521,8 @@ static NSConditionLock *threadLock = nil;
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    [NSThread currentThread].name = @"Search For Comparative Thread";
+    
     static NSRecursiveLock *searchForComparativeStudiesLock = nil;
     
     if( !searchForComparativeStudiesLock)
@@ -3681,20 +3683,29 @@ static NSConditionLock *threadLock = nil;
                     if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
                     {
                         [self showEntireDatabase];
-                        if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO]) success = YES;
+                        if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO])
+                            success = YES;
                     }
                     else success = YES;
                     
-                    if( success && comparativeStudyWaitedToOpen)
-                        [self databaseOpenStudy: study];
+                    if( success)
+                    {
+                        [comparativeStudyWaited release];
+                        comparativeStudyWaited = nil;
+                        
+                        if( comparativeStudyWaitedToOpen)
+                            [self databaseOpenStudy: study];
+                        
+                        [[self window] makeFirstResponder: databaseOutline];
+                    }
                 }
-                
-                [[self window] makeFirstResponder: databaseOutline];
             }
         }
-        
-        [comparativeStudyWaited release];
-        comparativeStudyWaited = nil;
+        else
+        {
+            [comparativeStudyWaited release];
+            comparativeStudyWaited = nil;
+        }
     }
 }
 
@@ -3736,7 +3747,7 @@ static NSConditionLock *threadLock = nil;
             
             [comparativeTable reloadData];
             
-            if( selectedStudy)
+            if( selectedStudy && [copy indexOfObject: selectedStudy] != NSNotFound)
                 [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [copy indexOfObject: selectedStudy]] byExtendingSelection: NO];
         }
     }
@@ -3849,7 +3860,7 @@ static NSConditionLock *threadLock = nil;
 //                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"searchForComparativeStudiesOnDICOMNodes"];
                 [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientIDForComparativeSearch"];
                 [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"usePatientNameForComparativeSearch"];
-                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObjects: @"MINIPACS", @"GEPACS", nil] forKey: @"comparativeSearchDICOMNodes"];
+                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObjects: @"MINIPACS", nil] forKey: @"comparativeSearchDICOMNodes"];
                 
                 
                 if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)

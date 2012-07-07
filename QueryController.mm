@@ -256,7 +256,8 @@ extern "C"
         [dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
         [dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
         [dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
-        
+        [dictionary setObject: [[object extraParameters] valueForKey: @"retrieveMode"] forKey: @"retrieveMode"];
+         
         FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
         if( pFile)
             fclose (pFile);
