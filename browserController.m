@@ -1821,7 +1821,7 @@ static NSConditionLock *threadLock = nil;
 
 - (void) selectThisStudy: (NSManagedObject*)study
 {
-    if( !study)
+    if( study == nil)
         return;
     
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
@@ -3540,16 +3540,16 @@ static NSConditionLock *threadLock = nil;
         {
             // Local studies
             NSArray *localStudies = nil;
+            [_database lock];
             @try
             {
-                DicomDatabase* idatabase = [self.database independentDatabase];
-                
-                localStudies = [idatabase objectsForEntity: idatabase.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID]];
+                localStudies = [_database objectsForEntity: _database.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID]];
             }
             @catch (NSException* e)
             {
                 NSLog( @"*** Comparative Studies exception: %@", e);
             }
+            [_database unlock];
             
             mergedStudies = [NSMutableArray arrayWithArray: localStudies];
             
@@ -3591,7 +3591,6 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                
                     @try
                     {
                         NSArray *distantStudies = nil;
