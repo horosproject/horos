@@ -26,6 +26,7 @@
 
 - Comparative: check if a study is already in the retrieve queue
 - Comparative: thumbnail matrix for ViewerController
+- Comparative: check for the waiting queue lock (take the last one only)
 
 -------------------------------------------------------------
 

@@ -225,16 +225,17 @@ extern NSString* O2AlbumDragType;
     
     BOOL subSeriesWindowIsOn;
     
-    NSString *comparativePatientUID;
-    NSArray *comparativeStudies;
+    NSString *comparativePatientUID; //Current patient history displayed
+    NSMutableArray *comparativeStudySearchArray; //The queue of patient history to be searched
+    NSArray *comparativeStudies; //Studies for the NSTableView
     IBOutlet NSTableView *comparativeTable;
     BOOL dontSelectStudyFromComparativeStudies;
-    NSTimeInterval lastRefreshComparativeStudies;
+    NSTimeInterval lastRefreshComparativeStudies; //Refresh the studies after X minutes
     
-    NSMutableArray *comparativeRetrieveQueue;
-    DCMTKStudyQueryNode *comparativeStudyWaited;
-    NSTimeInterval comparativeStudyWaitedTime;
-    BOOL comparativeStudyWaitedToOpen;
+    NSMutableArray *comparativeRetrieveQueue; //Retrieve Queue: don't retrieve the same study multiple times
+    DCMTKStudyQueryNode *comparativeStudyWaited; //The study to be selected or opened
+    NSTimeInterval comparativeStudyWaitedTime; //The time when the study to be selected or opened was activated
+    BOOL comparativeStudyWaitedToOpen; //Select or Open
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

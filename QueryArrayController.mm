@@ -78,7 +78,8 @@
 	else if ([description rangeOfString:@"Time"].location != NSNotFound)
 		filter = [DCMCalendarDate queryDate:filter];
 	
-	[filters setObject:filter forKey:description];
+    if( filter)
+        [filters setObject:filter forKey:description];
 }
 
 - (NSArray *)queries{

@@ -277,6 +277,18 @@ extern "C"
         return 0;
     }
     
+    if( usePatientName && study.name.length == 0)
+    {
+        NSLog( @"****** QR: usePatientName == YES && study.name.length == 0");
+        return 0;
+    }
+    
+    if( usePatientID && study.patientID.length == 0)
+    {
+        NSLog( @"****** QR: usePatientID == YES && study.patientID.length == 0");
+        return 0;
+    }
+    
 	@try
 	{
         for( NSDictionary *server in serversList)
