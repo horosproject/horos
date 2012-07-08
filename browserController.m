@@ -1285,6 +1285,9 @@ static NSConditionLock *threadLock = nil;
 
 -(void)setDatabase:(DicomDatabase*)db
 {
+    if( db == nil)
+        return;
+    
 	[[db retain] autorelease]; // avoid multithreaded release
 	
 	if (_database != db)
@@ -9302,19 +9305,22 @@ static BOOL needToRezoom;
 {
     id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
     
-    #ifndef OSIRIX_LIGHT
-    if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
+    if( study)
     {
-        // Check to see if already in retrieving mode, if not download it
-        [self retrieveComparativeStudy: study];
-        comparativeStudyWaitedToOpen = YES;
-    }
-    else
-    #endif
-    {
-        [self selectThisStudy: study];
-        [[self window] makeFirstResponder: databaseOutline];
-        [self databaseOpenStudy: study];
+        #ifndef OSIRIX_LIGHT
+        if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
+        {
+            // Check to see if already in retrieving mode, if not download it
+            [self retrieveComparativeStudy: study];
+            comparativeStudyWaitedToOpen = YES;
+        }
+        else
+        #endif
+        {
+            [self selectThisStudy: study];
+            [[self window] makeFirstResponder: databaseOutline];
+            [self databaseOpenStudy: study];
+        }
     }
 }
 
