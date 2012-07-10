@@ -3678,6 +3678,8 @@ static NSConditionLock *threadLock = nil;
     {
         self.comparativeStudies = newStudies;
         [comparativeTable reloadData];
+        
+        [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
     }
     
     NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
@@ -3912,6 +3914,7 @@ static NSConditionLock *threadLock = nil;
                     self.comparativePatientUID = studySelected.patientUID;
                     self.comparativeStudies = nil;
                     [comparativeTable reloadData];
+                    [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: NSLocalizedString( @"History", nil)];
                     
                     [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
                 }
