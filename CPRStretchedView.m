@@ -1313,7 +1313,7 @@ extern int splitPosition[ 3];
     
     unichar c = [[theEvent characters] characterAtIndex:0];
     
-    if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode)
+    if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode && _draggedNode != -1)
 	{
 		// Delete node
 			[_curvedPath removeNodeAtIndex:_draggedNode];
