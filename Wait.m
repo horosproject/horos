@@ -133,8 +133,7 @@
 {
 	self = [super initWithWindowNibName:@"Wait"];
 
-    if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
-        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+    [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
     
     [[self window] center];
 	[[self window] setLevel: NSModalPanelWindowLevel];

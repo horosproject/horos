@@ -110,8 +110,7 @@ static int increment = 0, previousNumberOfScreens = 0;
         [emptyToolbar setDelegate: self];
         [emptyToolbar insertItemWithItemIdentifier: @"emptyItem" atIndex: 0];
         
-        if( [[self window] respondsToSelector: @selector(setAnimationBehavior:)])
-            [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
         
         [[self window] setToolbar: emptyToolbar];
         [[self window] setLevel: NSNormalWindowLevel];
