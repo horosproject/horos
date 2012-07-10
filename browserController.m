@@ -7926,6 +7926,8 @@ static BOOL withReset = NO;
         rightFrame.size.height = splitFrame.size.height;
         rightFrame.origin.x = leftFrame.origin.x + leftFrame.size.width + dividerThickness;
         rightFrame.size.width = availableWidth - leftFrame.size.width;
+        if( rightFrame.size.width >= 300)
+            rightFrame.size.width = 300;
         [right setFrame:rightFrame];
         
         leftFrame.size.height = splitFrame.size.height;
