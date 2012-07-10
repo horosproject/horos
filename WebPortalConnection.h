@@ -45,8 +45,8 @@
 @property(retain,readonly) WebPortalResponse* response;
 @property(retain,readonly) WebPortalSession* session;
 @property(retain,readonly) WebPortalUser* user;
-@property(retain,readonly) NSDictionary* parameters;
-@property(retain,readonly) NSString* GETParams;
+@property(retain) NSDictionary* parameters;
+@property(retain) NSString* GETParams;
 @property(retain,readonly) DicomDatabase* independentDicomDatabase;
 
 @property(assign,readonly) WebPortalServer* server;

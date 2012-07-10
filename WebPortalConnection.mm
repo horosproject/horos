@@ -149,13 +149,16 @@ static NSString* NotNil(NSString *s) {
 	[sendLock unlock];
 	[sendLock release];
 	
-	self.user = NULL;
+	self.user = nil;
 	
 	[multipartData release];
 	[postBoundary release];
 	[POSTfilename release];
 	
-	self.session = NULL;
+    self.response = nil;
+    self.GETParams = nil;
+    self.parameters = nil;
+	self.session = nil;
     
     if ([_independentDicomDatabase.managedObjectContext hasChanges])
         [_independentDicomDatabase save];
@@ -376,18 +379,19 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	
 	// parse the URL to find the parameters (if any)
 	NSArray *urlComponenents = [url componentsSeparatedByString:@"?"];
-	if ([urlComponenents count] == 2) GETParams = [urlComponenents lastObject];
-	else GETParams = NULL;
+    
+	if ([urlComponenents count] == 2) self.GETParams = [urlComponenents lastObject];
+	else self.GETParams = NULL;
 	
-	NSMutableDictionary* params = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary* params = [NSMutableDictionary dictionary];
 	// GET params
-	[params addEntriesFromDictionary:[WebPortalConnection ExtractParams:GETParams]];
+	[params addEntriesFromDictionary:[WebPortalConnection ExtractParams: self.GETParams]];
 	// POST params
 	if ([method isEqualToString: @"POST"] && multipartData.count == 1) {
 		NSString* POSTParams = [[[NSString alloc] initWithBytes: [[multipartData lastObject] bytes] length: [(NSData*) [multipartData lastObject] length] encoding: NSUTF8StringEncoding] autorelease];
 		[params addEntriesFromDictionary:[WebPortalConnection ExtractParams:POSTParams]];
 	}
-	parameters = params;
+	self.parameters = params;
 	[response.tokens setObject:parameters forKey:@"Request"];
 	
 	// find the name of the requested file
