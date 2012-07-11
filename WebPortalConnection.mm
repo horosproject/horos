@@ -267,7 +267,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 	|| [path hasPrefix: @"/password_forgotten"]
 	|| [path hasPrefix: @"/index"]
 	|| [path hasPrefix:@"/weasis/"]
-	|| [path isEqualToString: @"/favicon.ico"])
+	|| [path isEqualToString: @"/favicon.ico"]
+    || [path isEqualToString: @"/testdbalive"])
 		return NO;
     
 	return self.portal.authenticationRequired;
@@ -497,6 +498,17 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             else
             if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin)
                 exit(0);
+            else
+                if ([requestedPath isEqual:@"/testdbalive"])
+                {
+                    [self.portal.dicomDatabase.managedObjectContext lock];
+                    [self.portal.dicomDatabase.managedObjectContext unlock];
+                    
+                    NSLog( @"WebPortal: test DB alive: lock/unlock for managedObjectContext : succeeded");
+                    
+                    [response setDataWithString: @"Test DB Alive succeeded"];
+                    response.mimeType = @"text/html";
+                }
             else
 				response.data = [self.portal dataForPath:requestedPath];
 			

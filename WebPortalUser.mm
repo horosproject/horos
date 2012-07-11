@@ -202,6 +202,12 @@ static NSMutableDictionary *studiesForUserCache = nil;
             return NO;
         }
         
+        if( [password2validate length] - [[password2validate commonPrefixWithString: self.name options: NSCaseInsensitiveSearch] length] < 4)
+        {
+            if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"Password needs to be different from the user name.", NULL)];
+            return NO;
+        }
+        
         NSUInteger invidualCharacters = 0;
         NSMutableArray *array = [NSMutableArray array];
         for( int i = 0; i < [password2validate length]; i++)
