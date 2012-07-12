@@ -10,6 +10,8 @@
 #import <vector>
 #import <iterator>
 #import <Accelerate/Accelerate.h>
+#import <QuartzCore/QuartzCore.h>
+#import <iostream>
 
 @implementation FlyAssistant (Histo)
 
@@ -38,7 +40,6 @@
 
 - (void) computeIntervalThresholdsFrom:(float)pixValue;
 {
-    NSLog(@"Compute Interval");
     if (!inputHisto) {
         [self computeHistogram];
         [self smoothHistogramWith:5]; // \todo{Trouver une meilleure définition ?}
@@ -101,29 +102,29 @@
     }
 }
 
-- (void) computeCumulative:(std::vector<int> &)histogram
-{
-    std::vector<int> simple;
-    [self getInputMinMaxValues];
-    simple.reserve( (int)( inputMaxValue - inputMinValue ) );
-    [self computeSimpleHistogram:simple];
-    [self computeCumulativeHistogram:histogram FromSimpleHistogram:simple];
-}
-
-- (void) computeCumulativeHistogram:(std::vector<int> &)cumulative FromSimpleHistogram:(const std::vector<int> &)simple
-{
-    cumulative[ 0 ] = simple [ 0 ];
-    for (unsigned int i = 1; i < cumulative.size(); ++i)
-    {
-        cumulative[ i ] = cumulative[ i-1 ] + simple[ i ];
-    }
-}
-
-- (void) computeSimpleHistogram:(std::vector<int> &)simple AndCumulative:(std::vector<int> &)cumulative
-{
-    [self computeSimpleHistogram:simple];
-    [self computeCumulativeHistogram:cumulative FromSimpleHistogram:simple];
-}
+//- (void) computeCumulative:(std::vector<int> &)histogram
+//{
+//    std::vector<int> simple;
+//    [self getInputMinMaxValues];
+//    simple.reserve( (int)( inputMaxValue - inputMinValue ) );
+//    [self computeSimpleHistogram:simple];
+//    [self computeCumulativeHistogram:histogram FromSimpleHistogram:simple];
+//}
+//
+//- (void) computeCumulativeHistogram:(std::vector<int> &)cumulative FromSimpleHistogram:(const std::vector<int> &)simple
+//{
+//    cumulative[ 0 ] = simple [ 0 ];
+//    for (unsigned int i = 1; i < cumulative.size(); ++i)
+//    {
+//        cumulative[ i ] = cumulative[ i-1 ] + simple[ i ];
+//    }
+//}
+//
+//- (void) computeSimpleHistogram:(std::vector<int> &)simple AndCumulative:(std::vector<int> &)cumulative
+//{
+//    [self computeSimpleHistogram:simple];
+//    [self computeCumulativeHistogram:cumulative FromSimpleHistogram:simple];
+//}
 
 - (void) smooth:(std::vector<int> &)histo withWindow:(const unsigned int)w
 {
@@ -160,7 +161,7 @@
 {
     int limit = histoSize;
     int size = limit + 2 * window;
-    vImagePixelCount * original = (vImagePixelCount *)malloc( size * sizeof(vImagePixelCount) );
+    vImagePixelCount original[size];// = (vImagePixelCount *)malloc(  * sizeof(vImagePixelCount) );
 
     // body copy
     for (unsigned int i = 0; i < limit; ++i)
@@ -189,7 +190,7 @@
         inputHisto[i] /= weight;
     }
     
-    free(original);
+//    free(original);
 }
 
 - (void) determineThresholdIntervalFrom:(int)value On:(const std::vector<int> &)histo WithStep:(const int)delta
@@ -279,83 +280,157 @@
     return xprev;
 }
 
-int compareFloats(const void * a, const void * b)
+- (void) medianFilter:(vImage_Buffer *) buffer
 {
-    float* arg1 = (float*) a;
-    float* arg2 = (float*) b;
-    if( *arg1 < *arg2 ) return -1;
-    else if( *arg1 == *arg2 ) return 0;
-    else return 1;
+    vImage_Buffer * imageFromHisto;
+    CIImage *bitmap/* = [[CIImage alloc] initWithCVImageBuffer:imageFromHisto]*/;
+    CIFilter * medianFilter = [CIFilter filterWithName:@"CIMedianFilter"];
+    [medianFilter setDefaults];
 }
 
-- (void) medianFilter;
+- (void) mmError:(vImage_Error) err
 {
-    NSLog(@"Median filter");
-    float * original = (float *)malloc( inputVolumeSize * sizeof(float) );
-    if (!original) {
-        NSLog(@"Not enough memory.");
-        return;
-    }
-    
-    // body copy
-    //    original = (float *)memcpy(original, input, inputVolumeSize * sizeof(float));
-    for (unsigned int i = 0; i < inputVolumeSize; ++i)
-    {
-        original[ i ] = input[ i ];
-    }
-    
-    float * sorted = new float[7];
-    unsigned int zmax = inputDepth - 1;
-    unsigned int ymax = inputWidth - 1;
-    unsigned int xmax = inputHeight - 1;
-    for (unsigned int z = 1; z < zmax; ++z) {
-        for (unsigned int y = 1; y < ymax; ++y) {
-            for (unsigned int x = 1; x < xmax; ++x) {
-                unsigned int index = x + y*inputWidth+ z*inputImageSize;
-                sorted[0] = original[index];
-                sorted[1] = original[index + 1];
-                sorted[2] = original[index - 1];
-                sorted[3] = original[index + inputWidth];
-                sorted[4] = original[index - inputWidth];
-                sorted[5] = original[index + inputImageSize];
-                sorted[6] = original[index - inputImageSize];
-                //                for (int i = -1; i < 2; ++i) {
-                //                    for (int j = -1; j < 2; ++j) {
-                //                        for (int k = -1; k < 2; ++k) {
-                //                            //index = x+i + (y+j)*inputWidth+ (z+j)*inputImageSize
-                //                            sorted.push_back(original[index + i + j*inputWidth + k*inputImageSize]);
-                //                        }
-                //                    }
-                //                }
-                qsort(sorted, 7, sizeof(float), compareFloats);
-                input[index] = sorted[4];
-            }
+    if (err != kvImageNoError) {
+        switch (err) {
+            case kvImageRoiLargerThanInputBuffer:
+                NSLog(@"kvImageRoiLargerThanInputBuffer");
+                break;
+            case kvImageInvalidKernelSize:
+                NSLog(@"kvImageInvalidKernelSize");
+                break;
+            case kvImageInvalidEdgeStyle:
+                NSLog(@"kvImageInvalidEdgeStyle");
+                break;
+            case kvImageInvalidOffset_X:
+                NSLog(@"kvImageInvalidOffset_X");
+                break;
+            case kvImageInvalidOffset_Y:
+                NSLog(@"kvImageInvalidOffset_Y");
+                break;
+            case kvImageMemoryAllocationError:
+                NSLog(@"kvImageMemoryAllocationError");
+                break;
+            case kvImageNullPointerArgument:
+                NSLog(@"kvImageNullPointerArgument");
+                break;
+            case kvImageInvalidParameter:
+                NSLog(@"kvImageInvalidParameter");
+                break;
+            case kvImageBufferSizeMismatch:
+                NSLog(@"kvImageBufferSizeMismatch");
+                break;
+            case kvImageUnknownFlagsBit:
+                NSLog(@"kvImageUnknownFlagsBit");
+                break;
         }
     }
-    
-    free(original);
-    delete sorted;
-    NSLog(@"done");
 }
 
-- (void) mmOpening;
+- (void) mmOpening:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
 {
+    vImage_Buffer tmpResult, result;
+    tmpResult.width     = buffer->width;
+    tmpResult.height    = buffer->height;
+    tmpResult.rowBytes  = buffer->rowBytes;
+    tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
+    float kernel[x*y];
+    for (unsigned int i = 0; i < x * y; ++i) {
+        kernel[i] = 1;
+    }
+    memset(kernel, 1, x*y*sizeof(float));
+    
+    if (buffer->data) {
+        vImage_Error err;
+        err = vImageErode_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags );
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+        err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags );
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+    }
+    free(tmpResult.data);
 }
 
-- (void) mmClosing;
+- (void) mmClosing:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
 {
+    vImage_Buffer tmpResult, result;
+    tmpResult.width     = buffer->width;
+    tmpResult.height    = buffer->height;
+    tmpResult.rowBytes  = buffer->rowBytes;
+    tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
+    float kernel[x*y];
+    for (unsigned int i = 0; i < x * y; ++i) {
+        kernel[i] = 1;
+    }
+        
+    if (buffer->data) {
+        vImage_Error err;
+        err = vImageDilate_PlanarF(buffer, &tmpResult, 0, 0, kernel, x, y, kvImageNoFlags);
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+        err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+    }
+    free(tmpResult.data);
 }
 
-- (void) mmErosion;
+- (void) mmErosion:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
 {
+    vImage_Buffer tmpResult;
+    tmpResult.width     = buffer->width;
+    tmpResult.height    = buffer->height;
+    tmpResult.rowBytes  = buffer->rowBytes;
+    tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
+    float kernel[x*y];
+    for (unsigned int i = 0; i < x * y; ++i) {
+        kernel[i] = 1;
+    }
+    
+    if (buffer->data) {
+        vImage_Error err = vImageErode_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+        memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes);
+    }
+    free(tmpResult.data);
 }
 
-- (void) mmDilation;
+- (void) mmDilation:(vImage_Buffer *) buffer:(vImagePixelCount) x : (vImagePixelCount) y
 {
+    vImage_Buffer tmpResult;
+    tmpResult.width     = buffer->width;
+    tmpResult.height    = buffer->height;
+    tmpResult.rowBytes  = buffer->rowBytes;
+    tmpResult.data      = (float *)malloc(tmpResult.rowBytes*tmpResult.height);
     
+    float kernel[x*y];
+    for (unsigned int i = 0; i < x * y; ++i) {
+        kernel[i] = 1;
+    }
+    
+    if (buffer->data) {
+        vImage_Error err = vImageDilate_PlanarF(&tmpResult, buffer, 0, 0, kernel, x, y, kvImageNoFlags);
+        if (err != kvImageNoError) {
+            [self mmError:err];
+            return;
+        }
+        memccpy(buffer->data, tmpResult.data, tmpResult.height*tmpResult.width, tmpResult.rowBytes*tmpResult.height);
+    }
+    free(tmpResult.data);
 }
 
 @end

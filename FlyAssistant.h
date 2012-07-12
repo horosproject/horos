@@ -80,6 +80,7 @@ typedef enum PathAssistantMode PathAssistantMode;
 - (void) setThreshold:(float)thres Asynchronous:(BOOL)async;
 - (void) converPoint2ResampleCoordinate:(Point3D*)pt;
 - (void) converPoint2InputCoordinate:(Point3D*)pt;
+- (void) thresholdImage;
 - (void) distanceTransformWithThreshold: (id) sender;
 - (int) caculateNextPositionFrom: (Point3D*) pt Towards:(Point3D*)dir;
 - (int) createCenterline:(NSMutableArray*)centerline FromPointA:(Point3D*)pta ToPointB:(Point3D*)ptb withSmoothing:(BOOL)smoothFlag;

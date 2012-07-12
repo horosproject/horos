@@ -28,21 +28,21 @@
  */
 - (void) computeSimpleHistogram:(std::vector<int> &)histo;
 
-/**
- Compute the greylevel cumulative histogram of input data
- */
-- (void) computeCumulative:(std::vector<int> &)histo;
-
-/**
- Compute cumulative histogram from simple histogram.
- Needs the simple histogram.
- */
-- (void) computeCumulativeHistogram:(std::vector<int> &)cumul FromSimpleHistogram:(const std::vector<int> &)histo;
-
-/**
- Compute both simple and cumulative histogram
- */
-- (void) computeSimpleHistogram:(std::vector<int> &)histo AndCumulative:(std::vector<int> &)cumul;
+///**
+// Compute the greylevel cumulative histogram of input data
+// */
+//- (void) computeCumulative:(std::vector<int> &)histo;
+//
+///**
+// Compute cumulative histogram from simple histogram.
+// Needs the simple histogram.
+// */
+//- (void) computeCumulativeHistogram:(std::vector<int> &)cumul FromSimpleHistogram:(const std::vector<int> &)histo;
+//
+///**
+// Compute both simple and cumulative histogram
+// */
+//- (void) computeSimpleHistogram:(std::vector<int> &)histo AndCumulative:(std::vector<int> &)cumul;
 
 /**
  Smooth histogram according to window w
@@ -76,12 +76,10 @@
  */
 - (int) getLocalMaximaWith:(const int)step from:(vImagePixelCount)value;
 
-// garbage stuff
-unsigned int inputIndex(const unsigned int x, const unsigned int y, const unsigned int z );
-- (void) medianFilter;
-- (void) mmOpening;
-- (void) mmClosing;
-- (void) mmErosion;
-- (void) mmDilation;
+- (void) medianFilter:(vImage_Buffer *) buffer;
+- (void) mmOpening : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
+- (void) mmClosing : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
+- (void) mmErosion : (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
+- (void) mmDilation: (vImage_Buffer *) buffer :(vImagePixelCount) x : (vImagePixelCount) y;
 
 @end

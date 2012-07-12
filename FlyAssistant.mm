@@ -71,8 +71,6 @@
     /**
      * Get input image range and compute histogram.
      */
-//    [NSThread detachNewThreadSelector: @selector(determineImageRange) toTarget: self withObject: nil];
-//    [self medianFilter];
     [self determineImageRange];
     [self computeHistogram];
     [self smoothHistogramWith:5]; // \todo{Trouver une meilleure définition ?}
@@ -149,23 +147,34 @@
 	pt.y /= resampleScale_y;
 	pt.z /= resampleScale_z;
 }
-- (void) distanceTransformWithThreshold: (id) sender
+- (void) thresholdImage
 {
-	
-	if(	!distmap )
-		return; // todo{l'allouer à la place ?}
-
-	int x,y,z;
 	int inputx,inputy,inputz;
-	float delta[4]={0,1,1.414213,1.73205};
 	
-	for (z=0; z<distmapDepth; z++) {
-		for (y=0; y<distmapHeight; y++) {
-			for (x=0; x<distmapWidth; x++) {
+    vImage_Buffer buffer;
+    buffer.data = distmap;
+    buffer.width = distmapImageSize;
+    buffer.height = distmapDepth;
+    buffer.rowBytes = distmapImageSize * sizeof(float);
+    
+	for (unsigned int z=0; z<distmapDepth; z++) {
+		for (unsigned int y=0; y<distmapHeight; y++) {
+			for (unsigned int x=0; x<distmapWidth; x++) {
 				inputx = x/resampleScale_x;
 				inputy = y/resampleScale_y;
 				inputz = z/resampleScale_z;
-                float inValue = input[inputz*inputWidth*inputHeight+inputy*inputWidth+inputx];
+                float inValue = -MAXFLOAT;
+                for (unsigned int i = inputx; i <= inputx+1; ++i) {
+                    for (unsigned int j = inputy; j <= inputy+1; ++j) {
+                        for (unsigned int k = inputz; k <= inputz+1; ++k) {
+                            if (inValue < input[k*inputImageSize+j*inputWidth+i]) {
+                                inValue = input[k*inputImageSize+j*inputWidth+i];
+                            }
+                        }
+                    }
+                }
+//                float inValue = resizedInput[z*distmapImageSize+y*distmapWidth+x];
+//                float inValue = input[inputz*inputImageSize+inputy*inputWidth+inputx];
                 if (inValue > thresholdB || inValue < thresholdA) {
 					distmap[z*distmapImageSize+y*distmapWidth+x]=0;
 				}
@@ -175,9 +184,37 @@
 			}
 		}
 	}
+    
+    // Close thresholded image:
+    // - small areas of value 0 become 3.4e+38 (i.e. background becomes object)
+    // Close on each slice
+    buffer.height = distmapHeight;
+    buffer.width = distmapWidth;
+    buffer.rowBytes = distmapWidth * sizeof(float);
+    for (unsigned int i = 0; i < distmapDepth; ++i) {
+        buffer.data = &distmap[i*distmapImageSize];
+        [self mmClosing:&buffer:3:3];
+        memcpy(&distmap[i*distmapImageSize], buffer.data, buffer.rowBytes*distmapHeight);
+    }
+
+    // Close along the depth axis
+    buffer.data = distmap;
+    buffer.height = distmapImageSize;
+    buffer.width = distmapDepth;
+    buffer.rowBytes = distmapDepth * sizeof(float);
+    [self mmClosing:&buffer:1:3];
+    distmap = (float *)buffer.data;
+}
+
+- (void) distanceTransformWithThreshold: (id) sender
+{
 	
-	int its=0;
-	
+	if(	!distmap )
+		return; // todo{l'allouer à la place ?}    
+
+    [self thresholdImage];
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent ();
+	int its=0;	
 	
 //need OSX 10.6 sdk
     /**
@@ -227,24 +264,20 @@
 										if(newdist<currentdist)
 										{
 											currentdist=newdist;
-//											changed=1;
+											changed=1;
 										}
 									}
 								}
-							}
-//							if (changed) {
-								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-//								changedpoints++;
-//							}
-							
-						}
-						
-						
-					}
-				}
-			}
-			
-		});
+                                if (changed) {
+                                    distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
+                                    changedpoints++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
 //		printf("changed pionts: %d",changedpoints);
 		if (changedpoints==0) {
 			break;
@@ -275,27 +308,38 @@
 										if(newdist<currentdist)
 										{
 											currentdist=newdist;
-//											changed=1;
+											changed=1;
 										}
 									}
 								}
 							}
-//							if (changed) {
+							if (changed) {
 								distmap[z*distmapImageSize+y*distmapWidth+x]=currentdist;
-//								changedpoints++;
-//							}
-							
-						}
-						
-						
+								changedpoints++;
+                            }
+                        }
 					}
 				}
-			}
-			
+			}			
 		});
 //		printf("changed pionts: %d\n",changedpoints);
 		
 	}
+//    unsigned int nbdiff = 0;
+//    float diff = 0;
+//    std::ofstream file;
+//    file.open("/Users/bd/diff.txt");
+//    for (unsigned int i = 0; i < distmapVolumeSize; ++i) {
+//        if (distmap2[i] != distmap[i]) {
+//            ++nbdiff;
+//            file << (i%distmapImageSize)%distmapWidth << " " << (i%distmapImageSize)/distmapWidth << " " << i / distmapImageSize << " " << distmap[i] << " " << distmap2[i] << std::endl;
+//        }
+//    }
+//    file.close();
+//    NSLog(@"NbDiffs = %d", nbdiff);
+//    NSLog(@"NbDiffs = %f", diff / nbdiff);
+    
+    
 //		//single thread
 //		int changedpoints=1;
 //
@@ -768,6 +812,9 @@ typedef GreaterPathNodeOnF NodeCompare;
         NSLog(@"Can not define path from point to itself.");
         return ERROR_CANNOTFINDPATH;
     }
+    
+    std::cout   << "x= " << pta.x << " y= " << pta.y <<  " z= " << pta.z << std::endl
+                << "x= " << ptb.x << " y= " << ptb.y <<  " z= " << ptb.z << std::endl;
 
     // get the boundaries for threshold
     int posA = (int)pta.z*inputWidth*inputHeight+(int)pta.y*inputWidth+(int)pta.x,
@@ -992,7 +1039,6 @@ typedef GreaterPathNodeOnF NodeCompare;
 			radius_prept = radius_nextpt;
 			prex = x; prey = y; prez = z;
 		}
-
 	}
 }
 - (void) createSmoothedCenterlin:(NSMutableArray*)centerline withStepLength:(float)len

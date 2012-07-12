@@ -51,6 +51,7 @@ extern const int32_t CPRCurvedPathControlTokenNone;
 - (void)addPatientNode:(N3Vector)node;
 - (NSInteger)insertNodeAtRelativePosition:(CGFloat)relativePosition; // returns the node index of the inserted node
 - (void)removeNodeAtIndex:(NSInteger)index;
+- (void)clearPath;
 
 - (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform; // resets Z by default
 - (void)moveNodeAtIndex:(NSInteger)index toVector:(N3Vector)vector; // for this exceptional method, the vector is given in patient space

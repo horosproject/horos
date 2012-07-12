@@ -948,8 +948,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	{
 		// Delete this curve
 		[self sendWillEditCurvedPath];
-		while( curvedPath.nodes.count > 0)
-			[curvedPath removeNodeAtIndex: 0];
+        [curvedPath clearPath];
 		[self sendDidUpdateCurvedPath];
 		[self sendDidEditCurvedPath];
 		[self setNeedsDisplay:YES];	
@@ -958,18 +957,19 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 
 - (void) deleteCurrentCurvedPath
 {
-	if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
-												 NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
-												 NSLocalizedString(@"OK",nil),
-												 NSLocalizedString(@"Cancel",nil),
-												 nil) == NSAlertDefaultReturn)
-	{
-		[self sendWillEditCurvedPath];
-		while( curvedPath.nodes.count > 0)
-			[curvedPath removeNodeAtIndex: 0];
-		[self sendDidUpdateCurvedPath];
-		[self sendDidEditCurvedPath];
-		[self setNeedsDisplay:YES];
+    if (curvedPath.nodes.count > 0) {
+        if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete the Curve", nil),
+                                         NSLocalizedString(@"Are you sure you want to delete the entire curve?", nil),
+                                         NSLocalizedString(@"OK",nil),
+                                         NSLocalizedString(@"Cancel",nil),
+                                         nil) == NSAlertDefaultReturn)
+        {
+            [self sendWillEditCurvedPath];
+            [curvedPath clearPath];
+            [self sendDidUpdateCurvedPath];
+            [self sendDidEditCurvedPath];
+            [self setNeedsDisplay:YES];
+        }
 	}
 }
 

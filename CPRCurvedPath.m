@@ -310,15 +310,31 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 
 - (void)removeNodeAtIndex:(NSInteger)index
 {
-	assert(index >= 0);
-	assert(index < [_nodes count]);
-	[_nodes removeObjectAtIndex:index];
-	
-    if ([_nodes count] >= 2) {
-        self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
-    } else {
-        self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
+    if (index >= 0 && index < [_nodes count]) {
+        [_nodes removeObjectAtIndex:index];
+        
+        if ([_nodes count] >= 2) {
+            self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
+        } else {
+            self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
+        }
     }
+    else
+    {
+        NSLog(@"Invalid index: %d", index);
+    }
+}
+
+- (void)clearPath
+{
+    [_bezierPath release];
+    _bezierPath = [[N3MutableBezierPath alloc] init];
+    [_nodes release];
+    _nodes = [[NSMutableArray alloc] init];
+    [_nodeRelativePositions release];
+    _nodeRelativePositions = [[NSMutableArray alloc] init];
+    _transverseSectionPosition = 0.5;
+    _transverseSectionSpacing = 2;
 }
 
 - (void)moveControlToken:(CPRCurvedPathControlToken)token toPoint:(NSPoint)point transform:(N3AffineTransform)transform // resets Z by default
