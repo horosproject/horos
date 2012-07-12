@@ -3569,6 +3569,14 @@
 		CE9E11D113DBB5DD008B2848 /* OsiriX.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */; };
 		CEA20537073A810100F0DAB7 /* iPhoto.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA20533073A810100F0DAB7 /* iPhoto.h */; };
 		CEA20538073A810100F0DAB7 /* iPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA20534073A810100F0DAB7 /* iPhoto.m */; };
+		CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
+		CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
+		CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
+		CEA4F07815AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
+		CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
+		CEA4F07A15AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
+		CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
+		CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
 		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */; };
 		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
@@ -10558,6 +10566,10 @@
 		CE9E11CF13DBB5DD008B2848 /* OsiriX.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = OsiriX.sdef; sourceTree = "<group>"; };
 		CEA20533073A810100F0DAB7 /* iPhoto.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = iPhoto.h; sourceTree = "<group>"; };
 		CEA20534073A810100F0DAB7 /* iPhoto.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = iPhoto.m; sourceTree = "<group>"; };
+		CEA4F07215AEA5FE009584C7 /* Cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cloud.png; path = "Preference Panes/OSIPACSOnDemandPreferencePane/Cloud.png"; sourceTree = "<group>"; };
+		CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIPACSOnDemandPreferencePane.m; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.m"; sourceTree = "<group>"; };
+		CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIPACSOnDemandPreferencePane.h; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.h"; sourceTree = "<group>"; };
+		CEA4F07C15AEA606009584C7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIPACSOnDemandPreferencePane/English.lproj/OSIPACSOnDemand.xib"; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
@@ -17684,38 +17696,50 @@
 			name = CoreData;
 			sourceTree = "<group>";
 		};
+		CEA4F07015AEA562009584C7 /* PACSOnDemand */ = {
+			isa = PBXGroup;
+			children = (
+				CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */,
+				CEA4F07215AEA5FE009584C7 /* Cloud.png */,
+				CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */,
+				CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */,
+			);
+			name = PACSOnDemand;
+			sourceTree = "<group>";
+		};
 		CEB989E9133506D40083F3FD /* Built-in Panes */ = {
 			isa = PBXGroup;
 			children = (
-				CEB98CE613350C480083F3FD /* OSIWebSharingPreferencePanePref */,
-				CEB98CE713350C610083F3FD /* OSIViewerPreferencePanePref */,
-				CEB98CEF13350CC00083F3FD /* OSIPETPreferencePanePref */,
-				CEB98CF013350CD50083F3FD /* OSILocationsPreferencePanePref */,
-				CEB98CF113350CED0083F3FD /* OSIListenerPreferencePanePref */,
-				CEB98CF213350D030083F3FD /* OSIHotKeysPref */,
-				CEB98CF313350D270083F3FD /* OSIHangingPreferencePanePref */,
-				CEB98CF413350D3C0083F3FD /* OSIGeneralPreferencePanePref */,
-				CEB98CF513350D4E0083F3FD /* OSIDatabasePreferencePanePref */,
-				CEB98CF613350D600083F3FD /* OSICustomImageAnnotations */,
-				CEB98CF713350D7F0083F3FD /* OSICDPreferencePanePref */,
-				CEB98CF813350D8C0083F3FD /* OSIAutoroutingPreferencePanePref */,
-				CEB98CF913350D9E0083F3FD /* OSI3DPreferencePanePref */,
-				CEB98CFA13350DAB0083F3FD /* AYDicomPrintPref */,
+				CEA4F07015AEA562009584C7 /* PACSOnDemand */,
+				CEB98CE613350C480083F3FD /* WebSharing */,
+				CEB98CE713350C610083F3FD /* Viewer */,
+				CEB98CEF13350CC00083F3FD /* PET */,
+				CEB98CF013350CD50083F3FD /* Locations */,
+				CEB98CF113350CED0083F3FD /* Listener */,
+				CEB98CF213350D030083F3FD /* HotKeys */,
+				CEB98CF313350D270083F3FD /* Hanging */,
+				CEB98CF413350D3C0083F3FD /* General */,
+				CEB98CF513350D4E0083F3FD /* Database */,
+				CEB98CF613350D600083F3FD /* CustomImageAnnotations */,
+				CEB98CF713350D7F0083F3FD /* CD */,
+				CEB98CF813350D8C0083F3FD /* Autorouting */,
+				CEB98CF913350D9E0083F3FD /* 3D */,
+				CEB98CFA13350DAB0083F3FD /* DicomPrint */,
 			);
 			name = "Built-in Panes";
 			sourceTree = "<group>";
 		};
-		CEB98CE613350C480083F3FD /* OSIWebSharingPreferencePanePref */ = {
+		CEB98CE613350C480083F3FD /* WebSharing */ = {
 			isa = PBXGroup;
 			children = (
 				CEB9898A133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib */,
 				CEB9898C133500D30083F3FD /* OSIWebSharingPreferencePanePref.h */,
 				CEB9898D133500D30083F3FD /* OSIWebSharingPreferencePanePref.mm */,
 			);
-			name = OSIWebSharingPreferencePanePref;
+			name = WebSharing;
 			sourceTree = "<group>";
 		};
-		CEB98CE713350C610083F3FD /* OSIViewerPreferencePanePref */ = {
+		CEB98CE713350C610083F3FD /* Viewer */ = {
 			isa = PBXGroup;
 			children = (
 				CEB989FE133507AC0083F3FD /* OSIViewerPreferencePanePref.xib */,
@@ -17724,20 +17748,20 @@
 				714D3BAF152AE40C003EB087 /* O2ScreensPrefsView.h */,
 				714D3BB0152AE40C003EB087 /* O2ScreensPrefsView.m */,
 			);
-			name = OSIViewerPreferencePanePref;
+			name = Viewer;
 			sourceTree = "<group>";
 		};
-		CEB98CEF13350CC00083F3FD /* OSIPETPreferencePanePref */ = {
+		CEB98CEF13350CC00083F3FD /* PET */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98A08133507BA0083F3FD /* OSIPETPreferencePanePref.xib */,
 				CEB98A0A133507BA0083F3FD /* OSIPETPreferencePane.h */,
 				CEB98A0B133507BB0083F3FD /* OSIPETPreferencePane.m */,
 			);
-			name = OSIPETPreferencePanePref;
+			name = PET;
 			sourceTree = "<group>";
 		};
-		CEB98CF013350CD50083F3FD /* OSILocationsPreferencePanePref */ = {
+		CEB98CF013350CD50083F3FD /* Locations */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98A12133507C80083F3FD /* OSILocationsPreferencePanePref.xib */,
@@ -17746,20 +17770,20 @@
 				CEB98A16133507C80083F3FD /* ServerTableView.h */,
 				CEB98A17133507C80083F3FD /* ServerTableView.m */,
 			);
-			name = OSILocationsPreferencePanePref;
+			name = Locations;
 			sourceTree = "<group>";
 		};
-		CEB98CF113350CED0083F3FD /* OSIListenerPreferencePanePref */ = {
+		CEB98CF113350CED0083F3FD /* Listener */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98BAB133507F50083F3FD /* OSIListenerPreferencePanePref.xib */,
 				CEB98BAF133507F50083F3FD /* OSIListenerPreferencePanePref.h */,
 				CEB98BB0133507F50083F3FD /* OSIListenerPreferencePanePref.mm */,
 			);
-			name = OSIListenerPreferencePanePref;
+			name = Listener;
 			sourceTree = "<group>";
 		};
-		CEB98CF213350D030083F3FD /* OSIHotKeysPref */ = {
+		CEB98CF213350D030083F3FD /* HotKeys */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98BB7133508040083F3FD /* OSIHotKeysPref.xib */,
@@ -17774,10 +17798,10 @@
 				CEB98BC1133508040083F3FD /* OSIHotKeysPref.h */,
 				CEB98BC2133508040083F3FD /* OSIHotKeysPref.m */,
 			);
-			name = OSIHotKeysPref;
+			name = HotKeys;
 			sourceTree = "<group>";
 		};
-		CEB98CF313350D270083F3FD /* OSIHangingPreferencePanePref */ = {
+		CEB98CF313350D270083F3FD /* Hanging */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98BDB133508180083F3FD /* OSIHangingPreferencePanePref.xib */,
@@ -17794,30 +17818,30 @@
 				CEB98BE5133508180083F3FD /* UpperCaseTableColumn.h */,
 				CEB98BE6133508180083F3FD /* UpperCaseTableColumn.m */,
 			);
-			name = OSIHangingPreferencePanePref;
+			name = Hanging;
 			sourceTree = "<group>";
 		};
-		CEB98CF413350D3C0083F3FD /* OSIGeneralPreferencePanePref */ = {
+		CEB98CF413350D3C0083F3FD /* General */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C01133508280083F3FD /* OSIGeneralPreferencePanePref.xib */,
 				CEB98C03133508280083F3FD /* OSIGeneralPreferencePanePref.h */,
 				CEB98C04133508280083F3FD /* OSIGeneralPreferencePanePref.m */,
 			);
-			name = OSIGeneralPreferencePanePref;
+			name = General;
 			sourceTree = "<group>";
 		};
-		CEB98CF513350D4E0083F3FD /* OSIDatabasePreferencePanePref */ = {
+		CEB98CF513350D4E0083F3FD /* Database */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C0B133508350083F3FD /* OSIDatabasePreferencePanePref.xib */,
 				CEB98C0D133508350083F3FD /* OSIDatabasePreferencePanePref.h */,
 				CEB98C0E133508350083F3FD /* OSIDatabasePreferencePanePref.m */,
 			);
-			name = OSIDatabasePreferencePanePref;
+			name = Database;
 			sourceTree = "<group>";
 		};
-		CEB98CF613350D600083F3FD /* OSICustomImageAnnotations */ = {
+		CEB98CF613350D600083F3FD /* CustomImageAnnotations */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C151335084F0083F3FD /* AlphaGray.tif */,
@@ -17838,10 +17862,10 @@
 				CEB98C2B1335084F0083F3FD /* RWTokenField.m */,
 				CEB98C2C1335084F0083F3FD /* Security.tiff */,
 			);
-			name = OSICustomImageAnnotations;
+			name = CustomImageAnnotations;
 			sourceTree = "<group>";
 		};
-		CEB98CF713350D7F0083F3FD /* OSICDPreferencePanePref */ = {
+		CEB98CF713350D7F0083F3FD /* CD */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C5B1335085D0083F3FD /* OSICDPreferencePanePref.xib */,
@@ -17851,10 +17875,10 @@
 				71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */,
 				71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */,
 			);
-			name = OSICDPreferencePanePref;
+			name = CD;
 			sourceTree = "<group>";
 		};
-		CEB98CF813350D8C0083F3FD /* OSIAutoroutingPreferencePanePref */ = {
+		CEB98CF813350D8C0083F3FD /* Autorouting */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C651335086B0083F3FD /* OSIAutoroutingPreferencePanePref.xib */,
@@ -17863,27 +17887,27 @@
 				CEB98C691335086B0083F3FD /* RoutesTableView.h */,
 				CEB98C6A1335086B0083F3FD /* RoutesTableView.m */,
 			);
-			name = OSIAutoroutingPreferencePanePref;
+			name = Autorouting;
 			sourceTree = "<group>";
 		};
-		CEB98CF913350D9E0083F3FD /* OSI3DPreferencePanePref */ = {
+		CEB98CF913350D9E0083F3FD /* 3D */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */,
 				CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */,
 				CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */,
 			);
-			name = OSI3DPreferencePanePref;
+			name = 3D;
 			sourceTree = "<group>";
 		};
-		CEB98CFA13350DAB0083F3FD /* AYDicomPrintPref */ = {
+		CEB98CFA13350DAB0083F3FD /* DicomPrint */ = {
 			isa = PBXGroup;
 			children = (
 				CEB98C7F1335088C0083F3FD /* AYDicomPrintPref.h */,
 				CEB98C801335088C0083F3FD /* AYDicomPrintPref.m */,
 				CEB98C811335088C0083F3FD /* AYDicomPrintPref.xib */,
 			);
-			name = AYDicomPrintPref;
+			name = DicomPrint;
 			sourceTree = "<group>";
 		};
 		CEBD79CF14F1AD8F000DA1FE /* VTKHeaders */ = {
@@ -25487,6 +25511,7 @@
 				840C2D5E1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 				711849771590A377006AB447 /* SMTPClient.h in Headers */,
 				CEC0BFA015A597DB0012D879 /* ComparativeCell.h in Headers */,
+				CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26114,6 +26139,7 @@
 				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 				840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 				CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */,
+				CEA4F07A15AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26799,6 +26825,8 @@
 				CE2BFE57153B177C00037546 /* iPad.png in Resources */,
 				71CE3C19157F489C00AC0112 /* List.pdf in Resources */,
 				840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
+				CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */,
+				CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27181,6 +27209,8 @@
 				CE2BFE58153B177C00037546 /* iPad.png in Resources */,
 				71CE3C1A157F489C00AC0112 /* List.pdf in Resources */,
 				840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
+				CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */,
+				CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28551,6 +28581,7 @@
 				840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 				711849781590A377006AB447 /* SMTPClient.m in Sources */,
 				CEC0BFA215A597DB0012D879 /* ComparativeCell.mm in Sources */,
+				CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29798,6 +29829,7 @@
 				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 				840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 				CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */,
+				CEA4F07815AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30283,6 +30315,14 @@
 				CE90551712F5B68100263AB6 /* English */,
 			);
 			name = CPR.xib;
+			sourceTree = "<group>";
+		};
+		CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEA4F07C15AEA606009584C7 /* English */,
+			);
+			name = OSIPACSOnDemand.xib;
 			sourceTree = "<group>";
 		};
 		CEB9898A133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib */ = {
