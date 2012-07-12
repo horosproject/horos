@@ -1921,7 +1921,7 @@ static NSDate *lastWarningDate = nil;
 					
 					NSString *info = [NSString stringWithFormat: @"Other : %@ : %@\rSelf  : %@ : %@", otherString, otherMAC, checkSN64String, myMacAddress];
 					
-					NSRunCriticalAlertPanel( NSLocalizedString( @"64-bit Extension License", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this 64-bit extension serial number. Buy a site license to run an unlimited number of OsiriX applications at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
+					NSRunCriticalAlertPanel( NSLocalizedString( @"Registration Key", nil), [NSString stringWithFormat: NSLocalizedString( @"There is already another running OsiriX application using this registration key. Buy another license or a site license to run multiple instances of OsiriX at the same time.\r\r%@", nil), info], NSLocalizedString( @"OK", nil), nil, nil);
 					exit(0);
 				}
 			}
