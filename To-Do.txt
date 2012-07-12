@@ -37,7 +37,6 @@
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
 - DICOM ECG (Ginkgo CADx) (OSIRIX-113)
-- Tool to create a new series from key images+-images with ROIs of a study
 - Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups of users (for sharing)
@@ -55,7 +54,6 @@
 - Tomographie rotational angio (OSIRIX-115)
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
 - 3D ROI -> 2D Viewer
-- Save albums -> store contained StudyInstanceUIDs, when reloading re-add these to album, if not in DB then show 0 series (OSIRIX-118)
 - DICOM Network: DICOM Authentication
 - ROI Manager (series level)
 - Display current image in 3D plane
