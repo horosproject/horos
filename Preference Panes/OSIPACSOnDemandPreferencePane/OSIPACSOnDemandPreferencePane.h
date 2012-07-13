@@ -13,11 +13,16 @@
 =========================================================================*/
 
 #import <PreferencePanes/PreferencePanes.h>
+#import "sourcesTableView.h"
 
 @interface OSIPACSOnDemandPreferencePane : NSPreferencePane 
 {
 
-	IBOutlet NSWindow						*mainWindow;
+	IBOutlet NSWindow *mainWindow;
+    
+    NSMutableArray *sourcesArray;
+	IBOutlet sourcesTableView *sourcesTable;
+
 }
 
 - (void) mainViewDidLoad;

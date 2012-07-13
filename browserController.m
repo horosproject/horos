@@ -3903,12 +3903,6 @@ static NSConditionLock *threadLock = nil;
                 
                 // COMPARATIVE STUDIES
                 
-//                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"searchForComparativeStudiesOnDICOMNodes"];
-                [[NSUserDefaults standardUserDefaults] setBool: YES forKey: @"usePatientIDForComparativeSearch"];
-                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"usePatientNameForComparativeSearch"];
-                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObjects: @"MINIPACS", nil] forKey: @"comparativeSearchDICOMNodes"];
-                
-                
                 if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)
                 {
                     self.comparativePatientUID = studySelected.patientUID;

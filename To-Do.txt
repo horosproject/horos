@@ -24,9 +24,8 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: check if a study is already in the retrieve queue
 - Comparative: thumbnail matrix for ViewerController
-- Comparative: check for the waiting queue lock (take the last one only)
+- Comparative: apply PatientName option, AFTER the query base on PatientID
 
 -------------------------------------------------------------
 
