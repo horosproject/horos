@@ -13386,8 +13386,13 @@ static volatile int numberOfThreadsForJPEG = 0;
 						{
 							if( (int) [im size].width != width || height != (int) [im size].height)
 							{
+                                NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                                
 								NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-								[imagesArray replaceObjectAtIndex: index withObject: newImage];
+                                if( newImage)
+                                    [imagesArray replaceObjectAtIndex: index withObject: newImage];
+                                
+                                [pool release];
 							}
 						}
 					}
@@ -13600,8 +13605,14 @@ static volatile int numberOfThreadsForJPEG = 0;
 				{
 					if( (int) [im size].width != width || height != (int) [im size].height)
 					{
+                        NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                        
 						NSImage *newImage = [im imageByScalingProportionallyToSize:NSMakeSize( width, height)];
-						[imagesArray replaceObjectAtIndex: index withObject: newImage];
+                        
+                        if( newImage)
+                            [imagesArray replaceObjectAtIndex: index withObject: newImage];
+                        
+                        [pool release];
 					}
 				}
 			}
