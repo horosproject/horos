@@ -8325,7 +8325,6 @@ static BOOL withReset = NO;
                             se.name = @"OsiriX No Autodeletion";
                             se.id = [NSNumber numberWithInt:5005];
                             [[s mutableSetValueForKey:@"series"] addObject:se];
-                            NSLog(@"lshflsh");
                         }
                     }
                 }
