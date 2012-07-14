@@ -17,7 +17,7 @@
 
 @implementation OSIPACSOnDemandPreferencePane
 
-- (IBAction) selectUniqueSource:(id) sender
+- (void) selectUniqueSource:(id) sender
 {
 	[self willChangeValueForKey:@"sourcesArray"];
 	
@@ -129,6 +129,7 @@
 	NSLog(@"dealloc OSIPACSOnDemandPreferencePane");
 	
     [sourcesArray release];
+    [smartAlbumsArray release];
     
 	[super dealloc];
 }

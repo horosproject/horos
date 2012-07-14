@@ -21,6 +21,8 @@
 	IBOutlet NSWindow *mainWindow;
     
     NSMutableArray *sourcesArray;
+    NSMutableArray *smartAlbumsArray;
+    
 	IBOutlet sourcesTableView *sourcesTable;
 
 }

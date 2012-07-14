@@ -3596,6 +3596,7 @@ static NSConditionLock *threadLock = nil;
                         NSArray *distantStudies = nil;
                         
                         BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
+                        BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"];
                         BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
                         
                         // Servers
@@ -3611,7 +3612,7 @@ static NSConditionLock *threadLock = nil;
                         
                         // Distant studies
                         #ifndef OSIRIX_LIGHT
-                        distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName servers: servers showErrors: NO];
+                        distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
                         #endif
                         
                         // Merge local and distant studies

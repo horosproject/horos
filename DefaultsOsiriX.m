@@ -1013,6 +1013,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_modality"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
+    [defaultValues setObject:@"1" forKey: @"usePatientIDForComparativeSearch"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];

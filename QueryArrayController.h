@@ -35,7 +35,7 @@
 
 - (id)rootNode;
 - (NSArray *)queries;
-
+- (NSMutableDictionary*) filters;
 - (void)addFilter:(id)filter forDescription:(NSString *)description;
 - (void)sortArray:(NSArray *)sortDesc;
 - (void)performQuery;

@@ -39,6 +39,7 @@
 #import "DicomStudy.h"
 #import "CIADICOMField.h"
 #import "N2Stuff.h"
+#import "DICOMFile.h"
 
 #include "osconfig.h"
 #include "mdfconen.h"
@@ -266,64 +267,43 @@ extern "C"
     }
 }
 
-+ (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName servers: (NSArray*) serversList showErrors: (BOOL) showErrors
++ (NSMutableArray*) queryStudiesForFilters:(NSDictionary*) filters servers: (NSArray*) serversList showErrors: (BOOL) showErrors
 {
 	QueryArrayController *qm = nil;
 	NSMutableArray *studies = [NSMutableArray array];
 	
-    if( usePatientID == NO && usePatientName == NO)
-    {
-        NSLog( @"****** QR: usePatientID == NO && usePatientName == NO");
-        return 0;
-    }
-    
-    if( usePatientName && study.name.length == 0)
-    {
-        NSLog( @"****** QR: usePatientName == YES && study.name.length == 0");
-        return 0;
-    }
-    
-    if( usePatientID && study.patientID.length == 0)
-    {
-        NSLog( @"****** QR: usePatientID == YES && study.patientID.length == 0");
-        return 0;
-    }
-    
 	@try
 	{
         for( NSDictionary *server in serversList)
         {
             qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer: server];
             
-            NSString *patientName = nil;
-            
-            if( usePatientName)
-                [qm addFilter: study.name forDescription: PatientName];
-            
-            if( usePatientID)
-                [qm addFilter: study.patientID forDescription: PatientID];
-            
-            [qm performQuery: showErrors];
+            [[qm filters] addEntriesFromDictionary: filters];
             
             NSArray *studiesForThisNode = [qm queries];
             
             if( studiesForThisNode == nil)
-                NSLog( @"QueryStudiesForPatient failed for this node: %@", [server valueForKey: @"Description"]);
+                NSLog( @"queryStudiesForFilters failed for this node: %@", [server valueForKey: @"Description"]);
             
             NSArray *uidArray = [studies valueForKey: @"uid"];
             
             for( NSUInteger x = 0 ; x < [studiesForThisNode count] ; x++)
             {
-                NSUInteger index = [uidArray indexOfObject: [[studiesForThisNode objectAtIndex: x] valueForKey:@"uid"]];
+                DCMTKStudyQueryNode *s = [studiesForThisNode objectAtIndex: x];
                 
-                if( index == NSNotFound) // not found
-                    [studies addObject: [studiesForThisNode objectAtIndex: x]];
-                else 
+                if( s)
                 {
-                    if( [[studies objectAtIndex: index] valueForKey: @"numberImages"] && [[studiesForThisNode objectAtIndex: x] valueForKey: @"numberImages"])
+                    NSUInteger index = [uidArray indexOfObject: [s valueForKey:@"uid"]];
+                    
+                    if( index == NSNotFound) // not found
+                        [studies addObject: s];
+                    else 
                     {
-                        if( [[[studies objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[[studiesForThisNode objectAtIndex: x] valueForKey: @"numberImages"] intValue])
-                            [studies replaceObjectAtIndex: index withObject: [studiesForThisNode objectAtIndex: x]];
+                        if( [[studies objectAtIndex: index] valueForKey: @"numberImages"] && [s valueForKey: @"numberImages"])
+                        {
+                            if( [[[studies objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[s valueForKey: @"numberImages"] intValue])
+                                [studies replaceObjectAtIndex: index withObject: s];
+                        }
                     }
                 }
             }
@@ -336,6 +316,50 @@ extern "C"
 		NSLog( @"%@",  [e description]);
 	}
 	
+	return studies;
+}
+
++ (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName usePatientBirthDate: (BOOL) usePatientBirthDate servers: (NSArray*) serversList showErrors: (BOOL) showErrors
+{
+    if( usePatientID == NO && usePatientName == NO)
+    {
+        NSLog( @"****** QR: usePatientID == NO && usePatientName == NO");
+        return 0;
+    }
+    
+    if( usePatientName && study.name.length == 0)
+    {
+        NSLog( @"****** QR: usePatientName == YES && study.name.length == 0");
+        return 0;
+    }
+    
+    if( usePatientBirthDate && study.dateOfBirth == nil)
+    {
+        NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0");
+        return 0;
+    }
+    
+    NSMutableDictionary *filters = [NSMutableDictionary dictionary];
+    
+    if( usePatientBirthDate)
+        [filters setObject: [DCMCalendarDate dicomDateWithDate: study.dateOfBirth] forKey: PatientBirthDate];
+    
+    if( usePatientID)
+        [filters setObject: study.patientID forKey: PatientID];
+
+    NSMutableArray *studies = [QueryController queryStudiesForFilters: filters servers: serversList showErrors: showErrors];
+    
+    if( usePatientName)
+    {
+        for( NSUInteger x = [studies count]-1 ; x >= 0 ; x--)
+        {
+            DCMTKStudyQueryNode *s = [studies objectAtIndex: x];
+            
+            if( [[DicomFile NSreplaceBadCharacter: s.name] isEqualToString: study.name] == NO)
+                    [studies removeObjectAtIndex: x];
+        }
+    }
+    
 	return studies;
 }
 

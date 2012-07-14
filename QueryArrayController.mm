@@ -70,6 +70,11 @@
 	[super dealloc];
 }
 
+- (NSMutableDictionary*) filters
+{
+    return filters;
+}
+
 - (void)addFilter:(id)filter forDescription:(NSString *)description
 {
 	if ([description rangeOfString:@"Date"].location != NSNotFound)
