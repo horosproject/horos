@@ -4086,7 +4086,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	NSPredicate				*predicate;
 	NSFetchRequest			*dbRequest;
 	NSError					*error = nil;
-	long					i, x, index = 0;
+	long					i, index = 0;
 	NSManagedObject			*curImage = [fileList[0] objectAtIndex:0];
 	NSPoint					origin = [[previewMatrix superview] bounds].origin;
 	
@@ -4177,7 +4177,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
-                    NSArray *series = [seriesArray objectAtIndex: x];
+                    NSArray *series = [seriesArray objectAtIndex: [studiesArray indexOfObject: curStudy]];
                     NSArray *images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
                     
                     if( [series count] != [images count])
@@ -4358,8 +4358,6 @@ static volatile int numberOfThreadsForRelisce = 0;
                 #ifndef OSIRIX_LIGHT
                 else if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study DCMTKQueryStudyNode
                 {
-                    DCMTKStudyQueryNode *curStudy = [studiesArray objectAtIndex: x];
-                    
                     NSString *name = [[curStudy valueForKey:@"studyName"] stringByTruncatingToLength: 34];
                     if( name == nil)
                         name = @"";
