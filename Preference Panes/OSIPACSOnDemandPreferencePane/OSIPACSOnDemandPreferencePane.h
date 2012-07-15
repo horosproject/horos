@@ -26,6 +26,8 @@
     NSMutableArray *smartAlbumsArray;
     IBOutlet NSTableView *smartAlbumsTable;
     
+    NSArray *albumDBArray;
+    
     IBOutlet NSWindow *smartAlbumsEditWindow;
     IBOutlet NSMatrix *dateMatrix;
     NSMutableArray *smartAlbumModality;

@@ -33,9 +33,7 @@ static NSMatrix *gDateMatrix = nil;
 }
 
 - (id)transformedValue:(NSArray*) array {
-    //Take an NSArray to NSString
     NSMutableString *string = [NSMutableString string];
-    
     for( NSString *modality in array)
     {
         [string appendString: modality];
@@ -159,10 +157,30 @@ static NSMatrix *gDateMatrix = nil;
 	return self;
 }
 
+- (IBAction) setActivated:(id) sender
+{
+    // Check that activated smart albums have at least date or modality filters
+    for( NSMutableDictionary *d in smartAlbumsArray)
+    {
+        if( [[d objectForKey: @"activated"] boolValue])
+        {
+            if( [[d objectForKey: @"date"] intValue] == 0 && [[d objectForKey: @"modality"] count] == 0)
+            {
+                NSRunInformationalAlertPanel( NSLocalizedString( @"Filter", nil), [NSString stringWithFormat: NSLocalizedString( @"The Smart Album filter (%@) needs to have at least one parameter defined to be activated: date or modality.", nil), [d objectForKey: @"name"]], NSLocalizedString( @"OK", nil), nil, nil);
+                
+                [self willChangeValueForKey: @"smartAlbumsArray"];
+                [d setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];
+                [self didChangeValueForKey: @"smartAlbumsArray"];
+            }
+        }
+    }
+}
 
 - (void) willUnselect
 {
 	[[[self mainView] window] makeFirstResponder: nil];
+    
+    // Save DICOM Nodes
     
     NSMutableArray *srcArray = [NSMutableArray array];
     for( id src in sourcesArray)
@@ -175,7 +193,10 @@ static NSMatrix *gDateMatrix = nil;
         [srcArray addObject: [sourcesArray objectAtIndex: [sourcesTable selectedRow]]];
     
     [[NSUserDefaults standardUserDefaults] setValue: srcArray forKey: @"comparativeSearchDICOMNodes"];
-
+    
+    // Save Smart Albums
+    [self setActivated: self];
+    [[NSUserDefaults standardUserDefaults] setObject: smartAlbumsArray forKey: @"smartAlbumStudiesDICOMNodes"];
 }
 
 - (void) dealloc
@@ -184,6 +205,7 @@ static NSMatrix *gDateMatrix = nil;
 	
     [sourcesArray release];
     [smartAlbumsArray release];
+    [albumDBArray release];
     
 	[super dealloc];
 }
@@ -194,9 +216,13 @@ static NSMatrix *gDateMatrix = nil;
     
     // Smart Albums
     
-    self.smartAlbumsArray = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
-    if( self.smartAlbumsArray == nil)
-        self.smartAlbumsArray = [NSMutableArray array];
+    NSMutableArray *savedSmartAlbums = [NSMutableArray array];
+    
+    // Create mutable version...
+    for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+        [savedSmartAlbums addObject: [NSMutableDictionary dictionaryWithDictionary: d]];
+    
+    self.smartAlbumsArray = savedSmartAlbums;
     
     [self willChangeValueForKey: @"smartAlbumsArray"];
     [[DicomDatabase activeLocalDatabase] lock];
@@ -206,17 +232,31 @@ static NSMatrix *gDateMatrix = nil;
         [dbRequest setEntity: [[DicomDatabase activeLocalDatabase] entityForName: @"Album"]];
         [dbRequest setPredicate: [NSPredicate predicateWithFormat: @"smartAlbum == YES"]];
         NSError *error = nil;
-        NSArray *albumArray = [[[DicomDatabase activeLocalDatabase] managedObjectContext] executeFetchRequest:dbRequest error:&error];
         
-        albumArray = [albumArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]]];
+        albumDBArray = [[[DicomDatabase activeLocalDatabase] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+        albumDBArray = [albumDBArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]]];
         
-        for( DicomAlbum *album in albumArray)
+        [albumDBArray retain];
+        
+        // Add mising smart albums
+        
+        for( DicomAlbum *album in albumDBArray)
         {
-            if( [self.smartAlbumsArray containsObject: album.name] == NO)
+            if( [[self.smartAlbumsArray valueForKey: @"name"] containsObject: album.name] == NO)
             {
-                [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", album.predicateString, @"predicateString", album.name, @"name", @"0", @"date", [NSArray arrayWithObjects: @"CT", @"MR", nil], @"modality", nil]];
+                [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", album.name, @"name", @"0", @"date", [NSArray array], @"modality", nil]];
             }
         }
+        
+        // Delete unavailble smart albums preferences
+        NSMutableArray *toBeRemoved = [NSMutableArray array];
+        for( NSDictionary *album in smartAlbumsArray)
+        {
+            if( [[albumDBArray valueForKey: @"name"] containsObject: [album objectForKey: @"name"]] == NO)
+                [toBeRemoved addObject: album];
+        }
+        
+        [smartAlbumsArray removeObjectsInArray: toBeRemoved];
     }
     @catch (NSException *e)
     {
@@ -257,7 +297,11 @@ static NSMatrix *gDateMatrix = nil;
         NSMutableDictionary *dict = [smartAlbumsArray objectAtIndex: [smartAlbumsTable selectedRow]];
         
         [dict setObject: [NSNumber numberWithInt: self.smartAlbumDate] forKey: @"date"];
-        [dict setObject: self.smartAlbumModality forKey: @"modality"];
+        
+        if( self.smartAlbumModality)
+            [dict setObject: self.smartAlbumModality forKey: @"modality"];
+        else
+            [dict setObject: [NSArray array] forKey: @"modality"];
         
         [self didChangeValueForKey: @"smartAlbumsArray"];
 	}
@@ -284,7 +328,9 @@ static NSMatrix *gDateMatrix = nil;
 			{
                 self.smartAlbumModality = [selectedAlbum objectForKey: @"modality"];
                 self.smartAlbumDate = [[selectedAlbum objectForKey: @"date"] intValue];
-                self.smartAlbumFilter = [selectedAlbum objectForKey: @"predicateString"];
+                
+                NSUInteger index = [[albumDBArray valueForKey: @"name"] indexOfObject: [selectedAlbum objectForKey: @"name"]];
+                self.smartAlbumFilter = [[albumDBArray objectAtIndex: index] valueForKey: @"predicateString"];
                 
 				[NSApp beginSheet: smartAlbumsEditWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 			}
