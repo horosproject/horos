@@ -25,6 +25,7 @@
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
 - Comparative: thumbnail matrix for ViewerController
+- QR: new modality saving, backward compatibility
 
 -------------------------------------------------------------
 

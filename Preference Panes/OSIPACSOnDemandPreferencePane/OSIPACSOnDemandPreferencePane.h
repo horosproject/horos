@@ -21,11 +21,21 @@
 	IBOutlet NSWindow *mainWindow;
     
     NSMutableArray *sourcesArray;
-    NSMutableArray *smartAlbumsArray;
+    IBOutlet sourcesTableView *sourcesTable;
     
-	IBOutlet sourcesTableView *sourcesTable;
-
+    NSMutableArray *smartAlbumsArray;
+    IBOutlet NSTableView *smartAlbumsTable;
+    
+    IBOutlet NSWindow *smartAlbumsEditWindow;
+    IBOutlet NSMatrix *dateMatrix;
+    NSMutableArray *smartAlbumModality;
+    NSString *smartAlbumFilter;
+    int smartAlbumDate;
 }
+
+@property (retain) NSMutableArray *smartAlbumsArray, *smartAlbumModality;
+@property (retain) NSString *smartAlbumFilter;
+@property int smartAlbumDate;
 
 - (void) mainViewDidLoad;
 @end

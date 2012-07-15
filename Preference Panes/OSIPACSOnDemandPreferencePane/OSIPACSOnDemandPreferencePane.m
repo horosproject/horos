@@ -14,8 +14,59 @@
 
 #import "OSIPACSOnDemandPreferencePane.h"
 #import "DCMNetServiceDelegate.h"
+#import "DicomDatabase.h"
+#import "DicomAlbum.h"
+#import "N2Debug.h"
+
+static NSMatrix *gDateMatrix = nil;
+
+@interface ArrayToListTransformer: NSValueTransformer {}
+@end
+@implementation ArrayToListTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
++ (Class)transformedValueClass {
+    return [NSString class];
+}
+
+- (id)transformedValue:(NSArray*) array {
+    //Take an NSArray to NSString
+    NSMutableString *string = [NSMutableString string];
+    
+    for( NSString *modality in array)
+    {
+        [string appendString: modality];
+        if( modality != array.lastObject)
+            [string appendString:@", "];
+    }
+    return string;
+}
+@end
+
+@interface DateEnumTransformer: NSValueTransformer {}
+@end
+@implementation DateEnumTransformer
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
+- (id)transformedValue:(NSNumber*) number {
+    return [[gDateMatrix cellWithTag: number.intValue] title];
+}
+@end
+
 
 @implementation OSIPACSOnDemandPreferencePane
+
+@synthesize smartAlbumsArray, smartAlbumModality, smartAlbumDate, smartAlbumFilter;
 
 - (void) selectUniqueSource:(id) sender
 {
@@ -99,6 +150,9 @@
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
+        
+        gDateMatrix = dateMatrix;
+        
 		[self mainViewDidLoad];
 	}
 	
@@ -138,6 +192,44 @@
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
+    // Smart Albums
+    
+    self.smartAlbumsArray = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
+    if( self.smartAlbumsArray == nil)
+        self.smartAlbumsArray = [NSMutableArray array];
+    
+    [self willChangeValueForKey: @"smartAlbumsArray"];
+    [[DicomDatabase activeLocalDatabase] lock];
+    @try
+    {
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        [dbRequest setEntity: [[DicomDatabase activeLocalDatabase] entityForName: @"Album"]];
+        [dbRequest setPredicate: [NSPredicate predicateWithFormat: @"smartAlbum == YES"]];
+        NSError *error = nil;
+        NSArray *albumArray = [[[DicomDatabase activeLocalDatabase] managedObjectContext] executeFetchRequest:dbRequest error:&error];
+        
+        albumArray = [albumArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES]]];
+        
+        for( DicomAlbum *album in albumArray)
+        {
+            if( [self.smartAlbumsArray containsObject: album.name] == NO)
+            {
+                [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", album.predicateString, @"predicateString", album.name, @"name", @"0", @"date", [NSArray arrayWithObjects: @"CT", @"MR", nil], @"modality", nil]];
+            }
+        }
+    }
+    @catch (NSException *e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    [[DicomDatabase activeLocalDatabase] unlock];
+    [self didChangeValueForKey: @"smartAlbumsArray"];
+    
+    [smartAlbumsTable setDoubleAction: @selector( editSmartAlbumFilter:)];
+    [smartAlbumsTable setTarget: self];
+    
+    // History
+    
     sourcesArray = [[[NSUserDefaults standardUserDefaults] objectForKey: @"comparativeSearchDICOMNodes"] mutableCopy];
     if( sourcesArray == nil) sourcesArray = [[NSMutableArray array] retain];
     
@@ -155,4 +247,49 @@
 		}
 	}
 }
+
+- (IBAction) endEditSmartAlbumFilter:(id) sender
+{
+	if( [sender tag] == 1) // OK
+	{
+        [self willChangeValueForKey: @"smartAlbumsArray"];
+        
+        NSMutableDictionary *dict = [smartAlbumsArray objectAtIndex: [smartAlbumsTable selectedRow]];
+        
+        [dict setObject: [NSNumber numberWithInt: self.smartAlbumDate] forKey: @"date"];
+        [dict setObject: self.smartAlbumModality forKey: @"modality"];
+        
+        [self didChangeValueForKey: @"smartAlbumsArray"];
+	}
+	else // Cancel
+	{
+	}
+	
+	[smartAlbumsEditWindow orderOut:sender];
+	[NSApp endSheet: smartAlbumsEditWindow returnCode:[sender tag]];
+}
+- (IBAction) editSmartAlbumFilter:(id) sender
+{
+//	if([self isUnlocked])
+	{
+		if( [smartAlbumsArray count] == 0)
+		{
+			NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),NSLocalizedString( @"No smart album exists.", nil),NSLocalizedString( @"OK", nil), nil, nil);
+		}
+		else
+		{
+			NSDictionary *selectedAlbum = [smartAlbumsArray objectAtIndex: [smartAlbumsTable selectedRow]];
+			
+			if( selectedAlbum)
+			{
+                self.smartAlbumModality = [selectedAlbum objectForKey: @"modality"];
+                self.smartAlbumDate = [[selectedAlbum objectForKey: @"date"] intValue];
+                self.smartAlbumFilter = [selectedAlbum objectForKey: @"predicateString"];
+                
+				[NSApp beginSheet: smartAlbumsEditWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+			}
+		}
+	}
+}
+
 @end
