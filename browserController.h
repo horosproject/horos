@@ -530,6 +530,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) anonymizeDICOM:(id) sender;
 - (void) queryDICOM:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study;
 #endif
 
 - (void) initAnimationSlider;

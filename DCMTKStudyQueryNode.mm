@@ -219,6 +219,11 @@
     return _theDescription;
 }
 
+- (NSDate*) dateOfBirth // Match DicomStudy
+{
+    return _birthdate;
+}
+
 - (void)addChild:(DcmDataset *)dataset
 {
 //	dataset->print( COUT);

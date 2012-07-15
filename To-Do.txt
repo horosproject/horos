@@ -24,7 +24,7 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: thumbnail matrix for ViewerController
+- Comparative: thumbnail matrix for ViewerController: TO BE TESTED
 - QR: new modality saving, backward compatibility
 
 -------------------------------------------------------------
