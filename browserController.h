@@ -225,6 +225,7 @@ extern NSString* O2AlbumDragType;
     
     BOOL subSeriesWindowIsOn;
     
+    NSRecursiveLock *searchForComparativeStudiesLock;
     NSString *comparativePatientUID; //Current patient history displayed
     NSMutableArray *comparativeStudySearchArray; //The queue of patient history to be searched
     NSArray *comparativeStudies; //Studies for the NSTableView
@@ -236,6 +237,11 @@ extern NSString* O2AlbumDragType;
     DCMTKStudyQueryNode *comparativeStudyWaited; //The study to be selected or opened
     NSTimeInterval comparativeStudyWaitedTime; //The time when the study to be selected or opened was activated
     BOOL comparativeStudyWaitedToOpen; //Select or Open
+    
+    NSString *smartAlbumDistantName;
+    NSArray *smartAlbumDistantArray;
+    NSMutableArray *smartAlbumDistantSearchArray; //The queue of smart albums to be searched
+    NSTimeInterval lastRefreshSmartAlbumDistantStudies;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -253,7 +259,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;

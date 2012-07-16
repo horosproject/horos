@@ -29,6 +29,7 @@
 
 -------------------------------------------------------------
 
+- Retina displays: HDMI mode
 - Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, Retina Display, unzip .app with password

@@ -289,7 +289,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable, comparativePatientUID;
-@synthesize bonjourSourcesBox, timeIntervalType;
+@synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
@@ -2673,7 +2673,8 @@ static NSConditionLock *threadLock = nil;
 	// ********************
 	// ALBUMS
 	// ********************
-	
+	NSString *smartAlbumName = nil;
+    
 	if( albumTable.selectedRow > 0)
 	{
 		NSArray	*albumArray = self.albumArray;
@@ -2681,18 +2682,18 @@ static NSConditionLock *threadLock = nil;
 		if( [albumArray count] > albumTable.selectedRow)
 		{
 			NSManagedObject	*album = [albumArray objectAtIndex: albumTable.selectedRow];
-			NSString		*albumName = [album valueForKey:@"name"];
 			
 			if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
 			{
+                smartAlbumName = [album valueForKey:@"name"];
 				subPredicate = [self smartAlbumPredicate: album];
-				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), albumName];
+				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), smartAlbumName];
 				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 			}
 			else
 			{
 				albumArrayContent = [[album valueForKey:@"studies"] allObjects];
-				description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), albumName];
+				description = [description stringByAppendingFormat:NSLocalizedString(@"Album selected: %@", nil), [album valueForKey:@"name"]];
 			}
 		}
 	}
@@ -2751,6 +2752,25 @@ static NSConditionLock *threadLock = nil;
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
 		
+        // Smart Album Distant Studies, if available
+        if( smartAlbumDistantArray && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
+        {
+            NSMutableArray *distantStudies = [NSMutableArray array];
+            // Merge local and distant studies
+            #ifndef OSIRIX_LIGHT
+            for( DCMTKStudyQueryNode *distantStudy in smartAlbumDistantArray)
+            {
+                if( [[outlineViewArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                {
+                    [distantStudies addObject: distantStudy];
+                }
+            }
+            #endif
+            
+            if( [distantStudies count])
+                outlineViewArray = [outlineViewArray arrayByAddingObjectsFromArray: distantStudies];
+        }
+        
 		@synchronized (_albumNoOfStudiesCache)
         {
 			if ([_albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
@@ -3520,6 +3540,97 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+- (void) searchForSmartAlbumDistantStudies: (NSString*) albumName
+{
+    if( albumName.length == 0)
+        return;
+    
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    [NSThread currentThread].name = @"Search For Smart Album Distant Studies";
+    
+    NSArray *albumArray = self.albumArray;
+    
+    if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]]) // There was maybe other locks in the queue...
+    {
+        NSLog( @"--- Search album: %@", albumName);
+        
+        lastRefreshSmartAlbumDistantStudies = [NSDate timeIntervalSinceReferenceDate];
+        
+        {
+            if( !searchForComparativeStudiesLock)
+                searchForComparativeStudiesLock = [NSRecursiveLock new];
+            
+            @synchronized( self)
+            {
+                if( smartAlbumDistantSearchArray == nil)
+                    smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
+                
+                [smartAlbumDistantSearchArray addObject: [NSThread currentThread]];
+            }
+            
+            [searchForComparativeStudiesLock lock];
+            
+            if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]]) // There was maybe other locks in the queue...
+            {
+                id lastObjectInQueue = nil;
+                
+                @synchronized( self)
+                {
+                    lastObjectInQueue = [smartAlbumDistantSearchArray lastObject];
+                }
+                
+                if( [NSThread currentThread] == lastObjectInQueue)
+                {
+                    @try
+                    {
+                        NSArray *distantStudies = nil;
+                        
+                        // Servers
+                        NSMutableArray* servers = [NSMutableArray array];
+                        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+                        for (NSDictionary* si in sources)
+                        {
+                            if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
+                            {
+                                [servers addObject: si];
+                            }
+                        }
+                        
+                        // Distant studies
+#ifndef OSIRIX_LIGHT
+                        [smartAlbumDistantArray release];
+                        
+                        NSDictionary *filters = nil;
+                        // XXX
+                        
+                        smartAlbumDistantArray = [[QueryController queryStudiesForFilters: filters servers: servers showErrors: NO] retain];
+                        
+                        self.smartAlbumDistantName = albumName;
+#endif
+                        
+                        if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]])
+                            [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
+                    }
+                    @catch (NSException* e)
+                    {
+                        N2LogExceptionWithStackTrace(e);
+                    }
+                }
+            }
+            
+            @synchronized( self)
+            {
+                [smartAlbumDistantSearchArray removeObject: [NSThread currentThread]];
+            }
+            
+            [searchForComparativeStudiesLock unlock];
+        }
+    }
+    
+    [pool release];
+}
+
 - (void) searchForComparativeStudies: (DicomStudy*) studySelected
 {
     if( studySelected.patientUID.length == 0)
@@ -3527,7 +3638,7 @@ static NSConditionLock *threadLock = nil;
     
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    [NSThread currentThread].name = @"Search For Comparative Thread";
+    [NSThread currentThread].name = @"Search For Comparative Studies";
     
     if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... Keep only the displayed patientUID
     {
@@ -3566,8 +3677,6 @@ static NSConditionLock *threadLock = nil;
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
         {
-            static NSRecursiveLock *searchForComparativeStudiesLock = nil;
-            
             if( !searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
             
@@ -3703,6 +3812,22 @@ static NSConditionLock *threadLock = nil;
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
         [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+    }
+    
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] && albumTable.selectedRow > 0)
+    {
+        NSArray	*albumArray = self.albumArray;
+        
+        if( [albumArray count] > albumTable.selectedRow)
+        {
+            DicomAlbum *album = [albumArray objectAtIndex: albumTable.selectedRow];
+            
+            if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
+            {
+                if( [NSDate timeIntervalSinceReferenceDate] - lastRefreshSmartAlbumDistantStudies > 3 * 60) // 3 min
+                    [NSThread detachNewThreadSelector: @selector( searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
+            }
+        }
     }
     
     if( comparativeStudyWaited) // Select it ! And open it if needed...
@@ -9332,7 +9457,23 @@ static BOOL needToRezoom;
             [self setSearchString: nil];
             
             [self refreshAlbums];
-
+            
+            // Distant Smart Albums
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] && albumTable.selectedRow > 0)
+            {
+                NSArray	*albumArray = self.albumArray;
+                
+                if( [albumArray count] > albumTable.selectedRow)
+                {
+                    DicomAlbum *album = [albumArray objectAtIndex: albumTable.selectedRow];
+                    
+                    if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
+                    {
+                        [NSThread detachNewThreadSelector: @selector( searchForSmartAlbumDistantStudies:) toTarget:self withObject: album.name];
+                    }
+                }
+            }
+            
             // outlineview sortdescriptors
             
             [self saveLoadAlbumsSortDescriptors];
