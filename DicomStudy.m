@@ -1056,11 +1056,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	else return @"";
 }
 
-- (NSString*) yearOld
++ (NSString*) yearOldFromDateOfBirth: (NSDate*) dateOfBirth
 {
-	if( [self valueForKey: @"dateOfBirth"])
+    if( dateOfBirth)
 	{
-		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[self valueForKey:@"dateOfBirth"] timeIntervalSinceReferenceDate]];
+		NSCalendarDate *momsBDay = [NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [dateOfBirth timeIntervalSinceReferenceDate]];
 		NSCalendarDate *dateOfBirth = [NSCalendarDate date];
 		
 		NSInteger years, months, days;
@@ -1083,6 +1083,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 		else return [NSString stringWithFormat: NSLocalizedString( @"%d y", @"y = year"), years];
 	}
 	else return @"";
+}
+
+- (NSString*) yearOld
+{
+	return [DicomStudy yearOldFromDateOfBirth: [self valueForKey: @"dateOfBirth"]];
 }
 
 

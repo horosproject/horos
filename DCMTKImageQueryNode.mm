@@ -132,7 +132,10 @@
 	return dataset;
 }
 
-
+- (NSString*) type
+{
+    return @"Image";
+}
 
 
 @end

@@ -181,5 +181,8 @@
     }
 }
 
-
+- (NSString*) type
+{
+    return @"Series";
+}
 @end

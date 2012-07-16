@@ -15,7 +15,7 @@
 #import "DCMTKStudyQueryNode.h"
 #import "DCMTKSeriesQueryNode.h"
 #import "DCMTKImageQueryNode.h"
-
+#import "DicomStudy.h"
 #import "WaitRendering.h"
 #import "DCMTKQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
@@ -478,6 +478,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (DCMCalendarDate *)birthdate{
 	return _birthdate;
+}
+- (NSString*) yearOld
+{
+    return [DicomStudy yearOldFromDateOfBirth: _birthdate];
 }
 - (DCMCalendarDate *)time{
 	return _time;

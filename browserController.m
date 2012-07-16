@@ -3123,6 +3123,11 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
 {
+    #ifndef OSIRIX_LIGHT
+    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+        return [NSArray array];
+    #endif
+    
 	if( [item isFault] || [item isDeleted])
 	{
         if( [item isFault])
@@ -3602,6 +3607,7 @@ static NSConditionLock *threadLock = nil;
                         [smartAlbumDistantArray release];
                         
                         NSDictionary *filters = nil;
+                        
                         // XXX
                         
                         smartAlbumDistantArray = [[QueryController queryStudiesForFilters: filters servers: servers showErrors: NO] retain];
@@ -4958,6 +4964,11 @@ static NSConditionLock *threadLock = nil;
 	
 //	[_database lock];
 	
+    #ifndef OSIRIX_LIGHT
+    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+        return NO;
+    #endif
+    
     if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
         returnVal = NO;
 	else if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
@@ -4983,7 +4994,12 @@ static NSConditionLock *threadLock = nil;
 	}
 	else
 	{
-		if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
+        #ifndef OSIRIX_LIGHT
+        if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            returnVal = 0;
+		else
+        #endif
+        if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
             returnVal = 0;
         else if ([[item valueForKey:@"type"] isEqualToString:@"Image"]) returnVal = 0;
 		else if ([[item valueForKey:@"type"] isEqualToString:@"Series"]) returnVal = [[item valueForKey:@"noFiles"] intValue];
@@ -5073,10 +5089,15 @@ static NSConditionLock *threadLock = nil;
 			else
 				name = [item valueForKey:@"name"];
 			
-			//return [NSString stringWithFormat:@"%@ (%d series)", name, [[item valueForKey:@"series"] count]];
+            #ifndef OSIRIX_LIGHT
+			if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+                return name;
+            #endif
+            
 			if ([item isFault])
 				return nil;
-			return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: for example, helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
+			
+            return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: for example, helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
 	
@@ -5102,12 +5123,15 @@ static NSConditionLock *threadLock = nil;
     
     if (!accessed)
         value = [item valueForKey:[tableColumn identifier]];
-
-    if ([[item valueForKey:@"type"] isEqualToString:@"Series"])                                                                                                                         // only Series
+    
+    if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
+    {   // only Series
         if ([[tableColumn identifier] isEqualToString:@"name"] || [[tableColumn identifier] isEqualToString:@"studyName"] || [[tableColumn identifier] isEqualToString:@"modality"])    // only name & description & modality
+        {
             if (!value || ([value isKindOfClass:[NSString class]] && [(NSString*)value length] == 0))
                 return NSLocalizedString(@"unknown", nil);
-
+        }
+    }
 	return value;
 }
 
@@ -5134,6 +5158,11 @@ static NSConditionLock *threadLock = nil;
 
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key
 {
+    #ifndef OSIRIX_LIGHT
+    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+        return;
+    #endif
+    
     DatabaseIsEdited = NO;
 	
 	[_database lock];
@@ -5190,6 +5219,11 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
+    #ifndef OSIRIX_LIGHT
+    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+        return;
+    #endif
+    
 	if ([self.database isReadOnly])
         return;
     
@@ -5261,7 +5295,14 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
 			
-			if( originalOutlineViewArray)
+            #ifndef OSIRIX_LIGHT
+            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            {
+                [cell setFont: [NSFont systemFontOfSize: 9]];
+            }
+			else
+            #endif
+            if( originalOutlineViewArray)
 			{
 				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
 				else [cell setFont: [NSFont systemFontOfSize:12]];
@@ -5381,40 +5422,12 @@ static NSConditionLock *threadLock = nil;
 	
 	[context unlock];
 	
-	// doesn't work with NSPopupButtonCell	
-	//	if ([outlineView isEqual:databaseOutline])
-	//	{
-	//		//[cell setBackgroundColor:[NSColor lightGrayColor]];
-	//		//	[cell setDrawsBackground: YES];
-	//		
-	//		//[[tableColumn dataCell] setBackgroundColor:[NSColor greenColor]];
-	//		[[tableColumn dataCell] setDrawsBackground: NO];
-	//	}
 }
-
-//- (void)outlineView:(NSOutlineView *)outlineView willDisplayOutlineCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item
-//{
-//	if ([outlineView isEqual:databaseOutline])
-//	{
-//		[cell setBackgroundColor:[NSColor greenColor]];
-//		//	[cell setDrawsBackground: YES];
-//		
-//		//[[tableColumn dataCell] setBackgroundColor:[NSColor greenColor]];
-//		//[[tableColumn dataCell] setDrawsBackground: NO];
-//	}
-//}
 
 - (void)tableView:(NSTableView *)tableView mouseDownInHeaderOfTableColumn:(NSTableColumn *)tableColumn
 {
 
 }
-
-//-(NSDragOperation)outlineView:(NSOutlineView*)outlineView validateDrop:(id<NSDraggingInfo>)info proposedItem:(id)item proposedChildIndex:(NSInteger)index
-//{
-//    if ([self.database isReadOnly])
-//        return NSDragOperationNone;
-//    return NSDragOperationGeneric;
-//}
 
 - (NSArray *)outlineView:(NSOutlineView *)outlineView namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedItems:(NSArray *)items
 {
@@ -5477,17 +5490,8 @@ static NSConditionLock *threadLock = nil;
 	
 	[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
 	
-//	[draggedItems release];
-//	draggedItems = [pbItems retain];
-
 	return YES;
 }
-
-/*- (void) setDraggedItems:(NSArray*) pbItems
-{
-	[draggedItems release];
-	draggedItems = [pbItems mutableCopy];
-}*/
 
 - (void)outlineViewItemWillCollapse:(NSNotification *)notification
 {
@@ -5534,47 +5538,6 @@ static NSConditionLock *threadLock = nil;
 			im = [images objectAtIndex: [animationSlider intValue]];
 		else
 			im = [[item valueForKey: @"images"] anyObject];
-		
-//		// ZIP files with XML descriptor
-//		if([[item valueForKey:@"noFiles"] intValue] == 1)
-//		{
-//			if([[im valueForKey:@"fileType"] isEqualToString:@"XMLDESCRIPTOR"] )
-//			{
-//				NSLog(@"******** XMLDESCRIPTOR ********");
-//				
-//				NSSavePanel *savePanel = [NSSavePanel savePanel];
-//				[savePanel setCanSelectHiddenExtension:YES];
-//				[savePanel setRequiredFileType:@"zip"];
-//				
-//				NSString *filePath = [im valueForKey: @"completePath"];
-//				NSString *fileName = [filePath lastPathComponent];
-//				
-//				if([savePanel runModalForDirectory:nil file:fileName] == NSFileHandlingPanelOKButton)
-//				{
-//					// write the file to the specified location on the disk
-//					NSFileManager *fileManager = [NSFileManager defaultManager];
-//					// zip
-//					NSString *newFilePath = [[savePanel URL] path];
-//					if ([fileManager fileExistsAtPath:filePath])
-//						[fileManager copyPath:filePath toPath:newFilePath handler:nil];
-//					// xml
-//					NSMutableString *xmlFilePath = [NSMutableString stringWithCapacity:[filePath length]];
-//					[xmlFilePath appendString: [filePath substringToIndex:[filePath length]-[[filePath pathExtension] length]]];
-//					[xmlFilePath appendString: @"xml"];
-//					NSLog(@"xmlFilePath : %@", xmlFilePath);
-//					
-//					NSMutableString *newXmlFilePath = [NSMutableString stringWithCapacity:[newFilePath length]];
-//					[newXmlFilePath appendString: [newFilePath substringToIndex:[newFilePath length]-[[newFilePath pathExtension] length]]];
-//					[newXmlFilePath appendString: @"xml"];
-//					NSLog(@"newXmlFilePath : %@", newXmlFilePath);
-//					
-//					if ([fileManager fileExistsAtPath:xmlFilePath])
-//						[fileManager copyPath:xmlFilePath toPath:newXmlFilePath handler:nil];
-//				}
-//				
-//				r = YES;
-//			}
-//		}
 		
 		if ([[im valueForKey:@"fileType"] isEqualToString:@"DICOMMPEG2"])
 		{

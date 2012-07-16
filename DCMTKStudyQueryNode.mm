@@ -224,14 +224,82 @@
     return _birthdate;
 }
 
+- (NSString*) type // Match DicomStudy
+{
+    return @"Study";
+}
+
+- (NSString*) patientUID // Match DicomStudy
+{
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: _name, @"patientName", _patientID, @"patientID", _birthdate, @"patientBirthDate", nil];
+    
+    return [DicomFile patientUID: dict];
+}
+
+- (BOOL) isFault // Match DicomStudy
+{
+    return NO;
+}
+
+- (NSString*) fileType // Match DicomStudy
+{
+    return @"DICOM";
+}
+
+- (NSString*) comment // Match DicomStudy
+{
+    return @"";
+}
+
+- (NSString*) comment2 // Match DicomStudy
+{
+    return @"";
+}
+
+- (NSString*) comment3 // Match DicomStudy
+{
+    return @"";
+}
+
+- (NSString*) comment4 // Match DicomStudy
+{
+    return @"";
+}
+
+- (NSNumber*) lockedStudy // Match DicomStudy
+{
+    return [NSNumber numberWithBool: NO];
+}
+
+- (NSString*) dictateURL // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSNumber*) expanded // Match DicomStudy
+{
+    return [NSNumber numberWithBool: NO];
+}
+
+- (NSString*) institutionName // Match DicomStudy
+{
+    return @"";
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+    NSLog( @"***** DCMTKStudyQueryNode valueForUndefinedKey : %@", key);
+    
+    return nil;
+}
+
 - (void)addChild:(DcmDataset *)dataset
 {
 //	dataset->print( COUT);
 
 	if( dataset == nil)
 		return;
-		
-		
+    
 	if (!_children)
 		_children = [[NSMutableArray alloc] init];
 	
