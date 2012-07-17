@@ -5298,7 +5298,7 @@ static NSConditionLock *threadLock = nil;
             #ifndef OSIRIX_LIGHT
             if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
             {
-                [cell setFont: [NSFont systemFontOfSize: 9]];
+                [cell setFont: [NSFont boldSystemFontOfSize: 12]];
             }
 			else
             #endif

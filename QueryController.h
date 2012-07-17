@@ -132,7 +132,7 @@
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError;
 - (BOOL) queryWithDisplayingErrors:(BOOL) showError instance: (NSMutableDictionary*) instance index: (int) index;
 - (IBAction) selectUniqueSource:(id) sender;
-- (QueryFilter*) getModalityQueryFilterWithString:(NSString*) modalityFilterMatrixString;
+- (QueryFilter*) getModalityQueryFilter:(NSArray*) modalityArray;
 - (void) refreshSources;
 - (IBAction) retrieveAndViewClick: (id) sender;
 - (IBAction) retrieveAndView: (id) sender;

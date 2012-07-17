@@ -787,18 +787,13 @@ extern "C"
 	[presets setValue: [NSNumber numberWithInt: [dateFilterMatrix selectedTag]] forKey: @"dateFilterMatrix"];
 	[presets setValue: [NSNumber numberWithInt: [birthdateFilterMatrix selectedTag]] forKey: @"birthdateFilterMatrix"];
 	
-	NSMutableString *cellsString = [NSMutableString string];
+	NSMutableArray *cellsString = [NSMutableArray array];
 	for( NSCell *cell in [modalityFilterMatrix cells])
 	{
 		if( [cell state] == NSOnState)
-		{
-			NSInteger row, col;
-			
-			[modalityFilterMatrix getRow: &row column: &col ofCell:cell];
-			[cellsString appendString: [NSString stringWithFormat:@"%d %d ", row, col]];
-		}
+			[cellsString addObject: [cell title]];
 	}
-	[presets setValue: cellsString forKey: @"modalityFilterMatrixString"];
+	[presets setValue: cellsString forKey: @"modalityStrings"];
 	
 	[presets setValue: [NSNumber numberWithInt: [PatientModeMatrix indexOfTabViewItem: [PatientModeMatrix selectedTabViewItem]]] forKey: @"PatientModeMatrix"];
 	
@@ -977,10 +972,18 @@ extern "C"
 	
 	[modalityFilterMatrix deselectAllCells];
 	
-	if( [presets valueForKey: @"modalityFilterMatrixRow"] && [presets valueForKey: @"modalityFilterMatrixColumn"])
-		[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
-	else
+    if( [presets valueForKey: @"modalityStrings"])
+    {
+        for( NSCell *cell in [modalityFilterMatrix cells])
+        {
+            if( [[presets valueForKey: @"modalityStrings"] containsObject: cell.title])
+                [cell setState: NSOnState];
+        }
+    }
+	else if( [presets valueForKey: @"modalityFilterMatrixString"]) // Backward compatibility
 	{
+        NSString *m[7][3] = {{@"SC", @"CR", @"DC"},{@"CT", @"US", @"MG"},{@"MR", @"NM", @"PT"},{@"XA", @"RF", @"SR"},{@"DR", @"OT", @"RG"},{@"ES", @"VL", @"XC"},{@"AU", @"", @""}};
+        
 		NSString *s = [presets valueForKey: @"modalityFilterMatrixString"];
 		
 		NSScanner *scan = [NSScanner scannerWithString: s];
@@ -994,12 +997,20 @@ extern "C"
 			more = [scan scanInteger: &col];
 			
 			if( more)
-				[modalityFilterMatrix selectCellAtRow: row column: col];
+			{
+                for( NSCell *cell in [modalityFilterMatrix cells])
+                {
+                    if( [cell.title isEqualToString: m[row][col]])
+                        [cell setState: NSOnState];
+                }
+            }
 			
 		}
 		while( more);
 	}
-	
+    else if( [presets valueForKey: @"modalityFilterMatrixRow"] && [presets valueForKey: @"modalityFilterMatrixColumn"])  // Backward compatibility
+		[modalityFilterMatrix selectCellAtRow: [[presets valueForKey: @"modalityFilterMatrixRow"] intValue]  column:[[presets valueForKey: @"modalityFilterMatrixColumn"] intValue]];
+
 	[PatientModeMatrix selectTabViewItemAtIndex: [[presets valueForKey: @"PatientModeMatrix"] intValue]];
 	
 	[fromDate setDateValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [[presets valueForKey: @"fromDate"] doubleValue]]];
@@ -2304,7 +2315,7 @@ extern "C"
                 queryItem = YES;
             }
             
-            modalityQueryFilter = [self getModalityQueryFilterWithString: [instance objectForKey: @"modalityFilterMatrixString"]];
+            modalityQueryFilter = [self getModalityQueryFilter: [instance objectForKey: @"modalityStrings"]];
             
             if ([modalityQueryFilter object])
             {
@@ -3612,39 +3623,21 @@ extern "C"
 	}
 }
 
-- (QueryFilter*) getModalityQueryFilterWithString:(NSString*) modalityFilterMatrixString
+- (QueryFilter*) getModalityQueryFilter:(NSArray*) modalityArray
 {
-    NSScanner *scan = [NSScanner scannerWithString: modalityFilterMatrixString];
-    NSMutableString *m = [NSMutableString stringWithString: @""];
     QueryFilter *modalityFilter = nil;
-    
-    BOOL more;
-    do
-    {
-        NSInteger row, col;
-        
-        more = [scan scanInteger: &row];
-        more = [scan scanInteger: &col];
-        
-        if( more)
-        {
-            if( [m length]) [m appendString:@"\\"];
-			[m appendString: [[modalityFilterMatrix cellAtRow: row column: col] title]];
-        }
-    }
-    while( more);
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
     {
-        if( [m length])
-            modalityFilter = [QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
+        if( modalityArray.count)
+            modalityFilter = [QueryFilter queryFilterWithObject: [modalityArray componentsJoinedByString:@"\\"] ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
         else
             modalityFilter = [QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"ModalitiesinStudy"];
     }
     else
     {
-        if( [m length])
-            modalityFilter = [QueryFilter queryFilterWithObject: m ofSearchType: searchExactMatch forKey:@"Modality"];
+        if( modalityArray.count)
+            modalityFilter = [QueryFilter queryFilterWithObject: [modalityArray componentsJoinedByString:@"\\"] ofSearchType: searchExactMatch forKey:@"Modality"];
         else
             modalityFilter = [QueryFilter queryFilterWithObject: nil ofSearchType: searchExactMatch forKey:@"Modality"];
     }
