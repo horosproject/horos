@@ -297,23 +297,15 @@ static volatile BOOL waitForRunningProcess = NO;
 
 + (BOOL) tryLock:(id) c during:(NSTimeInterval) sec
 {
-	if( c == nil) return YES;
+	if( c == nil)
+        return YES;
 	
-	BOOL locked = NO;
-	NSTimeInterval ti = [NSDate timeIntervalSinceReferenceDate] + sec;
-	
-	while( ti - [NSDate timeIntervalSinceReferenceDate] > 0)
-	{
-		if( [c tryLock])
-		{
-			[c unlock];
-			return YES;
-		}
-		
-		[NSThread sleepForTimeInterval: 0.1];
-        //		[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 0.2]];		
-	}
-	
+    if( [c lockBeforeDate: [NSDate dateWithTimeIntervalSinceNow: sec]])
+    {
+        [c unlock];
+        return YES;
+    }
+    
 	NSLog( @"******* tryLockDuring failed for this lock: %@ (%f sec)", c, sec);
 	
 	return NO;
@@ -12018,6 +12010,7 @@ static NSArray*	openSubSeriesArray = nil;
         
 //		[BrowserController tryLock:checkIncomingLock during: 120];
 		[BrowserController tryLock:_database during: 120];
+        [BrowserController tryLock:searchForComparativeStudiesLock during: 120];
 //		[BrowserController tryLock:checkBonjourUpToDateThreadLock during: 60];
 		
 	//	[BrowserController tryLock: decompressThreadRunning during: 120];
