@@ -278,31 +278,65 @@ extern "C"
         {
             qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer: server];
             
-            [[qm filters] addEntriesFromDictionary: filters];
+            NSMutableDictionary *f = [NSMutableDictionary dictionary];
             
-            NSArray *studiesForThisNode = [qm queries];
-            
-            if( studiesForThisNode == nil)
-                NSLog( @"queryStudiesForFilters failed for this node: %@", [server valueForKey: @"Description"]);
-            
-            NSArray *uidArray = [studies valueForKey: @"uid"];
-            
-            for( NSUInteger x = 0 ; x < [studiesForThisNode count] ; x++)
+            if( [[filters valueForKey: @"modality"] count] > 0)
             {
-                DCMTKStudyQueryNode *s = [studiesForThisNode objectAtIndex: x];
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
+                    [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"ModalitiesinStudy"];
+                else
+                    [f setObject: [[filters valueForKey: @"modality"] componentsJoinedByString: @"\\"] forKey: @"Modality"];
+            }
+            
+            if( [[filters valueForKey: @"date"] intValue] != 0)
+            {
+                QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil;
                 
-                if( s)
+                [QueryController getDateAndTimeQueryFilterWithTag: [[filters valueForKey: @"date"] intValue] fromDate: nil toDate: nil date: &dateQueryFilter time: &timeQueryFilter];
+                
+                if( dateQueryFilter)
                 {
-                    NSUInteger index = [uidArray indexOfObject: [s valueForKey:@"uid"]];
+                    [f setObject: [DCMCalendarDate queryDate: dateQueryFilter.filteredValue] forKey: @"StudyDate"];
+                }
+                
+                if( timeQueryFilter)
+                {
+                    [f setObject: [DCMCalendarDate queryDate: dateQueryFilter.filteredValue] forKey: @"StudyTime"];
+                }
+            }
+            
+            [[qm filters] addEntriesFromDictionary: f];
+            
+            if( [[qm filters] count] == 0)
+            {
+                NSLog( @"***** no query parameters for queryStudiesForFilters");
+            }
+            else
+            {
+                NSArray *studiesForThisNode = [qm queries];
+                
+                if( studiesForThisNode == nil)
+                    NSLog( @"queryStudiesForFilters failed for this node: %@", [server valueForKey: @"Description"]);
+                
+                NSArray *uidArray = [studies valueForKey: @"uid"];
+                
+                for( NSUInteger x = 0 ; x < [studiesForThisNode count] ; x++)
+                {
+                    DCMTKStudyQueryNode *s = [studiesForThisNode objectAtIndex: x];
                     
-                    if( index == NSNotFound) // not found
-                        [studies addObject: s];
-                    else 
+                    if( s)
                     {
-                        if( [[studies objectAtIndex: index] valueForKey: @"numberImages"] && [s valueForKey: @"numberImages"])
+                        NSUInteger index = [uidArray indexOfObject: [s valueForKey:@"uid"]];
+                        
+                        if( index == NSNotFound) // not found
+                            [studies addObject: s];
+                        else 
                         {
-                            if( [[[studies objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[s valueForKey: @"numberImages"] intValue])
-                                [studies replaceObjectAtIndex: index withObject: s];
+                            if( [[studies objectAtIndex: index] valueForKey: @"numberImages"] && [s valueForKey: @"numberImages"])
+                            {
+                                if( [[[studies objectAtIndex: index] valueForKey: @"numberImages"] intValue] < [[s valueForKey: @"numberImages"] intValue])
+                                    [studies replaceObjectAtIndex: index withObject: s];
+                            }
                         }
                     }
                 }
@@ -2301,7 +2335,7 @@ extern "C"
             
             QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil, *modalityQueryFilter = nil;
             
-            [self getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue] date: &dateQueryFilter time: &timeQueryFilter];
+            [QueryController getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue] fromDate: fromDate.dateValue toDate: toDate.dateValue date: &dateQueryFilter time: &timeQueryFilter];
             
             if ([dateQueryFilter object])
             {
@@ -3676,15 +3710,15 @@ enum
     todayPM = 11,
 };
 
-- (void) getDateAndTimeQueryFilterWithTag: (int) tag date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter
++ (void) getDateAndTimeQueryFilterWithTag: (int) tag fromDate:(NSDate*) from toDate:(NSDate*) to date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter
 {
     *dateQueryFilter = nil;
 	*timeQueryFilter = nil;
 	
 	if( tag == between)
 	{
-		NSDate *later = [[fromDate dateValue] laterDate: [toDate dateValue]];
-		NSDate *earlier = [[fromDate dateValue] earlierDate: [toDate dateValue]];
+		NSDate *later = [from laterDate: to];
+		NSDate *earlier = [from earlierDate: to];
 		
 		NSString *between = [NSString stringWithFormat:@"%@-%@", [earlier descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil], [later descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil]];
 		
@@ -3692,7 +3726,7 @@ enum
 	}
     else if( tag == on)
 	{
-        DCMCalendarDate *date = [DCMCalendarDate dateWithTimeIntervalSinceReferenceDate: [[fromDate dateValue] timeIntervalSinceReferenceDate]];
+        DCMCalendarDate *date = [DCMCalendarDate dateWithTimeIntervalSinceReferenceDate: [from timeIntervalSinceReferenceDate]];
         
         *dateQueryFilter = [QueryFilter queryFilterWithObject: date ofSearchType: searchExactDate forKey:@"StudyDate"];
 	}

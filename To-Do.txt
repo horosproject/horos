@@ -28,6 +28,7 @@
 
 -------------------------------------------------------------
 
+- Burn USB mode
 - Retina displays: HDMI mode
 - Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib

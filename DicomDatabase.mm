@@ -3295,22 +3295,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[_importFilesFromIncomingDirLock unlock];
 }
 
--(void)reduceCoreDataFootPrint {
-	NSLog(@"In %s", __PRETTY_FUNCTION__);
-	
-	if ([self tryLock])
-		@try {
-			NSError *err = nil;
-			[self save:&err];
-			if (!err)
-				[self.managedObjectContext reset];
-		} @catch (NSException* e) {
-			N2LogExceptionWithStackTrace(e);
-		} @finally {
-			[self unlock];
-		}
-}
-
 -(void)checkForHtmlTemplates {
 	// directory
 	NSString* htmlTemplatesDirectory = [self htmlTemplatesDirPath];

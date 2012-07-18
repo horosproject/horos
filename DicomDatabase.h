@@ -149,7 +149,6 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(void)checkForExistingReportForStudy:(NSManagedObject*)study;
 -(void)checkReportsConsistencyWithDICOMSR;
 -(void)rebuildSqlFile;
--(void)reduceCoreDataFootPrint;
 -(void)checkForHtmlTemplates;
 
 @end

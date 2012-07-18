@@ -128,26 +128,6 @@
 				[self unlock];
 			}
 		
-		/*// reduce memory footprint for CoreData - ONLY FOR SERVER MODE
-		if( gLastCoreDataReset == 0)
-			gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-		if( [NSDate timeIntervalSinceReferenceDate] - gLastCoreDataReset > 60*60)
-			if ([self tryLock])
-				@try {
-					if(newFilesInIncoming == NO && [SendController sendControllerObjects] == 0 && [[ThreadsManager defaultManager] threadsCount] == 0 && [AppController numberOfSubOsiriXProcesses] == 0)
-						if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"]) {
-							gLastCoreDataReset = [NSDate timeIntervalSinceReferenceDate];
-							[self reduceCoreDataFootPrint];
-						}
-				} @catch (NSException* e) {
-					N2LogExceptionWithStackTrace(e);
-				} @finally {
-					[self unlock];
-				}*/
-		
-		// Build thumbnails
-		//[self buildAllThumbnails: self];
-		
 		if ([defaults boolForKey:@"AUTOCLEANINGDATE"] && ([defaults boolForKey:@"AUTOCLEANINGDATEPRODUCED"] || [defaults boolForKey:@"AUTOCLEANINGDATEOPENED"])) {
 			if ([self tryLock])
 				@try {
