@@ -33,6 +33,7 @@
 
 // locking actually locks the context
 -(void)lock;
+-(BOOL)lockBeforeDate:(NSDate*) date;
 -(BOOL)tryLock;
 -(void)unlock;
 // write locking uses writeLock member

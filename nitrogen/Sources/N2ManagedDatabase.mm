@@ -353,6 +353,17 @@
     }
 }
 
+-(BOOL)lockBeforeDate:(NSDate*) date
+{
+    while( [[NSDate date] laterDate: date] == date)
+    {
+        if( [self.managedObjectContext tryLock])
+            return YES;
+        [NSThread sleepForTimeInterval: 0.1];
+    }
+    return NO;
+}
+
 -(void)lock {
 	[self.managedObjectContext lock];
 }

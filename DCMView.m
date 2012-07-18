@@ -1932,34 +1932,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	gClickCountSet = NO;
 }
 
--(void) checkVisible
-{
-    float newYY, newXX, xx, yy;
-    
-    xx = origin.x*cos(rotation*deg2rad) + origin.y*sin(rotation*deg2rad);
-    yy = origin.x*sin(rotation*deg2rad) - origin.y*cos(rotation*deg2rad);
-
-    NSRect size = [self bounds];
-    if( scaleValue > 1.0)
-	{
-        size.size.width = curDCM.pwidth*scaleValue;
-        size.size.height = curDCM.pheight*scaleValue;
-    }
-    
-    if( xx*scaleValue < -size.size.width/2) newXX = (-size.size.width/2.0/scaleValue);
-    else if( xx*scaleValue > size.size.width/2) newXX = (size.size.width/2.0/scaleValue);
-    else newXX = xx;
-    
-    if( yy*scaleValue < -size.size.height/2) newYY = -size.size.height/2.0/scaleValue;
-    else  if( yy*scaleValue > size.size.height/2) newYY = size.size.height/2.0/scaleValue;
-    else newYY = yy;
-    
-	[self setOriginX: newXX*cos(rotation*deg2rad) + newYY*sin(rotation*deg2rad) Y: newXX*sin(rotation*deg2rad) - newYY*cos(rotation*deg2rad)];
-}
-
 - (float) scaleToFitForDCMPix: (DCMPix*) d
 {
-	NSRect  sizeView = [self bounds];
+	NSRect  sizeView = [self convertRectToBacking: [self bounds]]; // Retina
 	
 	int w = d.pwidth;
 	int h = d.pheight;
@@ -6221,7 +6196,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     dcmFilesList = nil;
     
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
-
+    
+    [self setWantsBestResolutionOpenGLSurface:YES]; // Retina tests... https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+    
     blendingFactor = 0.5;
 	
     GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
@@ -8011,7 +7988,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@synchronized (self)
 	{
-		[self drawRect: [self frame] withContext: [self openGLContext]];
+        // Get view dimensions in pixels
+        NSRect backingBounds = [self convertRectToBacking: [self frame]]; // Retina
+        
+		[self drawRect: backingBounds withContext: [self openGLContext]];
 	}
 }
 

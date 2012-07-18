@@ -137,6 +137,8 @@
 {
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
+        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
+        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -172,8 +174,11 @@
 	}
 	
 	[self deleteTexture: currentContext];
-	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
-		frameSize = [string size]; // current string size
+	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) // find frame size if we have not already found it
+    {
+		frameSize = [string size];; // current string size
+        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
+        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
