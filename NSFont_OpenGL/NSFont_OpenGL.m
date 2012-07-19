@@ -178,19 +178,21 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	{
 		@try
 		{
-			currentChar = [ NSString stringWithCharacters:&currentUnichar length:1 ];
-			charSize = [ currentChar sizeWithAttributes:attribDict ];
+			currentChar = [NSString stringWithCharacters:&currentUnichar length:1];
+			charSize = [currentChar sizeWithAttributes:attribDict];
 			charRect.size = charSize;
-			charRect = NSIntegralRect( charRect );
+            
+			charRect = NSIntegralRect( charRect);
 			if( charRect.size.width <= 0 && charRect.size.height <= 0 ) // character with no glyph in the current font
 			{
-				currentChar = [ NSString stringWithString:@"?"];
-				charSize = [ currentChar sizeWithAttributes:attribDict ];
+				currentChar = [NSString stringWithString:@"?"];
+				charSize = [currentChar sizeWithAttributes:attribDict ];
+                
 				charRect.size = charSize;
 				charRect = NSIntegralRect( charRect );
 			}	
 			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
-			curSizeArray[ currentUnichar] = charRect.size.width;
+			curSizeArray[currentUnichar] = charRect.size.width;
 			[theImage setSize: charRect.size];
 			
 			if([theImage size].width > 0 && [theImage size].height > 0)
@@ -203,7 +205,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 				[theImage unlockFocus];
 			}
 			
-			bitmap = [NSBitmapImageRep imageRepWithData:[ theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
+			bitmap = [NSBitmapImageRep imageRepWithData:[theImage TIFFRepresentationUsingCompression:NSTIFFCompressionNone factor:0]];
 			
 			if( bitmap)
 			{

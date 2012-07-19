@@ -615,6 +615,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		temp += fontSizeArray[ cstr[ i]];
 		i++;
 	}
+    
 	return temp;
 }
 
