@@ -309,6 +309,8 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
    
+//    float f = [[NSScreen mainScreen] backingScaleFactor]; // retina
+    
    retval = TRUE;
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )
@@ -327,17 +329,17 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
                 {
                     case 0:
                         if( charPtrArray[ currentUnichar])
-                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
+                            glBitmap( [bitmap pixelsWide], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArray[ currentUnichar]);
                     break;
                     
                     case 1:
                         if( charPtrArrayPreview[ currentUnichar])
-                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
+                            glBitmap( [bitmap pixelsWide], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayPreview[ currentUnichar]);
                     break;
                     
                     case 2:
                         if( charPtrArrayROI[ currentUnichar])
-                            glBitmap( [bitmap pixelsWide ], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
+                            glBitmap( [bitmap pixelsWide], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, charPtrArrayROI[ currentUnichar]);
                     break;
                 }
                 glEndList();
@@ -363,11 +365,11 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    unsigned char	*newBuffer, *movingBuffer;
    int				rowIndex, colIndex;
 
-   pixelsHigh = [ bitmap pixelsHigh ];
-   pixelsWide = [ bitmap pixelsWide ];
-   bitmapBytes = [ bitmap bitmapData ];
-   bytesPerRow = [ bitmap bytesPerRow ];
-   samplesPerPixel = [ bitmap samplesPerPixel ];
+   pixelsHigh = [bitmap pixelsHigh];
+   pixelsWide = [bitmap pixelsWide];
+   bitmapBytes = [bitmap bitmapData];
+   bytesPerRow = [bitmap bytesPerRow];
+   samplesPerPixel = [bitmap samplesPerPixel];
    
    newBuffer = calloc( ceil( (float) bytesPerRow / 8.0 ), pixelsHigh );
    if( newBuffer == NULL )

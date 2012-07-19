@@ -6118,6 +6118,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
 	
+    [self setWantsBestResolutionOpenGLSurface:YES]; // Retina tests... https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+    
 	cursorTracking = [[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil];
 	[self addTrackingArea: cursorTracking];
 		
@@ -6196,9 +6198,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     dcmFilesList = nil;
     
     [[self openGLContext] makeCurrentContext];	// Important for iChat compatibility
-    
-    [self setWantsBestResolutionOpenGLSurface:YES]; // Retina tests... https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
-    
+        
     blendingFactor = 0.5;
 	
     GLint swap = 1;  // LIMIT SPEED TO VBL if swap == 1
@@ -7989,6 +7989,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	@synchronized (self)
 	{
         // Get view dimensions in pixels
+//        NSLog( @"%@, %@", NSStringFromRect( [self frame]), NSStringFromRect([self convertRectToBacking: [self frame]]));
         NSRect backingBounds = [self convertRectToBacking: [self frame]]; // Retina
         
 		[self drawRect: backingBounds withContext: [self openGLContext]];
