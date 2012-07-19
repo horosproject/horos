@@ -7577,9 +7577,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             for (k=0; k<[orientationPositionKeys count]; k++)
             {
                 NSArray *annotations = [annotationsDictionary objectForKey:[orientationPositionKeys objectAtIndex:k]];
-                xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
-                yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
-                increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
+                yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
+                increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
                 
                 if([[orientationPositionKeys objectAtIndex:k] hasPrefix:@"Lower"])
                     enumerator = [annotations reverseObjectEnumerator];
@@ -7618,9 +7618,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			NSString *key = [keys objectAtIndex:k];
 			
 			NSArray *annotations = [annotationsDictionary objectForKey:key];
-			xRaster = [[xRasterInit objectForKey:key] intValue];
-			yRaster = [[yRasterInit objectForKey:key] intValue];
-			increment = [[yRasterIncrement objectForKey:key] intValue];
+			xRaster = [[xRasterInit objectForKey:key] intValue]* [self.window backingScaleFactor]; //Retina
+			yRaster = [[yRasterInit objectForKey:key] intValue]* [self.window backingScaleFactor]; //Retina
+			increment = [[yRasterIncrement objectForKey:key] intValue] * [self.window backingScaleFactor]; //retina
 			
 			NSEnumerator *enumerator;
 			if([key hasPrefix:@"Lower"])
