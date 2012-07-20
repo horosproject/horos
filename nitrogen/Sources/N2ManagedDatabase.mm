@@ -547,12 +547,15 @@
 	
 	BOOL b = NO;
 	
+    [self.managedObjectContext lock];
+    
     @try {
         b = [self.managedObjectContext save:err];
     } @catch(NSException* e) {
         if (!*err)
             *err = [NSError errorWithDomain:@"Exception" code:-1 userInfo:[NSDictionary dictionaryWithObject:e forKey:@"Exception"]];
     } @finally {
+        [self.managedObjectContext unlock];
     }
 	
 	return b;
