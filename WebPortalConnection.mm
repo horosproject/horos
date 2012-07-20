@@ -505,13 +505,13 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
                     [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
                     [self.portal.dicomDatabase.managedObjectContext unlock];
                     
-                    NSLog( @"WebPortal: test DB alive: lock/unlock for DICOM DB managedObjectContext : succeeded");
+//                    NSLog( @"WebPortal: test DB alive: lock/unlock for DICOM DB managedObjectContext : succeeded");
                     
                     [self.portal.database.managedObjectContext lock];
                     [self.portal.database objectsForEntity:self.portal.database.userEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
                     [self.portal.database.managedObjectContext unlock];
                     
-                    NSLog( @"WebPortal: test DB alive: lock/unlock for WebPortal DB managedObjectContext : succeeded");
+//                    NSLog( @"WebPortal: test DB alive: lock/unlock for WebPortal DB managedObjectContext : succeeded");
                     
                     [response setDataWithString: @"Test DB Alive succeeded"];
                     response.mimeType = @"text/html";

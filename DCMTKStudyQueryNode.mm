@@ -251,6 +251,46 @@
     return @"";
 }
 
+- (NSString*) reportURL // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSDate*) dateAdded // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSNumber*) noFiles
+{
+    return _numberImages;
+}
+
+- (NSDate*) dateOpened // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSString*) id // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSString*) localstring // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSString*) performingPhysician // Match DicomStudy
+{
+    return nil;
+}
+
+- (NSString*) albumsNames // Match DicomStudy
+{
+    return nil;
+}
+
 - (NSString*) comment2 // Match DicomStudy
 {
     return @"";
@@ -281,9 +321,14 @@
     return [NSNumber numberWithBool: NO];
 }
 
+- (NSString*) referringPhysician
+{
+    return _referringPhysician;
+}
+
 - (NSString*) institutionName // Match DicomStudy
 {
-    return @"";
+    return _institutionName;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key

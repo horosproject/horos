@@ -116,6 +116,8 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 
+#define DISTANTSTUDYFONT @"Helvetica-Oblique"
+
 //#define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.5"
 #define DATABASEPATH @"/DATABASE.noindex/"
@@ -3014,42 +3016,45 @@ static NSConditionLock *threadLock = nil;
 		for (NSUInteger row = [rowEnumerator firstIndex]; row != NSNotFound; row = [rowEnumerator indexGreaterThanIndex: row])
 		{
 			NSManagedObject *curObj = [databaseOutline itemAtRow: row];
-
-			if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
-			{
-				NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
-				
-				[correspondingManagedObjects addObjectsFromArray: imagesArray];
-			}
-			
-			if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
-			{
-				NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
-				
-				int totImage = 0;
-                DicomSeries* dontDelete = nil;
-				
-				for (DicomSeries* obj in seriesArray)
-				{
-					NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
-					
-					totImage += [imagesArray count];
-					
-					[correspondingManagedObjects addObjectsFromArray: imagesArray];
-                    
-                    if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
-                        dontDelete = obj;
-				}
-                
-                if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
-                    [context deleteObject:dontDelete];
-				
-				if (onlyImages == NO && totImage == 0 && dontDelete == nil)							// We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
-					[context deleteObject: curObj];
-			}
             
-            if (![curObj isDeleted])
-                [treeManagedObjects addObject:curObj];
+            if( [curObj isKindOfClass: [NSManagedObject class]]) // not a distant study
+            {
+                if( [[curObj valueForKey:@"type"] isEqualToString:@"Series"])
+                {
+                    NSArray	*imagesArray = [self imagesArray: curObj onlyImages: onlyImages];
+                    
+                    [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                }
+                
+                if( [[curObj valueForKey:@"type"] isEqualToString:@"Study"])
+                {
+                    NSArray	*seriesArray = [self childrenArray: curObj onlyImages: onlyImages];
+                    
+                    int totImage = 0;
+                    DicomSeries* dontDelete = nil;
+                    
+                    for (DicomSeries* obj in seriesArray)
+                    {
+                        NSArray	*imagesArray = [self imagesArray: obj onlyImages: onlyImages];
+                        
+                        totImage += [imagesArray count];
+                        
+                        [correspondingManagedObjects addObjectsFromArray: imagesArray];
+                        
+                        if ([obj.name isEqualToString:@"OsiriX No Autodeletion"] && obj.id.intValue == 5005)
+                            dontDelete = obj;
+                    }
+                    
+                    if (totImage && dontDelete) // there are images, remove the "OsiriX No Autodeletion" series
+                        [context deleteObject:dontDelete];
+                    
+                    if (onlyImages == NO && totImage == 0 && dontDelete == nil)							// We don't want empty studies, unless the "OsiriX No Autodeletion" series is there...
+                        [context deleteObject: curObj];
+                }
+                
+                if (![curObj isDeleted])
+                    [treeManagedObjects addObject:curObj];
+            }
 		}
 		
 		[correspondingManagedObjects removeDuplicatedObjects];
@@ -3205,12 +3210,21 @@ static NSConditionLock *threadLock = nil;
                         // Servers
                         NSMutableArray* servers = [NSMutableArray array];
                         NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+                        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+                        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+                        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+                        {
+                            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+                                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+                            
+                            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+                                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+                        }
+                        
                         for (NSDictionary* si in sources)
                         {
-                            if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
-                            {
+                            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
                                 [servers addObject: si];
-                            }
                         }
                         
                         // Distant studies
@@ -3334,30 +3348,40 @@ static NSConditionLock *threadLock = nil;
                         // Servers
                         NSMutableArray* servers = [NSMutableArray array];
                         NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+                        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+                        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+                        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+                        {
+                            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+                                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+                            
+                            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+                                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+                        }
+                        
                         for (NSDictionary* si in sources)
                         {
-                            if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"] containsObject: [si objectForKey:@"Description"]])
-                            {
+                            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
                                 [servers addObject: si];
-                            }
                         }
                         
-                        // Distant studies
-                        #ifndef OSIRIX_LIGHT
-                        distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
-                        #endif
-                        
-                        // Merge local and distant studies
-                        
-                        #ifndef OSIRIX_LIGHT
-                        for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                        if( servers.count)
                         {
-                            if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                            // Distant studies
+                            #ifndef OSIRIX_LIGHT
+                            distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
+                            
+                            // Merge local and distant studies
+                            
+                            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                             {
-                                [mergedStudies addObject: distantStudy];
+                                if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                {
+                                    [mergedStudies addObject: distantStudy];
+                                }
                             }
+                            #endif
                         }
-                        #endif
                         
                         [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                         
@@ -3577,18 +3601,28 @@ static NSConditionLock *threadLock = nil;
 		
 		if( item)
 		{
-			/**********
-			 post notification of new selected item. Can be used by plugins to update RIS connection
-			 **********/
-			DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
-			
-			NSDictionary *userInfo = nil;
-			if( studySelected)
-			{
-				userInfo = [NSDictionary dictionaryWithObject:studySelected forKey: @"Selected Study"];
-				[[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
+            #ifndef OSIRIX_LIGHT
+            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            {
+                // Check to see if already in retrieving mode, if not download it
+                [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item];
+            }
+            else
+            #endif
+            {
+                /**********
+                 post notification of new selected item. Can be used by plugins to update RIS connection
+                 **********/
+                DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
+                
+                NSDictionary *userInfo = nil;
+                if( studySelected)
+                {
+                    userInfo = [NSDictionary dictionaryWithObject:studySelected forKey: @"Selected Study"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:OsirixNewStudySelectedNotification object:self userInfo:(NSDictionary *)userInfo];
+                }
 			}
-			
+            
 			BOOL refreshMatrix = YES;
 			long nowFiles = [[item valueForKey:@"noFiles"] intValue];
 			
@@ -3651,10 +3685,11 @@ static NSConditionLock *threadLock = nil;
 				previousItem = [item retain];
                 
                 // COMPARATIVE STUDIES
+                id studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
                 
-                if( [studySelected.patientUID isEqualToString: self.comparativePatientUID] == NO)
+                if( [[studySelected valueForKey: @"patientUID"] isEqualToString: self.comparativePatientUID] == NO)
                 {
-                    self.comparativePatientUID = studySelected.patientUID;
+                    self.comparativePatientUID = [studySelected valueForKey: @"patientUID"];
                     self.comparativeStudies = nil;
                     [comparativeTable reloadData];
                     [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: NSLocalizedString( @"History", nil)];
@@ -4915,7 +4950,7 @@ static NSConditionLock *threadLock = nil;
             #ifndef OSIRIX_LIGHT
             if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
             {
-                [cell setFont: [NSFont boldSystemFontOfSize: 12]];
+                [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size:12]];
             }
 			else
             #endif
@@ -4932,7 +4967,7 @@ static NSConditionLock *threadLock = nil;
 				
 				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"] && [[self window] firstResponder] == outlineView)
 				{
-					if( [[[previousItem entity] name] isEqual:@"Study"])
+					if( [[previousItem valueForKey: @"type"] isEqualToString:@"Study"])
 					{
 						NSString *uid = [item valueForKey: @"patientUID"];
 						
@@ -4968,8 +5003,6 @@ static NSConditionLock *threadLock = nil;
 				{
 					if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
 				}
-				
-				NSManagedObject *studySelected = [[[item entity] name] isEqual:@"Study"] ? item : [item valueForKey:@"study"];
 			}
 			
 			if( [[tableColumn identifier] isEqualToString: @"reportURL"])
@@ -6182,7 +6215,7 @@ static NSConditionLock *threadLock = nil;
 		
 		NSManagedObject   *aFile = [databaseOutline itemAtRow: r];
 		
-		if( aFile && [[[aFile entity] name] isEqual:@"Study"])
+		if( aFile && [[aFile valueForKey: @"type"] isEqualToString:@"Study"])
 		{
 			if( [string length])
 				[string appendString: @"\r"];
@@ -8630,7 +8663,7 @@ static BOOL needToRezoom;
                 local = YES;
         
             if( local) txtFont = [NSFont boldSystemFontOfSize: 11];
-            else txtFont = [NSFont systemFontOfSize:11];			
+            else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size:11];		
 		
             [cell setFont:txtFont];
             cell.title = [study studyName];
@@ -11902,7 +11935,7 @@ static NSArray*	openSubSeriesArray = nil;
         {
             DicomStudy *studySelected;
             	
-            if ([[[item entity] name] isEqual:@"Study"])
+            if ([[item valueForKey: @"type"] isEqualToString:@"Study"])
                 studySelected = (DicomStudy*) item;
             else
                 studySelected = [item valueForKey:@"study"];
@@ -14850,7 +14883,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if (item)
 	{	
-		if ([[[item entity] name] isEqual:@"Study"])
+		if ([[item valueForKey: @"type"] isEqualToString:@"Study"])
 			studySelected = item;
 		else
 			studySelected = [item valueForKey:@"study"];
@@ -15152,7 +15185,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	
 //	if (item)
 //	{
-//		if ([[[item entity] name] isEqual:@"Study"])
+//		if ([[[item valueForKey: @"type"] isEqualToString:@"Study"])
 //			studySelected = item;
 //		else
 //			studySelected = [item valueForKey:@"study"];
@@ -15269,7 +15302,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@try 
 		{			
-			if ([[[item entity] name] isEqual:@"Study"])
+			if ([[item valueForKey: @"type"] isEqualToString:@"Study"])
 				studySelected = (DicomStudy*) item;
 			else
 				studySelected = [item valueForKey:@"study"];
@@ -15310,7 +15343,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		@try 
 		{			
-			if ([[[item entity] name] isEqual:@"Study"])
+			if ([[item valueForKey: @"type"] isEqualToString:@"Study"])
 				studySelected = item;
 			else
 				studySelected = [item valueForKey:@"study"];
@@ -15388,7 +15421,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		DicomStudy *studySelected = nil;
 		
-		if ([[[item entity] name] isEqual:@"Study"])
+		if ([[item valueForKey: @"type"] isEqualToString:@"Study"])
 			studySelected = (DicomStudy*) item;
 		else
 			studySelected = [item valueForKey:@"study"];
@@ -15635,7 +15668,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		NSIndexSet* index = [databaseOutline selectedRowIndexes];
 		NSManagedObject	*selectedItem = [databaseOutline itemAtRow:[index firstIndex]];
 		DicomStudy* studySelected;
-		if ([[[selectedItem entity] name] isEqual:@"Study"])
+		if ([[selectedItem valueForKey: @"type"] isEqualToString:@"Study"])
 			studySelected = (DicomStudy*)selectedItem;
 		else
 			studySelected = [selectedItem valueForKey:@"study"];

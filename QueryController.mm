@@ -280,6 +280,12 @@ extern "C"
             
             NSMutableDictionary *f = [NSMutableDictionary dictionary];
             
+            if( [filters valueForKey: PatientID])
+                [f setObject: [filters valueForKey: PatientID] forKey: PatientID];
+            
+            if( [filters valueForKey: PatientBirthDate])
+                [f setObject: [[filters valueForKey: PatientBirthDate] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forKey: PatientBirthDate];
+            
             if( [[filters valueForKey: @"modality"] count] > 0)
             {
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
@@ -295,14 +301,10 @@ extern "C"
                 [QueryController getDateAndTimeQueryFilterWithTag: [[filters valueForKey: @"date"] intValue] fromDate: nil toDate: nil date: &dateQueryFilter time: &timeQueryFilter];
                 
                 if( dateQueryFilter)
-                {
                     [f setObject: [DCMCalendarDate queryDate: dateQueryFilter.filteredValue] forKey: @"StudyDate"];
-                }
                 
                 if( timeQueryFilter)
-                {
-                    [f setObject: [DCMCalendarDate queryDate: dateQueryFilter.filteredValue] forKey: @"StudyTime"];
-                }
+                    [f setObject: [DCMCalendarDate queryDate: timeQueryFilter.filteredValue] forKey: @"StudyTime"];
             }
             
             [[qm filters] addEntriesFromDictionary: f];
@@ -313,6 +315,8 @@ extern "C"
             }
             else
             {
+                [qm performQuery: showErrors];
+                
                 NSArray *studiesForThisNode = [qm queries];
                 
                 if( studiesForThisNode == nil)
@@ -368,6 +372,12 @@ extern "C"
     }
     
     if( usePatientBirthDate && study.dateOfBirth == nil)
+    {
+        NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0");
+        return 0;
+    }
+    
+    if( usePatientID && study.patientID.length == 0)
     {
         NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0");
         return 0;

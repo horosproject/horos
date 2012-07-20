@@ -26,6 +26,7 @@
 
 - Comparative: thumbnail matrix for ViewerController: TO BE TESTED (Next Patient failed)
 - Retina displays: iChat, CPR (add node), PT-CT
+- C-Find SCP: institution, referring physician
 -------------------------------------------------------------
 
 - Retina: VR (implication for MPR, CPR)
