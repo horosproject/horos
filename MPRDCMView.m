@@ -157,7 +157,7 @@ static	BOOL frameZoomed = NO;
 	if( blendingView)
 	{
 		[blendingView setFrame: frameRect];
-		blendingView.drawingFrameRect = frameRect; // very important to have correct position values with PET-CT
+		blendingView.drawingFrameRect = [self convertRectToBacking: frameRect]; // very important to have correct position values with PET-CT
 	}
 	
 	[super setFrame: frameRect];
@@ -167,7 +167,7 @@ static	BOOL frameZoomed = NO;
 
 - (void) checkForFrame
 {
-	NSRect frame = [self frame];
+	NSRect frame = [self convertRectToBacking: [self frame]];
 	NSPoint o = [self convertPoint: NSMakePoint(0, 0) toView:0L];
 	frame.origin = o;
 	
@@ -797,8 +797,8 @@ static	BOOL frameZoomed = NO;
 	if( [stringID isEqualToString: @"export"])
 		return;
 	
-	float heighthalf = self.frame.size.height/2;
-	float widthhalf = self.frame.size.width/2;
+	float heighthalf = [self convertSizeToBacking: self.frame.size].height/2;
+	float widthhalf = [self convertSizeToBacking: self.frame.size].width/2;
 	
 	[self colorForView: viewID];
 	
@@ -1728,9 +1728,9 @@ static	BOOL frameZoomed = NO;
 	float delta;
 	
 	if( scrollMode == 1)
-		delta = ((previous.y - current.y) * 512. )/ ([self frame].size.width/2);
+		delta = ((previous.y - current.y) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
 	else
-		delta = ((current.x - previous.x) * 512. )/ ([self frame].size.width/2);
+		delta = ((current.x - previous.x) * 512. )/ ([self convertSizeToBacking: self.frame.size].width/2);
 	
 	[self restoreCamera];
 	windowController.lowLOD = YES;
@@ -1775,11 +1775,13 @@ static	BOOL frameZoomed = NO;
         
         NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil];
         
+        point = [self convertPointToBacking: point];
+        
         if( yFlipped)
-            point.y = self.frame.size.height - point.y;
+            point.y = [self convertSizeToBacking: self.frame.size].height - point.y;
         
         if( xFlipped)
-            point.x = self.frame.size.width - point.x;
+            point.x = [self convertSizeToBacking: self.frame.size].width - point.x;
         
 		[vrView setWindowCenter: point];
 		

@@ -68,7 +68,7 @@
 	boxColor = box;
 	borderColor = border;
 	staticFrame = NO;
-	marginSize.width = 4.0f; // standard margins
+	marginSize.width = 4.0f;
 	marginSize.height = 2.0f;
 	ctxArray = [[NSMutableArray arrayWithCapacity: 10] retain];
 	textArray = [[NSMutableArray arrayWithCapacity: 10] retain];
@@ -137,8 +137,6 @@
 {
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
-//        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
-//        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -177,8 +175,8 @@
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
 		frameSize = [string size]; // current string size
-        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
-        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
+//        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
+//        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -212,7 +210,7 @@
 		[image unlockFocus];
 	
 		texSize.width = [bitmap size].width * [[NSScreen mainScreen] backingScaleFactor]; // retina
-		texSize.height = [bitmap size].height * [[NSScreen mainScreen] backingScaleFactor]; // retina
+		texSize.height = [bitmap size].height  * [[NSScreen mainScreen] backingScaleFactor]; // retina
 		
 		glGenTextures (1, &texName);
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);

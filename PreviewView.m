@@ -33,7 +33,7 @@
 		fontGL = [[NSFont systemFontOfSize: 12] retain];
 		
 		[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :1];
-		stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
+		stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
 		
 		[DCMView purgeStringTextureCache];
 		[stringTextureCache release];
@@ -44,11 +44,13 @@
 }
 
 
-- (BOOL)is2DViewer{
+- (BOOL)is2DViewer
+{
 	return NO;
 }
 
--(BOOL)actionForHotKey:(NSString *)hotKey{
+-(BOOL)actionForHotKey:(NSString *)hotKey
+{
 	NSLog(@"preview Hot Key");
 	return [super actionForHotKey:(NSString *)hotKey];
 }

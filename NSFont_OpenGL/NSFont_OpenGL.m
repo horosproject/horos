@@ -192,7 +192,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 				charRect = NSIntegralRect( charRect );
 			}	
 			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
-			curSizeArray[currentUnichar] = charRect.size.width;
+			curSizeArray[currentUnichar] = charRect.size.width * [[NSScreen mainScreen] backingScaleFactor];
 			[theImage setSize: charRect.size];
 			
 			if([theImage size].width > 0 && [theImage size].height > 0)

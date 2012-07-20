@@ -1720,7 +1720,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		if(align==DCMViewTextAlignRight) x -= [stringTex texSize].width;
 		else if(align==DCMViewTextAlignCenter) x -= [stringTex texSize].width/2.0;
-		else x -= 5;
+		else x -= 5 * self.window.backingScaleFactor;
 		
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
@@ -1753,15 +1753,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		char *cstrOut = (char*) [str UTF8String];
 		if(align==DCMViewTextAlignRight)
 		{
-			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2;
-			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2;
+			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2*self.window.backingScaleFactor;
+			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2*self.window.backingScaleFactor;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
 		else if(align==DCMViewTextAlignCenter)
 		{
-			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2;
-			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2;
-			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2;
+			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
+			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
+			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
 		}
 		
 		unsigned char	*lstr = (unsigned char*) cstrOut;
@@ -4977,8 +4977,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 // get current Point for Event in the local view Coordinates
 - (NSPoint)currentPointInView:(NSEvent *)event
 {
-	NSPoint     eventLocation = [event locationInWindow];
-	return [self convertPoint:eventLocation fromView: nil];
+	NSPoint eventLocation = [event locationInWindow];
+	return [self convertPoint: eventLocation fromView: nil];
 }
 
 // Check to see if an roi is selected at the Open GL point
@@ -5055,6 +5055,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			offset.x = - (previous.x - current.x) / scaleValue;
 			offset.y =  (previous.y - current.y) / scaleValue;
 			
+            offset.x *= self.window.backingScaleFactor;
+            offset.y *= self.window.backingScaleFactor;
+            
 			if( xFlipped) offset.x = -offset.x;
 			if( yFlipped) offset.y = -offset.y;
 			
@@ -5130,7 +5133,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		float xInv = 1, yInv = 1;
 		
-		NSPoint oo = start;
+		NSPoint oo = [self convertPointToBacking: start];
 		
 		oo.x = (oo.x - drawingFrameRect.size.width/2.) - (((oo.x - drawingFrameRect.size.width/2.)* scaleValue) / startScaleValue);
 		oo.y = (oo.y - drawingFrameRect.size.height/2.) - (((oo.y -drawingFrameRect.size.height/2.)* scaleValue) / startScaleValue);
@@ -5158,6 +5161,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	xmove = (current.x - start.x);
 	ymove = -(current.y - start.y);
 	
+    xmove *= [self.window backingScaleFactor];
+    ymove *= [self.window backingScaleFactor];
+    
 	if( xFlipped) xmove = -xmove;
 	if( yFlipped) ymove = -ymove;
 	
@@ -6073,7 +6079,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[DCMView computePETBlendingCLUT];
 	
 	yearOld = nil;
-	drawingFrameRect = [self frame];
 	syncSeriesIndex = -1;
 	mouseXPos = mouseYPos = 0;
 	pixelMouseValue = 0;
@@ -6120,6 +6125,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
 	
     [self setWantsBestResolutionOpenGLSurface:YES]; // Retina tests... https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+    
+    drawingFrameRect = [self convertRectToBacking: [self frame]]; //retina
     
 	cursorTracking = [[NSTrackingArea alloc] initWithRect: [self visibleRect] options: (NSTrackingCursorUpdate | NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow) owner: self userInfo: nil];
 	[self addTrackingArea: cursorTracking];
@@ -7000,15 +7007,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     a.y += (origin.y);
 
 	a.x += curDCM.pwidth/2.;
-	a.y += curDCM.pheight/ 2.;
+	a.y += curDCM.pheight/2.;
 	
     return a;
 }
 
 -(NSPoint) ConvertFromGL2GL:(NSPoint) a toView:(DCMView*) otherView
 {
-	a = [self ConvertFromGL2View:  a];
-	a = [otherView ConvertFromView2GL:  a];
+	a = [self ConvertFromGL2View: a];
+	a = [otherView ConvertFromView2GL: a];
 	
 	return a;
 }
@@ -7020,7 +7027,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( curDCM)
 	{
 		a.y *= curDCM.pixelRatio;
-		a.y -= curDCM.pheight * curDCM.pixelRatio * 0.5;;
+		a.y -= curDCM.pheight * curDCM.pixelRatio * 0.5f;
 		a.x -= curDCM.pwidth * 0.5f;
 	}
 	
@@ -7056,6 +7063,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	a.y -= [self drawingFrameRect].size.height/2.;			// Our viewing zero is centered in the view, NSView has the zero in left/bottom
 	a.x += [self drawingFrameRect].size.width/2.;					
 	
+    a = [self convertPointFromBacking: a]; //retina
+    
     return a;
 }
 
@@ -7070,8 +7079,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 -(NSPoint) ConvertFromNSView2GL:(NSPoint) a
 {
+    a = [self convertPointToBacking: a]; //retina
+
 	//inverse Y scaling system
-	a.y = [self drawingFrameRect].size.height - a.y;		// inverse Y scaling system
+	a.y = [self drawingFrameRect].size.height - a.y ;		// inverse Y scaling system
 	
 	return [self ConvertFromUpLeftView2GL: a];
 }
@@ -7087,7 +7098,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 - (NSPoint) ConvertFromUpLeftView2GL:(NSPoint) a
 {
 	NSRect size = drawingFrameRect;
-	
+	    
 	if( xFlipped) a.x = size.size.width - a.x;
 	if( yFlipped) a.y = size.size.height - a.y;
 	
@@ -7448,6 +7459,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) drawTextualData:(NSRect) size annotationsLevel:(long) annotations fullText: (BOOL) fullText onlyOrientation: (BOOL) onlyOrientation
 {
+    float sf = [self.window backingScaleFactor]; //retina
+    
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
 	//** TEXT INFORMATION
@@ -7528,12 +7541,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSDictionary *annotationsDictionary = curDCM.annotationsDictionary;
 		
 		NSMutableDictionary *xRasterInit = [NSMutableDictionary dictionary];
-		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"TopLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"MiddleLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:6] forKey:@"LowerLeft"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"TopRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2] forKey:@"MiddleRight"];
-		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2 - colorBoxSize] forKey:@"LowerRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"TopLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"MiddleLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:6*sf] forKey:@"LowerLeft"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"TopRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf] forKey:@"MiddleRight"];
+		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width-2*sf - colorBoxSize*sf] forKey:@"LowerRight"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"TopMiddle"];
 		[xRasterInit setObject:[NSNumber numberWithInt:size.size.width/2] forKey:@"LowerMiddle"];
 
@@ -7548,14 +7561,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[align setObject:[NSNumber numberWithInt:DCMViewTextAlignCenter] forKey:@"LowerMiddle"];
 
 		NSMutableDictionary *yRasterInit = [NSMutableDictionary dictionary];
-		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2] forKey:@"TopLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2*sf] forKey:@"TopLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopMiddle"];
-		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2] forKey:@"TopRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:_stringSize.height+2*sf] forKey:@"TopRight"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleLeft"];
 		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height/2] forKey:@"MiddleRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerLeft"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2-_stringSize.height] forKey:@"LowerRight"];
-		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2] forKey:@"LowerMiddle"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf] forKey:@"LowerLeft"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf-_stringSize.height] forKey:@"LowerRight"];
+		[yRasterInit setObject:[NSNumber numberWithInt:size.size.height-2*sf] forKey:@"LowerMiddle"];
 		
 		NSMutableDictionary *yRasterIncrement = [NSMutableDictionary dictionary];
 		[yRasterIncrement setObject:[NSNumber numberWithInt:_stringSize.height] forKey:@"TopLeft"];
@@ -7578,9 +7591,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             for (k=0; k<[orientationPositionKeys count]; k++)
             {
                 NSArray *annotations = [annotationsDictionary objectForKey:[orientationPositionKeys objectAtIndex:k]];
-                xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
-                yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
-                increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue] * [self.window backingScaleFactor]; //Retina
+                xRaster = [[xRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                yRaster = [[yRasterInit objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
+                increment = [[yRasterIncrement objectForKey:[orientationPositionKeys objectAtIndex:k]] intValue];
                 
                 if([[orientationPositionKeys objectAtIndex:k] hasPrefix:@"Lower"])
                     enumerator = [annotations reverseObjectEnumerator];
@@ -7619,9 +7632,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			NSString *key = [keys objectAtIndex:k];
 			
 			NSArray *annotations = [annotationsDictionary objectForKey:key];
-			xRaster = [[xRasterInit objectForKey:key] intValue]* [self.window backingScaleFactor]; //Retina
-			yRaster = [[yRasterInit objectForKey:key] intValue]* [self.window backingScaleFactor]; //Retina
-			increment = [[yRasterIncrement objectForKey:key] intValue] * [self.window backingScaleFactor]; //retina
+			xRaster = [[xRasterInit objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
+			yRaster = [[yRasterInit objectForKey:key] intValue]; //* [self.window backingScaleFactor]; //Retina
+			increment = [[yRasterIncrement objectForKey:key] intValue]; // * [self.window backingScaleFactor]; //retina
 			
 			NSEnumerator *enumerator;
 			if([key hasPrefix:@"Lower"])
@@ -9165,7 +9178,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[ctx flushBuffer];
 //	[NSOpenGLContext clearCurrentContext];
 	
-	drawingFrameRect = [self frame];
+	drawingFrameRect = [self convertRectToBacking: [self frame]];
 	
 	if( ctx == _alternateContext)
 		drawingFrameRect = savedDrawingFrameRect;
@@ -9551,7 +9564,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSRect usefulRect = [curDCM usefulRectWithRotation: rotation scale: scaleValue xFlipped: xFlipped yFlipped: yFlipped];
 	
-	NSSize rectSize = [self frame].size;
+	NSSize rectSize = drawingFrameRect.size;
 	
 	if( xFlipped) oo.x = - oo.x;
 	if( yFlipped) oo.y = - oo.y;
@@ -9638,7 +9651,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				smartCroppedRect = [self smartCrop: &shiftOrigin];
 				
-				if( smartCroppedRect.size.width == [self frame].size.width && smartCroppedRect.size.height == [self frame].size.height)
+				if( smartCroppedRect.size.width == drawingFrameRect.size.width && smartCroppedRect.size.height == drawingFrameRect.size.height)
 					smartCropped = NO;
 				else
 				{
@@ -9647,7 +9660,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					smartCropped = YES;
 				}
 			}
-			else smartCroppedRect = NSMakeRect( 0, 0, [self frame].size.width, [self frame].size.height);
+			else smartCroppedRect = NSMakeRect( 0, 0, drawingFrameRect.size.width, drawingFrameRect.size.height);
 			
 			if( imOrigin)
 			{
@@ -9688,7 +9701,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glReadBuffer(GL_FRONT);
 					
 					#if __BIG_ENDIAN__
-						glReadPixels(smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
+                    glReadPixels(smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, buf);		//GL_ABGR_EXT
 						
 						register int ii = *width * *height;
 						register unsigned char	*t_argb = buf;
@@ -9700,7 +9713,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							t_rgb+=3;
 						}
 					#else
- 						glReadPixels( smartCroppedRect.origin.x, [self frame].size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
+ 						glReadPixels( smartCroppedRect.origin.x, drawingFrameRect.size.height-smartCroppedRect.origin.y-smartCroppedRect.size.height, smartCroppedRect.size.width, smartCroppedRect.size.height, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8_REV, buf);		//GL_ABGR_EXT
 						
 						register int ii = *width * *height;
 						register unsigned char	*t_argb = buf;
@@ -9716,12 +9729,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				else
 				{
 					NSPoint oo = [self origin];
-					NSRect cc = [self frame];
+					NSRect cc = [self frame]; // copy, to restore later
 					
 					if( smartCropped)
 					{
 						dontEnterReshape = YES;
-						[self setFrame: smartCroppedRect];
+						[self setFrame: [self convertRectFromBacking: smartCroppedRect]];
 						[self setOrigin: NSMakePoint( shiftOrigin.x, shiftOrigin.y)];
 						
 						if( blendingView && [self is2DViewer])
@@ -9794,7 +9807,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			float s = [self scaleValue];
 			NSPoint o = [self origin];
 			
-			NSSize destRectSize = [self frame].size;
+			NSSize destRectSize = drawingFrameRect.size;
 			
 			// We want the full resolution, not less, not more
 			destRectSize.width /= s;
@@ -10100,7 +10113,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
-	NSRect savedFrame = [self frame];
+	NSRect savedFrame = drawingFrameRect;
 	
 	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
@@ -11536,7 +11549,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( labelFont == nil) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
 	
 	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2];
-	[ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
+	[ROI setFontHeight: [self convertSizeToBacking: [DCMView sizeOfString: @"B" forFont: labelFont]].height];
 	
 	[self setNeedsDisplay:YES];
 }
@@ -11557,7 +11570,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( fontGL == nil) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
 	
 	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
-	stringSize = [DCMView sizeOfString:@"B" forFont:fontGL];
+	stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
 	
 	@synchronized( globalStringTextureCache)
 	{

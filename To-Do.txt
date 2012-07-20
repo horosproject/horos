@@ -24,10 +24,11 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: thumbnail matrix for ViewerController: TO BE TESTED
-- Retina displays: HDMI mode ([self  setWantsBestResolutionOpenGLSurface:YES]; https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1)
+- Comparative: thumbnail matrix for ViewerController: TO BE TESTED (Next Patient failed)
+- Retina displays: iChat, CPR (add node), PT-CT
 -------------------------------------------------------------
 
+- Retina: VR (implication for MPR, CPR)
 - Burn USB mode
 - Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib
