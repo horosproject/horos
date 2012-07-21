@@ -63,6 +63,11 @@
 @dynamic images;
 @dynamic study;
 
+- (BOOL) isDistant
+{
+    return NO;
+}
+
 - (void) dealloc
 {
 	[dicomTime release];

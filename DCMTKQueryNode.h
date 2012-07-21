@@ -59,6 +59,7 @@
 			extraParameters:(NSDictionary *)extraParameters;
 			
 - (NSString *)uid;
+- (BOOL) isDistant;
 - (NSString *)theDescription;
 - (NSString *)name;
 - (NSString *)patientID;

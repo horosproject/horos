@@ -26,6 +26,7 @@
 
 - Comparative: thumbnail matrix for ViewerController: TO BE TESTED (Next Patient failed)
 - Comparative: local versus distant: check for no of files ?
+- Comparative: display a view: double-click to retrieve
 - Retina displays: iChat, CPR (add node), PT-CT
 - C-Find SCP: institution, referring physician
 -------------------------------------------------------------

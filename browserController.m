@@ -908,7 +908,7 @@ static NSConditionLock *threadLock = nil;
                     if( x == 0) row = [selectedRows firstIndex];
                     else row = [selectedRows indexGreaterThanIndex: row];
                     
-                    NSManagedObject	*object = [databaseOutline itemAtRow: row];
+                    id object = [databaseOutline itemAtRow: row];
                     
                     if( [object isKindOfClass:[DicomStudy class]])
                         [selectedStudies addObject: object];
@@ -2421,22 +2421,25 @@ static NSConditionLock *threadLock = nil;
 			NSLog( @"**** executeFetchRequest: %@", error);
 		
         // Smart Album Distant Studies, if available
-        if( smartAlbumDistantArray && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
+        @synchronized( self)
         {
-            NSMutableArray *distantStudies = [NSMutableArray array];
-            // Merge local and distant studies
-            #ifndef OSIRIX_LIGHT
-            for( DCMTKStudyQueryNode *distantStudy in smartAlbumDistantArray)
+            if( smartAlbumDistantArray && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
             {
-                if( [[outlineViewArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                NSMutableArray *distantStudies = [NSMutableArray array];
+                // Merge local and distant studies
+                #ifndef OSIRIX_LIGHT
+                for( DCMTKStudyQueryNode *distantStudy in smartAlbumDistantArray)
                 {
-                    [distantStudies addObject: distantStudy];
+                    if( [[outlineViewArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                    {
+                        [distantStudies addObject: distantStudy];
+                    }
                 }
+                #endif
+                
+                if( [distantStudies count])
+                    outlineViewArray = [outlineViewArray arrayByAddingObjectsFromArray: distantStudies];
             }
-            #endif
-            
-            if( [distantStudies count])
-                outlineViewArray = [outlineViewArray arrayByAddingObjectsFromArray: distantStudies];
         }
         
 		@synchronized (_albumNoOfStudiesCache)
@@ -2824,10 +2827,10 @@ static NSConditionLock *threadLock = nil;
 	return sortDescriptors;
 }
 
-- (NSArray*) childrenArray: (NSManagedObject*)item onlyImages: (BOOL)onlyImages
+- (NSArray*) childrenArray: (id)item onlyImages: (BOOL)onlyImages
 {
     #ifndef OSIRIX_LIGHT
-    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+    if( [item isDistant])
         return [NSArray array];
     #endif
     
@@ -2913,12 +2916,12 @@ static NSConditionLock *threadLock = nil;
 	return nil;
 }
 
-- (NSArray*) childrenArray: (NSManagedObject*) item
+- (NSArray*) childrenArray: (id) item
 {
 	return [self childrenArray: item onlyImages: YES];
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages
+- (NSArray*) imagesArray: (id) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages
 {
 	NSArray			*childrenArray = [self childrenArray: item onlyImages:onlyImages];
 	NSMutableArray	*imagesPathArray = nil;
@@ -3006,22 +3009,22 @@ static NSConditionLock *threadLock = nil;
 	return imagesPathArray;
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item preferredObject: (int) preferredObject
+- (NSArray*) imagesArray: (id) item preferredObject: (int) preferredObject
 {
 	return [self imagesArray: item preferredObject: oAny onlyImages:YES]; 
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item onlyImages:(BOOL) onlyImages
+- (NSArray*) imagesArray: (id) item onlyImages:(BOOL) onlyImages
 {
 	return [self imagesArray: item preferredObject: oAny onlyImages: onlyImages];
 }
 
-- (NSArray*) imagesArray: (NSManagedObject*) item
+- (NSArray*) imagesArray: (id) item
 {
 	return [self imagesArray: item preferredObject: oAny];
 }
 
-- (NSArray*) imagesPathArray: (NSManagedObject*) item
+- (NSArray*) imagesPathArray: (id) item
 {
 	return [[self imagesArray: item] valueForKey: @"completePath"];
 }
@@ -3316,8 +3319,11 @@ static NSConditionLock *threadLock = nil;
                 {
                     @try
                     {
-                        [smartAlbumDistantArray release];
-                        smartAlbumDistantArray = [[self distantStudiesForSmartAlbum: albumName] retain];
+                        @synchronized( self)
+                        {
+                            [smartAlbumDistantArray release];
+                            smartAlbumDistantArray = [[self distantStudiesForSmartAlbum: albumName] retain];
+                        }
                         
                         self.smartAlbumDistantName = albumName;
                         
@@ -3375,12 +3381,10 @@ static NSConditionLock *threadLock = nil;
             [_database unlock];
             
             mergedStudies = [NSMutableArray arrayWithArray: localStudies];
-            
             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             
-            
             if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
-                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: localStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
+                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
         }
         @catch (NSException* e)
         {
@@ -3465,7 +3469,7 @@ static NSConditionLock *threadLock = nil;
             //                BOOL distant = NO;
             //                
             //                #ifndef OSIRIX_LIGHT
-            //                distant = [study isKindOfClass: [DCMTKStudyQueryNode class]];
+            //                distant = [study isDistant];
             //                
             //                DCMTKStudyQueryNode *qrStudy = study;
             //                DicomStudy *xcStudy = study;
@@ -3671,7 +3675,7 @@ static NSConditionLock *threadLock = nil;
 		[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 		
 		NSIndexSet *index = [databaseOutline selectedRowIndexes];
-		NSManagedObject *item = [databaseOutline itemAtRow:[index firstIndex]];
+		id item = [databaseOutline itemAtRow:[index firstIndex]];
 		
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"displaySamePatientWithColorBackground"])
 		{
@@ -3681,14 +3685,12 @@ static NSConditionLock *threadLock = nil;
 		
 		if( item)
 		{
-            #ifndef OSIRIX_LIGHT
-            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            if( [item isDistant])
             {
                 // Check to see if already in retrieving mode, if not download it
                 // [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item]; -- Only when double-clicking
             }
             else
-            #endif
             {
                 /**********
                  post notification of new selected item. Can be used by plugins to update RIS connection
@@ -4701,10 +4703,8 @@ static NSConditionLock *threadLock = nil;
 	
 //	[_database lock];
 	
-    #ifndef OSIRIX_LIGHT
-    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+    if( [item isDistant])
         return NO;
-    #endif
     
     if ([item respondsToSelector:@selector(isFault:)] && [item isFault])
         returnVal = NO;
@@ -4732,7 +4732,7 @@ static NSConditionLock *threadLock = nil;
 	else
 	{
         #ifndef OSIRIX_LIGHT
-        if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+        if( [item isDistant])
             returnVal = 0;
 		else
         #endif
@@ -4826,10 +4826,8 @@ static NSConditionLock *threadLock = nil;
 			else
 				name = [item valueForKey:@"name"];
 			
-            #ifndef OSIRIX_LIGHT
-			if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+			if( [item isDistant])
                 return name;
-            #endif
             
 			if ([item isFault])
 				return nil;
@@ -4895,10 +4893,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void) setDatabaseValue:(id) object item:(id) item forKey:(NSString*) key
 {
-    #ifndef OSIRIX_LIGHT
-    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+    if( [item isDistant])
         return;
-    #endif
     
     DatabaseIsEdited = NO;
 	
@@ -4956,10 +4952,8 @@ static NSConditionLock *threadLock = nil;
 
 - (void)outlineView:(NSOutlineView *)outlineView setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item
 {
-    #ifndef OSIRIX_LIGHT
-    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+    if( [item isDistant])
         return;
-    #endif
     
 	if ([self.database isReadOnly])
         return;
@@ -5032,14 +5026,9 @@ static NSConditionLock *threadLock = nil;
 		{
 			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
 			
-            #ifndef OSIRIX_LIGHT
-            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
-            {
+            if( [item isDistant])
                 [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size:12]];
-            }
-			else
-            #endif
-            if( originalOutlineViewArray)
+			else if( originalOutlineViewArray)
 			{
 				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
 				else [cell setFont: [NSFont systemFontOfSize:12]];
@@ -5608,14 +5597,12 @@ static NSConditionLock *threadLock = nil;
 		
         if ([[item numberOfImages] intValue] != 0)
         {
-            #ifndef OSIRIX_LIGHT
-            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            if( [item isDistant])
             {
                 // Check to see if already in retrieving mode, if not download it
                 [self retrieveComparativeStudy: item];
             }
             else
-            #endif
             {
                 [self databaseOpenStudy: item];
             }
@@ -9141,15 +9128,13 @@ static BOOL needToRezoom;
     
     if( study)
     {
-        #ifndef OSIRIX_LIGHT
-        if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
+        if( [study isDistant])
         {
             // Check to see if already in retrieving mode, if not download it
             [self retrieveComparativeStudy: study];
 //            comparativeStudyWaitedToOpen = YES;
         }
         else
-        #endif
         {
             [self selectThisStudy: study];
             [[self window] makeFirstResponder: databaseOutline];
@@ -9199,7 +9184,7 @@ static BOOL needToRezoom;
                 if( study && dontSelectStudyFromComparativeStudies == NO)
                 {
 //                    #ifndef OSIRIX_LIGHT
-//                    if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it 
+//                    if( [study isDistant]) // distant study -> download it, and select it 
 //                    {
 //                        [self retrieveComparativeStudy: study]; -- Only when double-clicking
 //                        comparativeStudyWaitedToOpen = NO;

@@ -421,6 +421,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	return self;
 }
 
+- (BOOL) isDistant
+{
+    return YES;
+}
+
 - (void)dealloc
 {
 	[_children release];

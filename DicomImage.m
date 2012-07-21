@@ -191,7 +191,13 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 @dynamic zoom;
 @dynamic series;
 
--(id)copy {
+- (BOOL) isDistant
+{
+    return NO;
+}
+
+-(id)copy
+{
     id copy = [super copy];
     
     [copy setThumbnail: [[_thumbnail copy] autorelease]];

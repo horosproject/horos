@@ -216,6 +216,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
+- (BOOL) isDistant
+{
+    return NO;
+}
+
 - (void) reapplyAnnotationsFromDICOMSR
 {
 	#ifndef OSIRIX_LIGHT
