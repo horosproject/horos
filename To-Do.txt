@@ -25,6 +25,7 @@
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
 - Comparative: thumbnail matrix for ViewerController: TO BE TESTED (Next Patient failed)
+- Comparative: local versus distant: check for no of files ?
 - Retina displays: iChat, CPR (add node), PT-CT
 - C-Find SCP: institution, referring physician
 -------------------------------------------------------------

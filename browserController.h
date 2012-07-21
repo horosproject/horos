@@ -539,6 +539,8 @@ extern NSString* O2AlbumDragType;
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study;
 #endif
 
+
+- (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName;
 - (void) initAnimationSlider;
 
 

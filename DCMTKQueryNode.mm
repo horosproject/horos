@@ -1305,65 +1305,87 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	[pool release];
 }
 
-+ (void) releaseNetworkVariables: (NSDictionary *) dict
+static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
+
++ (void) releaseNetworkVariables
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"DCMTK Network release variables";
     
-	T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
-	T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
-	DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];
-	OFCondition cond;
-	
-	// CLEANUP
-	
-	for( int i = 0; i < 60; i++)
-	{
-		[NSThread sleepForTimeInterval: 1];
-		
-		if( [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
-			break;
-	}
-	
-	/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
-	/* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-	if( assoc)
-	{
-		cond = ASC_destroyAssociation(&assoc);
-		if (cond.bad())
-			DimseCondition::dump(cond); 
-	}
-	
-	/* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
-	/* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-	if( net)
-	{
-		cond = ASC_dropNetwork(&net);
-		if (cond.bad())
-			DimseCondition::dump(cond);
-	}
-	
+    while( 1) // Infinite loop
+    {
+        NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
+        
+        BOOL abortAssociations = [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"];
+        
+        NSArray *copyArray = nil;
+        
+        @synchronized( releaseNetworkVariablesDictionaries)
+        {
+            copyArray = [[releaseNetworkVariablesDictionaries copy] autorelease];
+        }
+        
+        for( NSDictionary *dict in copyArray)
+        {
+            if( abortAssociations || [[dict valueForKey: @"date"] timeIntervalSinceNow] < -120) // seconds
+            {
+                T_ASC_Association *assoc = (T_ASC_Association*) [[dict objectForKey: @"assoc"] pointerValue];
+                T_ASC_Network *net = (T_ASC_Network*) [[dict objectForKey: @"net"] pointerValue];
+                DcmTLSTransportLayer *tLayer = (DcmTLSTransportLayer*) [[dict objectForKey: @"tLayer"] pointerValue];
+                OFCondition cond;
+                
+                // CLEANUP
+                
+                /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
+                /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
+                if( assoc)
+                {
+                    cond = ASC_destroyAssociation(&assoc);
+                    if (cond.bad())
+                        DimseCondition::dump(cond); 
+                }
+                
+                /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
+                /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
+                if( net)
+                {
+                    cond = ASC_dropNetwork(&net);
+                    if (cond.bad())
+                        DimseCondition::dump(cond);
+                }
+                
 #ifdef WITH_OPENSSL
-	/*
-	 if (tLayer && opt_writeSeedFile)
-	 {
-	 if (tLayer->canWriteRandomSeed())
-	 {
-	 if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-	 {
-	 CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
-	 }
-	 } else {
-	 CERR << "Warning: cannot write random seed, ignoring." << endl;
-	 }
-	 }
-	 delete tLayer;
-	 */
-	if( tLayer)
-		delete tLayer;
+                /*
+                 if (tLayer && opt_writeSeedFile)
+                 {
+                 if (tLayer->canWriteRandomSeed())
+                 {
+                 if (!tLayer->writeRandomSeed(opt_writeSeedFile))
+                 {
+                 CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+                 }
+                 } else {
+                 CERR << "Warning: cannot write random seed, ignoring." << endl;
+                 }
+                 }
+                 delete tLayer;
+                 */
+                if( tLayer)
+                    delete tLayer;
 #endif
-	
+                @synchronized( releaseNetworkVariablesDictionaries)
+                {
+                    [releaseNetworkVariablesDictionaries removeObject: dict];
+                }
+            }
+        }
+        
+        [NSThread sleepForTimeInterval: 2];
+        
+        [pool2 release];
+    }
+    
 	[pool release];
 }
 
@@ -1904,8 +1926,18 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		wait = nil;
 		
 		//We want to give time for other threads that are maybe using assoc or net variables
-		[NSThread detachNewThreadSelector: @selector( releaseNetworkVariables:) toTarget: [DCMTKQueryNode class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: tLayer], @"tLayer", nil]];
-
+        
+        if( releaseNetworkVariablesDictionaries == nil)
+        {
+            releaseNetworkVariablesDictionaries = [[NSMutableArray array] retain];
+            [NSThread detachNewThreadSelector: @selector( releaseNetworkVariables) toTarget: [DCMTKQueryNode class] withObject: nil];
+        }
+        
+        @synchronized( releaseNetworkVariablesDictionaries)
+        {
+            [releaseNetworkVariablesDictionaries addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSDate date], @"date", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: tLayer], @"tLayer", nil]];
+        }
+        
 //		// CLEANUP
 //		
 //		/* destroy the association, i.e. free memory of T_ASC_Association* structure. This */

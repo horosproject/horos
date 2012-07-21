@@ -1556,22 +1556,36 @@ static NSConditionLock *threadLock = nil;
     if( study == studySelected)
         return;
     
-    if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
-        [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
+    if( [study isKindOfClass: [DicomStudy class]])
+    {
+        if ([study managedObjectContext] != self.database.managedObjectContext) // another database is selected, select the destination DB
+            [self setDatabase:[DicomDatabase databaseForContext:[study managedObjectContext]]];
+    }
     
     [self outlineViewRefresh];
 	
-    NSInteger index = [databaseOutline rowForItem:study];
-    if (index == -1 && albumTable.selectedRow > 0)
+    NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
+    NSInteger rowIndex = -1;
+    
+    if( studyIndex != NSNotFound)
+        rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
+    
+    if( studyIndex == NSNotFound && albumTable.selectedRow > 0)
     {
-        [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
-        [self outlineViewRefresh];
-        index = [databaseOutline rowForItem:study];
+        if( [study isKindOfClass: [DicomStudy class]]) // It's a local study: we HAVE to find it ! Select the entire DB
+        {
+            [albumTable selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO]; // Select the entire DB
+            [self outlineViewRefresh];
+            
+            NSUInteger studyIndex = [[outlineViewArray valueForKey: @"studyInstanceUID"] indexOfObject: [study valueForKey: @"studyInstanceUID"]]; // We can have DicomStudy OR DCMTKQueryStudyNode... : search with studyInstanceUID
+            if( studyIndex != NSNotFound)
+                rowIndex = [databaseOutline rowForItem: [outlineViewArray objectAtIndex: studyIndex]];
+        }
     }
     
-    if (index != -1)
+    if (rowIndex != -1)
     {
-        [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex:index] byExtendingSelection: NO];
+        [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: rowIndex] byExtendingSelection: NO];
         [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     }
 }
@@ -2390,9 +2404,19 @@ static NSConditionLock *threadLock = nil;
 	
 	@try
 	{
-        if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate:predicate];
-        else outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
-		
+        [_database lock];
+        @try
+        {
+            if( albumArrayContent) outlineViewArray = [albumArrayContent filteredArrayUsingPredicate:predicate];
+            else outlineViewArray = [[_database objectsForEntity:_database.studyEntity predicate:nil error:&error] filteredArrayUsingPredicate:predicate];
+		}
+        @catch( NSException *ne)
+        {
+            outlineViewArray = [NSArray array];
+            N2LogExceptionWithStackTrace(ne);
+        }
+        [_database unlock];
+        
 		if( error)
 			NSLog( @"**** executeFetchRequest: %@", error);
 		
@@ -2643,37 +2667,72 @@ static NSConditionLock *threadLock = nil;
             // compute every album's studies count
             
             NSArray* albumObjectIDs;
-            @synchronized (self) {
+            @synchronized (self)
+            {
                 albumObjectIDs = [_cachedAlbums valueForKey:@"objectID"];
             }
             
-            for (NSManagedObjectID* albumObjectID in albumObjectIDs) {
+            NSTimeInterval lastTime = [NSDate timeIntervalSinceReferenceDate];
+            
+            for (NSManagedObjectID* albumObjectID in albumObjectIDs)
+            {
                 DicomAlbum* ialbum = [idatabase objectWithID:albumObjectID];
                 
                 count = -1;
-                if (ialbum.smartAlbum.boolValue == YES)
-                    @try {
-                        count = [idatabase countObjectsForEntity:idatabase.studyEntity predicate:[self smartAlbumPredicate:ialbum]];
-                    } @catch (NSException* e) {
+                if( ialbum.smartAlbum.boolValue == YES)
+                {
+                    @try
+                    {
+                        NSArray *localStudies = [[idatabase objectsForEntity:idatabase.studyEntity predicate:[self smartAlbumPredicate:ialbum]] valueForKey: @"studyInstanceUID"];
+                        
+                        count = localStudies.count;
+                        
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
+                        {
+                            // Merge local and distant studies
+                            for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
+                            {
+                                if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
+                                    count++;
+                            }
+                        }
+                    }
+                    @catch (NSException* e)
+                    {
                         N2LogExceptionWithStackTrace(e);
                     }
+                }
                 else count = ialbum.studies.count;
                 
                 [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
+                
+                if( [NSDate timeIntervalSinceReferenceDate] - lastTime >= 1)
+                {
+                    lastTime = [NSDate timeIntervalSinceReferenceDate];
+                    @synchronized(_albumNoOfStudiesCache)
+                    {
+                        int max = _albumNoOfStudiesCache.count;
+                        if( max > NoOfStudies.count)
+                            max = NoOfStudies.count;
+                        [_albumNoOfStudiesCache replaceObjectsInRange: NSMakeRange( 0, max) withObjectsFromArray: NoOfStudies];
+                        [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
+                    }
+                }
             }
             
-            @synchronized(_albumNoOfStudiesCache) {
+            @synchronized(_albumNoOfStudiesCache)
+            {
                 [_albumNoOfStudiesCache removeAllObjects];
                 [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
+                [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
             }
-            
-            [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
         }
         @catch (NSException * e)
         {
             N2LogExceptionWithStackTrace(e);
         }
-        @finally {
+        @finally
+        {
             _computingNumberOfStudiesForAlbums = NO;
         }
     } @catch (NSException* e) {
@@ -3161,6 +3220,58 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
+- (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName
+{
+#ifndef OSIRIX_LIGHT
+    if( !searchForComparativeStudiesLock)
+        searchForComparativeStudiesLock = [NSRecursiveLock new];
+    
+    [searchForComparativeStudiesLock lock];
+    
+    @try
+    {
+        // Servers
+        NSMutableArray* servers = [NSMutableArray array];
+        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+        {
+            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+            
+            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+        }
+        
+        for (NSDictionary* si in sources)
+        {
+            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
+                [servers addObject: si];
+        }
+        
+        // Distant studies
+        // In current versions, two filters exist: modality & date
+        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+        {
+            if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
+            {
+                return [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+            }
+        }
+    }
+    @catch (NSException* e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally
+    {
+        [searchForComparativeStudiesLock unlock];
+    }
+#endif
+    return nil;
+}
+
 - (void) searchForSmartAlbumDistantStudies: (NSString*) albumName
 {
     if( albumName.length == 0)
@@ -3205,46 +3316,10 @@ static NSConditionLock *threadLock = nil;
                 {
                     @try
                     {
-                        NSArray *distantStudies = nil;
-                        
-                        // Servers
-                        NSMutableArray* servers = [NSMutableArray array];
-                        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-                        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-                        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-                        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
-                        {
-                            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
-                            
-                            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-                        }
-                        
-                        for (NSDictionary* si in sources)
-                        {
-                            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                                [servers addObject: si];
-                        }
-                        
-                        // Distant studies
-#ifndef OSIRIX_LIGHT
                         [smartAlbumDistantArray release];
-                        smartAlbumDistantArray = nil;
-                        
-                        // In current versions, two filters exist: modality & date
-                        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
-                        {
-                            if( [[d valueForKey: @"activated"] boolValue] && [albumName isEqualToString: [d valueForKey: @"name"]])
-                            {
-                                smartAlbumDistantArray = [[QueryController queryStudiesForFilters: d servers: servers showErrors: NO] retain];
-                                
-                                break;
-                            }
-                        }
+                        smartAlbumDistantArray = [[self distantStudiesForSmartAlbum: albumName] retain];
                         
                         self.smartAlbumDistantName = albumName;
-#endif
                         
                         if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]])
                             [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
@@ -3439,7 +3514,7 @@ static NSConditionLock *threadLock = nil;
         [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
     }
     
-    NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
+    NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
     
     dontSelectStudyFromComparativeStudies = NO;
     
@@ -3566,8 +3641,13 @@ static NSConditionLock *threadLock = nil;
             
             [comparativeTable reloadData];
             
-            if( selectedStudy && [copy indexOfObject: selectedStudy] != NSNotFound)
-                [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [copy indexOfObject: selectedStudy]] byExtendingSelection: NO];
+            if( selectedStudy)
+            {
+                NSUInteger index = [[copy valueForKey: @"studyInstanceUID"] indexOfObject: [selectedStudy valueForKey: @"studyInstanceUID"]];
+                
+                if( index != NSNotFound)
+                    [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
+            }
         }
     }
 }
@@ -3605,7 +3685,7 @@ static NSConditionLock *threadLock = nil;
             if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
             {
                 // Check to see if already in retrieving mode, if not download it
-                [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item];
+                // [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item]; -- Only when double-clicking
             }
             else
             #endif
@@ -3698,7 +3778,7 @@ static NSConditionLock *threadLock = nil;
                 }
                 else
                 {
-                    NSUInteger index = [self.comparativeStudies indexOfObject: studySelected];
+                    NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
                     if( index != NSNotFound)
                     {
                         [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
@@ -3718,6 +3798,11 @@ static NSConditionLock *threadLock = nil;
 			previousItem = nil;
 			
 			ROIsAndKeyImagesButtonAvailable = NO;
+            
+            self.comparativePatientUID = nil;
+            self.comparativeStudies = nil;
+            [comparativeTable reloadData];
+            [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: NSLocalizedString( @"History", nil)];
 		}
         
         [self splitView:splitViewVert resizeSubviewsWithOldSize:[splitViewVert bounds].size];
@@ -4167,7 +4252,7 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void) proceedDeleteObjects:(NSArray*)objectsToDelete
-    {
+{
     [self proceedDeleteObjects:objectsToDelete tree:nil];
 }
 
@@ -4293,9 +4378,9 @@ static NSConditionLock *threadLock = nil;
     }
     
     [context unlock];
-
+    
 	[self refreshMatrix: self];
-	
+    
 #ifndef OSIRIX_LIGHT
 	[[QueryController currentQueryController] executeRefresh: self];
 	[[QueryController currentAutoQueryController] executeRefresh: self];
@@ -5001,7 +5086,7 @@ static NSConditionLock *threadLock = nil;
 				
 				if( icon == NO)
 				{
-					if( [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
+					if( [item valueForKey:@"dateAdded"] && [[item valueForKey:@"dateAdded"] timeIntervalSinceNow] > -60) [(ImageAndTextCell*) cell setImage:[NSImage imageNamed:@"Receiving.tif"]];
 				}
 			}
 			
@@ -5522,11 +5607,24 @@ static NSConditionLock *threadLock = nil;
 		else item = [databaseOutline itemAtRow:[databaseOutline selectedRow]];
 		
         if ([[item numberOfImages] intValue] != 0)
-            [self databaseOpenStudy: item];
-        else {
-#ifndef OSIRIX_LIGHT
+        {
+            #ifndef OSIRIX_LIGHT
+            if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+            {
+                // Check to see if already in retrieving mode, if not download it
+                [self retrieveComparativeStudy: item];
+            }
+            else
+            #endif
+            {
+                [self databaseOpenStudy: item];
+            }
+        }
+        else
+        {
+            #ifndef OSIRIX_LIGHT
             [self querySelectedStudy:self];
-#endif
+            #endif
         }
 	}
 }
@@ -7389,7 +7487,7 @@ static BOOL withReset = NO;
         id database = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
-        DicomDatabase* idatabase = [database independentDatabase];
+        DicomDatabase* idatabase = _database; //[database independentDatabase]; -- was creating conflits - Antoine
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
         
         for (int i = 0; i < objectIDs.count; i++) {
@@ -8981,9 +9079,10 @@ static BOOL needToRezoom;
         [self loadSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
 }
 
-- (void) comparativeRetrieve:(DicomStudy*) study
+- (void) comparativeRetrieve:(DCMTKStudyQueryNode*) study
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    BOOL retrieve = NO;
     
     @synchronized( self)
     {
@@ -9006,10 +9105,7 @@ static BOOL needToRezoom;
 }
 
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study
-{
-    WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
-    [w showWindow:self];
-    
+{    
     BOOL retrieveStudy = YES;
     @synchronized( self)
     {
@@ -9019,16 +9115,18 @@ static BOOL needToRezoom;
     
     if( retrieveStudy)
     {
+        WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
+        [w showWindow:self];
+        
         NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
         t.name = NSLocalizedString( @"Retrieving images...", nil);
         t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
         t.supportsCancel = YES;
         [[ThreadsManager defaultManager] addThreadAndStart: t];
+        
+        [NSThread sleepForTimeInterval: 0.5];
+        [w close];
     }
-    
-    [NSThread sleepForTimeInterval: 1];
-    
-    [w close];
     
     // see refreshComparativeStudiesIfNeeded timer
     comparativeStudyWaitedToOpen = NO;
@@ -9048,7 +9146,7 @@ static BOOL needToRezoom;
         {
             // Check to see if already in retrieving mode, if not download it
             [self retrieveComparativeStudy: study];
-            comparativeStudyWaitedToOpen = YES;
+//            comparativeStudyWaitedToOpen = YES;
         }
         else
         #endif
@@ -9094,21 +9192,24 @@ static BOOL needToRezoom;
         
         if (aNotification.object == comparativeTable)
         {
-            id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
-            
-            if( study && dontSelectStudyFromComparativeStudies == NO)
+            if( comparativeTable.selectedRow >= 0 && comparativeTable.selectedRow < comparativeStudies.count)
             {
-                #ifndef OSIRIX_LIGHT
-                if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it
+                id study = [comparativeStudies objectAtIndex: comparativeTable.selectedRow];
+                
+                if( study && dontSelectStudyFromComparativeStudies == NO)
                 {
-                    [self retrieveComparativeStudy: study];
-                    comparativeStudyWaitedToOpen = NO;
-                }
-                else // local study -> select it
-                #endif
-                {
-                    [self selectThisStudy: study];
-                    [[self window] makeFirstResponder: databaseOutline];
+//                    #ifndef OSIRIX_LIGHT
+//                    if( [study isKindOfClass: [DCMTKStudyQueryNode class]]) // distant study -> download it, and select it 
+//                    {
+//                        [self retrieveComparativeStudy: study]; -- Only when double-clicking
+//                        comparativeStudyWaitedToOpen = NO;
+//                    }
+//                    else // local study -> select it
+//                    #endif
+                    {
+                        [self selectThisStudy: study];
+                        [[self window] makeFirstResponder: databaseOutline];
+                    }
                 }
             }
         }

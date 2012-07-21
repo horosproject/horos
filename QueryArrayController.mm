@@ -166,6 +166,9 @@
                 
                 [queries release];
                 queries = [[rootNode children] retain];
+                
+                if( queries == nil && rootNode != nil)
+                    queries = [[NSMutableArray array] retain];
             }
         }
         
