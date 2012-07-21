@@ -4061,7 +4061,7 @@ static volatile int numberOfThreadsForRelisce = 0;
     #ifndef OSIRIX_LIGHT
     else if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]]) //Distant Study
     {
-        [[BrowserController currentBrowser] retrieveComparativeStudy: curStudy];
+        [[BrowserController currentBrowser] retrieveComparativeStudy: curStudy select: NO open: NO];
     }
     #endif
 }

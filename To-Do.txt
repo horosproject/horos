@@ -24,11 +24,11 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
-- Comparative: thumbnail matrix for ViewerController: TO BE TESTED (Next Patient failed)
-- Comparative: local versus distant: check for no of files ?
-- Comparative: display a view: double-click to retrieve
+- ViewerController: Next Patient failed
+- Comparative: inactivate the icons for distant study
 - Retina displays: iChat, CPR (add node), PT-CT
 - C-Find SCP: institution, referring physician
+
 -------------------------------------------------------------
 
 - Retina: VR (implication for MPR, CPR)

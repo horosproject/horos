@@ -236,12 +236,14 @@ extern NSString* O2AlbumDragType;
     NSMutableArray *comparativeRetrieveQueue; //Retrieve Queue: don't retrieve the same study multiple times
     DCMTKStudyQueryNode *comparativeStudyWaited; //The study to be selected or opened
     NSTimeInterval comparativeStudyWaitedTime; //The time when the study to be selected or opened was activated
-    BOOL comparativeStudyWaitedToOpen; //Select or Open
+    BOOL comparativeStudyWaitedToOpen; // for retrieveStudy: function
+    BOOL comparativeStudyWaitedToSelect; // for retrieveStudy: function
     
     NSString *smartAlbumDistantName;
     NSArray *smartAlbumDistantArray;
     NSMutableArray *smartAlbumDistantSearchArray; //The queue of smart albums to be searched
     NSTimeInterval lastRefreshSmartAlbumDistantStudies;
+    NSString *distantStudyMessage; // The text displayed in the matrix thumbnails
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -259,7 +261,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;
@@ -372,7 +374,7 @@ extern NSString* O2AlbumDragType;
 - (void) delObjects:(NSMutableArray*) objectsToDelete;
 - (IBAction) selectFilesAndFoldersToAdd:(id) sender;
 - (void) showDatabase:(id)sender;
-- (NSInteger) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute;
+- (BOOL) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute;
 - (IBAction) matrixPressed:(id)sender;
 - (void) loadDatabase:(NSString*) path __deprecated;
 - (void) viewerDICOMInt:(BOOL) movieViewer dcmFile:(NSArray *)selectedLines viewer:(ViewerController*) viewer;
@@ -446,7 +448,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) reparseIn3D:(id) sender;
 - (IBAction) reparseIn4D:(id) sender;
 - (void)selectStudyWithObjectID:(NSManagedObjectID*)oid;
-- (void) selectThisStudy: (id)study;
+- (BOOL) selectThisStudy: (id)study;
 
 -(void) previewPerformAnimation:(id) sender;
 -(void) matrixDisplayIcons:(id) sender;
@@ -536,7 +538,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) anonymizeDICOM:(id) sender;
 - (void) queryDICOM:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
-- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study;
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
 #endif
 
 

@@ -289,7 +289,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize CDpassword, passwordForExportEncryption, databaseIndexDictionary;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
-@synthesize databaseOutline, albumTable, comparativePatientUID;
+@synthesize databaseOutline, albumTable, comparativePatientUID, distantStudyMessage;
 @synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
@@ -1545,16 +1545,16 @@ static NSConditionLock *threadLock = nil;
     if (s) [self selectThisStudy:s];
 }
 
-- (void) selectThisStudy: (NSManagedObject*)study
+- (BOOL) selectThisStudy: (NSManagedObject*)study
 {
     if( study == nil)
-        return;
+        return NO;
     
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
-    if( study == studySelected)
-        return;
+    if( [[study valueForKey: @"studyInstanceUID"] isEqualToString: [studySelected valueForKey: @"studyInstanceUID"]])
+        return YES;
     
     if( [study isKindOfClass: [DicomStudy class]])
     {
@@ -1587,7 +1587,11 @@ static NSConditionLock *threadLock = nil;
     {
         [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: rowIndex] byExtendingSelection: NO];
         [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+        
+        return YES;
     }
+    
+    return NO;
 }
 
 - (void) copyFilesThread: (NSDictionary*) dict
@@ -2428,11 +2432,35 @@ static NSConditionLock *threadLock = nil;
                 NSMutableArray *distantStudies = [NSMutableArray array];
                 // Merge local and distant studies
                 #ifndef OSIRIX_LIGHT
+                NSMutableArray *localStudyInstanceUIDs = [outlineViewArray valueForKey: @"studyInstanceUID"];
                 for( DCMTKStudyQueryNode *distantStudy in smartAlbumDistantArray)
                 {
-                    if( [[outlineViewArray valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
-                    {
+                    if( [localStudyInstanceUIDs containsObject: [distantStudy studyInstanceUID]] == NO)
                         [distantStudies addObject: distantStudy];
+                    
+                    else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                    {
+                        BOOL inTheRetrieveQueue = NO;
+                        
+                        //Is this study in the retrieve queue? Display the local study
+                        @synchronized( comparativeRetrieveQueue)
+                        {
+                            inTheRetrieveQueue = [[comparativeRetrieveQueue valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]];
+                        }
+                        
+                        if( inTheRetrieveQueue == NO)
+                        {
+                            NSUInteger index = [localStudyInstanceUIDs indexOfObject: [distantStudy studyInstanceUID]];
+                            
+                            if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] noFiles] intValue] < [[distantStudy noFiles] intValue])
+                            {
+                                NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
+                                
+                                [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
+                                
+                                outlineViewArray = mutableCopy;
+                            }
+                        }
                     }
                 }
                 #endif
@@ -2489,12 +2517,15 @@ static NSConditionLock *threadLock = nil;
 					@try {
                         NSPredicate* predicate = [NSPredicate predicateWithFormat: @"(patientID == %@) AND (studyInstanceUID != %@)", [obj valueForKey:@"patientID"], [obj valueForKey:@"studyInstanceUID"]];
                         
-                        for( id patientStudy in [[_database objectsForEntity:_database.studyEntity predicate:predicate] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO] autorelease]]])
+                        NSMutableArray *oulineViewArrayStudyInstanceUIDs = [[[copyOutlineViewArray valueForKey: @"studyInstanceUID"] mutableCopy] autorelease];
+                        
+                        for( id patientStudy in [[_database objectsForEntity:_database.studyEntity predicate:predicate] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending:NO]]])
                         {
-                            if( [copyOutlineViewArray containsObject: patientStudy] == NO && patientStudy != nil)
+                            if( [oulineViewArrayStudyInstanceUIDs containsObject: [patientStudy valueForKey: @"studyInstanceUID"]] == NO && patientStudy != nil)
                             {
                                 studyIndex++;
                                 [copyOutlineViewArray insertObject: patientStudy atIndex: studyIndex];
+                                [oulineViewArrayStudyInstanceUIDs insertObject: [patientStudy valueForKey: @"studyInstanceUID"] atIndex: studyIndex];
                             }
                         }
                     } @catch (NSException* e) { // object has become unavailable, who cares, we just won't be showing it anymore
@@ -3458,28 +3489,31 @@ static NSConditionLock *threadLock = nil;
                                 {
                                     [mergedStudies addObject: distantStudy];
                                 }
+                                else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
+                                {
+                                    BOOL inTheRetrieveQueue = NO;
+                                    
+                                    //Is this study in the retrieve queue? Display the local study
+                                    @synchronized( comparativeRetrieveQueue)
+                                    {
+                                        inTheRetrieveQueue = [[comparativeRetrieveQueue valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]];
+                                    }
+                                    
+                                    if( inTheRetrieveQueue == NO)
+                                    {
+                                        NSUInteger index = [[mergedStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                        
+                                        if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] noFiles] intValue] < [[distantStudy noFiles] intValue])
+                                        {
+                                            [mergedStudies replaceObjectAtIndex: index withObject: distantStudy];
+                                        }
+                                    }
+                                }
                             }
                             #endif
                         }
                         
                         [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
-                        
-            //            for( id study in mergedStudies)
-            //            {
-            //                BOOL distant = NO;
-            //                
-            //                #ifndef OSIRIX_LIGHT
-            //                distant = [study isDistant];
-            //                
-            //                DCMTKStudyQueryNode *qrStudy = study;
-            //                DicomStudy *xcStudy = study;
-            //                
-            //                [xcStudy name]; [xcStudy modality]; [xcStudy date]; [xcStudy studyName]; //For warnings report
-            //                [qrStudy name]; [qrStudy modality]; [qrStudy date], [qrStudy studyName]; //For warnings report
-            //                #endif
-            //                
-            //                NSLog( @"%d Patient name: %@ - %@ - %@ - %@", distant, [study name], [study modality], [[NSUserDefaults dateTimeFormatter] stringFromDate: [study date]], [study studyName]);
-            //            }
                         
                         if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
                             [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
@@ -3510,13 +3544,10 @@ static NSConditionLock *threadLock = nil;
     
     dontSelectStudyFromComparativeStudies = YES;
     
-    if( self.comparativeStudies != newStudies)
-    {
-        self.comparativeStudies = newStudies;
-        [comparativeTable reloadData];
-        
-        [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
-    }
+    self.comparativeStudies = newStudies;
+    [comparativeTable reloadData];
+    
+    [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
     
     NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
     
@@ -3570,31 +3601,34 @@ static NSConditionLock *threadLock = nil;
             NSArray *studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
             if( [studyArray count] > 0)
             {
-                NSManagedObject	*study = [studyArray objectAtIndex: 0];
+                DicomStudy *study = [studyArray objectAtIndex: 0];
                 NSArray *seriesArray = [self childrenArray: study];
                 
                 if( [seriesArray count])
                 {
-                    NSManagedObject	*series =  [seriesArray objectAtIndex: 0];
+                    NSManagedObject	*series = [seriesArray objectAtIndex: 0];
                     BOOL success = NO;
                     
-                    if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO] == NO)
+                    if( comparativeStudyWaitedToSelect)
                     {
-                        [self showEntireDatabase];
-                        if( [self findAndSelectFile:nil image:[[series valueForKey:@"images"] anyObject] shouldExpand:NO])
+                        if( [self selectThisStudy: study] == YES)
                             success = YES;
+                        
+                        if( success)
+                        {
+                            [comparativeStudyWaited release];
+                            comparativeStudyWaited = nil;
+                            
+                            if( comparativeStudyWaitedToOpen)
+                                [self databaseOpenStudy: study];
+                            
+                            [[self window] makeFirstResponder: databaseOutline];
+                        }
                     }
-                    else success = YES;
-                    
-                    if( success)
+                    else
                     {
                         [comparativeStudyWaited release];
                         comparativeStudyWaited = nil;
-                        
-                        if( comparativeStudyWaitedToOpen)
-                            [self databaseOpenStudy: study];
-                        
-                        [[self window] makeFirstResponder: databaseOutline];
                     }
                 }
             }
@@ -3688,7 +3722,7 @@ static NSConditionLock *threadLock = nil;
             if( [item isDistant])
             {
                 // Check to see if already in retrieving mode, if not download it
-                // [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item]; -- Only when double-clicking
+                // [self retrieveComparativeStudy: item select: YES open: NO]; -- Only when double-clicking
             }
             else
             {
@@ -3788,6 +3822,11 @@ static NSConditionLock *threadLock = nil;
                     }
                 }
 			}
+            
+            if( [item isDistant])
+                self.distantStudyMessage = NSLocalizedString( @"Double-click on the Study line to retrieve the images", nil);
+            else
+                self.distantStudyMessage = @"";
 			
 			[self resetROIsAndKeysButton];
 		}
@@ -3801,6 +3840,7 @@ static NSConditionLock *threadLock = nil;
 			
 			ROIsAndKeyImagesButtonAvailable = NO;
             
+            self.distantStudyMessage = @"";
             self.comparativePatientUID = nil;
             self.comparativeStudies = nil;
             [comparativeTable reloadData];
@@ -5600,7 +5640,7 @@ static NSConditionLock *threadLock = nil;
             if( [item isDistant])
             {
                 // Check to see if already in retrieving mode, if not download it
-                [self retrieveComparativeStudy: item];
+                [self retrieveComparativeStudy: item select: NO open: NO];
             }
             else
             {
@@ -5821,24 +5861,10 @@ static NSConditionLock *threadLock = nil;
 	return NO;
 }
 
-- (NSInteger) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute
+- (BOOL) displayStudy: (DicomStudy*) study object:(NSManagedObject*) element command:(NSString*) execute
 {
-	NSInteger index = [outlineViewArray indexOfObject: study];
-	
-	if( index == NSNotFound)	// Try again with all studies displayed. This study has to be here ! We found it in the DB
-	{
-		[self showEntireDatabase];
-		index = [outlineViewArray indexOfObject: study];
-	}
-	
-	if( index != NSNotFound)
-	{
-		if( [databaseOutline rowForItem: study] != [databaseOutline selectedRow])
-		{
-			[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: [databaseOutline rowForItem: study]] byExtendingSelection: NO];
-			[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
-		}
-		
+	if( [self selectThisStudy: study])
+    {
 		if( [execute isEqualToString: @"Open"])
 		{
 			NSMutableArray *viewersList = [ViewerController getDisplayed2DViewers];
@@ -5917,9 +5943,11 @@ static NSConditionLock *threadLock = nil;
 //				else [browserWindow viewerDICOM: self]; // Study
 			}
 		}
+        
+        return YES;
 	}
 	
-	return index;
+	return NO;
 }
 
 - (int) findObject:(NSString*) request table:(NSString*) table execute: (NSString*) execute elements:(NSString**) elements { // __deprecated
@@ -5997,9 +6025,9 @@ static NSConditionLock *threadLock = nil;
 			else if( [[element valueForKey: @"type"] isEqualToString: @"Study"]) study = (DicomStudy*)element;
 			else NSLog( @"DB selectObject : Unknown table");
 			
-			NSInteger index = [self displayStudy: study object: element command: execute];
+			BOOL succeed = [self displayStudy: study object: element command: execute];
 			
-			if( index == NSNotFound)
+			if( succeed == NO)
 				return -1;
 		}
 		
@@ -9071,11 +9099,11 @@ static BOOL needToRezoom;
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     BOOL retrieve = NO;
     
-    @synchronized( self)
+    if( comparativeRetrieveQueue == nil)
+        comparativeRetrieveQueue = [[NSMutableArray alloc] init];
+    
+    @synchronized( comparativeRetrieveQueue)
     {
-        if( comparativeRetrieveQueue == nil)
-            comparativeRetrieveQueue = [[NSMutableArray alloc] init];
-        
         [comparativeRetrieveQueue addObject: study];
     }
     
@@ -9083,7 +9111,7 @@ static BOOL needToRezoom;
     [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
     #endif
     
-    @synchronized( self)
+    @synchronized( comparativeRetrieveQueue)
     {
         [comparativeRetrieveQueue removeObject: study];
     }
@@ -9091,10 +9119,11 @@ static BOOL needToRezoom;
     [pool release];
 }
 
-- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study
+- (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open: (BOOL) open
 {    
     BOOL retrieveStudy = YES;
-    @synchronized( self)
+    
+    @synchronized( comparativeRetrieveQueue)
     {
         if( [comparativeRetrieveQueue containsObject: study])
             retrieveStudy = NO;
@@ -9116,7 +9145,8 @@ static BOOL needToRezoom;
     }
     
     // see refreshComparativeStudiesIfNeeded timer
-    comparativeStudyWaitedToOpen = NO;
+    comparativeStudyWaitedToOpen = open;
+    comparativeStudyWaitedToSelect = select;
     [comparativeStudyWaited release];
     comparativeStudyWaited = [study retain];
     comparativeStudyWaitedTime = [NSDate timeIntervalSinceReferenceDate];
@@ -9131,8 +9161,7 @@ static BOOL needToRezoom;
         if( [study isDistant])
         {
             // Check to see if already in retrieving mode, if not download it
-            [self retrieveComparativeStudy: study];
-//            comparativeStudyWaitedToOpen = YES;
+            [self retrieveComparativeStudy: study select: YES open: NO];
         }
         else
         {
@@ -9186,8 +9215,7 @@ static BOOL needToRezoom;
 //                    #ifndef OSIRIX_LIGHT
 //                    if( [study isDistant]) // distant study -> download it, and select it 
 //                    {
-//                        [self retrieveComparativeStudy: study]; -- Only when double-clicking
-//                        comparativeStudyWaitedToOpen = NO;
+//                        [self retrieveComparativeStudy: study select: YES open: NO]; -- Only when double-clicking
 //                    }
 //                    else // local study -> select it
 //                    #endif

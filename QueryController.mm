@@ -284,7 +284,7 @@ extern "C"
                 [f setObject: [filters valueForKey: PatientID] forKey: PatientID];
             
             if( [filters valueForKey: PatientBirthDate])
-                [f setObject: [[filters valueForKey: PatientBirthDate] descriptionWithCalendarFormat:@"%Y%m%d" timeZone:nil locale:nil] forKey: PatientBirthDate];
+                [f setObject: [DCMCalendarDate queryDate: [[filters valueForKey: PatientBirthDate] descriptionWithCalendarFormat:@"%Y%m%d" timeZone: nil locale:nil]] forKey: PatientBirthDate];
             
             if( [[filters valueForKey: @"modality"] count] > 0)
             {
@@ -359,9 +359,9 @@ extern "C"
 
 + (NSArray*) queryStudiesForPatient:(DicomStudy*) study usePatientID:(BOOL) usePatientID usePatientName:(BOOL) usePatientName usePatientBirthDate: (BOOL) usePatientBirthDate servers: (NSArray*) serversList showErrors: (BOOL) showErrors
 {
-    if( usePatientID == NO && usePatientName == NO)
+    if( usePatientID == NO && usePatientName == NO && usePatientBirthDate == NO)
     {
-        NSLog( @"****** QR: usePatientID == NO && usePatientName == NO");
+        NSLog( @"****** QR: usePatientID == NO && usePatientName == NO && usePatientBirthDate == NO");
         return 0;
     }
     
@@ -386,7 +386,7 @@ extern "C"
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     
     if( usePatientBirthDate)
-        [filters setObject: [DCMCalendarDate dicomDateWithDate: study.dateOfBirth] forKey: PatientBirthDate];
+        [filters setObject: study.dateOfBirth forKey: PatientBirthDate];
     
     if( usePatientID)
         [filters setObject: study.patientID forKey: PatientID];
@@ -395,7 +395,7 @@ extern "C"
     
     if( usePatientName)
     {
-        for( NSUInteger x = [studies count]-1 ; x >= 0 ; x--)
+        for( int x = [studies count]-1 ; x >= 0 ; x--)
         {
             DCMTKStudyQueryNode *s = [studies objectAtIndex: x];
             

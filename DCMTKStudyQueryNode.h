@@ -24,4 +24,5 @@
 - (NSString*) studyName;// Match DicomStudy
 - (NSNumber*) numberOfImages;// Match DicomStudy
 - (NSDate*) dateOfBirth; // Match DicomStudy
+- (NSNumber*) noFiles; // Match DicomStudy
 @end
