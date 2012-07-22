@@ -12032,9 +12032,32 @@ static NSArray*	openSubSeriesArray = nil;
 	#ifdef EXPORTTOOLBARITEM
 	return YES;
 	#endif
-
-	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
+    
+    BOOL containsDistantStudy = NO;
+    
+    if( [[databaseOutline selectedRowIndexes] count] > 0)
+    {
+        NSUInteger idx = databaseOutline.selectedRowIndexes.firstIndex;
+        
+        while (idx != NSNotFound)
+        {
+            id object = [databaseOutline itemAtRow: idx];
+            
+            if( [object isDistant])
+            {
+                containsDistantStudy = YES;
+                break;
+            }
+            
+            idx = [databaseOutline.selectedRowIndexes indexGreaterThanIndex: idx];
+        }
+    }
+    
+	if( [[databaseOutline selectedRowIndexes] count] < 1 || containsDistantStudy == YES) // No Database Selection or Distant Study
 	{
+        if( containsDistantStudy == YES && [menuItem action] == @selector( querySelectedStudy:))
+            return YES;
+        
 		if(	[menuItem action] == @selector( rebuildThumbnails:) ||
 			[menuItem action] == @selector( searchForCurrentPatient:) || 
 			[menuItem action] == @selector( viewerDICOM:) || 
@@ -12061,14 +12084,17 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( anonymizeDICOM:) || 
 			[menuItem action] == @selector( viewXML:) || 
 			[menuItem action] == @selector( applyRoutingRule:) || 
-            [menuItem action] == @selector( regenerateAutoComments:)
+            [menuItem action] == @selector( regenerateAutoComments:) ||
+            [menuItem action] == @selector( unifyStudies:) ||
+            [menuItem action] == @selector( viewerSubSeriesDICOM:) ||
+            [menuItem action] == @selector( viewerReparsedSeries:)
 			)
 		return NO;
 	}
     
     if( [menuItem action] == @selector( convertReportToPDF:) || [menuItem action] == @selector( convertReportToDICOMSR:))
     {
-        NSManagedObject *item = [databaseOutline itemAtRow:[[databaseOutline selectedRowIndexes] firstIndex]];
+        id item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         
         if( item)
         {
@@ -12102,6 +12128,9 @@ static NSArray*	openSubSeriesArray = nil;
     }
 	else if( [menuItem action] == @selector( viewerDICOMROIsImages:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if ([_database isLocal])
 		{
 			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self ROIImages: menuItem] count] == 0) return NO;
@@ -12110,6 +12139,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( viewerKeyImagesAndROIsImages:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if ([_database isLocal])
 		{
 			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self ROIsAndKeyImages: menuItem] count] == 0) return NO;
@@ -12118,6 +12150,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( viewerDICOMKeyImages:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if ([_database isLocal])
 		{
 			if( [[databaseOutline selectedRowIndexes] count] < 10 && [[self KeyImages: menuItem] count] == 0) return NO;
@@ -12126,27 +12161,29 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( createROIsFromRTSTRUCT:))
 	{
-		if (![_database isLocal]) return NO;
+        if( containsDistantStudy)
+            return NO;
+        
+		if (![_database isLocal])
+            return NO;
 	}
 	else if( [menuItem action] == @selector( compressSelectedFiles:))
 	{
-//		if( [decompressThreadRunning tryLock] == NO)
-//			return NO;
-//		else
-//			[decompressThreadRunning unlock];
-//		if (![_database isLocal]) return NO;
+        if( containsDistantStudy)
+            return NO;
 	}
 	else if( [menuItem action] == @selector( decompressSelectedFiles:))
 	{
-//		if( [decompressThreadRunning tryLock] == NO)
-//			return NO;
-//		else
-//			[decompressThreadRunning unlock];
-//		if (![_database isLocal]) return NO;
+        if( containsDistantStudy)
+            return NO;
 	}
 	else if( [menuItem action] == @selector( copyToDBFolder:))
 	{
-		if (![_database isLocal]) return NO;
+        if( containsDistantStudy)
+            return NO;
+        
+		if (![_database isLocal])
+            return NO;
 		
 		if( [[databaseOutline selectedRowIndexes] count] < 10)
 		{
@@ -12176,6 +12213,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( lockStudies:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		for( NSInteger x = 0, row; x < selectedRows.count; x++)
@@ -12193,6 +12233,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( unlockStudies:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		NSIndexSet *selectedRows = [databaseOutline selectedRowIndexes];
 		
 		for( NSInteger x = 0, row; x < selectedRows.count; x++)
@@ -12210,6 +12253,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( delItem:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if (![_database isLocal]) return NO;
 		
 		BOOL matrixThumbnails = YES;
@@ -12227,6 +12273,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( mergeStudies:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if (![_database isLocal]) return NO;
 		
 		NSIndexSet		*selectedRows = [databaseOutline selectedRowIndexes];
@@ -12249,6 +12298,9 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	else if( [menuItem action] == @selector( mergeSeries:))
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if (![_database isLocal]) return NO;
 		
 		if( [[oMatrix selectedCells] count] > 1) return YES;
@@ -12263,7 +12315,9 @@ static NSArray*	openSubSeriesArray = nil;
 }
 
 - (BOOL)is2DViewer
-{ return NO; }
+{
+    return NO;
+}
 
 - (IBAction)customizeViewerToolBar:(id)sender
 {
@@ -16647,7 +16701,28 @@ static volatile int numberOfThreadsForJPEG = 0;
 	return YES;
 	#endif
 	
+    BOOL containsDistantStudy = NO;
+    
+    if( [[databaseOutline selectedRowIndexes] count] > 0)
+    {
+        NSUInteger idx = databaseOutline.selectedRowIndexes.firstIndex;
+        
+        while (idx != NSNotFound)
+        {
+            id object = [databaseOutline itemAtRow: idx];
+            
+            if( [object isDistant])
+            {
+                containsDistantStudy = YES;
+                break;
+            }
+            
+            idx = [databaseOutline.selectedRowIndexes indexGreaterThanIndex:idx];
+        }
+    }
+    
     if ([self.database isReadOnly])
+    {
         if ([toolbarItem.itemIdentifier isEqualToString:ImportToolbarItemIdentifier] || 
             [toolbarItem.itemIdentifier isEqualToString:WebServerSingleNotification] || 
             [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier] || 
@@ -16659,9 +16734,26 @@ static volatile int numberOfThreadsForJPEG = 0;
             [toolbarItem.itemIdentifier isEqualToString:QueryToolbarItemIdentifier]
             )
             return NO;
+    }
     
-	if( [[databaseOutline selectedRowIndexes] count] < 1) // No Database Selection
+    if( containsDistantStudy)
+    {
+        if ([toolbarItem.itemIdentifier isEqualToString:WebServerSingleNotification] || 
+            [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:AnonymizerToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:TrashToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:ReportToolbarItemIdentifier] ||
+            [toolbarItem.itemIdentifier isEqualToString:BurnerToolbarItemIdentifier] || 
+            [toolbarItem.itemIdentifier isEqualToString:AddStudiesToUserItemIdentifier]
+            )
+            return NO;
+    }
+    
+	if( [[databaseOutline selectedRowIndexes] count] < 1 || containsDistantStudy) // No Database Selection
 	{
+        if( containsDistantStudy == YES && [toolbarItem action] == @selector( querySelectedStudy:))
+            return YES;
+        
 		if(	[toolbarItem action] == @selector( rebuildThumbnails:) ||
 			[toolbarItem action] == @selector( searchForCurrentPatient:) || 
 			[toolbarItem action] == @selector( viewerDICOM:) || 
@@ -16689,7 +16781,9 @@ static volatile int numberOfThreadsForJPEG = 0;
 			[toolbarItem action] == @selector( burnDICOM:) || 
 			[toolbarItem action] == @selector( viewXML:) || 
 			[toolbarItem action] == @selector( anonymizeDICOM:) || 
-			[toolbarItem action] == @selector( applyRoutingRule:)
+			[toolbarItem action] == @selector( applyRoutingRule:) ||
+            [toolbarItem action] == @selector( viewerSubSeriesDICOM:) ||
+            [toolbarItem action] == @selector( viewerReparsedSeries:)
 			)
 		return NO;
 	}
@@ -16697,13 +16791,15 @@ static volatile int numberOfThreadsForJPEG = 0;
 	if (![_database isLocal])
 	{
 		if ([[toolbarItem itemIdentifier] isEqualToString: ImportToolbarItemIdentifier]) return NO;
-//		if ([[toolbarItem itemIdentifier] isEqualToString: CDRomToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: TrashToolbarItemIdentifier]) return NO;
 		if ([[toolbarItem itemIdentifier] isEqualToString: QueryToolbarItemIdentifier]) return NO;
 	}
 	
 	if ([[toolbarItem itemIdentifier] isEqualToString: OpenKeyImagesAndROIsToolbarItemIdentifier])
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		return ROIsAndKeyImagesButtonAvailable;
 	}
 	
@@ -16715,18 +16811,20 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	if( [[toolbarItem itemIdentifier] isEqualToString: WebServerSingleNotification])
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO)
-		{
 			return NO;
-		}
 	}
 	
 	if( [[toolbarItem itemIdentifier] isEqualToString: AddStudiesToUserItemIdentifier])
 	{
+        if( containsDistantStudy)
+            return NO;
+        
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"httpWebServer"]  == NO || [[NSUserDefaults standardUserDefaults] boolForKey: @"passwordWebServer"] == NO)
-		{
 			return NO;
-		}
 	}
 	
     return YES;

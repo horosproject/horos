@@ -25,8 +25,8 @@
 - Display comparative studies in a separate view, including comparatives studies available in a distant DICOM node
 
 - ViewerController: Next Patient failed
-- Comparative: inactivate the icons for distant study
 - Retina displays: iChat, CPR (add node), PT-CT
+- Comparative: search field & time interval
 -------------------------------------------------------------
 
 - Retina: VR (implication for MPR, CPR)

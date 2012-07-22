@@ -559,7 +559,7 @@ static DicomDatabase* activeLocalDatabase = nil;
         NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
         if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
         
-        if (modelVersion && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
+        if (modelVersion.length && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
             rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
             [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         }
@@ -2662,11 +2662,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 #pragma mark Other
 
--(BOOL)rebuildAllowed {
+-(BOOL)rebuildAllowed
+{
 	return YES;
 }
 
--(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion {
+-(BOOL)upgradeSqlFileFromModelVersion:(NSString*)databaseModelVersion
+{
+    NSLog( @"------ upgradeSqlFileFromModelVersion: %@", databaseModelVersion);
+    
 	NSThread* thread = [NSThread currentThread];
     NSString* oldThreadName = thread.name;
     
@@ -2686,9 +2690,19 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         NSString* oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_Previous_DataModel%@.mom", databaseModelVersion];
         if ([databaseModelVersion isEqualToString:CurrentDatabaseVersion]) oldModelFilename = [NSString stringWithFormat:@"OsiriXDB_DataModel.mom"]; // same version 
         
-        if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]]) {
-            int r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
-            if (r == NSAlertAlternateReturn) {
+        if (![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.resourcePath stringByAppendingPathComponent:oldModelFilename]])
+        {
+            int r = NSAlertDefaultReturn;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
+            {
+                r = NSAlertDefaultReturn;
+            }
+            else
+                r = NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot understand the model of current saved database... The database index will be deleted and reconstructed (no images are lost).", nil), NSLocalizedString(@"OK", nil), NSLocalizedString(@"Quit", nil), nil);
+            
+            if (r == NSAlertAlternateReturn)
+            {
                 [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil]; // to avoid the crash message during next startup
                 [NSApp terminate:self];
             }
@@ -3103,6 +3117,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		NSString	*incomingPath = [self incomingDirPath];
 		long		totalFiles = 0;
 		
+        NSLog( @"Scan the Database folder");
+        
 		// In the DATABASE FOLDER, we have only folders! Move all files that are wrongly there to the INCOMING folder.... and then scan these folders containing the DICOM files
 		
 		NSArray	*dirContent = [[NSFileManager defaultManager] directoryContentsAtPath:aPath];
@@ -3123,10 +3139,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		for( NSString *name in dirContent)
 		{
-			NSAutoreleasePool		*pool = [[NSAutoreleasePool alloc] init];
+			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
-			NSString	*curDir = [aPath stringByAppendingPathComponent: name];
-			NSArray		*subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
+			NSString *curDir = [aPath stringByAppendingPathComponent: name];
+			NSArray *subDir = [[NSFileManager defaultManager] directoryContentsAtPath: [aPath stringByAppendingPathComponent: name]];
 			
 			for( NSString *subName in subDir)
 			{
