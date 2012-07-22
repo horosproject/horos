@@ -3868,19 +3868,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldAN cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle: NSLocalizedString( @"Recent Searches", nil) 
 								action:NULL
 								keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recents", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Clear", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
@@ -3893,19 +3893,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldStudyDescription cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recent Searches", nil) 
 								action:NULL
 								keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recents", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Clear", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
@@ -3918,19 +3918,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldComments cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recent Searches", nil) 
 								action:NULL
 								keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recents", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Clear", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
@@ -3943,19 +3943,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldRefPhysician cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recent Searches", nil) 
 										   action:NULL
 									keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recents", nil)
 										   action:NULL
 									keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Clear", nil)
 										   action:NULL
 									keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
@@ -3968,19 +3968,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldID cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recent Searches", nil) 
 								action:NULL
 								keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recents", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Clear", nil)
 								action:NULL
 								keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];
@@ -3993,19 +3993,19 @@ enum
 		NSMenu *cellMenu = [[[NSMenu alloc] initWithTitle:@"Search Menu"] autorelease];
 		NSMenuItem *item1, *item2, *item3;
 		id searchCell = [searchFieldName cell];
-		item1 = [[NSMenuItem alloc] initWithTitle:@"Recent Searches"
+		item1 = [[NSMenuItem alloc] initWithTitle:NSLocalizedString( @"Recent Searches", nil) 
 									action:NULL
 									keyEquivalent:@""];
 		[item1 setTag:NSSearchFieldRecentsTitleMenuItemTag];
 		[cellMenu insertItem:item1 atIndex:0];
 		[item1 release];
-		item2 = [[NSMenuItem alloc] initWithTitle:@"Recents"
+		item2 = [[NSMenuItem alloc] initWithTitle: NSLocalizedString( @"Recents", nil) 
 									action:NULL
 									keyEquivalent:@""];
 		[item2 setTag:NSSearchFieldRecentsMenuItemTag];
 		[cellMenu insertItem:item2 atIndex:1];
 		[item2 release];
-		item3 = [[NSMenuItem alloc] initWithTitle:@"Clear"
+		item3 = [[NSMenuItem alloc] initWithTitle: NSLocalizedString( @"Clear", nil) 
 									action:NULL
 									keyEquivalent:@""];
 		[item3 setTag:NSSearchFieldClearRecentsMenuItemTag];

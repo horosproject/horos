@@ -24,8 +24,7 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- ViewerController: Next Patient failed
-- Retina displays: iChat, CPR (add node), PT-CT
+- Retina displays: iChat, PT-CT
 -------------------------------------------------------------
 
 - Synchronize MPR viewers

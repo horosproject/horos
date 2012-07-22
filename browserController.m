@@ -3560,6 +3560,9 @@ static NSConditionLock *threadLock = nil;
     else
         [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
     
+    for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+        [v comparativeRefresh: self.comparativePatientUID];
+    
     [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
 }
 

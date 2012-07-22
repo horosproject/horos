@@ -648,6 +648,7 @@ enum
 - (void) setHighLighted: (float) b;
 - (void) syncThumbnails;
 - (void) checkBuiltMatrixPreview;
+- (void)comparativeRefresh:(NSString*) patientUID;
 
 /** Used to determine in the Window Controller is a 2D Viewer.
 * Always return YES

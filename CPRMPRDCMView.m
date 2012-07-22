@@ -1092,7 +1092,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         if( c == NSRightArrowFunctionKey) { center.y -= move*slopeY; center.x += move*slopeX;}
         if( c == NSLeftArrowFunctionKey) { center.y += move*slopeY; center.x -= move*slopeX;}
         
-        [vrView setWindowCenter: center];
+        [vrView setWindowCenter: [self convertPointToBacking: center]];
         [self updateViewMPR];
         
         moveCenter = NO;
@@ -1523,7 +1523,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	@try
 	{
-		if( [theEvent type] ==	NSLeftMouseDown || [theEvent type] ==	NSRightMouseDown || [theEvent type] ==	NSLeftMouseUp || [theEvent type] == NSRightMouseUp)
+		if( [theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown || [theEvent type] == NSLeftMouseUp || [theEvent type] == NSRightMouseUp)
 			clickCount = [theEvent clickCount];
 	}
 	@catch (NSException * e)
@@ -1546,6 +1546,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			else
 			{
 				NSPoint mouseLocation = [self convertPoint:[theEvent locationInWindow] fromView: nil];
+                
 				CPRCurvedPathControlToken token = [curvedPath controlTokenNearPoint:mouseLocation transform:N3AffineTransformConcat([self viewToPixTransform], [self pixToDicomTransform])];
 				if ([CPRCurvedPath controlTokenIsNode:token])
 				{
@@ -2001,12 +2002,12 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
         NSPoint point = [self convertPoint: [theEvent locationInWindow] fromView: nil];
         
         if( yFlipped)
-            point.y = [self convertSizeToBacking: self.frame.size].height - point.y;
+            point.y = self.frame.size.height - point.y;
         
         if( xFlipped)
-            point.x = [self convertSizeToBacking: self.frame.size].width - point.x;
+            point.x = self.frame.size.width - point.x;
         
-		[vrView setWindowCenter: point];
+		[vrView setWindowCenter: [self convertPointToBacking: point]];
         
 		[self updateViewMPR];
 		
@@ -2305,7 +2306,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
 	[self restoreCamera];
 	
-	[vrView setWindowCenter:crossCenter];
+	[vrView setWindowCenter: [self convertPointToBacking: crossCenter]];
 	
 	dontUseAutoLOD = YES;
 	LOD = 40;

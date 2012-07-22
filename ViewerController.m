@@ -4107,7 +4107,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	// FIND ALL STUDIES of this patient
 	
-	NSString	*searchString = [study valueForKey:@"patientID"];
+	NSString *searchString = [study valueForKey:@"patientID"];
 	
 	if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
 	{
@@ -4121,12 +4121,11 @@ static volatile int numberOfThreadsForRelisce = 0;
         NSArray *studiesArray = nil;
         // Use the 'history' array of the browser controller, if available (with the distant studies)
         
-        if( BrowserController.currentBrowser.comparativePatientUID == study.patientUID)
+        if( BrowserController.currentBrowser.comparativePatientUID == study.patientUID && BrowserController.currentBrowser.comparativeStudies)
             studiesArray = BrowserController.currentBrowser.comparativeStudies;
         else
         {
             studiesArray = [db objectsForEntity:db.studyEntity predicate:predicate];
-            
             studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: NO]]];
 		}
         
@@ -6585,45 +6584,57 @@ return YES;
 	return self;
 }
 
--(void)awakeFromNib {
+-(void)awakeFromNib
+{
     [previewMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
     [self observeScrollerStyleDidChangeNotification:nil];
 }
 
--(void)refreshDatabase:(NSArray*)newImages {
-	if ([[self imageView] mouseDragging]) {
-		[self performSelector:@selector(refreshDatabase:) withObject:newImages afterDelay:0.01];
+-(void)comparativeRefresh:(NSString*) patientUID
+{
+    DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
+    
+    if( [patientUID isEqualToString: firstObject.series.study.patientUID])
+        [self buildMatrixPreview: NO];
+}
+
+-(void)refreshDatabase:(NSArray*)newImages
+{
+	if( [[self imageView] mouseDragging])
+    {
+		[self performSelector:@selector(refreshDatabase:) withObject:newImages afterDelay:0.1];
 		return;
 	}
 	
 	BOOL rebuild = NO, reload = NO;
     
-    if (!newImages)
+    if( !newImages)
         rebuild = reload = YES;
     
 	DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
-	for (DicomImage* dicomImage in newImages)
+	for( DicomImage* dicomImage in newImages)
     {
-		if (dicomImage.series == firstObject.series)
+		if( dicomImage.series == firstObject.series)
 			reload = YES;
-		else if (!firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
+		else if( !firstObject || [dicomImage.series.study.patientID isEqualToString:firstObject.series.study.patientID])
 			rebuild = YES;
         
         if( reload == YES && rebuild == YES)
             break;
 	}
 	
-	if (rebuild)
+	if( rebuild)
 		[self buildMatrixPreview: NO];
-	if (reload) {
+    
+	if( reload)
+    {
 		BrowserController* bc = [BrowserController currentBrowser];
 		[bc openViewerFromImages:[NSArray arrayWithObject:[bc childrenArray:firstObject.series]] movie:NO viewer:self keyImagesOnly:NO tryToFlipData:YES];
 	}
 	
-	
-	[super refreshDatabase:newImages];
+	[super refreshDatabase: newImages];
 }
 
 - (NSNumber*) KeyImageCounter
@@ -6673,7 +6684,7 @@ return YES;
 //		[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
 //		[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
 //	}
-//	@catch ( NSException *e)
+//	@catch( NSException *e)
 //	{
 //		NSLog( @"***** finalizeSeriesViewing : %@", e);
 //	}
@@ -6684,7 +6695,7 @@ return YES;
 		{
 			[self saveROI: i];
 		}
-		@catch ( NSException *e)
+		@catch( NSException *e)
 		{
 			NSLog( @"***** saveROI exception : %@", e);
 		}
@@ -7319,7 +7330,7 @@ return YES;
 					[imageView setDrawing: YES];
 					[imageView setNeedsDisplay: YES];
 				}
-				@catch ( NSException *e)
+				@catch( NSException *e)
 				{
 					NSLog( @"***** changeImageData exception : %@", e);
 					[[self window] close];
@@ -7346,7 +7357,7 @@ return YES;
 			
 			[imageView computeColor];
 		}
-		@catch (NSException * e) 
+		@catch( NSException * e) 
 		{
             N2LogExceptionWithStackTrace(e);
 		}
@@ -7365,7 +7376,7 @@ return YES;
 {
 	NSRect	screenRect;
 	
-	switch ([[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
+	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
 	{
 		case 0:		// use main screen only
 			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
@@ -7439,12 +7450,12 @@ return YES;
 	
 	DCMPix *pixMask = [[imageView dcmPixList]objectAtIndex:subCtrlMaskID];
 	
-	for ( DCMPix *pix in [imageView dcmPixList])
+	for( DCMPix *pix in [imageView dcmPixList])
 	{
 		subCtrlMinMax = [pix subMinMax :[pix fImage] :[pixMask fImage]];
 						
-		if (subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
-		if (subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
+		if( subCtrlMinMax.x < subCtrlMin) subCtrlMin = subCtrlMinMax.x ;
+		if( subCtrlMinMax.y > subCtrlMax) subCtrlMax = subCtrlMinMax.y ;
 	}
 	subCtrlMinMax.x = subCtrlMin;
 	subCtrlMinMax.y = subCtrlMax;
