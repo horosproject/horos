@@ -4688,7 +4688,7 @@
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="348385774"/>
 									<int key="NSDividerStyle">2</int>
-									<string key="NSAutosaveName"/>
+									<string key="NSAutosaveName">albumsAndSources</string>
 								</object>
 								<object class="NSCustomView" id="662494550">
 									<reference key="NSNextResponder" ref="534658191"/>
@@ -5733,7 +5733,7 @@
 													<reference key="NSNextKeyView" ref="832526649"/>
 													<bool key="NSIsVertical">YES</bool>
 													<int key="NSDividerStyle">2</int>
-													<string key="NSAutosaveName"/>
+													<string key="NSAutosaveName">comparative</string>
 												</object>
 												<object class="NSSplitView" id="766578884">
 													<reference key="NSNextResponder" ref="948665668"/>
@@ -6188,7 +6188,7 @@
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="584808016"/>
 											<int key="NSDividerStyle">2</int>
-											<string key="NSAutosaveName"/>
+											<string key="NSAutosaveName">horizontal</string>
 										</object>
 									</array>
 									<string key="NSFrame">{{185, 0}, {859, 654}}</string>
@@ -6206,7 +6206,7 @@
 							<string key="NSReuseIdentifierKey">_NS:597</string>
 							<bool key="NSIsVertical">YES</bool>
 							<int key="NSDividerStyle">2</int>
-							<string key="NSAutosaveName"/>
+							<string key="NSAutosaveName">drawer</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{1043, 674}</string>
