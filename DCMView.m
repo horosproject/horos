@@ -1023,7 +1023,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 		
 		glColor3f (0.0f, 0.5f, 1.0f);
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINES);
 		
 		float crossx, crossy;
@@ -1095,7 +1095,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glDisable(GL_POINT_SMOOTH);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	glLineWidth( 1);
+	glLineWidth( 1 * self.window.backingScaleFactor);
 	
 	#define ROISELECTORREGION_R 0.8
 	#define ROISELECTORREGION_G 0.8
@@ -7472,7 +7472,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if ([self isKeyImage] && stringID == nil)
 	{
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glColor3f (1.0f, 1.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(0.0,                                      0.0);
@@ -7484,7 +7484,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glColor3f (0.0f, 0.0f, 0.0f);
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
 	#ifndef OSIRIX_LIGHT
 	if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && cgl_ctx==[_alternateContext CGLContextObj])
@@ -8067,7 +8067,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( showPoint)
 	{
 		glEnable(GL_POINT_SMOOTH);
-		glPointSize( 12);
+		glPointSize( 12 * self.window.backingScaleFactor);
 		
 		glBegin( GL_POINTS);
 		float mx = (c[ 0][ 0] + c[ 1][ 0]) / 2.;
@@ -8094,7 +8094,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( perpendicular)
 	{
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINES);
 			glVertex2f( scaleValue*((c[ 0][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 0][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
 			glVertex2f( scaleValue*((c[ 1][ 0]+a[0]*sliceFromToThickness/2.)/curDCM.pixelSpacingX-curDCM.pwidth/2.), scaleValue*((c[ 1][ 1]-a[1]*sliceFromToThickness/2.)/curDCM.pixelSpacingY - curDCM.pheight /2.));
@@ -8270,7 +8270,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnable(GL_BLEND);
 					
 					glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
-					glLineWidth(1.0);
+					glLineWidth(1.0 * self.window.backingScaleFactor);
 					glBegin(GL_QUADS);
 						glVertex2f(0.0, 0.0);
 						glVertex2f(0.0, drawingFrameRect.size.height);
@@ -8296,7 +8296,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glEnable(GL_BLEND);
 				
 				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-				glLineWidth(1.0);
+				glLineWidth(1.0 * self.window.backingScaleFactor);
 				glBegin(GL_QUADS);
 					glVertex2f(0.0, 0.0);
 					glVertex2f(0.0, topLeft.y);
@@ -8333,7 +8333,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
 				glEnd();
 				
-				glLineWidth(1.0);
+				glLineWidth(1.0 * self.window.backingScaleFactor);
 				glDisable(GL_BLEND);
 				
 				// label
@@ -8369,7 +8369,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 					
-					glLineWidth(1.0);
+					glLineWidth(1.0 * self.window.backingScaleFactor);
 					glBegin(GL_LINES);
 					for( int i = 0; i < 256; i++ )
 					{
@@ -8435,7 +8435,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						heighthalf = 0;
 						
-						glLineWidth(1.0);
+						glLineWidth(1.0 * self.window.backingScaleFactor);
 						glBegin(GL_LINES);
 						
 						if( bred)
@@ -8506,14 +8506,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 	//					glEnable(GL_BLEND);
 						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-						glLineWidth(8.0);
+						glLineWidth(8.0 * self.window.backingScaleFactor);
 						glBegin(GL_LINE_LOOP);
 							glVertex2f(  -widthhalf, -heighthalf);
 							glVertex2f(  -widthhalf, heighthalf);
 							glVertex2f(  widthhalf, heighthalf);
 							glVertex2f(  widthhalf, -heighthalf);
 						glEnd();
-						glLineWidth(1.0);
+						glLineWidth(1.0 * self.window.backingScaleFactor);
 	//					glDisable(GL_BLEND);
 					}
 				}  //drawLines for ImageView Frames
@@ -8524,14 +8524,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					float widthhalf = drawingFrameRect.size.width/2 - 1;
 					
 					glColor3f (0.5f, 0.5f, 0.5f);
-					glLineWidth(1.0);
+					glLineWidth(1.0 * self.window.backingScaleFactor);
 					glBegin(GL_LINE_LOOP);
 						glVertex2f(  -widthhalf, -heighthalf);
 						glVertex2f(  -widthhalf, heighthalf);
 						glVertex2f(  widthhalf, heighthalf);
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
-					glLineWidth(1.0);
+					glLineWidth(1.0 * self.window.backingScaleFactor);
 					
 					if (isKeyView && frontMost)
 					{
@@ -8539,14 +8539,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						float widthhalf = drawingFrameRect.size.width/2 - 1;
 						
 						glColor3f (1.0f, 0.0f, 0.0f);
-						glLineWidth(2.0);
+						glLineWidth(2.0 * self.window.backingScaleFactor);
 						glBegin(GL_LINE_LOOP);
 							glVertex2f(  -widthhalf, -heighthalf);
 							glVertex2f(  -widthhalf, heighthalf);
 							glVertex2f(  widthhalf, heighthalf);
 							glVertex2f(  widthhalf, -heighthalf);
 						glEnd();
-						glLineWidth(1.0);
+						glLineWidth(1.0 * self.window.backingScaleFactor);
 					}
 				}
 				
@@ -8660,12 +8660,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //								if( sliceFromTo[ 0][ 0] != HUGE_VALF)
 //								{
 //									glColor3f (0.0f, 0.6f, 0.0f);
-//									glLineWidth(2.0);
+//									glLineWidth(2.0 * self.window.backingScaleFactor);
 //									[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 //									
 //									if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
 //									{
-//										glLineWidth(2.0);
+//										glLineWidth(2.0 * self.window.backingScaleFactor);
 //										[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 //									}
 //								}
@@ -8679,20 +8679,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								{
 									glColor3f (1.0f, 0.6f, 0.0f);
 									
-									glLineWidth(2.0);
+									glLineWidth(2.0 * self.window.backingScaleFactor);
 									[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
 									
-									glLineWidth(2.0);
+									glLineWidth(2.0 * self.window.backingScaleFactor);
 									[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
 								}
 								
 								glColor3f (0.0f, 0.6f, 0.0f);
-								glLineWidth(2.0);
+								glLineWidth(2.0 * self.window.backingScaleFactor);
 								[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 								
 								if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
 								{
-									glLineWidth(2.0);
+									glLineWidth(2.0 * self.window.backingScaleFactor);
 									[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 								}
 							}
@@ -8703,7 +8703,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						float tempPoint3D[ 2];
 						
-						glLineWidth(2.0);
+						glLineWidth(2.0 * self.window.backingScaleFactor);
 						
 						tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
 						tempPoint3D[1] = slicePoint3D[ 1] / curDCM.pixelSpacingY;
@@ -8712,7 +8712,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						tempPoint3D[1] -= curDCM.pheight * 0.5f;
 
 						glColor3f (0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0);
+						glLineWidth(2.0 * self.window.backingScaleFactor);
 
 						if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
 						{
@@ -8753,7 +8753,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							glEnd();
 						}
-						glLineWidth(1.0);
+						glLineWidth(1.0 * self.window.backingScaleFactor);
 					}
 					
 					glDisable(GL_LINE_SMOOTH);
@@ -8774,7 +8774,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					float xOffset = 32;
 					//float xOffset = 10;
 					//float yOffset = 12;
-					glLineWidth( 1.0);
+					glLineWidth( 1.0 * self.window.backingScaleFactor);
 					glBegin(GL_LINES);
 					
 					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
@@ -9128,7 +9128,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 			
 	//		glColor4f ( 0, 0, 0 , 0.8);
-	//		glLineWidth( 3);
+	//		glLineWidth( 3 * self.window.backingScaleFactor);
 	//		
 	//		int resol = LENSSIZE*4*scaleValue;
 	//		
@@ -9150,7 +9150,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
 	//		}
 	//		glEnd();
-	//		glPointSize( 3);
+	//		glPointSize( 3 * self.window.backingScaleFactor);
 	//		glBegin( GL_POINTS);
 	//		for( int i = 0; i < resol ; i++ )
 	//		{

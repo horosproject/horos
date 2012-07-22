@@ -423,7 +423,7 @@ extern int ANNOTATIONS;
 	//	yAxeLength = viewportSizeY;
 		
 		glColor3f (0.0f, 1.0f, 0.0f);
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINES);
 		// vertical axis
 		glVertex2f(xCrossCenter,-4000);
@@ -511,14 +511,14 @@ extern int ANNOTATIONS;
 			
 			// red square
 			glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-			glLineWidth(8.0);
+			glLineWidth(8.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_LOOP);
 			glVertex2f(  -widthhalf, -heighthalf);
 			glVertex2f(  -widthhalf, heighthalf);
 			glVertex2f(  widthhalf, heighthalf);
 			glVertex2f(  widthhalf, -heighthalf);
 			glEnd();
-			glLineWidth(1.0);
+			glLineWidth(1.0 * self.window.backingScaleFactor);
 		}
 	}
 }

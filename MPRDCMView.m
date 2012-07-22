@@ -634,16 +634,16 @@ static	BOOL frameZoomed = NO;
 	
 	if( thickness > 2)
 	{
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 		
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: -thickness/2.];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: thickness/2.];
 	}
 	else
 	{
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 	}
 }
@@ -652,7 +652,7 @@ static	BOOL frameZoomed = NO;
 {
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 						
 	if( fromIntervalExport > 0)
 	{
@@ -706,7 +706,7 @@ static	BOOL frameZoomed = NO;
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glPointSize( 12);
+	glPointSize( 12 * self.window.backingScaleFactor);
 	
 	if( displayCrossLines && frameZoomed == NO)
 	{
@@ -805,7 +805,7 @@ static	BOOL frameZoomed = NO;
 	// Red Square
 	if( [[self window] firstResponder] == self && frameZoomed == NO)
 	{
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(  -widthhalf, -heighthalf);
 			glVertex2f(  -widthhalf, heighthalf);
@@ -814,14 +814,14 @@ static	BOOL frameZoomed = NO;
 		glEnd();
 	}
 	
-	glLineWidth(2.0);
+	glLineWidth(2.0 * self.window.backingScaleFactor);
 	glBegin(GL_POLYGON);
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 		glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf);
 		glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 	glEnd();
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
 	if( displayCrossLines && frameZoomed == NO && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
 																					&& !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
@@ -863,7 +863,7 @@ static	BOOL frameZoomed = NO;
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
@@ -882,7 +882,7 @@ static	BOOL frameZoomed = NO;
 			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
@@ -901,7 +901,7 @@ static	BOOL frameZoomed = NO;
 			
 			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;

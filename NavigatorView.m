@@ -522,7 +522,7 @@ static float deg2rad = M_PI/180.0;
 			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
 			glEnable(GL_SCISSOR_TEST);
 			
-			glLineWidth(6.0);
+			glLineWidth(6.0 * self.window.backingScaleFactor);
 			glColor3f(0.0f, 1.0f, 0.0f);
 			glBegin(GL_LINE_LOOP);
 				glVertex2f(upperLeft.x+1, upperLeft.y+1);
@@ -533,7 +533,7 @@ static float deg2rad = M_PI/180.0;
 			glDisable(GL_SCISSOR_TEST);
 			
 			glColor3f(0.0f, 0.0f, 0.0f);
-			glLineWidth(1.0);	
+			glLineWidth(1.0 * self.window.backingScaleFactor);	
 		}
 	}
 	
@@ -551,7 +551,7 @@ static float deg2rad = M_PI/180.0;
 		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
 		glEnable(GL_SCISSOR_TEST);
 		
-		glLineWidth(6.0);
+		glLineWidth(6.0 * self.window.backingScaleFactor);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(upperLeft.x+1, upperLeft.y+1);
@@ -562,7 +562,7 @@ static float deg2rad = M_PI/180.0;
 		glDisable(GL_SCISSOR_TEST);
 		
 		glColor3f(0.0f, 0.0f, 0.0f);
-		glLineWidth(1.0);	
+		glLineWidth(1.0 * self.window.backingScaleFactor);	
 	}
 
 	glDisable(GL_LINE_SMOOTH);
@@ -623,13 +623,13 @@ static float deg2rad = M_PI/180.0;
 	}
 	
 // mouse position (for debug purpose)	
-//	glPointSize(10.0);
+//	glPointSize(10.0 * self.window.backingScaleFactor);
 //	glColor3f(0.0f, 1.0f, 1.0f);
 //	glBegin(GL_POINTS);
 //		glVertex2f(mouseMovedPosition.x, mouseMovedPosition.y);
 //	glEnd();
 //	glColor3f(0.0f, 0.0f, 0.0f);
-//	glPointSize(1.0);
+//	glPointSize(1.0 * self.window.backingScaleFactor);
 
 	[[self openGLContext] flushBuffer];
 }

@@ -4577,32 +4577,29 @@ static float deg2rad = M_PI / 180.0;
 	self.curvedPath = [CPRMPRDCMView curvedPath];
 	
 	// this is a bit of a hack, but the -[self setCurvedPath] will change the initial angle if it was N3VectortZero
-	if (N3VectorEqualToVector([[CPRMPRDCMView curvedPath] initialNormal], N3VectorZero)) {
+	if (N3VectorEqualToVector([[CPRMPRDCMView curvedPath] initialNormal], N3VectorZero))
 		[CPRMPRDCMView setCurvedPath:self.curvedPath];
-	}
 	
-    if (mprView1 != CPRMPRDCMView) {
+    if (mprView1 != CPRMPRDCMView)
         mprView1.curvedPath = curvedPath;
-    }
-    if (mprView2 != CPRMPRDCMView) {
-        mprView2.curvedPath = curvedPath;
-    }
-    if (mprView3 != CPRMPRDCMView) {
-        mprView3.curvedPath = curvedPath;
-    }
-    if (cprView != CPRMPRDCMView) {
-        cprView.curvedPath = curvedPath;
-    }
     
-    if (topTransverseView != CPRMPRDCMView) {
+    if (mprView2 != CPRMPRDCMView)
+        mprView2.curvedPath = curvedPath;
+    
+    if (mprView3 != CPRMPRDCMView)
+        mprView3.curvedPath = curvedPath;
+    
+    if (cprView != CPRMPRDCMView)
+        cprView.curvedPath = curvedPath;
+    
+    if (topTransverseView != CPRMPRDCMView)
         topTransverseView.curvedPath = curvedPath;
-    }
-    if (middleTransverseView != CPRMPRDCMView) {
+    
+    if (middleTransverseView != CPRMPRDCMView)
         middleTransverseView.curvedPath = curvedPath;
-    }
-    if (bottomTransverseView != CPRMPRDCMView) {
+    
+    if (bottomTransverseView != CPRMPRDCMView)
         bottomTransverseView.curvedPath = curvedPath;
-    }
 }
 
 - (void)CPRViewDidEditCurvedPath:(id)CPRMPRDCMView

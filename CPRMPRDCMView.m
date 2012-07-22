@@ -646,16 +646,16 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	if( thickness > 2)
 	{
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 		
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: -thickness/2.];
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: thickness/2.];
 	}
 	else
 	{
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		[self drawCrossLines: sft ctx: cgl_ctx withShift: 0];
 	}
 }
@@ -664,7 +664,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 {
 //	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 //	
-//	glLineWidth(1.0);
+//	glLineWidth(1.0 * self.window.backingScaleFactor);
 //    
 //	if( fromIntervalExport > 0)
 //	{
@@ -721,7 +721,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glPointSize( 12);
+	glPointSize( 12 * self.window.backingScaleFactor);
 	
 	if( displayCrossLines && frameZoomed == NO)
 	{
@@ -781,7 +781,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil && frameZoomed == NO)
 	{
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
         glVertex2f(  -widthhalf, -heighthalf);
         glVertex2f(  -widthhalf, heighthalf);
@@ -790,14 +790,14 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 		glEnd();
 	}
 	
-	glLineWidth(2.0);
+	glLineWidth(2.0 * self.window.backingScaleFactor);
 	glBegin(GL_POLYGON);
     glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf+VIEW_COLOR_LABEL_SIZE);
     glVertex2f(widthhalf-VIEW_COLOR_LABEL_SIZE, -heighthalf);
     glVertex2f(widthhalf, -heighthalf);
     glVertex2f(widthhalf, -heighthalf+VIEW_COLOR_LABEL_SIZE);
 	glEnd();
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
 	if( displayCrossLines && frameZoomed == NO && windowController.displayMousePosition && !windowController.mprView1.rotateLines && !windowController.mprView2.rotateLines && !windowController.mprView3.rotateLines
        && !windowController.mprView1.moveCenter && !windowController.mprView2.moveCenter && !windowController.mprView3.moveCenter)
@@ -839,7 +839,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			[pixA convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
@@ -858,7 +858,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			[pixB convertPixX:sc[0] pixY:sc[1] toDICOMCoords:location pixelCenter:YES];
 			[pix convertDICOMCoords:location toSliceCoords:sc pixelCenter:YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
@@ -877,7 +877,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			
 			[pix convertDICOMCoords: dc toSliceCoords: sc pixelCenter: YES];
 			
-			glPointSize( 10);
+			glPointSize( 10 * self.window.backingScaleFactor);
 			glBegin( GL_POINTS);
 			sc[0] = sc[ 0] / curDCM.pixelSpacingX;
 			sc[1] = sc[ 1] / curDCM.pixelSpacingY;
@@ -900,7 +900,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 				N3AffineTransform transform;
 				[self colorForView:viewID];
 				glEnable(GL_POINT_SMOOTH);
-				glPointSize(8);
+				glPointSize(8 * self.window.backingScaleFactor);
 				transform = N3AffineTransformConcat(N3AffineTransformInvert([self pixToDicomTransform]), [self pixToSubDrawRectTransform]);
 				cursorVector = N3VectorApplyTransform([displayInfo mouseVectorForPlane:planeName], transform);
 				glBegin(GL_POINTS);
@@ -2445,7 +2445,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -0.5), N3VectorMake(0, 0, 1))];
     [flattenedBezierPath addEndpointsAtIntersectionsWithPlane:N3PlaneMake(N3VectorMake(0, 0, -1.0), N3VectorMake(0, 0, 1))];
     
-    glLineWidth(2.0);
+    glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [flattenedBezierPath elementCount]; i++) { // draw the line segments
         [flattenedBezierPath elementAtIndex:i control1:NULL control2:NULL endpoint:&vector];
@@ -2465,7 +2465,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     // draw the thick slab outline
     if ([bezierPath elementCount] >= 2 && curvedPath.thickness > 2.0 && length > 3.0)
 	{
-        glLineWidth(1.0);
+        glLineWidth(1.0 * self.window.backingScaleFactor);
         if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
             outlinePath = [[bezierPath outlineBezierPathAtDistance:curvedPath.thickness / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
         } else {
@@ -2491,7 +2491,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	if( [[self windowController] exportSlabThickness] > 0)
 	{
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
         if (_CPRType == CPRMPRDCMViewCPRStraightenedType) {
             outlinePath = [[bezierPath outlineBezierPathAtDistance: [[self windowController] exportSlabThickness] / 2.0 initialNormal:N3VectorCrossProduct(curvedPath.initialNormal, [flattenedBezierPath tangentAtStart]) spacing:1.0] mutableCopy];
         } else {
@@ -2641,7 +2641,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
     cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
     
     glEnable(GL_POINT_SMOOTH);
-    glPointSize(pointSize);
+    glPointSize( pointSize * self.window.backingScaleFactor);
     
     glBegin(GL_POINTS);
     glVertex2f(point.x, point.y);

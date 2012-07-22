@@ -473,7 +473,7 @@ extern int splitPosition[ 3];
 //		glColor4d(1.0, 1.0, 0.0, 1.0);
 //		lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, 0, 0), pixToSubDrawRectTransform);
 //		lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
-//		glLineWidth(1.0);
+//		glLineWidth(1.0 * self.window.backingScaleFactor);
 //		glBegin(GL_LINE_STRIP);
 //		glVertex2f(lineStart.x, lineStart.y);
 //		glVertex2f(lineEnd.x, lineEnd.y);
@@ -481,7 +481,7 @@ extern int splitPosition[ 3];
 //		
 //		if (_curvedPath.thickness > 2.0)
 //		{
-//			glLineWidth(1.0);
+//			glLineWidth(1.0 * self.window.backingScaleFactor);
 //			glBegin(GL_LINES);
 //			lineStart = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, 0, 0), pixToSubDrawRectTransform);
 //			lineEnd = N3VectorApplyTransform(N3VectorMake(((CGFloat)curDCM.pwidth+_curvedPath.thickness*pixelsPerMm)/2.0, curDCM.pheight, 0), pixToSubDrawRectTransform);
@@ -501,7 +501,7 @@ extern int splitPosition[ 3];
         
         glColor4d(1.0, 1.0, 0.0, 1.0);
         glEnable(GL_POINT_SMOOTH);
-        glPointSize(8);
+        glPointSize(8 * self.window.backingScaleFactor);
         glBegin(GL_POINTS);
         glVertex2f(cursorVector.x, cursorVector.y);
         glEnd();
@@ -518,7 +518,7 @@ extern int splitPosition[ 3];
 		float heighthalf = drawingFrameRect.size.height/2;
 		float widthhalf = drawingFrameRect.size.width/2;
 		
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
         glVertex2f(  -widthhalf, -heighthalf);
         glVertex2f(  -widthhalf, heighthalf);

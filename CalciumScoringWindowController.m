@@ -240,7 +240,7 @@ enum ctTypes {ElectronCTType, MultiSliceCTType};
 			
 			CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 			glColor3f (0.0f, 1.0f, 0.5f);
-			glLineWidth(2.0);
+			glLineWidth(2.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINES);
 			
 			float crossx, crossy, scaleValue = [[userInfo valueForKey:@"scaleValue"] floatValue];

@@ -447,7 +447,7 @@ extern int splitPosition[ 3];
 	glEnable(GL_BLEND);
 	glEnable(GL_POINT_SMOOTH);
 	glEnable(GL_LINE_SMOOTH);
-	glPointSize( 12);
+	glPointSize( 12 * self.window.backingScaleFactor);
 	
     pixToSubDrawRectTransform = [self pixToSubDrawRectTransform];
     pixelsPerMm = (CGFloat)curDCM.pwidth/[_curvedPath.bezierPath length];
@@ -456,13 +456,13 @@ extern int splitPosition[ 3];
         for (planeName in _planes) {
             planeColor = [self valueForKey:[planeName stringByAppendingString:@"PlaneColor"]];
             
-            glLineWidth(2.0);
+            glLineWidth(2.0 * self.window.backingScaleFactor);
             // draw planes
             glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]]];
 
-            glLineWidth(1.0);
+            glLineWidth(1.0 * self.window.backingScaleFactor);
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"TopPlaneRuns"]]];
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"BottomPlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"TopVerticalLines"]]];
@@ -476,7 +476,7 @@ extern int splitPosition[ 3];
     lineStart = N3VectorApplyTransform(lineStart, pixToSubDrawRectTransform);
     lineEnd = N3VectorApplyTransform(lineEnd, pixToSubDrawRectTransform);
     
-	glLineWidth(2.0);
+	glLineWidth(2.0 * self.window.backingScaleFactor);
     glBegin(GL_LINES);
     glColor4d(0.0, 1.0, 0.0, 0.2);
     glVertex2d(lineStart.x, lineStart.y);
@@ -491,7 +491,7 @@ extern int splitPosition[ 3];
         cursorVector = N3VectorApplyTransform(cursorVector, pixToSubDrawRectTransform);
         
         glEnable(GL_POINT_SMOOTH);
-        glPointSize(8);
+        glPointSize(8 * self.window.backingScaleFactor);
         
         glBegin(GL_POINTS);
         glVertex2f(cursorVector.x, cursorVector.y);
@@ -504,7 +504,7 @@ extern int splitPosition[ 3];
         draggedPosition = _displayInfo.draggedPosition;
         lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*draggedPosition, 0, 0), pixToSubDrawRectTransform);
         lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*draggedPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-        glLineWidth(2.0);
+        glLineWidth(2.0 * self.window.backingScaleFactor);
         glBegin(GL_LINE_STRIP);
         glVertex2f(lineStart.x, lineStart.y);
         glVertex2f(lineEnd.x, lineEnd.y);
@@ -536,7 +536,7 @@ extern int splitPosition[ 3];
 			transverseSectionPosition = (startingDistance + ((float) i * exportTransverseSliceInterval)) / (float) _curvedPath.bezierPath.length;
 			lineStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
 			lineEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-			glLineWidth(2.0);
+			glLineWidth(2.0 * self.window.backingScaleFactor);
 			glBegin(GL_LINE_STRIP);
 			glVertex2f(lineStart.x, lineStart.y);
 			glVertex2f(lineEnd.x, lineEnd.y);
@@ -552,7 +552,7 @@ extern int splitPosition[ 3];
 		transverseSectionPosition = _curvedPath.transverseSectionPosition;
 		lineBStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
 		lineBEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*transverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-		glLineWidth(2.0);
+		glLineWidth(2.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(lineBStart.x, lineBStart.y);
 		glVertex2f(lineBEnd.x, lineBEnd.y);
@@ -561,7 +561,7 @@ extern int splitPosition[ 3];
 		leftTransverseSectionPosition = _curvedPath.leftTransverseSectionPosition;
 		lineAStart = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, 0, 0), pixToSubDrawRectTransform);
 		lineAEnd = N3VectorApplyTransform(N3VectorMake((CGFloat)curDCM.pwidth*leftTransverseSectionPosition, curDCM.pheight, 0), pixToSubDrawRectTransform);
-		glLineWidth(1.0);
+		glLineWidth(1.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_STRIP);
 		glVertex2f(lineAStart.x, lineAStart.y);
 		glVertex2f(lineAEnd.x, lineAEnd.y);
@@ -662,7 +662,7 @@ extern int splitPosition[ 3];
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
 			glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
 			glEnable(GL_POINT_SMOOTH);
-			glPointSize(8);
+			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 			glBegin(GL_POINTS);
 			glVertex2f(cursorVector.x, cursorVector.y);
@@ -690,7 +690,7 @@ extern int splitPosition[ 3];
             
             glColor4d(1.0, 1.0, 0.0, 1.0);
             glEnable(GL_POINT_SMOOTH);
-            glPointSize(8);
+            glPointSize(8 * self.window.backingScaleFactor);
             glBegin(GL_POINTS);
             glVertex2f(cursorVector.x, cursorVector.y);
             glEnd();
@@ -714,7 +714,7 @@ extern int splitPosition[ 3];
 
             
             glEnable(GL_POINT_SMOOTH);
-            glPointSize(8);
+            glPointSize(8 * self.window.backingScaleFactor);
             
             glBegin(GL_POINTS);
             glVertex2f(cursorVector.x, cursorVector.y);
@@ -722,7 +722,7 @@ extern int splitPosition[ 3];
         }
     }
     
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
 	// Red Square
 	if( [[self window] firstResponder] == self && stringID == nil)
@@ -735,7 +735,7 @@ extern int splitPosition[ 3];
 		float heighthalf = drawingFrameRect.size.height/2;
 		float widthhalf = drawingFrameRect.size.width/2;
 		
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
         glVertex2f(  -widthhalf, -heighthalf);
         glVertex2f(  -widthhalf, heighthalf);

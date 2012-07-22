@@ -470,7 +470,7 @@ extern int splitPosition[ 3];
     // draw the centerline.
     
     glColor3f(0, 1, 0);
-    glLineWidth(1.0);
+    glLineWidth(1.0 * self.window.backingScaleFactor);
     glBegin(GL_LINE_STRIP);
     for (i = 0; i < [centerline elementCount]; i++) {
         [centerline elementAtIndex:i control1:NULL control2:NULL endpoint:&endpoint];
@@ -486,7 +486,7 @@ extern int splitPosition[ 3];
         cursorVector = [self _centerlinePixVectorForRelativePosition:_displayInfo.mouseCursorPosition];
         
         glEnable(GL_POINT_SMOOTH);
-        glPointSize(8);
+        glPointSize(8 * self.window.backingScaleFactor);
         
         glBegin(GL_POINTS);
         glVertex2f(cursorVector.x, cursorVector.y);
@@ -501,13 +501,13 @@ extern int splitPosition[ 3];
         for (planeName in _planes) {
             planeColor = [self valueForKey:[planeName stringByAppendingString:@"PlaneColor"]];
             
-            glLineWidth(2.0);
+            glLineWidth(2.0 * self.window.backingScaleFactor);
             // draw planes
             glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"PlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"VerticalLines"]]];
             
-            glLineWidth(1.0);
+            glLineWidth(1.0 * self.window.backingScaleFactor);
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"TopPlaneRuns"]]];
             [self _drawPlaneRuns:[self valueForKey:[planeName stringByAppendingString:@"BottomPlaneRuns"]]];
             [self _drawVerticalLines:[self valueForKey:[planeName stringByAppendingString:@"TopVerticalLines"]]];
@@ -552,7 +552,7 @@ extern int splitPosition[ 3];
             relativePosition = (startingDistance + (exportTransverseSliceInterval * (CGFloat)i)) / curveLength;
             transverseRun = [self _limitedRunForRelativePosition:relativePosition verticalLineIndex:&transverseIndex lengthFromCenterline:curDCM.pheight / 3];
             
-            glLineWidth(2.0);
+            glLineWidth(2.0 * self.window.backingScaleFactor);
 
             if (transverseRun) {
                 [self _drawPlaneRuns:[NSArray arrayWithObject:transverseRun]];
@@ -575,9 +575,9 @@ extern int splitPosition[ 3];
             NSArray *transverseVerticalLine = [_transverseVerticalLines objectForKey:name];
             
             if ([name isEqualToString:@"center"]) {
-                glLineWidth(2.0);
+                glLineWidth(2.0 * self.window.backingScaleFactor);
             } else {
-                glLineWidth(1.0);
+                glLineWidth(1.0 * self.window.backingScaleFactor);
             }
             
             [self _drawVerticalLines:transverseVerticalLine length:curDCM.pheight/3.0];
@@ -586,9 +586,9 @@ extern int splitPosition[ 3];
             NSArray *transversePlaneRun = [_transversePlaneRuns objectForKey:name];
             
             if ([name isEqualToString:@"center"]) {
-                glLineWidth(2.0);
+                glLineWidth(2.0 * self.window.backingScaleFactor);
             } else {
-                glLineWidth(1.0);
+                glLineWidth(1.0 * self.window.backingScaleFactor);
             }
             
             [self _drawPlaneRuns:transversePlaneRun];
@@ -687,7 +687,7 @@ extern int splitPosition[ 3];
 			planeColor = [self valueForKey:[NSString stringWithFormat:@"%@PlaneColor", planeName]];
 			glColor4f ([planeColor redComponent], [planeColor greenComponent], [planeColor blueComponent], [planeColor alphaComponent]);
 			glEnable(GL_POINT_SMOOTH);
-			glPointSize(8);
+			glPointSize(8 * self.window.backingScaleFactor);
 			cursorVector = N3VectorApplyTransform([[_mousePlanePointsInPix objectForKey:planeName] N3VectorValue], pixToSubDrawRectTransform);
 			glBegin(GL_POINTS);
 			glVertex2f(cursorVector.x, cursorVector.y);
@@ -715,7 +715,7 @@ extern int splitPosition[ 3];
 //            
 //            glColor4d(1.0, 1.0, 0.0, 1.0);
 //            glEnable(GL_POINT_SMOOTH);
-//            glPointSize(8);
+//            glPointSize(8 * self.window.backingScaleFactor);
 //            glBegin(GL_POINTS);
 //            glVertex2f(cursorVector.x, cursorVector.y);
 //            glEnd();
@@ -740,7 +740,7 @@ extern int splitPosition[ 3];
             
             
             glEnable(GL_POINT_SMOOTH);
-            glPointSize(8);
+            glPointSize(8 * self.window.backingScaleFactor);
             
             glBegin(GL_POINTS);
             glVertex2f(cursorVector.x, cursorVector.y);
@@ -761,7 +761,7 @@ extern int splitPosition[ 3];
 		float heighthalf = drawingFrameRect.size.height/2;
 		float widthhalf = drawingFrameRect.size.width/2;
 		
-		glLineWidth(8.0);
+		glLineWidth(8.0 * self.window.backingScaleFactor);
 		glBegin(GL_LINE_LOOP);
         glVertex2f(  -widthhalf, -heighthalf);
         glVertex2f(  -widthhalf, heighthalf);

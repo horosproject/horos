@@ -54,7 +54,7 @@
 	float halfViewFrameWidth = viewFrame.size.width/2.0;
 	
 	glColor3f(0.0f, 1.0f, 0.0f);
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 
 	glTranslatef( -origin.x, 0.0f, 0.0f);
 
@@ -131,7 +131,7 @@ const float ArrowButtonBottomMargin = 7.0, ArrowButtonRightMargin = 6.0, ArrowBu
 	glEnd();
 		
 	// triangle
-	glLineWidth(1.0);
+	glLineWidth(1.0 * self.window.backingScaleFactor);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_TRIANGLES);
 		glVertex2f(ArrowButtonLeftSide,position-ArrowButtonBottomMargin*[curDCM pixelSpacingX]/[curDCM pixelSpacingY]);
