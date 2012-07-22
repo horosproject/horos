@@ -3953,7 +3953,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 + (NSString*) patientUID: (id) src
 {
-	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", [src valueForKey:@"patientName"], [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
+    NSString *patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
+    
+	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
 	
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
 }

@@ -105,6 +105,9 @@
 		if (dataset ->findAndGetString(DCM_ReferringPhysiciansName, string).good() && string != nil)		
 			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 		
+        if (dataset ->findAndGetString(DCM_PerformingPhysiciansName, string).good() && string != nil)		
+			_performingPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
+        
 		if (dataset ->findAndGetString(DCM_InstitutionName, string).good() && string != nil)		
 			_institutionName = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 		
@@ -169,7 +172,7 @@
 	return self;
 }
 
-- (DcmDataset *)queryPrototype
+- (DcmDataset *)queryPrototype // When 'opening' a study -> SERIES level
 {
 	DcmDataset *dataset = new DcmDataset();
 	dataset-> insertEmptyElement(DCM_SeriesDescription, OFTrue);
@@ -182,6 +185,7 @@
 	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
 	dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
 	dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
+    dataset-> insertEmptyElement(DCM_PerformingPhysiciansName, OFTrue);
 	dataset-> insertEmptyElement(DCM_InstitutionName, OFTrue);
 	dataset-> putAndInsertString(DCM_StudyInstanceUID, [_uid UTF8String], OFTrue);
 	dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "SERIES", OFTrue);
@@ -283,7 +287,7 @@
 
 - (NSString*) performingPhysician // Match DicomStudy
 {
-    return nil;
+    return _performingPhysician;
 }
 
 - (NSString*) albumsNames // Match DicomStudy

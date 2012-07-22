@@ -2467,8 +2467,6 @@ static NSDate *lastWarningDate = nil;
 		if ([s hasPrefix:@"process_state-"])
 			[[NSFileManager defaultManager] removeItemAtPath:[@"/tmp" stringByAppendingPathComponent:s] error:nil];
 	
-	[NSSplitView saveSplitView];
-	
 	[[NSFileManager defaultManager] removeItemAtPath:@"/tmp/zippedCD/" error:nil];
 
     [[NSFileManager defaultManager] removeItemAtPath:[[NSFileManager defaultManager] tmpDirPath] error:NULL];
@@ -3037,8 +3035,6 @@ static BOOL initialized = NO;
 - (void) applicationDidFinishLaunching:(NSNotification*) aNotification
 {
 	unlink( "/tmp/kill_all_storescu");
-	
-	[NSSplitView loadSplitView];
 	
     [[[NSWorkspace sharedWorkspace] notificationCenter]
             addObserver:self

@@ -27,8 +27,6 @@
 - ViewerController: Next Patient failed
 - Comparative: inactivate the icons for distant study
 - Retina displays: iChat, CPR (add node), PT-CT
-- C-Find SCP: institution, referring physician
-
 -------------------------------------------------------------
 
 - Retina: VR (implication for MPR, CPR)

@@ -7574,6 +7574,9 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView:(NSSplitView*)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
+//    if( starting)
+//        return proposedPosition;
+    
     if (sender == splitViewVert)
 	{
         _splitViewVertDividerRatio = proposedPosition/sender.bounds.size.width;
@@ -7720,6 +7723,9 @@ static BOOL withReset = NO;
 
 -(void)splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
+//    if( starting)
+//        return;
+    
 	if (sender == splitDrawer)
     {
         NSView* left = [[sender subviews] objectAtIndex:0];
@@ -7812,6 +7818,9 @@ static BOOL withReset = NO;
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
 {
+//    if( starting)
+//        return;
+    
 	N2OpenGLViewWithSplitsWindow *window = (N2OpenGLViewWithSplitsWindow*)self.window;
 	
 	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
@@ -7820,6 +7829,9 @@ static BOOL withReset = NO;
 
 - (void)splitViewDidResizeSubviews: (NSNotification *)notification
 {
+//    if( starting)
+//        return;
+    
     if ([notification object] == splitViewVert)
     {
         CGFloat dividerPosition = [[[splitViewVert subviews] objectAtIndex:0] frame].size.width+(_bottomSplit.bounds.size.width-splitViewVert.bounds.size.width);
@@ -7872,21 +7884,13 @@ static BOOL withReset = NO;
     [left setHidden:!shouldExpand];
     
     [splitDrawer resizeSubviewsWithOldSize:splitDrawer.bounds.size];
-    
-/*    NSRect f = [_bottomSplit frame];
-    if (expand && f.origin.x < 100) {
-        f.size.width -= 160;
-        f.origin.x += 160;
-    } 
-    if (!expand && f.origin.x >= 100) {
-        f.size.width += 160;
-        f.origin.x -= 160;
-    }
-    [_bottomSplit setFrame:f];*/
 }
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMinCoordinate: (CGFloat)proposedMin ofSubviewAt: (NSInteger)offset
 {
+//    if( starting)
+//        return proposedMin;
+    
 	if (sender == splitViewHorz)
 		return oMatrix.cellSize.height;
 
@@ -7907,6 +7911,9 @@ static BOOL withReset = NO;
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainMaxCoordinate: (CGFloat)proposedMax ofSubviewAt: (NSInteger)offset
 {
+//    if( starting)
+//        return proposedMax;
+    
 	if (sender == splitViewVert)
 		return [sender bounds].size.width-200;
     
@@ -9110,6 +9117,10 @@ static BOOL needToRezoom;
     #ifndef OSIRIX_LIGHT
     [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
     #endif
+    
+    [NSThread sleepForTimeInterval: 0.2];
+    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+    [NSThread sleepForTimeInterval: 1];
     
     @synchronized( comparativeRetrieveQueue)
     {
@@ -11429,7 +11440,6 @@ static NSArray*	openSubSeriesArray = nil;
 		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NSWindow Frame DBWindow"] == nil) // No position for the window -> fullscreen
 			[[self window] zoom: self];
 		
-		//	[self splitViewDidResizeSubviews:nil];
 		[self.window setFrameAutosaveName:@"DBWindow"];
 		
 		[self awakeSources];
@@ -11545,17 +11555,25 @@ static NSArray*	openSubSeriesArray = nil;
 		
 		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
 		
-		
-		[splitViewVert restoreDefault:@"SPLITVERT2"];
-		[splitViewHorz restoreDefault:@"SPLITHORZ2"];
-		[splitAlbums restoreDefault:@"SPLITALBUMS"];
-        [splitComparative restoreDefault:@"SPLITCOMPARATIVE"];
-
-        //		[self autoCleanDatabaseDate: self];
-		
-		[self splitViewDidResizeSubviews:[NSNotification notificationWithName:NSSplitViewDidResizeSubviewsNotification object:splitViewVert]];
-		
-		
+        [splitDrawer restoreDefault: @"SplitDrawer"];
+        [splitAlbums restoreDefault: @"SplitAlbums"];
+        [splitViewHorz restoreDefault: @"SplitHorz2"];
+        [splitComparative restoreDefault: @"SplitComparative"];
+        [splitViewVert restoreDefault: @"SplitVert2"];
+        
+        {
+        NSView* right = [[splitComparative subviews] objectAtIndex:1];
+        BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
+            [self comparativeToggle: self];
+        }
+        {
+        NSView* left = [[splitDrawer subviews] objectAtIndex:0];
+        BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitDrawerHidden"] != hidden)
+            [self drawerToggle: self];
+        }
+        
 		// database : gray background
 		//	[databaseOutline setUsesAlternatingRowBackgroundColors:NO];
 		//	[databaseOutline setBackgroundColor:[NSColor lightGrayColor]];
@@ -11597,21 +11615,13 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	[self setDBWindowTitle];
 	
-    // TODO: drawer
-//	NSSize size = NSSizeFromString( [[NSUserDefaults standardUserDefaults] objectForKey: @"drawerSize"]);
-//	if( size.width > 0)
-///		; // [albumDrawer setContentSize: size];
-//	
-//	if( [[[NSUserDefaults standardUserDefaults] objectForKey: @"drawerState"] intValue] == NSDrawerOpenState && [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO)
-//		;//[albumDrawer openOnEdge:NSMinXEdge];
-
 	loadingIsOver = YES;
 	
 	[self outlineViewRefresh];
 	
 	[self awakeActivity];
 	[self.window makeKeyAndOrderFront: self];
-	
+    
 	[self refreshMatrix: self];
 	
 	#ifndef OSIRIX_LIGHT
@@ -11835,11 +11845,26 @@ static NSArray*	openSubSeriesArray = nil;
 	
 //	newFilesInIncoming = NO;
 	
-    [splitViewVert saveDefault:@"SPLITVERT2"];
-    [splitViewHorz saveDefault:@"SPLITHORZ2"];
-	[splitAlbums saveDefault:@"SPLITALBUMS"];
-    [splitComparative saveDefault:@"SPLITCOMPARATIVE"];
+    [splitViewVert saveDefault:@"SplitVert2"];
+    [splitViewHorz saveDefault:@"SplitHorz2"];
+	[splitAlbums saveDefault:@"SplitAlbums"];
+    [splitComparative saveDefault:@"SplitComparative"];
+    [splitDrawer saveDefault:@"SplitDrawer"];
 	
+    {
+        NSView* left = [[splitDrawer subviews] objectAtIndex:0];
+        BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
+    
+        [[NSUserDefaults standardUserDefaults] setBool: hidden forKey: @"SplitDrawerHidden"];
+    }
+    
+    {
+        NSView* right = [[splitComparative subviews] objectAtIndex:1];
+        BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
+        
+        [[NSUserDefaults standardUserDefaults] setBool: hidden forKey: @"SplitComparativeHidden"];
+    }
+                                                     
 	if( [[databaseOutline sortDescriptors] count] >= 1)
 	{
 		NSDictionary	*sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[databaseOutline sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[databaseOutline sortDescriptors] objectAtIndex: 0] key], @"key", nil];

@@ -367,19 +367,19 @@ extern "C"
     
     if( usePatientName && study.name.length == 0)
     {
-        NSLog( @"****** QR: usePatientName == YES && study.name.length == 0");
+        NSLog( @"****** QR: usePatientName == YES && study.name.length == 0 : %@", study);
         return 0;
     }
     
     if( usePatientBirthDate && study.dateOfBirth == nil)
     {
-        NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0");
+        NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0 : %@", study);
         return 0;
     }
     
     if( usePatientID && study.patientID.length == 0)
     {
-        NSLog( @"****** QR: usePatientBirthDate == YES && study.dateOfBirth == 0");
+        NSLog( @"****** QR: usePatientID && study.patientID.length == 0 : %@", study);
         return 0;
     }
     
