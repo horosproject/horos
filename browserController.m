@@ -2348,9 +2348,8 @@ static NSConditionLock *threadLock = nil;
 			if( [[album valueForKey:@"smartAlbum"] boolValue] == YES)
 			{
                 smartAlbumName = [album valueForKey:@"name"];
-				subPredicate = [self smartAlbumPredicate: album];
+                albumArrayContent = [_database objectsForEntity: _database.studyEntity predicate:[self smartAlbumPredicate: album]];
 				description = [description stringByAppendingFormat:NSLocalizedString(@"Smart Album selected: %@", nil), smartAlbumName];
-				predicate = [NSCompoundPredicate andPredicateWithSubpredicates: [NSArray arrayWithObjects: subPredicate, predicate, nil]];
 			}
 			else
 			{
@@ -2430,10 +2429,13 @@ static NSConditionLock *threadLock = nil;
             if( smartAlbumDistantArray && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
             {
                 NSMutableArray *distantStudies = [NSMutableArray array];
+                
+                NSArray *filteredAlbumDistantStudies = [smartAlbumDistantArray filteredArrayUsingPredicate: predicate];
+                
                 // Merge local and distant studies
                 #ifndef OSIRIX_LIGHT
                 NSMutableArray *localStudyInstanceUIDs = [outlineViewArray valueForKey: @"studyInstanceUID"];
-                for( DCMTKStudyQueryNode *distantStudy in smartAlbumDistantArray)
+                for( DCMTKStudyQueryNode *distantStudy in filteredAlbumDistantStudies)
                 {
                     if( [localStudyInstanceUIDs containsObject: [distantStudy studyInstanceUID]] == NO)
                         [distantStudies addObject: distantStudy];
