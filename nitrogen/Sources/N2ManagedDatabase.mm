@@ -283,9 +283,10 @@
 					} @catch (...) {
 					}
 					
-					if (!pStore && i == 1) {
+					if (!pStore && i == 1)
+                    {
 						NSLog(@"Error: [N2ManagedDatabase contextAtPath:] %@", [err description]);
-						if ([NSThread isMainThread]) NSRunCriticalAlertPanel([NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], err.localizedDescription, NSLocalizedString(@"OK", NULL), NULL, NULL);
+						if ([NSThread isMainThread]) NSRunCriticalAlertPanel( [NSString stringWithFormat:NSLocalizedString(@"%@ Storage Error", nil), [self className]], [NSString stringWithFormat: @"%@\r\r%@", err.localizedDescription, sqlFilePath], NSLocalizedString(@"OK", NULL), NULL, NULL);
 						
 						// error = [NSError osirixErrorWithCode:0 underlyingError:error localizedDescriptionFormat:NSLocalizedString(@"Store Configuration Failure: %@", NULL), error.localizedDescription? error.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 						
