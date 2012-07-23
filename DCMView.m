@@ -7981,15 +7981,17 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     #else
     if( size.size.width * sf > 700)
     {
+        glColor4f( 1.0, 1.0, 1.0, 1.0);
+        
         if( warningNotice == nil && [self class] == [DCMView class])
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 25] forKey:NSFontAttributeName];
+            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 20] forKey:NSFontAttributeName];
             NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
             warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
-        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 40*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 30*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
     }
     #endif
 }
