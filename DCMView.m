@@ -7979,7 +7979,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     #if __LP64__
     #else
-    if( size.size.width * sf > 700)
+    if( size.size.width * sf > 700 && [AppController isFDACleared] == NO)
     {
         glColor4f( 1.0, 1.0, 1.0, 1.0);
         
@@ -7991,7 +7991,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
-        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 30*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
     }
     #endif
 }
