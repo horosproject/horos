@@ -7513,7 +7513,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	
 	if (annotations == 4) [[NSNotificationCenter defaultCenter] postNotificationName: OsirixDrawTextInfoNotification object: self];
-	else //none, base, noName, full annotation
+	else if( annotations > annotGraphics)
 	{
 		NSMutableString *tempString, *tempString2, *tempString3, *tempString4;
 		long yRaster = 1, xRaster;
@@ -7975,23 +7975,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		xRaster = size.size.width-2 -colorBoxSize;
 		if( fullText)
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
-        
-#if __LP64__
-#else
-        if( size.size.width * sf > 700)
-        {
-            if( warningNotice == nil && [self class] == [DCMView class])
-            {
-                NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-                [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 25] forKey:NSFontAttributeName];
-                NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
-                warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
-            }
-            
-            [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 40*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
-        }
-#endif
      }
+    
+    #if __LP64__
+    #else
+    if( size.size.width * sf > 700)
+    {
+        if( warningNotice == nil && [self class] == [DCMView class])
+        {
+            NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 25] forKey:NSFontAttributeName];
+            NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
+            warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
+        }
+        
+        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 40*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+    }
+    #endif
 }
 
 - (void) drawTextualData:(NSRect) size :(long) annotations
@@ -8835,21 +8835,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						}
 					}
 					glEnd();
-					
-					@try
-					{
-						[self drawTextualData: drawingFrameRect :annotations];
-					}
-					
-					@catch (NSException * e)
-					{
-						NSLog( @"drawTextualData Annotations Exception : %@", e);
-					}
-					
 				}
 			
 			} //Annotation  != None
 			
+            @try
+            {
+                [self drawTextualData: drawingFrameRect :annotations];
+            }
+            
+            @catch (NSException * e)
+            {
+                NSLog( @"drawTextualData Annotations Exception : %@", e);
+            }
+            
 			if(repulsorRadius != 0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
