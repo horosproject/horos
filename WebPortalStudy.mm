@@ -34,7 +34,7 @@
 {
     DicomDatabase* ddb = [[WebPortal defaultWebPortal] dicomDatabase];
     
-	NSArray* studies = [ddb objectsForEntity:ddb.studyEntity predicate:[NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
+	NSArray* studies = [ddb objectsForEntity:ddb.studyEntity predicate:[NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
 	
 	if (studies.count != 1)
     {

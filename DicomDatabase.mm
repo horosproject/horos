@@ -1460,7 +1460,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				
 				if (curDict != nil)
 				{
-					if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: curPatientUID] == NSOrderedSame)
+					if ([[curDict objectForKey: @"studyID"] isEqualToString: curStudyID] == YES && [[curDict objectForKey: @"patientUID"] compare: curPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 					{
 						if ([[study valueForKey: @"modality"] isEqualToString: @"SR"] || [[study valueForKey: @"modality"] isEqualToString: @"OT"])
 							[study setValue: [curDict objectForKey: @"modality"] forKey:@"modality"];
@@ -1485,7 +1485,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							{
 								if (![[studiesArray objectAtIndex: index] valueForKey: @"patientUID"])
                                     [[studiesArray objectAtIndex: index] setPatientUID:[curDict objectForKey: @"patientUID"]];
-                                if ([[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]] == NSOrderedSame)
+                                if ([[curDict objectForKey: @"patientUID"] compare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 									study = [studiesArray objectAtIndex: index];
 								else
 								{
@@ -1498,7 +1498,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 										
 										if ([uid isEqualToString: curUID])
 										{
-											if ([[curDict objectForKey: @"patientUID"] caseInsensitiveCompare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"]] == NSOrderedSame)
+											if ([[curDict objectForKey: @"patientUID"] compare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 												study = [studiesArray objectAtIndex: i];
 										}
 									}

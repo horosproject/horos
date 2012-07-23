@@ -259,7 +259,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 		return;
 	}
 	
-	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID isEqualToString: [rootDict valueForKey: @"patientUID"]] == NO)
+	if( [self.studyInstanceUID isEqualToString: [rootDict valueForKey: @"studyInstanceUID"]] == NO || [self.patientUID compare: [rootDict valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 	{
 		NSLog( @"******** WARNING applyAnnotationsFromDictionary will not be applied - studyInstanceUID / name / patientID are NOT corresponding: %@ / %@", [rootDict valueForKey: @"patientsName"], self.name);
 	}
@@ -1808,7 +1808,7 @@ static NSRecursiveLock *dbModifyLock = nil;
         {
             if( user.studyPredicate.length > 0)
             {
-                NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
+                NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@ AND studyInstanceUID == %@", self.patientUID, self.studyInstanceUID]];
             
                 if( [studies containsObject: self])
                     [authorizedUsers addObject: user];

@@ -118,11 +118,11 @@
 		
 		for (managedObject in dbObjects)
 		{
-			id newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
+			NSString *newPatient = [managedObject valueForKeyPath:@"series.study.patientUID"];
 			
 			if( patient == nil)
 				patient = newPatient;
-			else if( ![patient isEqualToString:newPatient])
+			else if( [patient compare: newPatient options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
 				_multiplePatients = YES;
 				break;

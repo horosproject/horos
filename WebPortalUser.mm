@@ -348,9 +348,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 NSArray *obj = nil;
                 
                 if (self.canAccessPatientsOtherStudies.boolValue)
-                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@", study.patientUID]];
+                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@", study.patientUID]];
                 else
-                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID == %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
+                    obj = [studiesArray filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@ AND studyInstanceUID == %@", study.patientUID, study.studyInstanceUID]];
                 
                 if ([obj count] >= 1)
                 {

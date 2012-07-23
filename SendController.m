@@ -328,7 +328,7 @@ static volatile int sendControllerObjects = 0;
 	
 	@try
 	{
-        [objectsToSend sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor  sortDescriptorWithKey:@"series.study.patientUID" ascending:YES]]];
+        [objectsToSend sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"series.study.patientUID" ascending:YES]]];
         
 		// Remove duplicated files 
 		NSMutableArray *paths = [NSMutableArray arrayWithArray: [objectsToSend valueForKey: @"completePathResolved"]];
@@ -349,7 +349,7 @@ static volatile int sendControllerObjects = 0;
                 NSString *patientUID = [image valueForKeyPath:@"series.study.patientUID"];
                 BOOL newPatient = NO;
                 
-                if( [previousPatientUID isEqualToString: patientUID])
+                if( [previousPatientUID compare: patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     [samePatientArray addObject: image];
                 
                 else

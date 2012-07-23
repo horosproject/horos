@@ -111,7 +111,7 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
             s = image.series.study;
         }
         
-        NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID == %@", s.patientUID]];
+        NSArray *studies = [WebPortalUser studiesForUser: user predicate: [NSPredicate predicateWithFormat: @"patientUID BEGINSWITH[cd] %@", s.patientUID]];
         
         if( [[studies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", s.studyInstanceUID]] count] == 0)
         {

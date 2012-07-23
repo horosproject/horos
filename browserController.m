@@ -2544,7 +2544,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 				for (id obj in outlineViewArray)
-					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:@"(patientUID == %@)", [obj valueForKey:@"patientUID"]]];
+					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:@"(patientUID BEGINSWITH[cd] %@)", [obj valueForKey:@"patientUID"]]];
 				predicate = [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray];
 				[originalOutlineViewArray release];
 				originalOutlineViewArray = [outlineViewArray retain];
@@ -3391,7 +3391,7 @@ static NSConditionLock *threadLock = nil;
     
     [NSThread currentThread].name = @"Search For Comparative Studies";
     
-    if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... Keep only the displayed patientUID
+    if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
     {
         NSLog( @"--- Search history: %@", studySelected.patientUID);
         NSMutableArray *mergedStudies = nil;
@@ -3405,7 +3405,7 @@ static NSConditionLock *threadLock = nil;
             [_database lock];
             @try
             {
-                localStudies = [_database objectsForEntity: _database.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID == %@)", studySelected.patientUID]];
+                localStudies = [_database objectsForEntity: _database.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", studySelected.patientUID]];
             }
             @catch (NSException* e)
             {
@@ -3416,7 +3416,7 @@ static NSConditionLock *threadLock = nil;
             mergedStudies = [NSMutableArray arrayWithArray: localStudies];
             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             
-            if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
+            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                 [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
         }
         @catch (NSException* e)
@@ -3438,7 +3438,7 @@ static NSConditionLock *threadLock = nil;
             }
             
             [searchForComparativeStudiesLock lock];
-            if( [self.comparativePatientUID isEqualToString: studySelected.patientUID]) // There was maybe other locks in the queue... Keep only the displayed patientUID
+            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
             {
                 id lastObjectInQueue = nil;
                 
@@ -3517,7 +3517,7 @@ static NSConditionLock *threadLock = nil;
                         
                         [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
                         
-                        if( [self.comparativePatientUID isEqualToString: studySelected.patientUID])
+                        if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                             [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
                     }
                     @catch (NSException* e)
@@ -3652,7 +3652,7 @@ static NSConditionLock *threadLock = nil;
     
     for( DicomStudy *newStudy in newStudies)
     {
-        if( [self.comparativePatientUID isEqualToString: newStudy.patientUID])
+        if( [self.comparativePatientUID compare: newStudy.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
         {
             NSMutableArray *copy = [NSMutableArray arrayWithArray: self.comparativeStudies];
             
@@ -3808,7 +3808,7 @@ static NSConditionLock *threadLock = nil;
                 // COMPARATIVE STUDIES
                 id studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
                 
-                if( [[studySelected valueForKey: @"patientUID"] isEqualToString: self.comparativePatientUID] == NO)
+                if( [[studySelected valueForKey: @"patientUID"] compare: self.comparativePatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
                 {
                     self.comparativePatientUID = [studySelected valueForKey: @"patientUID"];
                     self.comparativeStudies = nil;
@@ -4244,7 +4244,7 @@ static NSConditionLock *threadLock = nil;
 		{
 			@try
 			{
-                if( [self.comparativePatientUID isEqualToString: study.patientUID])
+                if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
 				if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
@@ -5090,7 +5090,7 @@ static NSConditionLock *threadLock = nil;
 					{
 						NSString *uid = [item valueForKey: @"patientUID"];
 						
-						if( item != previousItem && [uid length] > 1 && [uid isEqualToString: [previousItem valueForKey: @"patientUID"]])
+						if( item != previousItem && [uid length] > 1 && [uid compare: [previousItem valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 						{
 							[cell setDrawsBackground: YES];
 							[cell setBackgroundColor: [NSColor lightGrayColor]];	//secondarySelectedControlColor]];
@@ -5466,7 +5466,7 @@ static NSConditionLock *threadLock = nil;
 							}
 							else
 							{
-								if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] isEqualToString: [item valueForKey: @"patientUID"]])
+								if( [[[seriesArray objectAtIndex: 0] valueForKeyPath:@"study.patientUID"] compare: [item valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 								{
 									if( seriesForThisViewer == nil)
 									{
@@ -6147,7 +6147,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				nextStudy = [outlineViewArray objectAtIndex: index];
 				
-				if( [[nextStudy valueForKey:@"patientUID"] isEqualToString:[study valueForKey:@"patientUID"]] == NO || [[nextStudy valueForKey:@"name"] isEqualToString:[study valueForKey:@"name"]] == NO)
+				if( [[nextStudy valueForKey:@"patientUID"] compare:[study valueForKey:@"patientUID"]options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 				{
 					found = YES;
 				}
@@ -6217,7 +6217,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	NSManagedObject		*currentSeries = [curImage valueForKey:@"series"];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", [study valueForKey:@"patientUID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", [study valueForKey:@"patientUID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
@@ -8085,7 +8085,8 @@ static BOOL withReset = NO;
                 else
                 {
                     NSMutableArray* studies = [NSMutableArray array];
-                    for (DicomStudy* study in album.studies) {
+                    for (DicomStudy* study in album.studies)
+                    {
                         NSMutableDictionary* entry = [NSMutableDictionary dictionary];
                         [entry setObject:study.studyInstanceUID forKey:@"studyInstanceUID"];
                         [entry setObject:study.name forKey:@"patientName"];
@@ -13281,7 +13282,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 			first = NO;
 			
 			tempPath = [tempPath stringByAppendingPathComponent: [[NSMutableString stringWithFormat: @"%@ - %@", [curImage valueForKeyPath: @"series.study.studyName"], [curImage valueForKeyPath: @"series.study.id"]] filenameString]];
-			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString: previousStudy] == NO || [[curImage valueForKeyPath: @"series.study.patientUID"] isEqualToString: previousPatientUID] == NO)
+			if( [[curImage valueForKeyPath: @"series.study.id"] isEqualToString: previousStudy] == NO || [[curImage valueForKeyPath: @"series.study.patientUID"] compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
 				previousPatientUID = [curImage valueForKeyPath: @"series.study.patientUID"];
 				previousStudy = [curImage valueForKeyPath: @"series.study.id"];
@@ -13824,7 +13825,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 						if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
 							study = [study valueForKey:@"study"];
 							
-						if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+						if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID 
+                                                                                                                                     indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 						{
 							NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
 						
@@ -13940,7 +13942,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 								if( [[study valueForKey: @"type"] isEqualToString:@"Series"])
 									study = [study valueForKey:@"study"];
 								
-								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+								if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || 
+                                   [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 								{
 									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName: @"Study" inManagedObjectContext: self.userManagedObjectContext];
 									
@@ -17410,7 +17413,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	// FIND ALL STUDIES of this patient
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", [study valueForKey:@"patientUID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID BEGINSWITH[cd] %@)", [study valueForKey:@"patientUID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	dbRequest.entity = [model.entitiesByName objectForKey:@"Study"];
 	dbRequest.predicate = predicate;

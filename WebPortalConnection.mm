@@ -646,7 +646,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			
 			NSString *studyInstanceUID = [f elementForKey: @"studyID"], *patientUID = [f elementForKey: @"patientUID"];
 				
-			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID isEqualToString: previousPatientUID] == NO)
+			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
 				NSArray *objects = [BrowserController addFiles: filesAccumulator
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
@@ -670,7 +670,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 					{
 						NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 						[dbRequest setEntity: [[[[BrowserController currentBrowser] managedObjectModel] entitiesByName] objectForKey: @"Study"]];
-						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+						[dbRequest setPredicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 						
 						NSError *error = nil;
 						NSArray *studies = [[[BrowserController currentBrowser] managedObjectContext] executeFetchRequest: dbRequest error:&error];
@@ -681,7 +681,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 						// Add study to specific study list for this user
 						if (user.uploadDICOMAddToSpecificStudies.boolValue)
 						{
-							NSArray *studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID == %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
+							NSArray *studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@) AND (studyInstanceUID == %@)", patientUID, studyInstanceUID]];
 							
 							if ([studies count] == 0)
 								NSLog( @"****** [studies count == 0] cannot find the file{s} we just received... upload POST: %@ %@", patientUID, studyInstanceUID);
@@ -696,7 +696,8 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 								if ([[study valueForKey: @"type"] isEqualToString:@"Series"])
 									study = [study valueForKey:@"study"];
 								
-								if ([studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || [studiesArrayPatientUID indexOfObject: [study valueForKey: @"patientUID"]]  == NSNotFound)
+                                if( [studiesArrayStudyInstanceUID indexOfObject: [study valueForKey: @"studyInstanceUID"]] == NSNotFound || 
+                                   [studiesArrayPatientUID indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) { if( [obj compare: [study valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) return YES; else return NO;}] == NSNotFound)
 								{
 									NSManagedObject *studyLink = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
 									

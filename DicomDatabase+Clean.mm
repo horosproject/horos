@@ -144,7 +144,8 @@
 					
 					@try {
 						studiesArray = [[self objectsForEntity:self.studyEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES] autorelease]]];
-						for (NSInteger i = 0; i < [studiesArray count]; i++) {
+						for (NSInteger i = 0; i < [studiesArray count]; i++)
+                        {
 							NSString	*patientID = [[studiesArray objectAtIndex: i] valueForKey:@"patientUID"];
 							NSDate		*studyDate = [[studiesArray objectAtIndex: i] valueForKey:@"date"];
 							NSDate		*openedStudyDate = [[studiesArray objectAtIndex: i] valueForKey:@"dateOpened"];
@@ -153,7 +154,7 @@
 							
 							int to, from = i;
 							
-							while( i < [studiesArray count]-1 && [patientID isEqualToString:[[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"]] == YES)
+							while( i < [studiesArray count]-1 && [patientID compare: [[studiesArray objectAtIndex: i+1] valueForKey:@"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
 							{
 								i++;
 								studyDate = [studyDate laterDate: [[studiesArray objectAtIndex: i] valueForKey:@"date"]];

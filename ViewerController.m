@@ -4114,14 +4114,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		searchString = [study valueForKey:@"name"];
 		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
 	}
-	else predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", searchString];
+	else predicate = [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", searchString];
 		
 	@try
 	{
         NSArray *studiesArray = nil;
         // Use the 'history' array of the browser controller, if available (with the distant studies)
         
-        if( BrowserController.currentBrowser.comparativePatientUID == study.patientUID && BrowserController.currentBrowser.comparativeStudies)
+        if( [[BrowserController.currentBrowser comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [BrowserController.currentBrowser comparativeStudies] != nil)
             studiesArray = BrowserController.currentBrowser.comparativeStudies;
         else
         {
@@ -6596,7 +6596,7 @@ return YES;
 {
     DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
     
-    if( [patientUID isEqualToString: firstObject.series.study.patientUID])
+    if( [patientUID compare: firstObject.series.study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
         [self buildMatrixPreview: NO];
 }
 
@@ -7100,7 +7100,7 @@ return YES;
 						
 					////////
 					
-					if( [previousPatientUID isEqualToString: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"]] == NO)
+					if( [previousPatientUID compare: [[fileList[0] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 					{
 						[self buildMatrixPreview];
 						[self matrixPreviewSelectCurrentSeries];
@@ -7121,7 +7121,7 @@ return YES;
 							NSString *pUID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientUID"];
 							NSString *pID = [[[v fileList] objectAtIndex:0] valueForKeyPath:@"series.study.patientID"];
 							
-							if( [curPatientUID isEqualToString: pUID] == NO)
+							if( [curPatientUID compare: pUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 							{
 								if( [curPatientID isEqualToString: pID] == NO)
 									[[v window] close];

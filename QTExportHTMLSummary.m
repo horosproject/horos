@@ -193,7 +193,7 @@
 			lastImageOfSeries = YES;
 		else if([[[series objectAtIndex:i] valueForKey: @"seriesInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKey: @"seriesInstanceUID"]] == NO)
 			lastImageOfSeries = YES;
-		else if( [[[series objectAtIndex:i] valueForKeyPath: @"study.id"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.id"]] == NO || [[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"]] == NO)
+		else if( [[[series objectAtIndex:i] valueForKeyPath: @"study.id"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.id"]] == NO || [[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] compare: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"]options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			lastImageOfSeries = YES;
 		else
 			lastImageOfSeries = NO;
@@ -264,7 +264,7 @@
 				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyInstanceUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyInstanceUID"]] == NO)
 				lastImageOfStudy = YES;
-			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"]] == NO)
+			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.patientUID"] compare: [[series objectAtIndex:i+1] valueForKeyPath: @"study.patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 				lastImageOfStudy = YES;
 			else if([[[series objectAtIndex:i] valueForKeyPath: @"study.studyName"]isEqualToString: [[series objectAtIndex:i+1] valueForKeyPath: @"study.studyName"]] == NO)
 				lastImageOfStudy = YES;
