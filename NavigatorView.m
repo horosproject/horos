@@ -113,6 +113,8 @@ static float deg2rad = M_PI/180.0;
 	
     if(self)
 	{
+        [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+        
 		userAction = idle;
 		translation = NSMakePoint(0, 0);
 		offset = NSMakePoint(0, 0);
@@ -314,10 +316,13 @@ static float deg2rad = M_PI/180.0;
 	[[self openGLContext] makeCurrentContext];
 
 	NSClipView *clipView = [[self enclosingScrollView] contentView];
-	NSRect viewBounds = [clipView documentVisibleRect];
-	NSRect viewFrame = [clipView frame];
+	NSRect viewBounds = [self convertRectToBacking: [clipView documentVisibleRect]];
+	NSRect viewFrame = [self convertRectToBacking: [clipView frame]];
 	NSSize viewSize = viewFrame.size;
 	
+    float scaledThumbnailWidth = thumbnailWidth * self.window.backingScaleFactor;
+    float scaledThumbnailHeight = thumbnailHeight * self.window.backingScaleFactor;
+    
 	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
 	glViewport(0, 0, viewSize.width, viewSize.height); // set the viewport to cover entire view
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -368,8 +373,8 @@ static float deg2rad = M_PI/180.0;
 			else
 				glColor4f (0.5f, 0.5f, 0.5f, 1.0f);				
 			
-			upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
-			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+			upperLeft = NSMakePoint(z*scaledThumbnailWidth-viewBounds.origin.x, t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height);
+			thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 			
 			if(NSIntersectsRect(thumbRect, viewFrame))
 			{
@@ -392,14 +397,14 @@ static float deg2rad = M_PI/180.0;
 					
 					glBindTexture(GL_TEXTURE_RECTANGLE_EXT, textureId);
 
-					glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+					glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 					glEnable(GL_SCISSOR_TEST);
 					
 					glTranslatef(upperLeft.x, upperLeft.y, 0.0);
-					glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+					glTranslatef(scaledThumbnailWidth/2.0, scaledThumbnailHeight/2.0, 0.0);
 					glRotatef(-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 					glScalef(1.0/zoomFactor, 1.0/zoomFactor, 1.0);
-					glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+					glTranslatef(-scaledThumbnailWidth/2.0, -scaledThumbnailHeight/2.0, 0.0);
 					glTranslatef(-upperLeft.x, -upperLeft.y, 0.0);
 							
 					glTranslatef(-offset.x/sizeFactor, -offset.y/sizeFactor, 0.0);
@@ -411,14 +416,14 @@ static float deg2rad = M_PI/180.0;
 							glVertex2f(upperLeft.x, upperLeft.y);
 							
 							glTexCoord2f(texUpperRight.x, texUpperRight.y);
-							glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y);
+							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y);
 
 							
 							glTexCoord2f(texLowerLeft.x, texLowerLeft.y);
-							glVertex2f(upperLeft.x, upperLeft.y+thumbnailHeight);
+							glVertex2f(upperLeft.x, upperLeft.y+scaledThumbnailHeight);
 						
 							glTexCoord2f(texLowerRight.x, texLowerRight.y);
-							glVertex2f(upperLeft.x+thumbnailWidth, upperLeft.y+thumbnailHeight);					
+							glVertex2f(upperLeft.x+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight);					
 						glEnd();
 						
 					glDisable(GL_SCISSOR_TEST);
@@ -428,10 +433,10 @@ static float deg2rad = M_PI/180.0;
 					glTranslatef(offset.x/sizeFactor, offset.y/sizeFactor, 0.0);
 					
 					glTranslatef(upperLeft.x, upperLeft.y, 0.0);
-					glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+					glTranslatef(scaledThumbnailWidth/2.0, scaledThumbnailHeight/2.0, 0.0);
 					glScalef(zoomFactor, zoomFactor, 1.0);
 					glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
-					glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+					glTranslatef(-scaledThumbnailWidth/2.0, -scaledThumbnailHeight/2.0, 0.0);
 					glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 				}
 			}
@@ -469,26 +474,28 @@ static float deg2rad = M_PI/180.0;
 				int correctedZ = (flippedData) ? [pixList count]-z-1 : z ;
 				DCMPix *pix = [pixList objectAtIndex:correctedZ];
 				
-				upperLeft = NSMakePoint(z*thumbnailWidth-viewBounds.origin.x, t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height);
+				upperLeft = NSMakePoint(z*scaledThumbnailWidth-viewBounds.origin.x, t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height);
 				
-				glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+				glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 				glEnable(GL_SCISSOR_TEST);
 		
 				NSArray *rois = [roiList objectAtIndex:correctedZ];
 
 				glTranslatef(upperLeft.x, upperLeft.y, 0.0);
-				glTranslatef(thumbnailWidth/2.0, thumbnailHeight/2.0, 0.0);
+				glTranslatef(scaledThumbnailWidth/2.0, scaledThumbnailHeight/2.0, 0.0);
 				glRotatef (-rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
 				
 				if([pix pixelRatio]!=1.0) glScalef( 1.0, [pix pixelRatio], 1.0);
 
+                float f = self.window.backingScaleFactor;
+                
 				for( ROI *r in rois)
 				{
 					glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
 					
 					if([r type]!=tText)
 					{
-						[r drawROIWithScaleValue:1.0/(zoomFactor*sizeFactor) offsetX:offset.x+pix.pwidth/2.0 offsetY:offset.y/[pix pixelRatio]+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0 prepareTextualData: NO];
+						[r drawROIWithScaleValue:f/(zoomFactor*sizeFactor) offsetX:offset.x/f+pix.pwidth/2.0 offsetY:offset.y/(f*[pix pixelRatio])+pix.pheight/2.0 pixelSpacingX:[pix pixelSpacingX] pixelSpacingY:[pix pixelSpacingY] highlightIfSelected:NO thickness:1.0 prepareTextualData: NO];
 					}
 				}
 				
@@ -496,7 +503,7 @@ static float deg2rad = M_PI/180.0;
 				
 				if([pix pixelRatio]!=1.0) glScalef(1.0, 1.0/[pix pixelRatio], 1.0);
 				glRotatef (rotationAngle/deg2rad, 0.0f, 0.0f, 1.0f);
-				glTranslatef(-thumbnailWidth/2.0, -thumbnailHeight/2.0, 0.0);
+				glTranslatef(-scaledThumbnailWidth/2.0, -scaledThumbnailHeight/2.0, 0.0);
 				glTranslatef(-upperLeft.x, -(upperLeft.y), 0.0);
 			}
 		}
@@ -511,24 +518,24 @@ static float deg2rad = M_PI/180.0;
 	for (ViewerController *v in [self associatedViewers])
 	{
 		int t = [v curMovieIndex];
-		upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+		upperLeft.y = t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height;
 		
 		int z = [v imageIndex];
-		upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
-		thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+		upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
+		thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 		
 		if(NSIntersectsRect(thumbRect, viewFrame))
 		{
-			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+			glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 			glEnable(GL_SCISSOR_TEST);
 			
 			glLineWidth(6.0 * self.window.backingScaleFactor);
 			glColor3f(0.0f, 1.0f, 0.0f);
 			glBegin(GL_LINE_LOOP);
 				glVertex2f(upperLeft.x+1, upperLeft.y+1);
-				glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+1);
-				glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+thumbnailHeight-1);
-				glVertex2f(upperLeft.x+1, upperLeft.y+thumbnailHeight-1);
+				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
+				glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
+				glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
 			glEnd();
 			glDisable(GL_SCISSOR_TEST);
 			
@@ -539,25 +546,25 @@ static float deg2rad = M_PI/180.0;
 	
 	// selected time line
 	int t = [[self viewer] curMovieIndex];
-	upperLeft.y = t*thumbnailHeight+viewBounds.origin.y+viewSize.height-[self frame].size.height;
+	upperLeft.y = t*scaledThumbnailHeight+viewBounds.origin.y+viewSize.height-viewFrame.size.height;
 
 	// selected image
 	int z = [[self viewer] imageIndex];
-	upperLeft.x = z*thumbnailWidth-viewBounds.origin.x;
-	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, thumbnailWidth, thumbnailHeight);
+	upperLeft.x = z*scaledThumbnailWidth-viewBounds.origin.x;
+	thumbRect = NSMakeRect(upperLeft.x, upperLeft.y, scaledThumbnailWidth, scaledThumbnailHeight);
 
 	if(NSIntersectsRect(thumbRect, viewFrame))
 	{
-		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+thumbnailHeight), thumbnailWidth, thumbnailHeight);
+		glScissor( upperLeft.x, viewSize.height - (upperLeft.y+scaledThumbnailHeight), scaledThumbnailWidth, scaledThumbnailHeight);
 		glEnable(GL_SCISSOR_TEST);
 		
 		glLineWidth(6.0 * self.window.backingScaleFactor);
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
 			glVertex2f(upperLeft.x+1, upperLeft.y+1);
-			glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+1);
-			glVertex2f(upperLeft.x-1+thumbnailWidth, upperLeft.y+thumbnailHeight-1);
-			glVertex2f(upperLeft.x+1, upperLeft.y+thumbnailHeight-1);
+			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+1);
+			glVertex2f(upperLeft.x-1+scaledThumbnailWidth, upperLeft.y+scaledThumbnailHeight-1);
+			glVertex2f(upperLeft.x+1, upperLeft.y+scaledThumbnailHeight-1);
 		glEnd();
 		glDisable(GL_SCISSOR_TEST);
 		
@@ -653,6 +660,9 @@ static float deg2rad = M_PI/180.0;
 	pointInView.x -= [[[self enclosingScrollView] contentView] documentVisibleRect].origin.x;
 	pointInView.y -= [[[self enclosingScrollView] contentView] documentVisibleRect].origin.y;
 	pointInView.y = [[[self enclosingScrollView] contentView] documentVisibleRect].size.height-pointInView.y;
+    
+    pointInView = [self convertPointToBacking: pointInView];
+    
 	return pointInView;
 }
 
@@ -662,8 +672,8 @@ static float deg2rad = M_PI/180.0;
 	mouseDownPosition = [self convertPointFromWindowToOpenGL:event_location];	
 	mouseDragged = NO;
 	
-	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition] && [self cansScrollLeft];
-	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition] && [self cansScrollRight];
+	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar: [self convertPointFromBacking: mouseDownPosition]] && [self cansScrollLeft];
+	BOOL scrollRight = [self isMouseOnRightLateralScrollBar: [self convertPointFromBacking: mouseDownPosition]] && [self cansScrollRight];
 
 	mouseClickedWithCommandKey = NO;
 	
@@ -729,8 +739,8 @@ static float deg2rad = M_PI/180.0;
 
 - (void)mouseUp:(NSEvent *)theEvent;
 {
-	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar:mouseDownPosition] && [self cansScrollLeft];
-	BOOL scrollRight = [self isMouseOnRightLateralScrollBar:mouseDownPosition] && [self cansScrollRight];
+	BOOL scrollLeft = [self isMouseOnLeftLateralScrollBar: [self convertPointFromBacking: mouseDownPosition]] && [self cansScrollLeft];
+	BOOL scrollRight = [self isMouseOnRightLateralScrollBar: [self convertPointFromBacking: mouseDownPosition]] && [self cansScrollRight];
 
 	if(!mouseDragged && !scrollLeft && !scrollRight)
 	{
@@ -1124,9 +1134,11 @@ static float deg2rad = M_PI/180.0;
 	NSRect viewBounds = [clipView documentVisibleRect];
 	NSRect viewFrame = [clipView frame];
 	NSSize viewSize = viewFrame.size;
-
-	int z = (mouseDownPosition.x + viewBounds.origin.x) / thumbnailWidth;
-	int t = (mouseDownPosition.y + [self frame].size.height-viewSize.height-viewBounds.origin.y)/thumbnailHeight;
+    
+    NSPoint position = [self convertPointFromBacking: mouseDownPosition];
+    
+	int z = (position.x + viewBounds.origin.x) / thumbnailWidth;
+	int t = (position.y + [self frame].size.height-viewSize.height-viewBounds.origin.y)/thumbnailHeight;
 
 	if(!newWindow)//t == [[self viewer] curMovieIndex] || [[self viewer] isPlaying4D]) // same time line: select the clicked slice
 	{

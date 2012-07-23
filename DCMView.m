@@ -6124,7 +6124,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     }
 	self = [super initWithFrame:frameRect pixelFormat:pixFmt];
 	
-    [self setWantsBestResolutionOpenGLSurface:YES]; // Retina tests... https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
+    [self setWantsBestResolutionOpenGLSurface:YES]; // Retina https://developer.apple.com/library/mac/#documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/CapturingScreenContents/CapturingScreenContents.html#//apple_ref/doc/uid/TP40012302-CH10-SW1
     
     drawingFrameRect = [self convertRectToBacking: [self frame]]; //retina
     
@@ -8935,10 +8935,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glMatrixMode (GL_MODELVIEW);
 					glPushMatrix();
 						glLoadIdentity ();
-						glScalef (2.0f / [self frame].size.width, -2.0f /  [self frame].size.height, 1.0f);
-						glTranslatef (-[self frame].size.width / 2.0f, -[self frame].size.height / 2.0f, 0.0f);
-
-						[showDescriptionInLargeText drawAtPoint:NSMakePoint([self frame].size.width/2 - [showDescriptionInLargeText frameSize].width/2, [self frame].size.height/2 - [showDescriptionInLargeText frameSize].height/2)];
+						glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f);
+						glTranslatef (-drawingFrameRect.size.width / 2.0f, -drawingFrameRect.size.height / 2.0f, 0.0f);
+                        
+						[showDescriptionInLargeText drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width/2, drawingFrameRect.size.height/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height/2)];
 						
 						glPopMatrix(); // GL_MODELVIEW
 					glMatrixMode (GL_PROJECTION);
@@ -8948,7 +8948,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		else
 		{
 			//no valid image  ie curImage = -1
-			//NSLog(@"no IMage");
+			//NSLog(@"****** No Image");
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear (GL_COLOR_BUFFER_BIT);
 		}
@@ -8981,7 +8981,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			/* mouse position */
 
 			NSPoint eventLocation = [[self window] convertScreenToBase: [NSEvent mouseLocation]];
-			eventLocation = [self convertPoint:eventLocation fromView:nil];
+			eventLocation = [self convertPointToBacking: [self convertPoint:eventLocation fromView:nil]];
 			
 			if( xFlipped)
 			{

@@ -24,7 +24,7 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- Retina displays: loupe, iChat, PT-CT, Navigator View, (avoid NSScreen mainScreen, multiple monitors?)
+- Retina displays: iChat, PT-CT, (avoid NSScreen mainScreen, multiple monitors?)
 -------------------------------------------------------------
 
 - Synchronize MPR viewers
