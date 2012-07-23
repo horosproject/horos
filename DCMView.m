@@ -2272,6 +2272,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[showDescriptionInLargeText release];
 	showDescriptionInLargeText = nil;
     
+    [warningNotice release];
+    warningNotice = nil;
+    
 	[blendingView release];
 	blendingView = nil;
     
@@ -7972,7 +7975,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		xRaster = size.size.width-2 -colorBoxSize;
 		if( fullText)
 			[self DrawNSStringGL: @"Made In OsiriX" :fontList :xRaster :yRaster rightAlignment:YES useStringTexture:YES];
-	}
+        
+#if __LP64__
+#else
+        if( size.size.width * sf > 700)
+        {
+            if( warningNotice == nil && [self class] == [DCMView class])
+            {
+                NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
+                [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 25] forKey:NSFontAttributeName];
+                NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
+                warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
+            }
+            
+            [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 40*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+        }
+#endif
+     }
 }
 
 - (void) drawTextualData:(NSRect) size :(long) annotations

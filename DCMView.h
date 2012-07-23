@@ -235,7 +235,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	
 	BOOL			scaleToFitNoReentry;
 	
-	GLString		*showDescriptionInLargeText;
+	GLString		*showDescriptionInLargeText, *warningNotice;
 	
 	//Context for rendering to iChat
 	NSOpenGLContext *_alternateContext;
