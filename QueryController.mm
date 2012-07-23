@@ -298,7 +298,7 @@ extern "C"
             {
                 QueryFilter *dateQueryFilter = nil, *timeQueryFilter = nil;
                 
-                [QueryController getDateAndTimeQueryFilterWithTag: [[filters valueForKey: @"date"] intValue] fromDate: nil toDate: nil date: &dateQueryFilter time: &timeQueryFilter];
+                [QueryController getDateAndTimeQueryFilterWithTag: [[filters valueForKey: @"date"] intValue] fromDate: [filters valueForKey: @"fromDate"] toDate: [filters valueForKey: @"toDate"] date: &dateQueryFilter time: &timeQueryFilter];
                 
                 if( dateQueryFilter)
                     [f setObject: [DCMCalendarDate queryDate: dateQueryFilter.filteredValue] forKey: @"StudyDate"];
@@ -1026,7 +1026,7 @@ extern "C"
     }
 	else if( [presets valueForKey: @"modalityFilterMatrixString"]) // Backward compatibility
 	{
-        NSString *m[7][3] = {{@"SC", @"CR", @"DC"},{@"CT", @"US", @"MG"},{@"MR", @"NM", @"PT"},{@"XA", @"RF", @"SR"},{@"DR", @"OT", @"RG"},{@"ES", @"VL", @"XC"},{@"AU", @"", @""}};
+        NSString *m[7][3] = {{@"SC", @"CR", @"DX"},{@"CT", @"US", @"MG"},{@"MR", @"NM", @"PT"},{@"XA", @"RF", @"SR"},{@"DR", @"OT", @"RG"},{@"ES", @"VL", @"XC"},{@"AU", @"", @""}};
         
 		NSString *s = [presets valueForKey: @"modalityFilterMatrixString"];
 		
@@ -1040,7 +1040,7 @@ extern "C"
 			more = [scan scanInteger: &row];
 			more = [scan scanInteger: &col];
 			
-			if( more)
+			if( more && row < 7 && col < 3)
 			{
                 for( NSCell *cell in [modalityFilterMatrix cells])
                 {
@@ -3703,22 +3703,6 @@ extern "C"
 		}
 	}
 }
-
-enum
-{
-    anyDate = 0,
-    today = 1,
-    yesteday = 2,
-    last7Days = 3,
-    lastMonth = 4,
-    between = 5,
-    on = 6,
-    last2Days = 7,
-    last3Months = 8,
-    dayBeforeYesterday = 9,
-    todayAM = 10,
-    todayPM = 11,
-};
 
 + (void) getDateAndTimeQueryFilterWithTag: (int) tag fromDate:(NSDate*) from toDate:(NSDate*) to date: (QueryFilter**) dateQueryFilter time: (QueryFilter**) timeQueryFilter
 {

@@ -244,6 +244,8 @@ extern NSString* O2AlbumDragType;
     NSMutableArray *smartAlbumDistantSearchArray; //The queue of smart albums to be searched
     NSTimeInterval lastRefreshSmartAlbumDistantStudies;
     NSString *distantStudyMessage; // The text displayed in the matrix thumbnails
+    
+    NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -266,6 +268,7 @@ extern NSString* O2AlbumDragType;
 @property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;
 @property(readonly) NSString *filterPredicateDescription;
+@property(retain) NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
 
 @property(nonatomic) int timeIntervalType;
 @property BOOL rtstructProgressBar;
@@ -344,6 +347,7 @@ extern NSString* O2AlbumDragType;
 - (NSArray*) imagesArray: (id) item preferredObject: (int) preferredObject onlyImages:(BOOL) onlyImages;
 - (void) setNetworkLogs;
 - (BOOL) isNetworkLogsActive;
+- (void) computeTimeInterval;
 - (void) ReadDicomCDRom:(id) sender __deprecated;
 - (NSString*) INCOMINGPATH __deprecated;
 - (NSString*) TEMPPATH __deprecated;

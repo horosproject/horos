@@ -140,6 +140,7 @@
                 self.toDate = date;
         }
         
+        [[BrowserController currentBrowser] computeTimeInterval];
         [[BrowserController currentBrowser] outlineViewRefresh];
     }
 }
@@ -166,6 +167,7 @@
             toDate = [[[NSCalendar currentCalendar] dateFromComponents: components] retain];
         }
         
+        [[BrowserController currentBrowser] computeTimeInterval];
         [[BrowserController currentBrowser] outlineViewRefresh];
     }
 }

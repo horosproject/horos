@@ -24,6 +24,22 @@
 
 #define MAXINSTANCE 40
 
+enum
+{
+    anyDate = 0,
+    today = 1,
+    yesteday = 2,
+    last7Days = 3,
+    lastMonth = 4,
+    between = 5,
+    on = 6,
+    last2Days = 7,
+    last3Months = 8,
+    dayBeforeYesterday = 9,
+    todayAM = 10,
+    todayPM = 11,
+};
+
 /** \brief Window Controller for Q/R */
 @interface QueryController : NSWindowController <NSWindowDelegate, NSOutlineViewDelegate>
 {
