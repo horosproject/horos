@@ -4107,14 +4107,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 	// FIND ALL STUDIES of this patient
 	
-	NSString *searchString = [study valueForKey:@"patientID"];
+	NSString *searchString = [study valueForKey:@"patientUID"];
 	
 	if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
 	{
 		searchString = [study valueForKey:@"name"];
 		predicate = [NSPredicate predicateWithFormat: @"(name == %@)", searchString];
 	}
-	else predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", searchString];
+	else predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", searchString];
 		
 	@try
 	{

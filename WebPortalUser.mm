@@ -465,7 +465,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
 				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
-				req.predicate = [NSPredicate predicateWithFormat:@"patientID IN %@", [studiesArray valueForKey:@"patientID"]];
+				req.predicate = [NSPredicate predicateWithFormat:@"patientUID IN %@", [studiesArray valueForKey:@"patientUID"]];
 				
 				int previousStudiesArrayCount = studiesArray.count;
 				

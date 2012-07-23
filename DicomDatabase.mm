@@ -2775,7 +2775,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		int chunk = 0;
 		
-		studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease]]]];
+		studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES] autorelease]]]];
 		if ([studies count] > 100)
 		{
 			int max = [studies count] - chunk*100;
@@ -2985,7 +2985,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				
 			//	[[splash progress] setMaxValue:[studies count]];
 				
-				studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientID" ascending:YES] autorelease]]]];
+				studies = [NSMutableArray arrayWithArray: [studies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"patientUID" ascending:YES] autorelease]]]];
 				if ([studies count] > 100)
 				{
 					int max = [studies count] - chunk*100;

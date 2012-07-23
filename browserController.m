@@ -2544,7 +2544,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				NSMutableArray	*patientPredicateArray = [NSMutableArray array];
 				for (id obj in outlineViewArray)
-					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:@"(patientID == %@)", [obj valueForKey:@"patientID"]]];
+					[patientPredicateArray addObject: [NSPredicate predicateWithFormat:@"(patientUID == %@)", [obj valueForKey:@"patientUID"]]];
 				predicate = [NSCompoundPredicate orPredicateWithSubpredicates: patientPredicateArray];
 				[originalOutlineViewArray release];
 				originalOutlineViewArray = [outlineViewArray retain];
@@ -6147,7 +6147,7 @@ static NSConditionLock *threadLock = nil;
 			{
 				nextStudy = [outlineViewArray objectAtIndex: index];
 				
-				if( [[nextStudy valueForKey:@"patientID"] isEqualToString:[study valueForKey:@"patientID"]] == NO || [[nextStudy valueForKey:@"name"] isEqualToString:[study valueForKey:@"name"]] == NO)
+				if( [[nextStudy valueForKey:@"patientUID"] isEqualToString:[study valueForKey:@"patientUID"]] == NO || [[nextStudy valueForKey:@"name"] isEqualToString:[study valueForKey:@"name"]] == NO)
 				{
 					found = YES;
 				}
@@ -6217,7 +6217,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObject		*study = [curImage valueForKeyPath:@"series.study"];
 	NSManagedObject		*currentSeries = [curImage valueForKey:@"series"];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientID == %@)", [study valueForKey:@"patientID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat: @"(patientUID == %@)", [study valueForKey:@"patientUID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity: [[model entitiesByName] objectForKey:@"Study"]];
 	[dbRequest setPredicate: predicate];
@@ -8090,6 +8090,7 @@ static BOOL withReset = NO;
                         [entry setObject:study.studyInstanceUID forKey:@"studyInstanceUID"];
                         [entry setObject:study.name forKey:@"patientName"];
                         [entry setObject:study.patientID forKey:@"patientID"];
+                        [entry setObject:study.patientUID forKey:@"patientUID"];
                         [entry setObject:study.dateOfBirth forKey:@"dateOfBirth"];
                         [entry setObject:study.studyName forKey:@"name"];
                         [entry setObject:study.date forKey:@"date"];
@@ -8173,6 +8174,7 @@ static BOOL withReset = NO;
                             s.studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
                             s.name = [entry objectForKey:@"patientName"];
                             s.patientID = [entry objectForKey:@"patientID"];
+                            s.patientUID = [entry objectForKey:@"patientUID"];
                             s.dateOfBirth = [entry objectForKey:@"dateOfBirth"];
                             s.studyName = [entry objectForKey:@"name"];
                             s.date = [entry objectForKey:@"date"];
@@ -17408,7 +17410,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	
 	// FIND ALL STUDIES of this patient
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientID == %@)", [study valueForKey:@"patientID"]];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:  @"(patientUID == %@)", [study valueForKey:@"patientUID"]];
 	NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	dbRequest.entity = [model.entitiesByName objectForKey:@"Study"];
 	dbRequest.predicate = predicate;
