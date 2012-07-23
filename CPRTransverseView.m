@@ -664,10 +664,9 @@ extern int splitPosition[ 3];
         cross = N3VectorNormalize(N3VectorCrossProduct(tangent, normal));
 
         // * 1.4 : to full the view area, if the matrix is rotated
-        mmPerPixel = (_sectionWidth / _renderingScale)/([self bounds].size.width*1.4);
+        mmPerPixel = (_sectionWidth / _renderingScale)/([self convertSizeToBacking:[self bounds].size].width*1.4);
         
-        request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vector pixelsWide:[self bounds].size.width*1.4 pixelsHigh:[self bounds].size.height*1.4
-                                                               xBasis:N3VectorScalarMultiply(cross, mmPerPixel) yBasis:N3VectorScalarMultiply(normal, mmPerPixel)];
+        request = [[CPRObliqueSliceGeneratorRequest alloc] initWithCenter:vector pixelsWide: [self convertSizeToBacking:[self bounds].size].width*1.4 pixelsHigh: [self convertSizeToBacking:[self bounds].size].height*1.4 xBasis:N3VectorScalarMultiply(cross, mmPerPixel) yBasis:N3VectorScalarMultiply(normal, mmPerPixel)];
 		
         if ([_lastRequest isEqual:request] == NO) {
 			CPRVolumeData *curvedVolume;

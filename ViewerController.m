@@ -4121,7 +4121,7 @@ static volatile int numberOfThreadsForRelisce = 0;
         NSArray *studiesArray = nil;
         // Use the 'history' array of the browser controller, if available (with the distant studies)
         
-        if( [[BrowserController.currentBrowser comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [BrowserController.currentBrowser comparativeStudies] != nil)
+        if( [[[BrowserController currentBrowser] comparativePatientUID] compare: [study patientUID] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[BrowserController currentBrowser] comparativeStudies] != nil)
             studiesArray = BrowserController.currentBrowser.comparativeStudies;
         else
         {
