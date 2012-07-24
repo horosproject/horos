@@ -38,6 +38,7 @@ enum
     dayBeforeYesterday = 9,
     todayAM = 10,
     todayPM = 11,
+    after = 12
 };
 
 /** \brief Window Controller for Q/R */

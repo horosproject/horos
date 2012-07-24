@@ -7983,7 +7983,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     {
         glColor4f( 1.0, 1.0, 1.0, 1.0);
         
-        if( warningNotice == nil && [self class] == [DCMView class])
+        if( warningNotice == nil && [self class] == [DCMView class] && fullText && annotations > annotNone)
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
             [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 20] forKey:NSFontAttributeName];

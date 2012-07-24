@@ -62,7 +62,7 @@
 - (NSArray *)sortedImages;
 - (NSComparisonResult)compareName:(DicomSeries*)series;
 - (NSNumber *) noFilesExcludingMultiFrames;
-
+- (NSNumber *) rawNoFiles;
 @end
 
 @interface DicomSeries (CoreDataGeneratedAccessors)

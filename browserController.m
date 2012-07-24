@@ -2475,7 +2475,7 @@ static NSConditionLock *threadLock = nil;
                         {
                             NSUInteger index = [localStudyInstanceUIDs indexOfObject: [distantStudy studyInstanceUID]];
                             
-                            if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] noFiles] intValue] < [[distantStudy noFiles] intValue])
+                            if( index != NSNotFound && [[[outlineViewArray objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                             {
                                 NSMutableArray *mutableCopy = [[outlineViewArray mutableCopy] autorelease];
                                 
@@ -3314,7 +3314,7 @@ static NSConditionLock *threadLock = nil;
         if( from && to)
             [d setObject: [NSNumber numberWithInt: between] forKey: @"date"];
         else if( from)
-            [d setObject: [NSNumber numberWithInt: on] forKey: @"date"];
+            [d setObject: [NSNumber numberWithInt: after] forKey: @"date"];
         
         [d setObject: from forKey: @"fromDate"];
         
@@ -3670,7 +3670,7 @@ static NSConditionLock *threadLock = nil;
                                     {
                                         NSUInteger index = [[mergedStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
                                         
-                                        if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] noFiles] intValue] < [[distantStudy noFiles] intValue])
+                                        if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
                                         {
                                             [mergedStudies replaceObjectAtIndex: index withObject: distantStudy];
                                         }
@@ -9366,6 +9366,9 @@ static BOOL needToRezoom;
         {
             // Clear search field
             [self setSearchString: nil];
+            
+            // Clear the time interval
+            [self setTimeIntervalType: 0];
             
             [self refreshAlbums];
             

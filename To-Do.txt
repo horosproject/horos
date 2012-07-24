@@ -24,9 +24,8 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- Comparative: time interval 48 h
 - Comparative: search-field on distant nodes
-- Comparative: smart album creation -> DICOM node
+- Comparative: smart album creation -> DICOM node rule prefs
 
 -------------------------------------------------------------
 

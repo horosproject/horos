@@ -3734,12 +3734,14 @@ extern "C"
 		switch( tag)
 		{
 			case anyDate: date = nil; break;
-                
+            
 			case today: date = [DCMCalendarDate date]; searchType = searchExactDate; break;
                 
 			case yesteday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24 -1];	searchType = searchExactDate; break;
                 
             case dayBeforeYesterday: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*48 -1]; searchType = searchExactDate; break;
+            
+            case after: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: [from timeIntervalSinceReferenceDate]];
                 
             case last2Days: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*2 -1]; break;
                 
@@ -3748,6 +3750,19 @@ extern "C"
 			case lastMonth: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1]; break;
                 
             case last3Months: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31*3 -1]; break;
+            
+            case todayAM:	// AM & PM
+			case todayPM:
+				date = [DCMCalendarDate date];
+				searchType = searchExactDate;
+				
+				if( tag == todayAM)
+					between = [NSString stringWithString:@"000000.000-120000.000"];
+				else
+					between = [NSString stringWithString:@"120000.000-235959.000"];
+				
+				*timeQueryFilter = [QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"];
+            break;
                 
             default:
                 if( tag >= 100 && tag <= 200)
@@ -3782,20 +3797,7 @@ extern "C"
                 }
                 else NSLog( @"******* unknown setDateQuery tag: %d", (int) tag);
                 break;
-				
-			case todayAM:	// AM & PM
-			case todayPM:
-				date = [DCMCalendarDate date];
-				searchType = searchExactDate;
-				
-				if( tag == todayAM)
-					between = [NSString stringWithString:@"000000.000-120000.000"];
-				else
-					between = [NSString stringWithString:@"120000.000-235959.000"];
-				
-				*timeQueryFilter = [QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"];
-                break;
-		}
+            }
 		*dateQueryFilter = [QueryFilter queryFilterWithObject: date ofSearchType: searchType forKey:@"StudyDate"];
 	}
 }
