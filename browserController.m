@@ -144,6 +144,7 @@ static int DefaultFolderSizeForDB = 0; // TODO: change
 static NSTimeInterval lastHardDiskCheck = 0;
 static unsigned long long lastFreeSpace = 0;
 static NSTimeInterval lastFreeSpaceLogTime = 0;
+static NSString *smartAlbumDistantArraySync = @"smartAlbumDistantArraySync";
 
 extern int delayedTileWindows;
 extern BOOL NEEDTOREBUILD;//, COMPLETEREBUILD;
@@ -292,7 +293,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize databaseOutline, albumTable, comparativePatientUID, distantStudyMessage;
 @synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
-@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate;
+@synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
 @synthesize rtstructProgressBar, rtstructProgressPercent, pluginManagerController;
 
@@ -2114,9 +2115,12 @@ static NSConditionLock *threadLock = nil;
 	[[[sender menu] itemWithTag: [sender tag]] setState: NSOnState];
 	[toolbarSearchItem setLabel: [NSString stringWithFormat: NSLocalizedString(@"Search by %@", nil), [sender title]]];
 	searchType = [sender tag];
+    
 	//create new Filter Predicate when changing searchType ans set searchString to nil;
 	[self setSearchString:nil];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    
+    [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
 }
 
 - (void) computeTimeInterval
@@ -2438,12 +2442,12 @@ static NSConditionLock *threadLock = nil;
             {
                 if( timeIntervalStart != nil || timeIntervalEnd != nil) // Search for the time interval, then apply the search field, if necessary
                 {
-                    if( self.distantTimeIntervalStart == timeIntervalStart && self.distantTimeIntervalEnd == timeIntervalEnd)
+                    if( [self.distantTimeIntervalStart isEqualToDate: timeIntervalStart] && [self.distantTimeIntervalEnd isEqualToDate: timeIntervalEnd])
                         useDistantArray = YES;
                 }
-                else if( self.filterPredicate)
+                else if( self.distantSearchType == searchType && [self.distantSearchString isEqualToString: _searchString])
                 {
-                    // TODO
+                    useDistantArray = YES;
                 }
             }
             
@@ -2451,7 +2455,11 @@ static NSConditionLock *threadLock = nil;
             {
                 NSMutableArray *distantStudies = [NSMutableArray array];
                 
-                NSArray *filteredAlbumDistantStudies = [smartAlbumDistantArray filteredArrayUsingPredicate: predicate];
+                NSArray *filteredAlbumDistantStudies = nil;
+                @synchronized( smartAlbumDistantArraySync)
+                {
+                    filteredAlbumDistantStudies = [smartAlbumDistantArray filteredArrayUsingPredicate: predicate];
+                }
                 
                 // Merge local and distant studies
                 #ifndef OSIRIX_LIGHT
@@ -3277,7 +3285,162 @@ static NSConditionLock *threadLock = nil;
 	}
 }
 
-- (NSArray*) distantStudiesForIntervalFrom: (NSDate*) from To:(NSDate*) to
+- (NSArray*) distantStudiesForSearchString: (NSString*) curSearchString type:(int) curSearchType
+{
+    #ifndef OSIRIX_LIGHT
+    if( !searchForComparativeStudiesLock)
+        searchForComparativeStudiesLock = [NSRecursiveLock new];
+    
+    [searchForComparativeStudiesLock lock];
+    
+    @try
+    {
+        // Servers
+        NSMutableArray* servers = [NSMutableArray array];
+        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+        {
+            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+            
+            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+        }
+        
+        for (NSDictionary* si in sources)
+        {
+            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
+                [servers addObject: si];
+        }
+        
+        // Distant studies
+        NSMutableDictionary *d = [NSMutableDictionary dictionary];
+        
+        switch( curSearchType) 
+		{
+            case 7:			// All fields -> Use only the Patient Name for distant nodes
+            case 0:			// Patient Name
+                [d setObject: [curSearchString stringByAppendingString:@"*"] forKey: @"PatientsName"];
+                break;
+                
+            case 1:			// Patient ID
+                [d setObject: curSearchString forKey: @"PatientID"];
+                break;
+                
+            case 2:			// Study ID
+                [d setObject: curSearchString forKey: @"StudyID"];
+                break;
+                
+            case 3:			// Comments
+                [d setObject: [curSearchString stringByAppendingString:@"*"] forKey: @"Comments"];
+                break;
+                
+            case 4:			// Study Description
+                [d setObject: [curSearchString stringByAppendingString:@"*"] forKey: @"StudyDescription"];
+                break;
+                
+            case 5:			// Modality
+                [d setObject: curSearchString forKey: @"modality"];
+                break;
+                
+            case 6:			// Accession Number 
+                [d setObject: curSearchString forKey: @"AccessionNumber"];
+                break;
+		}
+        
+        return [QueryController queryStudiesForFilters: d servers: servers showErrors: NO];
+    }
+    @catch (NSException* e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally
+    {
+        [searchForComparativeStudiesLock unlock];
+    }
+#endif
+    return nil;
+}
+
+- (void) searchForSearchField: (NSDictionary*) dict
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    int curSearchType = [[dict objectForKey: @"searchType"] intValue];
+    NSString *curSearchString = [dict objectForKey: @"searchString"];
+    
+    [NSThread currentThread].name = @"Search For Search Field Studies";
+    
+    if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
+    {
+        NSLog( @"--- Search For Search Field: %@ (%d)", curSearchString, curSearchType);
+        
+        if( [curSearchString length] > 2)
+        {
+            if( !searchForComparativeStudiesLock)
+                searchForComparativeStudiesLock = [NSRecursiveLock new];
+            
+            @synchronized( smartAlbumDistantArraySync)
+            {
+                if( smartAlbumDistantSearchArray == nil)
+                    smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
+                
+                [smartAlbumDistantSearchArray addObject: [NSThread currentThread]];
+            }
+            
+            [searchForComparativeStudiesLock lock];
+            
+            if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
+            {
+                id lastObjectInQueue = nil;
+                
+                @synchronized( smartAlbumDistantArraySync)
+                {
+                    lastObjectInQueue = [smartAlbumDistantSearchArray lastObject];
+                }
+                
+                if( [NSThread currentThread] == lastObjectInQueue)
+                {
+                    [NSThread currentThread].name = NSLocalizedString( @"Search Field...", nil);
+                    [NSThread currentThread].status = curSearchString;
+                    [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
+                    
+                    @try
+                    {
+                        @synchronized( smartAlbumDistantArraySync)
+                        {
+                            [smartAlbumDistantArray release];
+                            smartAlbumDistantArray = [[self distantStudiesForSearchString: curSearchString type: curSearchType] retain];
+                        }
+                        
+                        self.distantSearchString = curSearchString;
+                        self.distantSearchType = curSearchType;
+                        
+                        if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
+                            [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
+                    }
+                    @catch (NSException* e)
+                    {
+                        N2LogExceptionWithStackTrace(e);
+                    }
+                }
+            }
+            
+            @synchronized( smartAlbumDistantArraySync)
+            {
+                [smartAlbumDistantSearchArray removeObject: [NSThread currentThread]];
+            }
+            
+            [searchForComparativeStudiesLock unlock];
+        }
+    }
+    
+    [pool release];
+}
+
+- (NSArray*) distantStudiesForIntervalFrom: (NSDate*) from to:(NSDate*) to
 {
 #ifndef OSIRIX_LIGHT
     if( !searchForComparativeStudiesLock)
@@ -3308,7 +3471,6 @@ static NSConditionLock *threadLock = nil;
         }
         
         // Distant studies
-        // In current versions, two filters exist: modality & date
         NSMutableDictionary *d = [NSMutableDictionary dictionary];
         
         if( from && to)
@@ -3344,19 +3506,15 @@ static NSConditionLock *threadLock = nil;
 
     [NSThread currentThread].name = @"Search For Time Interval Studies";
     
-    NSArray *albumArray = self.albumArray;
-    
     if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
     {
         NSLog( @"--- Search time interval: %@ to %@", from, to);
-        
-        lastRefreshSmartAlbumDistantStudies = [NSDate timeIntervalSinceReferenceDate];
         
         {
             if( !searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 if( smartAlbumDistantSearchArray == nil)
                     smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
@@ -3370,7 +3528,7 @@ static NSConditionLock *threadLock = nil;
             {
                 id lastObjectInQueue = nil;
                 
-                @synchronized( self)
+                @synchronized( smartAlbumDistantArraySync)
                 {
                     lastObjectInQueue = [smartAlbumDistantSearchArray lastObject];
                 }
@@ -3382,10 +3540,10 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
-                        @synchronized( self)
+                        @synchronized( smartAlbumDistantArraySync)
                         {
                             [smartAlbumDistantArray release];
-                            smartAlbumDistantArray = [[self distantStudiesForIntervalFrom: from To: to] retain];
+                            smartAlbumDistantArray = [[self distantStudiesForIntervalFrom: from to: to] retain];
                         }
                         
                         self.distantTimeIntervalStart = from;
@@ -3401,7 +3559,7 @@ static NSConditionLock *threadLock = nil;
                 }
             }
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 [smartAlbumDistantSearchArray removeObject: [NSThread currentThread]];
             }
@@ -3486,7 +3644,7 @@ static NSConditionLock *threadLock = nil;
             if( !searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 if( smartAlbumDistantSearchArray == nil)
                     smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
@@ -3500,7 +3658,7 @@ static NSConditionLock *threadLock = nil;
             {
                 id lastObjectInQueue = nil;
                 
-                @synchronized( self)
+                @synchronized( smartAlbumDistantArraySync)
                 {
                     lastObjectInQueue = [smartAlbumDistantSearchArray lastObject];
                 }
@@ -3513,7 +3671,7 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
-                        @synchronized( self)
+                        @synchronized( smartAlbumDistantArraySync)
                         {
                             [smartAlbumDistantArray release];
                             smartAlbumDistantArray = [[self distantStudiesForSmartAlbum: albumName] retain];
@@ -3531,7 +3689,7 @@ static NSConditionLock *threadLock = nil;
                 }
             }
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 [smartAlbumDistantSearchArray removeObject: [NSThread currentThread]];
             }
@@ -3590,7 +3748,7 @@ static NSConditionLock *threadLock = nil;
             if( !searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 if( comparativeStudySearchArray == nil)
                     comparativeStudySearchArray = [[NSMutableArray alloc] init];
@@ -3603,7 +3761,7 @@ static NSConditionLock *threadLock = nil;
             {
                 id lastObjectInQueue = nil;
                 
-                @synchronized( self)
+                @synchronized( smartAlbumDistantArraySync)
                 {
                     lastObjectInQueue = [comparativeStudySearchArray lastObject];
                 }
@@ -3692,7 +3850,7 @@ static NSConditionLock *threadLock = nil;
                 }
             }
             
-            @synchronized( self)
+            @synchronized( smartAlbumDistantArraySync)
             {
                 [comparativeStudySearchArray removeObject: [NSThread currentThread]];
             }
@@ -3714,7 +3872,8 @@ static NSConditionLock *threadLock = nil;
     self.comparativeStudies = newStudies;
     [comparativeTable reloadData];
     
-    [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
+    if( studySelected.name)
+        [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
     
     NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
     
@@ -5239,7 +5398,9 @@ static NSConditionLock *threadLock = nil;
 			if( [[tableColumn identifier] isEqualToString:@"lockedStudy"]) [cell setTransparent: NO];
 			
             if( [item isDistant])
+            {
                 [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size:12]];
+            }
 			else if( originalOutlineViewArray)
 			{
 				if( [originalOutlineViewArray containsObject: item]) [cell setFont: [NSFont boldSystemFontOfSize:12]];
@@ -7095,7 +7256,8 @@ static BOOL withReset = NO;
 
 -(void) matrixInit:(long) noOfImages
 {	
-    @synchronized(self) {
+    @synchronized( self)
+    {
         setDCMDone = NO;
         loadPreviewIndex = 0;
         
@@ -17403,6 +17565,8 @@ static volatile int numberOfThreadsForJPEG = 0;
     [self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
+    
+    [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender

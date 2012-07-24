@@ -246,6 +246,8 @@ extern NSString* O2AlbumDragType;
     NSString *distantStudyMessage; // The text displayed in the matrix thumbnails
     
     NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
+    NSString *distantSearchString;
+    int distantSearchType;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;
@@ -263,7 +265,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage, *distantSearchString;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;
@@ -276,6 +278,7 @@ extern NSString* O2AlbumDragType;
 @property (nonatomic) NSTimeInterval databaseLastModification __deprecated;
 @property(readonly) NSMutableDictionary *databaseIndexDictionary;
 @property(readonly) PluginManagerController *pluginManagerController;
+@property int distantSearchType;
 
 +(void)initializeBrowserControllerClass;
 

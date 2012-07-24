@@ -2988,7 +2988,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		NSColor *frameColor = [NSColor colorWithDeviceRed: [boxColor redComponent] green:[boxColor greenComponent] blue:[boxColor blueComponent] alpha:1];
 		
 		if( showDescriptionInLargeText == nil)
-			showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor: boxColor withBorderColor:frameColor];
+			showDescriptionInLargeText = [[GLString alloc] initWithAttributedString: text withBoxColor: boxColor withBorderColor:frameColor];
 		else
 		{
 			[showDescriptionInLargeText setString: text];
@@ -7981,17 +7981,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     #else
     if( size.size.width * sf > 700 && [AppController isFDACleared] == NO)
     {
-        glColor4f( 1.0, 1.0, 1.0, 1.0);
-        
-        if( warningNotice == nil && [self class] == [DCMView class] && fullText && annotations > annotNone)
+        if( warningNotice == nil && [self class] == [DCMView class] && fullText)
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica-Bold" size: 20] forKey:NSFontAttributeName];
+            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 18] forKey: NSFontAttributeName];
+            [stanStringAttrib setObject: [NSColor colorWithDeviceRed:1.0f green:0.8 blue:0.8 alpha: 1.0] forKey: NSForegroundColorAttributeName];
             NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
-            warningNotice = [[GLString alloc] initWithAttributedString: text withTextColor:[NSColor redColor] withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
+            warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
-        [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+        if( annotations > annotNone)
+        {
+            glColor4f( 1.0, 1.0, 1.0, 1.0);
+            [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+        }
     }
     #endif
 }

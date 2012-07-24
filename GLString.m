@@ -126,7 +126,7 @@
 #pragma mark Initializers
 
 // designated initializer
-- (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
+- (id) initWithAttributedString:(NSAttributedString *)attributedString withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
 	self = [super init];
 	cgl_ctx = NULL;
@@ -135,10 +135,8 @@
 	texSize.height = 0.0f;
 	[attributedString retain];
 	string = attributedString;
-	[text retain];
 	[box retain];
 	[border retain];
-	textColor = text;
 	boxColor = box;
 	borderColor = border;
 	staticFrame = NO;
@@ -151,10 +149,10 @@
 	return self;
 }
 
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withTextColor:(NSColor *)text withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
+- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withBoxColor:(NSColor *)box withBorderColor:(NSColor *)border
 {
 	if( aString == nil) aString = @"";
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:text withBoxColor:box withBorderColor:border];
+	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withBoxColor:box withBorderColor:border];
 }
 
 // basic methods that pick up defaults
@@ -163,13 +161,13 @@
 	if( attributedString == nil)
 		attributedString = [[[NSAttributedString alloc] initWithString: @""] autorelease];
 		
-	return [self initWithAttributedString:attributedString withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
+	return [self initWithAttributedString:attributedString withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs
 {
 	if( aString == nil) aString = @"";
-	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withTextColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:1.0f] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
+	return [self initWithAttributedString:[[[NSAttributedString alloc] initWithString:aString attributes:attribs] autorelease] withBoxColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f] withBorderColor:[NSColor colorWithDeviceRed:1.0f green:1.0f blue:1.0f alpha:0.0f]];
 }
 
 - (void) genTexture; // generates the texture without drawing texture to current context
@@ -237,8 +235,8 @@
 		else
 			NSLog (@"StringTexture -genTexture: Failure to get current OpenGL context\n");
 	}
-	
-	[image release];
+    
+    [image release];
 	
 	requiresUpdate = NO;
 }

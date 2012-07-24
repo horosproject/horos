@@ -83,9 +83,9 @@
 // the same context should be current for all method calls for a particular object instance
 
 // designated initializer
-- (id) initWithAttributedString:(NSAttributedString *)attributedString withTextColor:(NSColor *)color withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
+- (id) initWithAttributedString:(NSAttributedString *)attributedString withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
 
-- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withTextColor:(NSColor *)color withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
+- (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs withBoxColor:(NSColor *)color withBorderColor:(NSColor *)color;
 
 // basic methods that pick up defaults
 - (id) initWithString:(NSString *)aString withAttributes:(NSDictionary *)attribs;
