@@ -2120,7 +2120,10 @@ static NSConditionLock *threadLock = nil;
 	[self setSearchString:nil];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    if( _searchString.length > 2)
+        [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    else if( timeIntervalStart || timeIntervalEnd)
+        [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
 }
 
 - (void) computeTimeInterval
@@ -2201,6 +2204,8 @@ static NSConditionLock *threadLock = nil;
         if( [timeIntervalStart isEqualToDate: self.distantTimeIntervalStart] == NO || (timeIntervalEnd != nil && [timeIntervalEnd isEqualToDate: self.distantTimeIntervalEnd] == NO))
             [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
+    else if( _searchString.length > 2)
+        [self setSearchString: _searchString];
 }
 
 - (void) setTimeIntervalType: (int) t
@@ -2442,13 +2447,12 @@ static NSConditionLock *threadLock = nil;
             {
                 if( timeIntervalStart != nil || timeIntervalEnd != nil) // Search for the time interval, then apply the search field, if necessary
                 {
-                    if( [self.distantTimeIntervalStart isEqualToDate: timeIntervalStart] && [self.distantTimeIntervalEnd isEqualToDate: timeIntervalEnd])
+                    if( [self.distantTimeIntervalStart isEqualToDate: timeIntervalStart] && (timeIntervalEnd == nil || [self.distantTimeIntervalEnd isEqualToDate: timeIntervalEnd]))
                         useDistantArray = YES;
                 }
-                else if( self.distantSearchType == searchType && [self.distantSearchString isEqualToString: _searchString])
-                {
+                
+                if( self.distantSearchType == searchType && [self.distantSearchString isEqualToString: _searchString])
                     useDistantArray = YES;
-                }
             }
             
             if( useDistantArray)
@@ -2695,19 +2699,25 @@ static NSConditionLock *threadLock = nil;
 - (void)_computeNumberOfStudiesForAlbumsThread
 {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    @try {
+    @try
+    {
         static NSNumberFormatter* decimalNumberFormatter = NULL;
-        if (!decimalNumberFormatter) {
+        if (!decimalNumberFormatter)
+        {
             decimalNumberFormatter = [[NSNumberFormatter alloc] init];
             [decimalNumberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
         }
         
-        if (_computingNumberOfStudiesForAlbums) {
+        if (_computingNumberOfStudiesForAlbums)
+        {
             [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
             return;
         }
         
         _computingNumberOfStudiesForAlbums = YES;
+        
+        [NSThread currentThread].name = NSLocalizedString( @"Compute Albums...", nil);
+        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
         
         DicomDatabase* idatabase = [self.database independentDatabase];
         if (!idatabase)
@@ -2742,6 +2752,8 @@ static NSConditionLock *threadLock = nil;
             for (NSManagedObjectID* albumObjectID in albumObjectIDs)
             {
                 DicomAlbum* ialbum = [idatabase objectWithID:albumObjectID];
+                
+                [NSThread currentThread].status = ialbum.name;
                 
                 count = -1;
                 if( ialbum.smartAlbum.boolValue == YES)
@@ -17559,14 +17571,20 @@ static volatile int numberOfThreadsForJPEG = 0;
     else
         [searchField setTextColor: [NSColor blackColor]];
     
-    [_searchString release];
-    _searchString = [searchString retain];
+    if( _searchString != searchString)
+    {
+        [_searchString release];
+        _searchString = [searchString retain];
+    }
     
     [self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    if( _searchString.length > 2)
+        [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    else if( timeIntervalStart || timeIntervalEnd)
+        [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender

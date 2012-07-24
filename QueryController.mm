@@ -278,6 +278,10 @@ extern "C"
         {
             qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer: server];
             
+            if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)
+                //Specific Character Set
+                [qm addFilter: [[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] forDescription:@"SpecificCharacterSet"];
+            
             NSMutableDictionary *f = [NSMutableDictionary dictionary];
             
             if( [filters valueForKey: @"AccessionNumber"])
@@ -330,6 +334,8 @@ extern "C"
             }
             else
             {
+                [NSThread currentThread].supportsCancel = YES;
+                
                 [qm performQuery: showErrors];
                 
                 NSArray *studiesForThisNode = [qm queries];

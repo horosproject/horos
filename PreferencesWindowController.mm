@@ -277,7 +277,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	[self addPaneWithResourceNamed:@"OSIAutoroutingPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Routing", @"Panel in preferences window") image:[NSImage imageNamed:@"route"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"AYDicomPrintPref" inBundle:bundle withTitle:NSLocalizedString(@"DICOM Print", @"Panel in preferences window") image:[NSImage imageNamed:@"SmallPrinter"] toGroupWithName:name];
 	[self addPaneWithResourceNamed:@"OSIWebSharingPreferencePanePref" inBundle:bundle withTitle:NSLocalizedString(@"Web Server", @"Panel in preferences window") image:[NSImage imageNamed:@"Safari"] toGroupWithName:name];
-    [self addPaneWithResourceNamed:@"OSIPACSOnDemandPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"Cloud", @"Panel in preferences window") image:[NSImage imageNamed:@"Cloud"] toGroupWithName:name];
+    [self addPaneWithResourceNamed:@"OSIPACSOnDemandPreferencePane" inBundle:bundle withTitle:NSLocalizedString(@"On-Demand", @"Panel in preferences window") image:[NSImage imageNamed:@"Cloud"] toGroupWithName:name];
 	
 	for (NSArray* pluginPane in pluginPanes)
 		[self addPaneWithResourceNamed:[pluginPane objectAtIndex:0] inBundle:[pluginPane objectAtIndex:1] withTitle:[pluginPane objectAtIndex:2] image:[pluginPane objectAtIndex:3] toGroupWithName:NSLocalizedString(@"Plugins", @"Title of Plugins section in preferences window")];

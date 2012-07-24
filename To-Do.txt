@@ -1,5 +1,5 @@
 - Require MacOS 10.7 or higher
-- On-Demand image retrieving, compatible with any DICOM nodes (Cloud Preferences)
+- On-Demand image retrieving, compatible with any DICOM nodes (On-Demand Preferences)
 - Display comparative studies in a separate view, including comparatives studies available on a distant DICOM node (Cloud Preferences)
 - OsiriX is now distributed as a dmg file
 - New Database API: more robustness and evolutivity
@@ -26,7 +26,6 @@
 
 - Comparative: search comments on DICOM node?
 - Comparative: smart album creation -> DICOM node rule prefs
-- Comparative QueryController: @"STRINGENCODING" if necessary
 
 -------------------------------------------------------------
 

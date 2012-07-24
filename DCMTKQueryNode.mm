@@ -1262,6 +1262,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	[lock lock];
 	
+    [NSThread currentThread].name = @"DCMTKQueryNode ASC_requestAssociation";
+    
 	@try
 	{
 		T_ASC_Association *assoc = NULL;
