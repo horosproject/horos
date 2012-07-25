@@ -2121,7 +2121,7 @@ static NSConditionLock *threadLock = nil;
 	[self setSearchString:nil];
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if( _searchString.length > 2)
+    if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
         [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     else if( timeIntervalStart || timeIntervalEnd)
         [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
@@ -2205,7 +2205,7 @@ static NSConditionLock *threadLock = nil;
         if( [timeIntervalStart isEqualToDate: self.distantTimeIntervalStart] == NO || (timeIntervalEnd != nil && [timeIntervalEnd isEqualToDate: self.distantTimeIntervalEnd] == NO))
             [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
-    else if( _searchString.length > 2)
+    else if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
         [self setSearchString: _searchString];
 }
 
@@ -2499,6 +2499,11 @@ static NSConditionLock *threadLock = nil;
                         }
                     }
                 }
+                
+                @synchronized (_albumNoOfStudiesCache)
+                {
+                    [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: distantStudies.count] forKey: smartAlbumName];
+                }
                 #endif
                 
                 if( [distantStudies count])
@@ -2772,7 +2777,13 @@ static NSConditionLock *threadLock = nil;
                         
                         count = 0;
                         
-                        if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] == nil)
+                        id cache = nil;
+                        @synchronized(_albumNoOfStudiesCache)
+                        {
+                            cache = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
+                        }
+                        
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || cache == nil)
                         {
                             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
                             {
@@ -2784,13 +2795,20 @@ static NSConditionLock *threadLock = nil;
                                 }
                             }
                             
-                            [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
+                            @synchronized(_albumNoOfStudiesCache)
+                            {
+                                [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
+                            }
                             
                             lastComputeAlbumsForDistantStudies = [NSDate timeIntervalSinceReferenceDate];
                         }
                         else
-                            count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
-                        
+                        {
+                            @synchronized(_albumNoOfStudiesCache)
+                            {
+                                count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
+                            }
+                        }
                         count += localStudies.count;
                     }
                     @catch (NSException* e)
@@ -3412,7 +3430,7 @@ static NSConditionLock *threadLock = nil;
     {
         NSLog( @"--- Search For Search Field: %@ (%d)", curSearchString, curSearchType);
         
-        if( [curSearchString length] > 2)
+        if( [curSearchString length] > 2 || (_searchString.length >= 2 && searchType == 5))
         {
             if( !searchForComparativeStudiesLock)
                 searchForComparativeStudiesLock = [NSRecursiveLock new];
@@ -17640,7 +17658,7 @@ static volatile int numberOfThreadsForJPEG = 0;
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
-    if( _searchString.length > 2)
+    if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
         [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     else if( timeIntervalStart || timeIntervalEnd)
         [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
