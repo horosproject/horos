@@ -26,17 +26,14 @@
 
 @synthesize _abortAssociation, showErrorMessage;
 
-- (void) errorMessage:(NSArray*) msg
++ (void) errorMessage:(NSArray*) msg
 {
-	if( showErrorMessage)
-	{
-		NSString *alertSuppress = @"hideListenerError";
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-			NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
-		else
-			NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
-	}
+    NSString *alertSuppress = @"hideListenerError";
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+        NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+    else
+        NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -51,7 +48,8 @@
 		if( firstWadoErrorDisplayed == NO)
 		{
 			firstWadoErrorDisplayed = YES;
-			[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"WADO http status code error: %d", [httpResponse statusCode]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+            if( showErrorMessage)
+                [WADODownload performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"WADO http status code error: %d", [httpResponse statusCode]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
 		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
@@ -82,7 +80,9 @@
 		if( firstWadoErrorDisplayed == NO)
 		{
 			firstWadoErrorDisplayed = YES;
-			[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@", [error localizedDescription]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+            
+            if( showErrorMessage)
+                [WADODownload performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@", [error localizedDescription]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
 		OSAtomicDecrement32Barrier( &WADOThreads);

@@ -252,7 +252,7 @@
 
 - (NSString*) comment // Match DicomStudy
 {
-    return @"";
+    return _comments;
 }
 
 - (NSString*) reportURL // Match DicomStudy

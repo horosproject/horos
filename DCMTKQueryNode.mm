@@ -805,7 +805,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //				if( firstWadoErrorDisplayed == NO)
 //				{
 //					firstWadoErrorDisplayed = YES;
-//					[self performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+//                  if( showErrorMessage)
+//                      [DCMTKQueryNode performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"%@ - %@", [error localizedDescription], url], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 //				}
 //			}
 //			
@@ -1230,17 +1231,14 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	showErrorMessage = m;
 }
 
-- (void) errorMessage:(NSArray*) msg
++ (void) errorMessage:(NSArray*) msg
 {
-	if( showErrorMessage)
-	{
-		NSString *alertSuppress = @"hideListenerError";
-		
-		if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
-			NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
-		else
-			NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
-	}
+    NSString *alertSuppress = @"hideListenerError";
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: alertSuppress] == NO)
+        NSRunCriticalAlertPanel( [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2], nil, nil) ;
+    else
+        NSLog( @"*** listener error (not displayed - hideListenerError): %@ %@ %@", [msg objectAtIndex: 0], [msg objectAtIndex: 1], [msg objectAtIndex: 2]);
 }
 
 - (BOOL)setupNetworkWithSyntax:(const char *)abstractSyntax dataset:(DcmDataset *)dataset
@@ -1929,7 +1927,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
 			if( showErrorMessage == YES && _abortAssociation == NO)
-				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+				[DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
@@ -2093,7 +2091,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			  }
 			
 			if( showErrorMessage == YES && _abortAssociation == NO)
-				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+				[DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (2)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (2)", nil) description: response name: @"autoquery"];
 				
@@ -2267,7 +2265,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			{
 				DIMSE_printCMoveRSP(stdout, &rsp);
 				
-				[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+                if( showErrorMessage)
+                    [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
 			}
 			
 			if (_verbose)
@@ -2281,7 +2280,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 		else
 		{
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
+            if( showErrorMessage)
+                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
 			errmsg("Move Failed:");
 			DimseCondition::dump(cond);
 		}
@@ -2368,7 +2368,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		{
 			DIMSE_printCGetRSP(stdout, &rsp);
 			
-			[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+            if( showErrorMessage)
+                [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: DU_cmoveStatusString(rsp.DimseStatus)], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
         if (_verbose)
@@ -2383,7 +2384,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
     }
 	else
 	{
-		[self performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+        if( showErrorMessage)
+            [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
         errmsg("Get Failed:");
         DimseCondition::dump(cond);
     }

@@ -116,7 +116,7 @@
 #import "WebPortal+Email+Log.h"
 #import "WebPortalDatabase.h"
 
-#define DISTANTSTUDYFONT @"Helvetica-Oblique"
+#define DISTANTSTUDYFONT @"Helvetica-BoldOblique"
 
 //#define USERDATABASEVERSION @"1.0"
 #define DATABASEVERSION @"2.5"
@@ -2122,9 +2122,36 @@ static NSConditionLock *threadLock = nil;
 	[databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
     if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+        
         [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    }
     else if( timeIntervalStart || timeIntervalEnd)
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+        
         [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+    }
+    else
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+    }
 }
 
 - (void) computeTimeInterval
@@ -2203,10 +2230,28 @@ static NSConditionLock *threadLock = nil;
     if( timeIntervalStart || timeIntervalEnd)
     {
         if( [timeIntervalStart isEqualToDate: self.distantTimeIntervalStart] == NO || (timeIntervalEnd != nil && [timeIntervalEnd isEqualToDate: self.distantTimeIntervalEnd] == NO))
+        {
+            @synchronized( self)
+            {
+                [distantSearchThread cancel];
+                [distantSearchThread release];
+                distantSearchThread = nil;
+            }
+            
             [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+        }
     }
     else if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
         [self setSearchString: _searchString];
+    else
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+    }
 }
 
 - (void) setTimeIntervalType: (int) t
@@ -2502,7 +2547,8 @@ static NSConditionLock *threadLock = nil;
                 
                 @synchronized (_albumNoOfStudiesCache)
                 {
-                    [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: distantStudies.count] forKey: smartAlbumName];
+                    if( smartAlbumName)
+                        [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: distantStudies.count] forKey: smartAlbumName];
                 }
                 #endif
                 
@@ -3441,11 +3487,12 @@ static NSConditionLock *threadLock = nil;
                     smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
                 
                 [smartAlbumDistantSearchArray addObject: [NSThread currentThread]];
+                distantSearchThread = [[NSThread currentThread] retain];
             }
             
             [searchForComparativeStudiesLock lock];
             
-            if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
+            if( curSearchType == searchType && [curSearchString isEqualToString: _searchString] && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue...
             {
                 id lastObjectInQueue = nil;
                 
@@ -3573,11 +3620,12 @@ static NSConditionLock *threadLock = nil;
                     smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
                 
                 [smartAlbumDistantSearchArray addObject: [NSThread currentThread]];
+                distantSearchThread = [[NSThread currentThread] retain];
             }
             
             [searchForComparativeStudiesLock lock];
             
-            if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
+            if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd]) && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue...
             {
                 id lastObjectInQueue = nil;
                 
@@ -3702,12 +3750,15 @@ static NSConditionLock *threadLock = nil;
                 if( smartAlbumDistantSearchArray == nil)
                     smartAlbumDistantSearchArray = [[NSMutableArray alloc] init];
                 
+                for( NSThread *t in smartAlbumDistantSearchArray)
+                    [t setIsCancelled: YES];
+                
                 [smartAlbumDistantSearchArray addObject: [NSThread currentThread]];
             }
             
             [searchForComparativeStudiesLock lock];
             
-            if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]]) // There was maybe other locks in the queue...
+            if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]] && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue...
             {
                 id lastObjectInQueue = nil;
                 
@@ -3806,11 +3857,14 @@ static NSConditionLock *threadLock = nil;
                 if( comparativeStudySearchArray == nil)
                     comparativeStudySearchArray = [[NSMutableArray alloc] init];
                 
+                for( NSThread *t in comparativeStudySearchArray)
+                    [t setIsCancelled: YES];
+                
                 [comparativeStudySearchArray addObject: [NSThread currentThread]];
             }
             
             [searchForComparativeStudiesLock lock];
-            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
+            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue... Keep only the displayed patientUID
             {
                 id lastObjectInQueue = nil;
                 
@@ -11827,6 +11881,8 @@ static NSArray*	openSubSeriesArray = nil;
 //		printf("%u\n",i);
 //	});
     
+//    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
+    
     [self saveLoadAlbumsSortDescriptors];
     
 	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
@@ -17659,9 +17715,36 @@ static volatile int numberOfThreadsForJPEG = 0;
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
     
     if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+        
         [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+    }
     else if( timeIntervalStart || timeIntervalEnd)
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+        
         [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+    }
+    else
+    {
+        @synchronized( self)
+        {
+            [distantSearchThread cancel];
+            [distantSearchThread release];
+            distantSearchThread = nil;
+        }
+    }
 }
 
 - (IBAction)searchForCurrentPatient: (id)sender

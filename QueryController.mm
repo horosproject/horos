@@ -57,7 +57,7 @@ static NSString *PatientName = @"PatientsName";
 static NSString *PatientID = @"PatientID";
 static NSString *AccessionNumber = @"AccessionNumber";
 static NSString *StudyDescription = @"StudyDescription";
-static NSString *Comments = @"Comments";
+static NSString *StudyComments = @"StudyComments";
 static NSString *PatientBirthDate = @"PatientBirthDate";
 static NSString *ReferringPhysician = @"ReferringPhysiciansName";
 static NSString *InstitutionName = @"InstitutionName";
@@ -291,7 +291,7 @@ extern "C"
                 [f setObject: [filters valueForKey: @"StudyDescription"] forKey: @"StudyDescription"];
             
             if( [filters valueForKey: @"Comments"])
-                [f setObject: [filters valueForKey: @"Comments"] forKey: @"Comments"];
+                [f setObject: [filters valueForKey: @"Comments"] forKey: StudyComments];
             
             if( [filters valueForKey: @"StudyID"])
                 [f setObject: [filters valueForKey: @"StudyID"] forKey: @"StudyID"];
@@ -2121,7 +2121,7 @@ extern "C"
                     case 3:		currentQueryKey = PatientBirthDate;     break;
                     case 4:		currentQueryKey = StudyDescription;     break;
                     case 5:		currentQueryKey = ReferringPhysician;	break;
-                    case 6:		currentQueryKey = Comments;             break;
+                    case 6:		currentQueryKey = StudyComments;            break;
                     case 7:		currentQueryKey = InstitutionName;      break;
                     case 8:     currentQueryKey = customDICOMField;     break;
                 }
@@ -2336,7 +2336,7 @@ extern "C"
                         queryItem = YES;
                     }
                 }
-                else if( currentQueryKey == Comments && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
+                else if( currentQueryKey == StudyComments && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_comments"])
                 {
                     NSString *commentsValue = nil;
                     

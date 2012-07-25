@@ -89,6 +89,7 @@ extern NSString* O2AlbumDragType;
 	
     NSTimeInterval          lastComputeAlbumsForDistantStudies;
     NSMutableDictionary     *_distantAlbumNoOfStudiesCache;
+    NSThread                *distantSearchThread;
 	NSMutableArray*         _albumNoOfStudiesCache;
     NSArray*                _cachedAlbums;
     NSManagedObjectContext* _cachedAlbumsContext;
