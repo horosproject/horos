@@ -2130,7 +2130,8 @@ static NSConditionLock *threadLock = nil;
             distantSearchThread = nil;
         }
         
-        [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+        if( albumTable.selectedRow == 0)
+            [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {
@@ -2141,7 +2142,8 @@ static NSConditionLock *threadLock = nil;
             distantSearchThread = nil;
         }
         
-        [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+        if( albumTable.selectedRow == 0)
+            [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
     else
     {
@@ -2238,7 +2240,8 @@ static NSConditionLock *threadLock = nil;
                 distantSearchThread = nil;
             }
             
-            [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+            if( albumTable.selectedRow == 0)
+                [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
         }
     }
     else if( _searchString.length > 2 || (_searchString.length >= 2 && searchType == 5))
@@ -5538,6 +5541,7 @@ static NSConditionLock *threadLock = nil;
             if( [item isDistant])
             {
                 [cell setFont: [NSFont fontWithName: DISTANTSTUDYFONT size:12]];
+//                [cell setTextColor: [NSColor grayColor]];
             }
 			else if( originalOutlineViewArray)
 			{
@@ -17723,7 +17727,8 @@ static volatile int numberOfThreadsForJPEG = 0;
             distantSearchThread = nil;
         }
         
-        [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
+        if( albumTable.selectedRow == 0)
+            [NSThread detachNewThreadSelector: @selector( searchForSearchField:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInt: searchType], @"searchType", _searchString, @"searchString", nil]];
     }
     else if( timeIntervalStart || timeIntervalEnd)
     {
@@ -17734,7 +17739,8 @@ static volatile int numberOfThreadsForJPEG = 0;
             distantSearchThread = nil;
         }
         
-        [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
+        if( albumTable.selectedRow == 0)
+            [NSThread detachNewThreadSelector: @selector( searchForTimeIntervalFromTo:) toTarget:self withObject: [NSDictionary dictionaryWithObjectsAndKeys: timeIntervalStart, @"from", timeIntervalEnd, @"to", nil]];
     }
     else
     {

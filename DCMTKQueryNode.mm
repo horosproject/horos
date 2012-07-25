@@ -1931,8 +1931,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
-            N2LogExceptionWithStackTrace(e);
-			
+            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            
 			succeed = NO;
 		}
 		

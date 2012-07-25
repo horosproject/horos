@@ -52,6 +52,8 @@
 
 #include <signal.h>
 
+extern int AbortAssociationTimeOut;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @interface ContextCleaner : NSObject
@@ -575,8 +577,10 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 //			NSLog( @"******* RESTARTOSIRIXSTORESCP");
 		}
 		
+        AbortAssociationTimeOut = 2;
 		/* some kind of error so abort the association */
         cond = ASC_abortAssociation(assoc);
+        AbortAssociationTimeOut = -1;
     }
 
     cond = ASC_dropAssociation(assoc);
