@@ -198,7 +198,7 @@ static int validFilePathDepth = 0;
     NSMutableArray *theArguments = [NSMutableArray array];
     NSPipe *newPipe = [NSPipe pipe];
     NSData *inData = nil;
-    NSString *s = [NSString stringWithString:@""];
+    NSString *s = @"";
     
 	dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
 	

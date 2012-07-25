@@ -12487,8 +12487,8 @@ END_CREATE_ROIS:
 	[description appendString:[NSString stringWithFormat:@" <%x>", (NSInteger)self]];
 	[description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
 	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
-	[description appendString:[NSString stringWithFormat: @"width: %d\n", width]];
-	[description appendString:[NSString stringWithFormat: @"height: %d\n", height]];
+	[description appendString:[NSString stringWithFormat: @"width: %d\n", (int) width]];
+	[description appendString:[NSString stringWithFormat: @"height: %d\n", (int) height]];
 	[description appendString:[NSString stringWithFormat: @"pixelRatio: %f\n", pixelRatio]];
 	[description appendString:[NSString stringWithFormat: @"origin X: %f Y: %f  Z: %f\n", originX, originY, originZ]];
 	

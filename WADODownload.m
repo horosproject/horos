@@ -52,7 +52,7 @@
                 [WADODownload performSelectorOnMainThread :@selector(errorMessage:) withObject: [NSArray arrayWithObjects: NSLocalizedString(@"WADO Retrieve Failed", nil), [NSString stringWithFormat: @"WADO http status code error: %d", [httpResponse statusCode]], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
 		}
 		
-		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", (long) connection]];
 	}
 }
 
@@ -62,7 +62,7 @@
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", (long) connection]];
 		[d appendData: data];
 		
 		[pool release];
@@ -73,7 +73,7 @@
 {
 	if( connection)
 	{
-		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", connection]];
+		[WADODownloadDictionary removeObjectForKey: [NSString stringWithFormat:@"%ld", (long) connection]];
 		
 		NSLog(@"***** WADO Retrieve error: %@", error);
 		
@@ -112,7 +112,7 @@
         
 		NSString *path = [[DicomDatabase defaultDatabase] incomingDirPath];
         
-		NSString *key = [NSString stringWithFormat:@"%ld", connection];
+		NSString *key = [NSString stringWithFormat:@"%ld", (long) connection];
 		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
 		
 		NSString *extension = @"dcm";
@@ -122,7 +122,7 @@
 			if( [[NSString stringWithCString: [d bytes] length: 2] isEqualToString: @"PK"])
 				extension = @"osirixzip";
             
-            NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, self] stringByAppendingPathExtension: extension];
+            NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, (long) self] stringByAppendingPathExtension: extension];
         
             [d writeToFile: [path stringByAppendingPathComponent: filename] atomically: YES];
             
@@ -200,7 +200,7 @@
 			
             if( downloadConnection)
             {
-                [WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", downloadConnection]];
+                [WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", (long) downloadConnection]];
                 [downloadConnection start];
                 [connectionsArray addObject: downloadConnection];
 			}

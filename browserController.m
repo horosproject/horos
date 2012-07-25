@@ -1642,10 +1642,10 @@ static NSConditionLock *threadLock = nil;
 				NSString *extension = [srcPath pathExtension];
 				
 				if( [[im valueForKey: @"fileType"] hasPrefix: @"DICOM"])
-					extension = [NSString stringWithString:@"dcm"];
+					extension = @"dcm";
 				
 				if( [extension isEqualToString:@""])
-					extension = [NSString stringWithString:@"dcm"]; 
+					extension = @"dcm";
 				
 				NSString *dstPath = [self getNewFileDatabasePath:extension];
 				
@@ -1807,15 +1807,13 @@ static NSConditionLock *threadLock = nil;
 						if( curFile)
 						{
 							if( [[[curFile dicomElements] objectForKey: @"fileType"] hasPrefix: @"DICOM"])
-								extension = [NSString stringWithString:@"dcm"];
-							
-							[curFile release];
-							
+								extension = @"dcm";
+                            
 							if( [extension isEqualToString:@""])
-								extension = [NSString stringWithString:@"dcm"]; 
+								extension = @"dcm"; 
 							
 							if( [extension length] > 4 || [extension length] < 3)
-								extension = [NSString stringWithString:@"dcm"];
+								extension = @"dcm";
 							
 							NSString *dstPath = [self getNewFileDatabasePath:extension];
 							
@@ -1828,6 +1826,9 @@ static NSConditionLock *threadLock = nil;
 							{
 								[[NSFileManager defaultManager] copyPath:[[srcPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] toPath:[[dstPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"img"] handler:nil];
 							}
+                            
+                            [curFile release];
+							curFile = nil;
 						}
 						else NSLog( @"**** DicomFile *curFile = nil");
 					}
@@ -8880,8 +8881,8 @@ static BOOL withReset = NO;
     
     if( result == NSRunStoppedResponse)
     {
-        NSString			*name;
-        long				i = 2;
+        NSString *name;
+        int i = 2;
         
         NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
         [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
@@ -9054,9 +9055,9 @@ static BOOL needToRezoom;
 			
 			if( result == NSRunStoppedResponse)
 			{
-				NSError				*error = nil;
-				NSString			*name;
-				long				i = 2;
+				NSError *error = nil;
+				NSString *name;
+				int i = 2;
 				
 				NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 				[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
@@ -14196,18 +14197,18 @@ static volatile int numberOfThreadsForJPEG = 0;
 				serieCount++;
 			}
 			
-			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
+			dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, extension];
 			
 			int t = 2;
 			while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 			{
-				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
+				dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, t, extension];
 				t++;
 			}
 			
 			if( t != 2)
 			{
-				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
+				[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, 1, extension], @"newName", nil]];
 			}
 			
 			DCMPix* dcmPix = [[DCMPix alloc] initWithPath: [curImage valueForKey:@"completePathResolved"] :0 :1 :nil :[[curImage valueForKey:@"frameID"] intValue] :[[curImage valueForKeyPath:@"series.id"] intValue] isBonjour:![_database isLocal] imageObj:curImage];
@@ -14732,11 +14733,11 @@ static volatile int numberOfThreadsForJPEG = 0;
 				if( [curImage valueForKey: @"fileType"])
 				{
 					if( [[curImage valueForKey: @"fileType"] hasPrefix:@"DICOM"])
-						extension = [NSString stringWithString:@"dcm"];
+						extension = @"dcm";
 				}
 				
 				if([extension isEqualToString:@""])
-					extension = [NSString stringWithString:@"dcm"]; 
+					extension = @"dcm"; 
 				
 				NSString *tempPath;
 				// if creating DICOMDIR. Limit length to 8 char
@@ -14827,10 +14828,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					NSString *studyName = [BrowserController replaceNotAdmitted: [NSMutableString stringWithString: name]];
 					
 					if( studyId == nil || [studyId length] == 0)
-						studyId = [NSString stringWithString: @"0"];
+						studyId = @"0";
 					
 					if( studyName == nil || [studyName length] == 0)
-						studyName = [NSString stringWithString: @"unnamed"];
+						studyName = @"unnamed";
 					
 					if (!addDICOMDIR)
 						tempPath = [tempPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@ - %@", studyName, studyId]];
@@ -14867,7 +14868,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 						seriesId = [NSNumber numberWithInt: 0];
 					
 					if( seriesName == nil || [seriesName length] == 0)
-						seriesName = [NSString stringWithString: @"unnamed"];
+						seriesName = @"unnamed";
 					
 					if ( !addDICOMDIR)
 					{
@@ -14914,26 +14915,26 @@ static volatile int numberOfThreadsForJPEG = 0;
 					serieCount++;
 				}
 				if (!addDICOMDIR)
-					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension];
+					dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, extension];
 				else
-					dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo];
+					dest = [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, (int) serieCount, (int) imageNo];
 				
 				int t = 2;
 				while( [[NSFileManager defaultManager] fileExistsAtPath: dest])
 				{
 					if (!addDICOMDIR)
-						dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, t, extension];
+						dest = [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, t, extension];
 					else
-						dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, t];
+						dest = [NSString stringWithFormat:@"%@/%4.4d%d", tempPath, (int) imageNo, t];
 					t++;
 				}
 				
 				if( t != 2)
 				{
 					if (!addDICOMDIR)
-						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, serieCount, imageNo, 1, extension], @"newName", nil]];
+						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, extension], @"oldName", [NSString stringWithFormat:@"%@/IM-%4.4d-%4.4d-%4.4d.%@", tempPath, (int) serieCount, (int) imageNo, 1, extension], @"newName", nil]];
 					else
-						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, serieCount, imageNo], @"oldName", [NSString stringWithFormat:@"%@/%4.4d%d", tempPath,  imageNo, 1], @"newName", nil]];
+						[renameArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithFormat:@"%@/%4.4d%4.4d", tempPath, (int) serieCount, (int) imageNo], @"oldName", [NSString stringWithFormat:@"%@/%4.4d%d", tempPath, (int) imageNo, 1], @"newName", nil]];
 				}
 				
 				NSError *error = nil;

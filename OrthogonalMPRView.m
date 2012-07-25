@@ -705,7 +705,7 @@ extern int ANNOTATIONS;
 				[new2DPointROI setROIMode:ROI_selected];
 				
 				// name		
-				NSString *finalName, *roiName = [NSString stringWithString:@"Point "];
+				NSString *finalName, *roiName = @"Point ";
 				int counter = 1;
 				BOOL existsAlready = YES;
 				while (existsAlready)

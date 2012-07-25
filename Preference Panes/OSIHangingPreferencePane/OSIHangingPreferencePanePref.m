@@ -42,7 +42,7 @@
 	
 	//setup GUI
 	
-	modalityForHangingProtocols = [[NSString stringWithString:@"CR"] retain];
+	modalityForHangingProtocols = [@"CR" retain];
 	[hangingProtocolTableView reloadData];
 	
 //	[bodyRegionBrowser setDoubleAction:@selector(browserDoubleAction:)];

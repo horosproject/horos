@@ -183,7 +183,7 @@ extern NSRecursiveLock *PapyrusLock;
 			Modality = [[NSString alloc] initWithString:@"RD"];
 			date = [[NSCalendarDate date] retain];
 			serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-			fileType = [[NSString stringWithString:@"IMAGE"] retain];
+			fileType = [@"IMAGE" retain];
 
 
 			NoOfFrames = 1;
@@ -282,12 +282,12 @@ extern NSRecursiveLock *PapyrusLock;
 		if (fileformat.getMetaInfo()->findAndGetString(DCM_TransferSyntaxUID, string, OFFalse).good() && string != NULL 
 			&& [[NSString stringWithCString:string encoding: NSASCIIStringEncoding] isEqualToString:@"1.2.840.10008.1.2.4.100"])
 		{
-				fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+				fileType = [@"DICOMMPEG2" retain];
 				[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		else
 		{
-			fileType = [[NSString stringWithString:@"DICOM"] retain];
+			fileType = [@"DICOM" retain];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
@@ -744,7 +744,7 @@ extern NSRecursiveLock *PapyrusLock;
 		{
 			NSString	*n;
 			
-			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
+			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 			[serieID release];
 			serieID = n;
 		}

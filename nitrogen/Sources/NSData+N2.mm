@@ -156,7 +156,7 @@ static const char base64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijk
 	NSMutableString* stringBuffer = [NSMutableString stringWithCapacity:([self length] * 2)];
 	const unsigned char* dataBuffer = (unsigned char*)[self bytes];
 	for (int i = 0; i < [self length]; ++i)
-		[stringBuffer appendFormat:@"%02X", (unsigned long)dataBuffer[i]];
+		[stringBuffer appendFormat:@"%02X", (unsigned int) dataBuffer[i]];
 	return [[stringBuffer copy] autorelease];
 }
 

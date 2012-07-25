@@ -406,7 +406,7 @@ static NSMutableArray *cachedServersArray = nil;
 		}
 		@catch (NSException * e)
 		{
-            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
+            NSLog(@"Exception in %s: %@", __PRETTY_FUNCTION__, e.reason);
 		}
 	}
 	

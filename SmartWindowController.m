@@ -261,8 +261,8 @@
 			NSDate		*date = nil;
 			NSString	*field = nil;
 			
-			if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) field = [NSString stringWithString: @"date"];
-			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)]) field = [NSString stringWithString: @"dateAdded"];
+			if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) field = @"date";
+			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)]) field = @"dateAdded";
 			
 			switch ([[view searchTypePopup] indexOfSelectedItem] + 4)
 			{
@@ -352,7 +352,7 @@
 				case searchEndsWith:			predicateString = [NSString stringWithFormat:@"%@ ENDSWITH[cd] '%@'", key, value];		break;
 				case searchExactMatch:
 									{
-										if([[[view valueField] stringValue] isEqualToString:@""]) value = [NSString stringWithString: @"<empty>"];
+										if([[[view valueField] stringValue] isEqualToString:@""]) value = @"<empty>";
 										predicateString = [NSString stringWithFormat:@"(%@ BEGINSWITH[cd] '%@') AND (%@ ENDSWITH[cd] '%@')", key, value, key, value];	break;
 									}
 			}

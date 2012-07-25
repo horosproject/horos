@@ -40,7 +40,7 @@
 }
 
 -(NSString*)description {
-    return [NSString stringWithFormat:@"<N2MutableUInteger: %llu>", _value];
+    return [NSString stringWithFormat:@"<N2MutableUInteger: %llu>", (long long)_value];
 }
 
 @end

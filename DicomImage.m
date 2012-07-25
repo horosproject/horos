@@ -698,7 +698,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         NSString	*f = [self primitiveValueForKey:@"storedExtension"];
         
-        if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"dcm"];
+        if( f == 0 || [f isEqualToString:@""]) f = @"dcm";
 
         [extension release];
         extension = [f retain];
@@ -733,7 +733,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         NSString	*f = [self primitiveValueForKey:@"storedModality"];
         
-        if( f == 0 || [f isEqualToString:@""]) f = [NSString stringWithString: @"CT"];
+        if( f == 0 || [f isEqualToString:@""]) f = @"CT";
 
         [modality release];
         modality = [f retain];
@@ -768,7 +768,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         
         NSString	*f = [self primitiveValueForKey:@"storedFileType"];
         
-        if( f == 0 || [f isEqualToString:@""]) f =  [NSString stringWithString: @"DICOM"];
+        if( f == 0 || [f isEqualToString:@""]) f =  @"DICOM";
         
         [fileType release];
         fileType = [f retain];
@@ -841,7 +841,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 - (NSString*) type
 {
-	return  [NSString stringWithString: @"Image"];
+	return  @"Image";
 }
 
 - (void) dealloc
@@ -890,7 +890,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 		val++;
 		val *= [BrowserController DefaultFolderSizeForDB];
 		
-		return [[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", val]] stringByAppendingPathComponent: path];
+		return [[dbLocation stringByAppendingPathComponent: [NSString stringWithFormat: @"%d", (int) val]] stringByAppendingPathComponent: path];
 	}
 	else return path;
 }

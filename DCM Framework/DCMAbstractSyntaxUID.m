@@ -595,7 +595,7 @@ static NSString *DCM_Verification = @"1.2.840.10008.1.1";
 		}
 		@catch (NSException * e) 
 		{
-            NSLog(@"Exception in %@: %@", __PRETTY_FUNCTION__, e.reason);
+            NSLog(@"Exception in %s: %@", __PRETTY_FUNCTION__, e.reason);
 		}
         
         @try 

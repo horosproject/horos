@@ -185,7 +185,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 			charRect = NSIntegralRect( charRect);
 			if( charRect.size.width <= 0 && charRect.size.height <= 0 ) // character with no glyph in the current font
 			{
-				currentChar = [NSString stringWithString:@"?"];
+				currentChar = @"?";
 				charSize = [currentChar sizeWithAttributes:attribDict ];
                 
 				charRect.size = charSize;

@@ -1021,11 +1021,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 
 				if (fileformat.getDataset()->findAndGetString(DCM_PatientsName, string, OFFalse).good() && string != nil)
 					_patientName = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-				else _patientName = [[NSString stringWithString:@"Unnamed"] retain];
+				else _patientName = [@"Unnamed" retain];
 				
 				if (fileformat.getDataset()->findAndGetString(DCM_StudyDescription, string, OFFalse).good() && string != nil)
 					_studyDescription = [[DicomFile stringWithBytes: (char*) string encodings:encoding] retain];
-				else _studyDescription = [[NSString stringWithString:@"Unnamed"] retain];
+				else _studyDescription = [@"Unnamed" retain];
 			}
 		}
 	}

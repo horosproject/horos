@@ -688,7 +688,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 	imageID = [[NSString alloc] initWithString: [[NSDate date] description]];
 	serieID = [[NSString alloc] initWithString: [[NSDate date] description]];
-	studyID = [[NSString alloc] initWithFormat:@"%d", random()];
+	studyID = [[NSString alloc] initWithFormat:@"%ld", random()];
 
 	name = [[NSString alloc] initWithString:[filePath lastPathComponent]];
 	patientID = [[NSString alloc] initWithString:name];
@@ -696,7 +696,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	Modality = [[NSString alloc] initWithString:@"RD"];
 	date = [[NSCalendarDate date] retain];
 	serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-	fileType = [[NSString stringWithString:@"IMAGE"] retain];
+	fileType = [@"IMAGE" retain];
 
 	NoOfSeries = 1;
 	NoOfFrames = 1;
@@ -880,7 +880,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				Modality = [[NSString alloc] initWithString:extension];
 				date = [[[[NSFileManager defaultManager] attributesOfItemAtPath: filePath error: nil] fileCreationDate] retain];
 				serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-				fileType = [[NSString stringWithString:@"IMAGE"] retain];
+				fileType = [@"IMAGE" retain];
 				
 				if( NoOfFrames > 1) // SERIES ID MUST BE UNIQUE!!!!!
 				{
@@ -936,7 +936,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         Modality = [[NSString alloc] initWithString:extension];
         date = [[[[NSFileManager defaultManager] attributesOfItemAtPath:filePath error: nil] fileCreationDate] retain];
         serie = [[NSString alloc] initWithString:[filePath lastPathComponent]];
-        fileType = [[NSString stringWithString:@"IMAGE"] retain];
+        fileType = [@"IMAGE" retain];
 
         NoOfFrames = 1;
         NoOfSeries = 1;
@@ -1116,7 +1116,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		fp = fopen( [filePath UTF8String], "r");
 		if( fp)
 		{
-			fileType = [[NSString stringWithString:@"BIORAD"] retain];
+			fileType = [@"BIORAD" retain];
 			
 			fread( &header, 76, 1, fp);
 			
@@ -1191,7 +1191,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		file = [NSData dataWithContentsOfFile: filePath];
 		if( [file length] > 1)
 		{
-			fileType = [[NSString stringWithString:@"LSM"] retain];
+			fileType = [@"LSM" retain];
 			
 			ptr = [file bytes];
 			
@@ -1487,7 +1487,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			{
 				NSString* SeriesNum;
 				if (i)
-					SeriesNum = [NSString stringWithFormat:@"%d",i];
+					SeriesNum = [NSString stringWithFormat:@"%ld",i];
 				else
 					SeriesNum = @"";
 								
@@ -1521,7 +1521,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			file = [NSData dataWithContentsOfFile: filePath];
 			if( [file length] == 348)
 			{
-				fileType = [[NSString stringWithString:@"ANALYZE"] retain];
+				fileType = [@"ANALYZE" retain];
 				
 				Analyze = (struct dsr*) [file bytes];
 				
@@ -1597,7 +1597,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( NIfTI == nil)
 			return -1;
 		
-		fileType = [[NSString stringWithString:@"NIfTI"] retain];
+		fileType = [@"NIfTI" retain];
 		
 		if( (NIfTI->magic[0] == 'n')                           &&
 			(NIfTI->magic[1] == 'i' || NIfTI->magic[1] == '+')   &&
@@ -1820,12 +1820,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             {
                 if( gArrCompression  [fileNb] == MPEG2MPML)
                 {
-                    fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+                    fileType = [@"DICOMMPEG2" retain];
                     [dicomElements setObject:fileType forKey:@"fileType"];
                 }
                 else
                 {
-                    fileType = [[NSString stringWithString:@"DICOM"] retain];
+                    fileType = [@"DICOM" retain];
                     [dicomElements setObject:fileType forKey:@"fileType"];
                 }
                 
@@ -2536,7 +2536,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     {
                         NSString	*n;
                         
-                        n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
+                        n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
                         [serieID release];
                         serieID = n;
                     }
@@ -3119,7 +3119,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
             [dicomElements setObject:[NSNumber numberWithBool:YES] forKey:@"hasDICOM"];
             
             if( serie == nil)
-                serie = [[NSString stringWithString:@"unnamed"] retain];
+                serie = [@"unnamed" retain];
             
             [dicomElements setObject:serie forKey:@"seriesDescription"];
             
@@ -3336,12 +3336,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSString *transferSyntaxUID = [dcmObject attributeValueWithName:@"TransferSyntaxUID"];
 		if( [transferSyntaxUID isEqualToString:@"1.2.840.10008.1.2.4.100"])
 		{
-			fileType = [[NSString stringWithString:@"DICOMMPEG2"] retain];
+			fileType = [@"DICOMMPEG2" retain];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		else
 		{
-			fileType = [[NSString stringWithString:@"DICOM"] retain];
+			fileType = [@"DICOM" retain];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
@@ -3359,7 +3359,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		else
 		{
-			study = [[NSString stringWithString:@"unnamed"] retain];
+			study = [@"unnamed" retain];
 			[dicomElements setObject:study forKey:@"studyDescription"];
 		}
 		
@@ -3595,7 +3595,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		if( cardiacTime != -1 && SEPARATECARDIAC4D == YES)  // For new Cardiac-CT Siemens series
 		{
 			NSString	*n;
-			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , cardiacTime];
+			n = [[NSString alloc] initWithFormat:@"%@ %2.2d", serieID , (int) cardiacTime];
 			[serieID release];
 			serieID = n;
 		}
@@ -3783,7 +3783,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		serie = nil;
 		date = nil;
 		Modality = nil;
-		filePath = [[NSString alloc] initWithFormat:@"protp/aksidkoa/saodkireks/ksidjaiskd/orkerofk%d", random()];
+		filePath = [[NSString alloc] initWithFormat:@"protp/aksidkoa/saodkireks/ksidjaiskd/orkerofk%d", (int) random()];
 		SOPUID = nil;
 		fileType = nil;
 		NoOfSeries = 1;
@@ -3987,7 +3987,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	if ((fileFormatBundle = [[PluginManager fileFormatPlugins] objectForKey:extension]))
 	{
-		fileType = [[NSString stringWithString:@"IMAGE"] retain];
+		fileType = [@"IMAGE" retain];
 		
 		PluginFileFormatDecoder *decoder = [[[fileFormatBundle principalClass] alloc] init];
         
@@ -4215,7 +4215,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			date = [[NSDate dateWithString:[xmlData objectForKey:@"studyDate"]] retain];
 			Modality = [[xmlData objectForKey:@"modality"] retain];
 			filePath = [f retain];
-			fileType = [[NSString stringWithString:@"XMLDESCRIPTOR"] retain];
+			fileType = [@"XMLDESCRIPTOR" retain];
 			NoOfSeries = 1;
 			NoOfFrames = [[xmlData objectForKey:@"numberOfImages"] intValue];
 			

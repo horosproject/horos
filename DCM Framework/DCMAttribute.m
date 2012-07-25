@@ -485,8 +485,8 @@
 
 - (NSString *)description{
 	if (self.valueLength < 100)
-		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", _tag.description, _tag.vr, self.valueLength, self.valueMultiplicity, [self valuesAsString]];
-	return  [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, self.valueLength, self.valueMultiplicity];
+		return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d\t %@", _tag.description, _tag.vr, (int)self.valueLength, self.valueMultiplicity, [self valuesAsString]];
+	return  [NSString stringWithFormat:@"%@\t vl:%d\t vm:%d", _tag.description, (int) self.valueLength, self.valueMultiplicity];
 }
 	
 

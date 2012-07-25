@@ -41,7 +41,7 @@
 }
 
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath {
-	NSString* prefix = [NSString stringWithFormat:@"%@_%@_%u_%x_", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S" timeZone:NULL locale:NULL], getpid(), [NSThread currentThread]];
+	NSString* prefix = [NSString stringWithFormat:@"%@_%@_%u_%lu_", [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey], [[NSDate date] descriptionWithCalendarFormat:@"%Y%m%d%H%M%S" timeZone:NULL locale:NULL], getpid(), (long) [NSThread currentThread]];
 	char* path = tempnam(dirPath.UTF8String, prefix.UTF8String);
 	NSString* nsPath = [NSString stringWithUTF8String:path];
 	free(path);

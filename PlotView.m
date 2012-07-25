@@ -180,7 +180,7 @@
 		
 		[paragraphStyle setAlignment:NSCenterTextAlignment];
 		
-		trace = [NSString stringWithFormat:@"X: %d", curMousePosition+1];
+		trace = [NSString stringWithFormat:@"X: %d", (int) curMousePosition+1];
 		
 		NSSize traceSize = [trace sizeWithAttributes:boldFont];
 		NSPoint xLabelPosition;

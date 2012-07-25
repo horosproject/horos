@@ -325,7 +325,7 @@ static DicomDatabase* activeLocalDatabase = nil;
 }
 
 -(NSString*)description {
-	return [NSString stringWithFormat:@"<%@ 0x%08x> \"%@\"", self.className, self, self.name];
+	return [NSString stringWithFormat:@"<%@ 0x%08lx> \"%@\"", self.className, (long) self, self.name];
 }
 
 +(NSString*)modelName
@@ -2091,10 +2091,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					NSString *extension = [srcPath pathExtension];
 					
 					if( [extension isEqualToString:@""])
-						extension = [NSString stringWithString:@"dcm"]; 
+						extension = @"dcm"; 
 					
 					if( [extension length] > 4 || [extension length] < 3)
-						extension = [NSString stringWithString:@"dcm"];
+						extension = @"dcm";
 					
 					dstPath = [self uniquePathForNewDataFileWithExtension:extension];
 

@@ -2364,7 +2364,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	if( windowWillClose) return;
 	
-	NSString *loading = [NSString stringWithString:@"         "];
+	NSString *loading = @"         ";
 	
 	if( ThreadLoadImage == YES || loadingPercentage == 0)
 	{
@@ -8343,7 +8343,7 @@ return YES;
 		if( [imageView flippedData]) subCtrlMaskID = [pixList[ curMovieIndex] count] - [imageView curImage] -1;
 		else                         subCtrlMaskID = [imageView curImage];//starts at 1;
 		
-		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"%d", (subCtrlMaskID+1)]];//changes tool text
+		[subCtrlMaskText setStringValue: [NSString stringWithFormat:@"%d", (int) (subCtrlMaskID+1)]];//changes tool text
 		
 		//---------------------------------------define min value of the subtraction
 		long subCtrlMin = 1024;

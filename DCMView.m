@@ -4372,7 +4372,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											{
 												existsAlready = NO;
 												
-												finalName = [roiName stringByAppendingFormat:@"%d", counter++];
+												finalName = [roiName stringByAppendingFormat:@"%d", (int) counter++];
 												
 												for( int i = 0; i < [dcmRoiList count]; i++)
 												{

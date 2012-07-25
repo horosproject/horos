@@ -1258,7 +1258,7 @@ return YES;
 {
     NSSavePanel     *panel = [NSSavePanel savePanel];
 	BOOL			all = NO;
-	long			i;
+	int             i;
 	NSWorkspace		*ws = [NSWorkspace sharedWorkspace];
 	
 	long deltaX, deltaY, x, y, oldX, oldY, max;

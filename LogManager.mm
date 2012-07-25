@@ -203,7 +203,7 @@ static LogManager *currentLogManager = nil;
 									if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
 									{
 										if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
-											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", time (NULL)] UTF8String]);
+											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", (int) time (NULL)] UTF8String]);
 											
 										[_currentLogs removeObjectForKey: uid];
 									}

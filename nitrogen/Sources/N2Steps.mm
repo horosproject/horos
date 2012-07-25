@@ -30,7 +30,7 @@ NSString* N2StepsNotificationStep = @"N2StepsNotificationStep";
 }
 
 -(void)addObject:(id)obj {
-	NSAssert([obj isKindOfClass:[N2Step class]], @"[N2Steps addObject:%@] only accepts objects inheriting from class N2Step");
+	NSAssert([obj isKindOfClass:[N2Step class]], @"[N2Steps addObject:] only accepts objects inheriting from class N2Step");
 	[super addObject:obj];
 	[[NSNotificationCenter defaultCenter] postNotificationName:N2StepsDidAddStepNotification object:self userInfo:[NSDictionary dictionaryWithObject:obj forKey:N2StepsNotificationStep]];
 	if (!_currentStep) [self setCurrentStep:obj];

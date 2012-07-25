@@ -937,7 +937,7 @@ static inline int int_ceildivpow2(int a, int b) {
 }
 
 - (NSString *)description{
-	return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d", _tag.description, _vr, self.valueLength, self.valueMultiplicity];
+	return  [NSString stringWithFormat:@"%@\t %@\t vl:%d\t vm:%d", _tag.description, _vr, (int) self.valueLength, self.valueMultiplicity];
 }
 
 - (BOOL)convertToTransferSyntax:(DCMTransferSyntax *)ts quality:(int)quality
