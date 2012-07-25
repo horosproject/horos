@@ -1318,6 +1318,7 @@ static NSConditionLock *threadLock = nil;
 			@synchronized(_albumNoOfStudiesCache)
             {
 				[_albumNoOfStudiesCache removeAllObjects];
+                [_distantAlbumNoOfStudiesCache removeAllObjects];
 			}
 			
 			[[_database managedObjectContext] lock];
@@ -2508,7 +2509,10 @@ static NSConditionLock *threadLock = nil;
 		@synchronized (_albumNoOfStudiesCache)
         {
 			if ([_albumNoOfStudiesCache count] > albumTable.selectedRow && filtered == NO)
+            {
 				[_albumNoOfStudiesCache replaceObjectAtIndex:albumTable.selectedRow withObject:[decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:[outlineViewArray count]]]];
+                [albumTable reloadData];
+            }
 		}
 	}
 	@catch( NSException *ne)
@@ -2717,7 +2721,7 @@ static NSConditionLock *threadLock = nil;
         _computingNumberOfStudiesForAlbums = YES;
         
         [NSThread currentThread].name = NSLocalizedString( @"Compute Albums...", nil);
-        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
+        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]]; // TO BE REMOVED: just to analyze the number of calls to this function
         
         DicomDatabase* idatabase = [self.database independentDatabase];
         if (!idatabase)
@@ -2727,14 +2731,18 @@ static NSConditionLock *threadLock = nil;
             return;
         }
         
-        @try {
+        @try
+        {
             NSMutableArray* NoOfStudies = [NSMutableArray array];
             
             // compute number of studies in database
             NSInteger count = -1;
-            @try {
+            @try
+            {
                 count = [idatabase countObjectsForEntity:idatabase.studyEntity];
-            } @catch (NSException* e) {
+            }
+            @catch (NSException* e)
+            {
                 N2LogExceptionWithStackTrace(e);
             }
             [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
@@ -2762,17 +2770,28 @@ static NSConditionLock *threadLock = nil;
                     {
                         NSArray *localStudies = [[idatabase objectsForEntity:idatabase.studyEntity predicate:[self smartAlbumPredicate:ialbum]] valueForKey: @"studyInstanceUID"];
                         
-                        count = localStudies.count;
+                        count = 0;
                         
-                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
+                        if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] == nil)
                         {
-                            // Merge local and distant studies
-                            for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
+                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
                             {
-                                if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
-                                    count++;
+                                // Merge local and distant studies
+                                for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
+                                {
+                                    if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
+                                        count++;
+                                }
                             }
+                            
+                            [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
+                            
+                            lastComputeAlbumsForDistantStudies = [NSDate timeIntervalSinceReferenceDate];
                         }
+                        else
+                            count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
+                        
+                        count += localStudies.count;
                     }
                     @catch (NSException* e)
                     {
@@ -2780,6 +2799,7 @@ static NSConditionLock *threadLock = nil;
                     }
                 }
                 else count = ialbum.studies.count;
+                
                 
                 [NoOfStudies addObject: count >= 0 ? [decimalNumberFormatter stringForObjectValue:[NSNumber numberWithInt:count]] : @"#"];
                 
@@ -3968,7 +3988,8 @@ static NSConditionLock *threadLock = nil;
                             if( comparativeStudyWaitedToOpen)
                                 [self databaseOpenStudy: study];
                             
-                            [[self window] makeFirstResponder: databaseOutline];
+                            if( [[self window] firstResponder] != searchField)
+                                [[self window] makeFirstResponder: databaseOutline];
                         }
                     }
                     else
@@ -4651,6 +4672,7 @@ static NSConditionLock *threadLock = nil;
 	NSManagedObjectContext	*context = self.managedObjectContext;
 
     [context lock];
+    
     // Are some images locked?
     NSArray	*lockedImages = [objectsToDelete filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"series.study.lockedStudy == YES"]];
     
@@ -4820,6 +4842,35 @@ static NSConditionLock *threadLock = nil;
 	else
 		level = NSLocalizedString( @"Selected Lines", nil);
 	
+    if( matrixThumbnails == NO)
+    {
+        BOOL containsDistantStudy = NO;
+        
+        if( [[databaseOutline selectedRowIndexes] count] > 0)
+        {
+            NSUInteger idx = databaseOutline.selectedRowIndexes.firstIndex;
+            
+            while (idx != NSNotFound)
+            {
+                id object = [databaseOutline itemAtRow: idx];
+                
+                if( [object isDistant])
+                {
+                    containsDistantStudy = YES;
+                    break;
+                }
+                
+                idx = [databaseOutline.selectedRowIndexes indexGreaterThanIndex: idx];
+            }
+        }
+        
+        if( containsDistantStudy)
+        {
+            NSRunInformationalAlertPanel(NSLocalizedString(@"Delete images", nil), NSLocalizedString(@"These studies are not stored locally, you cannot delete them", nil), NSLocalizedString(@"OK",nil), nil, nil);
+            return;
+        }
+    }
+    
 	[animationCheck setState: NSOffState];
 	
 	[context retain];
@@ -5594,12 +5645,15 @@ static NSConditionLock *threadLock = nil;
 
 - (BOOL)outlineView:(NSOutlineView *)olv writeItems:(NSArray*)pbItems toPasteboard:(NSPasteboard*)pboard
 {
+    for( id item in pbItems)
+    {
+        if( [item isDistant])
+            return NO;
+    }
+    
 	[pboard declareTypes: [NSArray arrayWithObjects: @"BrowserController.database.context.XIDs", O2AlbumDragType, NSFilesPromisePboardType, NSFilenamesPboardType, NSStringPboardType, nil] owner:self];
-	
 	[pboard setPropertyList:nil forType:O2AlbumDragType];
-	
     [pboard setPropertyList:[NSArray arrayWithObject:@"dcm"] forType:NSFilesPromisePboardType];
-	
 	[pboard setPropertyList:[NSPropertyListSerialization dataFromPropertyList:[pbItems valueForKey:@"XID"] format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL] forType:@"BrowserController.database.context.XIDs"];
 	
 	return YES;
@@ -9587,7 +9641,8 @@ static BOOL needToRezoom;
 //                    #endif
                     {
                         [self selectThisStudy: study];
-                        [[self window] makeFirstResponder: databaseOutline];
+                        if( [[self window] firstResponder] != searchField)
+                            [[self window] makeFirstResponder: databaseOutline];
                     }
                 }
             }
@@ -11417,6 +11472,7 @@ static NSArray*	openSubSeriesArray = nil;
 			NSRunCriticalAlertPanel(NSLocalizedString(@"Protected Mode", nil), NSLocalizedString(@"OsiriX is now running in Protected Mode (shift + option keys at startup): no images are displayed, allowing you to delete crashing or corrupted images/studies.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 		}
 		
+        _distantAlbumNoOfStudiesCache = [[NSMutableDictionary alloc] init];
 		_albumNoOfStudiesCache = [[NSMutableArray alloc] init];
 		databaseIndexDictionary = [[NSMutableDictionary alloc] initWithCapacity: 0];
 		

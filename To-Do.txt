@@ -26,7 +26,6 @@
 
 - Comparative: search comments on DICOM node?
 - Comparative: smart album creation -> DICOM node rule prefs
-- Comparative: check drag & drop distant study
 
 -------------------------------------------------------------
 

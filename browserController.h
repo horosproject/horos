@@ -87,6 +87,8 @@ extern NSString* O2AlbumDragType;
     
 	BOOL					setDCMDone, dontUpdatePreviewPane;
 	
+    NSTimeInterval          lastComputeAlbumsForDistantStudies;
+    NSMutableDictionary     *_distantAlbumNoOfStudiesCache;
 	NSMutableArray*         _albumNoOfStudiesCache;
     NSArray*                _cachedAlbums;
     NSManagedObjectContext* _cachedAlbumsContext;
