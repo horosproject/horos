@@ -2795,6 +2795,9 @@ static NSConditionLock *threadLock = nil;
                         [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
                     }
                 }
+                
+                if( [[NSThread currentThread] isCancelled])
+                    break;
             }
             
             @synchronized(_albumNoOfStudiesCache)
