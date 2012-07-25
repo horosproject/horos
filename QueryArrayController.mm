@@ -171,8 +171,6 @@
                     queries = [[NSMutableArray array] retain];
             }
         }
-        
-            
     }
     @catch (NSException * e)
     {	

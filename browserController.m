@@ -3513,10 +3513,11 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
+                        NSArray *array = [self distantStudiesForSearchString: curSearchString type: curSearchType];
                         @synchronized( smartAlbumDistantArraySync)
                         {
                             [smartAlbumDistantArray release];
-                            smartAlbumDistantArray = [[self distantStudiesForSearchString: curSearchString type: curSearchType] retain];
+                            smartAlbumDistantArray = [array retain];
                         }
                         
                         self.distantSearchString = curSearchString;
@@ -3645,10 +3646,11 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
+                        NSArray *array = [self distantStudiesForIntervalFrom: from to: to];
                         @synchronized( smartAlbumDistantArraySync)
                         {
                             [smartAlbumDistantArray release];
-                            smartAlbumDistantArray = [[self distantStudiesForIntervalFrom: from to: to] retain];
+                            smartAlbumDistantArray = [array retain];
                         }
                         
                         self.distantTimeIntervalStart = from;
@@ -3779,10 +3781,12 @@ static NSConditionLock *threadLock = nil;
                     
                     @try
                     {
+                        NSArray *array = [self distantStudiesForSmartAlbum: albumName];
+                        
                         @synchronized( smartAlbumDistantArraySync)
                         {
                             [smartAlbumDistantArray release];
-                            smartAlbumDistantArray = [[self distantStudiesForSmartAlbum: albumName] retain];
+                            smartAlbumDistantArray = [array retain];
                         }
                         
                         self.smartAlbumDistantName = albumName;
