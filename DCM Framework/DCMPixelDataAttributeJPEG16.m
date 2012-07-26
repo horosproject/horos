@@ -22,8 +22,6 @@
 #import <stdio.h>
 #import "jpegdatasrc.h"
 
-//static NSException *dcmException;
-
 LOCAL(int)
 readFromData16(NSData *data, JOCTET *buffer, int currentPosition, int length)
 {

@@ -38,7 +38,9 @@ enum
     dayBeforeYesterday = 9,
     todayAM = 10,
     todayPM = 11,
-    after = 12
+    after = 12,
+    last2Months = 13,
+    lastYear = 14
 };
 
 /** \brief Window Controller for Q/R */
@@ -120,7 +122,7 @@ enum
 @property (readonly) QueryOutlineView *outlineView;
 @property BOOL autoQuery, DatabaseIsEdited;
 @property NSInteger autoRefreshQueryResults;
-@property int currentAutoQR;
+@property (nonatomic) int currentAutoQR;
 @property(readonly) SFAuthorizationView* authView;
 
 + (QueryController*) currentQueryController;

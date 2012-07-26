@@ -25,9 +25,6 @@
 
 //#define JMSG_LENGTH_MAX = 100;
 
-NSMutableData *dstData;
-//NSException *exception;
-
 LOCAL(int)
 readFromData8(NSData *data, JOCTET *buffer, int currentPosition, int length){
 	int lengthToRead = 0;
@@ -303,7 +300,6 @@ init_destination8 (j_compress_ptr cinfo)
 {
 	NSLog(@"init_destination8");
 	data8_dst_ptr dest = (data8_dst_ptr) cinfo->dest;
-	//dest->data = dstData;
 
 	/* Allocate the output buffer --- it will be released when done with image */
 	dest->buffer = (JOCTET *)
@@ -530,7 +526,6 @@ jpeg8_NSData_dest (j_compress_ptr cinfo, NSMutableData *aData)
 - (NSMutableData *)compressJPEG8:(NSMutableData *)data  compressionSyntax:(DCMTransferSyntax *)compressionSyntax  quality:(float)quality{
 	unsigned char *image_buffer = (unsigned char *)[data bytes];
 	NSMutableData *jpegData = [NSMutableData data];
-	dstData = jpegData;
 	int columns = _columns;
 	int rows = _rows;
 	int samplesPerPixel = _samplesPerPixel;

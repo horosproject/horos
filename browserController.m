@@ -8842,12 +8842,28 @@ static BOOL withReset = NO;
 			[album setValue:name forKey:@"name"];
 			[album setValue:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
 			
-			NSString *format = [smartWindowController sqlQueryString];
-						
-			[album setValue:format forKey:@"predicateString"];
-			
+			[album setValue: [smartWindowController sqlQueryString] forKey:@"predicateString"];
 			[_database save:NULL];
-			
+            
+            // Distant DICOM node filter
+            if( [[[smartWindowController onDemandFilter] allKeys] count] > 0)
+            {
+                NSMutableArray *savedSmartAlbums = [[[[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"] mutableCopy] autorelease];
+                
+                NSUInteger idx = [[savedSmartAlbums valueForKey: @"name"] indexOfObject: name];
+                
+                if( idx != NSNotFound)
+                    [savedSmartAlbums removeObjectAtIndex: idx];
+                
+                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", name, @"name", nil];
+                
+                [dict addEntriesFromDictionary: [smartWindowController onDemandFilter]];
+                
+                [savedSmartAlbums addObject: dict];
+                
+                [[NSUserDefaults standardUserDefaults] setObject: savedSmartAlbums forKey: @"smartAlbumStudiesDICOMNodes"];
+            }
+            
 			[self refreshAlbums];
 			
             NSInteger index = [self.albumArray indexOfObject:album];

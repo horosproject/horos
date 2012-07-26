@@ -24,7 +24,7 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- Comparative: smart album creation -> DICOM node rule prefs
+- 10.8: test getting smtp password
 
 -------------------------------------------------------------
 

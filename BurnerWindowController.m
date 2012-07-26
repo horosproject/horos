@@ -255,7 +255,7 @@
 		if( [cdName length] <= 0)
 		{
 			[cdName release];
-			cdName = [[NSString stringWithString: @"UNTITLED"] retain];
+			cdName = [@"UNTITLED" retain];
 		}
 		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];

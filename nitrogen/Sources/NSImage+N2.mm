@@ -16,9 +16,6 @@
 #import "NSImage+N2.h"
 #include <algorithm>
 #import <Accelerate/Accelerate.h>
-//#include <boost/numeric/ublas/matrix.hpp>
-//#include <fftw3.h>
-//#include <complex>
 #import "N2Operators.h"
 #import "NSColor+N2.h"
 #import <QuartzCore/QuartzCore.h>
@@ -87,10 +84,11 @@
 
 @implementation NSImage (N2)
 
--(NSImage*)shadowImage {
-	NSUInteger w = self.size.width, h = self.size.height;
+-(NSImage*)shadowImage
+{
 	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[self TIFFRepresentation]];
-	
+	NSUInteger w = bitmap.pixelsWide, h = bitmap.pixelsHigh;
+    
 	for (NSUInteger y = 0; y < h; ++y)
 		for (NSUInteger x = 0; x < w; ++x) {
 			NSColor* c = [bitmap colorAtX:x y:y];
@@ -100,8 +98,11 @@
 	
 	NSImage* dark = [[NSImage alloc] initWithSize:[self size]];
 	[dark lockFocus];
-	[bitmap draw]; [bitmap release];
+	[bitmap drawInRect: NSMakeRect( 0, 0, self.size.width, self.size.height)];
 	[dark unlockFocus];
+    
+    [bitmap release];
+    
 	return [dark autorelease];
 }
 

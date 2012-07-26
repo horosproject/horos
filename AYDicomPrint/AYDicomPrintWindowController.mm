@@ -400,7 +400,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	[association addAttribute: [NSXMLNode attributeWithName: @"port" stringValue: [dict valueForKey: @"port"]]];
 	NSString *aeTitle = [NSUserDefaults defaultAETitle];
 	if (!aeTitle)
-		aeTitle = [NSString stringWithString: @"OSIRIX_DICOM_PRINT"];
+		aeTitle = @"OSIRIX_DICOM_PRINT";
 	[association addAttribute: [NSXMLNode attributeWithName: @"aetitle_sender" stringValue: aeTitle]];
 	[association addAttribute: [NSXMLNode attributeWithName: @"aetitle_receiver" stringValue: [dict valueForKey: @"aeTitle"]]];
 	if ([[dict valueForKey: @"colorPrint"] boolValue])
@@ -556,7 +556,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	{
 		// dicom log path & basename
 		NSString *logPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Logs/AYDicomPrint"];
-		NSString *baseName = [NSString stringWithString: @"AYDicomPrint"];
+		NSString *baseName = @"AYDicomPrint";
 
 		// create log directory, if it does not exist
 		NSFileManager *fileManager = [NSFileManager defaultManager];

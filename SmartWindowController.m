@@ -15,21 +15,29 @@
 #import "SmartWindowController.h"
 #import "SearchSubview.h"
 #import "QueryFilter.h"
+#import "QueryController.h"
 
 #define SUBVIEWHEIGHT 50
 
 @implementation SmartWindowController
 
+@synthesize onDemandFilter;
+
 - (id)init
 {
 	if (self = [super initWithWindowNibName:@"SmartAlbum"])
+    {
 		subviews = [[NSMutableArray array] retain];
-		
+        self.onDemandFilter = [NSMutableDictionary dictionary];
+    }
+    
 	return self;
 }
 
 - (void) dealloc
 {
+    self.onDemandFilter = nil;
+    
 	[previousSqlString release];
 	[sqlQueryTimer release];
 	[subviews release];
@@ -187,6 +195,10 @@
 	AdvancedQuerySubview *view;
 	[criteria release];
 	criteria = [[NSMutableArray array] retain];
+    
+    [self.onDemandFilter removeObjectForKey: @"date"];
+    [self.onDemandFilter removeObjectForKey: @"modality"];
+    
 	for (view in subviews)
 	{
 		NSString *predicateString = nil;
@@ -231,6 +243,22 @@
 				break;
 			}
 			
+            if( value)
+            {
+                if( [[NSUserDefaults standardUserDefaults] integerForKey: @"smartAlbumLogicalOperator"] == 1) // OR
+                {
+                    NSArray *existingArray = [self.onDemandFilter valueForKey: @"modality"];
+                    
+                    if( existingArray == nil)
+                        existingArray = [NSArray array];
+                    
+                    existingArray = [existingArray arrayByAddingObject: value];
+                    
+                    [self.onDemandFilter setValue: existingArray forKey: @"modality"];
+                }
+                else
+                     [self.onDemandFilter setValue: [NSArray arrayWithObject: value] forKey: @"modality"];
+            }
 			predicateString = [NSString stringWithFormat:@"modality CONTAINS[cd] '%@'", value];
 		}
 		// Study status	
@@ -258,46 +286,54 @@
 		// Dates		
 		else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)] == YES || [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
 		{
-			NSDate		*date = nil;
-			NSString	*field = nil;
-			
-			if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)]) field = @"date";
-			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)]) field = @"dateAdded";
+			NSDate *date = nil;
+			NSString *field = nil;
+			NSMutableDictionary *dict = nil;
+            int dateEnum = 0;
+            
+			if( [key isEqualToString:NSLocalizedString(@"Study Date", nil)])
+            {
+                field = @"date";
+                dict = self.onDemandFilter;
+            }
+            
+			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
+                field = @"dateAdded";
 			
 			switch ([[view searchTypePopup] indexOfSelectedItem] + 4)
 			{
 				case searchToday:
+                    dateEnum = today;
 					predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_TODAY", field];
 				break;
 				
 				case searchYesterday:
+                    dateEnum = yesteday;
 					predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YESTERDAY AND %@ <= $NSDATE_TODAY", field, field];
 				break;
 														
 				case searchWithin:
 					switch( [[view dateRangePopup] indexOfSelectedItem])
 					{
-						case 0:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YESTERDAY", field];		break;
-						case 1:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2DAYS", field];			break;
-						case 2:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_WEEK", field];			break;
-						case 3:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_MONTH", field];			break;
-						case 4:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2MONTHS", field];			break;
-						case 5:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_3MONTHS", field];			break;
-						case 6:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YEAR", field];			break;
-						case 8:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LASTHOUR", field];		break;
-						case 9:		predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST6HOURS", field];		break;
-						case 10:	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST12HOURS", field];		break;
+						case 0:	dateEnum = today;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_TODAY", field];		break;
+						case 1:	dateEnum = last2Days;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2DAYS", field];			break;
+						case 2:	dateEnum = last7Days;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_WEEK", field];			break;
+						case 3:	dateEnum = lastMonth;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_MONTH", field];			break;
+						case 4:	dateEnum = last2Months;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_2MONTHS", field];			break;
+						case 5:	dateEnum = last3Months;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_3MONTHS", field];			break;
+						case 6:	dateEnum = lastYear;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_YEAR", field];			break;
+						case 8:	dateEnum = 101;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LASTHOUR", field];		break;
+						case 9:	dateEnum = 106;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST6HOURS", field];		break;
+						case 10:dateEnum = 112;	predicateString = [NSString stringWithFormat:@"%@ >= $NSDATE_LAST12HOURS", field];		break;
 					}
 				break;
 				
 				case searchBefore:
-					//date = [[view valueField] objectValue];
 					date = [[view datePicker] objectValue];
 					predicateString = [NSString stringWithFormat:@"%@ <= CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate]];
 				break;
 				
 				case searchAfter:
-					//date = [[view valueField] objectValue];
 					date = [[view datePicker] objectValue];
 					predicateString = [NSString stringWithFormat:@"%@ >= CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate]];
 				break;
@@ -307,8 +343,12 @@
 					predicateString = [NSString stringWithFormat:@"%@ >= CAST(%lf, \"NSDate\") AND %@ < CAST(%lf, \"NSDate\")", field, [date timeIntervalSinceReferenceDate], field, [[date addTimeInterval:60*60*24] timeIntervalSinceReferenceDate]];
 				break;
 			}
+            
+            if( dateEnum)
+                [dict setValue: [NSNumber numberWithInt: dateEnum] forKey: @"date"];
 		}
-		else {
+		else
+        {
 			searchType = [[view searchTypePopup] indexOfSelectedItem];
 			value = [[view valueField] stringValue];
 		}
@@ -419,22 +459,4 @@
 	}
 	return date;
 }
-//
-//- (IBAction)newAlbum:(id)sender
-//{
-//	if ([sender tag] == 0)
-//		madeCriteria = NO;
-//	else
-//	{
-//		madeCriteria = YES;
-//		[self createCriteria];
-//	}
-//	[NSApp stopModal];
-//}
-//
-//- (BOOL)madeCriteria {
-//	return madeCriteria;
-//}
-		
-
 @end

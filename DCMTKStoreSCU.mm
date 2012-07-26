@@ -122,12 +122,10 @@ static OFCmdUnsignedInt opt_inventStudyCount = 50;
 static OFCmdUnsignedInt opt_inventSeriesCount = 100;
 static OFBool opt_inventSOPInstanceInformation = OFFalse;
 static OFBool opt_correctUIDPadding = OFFalse;
-static OFString patientNamePrefix("OFFIS^TEST_PN_");   // PatientName is PN (maximum 16 chars)
+static OFString patientNamePrefix("OSIRIX^PN_");   // PatientName is PN (maximum 16 chars)
 static OFString patientIDPrefix("PID_"); // PatientID is LO (maximum 64 chars)
 static OFString studyIDPrefix("SID_");   // StudyID is SH (maximum 16 chars)
 static OFString accessionNumberPrefix;  // AccessionNumber is SH (maximum 16 chars)
-static const char *opt_configFile = NULL;
-static const char *opt_profileName = NULL;
 T_DIMSE_BlockingMode opt_blockMode = DIMSE_NONBLOCKING;
 int opt_dimse_timeout = 0;
 int opt_acse_timeout = 30;

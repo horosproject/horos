@@ -451,7 +451,7 @@ extern "C"
 		NSNumber *port = [serverParameters objectForKey:@"Port"];
 		NSString *aet = [serverParameters objectForKey:@"AETitle"];
 		
-		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
+		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, (int) random()];
 		
 		NSTask* theTask = [[[NSTask alloc]init]autorelease];
 		
@@ -3771,6 +3771,8 @@ extern "C"
 			case lastMonth: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31 -1]; break;
                 
             case last3Months: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31*3 -1]; break;
+            case last2Months: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*31*2 -1]; break;
+            case lastYear: date = [DCMCalendarDate dateWithTimeIntervalSinceNow: -60*60*24*365 -1]; break;
             
             case todayAM:	// AM & PM
 			case todayPM:
@@ -3778,9 +3780,9 @@ extern "C"
 				searchType = searchExactDate;
 				
 				if( tag == todayAM)
-					between = [NSString stringWithString:@"000000.000-120000.000"];
+					between = @"000000.000-120000.000";
 				else
-					between = [NSString stringWithString:@"120000.000-235959.000"];
+					between = @"120000.000-235959.000";
 				
 				*timeQueryFilter = [QueryFilter queryFilterWithObject: between ofSearchType: searchExactMatch forKey:@"StudyTime"];
             break;

@@ -215,7 +215,6 @@ static NSMatrix *gDateMatrix = nil;
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // Smart Albums
-    
     NSMutableArray *savedSmartAlbums = [NSMutableArray array];
     
     // Create mutable version...

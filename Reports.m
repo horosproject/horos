@@ -187,7 +187,7 @@ static id aedesc_to_id(AEDesc *desc)
 			
 			NSRange	searchRange = rtf.range;
 			
-			range = [rtfString rangeOfString: [NSString stringWithString:@"«today»"] options:0 range: searchRange];
+			range = [rtfString rangeOfString: @"«today»" options:0 range: searchRange];
 			if( range.length > 0)
 			{
 				[rtf replaceCharactersInRange:range withString:[date stringFromDate: [NSDate date]]];

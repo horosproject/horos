@@ -448,7 +448,7 @@ extern BOOL FULL32BITPIPELINE;
 	float whiteYOffset = 1.0;
 
 	NSMutableDictionary *attribs = [NSMutableDictionary dictionary];
-	NSString *fontName = [NSString stringWithString: @"Andale Mono"];
+	NSString *fontName = @"Andale Mono";
 	[attribs setObject: [NSFont fontWithName: fontName size: fontSize] forKey: NSFontAttributeName];
 	NSMutableAttributedString *attribString = [[NSMutableAttributedString alloc] initWithString: [NSString stringWithFormat: @"%@", stringObj] attributes: attribs];
 

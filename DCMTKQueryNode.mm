@@ -79,7 +79,6 @@ static OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
 
 static int inc = 0;
-static NSException* queryException = nil;
 static int debugLevel = 0;
 static int wadoUnique = 0;	//wadoUniqueThreadID = 0;
 
@@ -992,8 +991,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
 		{
-			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil];
-			[queryException raise];
+            [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
 		}
 		else
 		{
@@ -1015,8 +1013,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
 		if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
 		{
-			NSException *queryException = [NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil];
-			[queryException raise];
+            [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
 		}
 		else
 		{
@@ -1463,11 +1460,11 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 		
 		DcmTLSTransportLayer *tLayer = NULL;
-		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
+		NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, (int) random()];
 		
 	//	if (_secureConnection)
 	//		[DDKeychain lockTmpFiles];
-
+        
 		@try
 		{
 			#ifdef WITH_OPENSSL		
@@ -1492,8 +1489,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 							NSLog(@"%s", DcmTLSTransportLayer::getTLSCipherSuiteName(cs));
 						}
 						
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil];
-						[queryException raise];
+                        [[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Ciphersuite '%s' is unknown.", current] userInfo:nil] raise];
 					}
 					else
 					{
@@ -1517,8 +1513,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			if (cond.bad())
 			{
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
+                [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
 		#ifdef WITH_OPENSSL // joris
@@ -1530,8 +1525,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				if (tLayer == NULL)
 				{
 					NSLog(@"unable to create TLS transport layer");
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"unable to create TLS transport layer" userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"unable to create TLS transport layer" userInfo:nil] raise];
 				}
 				
 				if(certVerification==VerifyPeerCertificate || certVerification==RequirePeerCertificate)
@@ -1544,8 +1538,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					{
 						if (TCS_ok != tLayer->addTrustedCertificateFile([[trustedCertificatesDir stringByAppendingPathComponent:cert] cStringUsingEncoding:NSUTF8StringEncoding], _keyFileFormat))
 						{
-							queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil];
-							[queryException raise];
+							[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate file %@", [trustedCertificatesDir stringByAppendingPathComponent:cert]] userInfo:nil] raise];
 						}
 					}
 							//--add-cert-dir //// add certificates in d to list of certificates
@@ -1567,8 +1560,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				
 				if (_dhparam && ! (tLayer->setTempDHParameters(_dhparam)))
 				{
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load temporary DH parameter file %s", _dhparam] userInfo:nil] raise];
 				}
 				
 				if (_doAuthenticate)
@@ -1582,27 +1574,23 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					
 					if (TCS_ok != tLayer->setPrivateKeyFile([_privateKeyFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 					{
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil];
-						[queryException raise];
+						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load private TLS key from %@", _privateKeyFile] userInfo:nil] raise];
 					}
 					
 					if (TCS_ok != tLayer->setCertificateFile([_certificateFile cStringUsingEncoding:NSUTF8StringEncoding], SSL_FILETYPE_PEM))
 					{
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil];
-						[queryException raise];
+						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"Unable to load certificate from %@", _certificateFile] userInfo:nil] raise];
 					}
 					
 					if (!tLayer->checkPrivateKeyMatchesCertificate())
 					{
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil];
-						[queryException raise];
+						[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat:@"private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile] userInfo:nil] raise];
 					}
 				}
 				
 				if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
 				{
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:@"Unable to set selected cipher suites" userInfo:nil] raise];
 				}
 				
 				DcmCertificateVerification _certVerification;
@@ -1620,8 +1608,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				if (cond.bad())
 				{
 					DimseCondition::dump(cond);
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 				}
 			}
 
@@ -1633,8 +1620,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 	//		DimseCondition::dump(cond);
 			if (cond.bad()) {
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
+				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
 			/* sets this application's title and the called application's title in the params */
@@ -1647,8 +1633,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			cond = ASC_setTransportLayerType(params, _secureConnection);
 			if (cond.bad()) {
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
+				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
 			/* Figure out the presentation addresses and copy the */
@@ -1671,8 +1656,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			if (cond.bad())
 			{
 				DimseCondition::dump(cond);
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				[queryException raise];
+				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 
 			/* dump presentation contexts if required */
@@ -1749,16 +1733,14 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					ASC_getRejectParameters(params, &rej);
 					errmsg("Association Rejected:");
 					ASC_printRejectParameters(stderr, &rej);
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 
 				}
 				else
 				{
 					errmsg("Association Request Failed:");
 					DimseCondition::dump(cond);
-					queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-					[queryException raise];
+					[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 				}
 			}
 			
@@ -1783,8 +1765,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			/* If there are none, finish the execution */
 			if (ASC_countAcceptedPresentationContexts(params) == 0) {
 				errmsg("No Acceptable Presentation Contexts");
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil];
-				[queryException raise];
+				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:@"No acceptable presentation contexts" userInfo:nil] raise];
 			}
 			
 			//specific for Move vs find
@@ -1857,8 +1838,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					{
 						errmsg("Association Abort Failed:");
 						DimseCondition::dump(cond);
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-						[queryException raise];
+                        [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 					}
 				}
 				else
@@ -1871,8 +1851,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					{
 						errmsg("Association Release Failed:");
 						DimseCondition::dump(cond);
-						queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-						[queryException raise];
+                        
+                        [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 					}
 				}
 			}
@@ -1882,7 +1862,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				if (_verbose)
 					printf("Aborting Association\n");
 				
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
+                NSString *reason = [NSString stringWithFormat: @"Protocol Error: peer requested release (Aborting) %04x:%04x %s", cond.module(), cond.code(), cond.text()];
 				
 				AbortAssociationTimeOut = 2;
 				cond = ASC_abortAssociation(assoc);
@@ -1893,7 +1873,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					errmsg("Association Abort Failed:");
 					DimseCondition::dump(cond);
 				}
-				[queryException raise];
+				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason: reason userInfo:nil] raise];
 			}
 			else if (cond == DUL_PEERABORTEDASSOCIATION)
 			{
@@ -1906,8 +1886,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				if (_verbose)
 					printf("Aborting Association\n");
 				
-				queryException = [NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil];
-				
+                NSString *reason = [NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()];
+                
 				AbortAssociationTimeOut = 2;
 				cond = ASC_abortAssociation(assoc);
 				AbortAssociationTimeOut = -1;
@@ -1918,7 +1898,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					DimseCondition::dump(cond);
 				}
 				
-				[queryException raise];
+				[[NSException exceptionWithName: @"DICOM Network Failure (query)" reason: reason userInfo:nil] raise];
 			}
 		}
 		

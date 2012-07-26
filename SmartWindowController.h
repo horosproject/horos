@@ -31,7 +31,10 @@
 	NSTimer						*sqlQueryTimer;
 	NSString					*previousSqlString;
 	float						startingWindowHeight;
+    NSMutableDictionary         *onDemandFilter;
 }
+
+@property (retain) NSMutableDictionary *onDemandFilter;
 
 - (IBAction)editSqlString:(id) sender;
 - (void)removeSubview:(id)sender; /**< Removes a subView representing a smart filter predicate. */
