@@ -32,7 +32,7 @@
 		[NSException raise:NSGenericException format:@"[N2XMLRPCWebServiceClient execute:arguments:] fault: %@", [N2XMLRPC ParseElement:[errs objectAtIndex:0]]];
 	
 	NSArray* vals = [doc objectsForXQuery:@"/methodResponse/params/param/value/*" error:NULL];
-	if (vals.count != 1) [NSException raise:NSGenericException format:@"[N2XMLRPCWebServiceClient execute:arguments:] received %d return values", vals.count];
+	if (vals.count != 1) [NSException raise:NSGenericException format:@"[N2XMLRPCWebServiceClient execute:arguments:] received %d return values", (int) vals.count];
 	
 	return [N2XMLRPC ParseElement:[vals objectAtIndex:0]];
 }

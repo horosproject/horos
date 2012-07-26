@@ -12484,7 +12484,7 @@ END_CREATE_ROIS:
 {
 	NSMutableString *description = [NSMutableString string];
 	[description appendString:NSStringFromClass([self class])];
-	[description appendString:[NSString stringWithFormat:@" <%x>", (NSInteger)self]];
+	[description appendString:[NSString stringWithFormat:@" <%lx>", (unsigned long) self]];
 	[description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
 	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
 	[description appendString:[NSString stringWithFormat: @"width: %d\n", (int) width]];

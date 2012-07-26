@@ -100,11 +100,16 @@ NSString* N2NonNullString(NSString* s) {
 	} while (rs.count < maxUnits && time >= 1);
 	
 	NSMutableString* s = [NSMutableString string];
-	for (NSInteger i = 0; i < rs.count; ++i) {
+	for (NSInteger i = 0; i < rs.count; ++i)
+    {
 		if (i > 1)
+        {
 			if (i == rs.count-1) 
 				[s appendString:NSLocalizedString(@" and ", nil)];
-			else [s appendString:@", "];
+			else
+                [s appendString:@", "];
+        }
+        
 		[s appendString:[rs objectAtIndex:i]];
 	}
 	

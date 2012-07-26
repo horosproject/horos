@@ -184,10 +184,11 @@
     if (address && parts.count > 0) *address = [parts objectAtIndex:0];
     
 	if (port)
+    {
         if (parts.count > 1)
 			*port = [[parts objectAtIndex:1] integerValue];
 		else *port = defaultPort;
-    
+    }
 	return *address;
 }
 
@@ -247,7 +248,7 @@
 }
 
 +(NSString*)locationWithAddress:(NSString*)address port:(NSInteger)port {
-	return [NSString stringWithFormat:@"%@:%d", address, port];
+	return [NSString stringWithFormat:@"%@:%d", address, (int) port];
 }
 
 @end
@@ -319,7 +320,7 @@
 }
 
 +(NSString*)locationWithAddress:(NSString*)host port:(NSInteger)port aet:(NSString*)aet {
-	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, port];
+	return [NSString stringWithFormat:@"%@@%@:%d", aet, host, (int) port];
 }
 
 @end

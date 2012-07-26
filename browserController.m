@@ -4656,6 +4656,7 @@ static NSConditionLock *threadLock = nil;
 			@try
 			{
 				if ([series isDeleted] == NO && [series isFault] == NO)
+                {
                     if ([series.images count] == 0)
                     {
                         [database.managedObjectContext deleteObject:series];
@@ -4665,6 +4666,7 @@ static NSConditionLock *threadLock = nil;
                         series.numberOfImages = [NSNumber numberWithInt:0];
                         series.thumbnail = nil;
                     }
+                }
 			}
 			@catch (NSException* e)
 			{

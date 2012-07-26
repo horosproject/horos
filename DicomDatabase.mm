@@ -768,7 +768,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				t -= [BrowserController DefaultFolderSizeForDB];
 				if (t < 0) t = 0;
 				
-				NSArray* paths = [[NSFileManager.defaultManager enumeratorAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
+				NSArray* paths = [[NSFileManager.defaultManager enumeratorAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", (int) _dataFileIndex.unsignedIntegerValue]] filesOnly:NO recursive:NO] allObjects]; // [NSFileManager.defaultManager contentsOfDirectoryAtPath:[path stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", _dataFileIndex.unsignedIntegerValue]] error:nil];
 //				NSLog(@"contains %d files", paths.count);
 				for (NSString* s in paths) {
 					long si = [[s stringByDeletingPathExtension] integerValue];
@@ -819,10 +819,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			fileExists = [NSFileManager.defaultManager fileExistsAtPath:path];
 			
 			if (fileExists)
-				if (firstExists) {
+            {
+				if (firstExists)
+                {
 					firstExists = NO;
 					[self computeDataFileIndex];
-				} else [_dataFileIndex increment];
+				}
+                else [_dataFileIndex increment];
+            }
 		} while (fileExists);
 	}
 

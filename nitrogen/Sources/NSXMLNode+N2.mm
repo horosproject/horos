@@ -23,7 +23,7 @@
 }
 
 +(id)elementWithName:(NSString*)name unsignedInt:(NSUInteger)value {
-	return [self elementWithName:name text:[NSString stringWithFormat:@"%u", value]];
+	return [self elementWithName:name text:[NSString stringWithFormat:@"%u", (int) value]];
 }
 
 +(id)elementWithName:(NSString*)name bool:(BOOL)value {

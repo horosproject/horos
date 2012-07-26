@@ -169,7 +169,7 @@ PURPOSE.
 		
 	if( [[tableColumn identifier] isEqualToString:@"Index"])
 	{
-		return [NSString stringWithFormat:@"%d", row+1];
+		return [NSString stringWithFormat:@"%d", (int) row+1];
 	}
 	
 	if( [[tableColumn identifier] isEqualToString:@"Name"])

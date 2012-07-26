@@ -218,7 +218,7 @@ enum {
 			NSString* address = [io objectAtIndex:1];
 			NSInteger port = [[io objectAtIndex:2] intValue];
 			NSString* name = io.count > 3? [io objectAtIndex:3] : nil;
-			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, port];
+			NSString* ap = [NSString stringWithFormat:@"%@:%d", address, (int) port];
 			db = [RemoteDicomDatabase databaseForLocation:ap name:name];
 		}
 		
@@ -611,9 +611,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             {
                 // NSLog(@"\t%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]);
                 if (!source.location)
+                {
                     if ([source isKindOfClass:[RemoteDatabaseNodeIdentifier class]])
                         source.location = [[address objectAtIndex:0] stringByAppendingFormat:@":%@", [address objectAtIndex:1]];
                     else source.location = [service.name stringByAppendingFormat:@"@%@:%@", [address objectAtIndex:0], [address objectAtIndex:1]];
+                }
             }
             
             NSUInteger i = [_browser.sources.content indexOfObject:source];

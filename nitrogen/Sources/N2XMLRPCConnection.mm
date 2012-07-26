@@ -162,7 +162,7 @@
         
 		NSArray* methodCalls = [_doc nodesForXPath:@"methodCall" error:NULL];
 		if ([methodCalls count] != 1)
-			[NSException raise:NSGenericException format:@"request contains %d method calls", [methodCalls count]];
+			[NSException raise:NSGenericException format:@"request contains %d method calls", (int) [methodCalls count]];
 		NSXMLElement* methodCall = [methodCalls objectAtIndex:0];
         
         [_inputStream close]; [_inputStream release]; _inputStream = nil;
@@ -185,7 +185,7 @@
         
         NSArray* methodNames = [methodCall nodesForXPath:@"methodName" error:NULL];
         if ([methodNames count] != 1)
-            [NSException raise:NSGenericException format:@"method call contains %d method names", [methodNames count]];
+            [NSException raise:NSGenericException format:@"method call contains %d method names", (int) [methodNames count]];
         NSString* methodName = [[methodNames objectAtIndex:0] stringValue];
         
         DLog(@"XMLRPC call: %@", methodName);
@@ -220,7 +220,7 @@
         NSData* responseData = [[N2XMLRPC responseWithValue:result options:[self N2XMLRPCOptions]] dataUsingEncoding:NSUTF8StringEncoding];
         
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 200, NULL, (CFStringRef)version);
-        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", [responseData length]]);
+        CFHTTPMessageSetHeaderFieldValue(response, (CFStringRef)@"Content-Length", (CFStringRef)[NSString stringWithFormat:@"%d", (int) [responseData length]]);
         CFHTTPMessageSetBody(response, (CFDataRef)responseData);
         [self writeAndReleaseResponse:response];
     } @catch (NSException* e) {

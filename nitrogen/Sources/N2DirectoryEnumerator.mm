@@ -149,9 +149,11 @@
 	if (DIRs.count) {
 		NSArray* d = DIRs.lastObject;
 		if (name)
+        {
 			if (d.count > 1)
 				*name = [d objectAtIndex:1];
 			else *name = NULL;
+        }
 		return (DIR*)[[d objectAtIndex:0] pointerValue];
 	} else return nil;
 }

@@ -57,7 +57,7 @@
 	[request setHTTPMethod: method == HTTPGet ? @"GET" : @"POST" ]; 
 	
 	if (content) [request setHTTPBody:content];
-	[request setValue: content? [NSString stringWithFormat:@"%u", [content length]] : 0 forHTTPHeaderField: @"Content-Length"];
+	[request setValue: content? [NSString stringWithFormat:@"%u", (int) [content length]] : 0 forHTTPHeaderField: @"Content-Length"];
 	[request setValue:@"text/xml" forHTTPHeaderField:@"Content-Type"];
 	if (headers)
 		for (NSString* key in headers)
@@ -74,7 +74,7 @@
 	if (error)
 		[NSException raise:NSGenericException format:@"[N2WebServiceClient requestWithURL:method:parameters:content:headers:] failed with error: %@", [error description]];
 	if ([response isKindOfClass:[NSHTTPURLResponse class]] && [(NSHTTPURLResponse*)response statusCode]/100 != 2) // HTTP status code ≠ (200 to 299)
-		[NSException raise:NSGenericException format:@"[N2WebServiceClient requestWithURL:method:parameters:content:headers:] failed with status %d", [(NSHTTPURLResponse*)response statusCode]];
+		[NSException raise:NSGenericException format:@"[N2WebServiceClient requestWithURL:method:parameters:content:headers:] failed with status %d", (int) [(NSHTTPURLResponse*)response statusCode]];
 
 	if (![self validateResult:result])
 		[NSException raise:NSGenericException format:@"[N2WebServiceClient requestWithURL:method:parameters:content:headers:] received invalid result: %@", [[[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding] autorelease]];

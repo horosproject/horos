@@ -4211,9 +4211,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
                     
                     if( [stateText length] == 0 && [comment length] == 0)
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), action]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), action]];
                     else 
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
                     
                     [cell setBackgroundColor: [NSColor whiteColor]];
                     

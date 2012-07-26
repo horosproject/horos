@@ -164,7 +164,8 @@ typedef struct ConstrainedFloat {
 					int unfixedColsCount = 0;
 					CGFloat unfixedRefWidth = 0, unfixedInvasivity = 0;
 					for (NSUInteger i = from; i < from+span; ++i)
-						if (!(colFixed[i] = !((deltaWidth > 0 && widths[0][i].value < widths[0][i].constraint.max) || (deltaWidth < 0 && widths[0][i].value > widths[0][i].constraint.min)))) {
+						if (!(colFixed[i] = !((deltaWidth > 0 && widths[0][i].value < widths[0][i].constraint.max) || (deltaWidth < 0 && widths[0][i].value > widths[0][i].constraint.min))))
+                        {
 							++unfixedColsCount;
 							unfixedRefWidth += widths[0][i].value;
 							unfixedInvasivity += [[_columnDescriptors objectAtIndex:i] invasivity];
@@ -174,11 +175,14 @@ typedef struct ConstrainedFloat {
 						break;
 					
 					for (NSUInteger i = from; i < from+span; ++i)
+                    {
 						if (!colFixed[i])
+                        {
 							if (unfixedInvasivity == 0)
 								widths[0][i].value *= 1+deltaWidth/unfixedRefWidth;
 							else widths[0][i].value += deltaWidth*([[_columnDescriptors objectAtIndex:i] invasivity]/unfixedInvasivity);
-							
+                        }
+                    }
 				}
 			}
 	

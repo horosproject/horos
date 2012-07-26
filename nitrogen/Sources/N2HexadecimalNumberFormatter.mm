@@ -21,7 +21,7 @@
     if (![number isKindOfClass:[NSNumber class]])
         return NULL;
 	
-	NSString* format = [NSString stringWithFormat:@"0x%%0%dX", self.formatWidth];
+	NSString* format = [NSString stringWithFormat:@"0x%%0%dX", (int) self.formatWidth];
 	
     return [NSString stringWithFormat:format, [number intValue]];
 }

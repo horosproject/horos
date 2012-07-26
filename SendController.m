@@ -92,7 +92,7 @@ static volatile int sendControllerObjects = 0;
 		_abort = NO;
 		_files = [files copy];
 		
-		[self setNumberFiles: [NSString stringWithFormat: @"%d", [_files  count]]];
+		[self setNumberFiles: [NSString stringWithFormat: @"%d", (int) [_files  count]]];
 		
 		_serverIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"lastSendServer"];	
 		

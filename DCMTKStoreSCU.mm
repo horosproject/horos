@@ -1621,7 +1621,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
                 if( _secureConnection)
                     extraInfo = NSLocalizedString(@" (TLS)", @"don't remove leading space");
                 NSInteger theNumber = [[userInfo objectForKey: @"SendTotal"] intValue] - [[userInfo objectForKey: @"NumberSent"] intValue];
-				[NSThread currentThread].status = [NSString stringWithFormat:@"%d %@%@", theNumber, (theNumber != 1? NSLocalizedString(@"files", nil) : NSLocalizedString(@"file", nil)), extraInfo];
+				[NSThread currentThread].status = [NSString stringWithFormat:@"%d %@%@", (int) theNumber, (theNumber != 1? NSLocalizedString(@"files", nil) : NSLocalizedString(@"file", nil)), extraInfo];
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
             

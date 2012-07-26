@@ -167,7 +167,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		while (doBind) {
 			++bki;
-			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", (int) bki]];
 	
 			NSDictionary* b = [view infoForBinding:bk];
 			if (!b) break;
@@ -197,7 +197,7 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		
 		while (!unbind) {
 			++bki;
-			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", bki]];
+			bk = [NSString stringWithFormat:@"enabled%@", bki==1? @"" : [NSString stringWithFormat:@"%d", (int) bki]];
 			
 			NSDictionary* b = [view infoForBinding:bk];
 			if (!b) break;

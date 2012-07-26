@@ -4303,7 +4303,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                     roiInsideMModeOrSpectralUSRegion = (((int)rect.origin.x >= usRegionMinX) && ((int)rect.origin.x <= usRegionMaxX) &&
                                                                         ((int)rect.origin.y >= usRegionMinY) && ((int)rect.origin.y <= usRegionMaxY));
                                     
-                                    if (roiInsideMModeOrSpectralUSRegion) {
+                                    if (roiInsideMModeOrSpectralUSRegion)
+                                    {
                                         // X axis
                                         physicalUnitsXDirection = [anUsRegion physicalUnitsXDirection];
                                         isReferencePixelX0Present = [anUsRegion isReferencePixelX0Present];
@@ -4314,12 +4315,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
                                         physicalUnitsYDirection = [anUsRegion physicalUnitsYDirection];
                                         isReferencePixelY0Present = [anUsRegion isReferencePixelY0Present];
                                         if (isReferencePixelY0Present)
+                                        {
                                             if ([anUsRegion regionSpatialFormat] == 2)
                                                 // M-Mode
                                                 roiPosYValue = -((usRegionMinY + [anUsRegion referencePixelY0]) - rect.origin.y + [anUsRegion refPixelPhysicalValueY]) * fabs([anUsRegion    physicalDeltaY]);
                                             else
                                                 // Spectral
                                                 roiPosYValue = ((usRegionMinY + [anUsRegion referencePixelY0]) - rect.origin.y + [anUsRegion refPixelPhysicalValueY]) * fabs([anUsRegion    physicalDeltaY]);
+                                        }
                                     }
                                 }
                             }

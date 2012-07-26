@@ -72,7 +72,7 @@
 		if( [settings valueForKey:@"comments"]) 
 		{
 			headerHeight += 13;
-			string2draw = [string2draw stringByAppendingFormat:@"%@   (%d/%d)\r", [settings valueForKey:@"comments"], [[NSPrintOperation currentOperation] currentPage], range.length];
+			string2draw = [string2draw stringByAppendingFormat:@"%@   (%d/%d)\r", [settings valueForKey:@"comments"], (int) [[NSPrintOperation currentOperation] currentPage], (int) range.length];
 		}
 		
 				
