@@ -5495,6 +5495,9 @@ static NSConditionLock *threadLock = nil;
 	if ([item isFault])
 		return nil;
 	
+    if ([item isDistant])
+		return NSLocalizedString( @"Double-Click to retrieve", nil);;
+    
     @try
     {
         if ([[tableColumn identifier] isEqualToString:@"name"])
@@ -9480,6 +9483,12 @@ static BOOL needToRezoom;
 
 - (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc row:(NSInteger)row mouseLocation:(NSPoint)mouseLocation
 {
+    if( tv == comparativeTable)
+    {
+        if( [[comparativeStudies objectAtIndex: row] isDistant])
+            return NSLocalizedString( @"Double-Click to retrieve", nil);
+    }
+    
 	return nil;
 }
 
@@ -9739,8 +9748,7 @@ static BOOL needToRezoom;
 //                    else // local study -> select it
 //                    #endif
                     {
-                        [self selectThisStudy: study];
-                        if( [[self window] firstResponder] != searchField)
+                        if( [self selectThisStudy: study] && [[self window] firstResponder] != searchField)
                             [[self window] makeFirstResponder: databaseOutline];
                     }
                 }
