@@ -150,19 +150,22 @@ static NSMutableArray *cachedServersArray = nil;
 
 + (void) syncDICOMNodes
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
-	NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
-	
-	if( url)
-	{
-		NSArray	*r = [NSArray arrayWithContentsOfURL: url];
-		
-		if( r)
-			[[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
-	}
-	
-	[pool release];
+    @synchronized( self)
+    {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        
+        NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
+        
+        if( url)
+        {
+            NSArray	*r = [NSArray arrayWithContentsOfURL: url];
+            
+            if( r)
+                [[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
+        }
+        
+        [pool release];
+    }
 }
 
 +(NSMutableDictionary*)DICOMNodeInfoFromTXTRecordData:(NSData*)data {
