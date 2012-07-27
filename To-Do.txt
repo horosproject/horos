@@ -24,8 +24,6 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- 10.8: test getting smtp password
-
 -------------------------------------------------------------
 
 - Synchronize MPR viewers

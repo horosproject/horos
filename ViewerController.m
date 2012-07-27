@@ -15739,6 +15739,8 @@ int i,j,l;
 	[imageView sendSyncMessage: 0];
 	
 	[self adjustSlider];
+    
+    [self matrixPreviewSelectCurrentSeries];
 }
 
 - (void) moviePosSliderAction:(id) sender
