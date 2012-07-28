@@ -30565,7 +30565,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -30630,7 +30629,6 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/ITK180/lib\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -30667,7 +30665,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -30942,7 +30939,6 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/ITK180/lib\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -31028,7 +31024,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -31062,7 +31057,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -31236,7 +31230,6 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/ITK180/lib\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",
@@ -31325,7 +31318,6 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
 				OTHER_CFLAGS = (
 					"-falign-functions=32",
 					"-falign-labels=32",
@@ -31350,7 +31342,6 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = Binaries;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "Build All Prerequisites";
 				SECTORDER_FLAGS = "";
@@ -31528,7 +31519,6 @@
 					"\"$(SRCROOT)/Binaries/CharLS\"",
 					"\"$(SRCROOT)/Binaries/VTKLibs\"",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-Wno-deprecated",

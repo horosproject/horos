@@ -65,7 +65,6 @@
 #import "N2MutableUInteger.h"
 #import "Window3DController.h"
 
-
 #include <OpenGL/OpenGL.h>
 
 #include <kdu_OsiriXSupport.h>
@@ -662,6 +661,23 @@ static NSDate *lastWarningDate = nil;
 @implementation AppController
 
 @synthesize checkAllWindowsAreVisibleIsOff, filtersMenu, windowsTilingMenuRows, windowsTilingMenuColumns, isSessionInactive, dicomBonjourPublisher = BonjourDICOMService, XMLRPCServer;
+
++(BOOL) hasMacOSXMountainLion
+{
+	OSErr err;
+	SInt32 osVersion;
+	
+	err = Gestalt ( gestaltSystemVersion, &osVersion );
+	if ( err == noErr)
+	{
+		if ( osVersion < 0x1080UL )
+		{
+			return NO;
+		}
+	}
+	return YES;
+}
+
 
 +(BOOL) hasMacOSXLion
 {
@@ -2930,6 +2946,13 @@ static BOOL initialized = NO;
 							clickContext: nil];
 #endif
 #endif
+    
+//    NSUserNotification *userNotification = [[NSUserNotification new] autorelease];
+//    
+//    userNotification.title = title;
+//    userNotification.subtitle = description;
+//    
+//    [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: userNotification];
 }
 
 - (NSDictionary *) registrationDictionaryForGrowl
