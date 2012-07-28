@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
-		<int key="IBDocument.SystemTarget">1060</int>
-		<string key="IBDocument.SystemVersion">11E53</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2182</string>
-		<string key="IBDocument.AppKitVersion">1138.47</string>
-		<string key="IBDocument.HIToolboxVersion">569.00</string>
+		<int key="IBDocument.SystemTarget">1070</int>
+		<string key="IBDocument.SystemVersion">12A269</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
+		<string key="IBDocument.AppKitVersion">1187</string>
+		<string key="IBDocument.HIToolboxVersion">624.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2182</string>
+			<string key="NS.object.0">2549</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
-			<string>NSView</string>
-			<string>NSWindowTemplate</string>
+			<string>NSButton</string>
 			<string>NSButtonCell</string>
+			<string>NSCustomObject</string>
 			<string>NSImageCell</string>
 			<string>NSImageView</string>
-			<string>NSButton</string>
-			<string>NSCustomObject</string>
+			<string>NSView</string>
+			<string>NSWindowTemplate</string>
 		</array>
 		<array key="IBDocument.PluginDependencies">
 			<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -57,10 +57,11 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{10, 3}, {187, 20}}</string>
 							<reference key="NSSuperview" ref="123446871"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="899656699"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="707129790">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">134348800</int>
 								<string key="NSContents">Visit OsiriX web site</string>
 								<object class="NSFont" key="NSSupport">
@@ -69,7 +70,7 @@
 									<int key="NSfFlags">3100</int>
 								</object>
 								<reference key="NSControlView" ref="365363143"/>
-								<int key="NSButtonFlags">-2038021889</int>
+								<int key="NSButtonFlags">-2038022144</int>
 								<int key="NSButtonFlags2">32</int>
 								<object class="NSFont" key="NSAlternateImage" id="1000549068">
 									<string key="NSName">LucidaGrande</string>
@@ -81,6 +82,7 @@
 								<int key="NSPeriodicDelay">400</int>
 								<int key="NSPeriodicInterval">75</int>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 						<object class="NSImageView" id="451490033">
 							<reference key="NSNextResponder" ref="123446871"/>
@@ -95,10 +97,11 @@
 							</set>
 							<string key="NSFrame">{{11, 26}, {513, 681}}</string>
 							<reference key="NSSuperview" ref="123446871"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="365363143"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="38022446">
-								<int key="NSCellFlags">130560</int>
+								<int key="NSCellFlags">134217728</int>
 								<int key="NSCellFlags2">33554432</int>
 								<object class="NSCustomResource" key="NSContents">
 									<string key="NSClassName">NSImage</string>
@@ -109,6 +112,7 @@
 								<int key="NSStyle">0</int>
 								<bool key="NSAnimates">YES</bool>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 							<bool key="NSEditable">YES</bool>
 						</object>
 						<object class="NSButton" id="899656699">
@@ -116,15 +120,16 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{199, 5}, {325, 19}}</string>
 							<reference key="NSSuperview" ref="123446871"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="62412178">
-								<int key="NSCellFlags">67239424</int>
+								<int key="NSCellFlags">67108864</int>
 								<int key="NSCellFlags2">67108864</int>
 								<string key="NSContents">Version Number</string>
 								<reference key="NSSupport" ref="1000549068"/>
 								<reference key="NSControlView" ref="899656699"/>
-								<int key="NSButtonFlags">-936099585</int>
+								<int key="NSButtonFlags">-936099840</int>
 								<int key="NSButtonFlags2">6</int>
 								<string key="NSAlternateContents"/>
 								<object class="NSMutableString" key="NSKeyEquivalent">
@@ -133,15 +138,19 @@
 								<int key="NSPeriodicDelay">200</int>
 								<int key="NSPeriodicInterval">25</int>
 							</object>
+							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						</object>
 					</array>
 					<string key="NSFrameSize">{532, 713}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="451490033"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
+				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
+				<bool key="NSAutorecalculatesContentBorderThicknessMaxY">NO</bool>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 		</array>
@@ -298,6 +307,813 @@
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
+					<string key="className">AppController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="about:">id</string>
+						<string key="autoQueryRefresh:">id</string>
+						<string key="cancelModal:">id</string>
+						<string key="checkForUpdates:">id</string>
+						<string key="closeAllViewers:">id</string>
+						<string key="help:">id</string>
+						<string key="killAllStoreSCU:">id</string>
+						<string key="okModal:">id</string>
+						<string key="openOsirixDiscussion:">id</string>
+						<string key="openOsirixWebPage:">id</string>
+						<string key="osirix64bit:">id</string>
+						<string key="sendEmail:">id</string>
+						<string key="setFixedTilingColumns:">id</string>
+						<string key="setFixedTilingRows:">id</string>
+						<string key="showPreferencePanel:">id</string>
+						<string key="tile3DWindows:">id</string>
+						<string key="tileWindows:">id</string>
+						<string key="updateViews:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="about:">
+							<string key="name">about:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="autoQueryRefresh:">
+							<string key="name">autoQueryRefresh:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="cancelModal:">
+							<string key="name">cancelModal:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="checkForUpdates:">
+							<string key="name">checkForUpdates:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="closeAllViewers:">
+							<string key="name">closeAllViewers:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="help:">
+							<string key="name">help:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="killAllStoreSCU:">
+							<string key="name">killAllStoreSCU:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="okModal:">
+							<string key="name">okModal:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openOsirixDiscussion:">
+							<string key="name">openOsirixDiscussion:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openOsirixWebPage:">
+							<string key="name">openOsirixWebPage:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="osirix64bit:">
+							<string key="name">osirix64bit:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="sendEmail:">
+							<string key="name">sendEmail:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setFixedTilingColumns:">
+							<string key="name">setFixedTilingColumns:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setFixedTilingRows:">
+							<string key="name">setFixedTilingRows:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showPreferencePanel:">
+							<string key="name">showPreferencePanel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="tile3DWindows:">
+							<string key="name">tile3DWindows:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="tileWindows:">
+							<string key="name">tileWindows:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="updateViews:">
+							<string key="name">updateViews:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="browserController">BrowserController</string>
+						<string key="dbMenu">NSMenu</string>
+						<string key="dbWindow">NSWindow</string>
+						<string key="filtersMenu">NSMenu</string>
+						<string key="othersMenu">NSMenu</string>
+						<string key="roisMenu">NSMenu</string>
+						<string key="windowsTilingMenuColumns">NSMenu</string>
+						<string key="windowsTilingMenuRows">NSMenu</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="browserController">
+							<string key="name">browserController</string>
+							<string key="candidateClassName">BrowserController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="dbMenu">
+							<string key="name">dbMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="dbWindow">
+							<string key="name">dbWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="filtersMenu">
+							<string key="name">filtersMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="othersMenu">
+							<string key="name">othersMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="roisMenu">
+							<string key="name">roisMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="windowsTilingMenuColumns">
+							<string key="name">windowsTilingMenuColumns</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="windowsTilingMenuRows">
+							<string key="name">windowsTilingMenuRows</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/AppController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BrowserController</string>
+					<string key="superclassName">NSWindowController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="ReBuildDatabaseSheet:">id</string>
+						<string key="addAlbum:">id</string>
+						<string key="addAlbums:">id</string>
+						<string key="addSmartAlbum:">id</string>
+						<string key="albumTableDoublePressed:">id</string>
+						<string key="anonymizeDICOM:">id</string>
+						<string key="bonjourServiceClicked:">id</string>
+						<string key="buildAllThumbnails:">id</string>
+						<string key="checkMemory:">id</string>
+						<string key="clickBanner:">id</string>
+						<string key="compressSelectedFiles:">id</string>
+						<string key="convertReportToDICOMSR:">id</string>
+						<string key="convertReportToPDF:">id</string>
+						<string key="copyToDBFolder:">id</string>
+						<string key="createDatabaseFolder:">id</string>
+						<string key="customize:">id</string>
+						<string key="databaseDoublePressed:">id</string>
+						<string key="decompressSelectedFiles:">id</string>
+						<string key="defaultAlbums:">id</string>
+						<string key="delItem:">id</string>
+						<string key="deleteAlbum:">id</string>
+						<string key="deleteReport:">id</string>
+						<string key="drawerToggle:">id</string>
+						<string key="endReBuildDatabase:">id</string>
+						<string key="generateReport:">id</string>
+						<string key="importRawData:">id</string>
+						<string key="matrixDoublePressed:">id</string>
+						<string key="matrixPressed:">id</string>
+						<string key="mergeStudies:">id</string>
+						<string key="openDatabase:">id</string>
+						<string key="paste:">id</string>
+						<string key="pasteImageForSourceFile:">NSString</string>
+						<string key="querySelectedStudy:">id</string>
+						<string key="rebuildThumbnails:">id</string>
+						<string key="regenerateAutoComments:">id</string>
+						<string key="reparseIn3D:">id</string>
+						<string key="reparseIn4D:">id</string>
+						<string key="saveAlbums:">id</string>
+						<string key="saveDBListAs:">id</string>
+						<string key="search:">id</string>
+						<string key="selectAll3DSeries:">id</string>
+						<string key="selectAll4DSeries:">id</string>
+						<string key="selectFilesAndFoldersToAdd:">id</string>
+						<string key="setSearchType:">id</string>
+						<string key="showLogWindow:">id</string>
+						<string key="showhide:">id</string>
+						<string key="smartAlbumHelpButton:">id</string>
+						<string key="switchSoundex:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
+							<string key="name">ReBuildDatabaseSheet:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="addAlbum:">
+							<string key="name">addAlbum:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="addAlbums:">
+							<string key="name">addAlbums:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="addSmartAlbum:">
+							<string key="name">addSmartAlbum:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="albumTableDoublePressed:">
+							<string key="name">albumTableDoublePressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="anonymizeDICOM:">
+							<string key="name">anonymizeDICOM:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="bonjourServiceClicked:">
+							<string key="name">bonjourServiceClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="buildAllThumbnails:">
+							<string key="name">buildAllThumbnails:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="checkMemory:">
+							<string key="name">checkMemory:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="clickBanner:">
+							<string key="name">clickBanner:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="compressSelectedFiles:">
+							<string key="name">compressSelectedFiles:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="convertReportToDICOMSR:">
+							<string key="name">convertReportToDICOMSR:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="convertReportToPDF:">
+							<string key="name">convertReportToPDF:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="copyToDBFolder:">
+							<string key="name">copyToDBFolder:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="createDatabaseFolder:">
+							<string key="name">createDatabaseFolder:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="customize:">
+							<string key="name">customize:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="databaseDoublePressed:">
+							<string key="name">databaseDoublePressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="decompressSelectedFiles:">
+							<string key="name">decompressSelectedFiles:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="defaultAlbums:">
+							<string key="name">defaultAlbums:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="delItem:">
+							<string key="name">delItem:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteAlbum:">
+							<string key="name">deleteAlbum:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="deleteReport:">
+							<string key="name">deleteReport:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="drawerToggle:">
+							<string key="name">drawerToggle:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="endReBuildDatabase:">
+							<string key="name">endReBuildDatabase:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="generateReport:">
+							<string key="name">generateReport:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="importRawData:">
+							<string key="name">importRawData:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="matrixDoublePressed:">
+							<string key="name">matrixDoublePressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="matrixPressed:">
+							<string key="name">matrixPressed:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="mergeStudies:">
+							<string key="name">mergeStudies:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="openDatabase:">
+							<string key="name">openDatabase:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="paste:">
+							<string key="name">paste:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="pasteImageForSourceFile:">
+							<string key="name">pasteImageForSourceFile:</string>
+							<string key="candidateClassName">NSString</string>
+						</object>
+						<object class="IBActionInfo" key="querySelectedStudy:">
+							<string key="name">querySelectedStudy:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="rebuildThumbnails:">
+							<string key="name">rebuildThumbnails:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="regenerateAutoComments:">
+							<string key="name">regenerateAutoComments:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="reparseIn3D:">
+							<string key="name">reparseIn3D:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="reparseIn4D:">
+							<string key="name">reparseIn4D:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveAlbums:">
+							<string key="name">saveAlbums:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveDBListAs:">
+							<string key="name">saveDBListAs:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="search:">
+							<string key="name">search:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="selectAll3DSeries:">
+							<string key="name">selectAll3DSeries:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="selectAll4DSeries:">
+							<string key="name">selectAll4DSeries:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="selectFilesAndFoldersToAdd:">
+							<string key="name">selectFilesAndFoldersToAdd:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="setSearchType:">
+							<string key="name">setSearchType:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showLogWindow:">
+							<string key="name">showLogWindow:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showhide:">
+							<string key="name">showhide:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="smartAlbumHelpButton:">
+							<string key="name">smartAlbumHelpButton:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="switchSoundex:">
+							<string key="name">switchSoundex:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="CDpasswordWindow">NSWindow</string>
+						<string key="ZIPpasswordWindow">NSWindow</string>
+						<string key="_activityTableView">NSTableView</string>
+						<string key="_bottomSplit">NSSplitView</string>
+						<string key="_sourcesArrayController">NSArrayController</string>
+						<string key="_sourcesTableView">NSTableView</string>
+						<string key="addStudiesToUserWindow">NSWindow</string>
+						<string key="albumTable">NSTableView</string>
+						<string key="animationCheck">NSButton</string>
+						<string key="animationSlider">NSSlider</string>
+						<string key="banner">NSButton</string>
+						<string key="bannerSplit">NSSplitView</string>
+						<string key="bonjourPasswordWindow">NSWindow</string>
+						<string key="bonjourSourcesBox">NSBox</string>
+						<string key="comparativeTable">NSTableView</string>
+						<string key="compressionMatrix">NSMatrix</string>
+						<string key="databaseDescription">NSTextField</string>
+						<string key="databaseOutline">MyOutlineView</string>
+						<string key="editSmartAlbum">NSWindow</string>
+						<string key="editSmartAlbumName">NSTextField</string>
+						<string key="editSmartAlbumQuery">NSTextField</string>
+						<string key="estimatedTime">NSTextField</string>
+						<string key="exportAccessoryView">NSView</string>
+						<string key="exportHTMLButton">NSButton</string>
+						<string key="exportQuicktimeView">NSView</string>
+						<string key="folderTree">NSMatrix</string>
+						<string key="imageTileMenu">NSMenu</string>
+						<string key="imageView">PreviewView</string>
+						<string key="leftIcon">NSImageView</string>
+						<string key="memoryMessage">NSTextField</string>
+						<string key="newAlbum">NSWindow</string>
+						<string key="newAlbumName">NSTextField</string>
+						<string key="noOfFilesToRebuild">NSTextField</string>
+						<string key="notificationEmailArrayController">NSArrayController</string>
+						<string key="notificationEmailWindow">NSWindow</string>
+						<string key="oMatrix">BrowserMatrix</string>
+						<string key="password">NSTextField</string>
+						<string key="pluginManagerController">PluginManagerController</string>
+						<string key="rdAccessory">NSView</string>
+						<string key="rdOffsetForm">NSForm</string>
+						<string key="rdPatientForm">NSForm</string>
+						<string key="rdPixelForm">NSForm</string>
+						<string key="rdPixelTypeMatrix">NSMatrix</string>
+						<string key="rdVoxelForm">NSForm</string>
+						<string key="rebuildType">NSMatrix</string>
+						<string key="rebuildWindow">NSWindow</string>
+						<string key="reportTemplatesImageView">NSImageView</string>
+						<string key="reportTemplatesListPopUpButton">NSPopUpButton</string>
+						<string key="reportTemplatesView">NSView</string>
+						<string key="rightIcon">NSImageView</string>
+						<string key="searchField">NSSearchField</string>
+						<string key="searchView">NSView</string>
+						<string key="splitAlbums">NSSplitView</string>
+						<string key="splitComparative">NSSplitView</string>
+						<string key="splitDrawer">NSSplitView</string>
+						<string key="splitViewHorz">NSSplitView</string>
+						<string key="splitViewVert">NSSplitView</string>
+						<string key="subOpenMatrix3D">NSMatrix</string>
+						<string key="subOpenMatrix4D">NSMatrix</string>
+						<string key="subOpenWindow">NSWindow</string>
+						<string key="subSeriesOKButton">NSButton</string>
+						<string key="subSeriesWindow">NSWindow</string>
+						<string key="supOpenButtons">NSMatrix</string>
+						<string key="thumbnailsScrollView">NSScrollView</string>
+						<string key="timeIntervalView">NSView</string>
+						<string key="urlString">NSTextField</string>
+						<string key="urlWindow">NSWindow</string>
+						<string key="warning">NSTextField</string>
+						<string key="warningBox">NSBox</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="CDpasswordWindow">
+							<string key="name">CDpasswordWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="ZIPpasswordWindow">
+							<string key="name">ZIPpasswordWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_activityTableView">
+							<string key="name">_activityTableView</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_bottomSplit">
+							<string key="name">_bottomSplit</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_sourcesArrayController">
+							<string key="name">_sourcesArrayController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="_sourcesTableView">
+							<string key="name">_sourcesTableView</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="addStudiesToUserWindow">
+							<string key="name">addStudiesToUserWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="albumTable">
+							<string key="name">albumTable</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="animationCheck">
+							<string key="name">animationCheck</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="animationSlider">
+							<string key="name">animationSlider</string>
+							<string key="candidateClassName">NSSlider</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="banner">
+							<string key="name">banner</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bannerSplit">
+							<string key="name">bannerSplit</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bonjourPasswordWindow">
+							<string key="name">bonjourPasswordWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="bonjourSourcesBox">
+							<string key="name">bonjourSourcesBox</string>
+							<string key="candidateClassName">NSBox</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="comparativeTable">
+							<string key="name">comparativeTable</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="compressionMatrix">
+							<string key="name">compressionMatrix</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="databaseDescription">
+							<string key="name">databaseDescription</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="databaseOutline">
+							<string key="name">databaseOutline</string>
+							<string key="candidateClassName">MyOutlineView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="editSmartAlbum">
+							<string key="name">editSmartAlbum</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="editSmartAlbumName">
+							<string key="name">editSmartAlbumName</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="editSmartAlbumQuery">
+							<string key="name">editSmartAlbumQuery</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="estimatedTime">
+							<string key="name">estimatedTime</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="exportAccessoryView">
+							<string key="name">exportAccessoryView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="exportHTMLButton">
+							<string key="name">exportHTMLButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="exportQuicktimeView">
+							<string key="name">exportQuicktimeView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="folderTree">
+							<string key="name">folderTree</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="imageTileMenu">
+							<string key="name">imageTileMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="imageView">
+							<string key="name">imageView</string>
+							<string key="candidateClassName">PreviewView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="leftIcon">
+							<string key="name">leftIcon</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="memoryMessage">
+							<string key="name">memoryMessage</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="newAlbum">
+							<string key="name">newAlbum</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="newAlbumName">
+							<string key="name">newAlbumName</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="noOfFilesToRebuild">
+							<string key="name">noOfFilesToRebuild</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="notificationEmailArrayController">
+							<string key="name">notificationEmailArrayController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="notificationEmailWindow">
+							<string key="name">notificationEmailWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="oMatrix">
+							<string key="name">oMatrix</string>
+							<string key="candidateClassName">BrowserMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="password">
+							<string key="name">password</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pluginManagerController">
+							<string key="name">pluginManagerController</string>
+							<string key="candidateClassName">PluginManagerController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdAccessory">
+							<string key="name">rdAccessory</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdOffsetForm">
+							<string key="name">rdOffsetForm</string>
+							<string key="candidateClassName">NSForm</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdPatientForm">
+							<string key="name">rdPatientForm</string>
+							<string key="candidateClassName">NSForm</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdPixelForm">
+							<string key="name">rdPixelForm</string>
+							<string key="candidateClassName">NSForm</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdPixelTypeMatrix">
+							<string key="name">rdPixelTypeMatrix</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rdVoxelForm">
+							<string key="name">rdVoxelForm</string>
+							<string key="candidateClassName">NSForm</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rebuildType">
+							<string key="name">rebuildType</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rebuildWindow">
+							<string key="name">rebuildWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="reportTemplatesImageView">
+							<string key="name">reportTemplatesImageView</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="reportTemplatesListPopUpButton">
+							<string key="name">reportTemplatesListPopUpButton</string>
+							<string key="candidateClassName">NSPopUpButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="reportTemplatesView">
+							<string key="name">reportTemplatesView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="rightIcon">
+							<string key="name">rightIcon</string>
+							<string key="candidateClassName">NSImageView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="searchField">
+							<string key="name">searchField</string>
+							<string key="candidateClassName">NSSearchField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="searchView">
+							<string key="name">searchView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitAlbums">
+							<string key="name">splitAlbums</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitComparative">
+							<string key="name">splitComparative</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitDrawer">
+							<string key="name">splitDrawer</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitViewHorz">
+							<string key="name">splitViewHorz</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="splitViewVert">
+							<string key="name">splitViewVert</string>
+							<string key="candidateClassName">NSSplitView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subOpenMatrix3D">
+							<string key="name">subOpenMatrix3D</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subOpenMatrix4D">
+							<string key="name">subOpenMatrix4D</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subOpenWindow">
+							<string key="name">subOpenWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subSeriesOKButton">
+							<string key="name">subSeriesOKButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subSeriesWindow">
+							<string key="name">subSeriesWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="supOpenButtons">
+							<string key="name">supOpenButtons</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="thumbnailsScrollView">
+							<string key="name">thumbnailsScrollView</string>
+							<string key="candidateClassName">NSScrollView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="timeIntervalView">
+							<string key="name">timeIntervalView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="urlString">
+							<string key="name">urlString</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="urlWindow">
+							<string key="name">urlWindow</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="warning">
+							<string key="name">warning</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="warningBox">
+							<string key="name">warningBox</string>
+							<string key="candidateClassName">NSBox</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/BrowserController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">BrowserMatrix</string>
+					<string key="superclassName">NSMatrix</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/BrowserMatrix.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">DCMView</string>
+					<string key="superclassName">NSOpenGLView</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="actualSize:">id</string>
+						<string key="alwaysSyncMenu:">id</string>
+						<string key="flipHorizontal:">id</string>
+						<string key="flipVertical:">id</string>
+						<string key="realSize:">id</string>
+						<string key="roiLoadFromXMLFiles:">NSArray</string>
+						<string key="scaleToFit:">id</string>
+						<string key="sliderRGBFactor:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="actualSize:">
+							<string key="name">actualSize:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="alwaysSyncMenu:">
+							<string key="name">alwaysSyncMenu:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="flipHorizontal:">
+							<string key="name">flipHorizontal:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="flipVertical:">
+							<string key="name">flipVertical:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="realSize:">
+							<string key="name">realSize:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="roiLoadFromXMLFiles:">
+							<string key="name">roiLoadFromXMLFiles:</string>
+							<string key="candidateClassName">NSArray</string>
+						</object>
+						<object class="IBActionInfo" key="scaleToFit:">
+							<string key="name">scaleToFit:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="sliderRGBFactor:">
+							<string key="name">sliderRGBFactor:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/DCMView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
 					<object class="NSMutableDictionary" key="actions">
 						<string key="NS.key.0">openOsirixWebPage:</string>
@@ -315,13 +1131,204 @@
 						<string key="minorKey"/>
 					</object>
 				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">MyOutlineView</string>
+					<string key="superclassName">NSOutlineView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/MyOutlineView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PluginManagerController</string>
+					<string key="superclassName">NSWindowController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="changeWebView:">id</string>
+						<string key="delete:">id</string>
+						<string key="download:">id</string>
+						<string key="loadPlugins:">id</string>
+						<string key="modifiyActivation:">id</string>
+						<string key="modifiyAvailability:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="changeWebView:">
+							<string key="name">changeWebView:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="delete:">
+							<string key="name">delete:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="download:">
+							<string key="name">download:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="loadPlugins:">
+							<string key="name">loadPlugins:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="modifiyActivation:">
+							<string key="name">modifiyActivation:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="modifiyAvailability:">
+							<string key="name">modifiyAvailability:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="dbMenu">NSMenu</string>
+						<string key="downloadButton">NSButton</string>
+						<string key="filtersMenu">NSMenu</string>
+						<string key="installedPluginsTabViewItem">NSTabViewItem</string>
+						<string key="othersMenu">NSMenu</string>
+						<string key="pluginTable">PluginsTableView</string>
+						<string key="pluginsArrayController">NSArrayController</string>
+						<string key="pluginsListPopUp">NSPopUpButton</string>
+						<string key="roisMenu">NSMenu</string>
+						<string key="statusProgressIndicator">NSProgressIndicator</string>
+						<string key="statusTextField">NSTextField</string>
+						<string key="tabView">NSTabView</string>
+						<string key="webView">WebView</string>
+						<string key="webViewTabViewItem">NSTabViewItem</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="dbMenu">
+							<string key="name">dbMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="downloadButton">
+							<string key="name">downloadButton</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="filtersMenu">
+							<string key="name">filtersMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="installedPluginsTabViewItem">
+							<string key="name">installedPluginsTabViewItem</string>
+							<string key="candidateClassName">NSTabViewItem</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="othersMenu">
+							<string key="name">othersMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pluginTable">
+							<string key="name">pluginTable</string>
+							<string key="candidateClassName">PluginsTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pluginsArrayController">
+							<string key="name">pluginsArrayController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="pluginsListPopUp">
+							<string key="name">pluginsListPopUp</string>
+							<string key="candidateClassName">NSPopUpButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="roisMenu">
+							<string key="name">roisMenu</string>
+							<string key="candidateClassName">NSMenu</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="statusProgressIndicator">
+							<string key="name">statusProgressIndicator</string>
+							<string key="candidateClassName">NSProgressIndicator</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="statusTextField">
+							<string key="name">statusTextField</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="tabView">
+							<string key="name">tabView</string>
+							<string key="candidateClassName">NSTabView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="webView">
+							<string key="name">webView</string>
+							<string key="candidateClassName">WebView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="webViewTabViewItem">
+							<string key="name">webViewTabViewItem</string>
+							<string key="candidateClassName">NSTabViewItem</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PluginManagerController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PluginsTableView</string>
+					<string key="superclassName">NSTableView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PluginsTableView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">PreviewView</string>
+					<string key="superclassName">DCMView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/PreviewView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">SplashScreen</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">switchVersion:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">switchVersion:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">switchVersion:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="version">NSButton</string>
+						<string key="view">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="version">
+							<string key="name">version</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="view">
+							<string key="name">view</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/SplashScreen.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">WebView</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">reloadFromOrigin:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">reloadFromOrigin:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">reloadFromOrigin:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/WebView.h</string>
+					</object>
+				</object>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.macosx</string>
-			<real value="1060" key="NS.object.0"/>
+			<real value="1070" key="NS.object.0"/>
 		</object>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDevelopmentDependencies">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin.InterfaceBuilder3</string>
