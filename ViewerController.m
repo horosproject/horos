@@ -3702,6 +3702,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
     [[NSUserDefaults standardUserDefaults] setBool: [self matrixIsVisible] forKey: @"SeriesListVisible"];
     
+    NSMutableArray *viewerSeries = [NSMutableArray array];
+    
+    for( int i = 0 ; i < maxMovieIndex; i++)
+        [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+    
 	ThumbnailCell *c = [sender selectedCell];
 
 	if( ([c rightClick] || ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)) && FullScreenOn == NO) 
@@ -3731,7 +3736,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	}
 	else
 	{
-		if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"])
+		if( [viewerSeries containsObject: [[sender selectedCell] representedObject]] == NO)
 		{
 			BOOL found = NO;
 		
@@ -3773,6 +3778,16 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[[NSUserDefaults standardUserDefaults] setBool: savedAUTOHIDEMATRIX forKey:@"AUTOHIDEMATRIX"];
 			}
 		}
+        else if( [[sender selectedCell] representedObject] != [[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"series"]) // Select it in 4D !
+        {
+            NSUInteger idx = [viewerSeries indexOfObject: [[sender selectedCell] representedObject]];
+            
+            if( idx != NSNotFound)
+            {
+                [self setMovieIndex: idx];
+                [self propagateSettings];
+            }
+        }
 		else
 		{
 			lastHighLightedRow = 0;
@@ -4103,10 +4118,14 @@ static volatile int numberOfThreadsForRelisce = 0;
 		[previewMatrix renewRows: 0 columns: 0];
 		[previewMatrix sizeToCells];
 		return;
-	}	
+	}
 
+    NSMutableArray *viewerSeries = [NSMutableArray array];
+    
+    for( int i = 0 ; i < maxMovieIndex; i++)
+        [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+    
 	// FIND ALL STUDIES of this patient
-	
 	NSString *searchString = [study valueForKey:@"patientUID"];
 	
 	if( [searchString length] == 0 || [searchString isEqualToString:@"0"])
@@ -4291,18 +4310,18 @@ static volatile int numberOfThreadsForRelisce = 0;
                             
                             [previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rRight mouse button to\ropen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
                             
-                            if( [curImage valueForKey:@"series"] == curSeries)
+                            if( [viewerSeries containsObject: curSeries]) // Red
                             {
                                 [cell setBackgroundColor: [NSColor colorWithCalibratedRed:252/255. green:177/255. blue:141/255. alpha:1.0]];
                                 
                                 [cell setBordered: NO];
                             }
-                            else if( [[self blendingController] currentSeries] == curSeries)
+                            else if( [[self blendingController] currentSeries] == curSeries) // Green
                             {
                                 [cell setBackgroundColor: [NSColor colorWithCalibratedRed: (195.)/(255.) green: (249.)/(255.) blue: (145.)/(255.) alpha:1.0]];
                                 [cell setBordered: NO];
                             }
-                            else if( [displayedSeries containsObject: curSeries])
+                            else if( [displayedSeries containsObject: curSeries]) // Yellow
                             {
                                 [cell setBackgroundColor: [NSColor colorWithCalibratedRed:249./255. green:240./255. blue:140./255. alpha:1.0]];
                                 [cell setBordered: NO];
