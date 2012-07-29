@@ -549,6 +549,11 @@
 
 - (void)burnCD:(id)object
 {
+    if( [NSThread isMainThread] == NO)
+    {
+        NSLog( @"******* THIS SHOULD BE ON THE MAIN THREAD: burnCD");
+    }
+    
     sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
     
 	DRTrack* track = [DRTrack trackForRootFolder: [DRFolder folderWithPath: [self folderToBurn]]];
@@ -636,9 +641,6 @@
 		[sizeField setStringValue: NSLocalizedString( @"Burning is finished !", nil)];
 	}
     
-	if( [self.window isSheet])
-		[NSApp endSheet:self.window];
-    
     self.buttonsDisabled = NO;
     runBurnAnimation = NO;
     burning = NO;
@@ -693,10 +695,6 @@
 		[anonymizedFiles release];
 		anonymizedFiles = nil;
 		
-		//[filesTableView reloadData];
-		
-		if( [self.window isSheet])
-			[NSApp endSheet:self.window];
 		NSLog(@"Burner windowShouldClose YES");
 		
 		return YES;
