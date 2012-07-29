@@ -5793,8 +5793,8 @@ END_CREATE_ROIS:
 				oColumns = [[dcmObject attributeValueWithName: @"OverlayColumns"] intValue];
 				oType = [[dcmObject attributeValueWithName: @"OverlayType"] characterAtIndex: 0];
 				
-				oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue];
-				oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue];
+				oOrigin[ 0] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 0] intValue] -1;
+				oOrigin[ 1] = [[[dcmObject attributeArrayWithName: @"OverlayOrigin"] objectAtIndex: 1] intValue] -1;
 				
 				oBits = [[dcmObject attributeValueWithName: @"OverlayBitsAllocated"] intValue];
 				
@@ -6209,12 +6209,12 @@ END_CREATE_ROIS:
 						{
 							if( oData[ y * oColumns + x])
 							{
-                                if( (x + (oOrigin[ 0]-1)) >= 0 && (x + (oOrigin[ 0]-1)) < width &&
-                                    (y + (oOrigin[ 1]-1)) >= 0 && (y + (oOrigin[ 1]-1)) < height)
+                                if( (x + oOrigin[ 0]) >= 0 && (x + oOrigin[ 0]) < width &&
+                                    (y + oOrigin[ 1]) >= 0 && (y + oOrigin[ 1]) < height)
                                 {
-                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 1] = 0xFF;
-                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 2] = 0xFF;
-                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 3] = 0xFF;
+                                    rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 1] = 0xFF;
+                                    rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 2] = 0xFF;
+                                    rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 3] = 0xFF;
                                 }
 							}
 						}
@@ -6317,9 +6317,11 @@ END_CREATE_ROIS:
 					oImage = nil;
 				}
 				
-				if( oData && gDisplayDICOMOverlays)
+                
+                
+				if( oData && gDisplayDICOMOverlays && fImage)
 				{
-					float maxValue = 0; XXXX
+					float maxValue = 0;
 					
 					if( inverseVal)
 						maxValue = -offset;
@@ -6329,33 +6331,21 @@ END_CREATE_ROIS:
 						maxValue *= slope;
 						maxValue += offset;
 					}
-					
-					if( oColumns == width)
+                    
+					for( int y = 0; y < oRows; y++)
 					{
-						register unsigned long x = oRows * oColumns;
-						register unsigned char *d = oData;
-						register float *ffI = fImage;
-						
-						while( x-- > 0)
+						for( int x = 0; x < oColumns; x++)
 						{
-							if( *d++)
-								*ffI = maxValue;
-							ffI++;
-						}
-					}
-					else
-					{
-						NSLog( @"-- oColumns != width");
-						
-						for( int y = 0; y < oRows; y++)
-						{
-							for( int x = 0; x < oColumns; x++)
+							if( oData[ y * oColumns + x])
 							{
-								if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
-							}
-						}
-						
-					}
+                                if( (x + oOrigin[ 0]) >= 0 && (x + oOrigin[ 0]) < width &&
+                                   (y + oOrigin[ 1]) >= 0 && (y + oOrigin[ 1]) < height)
+                                {
+                                    fImage[ (y + oOrigin[ 1]) * width + x + oOrigin[ 0]] = maxValue;
+                                }
+                            }
+                        }
+                    }
 				}
 			}
 			
@@ -8833,12 +8823,12 @@ END_CREATE_ROIS:
                                     {
                                         if( oData[ y * oColumns + x])
                                         {
-                                            if( (x + (oOrigin[ 0]-1)) >= 0 && (x + (oOrigin[ 0]-1)) < width &&
-                                               (y + (oOrigin[ 1]-1)) >= 0 && (y + (oOrigin[ 1]-1)) < height)
+                                            if( (x + oOrigin[ 0]) >= 0 && (x + oOrigin[ 0]) < width &&
+                                                (y + oOrigin[ 1]) >= 0 && (y + oOrigin[ 1]) < height)
                                             {
-                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 1] = 0xFF;
-                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 2] = 0xFF;
-                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 3] = 0xFF;
+                                                rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 1] = 0xFF;
+                                                rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 2] = 0xFF;
+                                                rgbData[ (y + oOrigin[ 1]) * width*4 + (x + oOrigin[ 0])*4 + 3] = 0xFF;
                                             }
                                         }
                                     }
@@ -8934,45 +8924,33 @@ END_CREATE_ROIS:
 							}
 							
 							if( oData && gDisplayDICOMOverlays && fImage)
-							{
-								float maxValue = 0;  XXXX
-								
-								if( inverseVal)
-									maxValue = -offset;
-								else
-								{
-									maxValue = pow( 2, bitsStored);
-									maxValue *= slope;
-									maxValue += offset;
-								}
-								
-								if( oColumns == width)
-								{
-									register unsigned long x = oRows * oColumns;
-									register unsigned char *d = oData;
-									register float *ffI = fImage;
-									
-									while( x-- > 0)
-									{
-										if( *d++)
-											*ffI = maxValue;
-										ffI++;
-									}
-								}
-								else
-								{
-									NSLog( @"-- oColumns != width");
-									
-									for( int y = 0; y < oRows; y++)
-									{
-										for( int x = 0; x < oColumns; x++)
-										{
-											if( oData[ y * oColumns + x]) fImage[ y * width + x] = maxValue;
-										}
-									}
-									
-								}
-							}
+                            {
+                                float maxValue = 0;
+                                
+                                if( inverseVal)
+                                    maxValue = -offset;
+                                else
+                                {
+                                    maxValue = pow( 2, bitsStored);
+                                    maxValue *= slope;
+                                    maxValue += offset;
+                                }
+                                
+                                for( int y = 0; y < oRows; y++)
+                                {
+                                    for( int x = 0; x < oColumns; x++)
+                                    {
+                                        if( oData[ y * oColumns + x])
+                                        {
+                                            if( (x + oOrigin[ 0]) >= 0 && (x + oOrigin[ 0]) < width &&
+                                               (y + oOrigin[ 1]) >= 0 && (y + oOrigin[ 1]) < height)
+                                            {
+                                                fImage[ (y + oOrigin[ 1]) * width + x + oOrigin[ 0]] = maxValue;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 						}
 					}
 					//***********
