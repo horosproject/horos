@@ -108,6 +108,7 @@ static NSString* ThreadModalForWindowControllerObservationContext = @"ThreadModa
 	[self.thread removeObserver:self forKeyPath:NSThreadProgressDetailsKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadSupportsCancelKey];
 	[self.thread removeObserver:self forKeyPath:NSThreadIsCancelledKey];
+    [self.thread removeObserver:self forKeyPath:NSThreadSupportsBackgroundingKey];
 	
     [_retainedThreadDictionary release]; _retainedThreadDictionary = nil;
 	[_thread release];

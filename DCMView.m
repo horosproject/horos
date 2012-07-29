@@ -7985,9 +7985,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
             [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 18] forKey: NSFontAttributeName];
-            [stanStringAttrib setObject: [NSColor colorWithDeviceRed:1.0f green:0.8 blue:0.8 alpha: 1.0] forKey: NSForegroundColorAttributeName];
+            if( whiteBackground)
+                [stanStringAttrib setObject: [NSColor colorWithDeviceRed:0.2f green:0.2 blue:0.2 alpha: 1.0] forKey: NSForegroundColorAttributeName];
+            else
+                [stanStringAttrib setObject: [NSColor colorWithDeviceRed:1.0f green:0.8 blue:0.8 alpha: 1.0] forKey: NSForegroundColorAttributeName];
             NSAttributedString *text = [[[NSAttributedString alloc] initWithString: NSLocalizedString( @"NOT FOR MEDICAL USAGE", nil) attributes: stanStringAttrib] autorelease];
-            warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.3f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
+            warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
         if( annotations > annotNone)
@@ -7997,6 +8000,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         }
     }
     #endif
+}
+
+- (void) setWhiteBackground:(BOOL)w
+{
+    whiteBackground = w;
+    
+    [warningNotice release];
+    warningNotice = nil;
 }
 
 - (void) drawTextualData:(NSRect) size :(long) annotations

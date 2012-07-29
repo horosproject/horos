@@ -14,6 +14,7 @@
 - Updated Quicktime functions to AVFoundation & CoreMedia frameworks
 - Movies files produces for HTML pages (CD Burning, WebPortal) are now MPEG4 HTML5 files
 - DVD/CD Burning: preparation process is now 100% in a separate background thread
+- DVD/CD Burning: option to save the content on a USB Key
 - Add supports for private SOP Class UIDs: Philips, GE, Siemens
 - Better Bonjour detection
 - Add up to 4 DICOM fields to populate DB Comments field
@@ -24,15 +25,16 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
+- Test CD burning (performBurn performSelectorOnMainThread)
+
 -------------------------------------------------------------
 
-- Synchronize MPR viewers
+- Overlays support group 6000 - see Overlay.dcm
 - Retina: VR (implication for MPR, CPR), SR
 - Retina: iChat?, (avoid NSScreen mainScreen, multiple monitors?)
-- Burn USB mode
-- Overlays support group 6000 - see Overlay.dcm
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center, iCloud sync, unzip .app with password
+- Synchronize MPR viewers
 - Shift+Cmd+Click to add series to viewer
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)

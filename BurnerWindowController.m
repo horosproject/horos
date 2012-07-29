@@ -34,9 +34,11 @@
 #import "NSImage+N2.h"
 #import "DicomDir.h"
 #import "DicomDatabase.h"
+#import <DiskArbitration/DiskArbitration.h>
 
 @implementation BurnerWindowController
-@synthesize password, buttonsDisabled;
+
+@synthesize password, buttonsDisabled, selectedUSB;
 
 - (void) createDMG:(NSString*) imagePath withSource:(NSString*) directoryPath
 {
@@ -60,28 +62,11 @@
 	[makeImageTask waitUntilExit];
 }
 
-- (void) copyDefaultsSettings
-{
-	burnSuppFolder = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnSupplementaryFolder"];
-	burnOsiriX = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"];
-	burnHtml = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnHtml"];
-	burnWeasis = [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnWeasis"];;
-}
-
-- (void) restoreDefaultsSettings
-{
-	[[NSUserDefaults standardUserDefaults] setBool: burnSuppFolder forKey:@"BurnSupplementaryFolder"];
-	[[NSUserDefaults standardUserDefaults] setBool: burnOsiriX forKey:@"BurnOsirixApplication"];
-	[[NSUserDefaults standardUserDefaults] setBool: burnHtml forKey:@"BurnHtml"];
-	[[NSUserDefaults standardUserDefaults] setBool: burnWeasis forKey:@"BurnWeasis"];
-}
 
 -(id) initWithFiles:(NSArray *)theFiles
 {
-    if( self = [super initWithWindowNibName:@"BurnViewer"]) {
-		
-		[self copyDefaultsSettings];
-		
+    if( self = [super initWithWindowNibName:@"BurnViewer"])
+    {
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
 		files = [theFiles mutableCopy];
@@ -98,8 +83,6 @@
 {
 	if( self = [super initWithWindowNibName:@"BurnViewer"])
 	{
-		[self copyDefaultsSettings];
-		
 		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
 		
         idatabase = [[[DicomDatabase databaseForContext:[[managedObjects objectAtIndex:0] managedObjectContext]] independentDatabase] retain];
@@ -136,9 +119,19 @@
 		
 		[[self window] center];
 		
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
+		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
+        
 		NSLog( @"Burner allocated");
 	}
 	return self;
+}
+
+-(void)_observeVolumeNotification:(NSNotification*)notification
+{
+    [self willChangeValueForKey: @"volumes"];
+    [self didChangeValueForKey:@"volumes"];
 }
 
 - (void)windowDidLoad
@@ -152,11 +145,14 @@
 }
 
 - (void)dealloc
-{    
+{
 	windowWillClose = YES;
 	
 	runBurnAnimation = NO;
-		
+	
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
+    
 	[anonymizedFiles release];
 	[filesToBurn release];
 	[dbObjects release];
@@ -164,9 +160,9 @@
 	[cdName release];
 	[password release];
     [writeDMGPath release];
+    [writeVolumePath release];
     [idatabase release];
 	[anonymizationTags release];
-    [destinationCompleteLock release];
     
 	NSLog(@"Burner dealloc");	
 	[super dealloc];
@@ -184,19 +180,8 @@
 - (void)setFilesToBurn:(NSArray *)theFiles
 {
 	[filesToBurn release];
-	//filesToBurn = [self extractFileNames:theFiles];
 	filesToBurn = [theFiles retain];
-	//[filesTableView reloadData];
 }
-
-- (void)setIsBurning: (BOOL)value{
-	burning = value;
-}
-- (BOOL)isBurning{
-	return burning;
-}
-
-
 
 - (NSArray *)extractFileNames:(NSArray *)filenames
 {
@@ -245,112 +230,146 @@
 	{
         cancelled = NO;
         
-		[sizeField setStringValue: @""];
-		
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
-		
-		[cdName release];
-		cdName = [[nameField stringValue] retain];
-		
-		if( [cdName length] <= 0)
-		{
-			[cdName release];
-			cdName = [@"UNTITLED" retain];
-		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
-		[[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
-		
+        [sizeField setStringValue: @""];
+        
+        [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+        
+        [cdName release];
+        cdName = [[nameField stringValue] retain];
+        
+        if( [cdName length] <= 0)
+        {
+            [cdName release];
+            cdName = [@"UNTITLED" retain];
+        }
+        
+        [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+        [[NSFileManager defaultManager] removeFileAtPath:[NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
+        
+        [writeVolumePath release];
+        writeVolumePath = nil;
+        
         [writeDMGPath release];
         writeDMGPath = nil;
-		writeDMG = NO;
-		if( [[[NSApplication sharedApplication] currentEvent] modifierFlags]  & NSShiftKeyMask) writeDMG = YES;
-		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"saveAsDMGFile"]) writeDMG = YES;
-		        
+        
         [anonymizationTags release];
         anonymizationTags = nil;
         
-		if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
-		{
-			AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
-			
-			if( panelController.end == AnonymizationPanelCancel)
-				return;
-			
+        if( [[NSUserDefaults standardUserDefaults] boolForKey:@"anonymizedBeforeBurning"])
+        {
+            AnonymizationPanelController* panelController = [Anonymization showPanelForDefaultsKey:@"AnonymizationFields" modalForWindow:self.window modalDelegate:NULL didEndSelector:NULL representedObject:NULL];
+            
+            if( panelController.end == AnonymizationPanelCancel)
+                return;
+            
             anonymizationTags = [panelController.anonymizationViewController.tagsValues retain];
-		}
-		else
-		{
-			[anonymizedFiles release];
-			anonymizedFiles = nil;
-		}
-		
-		self.buttonsDisabled = YES;
-		
-        destinationCompleteLock = [NSRecursiveLock new];
-        [destinationCompleteLock lock];
-        
-		if( cdName != nil && [cdName length] > 0)
-		{
-			runBurnAnimation = YES;
-            
-			NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
-			t.name = NSLocalizedString( @"Burning...", nil);
-			[[ThreadsManager defaultManager] addThreadAndStart: t];
-		}
-		else
+        }
+        else
         {
-			NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
-            return;
+            [anonymizedFiles release];
+            anonymizedFiles = nil;
         }
         
-        if( writeDMG)
-        {
-            NSSavePanel *savePanel = [NSSavePanel savePanel];
-            [savePanel setCanSelectHiddenExtension:YES];
-            [savePanel setRequiredFileType:@"dmg"];
-            [savePanel setTitle:@"Save as DMG"];
-            
-            if( [savePanel runModalForDirectory:nil file: [[self folderToBurn] lastPathComponent]] == NSFileHandlingPanelOKButton)
-            {
-                writeDMGPath = [[[savePanel URL] path] retain];
-                [[NSFileManager defaultManager] removeItemAtPath: writeDMGPath error: nil];
-            }
-            else cancelled = YES;
-        }
+        self.buttonsDisabled = YES;
         
-        self.password = @"";
-        
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
+        @try
         {
-            int result = 0;
-            do
+            if( cdName != nil && [cdName length] > 0)
             {
-                [NSApp beginSheet: passwordWindow
-                   modalForWindow: self.window
-                    modalDelegate: nil
-                   didEndSelector: nil
-                      contextInfo: nil];
+                runBurnAnimation = YES;
                 
-                result = [NSApp runModalForWindow: passwordWindow];
-                [passwordWindow makeFirstResponder: nil];
+                if( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"] == USBKey)
+                {
+                    [writeVolumePath release];
+                    writeVolumePath = nil;
+                    if( selectedUSB != NSNotFound)
+                        writeVolumePath = [[[self volumes] objectAtIndex: selectedUSB] retain];
+                    
+                    if( writeVolumePath == nil)
+                    {
+                        NSInteger result = NSRunCriticalAlertPanel( NSLocalizedString( @"USB Writing", nil), NSLocalizedString( @"No destination selected.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                        
+                        self.buttonsDisabled = NO;
+                        return;
+                    }
+                    
+                    NSInteger result = NSRunCriticalAlertPanel( NSLocalizedString( @"USB Writing", nil), NSLocalizedString( @"The ENTIRE content of the selected media (%@) will be deleted, before writing the new data. Do you confirm?", nil), NSLocalizedString( @"OK", nil), NSLocalizedString( @"Cancel", nil), nil, writeVolumePath, nil);
+                    
+                    if( result != NSAlertDefaultReturn)
+                    {
+                        self.buttonsDisabled = NO;
+                        return;
+                    }
+                }
                 
-                [NSApp endSheet: passwordWindow];
-                [passwordWindow orderOut: self];
-            }
-            while( [self.password length] < 8 && result == NSRunStoppedResponse);
-            
-            if( result == NSRunStoppedResponse)
-            {
+                if( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"] == DMGFile)
+                {
+                    NSSavePanel *savePanel = [NSSavePanel savePanel];
+                    [savePanel setCanSelectHiddenExtension:YES];
+                    [savePanel setRequiredFileType:@"dmg"];
+                    [savePanel setTitle:@"Save as DMG"];
+                    
+                    if( [savePanel runModalForDirectory:nil file: cdName] == NSFileHandlingPanelOKButton)
+                    {
+                        [writeDMGPath release];
+                        writeDMGPath = [[[savePanel URL] path] retain];
+                        [[NSFileManager defaultManager] removeItemAtPath: writeDMGPath error: nil];
+                    }
+                    else
+                    {
+                        self.buttonsDisabled = NO;
+                        return;
+                    }
+                }
                 
+                self.password = @"";
+                
+                if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"])
+                {
+                    int result = 0;
+                    do
+                    {
+                        [NSApp beginSheet: passwordWindow
+                           modalForWindow: self.window
+                            modalDelegate: nil
+                           didEndSelector: nil
+                              contextInfo: nil];
+                        
+                        result = [NSApp runModalForWindow: passwordWindow];
+                        [passwordWindow makeFirstResponder: nil];
+                        
+                        [NSApp endSheet: passwordWindow];
+                        [passwordWindow orderOut: self];
+                    }
+                    while( [self.password length] < 8 && result == NSRunStoppedResponse);
+                    
+                    if( result == NSRunStoppedResponse)
+                    {
+                        
+                    }
+                    else
+                    {
+                        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
+                        NSRunCriticalAlertPanel( NSLocalizedString( @"Encryption", nil), NSLocalizedString( @"The content will NOT be encrypted in a ZIP file.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                    }
+                }
+                
+                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( performBurn:) object: nil] autorelease];
+                t.name = NSLocalizedString( @"Burning...", nil);
+                [[ThreadsManager defaultManager] addThreadAndStart: t];
             }
             else
             {
-                [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
-                NSRunCriticalAlertPanel( NSLocalizedString( @"Encryption", nil), NSLocalizedString( @"The content will NOT be encrypted in a ZIP file.", nil), NSLocalizedString( @"OK", nil), nil, nil);
-            }
+                NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
+                
+                self.buttonsDisabled = NO;
+                return;
+            } 
         }
-        [destinationCompleteLock unlock];
+        @catch (NSException *exception)
+        {
+            NSLog( @"*** exception: %@", exception);
+        }
 	}
 }
 
@@ -376,24 +395,31 @@
 		
 	if( anonymizedFiles) no = [anonymizedFiles count];
 	else no = [files count];
-		
+    
+    burning = YES;
+    
 	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]] && cancelled == NO)
 	{
-        [destinationCompleteLock lock]; // Did the user finished entering the CD or the DMG path?
-        
 		if( no)
 		{
-			if( writeDMG)
-                [self createDMG: writeDMGPath withSource:[self folderToBurn]];
-            
-			else
-                [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"])
+            {
+                case DMGFile:
+                    [self createDMG: writeDMGPath withSource:[self folderToBurn]];
+                break;
+                
+                case CDDVD:
+                    [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
+                break;
+                    
+                case USBKey:
+                    [self saveOnVolume];
+                break;
+            }
 		}
-        
-        [destinationCompleteLock unlock];
 	}
 	
-    [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
+    [[NSFileManager defaultManager] removeFileAtPath: [self folderToBurn] handler:nil];
     self.buttonsDisabled = NO;
     runBurnAnimation = NO;
 	burning = NO;
@@ -446,6 +472,66 @@
 	return [NSString stringWithFormat:@"/tmp/%@",cdName];
 }
 
+-(NSArray*) volumes
+{
+    NSArray	*removeableMedia = [[NSWorkspace sharedWorkspace] mountedRemovableMedia];
+    NSMutableArray *array = [NSMutableArray array];
+    
+    for( NSString *mediaPath in removeableMedia)
+    {
+        BOOL		isWritable, isUnmountable, isRemovable, hasDICOMDIR = NO;
+        NSString	*description, *type;
+        
+        [[NSWorkspace sharedWorkspace] getFileSystemInfoForPath: mediaPath isRemovable:&isRemovable isWritable:&isWritable isUnmountable:&isUnmountable description:&description type:&type];
+        
+        if( isRemovable && isWritable && isUnmountable)
+            [array addObject: mediaPath];
+    }
+    
+    return array;
+}
+
+- (void) saveOnVolume
+{
+    [[BrowserController currentBrowser] removePathFromSources: writeVolumePath];
+    
+    NSLog( @"Erase volume : %@", writeVolumePath);
+    
+    for( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
+        [[NSFileManager defaultManager] removeItemAtPath: [writeVolumePath stringByAppendingPathComponent: path] error: nil];
+    
+    
+    [[NSFileManager defaultManager] copyItemAtPath: [self folderToBurn] toPath: writeVolumePath byReplacingExisting: YES error: nil];
+    
+    NSString *newName = cdName;
+    
+    [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]] waitUntilExit];
+    
+    [NSThread sleepForTimeInterval: 1];
+    
+    //Did we succeed? Basic MS-DOS FAT support only CAPITAL letters and maximum of 10 characters...
+    if( [[NSFileManager defaultManager] fileExistsAtPath: [[writeVolumePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: newName]] == NO)
+    {
+        if( newName.length > 10)
+            newName = [newName substringToIndex: 10];
+        
+        [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, [newName uppercaseString], nil]] waitUntilExit];
+        [NSThread sleepForTimeInterval: 1];
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [[writeVolumePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: newName]] == NO)
+        {
+            newName = @"DICOM";
+            
+            [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]] waitUntilExit];
+            [NSThread sleepForTimeInterval: 1];
+        }
+    }
+    
+    [[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [[writeVolumePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: newName]];
+    
+    NSLog( @"Ejecting new DICOM Volume: %@", newName);
+}
+
 - (void)burnCD:(id)object
 {
     sizeInMb = [[self getSizeOfDirectory: [self folderToBurn]] intValue] / 1024;
@@ -487,6 +573,7 @@
 	if( freeSpace > 0 && sizeInMb >= freeSpace)
 	{
 		*prompt = [NSString stringWithFormat: NSLocalizedString(@"The data to burn is larger than a media size (%d MB), you need a DVD to burn this amount of data (%d MB).", nil), freeSpace, sizeInMb];
+        cancelled = YES;
 		return NO;
 	}
 	else if( freeSpace > 0)
@@ -500,7 +587,6 @@
 
 - (void) burnProgressPanelWillBegin:(NSNotification*)aNotification
 {
-	burning = YES;	// Keep the app from being quit from underneath the burn.
 	burnAnimationIndex = 0;
     runBurnAnimation = YES;
 }
@@ -547,8 +633,6 @@
 	
 	NSLog(@"Burner windowWillClose");
 	
-	[self restoreDefaultsSettings];
-	
 	[[self window] setDelegate: nil];
 	
 	isExtracting = NO;
@@ -567,10 +651,8 @@
 		return NO;
 	else
 	{
-		NSFileManager *manager = [NSFileManager defaultManager];
-		[manager removeFileAtPath: [self folderToBurn] handler:nil];
-		[manager removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
-		[manager removeFileAtPath: [self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [self folderToBurn] handler:nil];
+		[[NSFileManager defaultManager] removeFileAtPath: [NSString stringWithFormat:@"/tmp/burnAnonymized"] handler:nil];
 		
 		[filesToBurn release];
 		filesToBurn = nil;
@@ -938,8 +1020,6 @@
         
         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EncryptCD"] && cancelled == NO)
         {
-            [destinationCompleteLock lock];
-            
             if( cancelled == NO)
             {
                 thread.name = NSLocalizedString( @"Burning...", nil);
@@ -956,8 +1036,6 @@
                 [[NSFileManager defaultManager] moveItemAtPath: [[burnFolder stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"encryptedDICOM.zip"] toPath: [burnFolder stringByAppendingPathComponent: @"encryptedDICOM.zip"] error: nil];
                 [[NSString stringWithString: NSLocalizedString( @"The images are encrypted with a password in this ZIP file: first, unzip this file to read the content. Use an Unzip application to extract the files.", nil)] writeToFile: [burnFolder stringByAppendingPathComponent: @"ReadMe.txt"] atomically: YES encoding: NSASCIIStringEncoding error: nil];
             }
-            
-            [destinationCompleteLock unlock];
         }
         
         thread.name = NSLocalizedString( @"Burning...", nil);

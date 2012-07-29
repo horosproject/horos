@@ -630,7 +630,6 @@ enum
 - (IBAction) endBlendingType:(id) sender;
 - (IBAction) endQuicktime:(id) sender;
 - (void) setDefaultTool:(id) sender;
-- (OSErr)getFSRefAtPath:(NSString*)sourceItem ref:(FSRef*)sourceRef;
 - (id) viewCinit:(NSMutableArray*)f :(NSMutableArray*) d :(NSData*) v;
 - (id) initWithPix:(NSMutableArray*)f withFiles:(NSMutableArray*) d withVolume:(NSData*) v;
 - (void) speedSliderAction:(id) sender;

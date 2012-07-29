@@ -3424,6 +3424,8 @@
 		CE5EABCF0935E702006D85DD /* HotGreen.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC40935E702006D85DD /* HotGreen.plist */; };
 		CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */ = {isa = PBXBuildFile; fileRef = CE5F9D730AE813A40042280F /* localizedTemplatesPages */; };
 		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
+		CE65D9F115C4843300E9D94C /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65D9F015C4843300E9D94C /* DiskArbitration.framework */; };
+		CE65D9F215C4843300E9D94C /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65D9F015C4843300E9D94C /* DiskArbitration.framework */; };
 		CE6692DA0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
 		CE6692DB0AF545F90073D923 /* printView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6692D90AF545F90073D923 /* printView.m */; };
 		CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6693C60AF551210073D923 /* libxerces-c.27.dylib */; };
@@ -10479,6 +10481,7 @@
 		CE5EABC40935E702006D85DD /* HotGreen.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = HotGreen.plist; sourceTree = "<group>"; };
 		CE5F9D730AE813A40042280F /* localizedTemplatesPages */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = localizedTemplatesPages; path = Binaries/localizedTemplatesPages; sourceTree = "<group>"; };
 		CE646B150751D8D9002962B7 /* iPhotoSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = iPhotoSmall.tif; path = Binaries/Icons/iPhotoSmall.tif; sourceTree = SOURCE_ROOT; };
+		CE65D9F015C4843300E9D94C /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = ../../../../System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<group>"; };
 		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
 		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
 		CE6693C60AF551210073D923 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
@@ -14361,6 +14364,7 @@
 				CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */,
 				8476BC2F1599D4B200451331 /* AVFoundation.framework in Frameworks */,
 				8476BC341599D7E900451331 /* CoreMedia.framework in Frameworks */,
+				CE65D9F115C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14432,6 +14436,7 @@
 				CEBD93A914F1AEDA000DA1FE /* libvtkzlib.a in Frameworks */,
 				8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */,
 				8476BC351599D7E900451331 /* CoreMedia.framework in Frameworks */,
+				CE65D9F215C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14499,6 +14504,7 @@
 				CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
+				CE65D9F015C4843300E9D94C /* DiskArbitration.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,

@@ -107,6 +107,23 @@ enum {
 
 @implementation BrowserController (Sources)
 
+-(void)removePathFromSources:(NSString*) path
+{
+    MountedDatabaseNodeIdentifier* mbs = nil;
+    for (MountedDatabaseNodeIdentifier* ibs in self.sources.arrangedObjects)
+        if ([ibs isKindOfClass:[MountedDatabaseNodeIdentifier class]] && [ibs.devicePath isEqualToString:path])
+        {
+            mbs = ibs;
+            break;
+        }
+    if (mbs)
+    {
+        if ([[self sourceIdentifierForDatabase:self.database] isEqualToDataNodeIdentifier:mbs])
+            [self setDatabase:DicomDatabase.defaultDatabase];
+        [self.sources removeObject:mbs];
+    }
+}
+
 -(void)awakeSources
 {
 	[_sourcesArrayController setSortDescriptors:[NSArray arrayWithObjects: [[[NSSortDescriptor alloc] initWithKey:@"self" ascending:YES] autorelease], NULL]];
@@ -347,6 +364,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		// mounted devices
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidMountNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidUnmountNotification object:nil];
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeNotification:) name:NSWorkspaceDidRenameVolumeNotification object:nil];
 		[[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(_observeVolumeWillUnmountNotification:) name:NSWorkspaceWillUnmountNotification object:nil];
 		for (NSString* path in [[NSWorkspace sharedWorkspace] mountedRemovableMedia])
 			[self _analyzeVolumeAtPath:path];
@@ -360,6 +378,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceWillUnmountNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidRenameVolumeNotification object:nil];
 	[_nsbDicom release]; _nsbDicom = nil;
 	[_nsbOsirix release]; _nsbOsirix = nil;
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
@@ -756,13 +775,23 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             N2LogExceptionWithStackTrace(e);
         }
 	
-    if ([[result objectForKey:@"MediaType"] isEqualToString:@"iPod"])
+    else if ([[result objectForKey:@"MediaType"] isEqualToString:@"iPod"])
         @try {
 			[_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeIPod]];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         }
-	
+	else // Is there a DICOMDIR at root?
+    {
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent: @"DICOMDIR"]])
+        {
+            @try {
+                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+        }
+    }
 	
 /*	OSStatus err;
 	kern_return_t kr;
@@ -808,22 +837,29 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)_observeVolumeNotification:(NSNotification*)notification
 {
-	NSString* path = [notification.userInfo objectForKey:@"NSDevicePath"];
-
+	NSString* path = [[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path];
+    BOOL oldPathWasMounted = NO;
+    
 	[_browser redrawSources];
 	
 	if ([notification.name isEqualToString:NSWorkspaceDidMountNotification])
     {
-		[self _analyzeVolumeAtPath:[notification.userInfo objectForKey:@"NSDevicePath"]];
+		[self _analyzeVolumeAtPath:[[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path]];
 	}
     
-    if ([notification.name isEqualToString:NSWorkspaceDidUnmountNotification])
+    if( [notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
+    {
+        path = [[[notification userInfo] objectForKey: NSWorkspaceVolumeOldURLKey] path];
+    }
+    
+    if ([notification.name isEqualToString:NSWorkspaceDidUnmountNotification] || [notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification])
     {
         MountedDatabaseNodeIdentifier* mbs = nil;
         for (MountedDatabaseNodeIdentifier* ibs in _browser.sources.arrangedObjects)
             if ([ibs isKindOfClass:[MountedDatabaseNodeIdentifier class]] && [ibs.devicePath isEqualToString:path])
             {
                 mbs = ibs;
+                oldPathWasMounted = YES;
                 break;
             }
         if (mbs)
@@ -832,6 +868,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
                 [_browser setDatabase:DicomDatabase.defaultDatabase];
             [_browser.sources removeObject:mbs];
         }
+    }
+    
+    if ([notification.name isEqualToString:NSWorkspaceDidRenameVolumeNotification] && oldPathWasMounted == YES) // Re-mount an renamed path, that was previously mounted
+    {
+        [self _analyzeVolumeAtPath:[[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path]];
     }
 	
 //	for (BrowserSource* bs in _browser.sources)

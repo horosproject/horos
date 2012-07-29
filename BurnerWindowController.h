@@ -14,6 +14,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum burnerDestination
+{
+    CDDVD = 0,
+    USBKey = 1,
+    DMGFile = 2
+};
+
 @class DRTrack;
 @class DicomDatabase;
 
@@ -35,10 +42,10 @@
 	volatile BOOL runBurnAnimation, isExtracting, isSettingUpBurn, isThrobbing, windowWillClose;
 	NSArray *filesToBurn;
 	BOOL _multiplePatients;
-	BOOL writeDMG, cancelled;
-    NSString *writeDMGPath;
+	BOOL cancelled;
+    NSString *writeDMGPath, *writeVolumePath;
+    NSUInteger selectedUSB;
 	NSArray *anonymizationTags;
-    NSRecursiveLock *destinationCompleteLock;
     int sizeInMb;
 	NSString *password;
 	IBOutlet NSWindow *passwordWindow;
@@ -54,8 +61,10 @@
 }
 
 @property BOOL buttonsDisabled;
+@property NSUInteger selectedUSB;
 @property (retain) NSString *password;
 
+- (NSArray*) volumes;
 - (IBAction) ok:(id)sender;
 - (IBAction) cancel:(id)sender;
 - (IBAction) setAnonymizedCheck: (id) sender;
@@ -78,4 +87,5 @@
 - (NSNumber*)getSizeOfDirectory:(NSString*)path;
 - (NSString*) defaultTitle;
 - (IBAction) estimateFolderSize: (id) sender;
+- (void)saveOnVolume;
 @end

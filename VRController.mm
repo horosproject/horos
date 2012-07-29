@@ -825,7 +825,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( [style isEqualToString:@"noNib"])
 		str = nil;
 	else
-		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", (int) [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	if( str)
 	{
@@ -863,7 +863,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	if( [style isEqualToString:@"noNib"])
 		str = nil;
 	else
-		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
+		str = [path stringByAppendingPathComponent: [NSString stringWithFormat:@"VRMIP-%d-%@", (int) [view mode], [[fileList objectAtIndex:0] valueForKey:@"uniqueFilename"]]];
 	
 	NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: str];
 	

@@ -9601,10 +9601,15 @@ static BOOL needToRezoom;
     if (previousSelectedAlbumId)
         [self saveSortDescriptors:[self _albumWithID:previousSelectedAlbumId]];
     
+    DicomAlbum* selectedAlbum = nil;
+    
     NSInteger selection = albumTable.selectedRow;
-    DicomAlbum* selectedAlbum = [albums objectAtIndex:selection];
-    if ([selectedAlbum isEqual:previousSelectedAlbumId])
-        return;
+    if( selection >= 0)
+    {
+        selectedAlbum = [albums objectAtIndex:selection];
+        if ([selectedAlbum isEqual:previousSelectedAlbumId])
+            return;
+    }
     
     [previousSelectedAlbumId release];
     if (!_database)

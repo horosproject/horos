@@ -5802,7 +5802,7 @@ END_CREATE_ROIS:
 				
 				NSData	*data = [dcmObject attributeValueWithName: @"OverlayData"];
 				
-				if (data && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+				if (data && oBits == 1 && oBitPosition == 0 && oType == 'G')
 				{
 					if( oData) free( oData);
 					oData = calloc( oRows*oColumns, 1);
@@ -6209,9 +6209,13 @@ END_CREATE_ROIS:
 						{
 							if( oData[ y * oColumns + x])
 							{
-								rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-								rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-								rgbData[ y * width*4 + x*4 + 3] = 0xFF;
+                                if( (x + (oOrigin[ 0]-1)) >= 0 && (x + (oOrigin[ 0]-1)) < width &&
+                                    (y + (oOrigin[ 1]-1)) >= 0 && (y + (oOrigin[ 1]-1)) < height)
+                                {
+                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 1] = 0xFF;
+                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 2] = 0xFF;
+                                    rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 3] = 0xFF;
+                                }
 							}
 						}
 					}
@@ -6315,7 +6319,7 @@ END_CREATE_ROIS:
 				
 				if( oData && gDisplayDICOMOverlays)
 				{
-					float maxValue = 0;
+					float maxValue = 0; XXXX
 					
 					if( inverseVal)
 						maxValue = -offset;
@@ -8250,7 +8254,7 @@ END_CREATE_ROIS:
 					if ( val) oBitPosition	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
-					if (val != NULL && oBits == 1 && oRows == height && oColumns == width && oType == 'G' && oBitPosition == 0 && oOrigin[ 0] == 1 && oOrigin[ 1] == 1)
+					if (val != NULL && oBits == 1 && oType == 'G' && oBitPosition == 0)
 					{
 						if( oData) free( oData);
 						oData = calloc( oRows*oColumns, 1);
@@ -8821,22 +8825,25 @@ END_CREATE_ROIS:
 							
 							if( oData && gDisplayDICOMOverlays)
 							{
-								unsigned char	*rgbData = (unsigned char*) fImage;
-								int				y, x;
-								
-								for( y = 0; y < oRows; y++)
-								{
-									for( x = 0; x < oColumns; x++)
-									{
-										if( oData[ y * oColumns + x])
-										{
-											rgbData[ y * width*4 + x*4 + 1] = 0xFF;
-											rgbData[ y * width*4 + x*4 + 2] = 0xFF;
-											rgbData[ y * width*4 + x*4 + 3] = 0xFF;
-										}
-									}
-								}
-							}
+                                unsigned char	*rgbData = (unsigned char*) fImage;
+                                
+                                for( int y = 0; y < oRows; y++)
+                                {
+                                    for( int x = 0; x < oColumns; x++)
+                                    {
+                                        if( oData[ y * oColumns + x])
+                                        {
+                                            if( (x + (oOrigin[ 0]-1)) >= 0 && (x + (oOrigin[ 0]-1)) < width &&
+                                               (y + (oOrigin[ 1]-1)) >= 0 && (y + (oOrigin[ 1]-1)) < height)
+                                            {
+                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 1] = 0xFF;
+                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 2] = 0xFF;
+                                                rgbData[ (y + (oOrigin[ 1]-1)) * width*4 + (x + (oOrigin[ 0]-1))*4 + 3] = 0xFF;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 						}
 						else
 						{
@@ -8928,7 +8935,7 @@ END_CREATE_ROIS:
 							
 							if( oData && gDisplayDICOMOverlays && fImage)
 							{
-								float maxValue = 0;
+								float maxValue = 0;  XXXX
 								
 								if( inverseVal)
 									maxValue = -offset;
