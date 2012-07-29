@@ -25,20 +25,17 @@
 - New Sync mode: based on image ID ratio, allowing to synchronize time loops with different images count
 - Multiple bugs corrected
 
-- Test CD burning (performBurn performSelectorOnMainThread)
-
 -------------------------------------------------------------
 
 - Retina: VR (implication for MPR, CPR), SR
 - Retina: iChat?, (avoid NSScreen mainScreen, multiple monitors?)
 - 10.7: Core Layout for xib
-- 10.8: Notifications Center, iCloud sync, unzip .app with password
+- 10.8: Notifications Center
 - Synchronize MPR viewers
-- Shift+Cmd+Click to add series to viewer
+- Multiple HDs for DB
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
 - DICOM ECG (Ginkgo CADx) (OSIRIX-113)
-- Windows Tiling <-> Image Tiling (async combinations)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups of users (for sharing)
 - WebPortal: Edit report (OSIRIX-4)
@@ -46,12 +43,8 @@
 - WebPortal: create/delete albums and add/remove studies to static albums (admin)
 - WebPortal: for admin, consult network logs
 - WebPortal: ROIs, Key images series, ...
-- http://code.google.com/p/exposure-render/
-- The dcmmkdir binary is no longer used for DICOMDIR creation, but older versions of the DiscPublishing plugin rely on it - we will remove it one day
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
-- Delete Alias ROI?
-- Option for Tiling Windows: always order from oldest study to ...
 - Tomographie rotational angio (OSIRIX-115)
 - QR : Local Comments, Local Status versus Distant Comments, Distant Status
 - 3D ROI -> 2D Viewer
@@ -61,7 +54,7 @@
 - Sync Ortho-MPR (OSIRIX-30)
 - Propagate sub-settings
 - Phase Cardiac (OSIRIX-32)
-- Full Simpson
+- Full Simpson Ejection Fraction
 - Printing Layout (OSIRIX-34)
 - Growing region: set to new val
 - DICOM Printing 1/1 size, fit to size

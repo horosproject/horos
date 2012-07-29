@@ -5802,7 +5802,7 @@ END_CREATE_ROIS:
 				
 				NSData	*data = [dcmObject attributeValueWithName: @"OverlayData"];
 				
-				if (data && oBits == 1 && oBitPosition == 0 && oType == 'G')
+				if (data && oBits == 1 && oBitPosition == 0)
 				{
 					if( oData) free( oData);
 					oData = calloc( oRows*oColumns, 1);
@@ -8244,7 +8244,7 @@ END_CREATE_ROIS:
 					if ( val) oBitPosition	= val->us;
 					
 					val = Papy3GetElement (theGroupP, papOverlayDataGr, &nbVal, &elemType);
-					if (val != NULL && oBits == 1 && oType == 'G' && oBitPosition == 0)
+					if (val != NULL && oBits == 1 && oBitPosition == 0)
 					{
 						if( oData) free( oData);
 						oData = calloc( oRows*oColumns, 1);

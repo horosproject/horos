@@ -232,8 +232,6 @@
         
         [sizeField setStringValue: @""];
         
-        [[NSFileManager defaultManager] removeFileAtPath:[self folderToBurn] handler:nil];
-        
         [cdName release];
         cdName = [[nameField stringValue] retain];
         
@@ -290,6 +288,8 @@
                         NSInteger result = NSRunCriticalAlertPanel( NSLocalizedString( @"USB Writing", nil), NSLocalizedString( @"No destination selected.", nil), NSLocalizedString( @"OK", nil), nil, nil);
                         
                         self.buttonsDisabled = NO;
+                        runBurnAnimation = NO;
+                        burning = NO;
                         return;
                     }
                     
@@ -298,6 +298,8 @@
                     if( result != NSAlertDefaultReturn)
                     {
                         self.buttonsDisabled = NO;
+                        runBurnAnimation = NO;
+                        burning = NO;
                         return;
                     }
                 }
@@ -318,6 +320,8 @@
                     else
                     {
                         self.buttonsDisabled = NO;
+                        runBurnAnimation = NO;
+                        burning = NO;
                         return;
                     }
                 }
@@ -349,8 +353,10 @@
                     }
                     else
                     {
-                        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"EncryptCD"];
-                        NSRunCriticalAlertPanel( NSLocalizedString( @"Encryption", nil), NSLocalizedString( @"The content will NOT be encrypted in a ZIP file.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+                        self.buttonsDisabled = NO;
+                        runBurnAnimation = NO;
+                        burning = NO;
+                        return;
                     }
                 }
                 
@@ -363,6 +369,8 @@
                 NSBeginAlertSheet( NSLocalizedString( @"Burn Warning", nil) , NSLocalizedString( @"OK", nil), nil, nil, nil, nil, nil, nil, nil, NSLocalizedString( @"Please add CD name", nil));
                 
                 self.buttonsDisabled = NO;
+                runBurnAnimation = NO;
+                burning = NO;
                 return;
             } 
         }
@@ -377,64 +385,71 @@
 {	 
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-	isSettingUpBurn = YES;
-	
-    if( anonymizationTags)
+    @try
     {
-        NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags: anonymizationTags];
+        isSettingUpBurn = YES;
         
-        [anonymizedFiles release];
-        anonymizedFiles = [[anonOut allValues] mutableCopy];
-    }
-    
-	[self prepareCDContent];
-	
-	isSettingUpBurn = NO;
-	
-	int no = 0;
-		
-	if( anonymizedFiles) no = [anonymizedFiles count];
-	else no = [files count];
-    
-    burning = YES;
-    
-	if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]] && cancelled == NO)
-	{
-		if( no)
-		{
-			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"])
+        if( anonymizationTags)
+        {
+            NSDictionary* anonOut = [Anonymization anonymizeFiles:files dicomImages: dbObjects toPath:@"/tmp/burnAnonymized" withTags: anonymizationTags];
+            
+            [anonymizedFiles release];
+            anonymizedFiles = [[anonOut allValues] mutableCopy];
+        }
+        
+        [self prepareCDContent];
+        
+        isSettingUpBurn = NO;
+        
+        int no = 0;
+            
+        if( anonymizedFiles) no = [anonymizedFiles count];
+        else no = [files count];
+        
+        burning = YES;
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [self folderToBurn]] && cancelled == NO)
+        {
+            if( no)
             {
-                case DMGFile:
-                    [self createDMG: writeDMGPath withSource:[self folderToBurn]];
-                break;
-                
-                case CDDVD:
-                    [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:YES];
-                break;
+                switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"])
+                {
+                    case DMGFile:
+                        [self createDMG: writeDMGPath withSource:[self folderToBurn]];
+                    break;
                     
-                case USBKey:
-                    [self saveOnVolume];
-                break;
+                    case CDDVD:
+                        [self performSelectorOnMainThread:@selector( burnCD:) withObject:nil waitUntilDone:NO];
+                        return;
+                    break;
+                        
+                    case USBKey:
+                        [self saveOnVolume];
+                    break;
+                }
             }
-		}
-	}
-	
-    [[NSFileManager defaultManager] removeFileAtPath: [self folderToBurn] handler:nil];
-    self.buttonsDisabled = NO;
-    runBurnAnimation = NO;
-	burning = NO;
-    
-    if( cancelled == NO)
-    {
-        // Finished ! Close the window....
+        }
         
-        [[NSSound soundNamed: @"Glass.aiff"] play];
-        [self.window performSelectorOnMainThread: @selector( performClose:) withObject: self waitUntilDone: NO];
+        self.buttonsDisabled = NO;
+        runBurnAnimation = NO;
+        burning = NO;
+        
+        if( cancelled == NO)
+        {
+            // Finished ! Close the window....
+            
+            [[NSSound soundNamed: @"Glass.aiff"] play];
+            [self.window performSelectorOnMainThread: @selector( performClose:) withObject: self waitUntilDone: NO];
+        }
     }
-    
-	cancelled = NO;
-    
-	[pool release];
+    @catch (NSException *exception)
+    {
+        NSLog( @"*** exception: %@", exception);
+    }
+    @finally
+    {
+        [pool release];
+    }
 }
 
 - (IBAction) setAnonymizedCheck: (id) sender
@@ -549,8 +564,14 @@
             DRBurnProgressPanel *bpp = [DRBurnProgressPanel progressPanel];
             [bpp setDelegate: self];
             [bpp beginProgressSheetForBurn:[bsp burnObject] layout:track modalForWindow: [self window]];
+            
+            return;
         }
 	}
+    
+    self.buttonsDisabled = NO;
+    runBurnAnimation = NO;
+    burning = NO;
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------
@@ -564,7 +585,7 @@
 	return YES;
 }
 
-- (BOOL) setupPanel:(DRSetupPanel*)aPanel deviceContainsSuitableMedia:(DRDevice*)device promptString:(NSString**)prompt; 
+- (BOOL) setupPanel:(DRSetupPanel*)aPanel deviceContainsSuitableMedia:(DRDevice*)device promptString:(NSString**)prompt;
 {
 	NSDictionary *status = [device status];
 	
@@ -593,6 +614,7 @@
 
 - (void) burnProgressPanelDidFinish:(NSNotification*)aNotification
 {
+    
 }
 
 - (BOOL) burnProgressPanel:(DRBurnProgressPanel*)theBurnPanel burnDidFinish:(DRBurn*)burn
@@ -612,7 +634,12 @@
 	
 	if( [self.window isSheet])
 		[NSApp endSheet:self.window];
-	[[self window] performClose:nil];
+    
+    self.buttonsDisabled = NO;
+    runBurnAnimation = NO;
+    burning = NO;
+    
+    [[self window] performSelector: @selector( performClose:) withObject: nil afterDelay: 1];
 	
 	return YES;
 }
