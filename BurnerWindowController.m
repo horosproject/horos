@@ -302,6 +302,8 @@
                         burning = NO;
                         return;
                     }
+                    
+                    [[BrowserController currentBrowser] removePathFromSources: writeVolumePath];
                 }
                 
                 if( [[NSUserDefaults standardUserDefaults] integerForKey: @"burnDestination"] == DMGFile)
@@ -508,8 +510,6 @@
 
 - (void) saveOnVolume
 {
-    [[BrowserController currentBrowser] removePathFromSources: writeVolumePath];
-    
     NSLog( @"Erase volume : %@", writeVolumePath);
     
     for( NSString *path in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: writeVolumePath error: nil])
