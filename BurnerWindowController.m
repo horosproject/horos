@@ -621,7 +621,8 @@
 {
 	NSDictionary*	burnStatus = [burn status];
 	NSString*		state = [burnStatus objectForKey:DRStatusStateKey];
-	
+	BOOL            succeed = NO;
+    
 	if( [state isEqualToString:DRStatusStateFailed])
 	{
 		NSDictionary*	errorStatus = [burnStatus objectForKey:DRErrorStatusKey];
@@ -630,8 +631,11 @@
 		NSRunCriticalAlertPanel( NSLocalizedString( @"Burning failed", nil), errorString, NSLocalizedString( @"OK", nil), nil, nil);
 	}
 	else
+    {
+        succeed = YES;
 		[sizeField setStringValue: NSLocalizedString( @"Burning is finished !", nil)];
-	
+	}
+    
 	if( [self.window isSheet])
 		[NSApp endSheet:self.window];
     
@@ -639,7 +643,8 @@
     runBurnAnimation = NO;
     burning = NO;
     
-    [[self window] performSelector: @selector( performClose:) withObject: nil afterDelay: 1];
+    if( succeed)
+        [[self window] performSelector: @selector( performClose:) withObject: nil afterDelay: 1];
 	
 	return YES;
 }
