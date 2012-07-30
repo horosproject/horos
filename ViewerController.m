@@ -106,10 +106,10 @@ extern BOOL FULL32BITPIPELINE;
 static	BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 
 static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
-static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.icns";
+static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
-static NSString*	PlayToolbarItemIdentifier			= @"Play.icns";
-static NSString*	PauseToolbarItemIdentifier			= @"Pause.icns";
+static NSString*	PlayToolbarItemIdentifier			= @"Play.pdf";
+static NSString*	PauseToolbarItemIdentifier			= @"Pause.pdf";
 static NSString*	XMLToolbarItemIdentifier			= @"XML.icns";
 static NSString*	SpeedToolbarItemIdentifier			= @"Speed";
 static NSString*	ToolsToolbarItemIdentifier			= @"Tools";
@@ -128,15 +128,15 @@ static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
 static NSString*	iChatBroadCastToolbarItemIdentifier = @"iChat.icns";
 static NSString*	StatusToolbarItemIdentifier			= @"status";
-static NSString*	SyncSeriesToolbarItemIdentifier		= @"Sync.tif";
-static NSString*	ResetToolbarItemIdentifier			= @"Reset.tif";
+static NSString*	SyncSeriesToolbarItemIdentifier		= @"Sync.pdf";
+static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
 static NSString*	RevertToolbarItemIdentifier			= @"Revert.tif";
 static NSString*	FlipDataToolbarItemIdentifier		= @"FlipData.tif";
 static NSString*	DatabaseWindowToolbarItemIdentifier = @"DatabaseWindow.icns";
 static NSString*	KeyImagesToolbarItemIdentifier		= @"keyImages";
 static NSString*	TileWindowsToolbarItemIdentifier	= @"windows.tif";
 static NSString*	SUVToolbarItemIdentifier			= @"SUV.tif";
-static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tif";
+static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.pdf";
 static NSString*	ReportToolbarItemIdentifier			= @"Report.icns";
 static NSString*	FlipVerticalToolbarItemIdentifier	= @"FlipVertical.tif";
 static NSString*	FlipHorizontalToolbarItemIdentifier	= @"FlipHorizontal.tif";
@@ -151,7 +151,7 @@ static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
 static NSString*	ThreeDPositionToolbarItemIdentifier	= @"3DPosition";
 static NSString*	CobbAngleToolbarItemIdentifier		= @"CobbAngle";
-static NSString*	SetPixelValueItemIdentifier			= @"SetPixelValue.png";
+static NSString*	SetPixelValueItemIdentifier			= @"SetPixelValue.pdf";
 static NSString*	GrowingRegionItemIdentifier			= @"GrowingRegion.png";
 
 static NSArray*		DefaultROINames = nil;
@@ -5123,7 +5123,7 @@ static ViewerController *draggedController = nil;
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Sync", nil)];
 		[toolbarItem setPaletteLabel: NSLocalizedString(@"Sync", nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"SyncLock.tif"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 	}
 	else
 	{
@@ -14854,7 +14854,7 @@ int i,j,l;
 			NSNumber *sliceLocation = [[note userInfo] objectForKey:@"sliceLocation"];
 			float offset = [(DCMPix*)[[imageView dcmPixList] objectAtIndex:[imageView  curImage]] sliceLocation] - [sliceLocation floatValue];
 			[imageView setSyncRelativeDiff:offset];
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 			
 			[imageView setSyncSeriesIndex: [imageView curImage]];
 		}
@@ -14868,7 +14868,7 @@ int i,j,l;
 	{
 		if( [imageView syncro] != syncroOFF)
 		{
-			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.tif"]];
+			[[self findSyncSeriesButton] setImage: [NSImage imageNamed: @"SyncLock.pdf"]];
 		}
 		else
 		{

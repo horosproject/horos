@@ -2783,11 +2783,11 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setView: tbLOD];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbLOD frame]), NSHeight([tbLOD frame]))];
     }
-	else if ([itemIdent isEqualToString: @"Reset.tif"])
+	else if ([itemIdent isEqualToString: @"Reset.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reset",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Reset",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Reset.tif"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Reset.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( showWindow:)];
     }
@@ -2808,11 +2808,11 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( bestRendering:)];
     }
-	else if ([itemIdent isEqualToString: @"QTExport.icns"])
+	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.icns"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportQuicktime:)];
     }
@@ -2923,7 +2923,7 @@ static float deg2rad = M_PI/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.pdf", @"Export.icns", @"Capture.icns", @"QTExport.pdf", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2932,7 +2932,7 @@ static float deg2rad = M_PI/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.tif", @"Export.icns", @"Capture.icns", @"QTExport.icns", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.pdf", @"Export.icns", @"Capture.icns", @"QTExport.pdf", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
 }
 
 - (void)updateToolbarItems;

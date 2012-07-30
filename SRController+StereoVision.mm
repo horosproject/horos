@@ -28,7 +28,7 @@
 #import "Notifications.h"
 
 static NSString* 	MIPToolbarIdentifier				= @"SR Toolbar Identifier";
-static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.icns";
+static NSString*	QTExportToolbarItemIdentifier		= @"QTExport.pdf";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto.icns";
 static NSString*	StereoIdentifier					= @"Stereo.icns";
 //static NSString*	QTExportVRToolbarItemIdentifier		= @"QTExportVR.icns";
@@ -36,12 +36,12 @@ static NSString*	SRSettingsToolbarItemIdentifier		= @"SRSettings.tif";
 static NSString*	BSRSettingsToolbarItemIdentifier	= @"BSRSettings.tif";
 static NSString*	ToolsToolbarItemIdentifier			= @"Tools";
 static NSString*	Export3DFileFormat					= @"3DExportFileFormat";
-static NSString*	FlyThruToolbarItemIdentifier		= @"FlyThru.tif";
+static NSString*	FlyThruToolbarItemIdentifier		= @"FlyThru.pdf";
 static NSString*	OrientationToolbarItemIdentifier	= @"OrientationWidget.tiff";
 static NSString*	ToggleDisplay3DpointsItemIdentifier	= @"Point.tiff";
 static NSString*	PerspectiveToolbarItemIdentifier	= @"Perspective";
-static NSString*	ResetToolbarItemIdentifier			= @"Reset.tiff";
-static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.tiff";
+static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
+static NSString*	ROIManagerToolbarItemIdentifier		= @"ROIManager.pdf";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	OrientationsViewToolbarItemIdentifier		= @"OrientationsView";
 static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorView";

@@ -34,9 +34,9 @@
 static NSString* 	EndoscopyToolbarIdentifier				= @"Endoscopy Viewer Toolbar Identifier";
 static NSString*	endo3DToolsToolbarItemIdentifier		= @"3DTools";
 static NSString*	endoMPRToolsToolbarItemIdentifier		= @"MPRTools";
-static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.tif";
+static NSString*	FlyThruToolbarItemIdentifier			= @"FlyThru.pdf";
 static NSString*	EngineToolbarItemIdentifier				= @"Engine";
-static NSString*	CroppingToolbarItemIdentifier			= @"Cropping.icns";
+static NSString*	CroppingToolbarItemIdentifier			= @"Cropping.pdf";
 static NSString*	WLWW3DToolbarItemIdentifier				= @"WLWW3D";
 static NSString*	WLWW2DToolbarItemIdentifier				= @"WLWW2D";
 static NSString*	ExportToolbarItemIdentifier				= @"Export.icns";

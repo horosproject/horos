@@ -3700,11 +3700,11 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbStraightenedCPRAngle];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbStraightenedCPRAngle frame]), NSHeight([tbStraightenedCPRAngle frame]))];
     }    
-	else if ([itemIdent isEqualToString: @"Reset.tif"])
+	else if ([itemIdent isEqualToString: @"Reset.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Reset",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Reset",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Reset.tif"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"Reset.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( showWindow:)];
     }
@@ -3734,11 +3734,11 @@ static float deg2rad = M_PI / 180.0;
 //		[toolbarItem setTarget: self];
 //		[toolbarItem setAction: @selector( bestRendering:)];
 //    }
-//	else if ([itemIdent isEqualToString: @"QTExport.icns"])
+//	else if ([itemIdent isEqualToString: @"QTExport.pdf"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 //		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.icns"]];
+//		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
 //		[toolbarItem setTarget: self];
 //		[toolbarItem setAction: @selector( exportQuicktime:)];
 //    }
@@ -3879,7 +3879,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3888,7 +3888,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.tif", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
