@@ -85,6 +85,41 @@
 	return YES; // succeeded
 }
 
+// TEMPORARY USERS
+- (void) deleteTemporaryUsers:(NSTimer*)timer
+{
+    [database.managedObjectContext lock];
+    
+    @try
+    {
+        BOOL toBeSaved = NO;
+        
+        NSArray *users = [database objectsForEntity:database.userEntity];
+        
+        for (WebPortalUser* user in users)
+        {
+            if (user.autoDelete.boolValue == YES && user.deletionDate && [user.deletionDate timeIntervalSinceNow] < 0)
+            {
+                NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", user.name);
+                
+                [self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:nil];
+                
+                toBeSaved = YES;
+                [database.managedObjectContext deleteObject:user];
+            }
+        }
+        
+        if (toBeSaved)
+            [database save:NULL];
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"***** deleteTemporaryUsers exception for deleting temporary users: %@", e);
+    }
+    
+    [database.managedObjectContext unlock];
+}
+
 - (void) emailNotifications
 {
 	if ([NSThread isMainThread] == NO)
@@ -110,35 +145,6 @@
 //	if ([self.dicomDatabase tryLock])
 	{
 		[database.managedObjectContext lock];
-		
-		// TEMPORARY USERS
-		
-		@try
-		{
-			BOOL toBeSaved = NO;
-			
-			NSArray *users = [database objectsForEntity:database.userEntity];
-			
-			for (WebPortalUser* user in users)
-			{
-				if (user.autoDelete.boolValue == YES && user.deletionDate && [user.deletionDate timeIntervalSinceDate: [NSDate date]] < 0)
-				{
-					NSLog( @"----- Temporary User reached the EOL (end-of-life) : %@", user.name);
-					
-					[self updateLogEntryForStudy:nil withMessage: @"temporary user deleted" forUser:user.name ip:nil];
-					
-					toBeSaved = YES;
-					[database.managedObjectContext deleteObject:user];
-				}
-			}
-			
-			if (toBeSaved)
-				[database save:NULL];
-		}
-		@catch (NSException *e)
-		{
-			NSLog( @"***** emailNotifications exception for deleting temporary users: %@", e);
-		}
 		
 		// CHECK dateAdded
 		

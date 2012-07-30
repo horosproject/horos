@@ -218,8 +218,6 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 			webPortal.notificationsEnabled = NSUserDefaults.webPortalNotificationsEnabled;
 					
 	}
-	
-	//NSTimer* t = [[NSTimer scheduledTimerWithTimeInterval:60 * [[NSUserDefaults standardUserDefaults] integerForKey: @"notificationsEmailsInterval"] target: self selector: @selector( webServerEmailNotifications:) userInfo: nil repeats: YES] retain];
 }
 
 +(void)finalizeWebPortalClass {
@@ -263,7 +261,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
 	
-	self.notificationsInterval = 60;
+    temporaryUsersTimer = [NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector( deleteTemporaryUsers:) userInfo:NULL repeats:YES];
 	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
 	
@@ -297,14 +295,21 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	return nil;
 }
 
--(void)invalidate {
+-(void)invalidate
+{
 	[self stopAcceptingConnections];
-	//[notificationsTimer invalidate]; notificationsTimer = NULL;
 }
 
--(void)dealloc {
+-(void)dealloc
+{
 	[self invalidate];
 	
+	[notificationsTimer invalidate];
+    notificationsTimer = nil;
+    
+    [temporaryUsersTimer invalidate];
+    temporaryUsersTimer = nil;
+    
 	self.notificationsEnabled = NO;
 	
 	self.database = NULL;
@@ -679,31 +684,39 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 #pragma mark Notifications
 
--(void)setNotificationsEnabled:(BOOL)flag {
-	if (self.notificationsEnabled != flag) {
+-(void)setNotificationsEnabled:(BOOL)flag
+{
+	if (self.notificationsEnabled != flag)
+    {
 		notificationsEnabled = flag;
-		if (!flag) {
+		if (!flag)
+        {
 			[notificationsTimer invalidate];
 			notificationsTimer = nil;
-		} else {
+		}
+        else if( self.notificationsInterval > 0)
 			notificationsTimer = [NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES];
-		}
 	}
 }
 
--(void)setNotificationsInterval:(NSInteger)value {
-	if (self.notificationsInterval != value) {
+-(void)setNotificationsInterval:(NSInteger)value
+{
+	if (self.notificationsInterval != value)
+    {
 		notificationsInterval = value;
-		if (self.notificationsEnabled) {
-			NSDate* fireDate = notificationsTimer.fireDate;
+		if (self.notificationsEnabled)
+        {
 			[notificationsTimer invalidate];
-			notificationsTimer = [[[NSTimer alloc] initWithFireDate:fireDate? fireDate : [NSDate dateWithTimeIntervalSinceNow:self.notificationsInterval/2] interval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] autorelease];
-			[[NSRunLoop currentRunLoop] addTimer:notificationsTimer forMode:NSDefaultRunLoopMode];
+            notificationsTimer = nil;
+            
+            if( self.notificationsInterval > 0)
+                notificationsTimer = [NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES];
 		}
 	}
 }
 
--(void)notificationsTimerCallback:(NSTimer*)timer {
+-(void)notificationsTimerCallback:(NSTimer*)timer
+{
 	if (self.isAcceptingConnections)
 		[self emailNotifications];
 }

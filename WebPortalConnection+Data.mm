@@ -860,22 +860,26 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             }
             else destUser = [self objectWithXID:shareStudyDestination ofClass: [WebPortalUser class]];
             
-            if ([destUser isKindOfClass: [WebPortalUser class]]) {
+            if ([destUser isKindOfClass: [WebPortalUser class]])
+            {
                 // add study to specific study list for this user
-                if (![[destUser.studies.allObjects valueForKey:@"study"] containsObject:study]) {
+                if (![[destUser.studies.allObjects valueForKey:@"studyInstanceUID"] containsObject:study.studyInstanceUID])
+                {
                     WebPortalStudy* wpStudy = [NSEntityDescription insertNewObjectForEntityForName:@"Study" inManagedObjectContext:self.portal.database.managedObjectContext];
                     wpStudy.user = destUser;
                     wpStudy.patientUID = study.patientUID;
                     wpStudy.studyInstanceUID = study.studyInstanceUID;
                     wpStudy.dateAdded = [NSDate dateWithTimeIntervalSinceReferenceDate:[[NSUserDefaults standardUserDefaults] doubleForKey:@"lastNotificationsDate"]];
                     [self.portal.database save:NULL];
+                    
+                    [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
                 }
+                else
+                    [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
                 
                 // Send the email
                 [self.portal sendNotificationsEmailsTo:[NSArray arrayWithObject:destUser] aboutStudies:[NSArray arrayWithObject:study] predicate:NULL customText: [parameters objectForKey:@"message"] from: user];
                 [self.portal updateLogEntryForStudy: study withMessage: [NSString stringWithFormat: @"Share Study with User: %@", destUser.name] forUser:user.name ip:asyncSocket.connectedHost];
-                
-                [response.tokens addMessage:[NSString stringWithFormat:NSLocalizedString(@"This study is now shared with <b>%@</b>.", @"Web Portal, study, share, ok (%@ is destUser.name)"), destUser.name]];
             } else
                 [response.tokens addError: NSLocalizedString(@"Study share failed: cannot identify user.", @"Web Portal, study, share, error")];
         }
@@ -1257,20 +1261,27 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 					webUser.deletionDate = [NSCalendarDate dateWithYear:[[parameters objectForKey:@"deletionDate_year"] integerValue] month:[[parameters objectForKey:@"deletionDate_month"] integerValue]+1 day:[[parameters objectForKey:@"deletionDate_day"] integerValue] hour:0 minute:0 second:0 timeZone:NULL];
 				
 				NSMutableArray* remainingStudies = [NSMutableArray array];
-				for (NSString* studyXid in [[self.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","]) {
+				for (NSString* studyXid in [[self.parameters objectForKey:@"remainingStudies"] componentsSeparatedByString:@","])
+                {
 					studyXid = [studyXid.stringByTrimmingStartAndEnd stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 					
-					WebPortalStudy* wpStudy = NULL;
-					// this is Mac OS X 10.6 SnowLeopard only // wpStudy = [webUser.managedObjectContext existingObjectWithID:[webUser.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:studyObjectID]] error:NULL];
-					for (WebPortalStudy* iwpStudy in webUser.studies)
-						if ([iwpStudy.XID isEqual:studyXid]) {
-							wpStudy = iwpStudy;
-							break;
-						}
-					
-					if (wpStudy) [remainingStudies addObject:wpStudy];
-					else NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", self.user.name, studyXid);
-				}
+                    if( studyXid.length)
+                    {
+                        WebPortalStudy* wpStudy = NULL;
+                        // this is Mac OS X 10.6 SnowLeopard only // wpStudy = [webUser.managedObjectContext existingObjectWithID:[webUser.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:[NSURL URLWithString:studyObjectID]] error:NULL];
+                        for (WebPortalStudy* iwpStudy in webUser.studies)
+                            if ([iwpStudy.XID isEqual:studyXid])
+                            {
+                                wpStudy = iwpStudy;
+                                break;
+                            }
+                        
+                        if (wpStudy)
+                            [remainingStudies addObject:wpStudy];
+                        else
+                            NSLog(@"Warning: Web Portal user %@ is referencing a study with CoreData ID %@, which doesn't exist", self.user.name, studyXid);
+                    }
+                }
 				for (WebPortalStudy* iwpStudy in webUser.studies.allObjects)
 					if (![remainingStudies containsObject:iwpStudy])
 						[webUser removeStudiesObject:iwpStudy];

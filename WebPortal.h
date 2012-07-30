@@ -39,7 +39,7 @@
 	
 	BOOL notificationsEnabled;
 	NSInteger notificationsInterval;
-	NSTimer* notificationsTimer;
+	NSTimer* notificationsTimer, *temporaryUsersTimer;
 	
 	NSArray *preferredLocalizations;
 	NSMutableDictionary* cache;
