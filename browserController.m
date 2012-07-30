@@ -2827,15 +2827,15 @@ static NSConditionLock *threadLock = nil;
                         
                         count = 0;
                         
-                        id cache = nil;
-                        @synchronized(_albumNoOfStudiesCache)
+                        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
                         {
-                            cache = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
-                        }
-                        
-                        if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || cache == nil)
-                        {
-                            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
+                            id cache = nil;
+                            @synchronized(_albumNoOfStudiesCache)
+                            {
+                                cache = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
+                            }
+                            
+                            if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || cache == nil)
                             {
                                 // Merge local and distant studies
                                 for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
@@ -2843,22 +2843,23 @@ static NSConditionLock *threadLock = nil;
                                     if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
                                         count++;
                                 }
+                                
+                                @synchronized(_albumNoOfStudiesCache)
+                                {
+                                    [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
+                                }
+                                
+                                lastComputeAlbumsForDistantStudies = [NSDate timeIntervalSinceReferenceDate];
                             }
-                            
-                            @synchronized(_albumNoOfStudiesCache)
+                            else
                             {
-                                [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
-                            }
-                            
-                            lastComputeAlbumsForDistantStudies = [NSDate timeIntervalSinceReferenceDate];
-                        }
-                        else
-                        {
-                            @synchronized(_albumNoOfStudiesCache)
-                            {
-                                count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
+                                @synchronized(_albumNoOfStudiesCache)
+                                {
+                                    count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
+                                }
                             }
                         }
+                        
                         count += localStudies.count;
                     }
                     @catch (NSException* e)
@@ -4007,6 +4008,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) refreshComparativeStudiesIfNeeded:(id) timer
 {
+    if( timer == nil)
+        lastRefreshComparativeStudies = 0;
+    
     if( [NSDate timeIntervalSinceReferenceDate] - lastRefreshComparativeStudies > 3 * 60) // 3 min
     {
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];

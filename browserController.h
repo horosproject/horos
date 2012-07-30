@@ -551,7 +551,7 @@ extern NSString* O2AlbumDragType;
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
 #endif
 
-
+- (void) refreshComparativeStudiesIfNeeded:(id) timer;
 - (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName;
 - (void) initAnimationSlider;
 

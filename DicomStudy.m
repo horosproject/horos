@@ -216,6 +216,42 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return r;
 }
 
++ (NSString*) scrambleString: (NSString*) t
+{
+    static NSMutableArray *v = nil;
+    
+    if( v == nil)
+    {
+        v = [[NSMutableArray arrayWithObjects: @"A", @"E", @"I", @"O", @"U", @"Y", @"R", @"F", @"N", @"M", @"P", @"L", @"S", @"D", @"B", @"C", nil] retain];
+        
+        for (int i = [v count]; i > 1; i--)
+            [v exchangeObjectAtIndex:i-1 withObjectAtIndex:random()%i];
+    }
+    
+    t = [t stringByReplacingOccurrencesOfString: @"A" withString: [v objectAtIndex: 0]];
+    t = [t stringByReplacingOccurrencesOfString: @"E" withString: [v objectAtIndex: 1]];
+    t = [t stringByReplacingOccurrencesOfString: @"I" withString: [v objectAtIndex: 2]];
+    t = [t stringByReplacingOccurrencesOfString: @"O" withString: [v objectAtIndex: 3]];
+    t = [t stringByReplacingOccurrencesOfString: @"U" withString: [v objectAtIndex: 4]];
+    t = [t stringByReplacingOccurrencesOfString: @"Y" withString: [v objectAtIndex: 5]];
+    t = [t stringByReplacingOccurrencesOfString: @"R" withString: [v objectAtIndex: 6]];
+    t = [t stringByReplacingOccurrencesOfString: @"F" withString: [v objectAtIndex: 7]];
+    t = [t stringByReplacingOccurrencesOfString: @"N" withString: [v objectAtIndex: 8]];
+    t = [t stringByReplacingOccurrencesOfString: @"M" withString: [v objectAtIndex: 9]];
+    t = [t stringByReplacingOccurrencesOfString: @"P" withString: [v objectAtIndex: 10]];
+    t = [t stringByReplacingOccurrencesOfString: @"L" withString: [v objectAtIndex: 11]];
+    t = [t stringByReplacingOccurrencesOfString: @"S" withString: [v objectAtIndex: 12]];
+    t = [t stringByReplacingOccurrencesOfString: @"D" withString: [v objectAtIndex: 13]];
+    t = [t stringByReplacingOccurrencesOfString: @"B" withString: [v objectAtIndex: 14]];
+    t = [t stringByReplacingOccurrencesOfString: @"C" withString: [v objectAtIndex: 15]];
+    return t;
+}
+
+//- (NSString*) name
+//{
+//    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
+//}
+
 - (BOOL) isDistant
 {
     return NO;

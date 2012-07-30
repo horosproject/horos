@@ -104,6 +104,7 @@
 - (void)addSeries:(NSSet *)value;
 - (void)removeSeries:(NSSet *)value;
 
++ (NSString*) scrambleString: (NSString*) t;
 
 @end
 

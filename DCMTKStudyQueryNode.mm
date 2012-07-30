@@ -19,6 +19,7 @@
 #import "DCMTKImageQueryNode.h"
 #import "DICOMToNSString.h"
 #import "dicomFile.h"
+#import "DicomStudy.h"
 
 #undef verify
 #include "dcdeftag.h"
@@ -222,6 +223,11 @@
 {
     return _theDescription;
 }
+
+//- (NSString*) name
+//{
+//    return [DicomStudy scrambleString: _name];
+//}
 
 - (NSDate*) dateOfBirth // Match DicomStudy
 {

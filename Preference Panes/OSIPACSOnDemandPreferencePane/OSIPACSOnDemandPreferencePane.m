@@ -17,6 +17,7 @@
 #import "DicomDatabase.h"
 #import "DicomAlbum.h"
 #import "N2Debug.h"
+#import "BrowserController.h"
 
 static NSMatrix *gDateMatrix = nil;
 
@@ -197,6 +198,11 @@ static NSMatrix *gDateMatrix = nil;
     // Save Smart Albums
     [self setActivated: self];
     [[NSUserDefaults standardUserDefaults] setObject: smartAlbumsArray forKey: @"smartAlbumStudiesDICOMNodes"];
+    
+    // Refresh Smart Albums
+    [[BrowserController currentBrowser] refreshAlbums];
+    [[BrowserController currentBrowser] refreshComparativeStudiesIfNeeded: nil];
+    [[BrowserController currentBrowser] outlineViewRefresh];
 }
 
 - (void) dealloc

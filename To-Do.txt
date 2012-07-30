@@ -56,9 +56,7 @@
 - Phase Cardiac (OSIRIX-32)
 - Full Simpson Ejection Fraction
 - Printing Layout (OSIRIX-34)
-- Growing region: set to new val
 - DICOM Printing 1/1 size, fit to size
 - Hanging protocols based on Workspace state
 - Password DB in keychain
-- Preferences for Status menu in DB
 - Reporter for Word
