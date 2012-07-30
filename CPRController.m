@@ -3726,11 +3726,11 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( saveBezierPath:)];
     }
-//	else if ([itemIdent isEqualToString: @"Capture.icns"])
+//	else if ([itemIdent isEqualToString: @"BestRendering.pdf"])
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
 //		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: @"Capture.icns"]];
+//		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
 //		[toolbarItem setTarget: self];
 //		[toolbarItem setAction: @selector( bestRendering:)];
 //    }
@@ -3879,7 +3879,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3888,7 +3888,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"Capture.icns", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item

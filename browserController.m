@@ -243,10 +243,10 @@ static NSString* BrowserControllerClassHelperContext = @"BrowserControllerClassH
 }
 
 static NSString* 	DatabaseToolbarIdentifier			= @"DicomDatabase Toolbar Identifier";
-static NSString*	ImportToolbarItemIdentifier			= @"Import.icns";
+static NSString*	ImportToolbarItemIdentifier			= @"Import.pdf";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
-static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
-static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.icns";
+static NSString*	ExportToolbarItemIdentifier			= @"Export.pdf";
+static NSString*	AnonymizerToolbarItemIdentifier		= @"Anonymizer.pdf";
 static NSString*	QueryToolbarItemIdentifier			= @"QueryRetrieve.pdf";
 static NSString*	SendToolbarItemIdentifier			= @"Send.pdf";
 static NSString*	ViewerToolbarItemIdentifier			= @"Viewer.pdf";

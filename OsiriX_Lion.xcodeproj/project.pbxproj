@@ -669,6 +669,8 @@
 		A917F37E10F4F20C00344C5D /* CertSmallStd.tif in Resources */ = {isa = PBXBuildFile; fileRef = A917F37C10F4F20C00344C5D /* CertSmallStd.tif */; };
 		A918CC7D0C02E51B00CAC7A3 /* stringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = A918CC790C02E51B00CAC7A3 /* stringAdditions.h */; };
 		A918CC7E0C02E51B00CAC7A3 /* stringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */; };
+		A91BF49715BD8A8900B7BA23 /* Anonymizer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A91BF49615BD8A8700B7BA23 /* Anonymizer.pdf */; };
+		A91BF49815BD8A8900B7BA23 /* Anonymizer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A91BF49615BD8A8700B7BA23 /* Anonymizer.pdf */; };
 		A91CE491098F5437008665E3 /* ROIVolumeManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */; };
 		A91CE495098F5441008665E3 /* ROIVolumeManagerController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */; };
 		A91F01110B568EA600FCD57C /* Repulsor.tif in Resources */ = {isa = PBXBuildFile; fileRef = A91F01100B568EA600FCD57C /* Repulsor.tif */; };
@@ -796,6 +798,10 @@
 		A9E80EB10987742A005121AA /* ROIVolume.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9E80E3F0986897C005121AA /* ROIVolume.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		A9EDB2CF091A473E00EE86AF /* KFSplitView.h in Headers */ = {isa = PBXBuildFile; fileRef = A9EDB2CD091A473E00EE86AF /* KFSplitView.h */; };
 		A9EDB2D0091A473E00EE86AF /* KFSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9EDB2CE091A473E00EE86AF /* KFSplitView.m */; };
+		A9EFC40A15C6CBD6000D1179 /* Export.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9EFC40915C6CBD6000D1179 /* Export.pdf */; };
+		A9EFC40B15C6CBD6000D1179 /* Export.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9EFC40915C6CBD6000D1179 /* Export.pdf */; };
+		A9EFC40D15C6CBE3000D1179 /* Import.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9EFC40C15C6CBE3000D1179 /* Import.pdf */; };
+		A9EFC40E15C6CBE3000D1179 /* Import.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9EFC40C15C6CBE3000D1179 /* Import.pdf */; };
 		A9F2E559092227A400055899 /* DarkWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F2E557092227A400055899 /* DarkWindow.h */; };
 		A9F2E55A092227A400055899 /* DarkWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F2E558092227A400055899 /* DarkWindow.m */; };
 		A9F2E5E709224ED600055899 /* DarkPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = A9F2E5E509224ED600055899 /* DarkPanel.h */; };
@@ -1595,15 +1601,13 @@
 		ABBB64B1063587B200D9531F /* Arrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647F063587B200D9531F /* Arrow.tif */; };
 		ABBB64B2063587B200D9531F /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
 		ABBB64B3063587B200D9531F /* BSRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6481063587B200D9531F /* BSRSettings.tif */; };
-		ABBB64B4063587B200D9531F /* Capture.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* Capture.pdf */; };
+		ABBB64B4063587B200D9531F /* BestRendering.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* BestRendering.pdf */; };
 		ABBB64B6063587B200D9531F /* Closed Polygon.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6484063587B200D9531F /* Closed Polygon.tif */; };
 		ABBB64B7063587B200D9531F /* Cor.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6485063587B200D9531F /* Cor.tif */; };
 		ABBB64B8063587B200D9531F /* Cropping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6486063587B200D9531F /* Cropping.pdf */; };
 		ABBB64B9063587B200D9531F /* Cross.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6487063587B200D9531F /* Cross.tif */; };
 		ABBB64BA063587B200D9531F /* DAT.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6488063587B200D9531F /* DAT.icns */; };
 		ABBB64BB063587B200D9531F /* dcm.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6489063587B200D9531F /* dcm.icns */; };
-		ABBB64BC063587B200D9531F /* Export.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648A063587B200D9531F /* Export.icns */; };
-		ABBB64BD063587B200D9531F /* Import.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648B063587B200D9531F /* Import.icns */; };
 		ABBB64BE063587B200D9531F /* Length.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648C063587B200D9531F /* Length.tif */; };
 		ABBB64BF063587B200D9531F /* Logo.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648D063587B200D9531F /* Logo.tif */; };
 		ABBB64C0063587B200D9531F /* MIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648E063587B200D9531F /* MIP.tif */; };
@@ -3455,7 +3459,6 @@
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
 		CE79D98A0FD84C350043DD73 /* DCMAbstractSyntaxUID.h in Headers */ = {isa = PBXBuildFile; fileRef = CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */; };
 		CE79D98B0FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
-		CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CE81E2A50FDA9F00000D3D96 /* OsiriX.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = CE8D057D0FD8505000165DDE /* OsiriX.framework */; };
 		CE85FF5D10E6764100175CEB /* OpenGLScreenReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A930149310DA63C200AF0051 /* OpenGLScreenReader.m */; };
 		CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */; };
@@ -7192,15 +7195,13 @@
 		CEC7056A10A5C844008935EA /* Arrow.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB647F063587B200D9531F /* Arrow.tif */; };
 		CEC7056B10A5C844008935EA /* Axial.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6480063587B200D9531F /* Axial.tif */; };
 		CEC7056C10A5C844008935EA /* BSRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6481063587B200D9531F /* BSRSettings.tif */; };
-		CEC7056D10A5C844008935EA /* Capture.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* Capture.pdf */; };
+		CEC7056D10A5C844008935EA /* BestRendering.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6482063587B200D9531F /* BestRendering.pdf */; };
 		CEC7056F10A5C844008935EA /* Closed Polygon.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6484063587B200D9531F /* Closed Polygon.tif */; };
 		CEC7057010A5C844008935EA /* Cor.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6485063587B200D9531F /* Cor.tif */; };
 		CEC7057110A5C844008935EA /* Cropping.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6486063587B200D9531F /* Cropping.pdf */; };
 		CEC7057210A5C844008935EA /* Cross.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6487063587B200D9531F /* Cross.tif */; };
 		CEC7057310A5C844008935EA /* DAT.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6488063587B200D9531F /* DAT.icns */; };
 		CEC7057410A5C844008935EA /* dcm.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6489063587B200D9531F /* dcm.icns */; };
-		CEC7057510A5C844008935EA /* Export.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648A063587B200D9531F /* Export.icns */; };
-		CEC7057610A5C844008935EA /* Import.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648B063587B200D9531F /* Import.icns */; };
 		CEC7057710A5C844008935EA /* Length.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648C063587B200D9531F /* Length.tif */; };
 		CEC7057810A5C844008935EA /* Logo.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648D063587B200D9531F /* Logo.tif */; };
 		CEC7057910A5C844008935EA /* MIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648E063587B200D9531F /* MIP.tif */; };
@@ -7260,7 +7261,6 @@
 		CEC705AF10A5C844008935EA /* redLight.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E9C6D2C066D2BE800D33966 /* redLight.tif */; };
 		CEC705B010A5C844008935EA /* PIC.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B706839830006F3936 /* PIC.icns */; };
 		CEC705B110A5C844008935EA /* lsm.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB9139B806839830006F3936 /* lsm.icns */; };
-		CEC705B210A5C844008935EA /* Anonymizer.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */; };
 		CEC705B510A5C844008935EA /* Mail.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE279EEE06AEFB87008315C8 /* Mail.icns */; };
 		CEC705B610A5C844008935EA /* iChat.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE1335E806B02DC000B7FC03 /* iChat.icns */; };
 		CEC705B910A5C844008935EA /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
@@ -8816,7 +8816,7 @@
 		84ADF464115B622D00FE18B2 /* SRView+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SRView+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF465115B622D00FE18B2 /* SRView+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "SRView+StereoVision.mm"; sourceTree = "<group>"; };
 		84ADF466115B622D00FE18B2 /* VRController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRController+StereoVision.h"; sourceTree = "<group>"; };
-		84ADF467115B622D00FE18B2 /* VRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "VRController+StereoVision.mm"; sourceTree = "<group>"; };
+		84ADF467115B622D00FE18B2 /* VRController+StereoVision.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 2; path = "VRController+StereoVision.mm"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		84ADF468115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRFlyThruAdapter+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF469115B622D00FE18B2 /* VRFlyThruAdapter+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "VRFlyThruAdapter+StereoVision.m"; sourceTree = "<group>"; };
 		84ADF46A115B622D00FE18B2 /* VRView+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VRView+StereoVision.h"; sourceTree = "<group>"; };
@@ -8864,6 +8864,7 @@
 		A917F37C10F4F20C00344C5D /* CertSmallStd.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = CertSmallStd.tif; sourceTree = "<group>"; };
 		A918CC790C02E51B00CAC7A3 /* stringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringAdditions.h; sourceTree = "<group>"; };
 		A918CC7A0C02E51B00CAC7A3 /* stringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = stringAdditions.m; sourceTree = "<group>"; };
+		A91BF49615BD8A8700B7BA23 /* Anonymizer.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Anonymizer.pdf; sourceTree = "<group>"; };
 		A91CE490098F5437008665E3 /* ROIVolumeManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeManagerController.h; sourceTree = "<group>"; };
 		A91CE494098F5441008665E3 /* ROIVolumeManagerController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolumeManagerController.mm; sourceTree = "<group>"; };
 		A91F01100B568EA600FCD57C /* Repulsor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Repulsor.tif; sourceTree = "<group>"; };
@@ -8881,7 +8882,7 @@
 		A9333D230F56E6800097DAB7 /* MPRDCMView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRDCMView.h; sourceTree = "<group>"; };
 		A9333D240F56E6800097DAB7 /* MPRDCMView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRDCMView.m; sourceTree = "<group>"; };
 		A9333D2F0F56E70B0097DAB7 /* MPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRController.h; sourceTree = "<group>"; };
-		A9333D300F56E70B0097DAB7 /* MPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPRController.m; sourceTree = "<group>"; };
+		A9333D300F56E70B0097DAB7 /* MPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MPRController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A9333D390F56E9670097DAB7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR.xib; sourceTree = "<group>"; };
 		A93CFF980A516A5000078038 /* LLMPRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRController.h; sourceTree = "<group>"; };
 		A93CFF990A516A5000078038 /* LLMPRController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LLMPRController.m; sourceTree = "<group>"; };
@@ -8991,6 +8992,8 @@
 		A9E80E3F0986897C005121AA /* ROIVolume.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ROIVolume.mm; sourceTree = "<group>"; };
 		A9EDB2CD091A473E00EE86AF /* KFSplitView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = KFSplitView.h; sourceTree = "<group>"; };
 		A9EDB2CE091A473E00EE86AF /* KFSplitView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = KFSplitView.m; sourceTree = "<group>"; };
+		A9EFC40915C6CBD6000D1179 /* Export.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Export.pdf; sourceTree = "<group>"; };
+		A9EFC40C15C6CBE3000D1179 /* Import.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Import.pdf; sourceTree = "<group>"; };
 		A9F2E557092227A400055899 /* DarkWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DarkWindow.h; sourceTree = "<group>"; };
 		A9F2E558092227A400055899 /* DarkWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DarkWindow.m; sourceTree = "<group>"; };
 		A9F2E5E509224ED600055899 /* DarkPanel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DarkPanel.h; sourceTree = "<group>"; };
@@ -9212,7 +9215,7 @@
 		AB6AC6420624AC5200AFC7AF /* VRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRView.h; sourceTree = "<group>"; };
 		AB6AC6430624AC5200AFC7AF /* VRView.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRView.mm; sourceTree = "<group>"; };
 		AB6AC6440624AC5200AFC7AF /* VRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VRController.h; sourceTree = "<group>"; };
-		AB6AC6450624AC5200AFC7AF /* VRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = VRController.mm; sourceTree = "<group>"; };
+		AB6AC6450624AC5200AFC7AF /* VRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = VRController.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		AB6D320C05B3159D0002F793 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		AB6F34FB0574081F00CDCA47 /* Wait.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Wait.h; sourceTree = "<group>"; };
 		AB6F34FC0574081F00CDCA47 /* Wait.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Wait.m; sourceTree = "<group>"; };
@@ -9305,15 +9308,13 @@
 		ABBB647F063587B200D9531F /* Arrow.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Arrow.tif; sourceTree = "<group>"; };
 		ABBB6480063587B200D9531F /* Axial.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Axial.tif; sourceTree = "<group>"; };
 		ABBB6481063587B200D9531F /* BSRSettings.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = BSRSettings.tif; sourceTree = "<group>"; };
-		ABBB6482063587B200D9531F /* Capture.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Capture.pdf; sourceTree = "<group>"; };
+		ABBB6482063587B200D9531F /* BestRendering.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = BestRendering.pdf; sourceTree = "<group>"; };
 		ABBB6484063587B200D9531F /* Closed Polygon.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "Closed Polygon.tif"; sourceTree = "<group>"; };
 		ABBB6485063587B200D9531F /* Cor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cor.tif; sourceTree = "<group>"; };
 		ABBB6486063587B200D9531F /* Cropping.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Cropping.pdf; sourceTree = "<group>"; };
 		ABBB6487063587B200D9531F /* Cross.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Cross.tif; sourceTree = "<group>"; };
 		ABBB6488063587B200D9531F /* DAT.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DAT.icns; sourceTree = "<group>"; };
 		ABBB6489063587B200D9531F /* dcm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = dcm.icns; sourceTree = "<group>"; };
-		ABBB648A063587B200D9531F /* Export.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Export.icns; sourceTree = "<group>"; };
-		ABBB648B063587B200D9531F /* Import.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Import.icns; sourceTree = "<group>"; };
 		ABBB648C063587B200D9531F /* Length.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Length.tif; sourceTree = "<group>"; };
 		ABBB648D063587B200D9531F /* Logo.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Logo.tif; sourceTree = "<group>"; };
 		ABBB648E063587B200D9531F /* MIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MIP.tif; sourceTree = "<group>"; };
@@ -10503,7 +10504,6 @@
 		CE790A19105D4DE200CE6AAF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
 		CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMAbstractSyntaxUID.m; sourceTree = "<group>"; };
-		CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Anonymizer.icns; sourceTree = "<group>"; };
 		CE882AC40C889B6500D4F982 /* XMLRPCMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLRPCMethods.h; sourceTree = "<group>"; };
 		CE882AC50C889B6500D4F982 /* XMLRPCMethods.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XMLRPCMethods.mm; sourceTree = "<group>"; };
 		CE88575A08AF938800B72DA7 /* ROIVolumeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIVolumeView.h; sourceTree = "<group>"; };
@@ -10517,7 +10517,7 @@
 		CE9054CF12F5B64200263AB6 /* CPRClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRClusterView.h; sourceTree = "<group>"; };
 		CE9054D012F5B64200263AB6 /* CPRClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRClusterView.m; sourceTree = "<group>"; };
 		CE9054D112F5B64200263AB6 /* CPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRController.h; sourceTree = "<group>"; };
-		CE9054D212F5B64200263AB6 /* CPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRController.m; sourceTree = "<group>"; };
+		CE9054D212F5B64200263AB6 /* CPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 2; path = CPRController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		CE9054D312F5B64200263AB6 /* CPRCurvedPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRCurvedPath.h; sourceTree = "<group>"; };
 		CE9054D412F5B64200263AB6 /* CPRCurvedPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRCurvedPath.m; sourceTree = "<group>"; };
 		CE9054D512F5B64200263AB6 /* CPRDisplayInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRDisplayInfo.h; sourceTree = "<group>"; };
@@ -15987,7 +15987,7 @@
 				CED80C7B0BF187930058A469 /* AddLink.tif */,
 				BF8DE5DA06507355005DB40E /* Album.tif */,
 				ABBB647E063587B200D9531F /* Angle.tif */,
-				CE7E5D4406AC8DDC0058C3AA /* Anonymizer.icns */,
+				A91BF49615BD8A8700B7BA23 /* Anonymizer.pdf */,
 				ABBB647F063587B200D9531F /* Arrow.tif */,
 				CED80C7A0BF187930058A469 /* Autofill.tif */,
 				CED80C790BF187930058A469 /* AutofillDisabled.tif */,
@@ -16000,6 +16000,7 @@
 				CEFBB1890B358C8F00666FA9 /* Back.tif */,
 				CEFBB18D0B358C8F00666FA9 /* BackDisabled.tif */,
 				CEFBB18B0B358C8F00666FA9 /* BackPressed.tif */,
+				ABBB6482063587B200D9531F /* BestRendering.pdf */,
 				A981599E09AC6B25003FF1FB /* bonesRemoval.tif */,
 				A9B412D4089180A200913770 /* bonjour.tif */,
 				CE5487790989363200CF4C60 /* Brush.tif */,
@@ -16009,7 +16010,6 @@
 				7E54309007A05F7500500ABB /* burn_throb.tif */,
 				CEC171F70874839C0021C3FC /* BurnAnimation */,
 				AB0F20AB06460F7F0075465D /* Burner.tif */,
-				ABBB6482063587B200D9531F /* Capture.pdf */,
 				7E2BE3D90715DBC50017898A /* cd.icns */,
 				7E2BE4180715E5040017898A /* CD.tif */,
 				59C447E01451705800D71580 /* Eject_gray.pdf */,
@@ -16040,7 +16040,7 @@
 				CE49E2C50760B93500444203 /* Empty.tif */,
 				CE2028F8094EFFC300C00310 /* Endoscopy.tif */,
 				AB7CB7AF0A6E3886008DFCC9 /* error.png */,
-				ABBB648A063587B200D9531F /* Export.icns */,
+				A9EFC40915C6CBD6000D1179 /* Export.pdf */,
 				AB85C65B0BFADA9500C4B52E /* FileIcon.tif */,
 				AB95C0380A2B08ED00380C65 /* FileNotFound.tif */,
 				CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */,
@@ -16060,7 +16060,7 @@
 				A917CF1B0BF49314002F415E /* HUDRightArrowButtonNeutral.tif */,
 				A917CF1C0BF49314002F415E /* HUDRightArrowButtonPressed.tif */,
 				CE1335E806B02DC000B7FC03 /* iChat.icns */,
-				ABBB648B063587B200D9531F /* Import.icns */,
+				A9EFC40C15C6CBE3000D1179 /* Import.pdf */,
 				BF398B8A065B124700AD1F25 /* InArrow.tif */,
 				CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */,
 				CE2BFE56153B177C00037546 /* iPad.png */,
@@ -26392,15 +26392,13 @@
 				ABBB64B1063587B200D9531F /* Arrow.tif in Resources */,
 				ABBB64B2063587B200D9531F /* Axial.tif in Resources */,
 				ABBB64B3063587B200D9531F /* BSRSettings.tif in Resources */,
-				ABBB64B4063587B200D9531F /* Capture.pdf in Resources */,
+				ABBB64B4063587B200D9531F /* BestRendering.pdf in Resources */,
 				ABBB64B6063587B200D9531F /* Closed Polygon.tif in Resources */,
 				ABBB64B7063587B200D9531F /* Cor.tif in Resources */,
 				ABBB64B8063587B200D9531F /* Cropping.pdf in Resources */,
 				ABBB64B9063587B200D9531F /* Cross.tif in Resources */,
 				ABBB64BA063587B200D9531F /* DAT.icns in Resources */,
 				ABBB64BB063587B200D9531F /* dcm.icns in Resources */,
-				ABBB64BC063587B200D9531F /* Export.icns in Resources */,
-				ABBB64BD063587B200D9531F /* Import.icns in Resources */,
 				ABBB64BE063587B200D9531F /* Length.tif in Resources */,
 				ABBB64BF063587B200D9531F /* Logo.tif in Resources */,
 				ABBB64C0063587B200D9531F /* MIP.tif in Resources */,
@@ -26460,7 +26458,6 @@
 				7E9C6D2E066D2BE800D33966 /* redLight.tif in Resources */,
 				AB9139B906839830006F3936 /* PIC.icns in Resources */,
 				AB9139BA06839830006F3936 /* lsm.icns in Resources */,
-				CE7E5D4506AC8DDC0058C3AA /* Anonymizer.icns in Resources */,
 				CE279EF006AEFB87008315C8 /* Mail.icns in Resources */,
 				CE1335EA06B02DC000B7FC03 /* iChat.icns in Resources */,
 				CE74824206C9701200FFA74C /* trash.icns in Resources */,
@@ -26831,6 +26828,9 @@
 				840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 				CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */,
 				CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
+				A91BF49715BD8A8900B7BA23 /* Anonymizer.pdf in Resources */,
+				A9EFC40A15C6CBD6000D1179 /* Export.pdf in Resources */,
+				A9EFC40D15C6CBE3000D1179 /* Import.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26848,15 +26848,13 @@
 				CEC7056A10A5C844008935EA /* Arrow.tif in Resources */,
 				CEC7056B10A5C844008935EA /* Axial.tif in Resources */,
 				CEC7056C10A5C844008935EA /* BSRSettings.tif in Resources */,
-				CEC7056D10A5C844008935EA /* Capture.pdf in Resources */,
+				CEC7056D10A5C844008935EA /* BestRendering.pdf in Resources */,
 				CEC7056F10A5C844008935EA /* Closed Polygon.tif in Resources */,
 				CEC7057010A5C844008935EA /* Cor.tif in Resources */,
 				CEC7057110A5C844008935EA /* Cropping.pdf in Resources */,
 				CEC7057210A5C844008935EA /* Cross.tif in Resources */,
 				CEC7057310A5C844008935EA /* DAT.icns in Resources */,
 				CEC7057410A5C844008935EA /* dcm.icns in Resources */,
-				CEC7057510A5C844008935EA /* Export.icns in Resources */,
-				CEC7057610A5C844008935EA /* Import.icns in Resources */,
 				CEC7057710A5C844008935EA /* Length.tif in Resources */,
 				CEC7057810A5C844008935EA /* Logo.tif in Resources */,
 				CEC7057910A5C844008935EA /* MIP.tif in Resources */,
@@ -26916,7 +26914,6 @@
 				CEC705AF10A5C844008935EA /* redLight.tif in Resources */,
 				CEC705B010A5C844008935EA /* PIC.icns in Resources */,
 				CEC705B110A5C844008935EA /* lsm.icns in Resources */,
-				CEC705B210A5C844008935EA /* Anonymizer.icns in Resources */,
 				CEC705B510A5C844008935EA /* Mail.icns in Resources */,
 				CEC705B610A5C844008935EA /* iChat.icns in Resources */,
 				CEC705B910A5C844008935EA /* trash.icns in Resources */,
@@ -27215,6 +27212,9 @@
 				840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 				CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */,
 				CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
+				A91BF49815BD8A8900B7BA23 /* Anonymizer.pdf in Resources */,
+				A9EFC40B15C6CBD6000D1179 /* Export.pdf in Resources */,
+				A9EFC40E15C6CBE3000D1179 /* Import.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

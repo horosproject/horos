@@ -2800,11 +2800,11 @@ static float deg2rad = M_PI/180.0;
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( exportDICOMFile:)];
     }
-	else if ([itemIdent isEqualToString: @"Capture.icns"])
+	else if ([itemIdent isEqualToString: @"BestRendering.pdf"])
 	{
 		[toolbarItem setLabel: NSLocalizedString(@"Best",nil)];
 		[toolbarItem setPaletteLabel:NSLocalizedString(@"Best",nil)];
-		[toolbarItem setImage: [NSImage imageNamed: @"Capture.icns"]];
+		[toolbarItem setImage: [NSImage imageNamed: @"BestRendering.pdf"]];
 		[toolbarItem setTarget: self];
 		[toolbarItem setAction: @selector( bestRendering:)];
     }
@@ -2923,7 +2923,7 @@ static float deg2rad = M_PI/180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.pdf", @"Export.icns", @"Capture.icns", @"QTExport.pdf", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
+		return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbThickSlab", @"tbShading", NSToolbarFlexibleSpaceItemIdentifier, @"ViewsPosition", @"Reset.pdf", @"Export.icns", @"BestRendering.pdf", @"QTExport.pdf", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -2932,7 +2932,7 @@ static float deg2rad = M_PI/180.0;
 											NSToolbarFlexibleSpaceItemIdentifier,
 											NSToolbarSpaceItemIdentifier,
 											NSToolbarSeparatorItemIdentifier,
-											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.pdf", @"Export.icns", @"Capture.icns", @"QTExport.pdf", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
+											@"tbTools", @"tbWLWW", @"tbLOD", @"tbThickSlab", @"tbBlending", @"tbShading", @"tbMovie", @"Reset.pdf", @"Export.icns", @"BestRendering.pdf", @"QTExport.pdf", @"AxisColors", @"AxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"ViewsPosition", nil];
 }
 
 - (void)updateToolbarItems;
