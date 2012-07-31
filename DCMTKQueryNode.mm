@@ -1259,20 +1259,29 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
     [NSThread currentThread].name = @"DCMTKQueryNode ASC_requestAssociation";
     
-	@try
-	{
-		T_ASC_Association *assoc = NULL;
-		
-		OFCondition cond = ASC_requestAssociation(net, params, &assoc);
-		globalCondition = cond;
-		
-		if( cond == EC_Normal)
-			[dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
-	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
+    T_ASC_Association *assoc = NULL;
+    if( _abortAssociation == NO)
+    {
+        @try
+        {
+            OFCondition cond = ASC_requestAssociation(net, params, &assoc);
+            globalCondition = cond;
+            
+            if( cond == EC_Normal && _abortAssociation == NO)
+                [dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
+        }
+        @catch (NSException * e)
+        {
+            N2LogExceptionWithStackTrace(e);
+        }
+    }
+    
+    if( _abortAssociation && assoc)
+    {
+        AbortAssociationTimeOut = 2;
+        ASC_abortAssociation( assoc);
+        AbortAssociationTimeOut = -1;
+    }
 	
 	[lock unlock];
 	[lock release];
@@ -1686,7 +1695,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: net], @"net", [NSValue valueWithPointer: params], @"params", nil];
 				
 				globalCondition = EC_Normal;
-				[NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
+                
+                [NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
 				[NSThread sleepForTimeInterval: 0.1];
 				
 				while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
@@ -1901,7 +1911,6 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				[[NSException exceptionWithName: @"DICOM Network Failure (query)" reason: reason userInfo:nil] raise];
 			}
 		}
-		
 		@catch (NSException *e)
 		{
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
@@ -1914,6 +1923,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
             NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
             
 			succeed = NO;
+            
+            [NSThread sleepForTimeInterval: 0.1];
 		}
 		
 		[wait end];
