@@ -221,13 +221,20 @@
 
 - (NSString*) studyName // Match DicomStudy
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_theDescription capitalizedString];
+        
     return _theDescription;
 }
 
-//- (NSString*) name
-//{
+- (NSString*) name  // Match DicomStudy
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_name capitalizedString];
+    
+    return _name;
 //    return [DicomStudy scrambleString: _name];
-//}
+}
 
 - (NSDate*) dateOfBirth // Match DicomStudy
 {

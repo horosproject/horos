@@ -247,10 +247,24 @@ static NSRecursiveLock *dbModifyLock = nil;
     return t;
 }
 
-//- (NSString*) name
-//{
-//    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
-//}
+- (NSString*) studyName
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [[self primitiveValueForKey: @"studyName"] capitalizedString];
+    
+    return [self primitiveValueForKey: @"studyName"];
+}
+
+
+- (NSString*) name
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [[self primitiveValueForKey: @"name"] capitalizedString];
+
+    return [self primitiveValueForKey: @"name"];
+    
+    //    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
+}
 
 - (BOOL) isDistant
 {

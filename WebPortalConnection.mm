@@ -85,7 +85,7 @@ static NSString* NotNil(NSString *s) {
 @interface WebPortalConnection ()
 
 @property(retain,readwrite) WebPortalResponse* response;
-@property(retain,readwrite) WebPortalSession* session;
+@property(retain,readwrite,nonatomic) WebPortalSession* session;
 @property(retain,readwrite) WebPortalUser* user;
 
 @end
