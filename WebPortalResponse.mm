@@ -340,7 +340,7 @@
 		NSString* evaldToken = [self evaluateToken:token withDictionary:dict context:context mustReevaluate:mustReevaluate];
 		
 		if ([part1 isEqualToString:@"ZWS"])
-			evaldToken = [[evaldToken componentsWithLength:1] componentsJoinedByString:[NSString stringWithFormat:@"%C",0x200b]];
+			evaldToken = [[evaldToken componentsWithLength:1] componentsJoinedByString:[NSString stringWithFormat:@"%C", (unsigned short)0x200b]];
 		
 		return [evaldToken xmlEscapedString];
 	}
