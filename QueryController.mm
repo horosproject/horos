@@ -276,6 +276,8 @@ extern "C"
 	{
         for( NSDictionary *server in serversList)
         {
+            [NSThread currentThread].status = [server valueForKey: @"Description"];
+            
             qm = [[QueryArrayController alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] distantServer: server];
             
             if( [[[NSUserDefaults standardUserDefaults] stringForKey: @"STRINGENCODING"] isEqualToString:@"ISO_IR 100"] == NO)

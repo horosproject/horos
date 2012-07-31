@@ -3475,7 +3475,7 @@ static NSConditionLock *threadLock = nil;
     int curSearchType = [[dict objectForKey: @"searchType"] intValue];
     NSString *curSearchString = [dict objectForKey: @"searchString"];
     
-    [NSThread currentThread].name = @"Search For Search Field Studies";
+    [NSThread currentThread].name = @"Search For Search Field...";
     
     if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
     {
@@ -3508,8 +3508,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                    [NSThread currentThread].name = NSLocalizedString( @"Search Field...", nil);
-                    [NSThread currentThread].status = curSearchString;
+                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search Field: %@", nil), curSearchString];
                     [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                     
                     @try
@@ -3642,7 +3641,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                    [NSThread currentThread].name = NSLocalizedString( @"Search time interval...", nil);
+                    [NSThread currentThread].name = NSLocalizedString( @"Search Time Interval...", nil);
                     [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                     
                     @try
@@ -3776,8 +3775,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                    [NSThread currentThread].name = NSLocalizedString( @"Search smart album...", nil);
-                    [NSThread currentThread].status = albumName;
+                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search Smart Album...", nil), albumName];
                     [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                     
                     @try
@@ -3884,8 +3882,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( [NSThread currentThread] == lastObjectInQueue)
                 {
-                    [NSThread currentThread].name = NSLocalizedString( @"Search history...", nil);
-                    [NSThread currentThread].status = studySelected.name;
+                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search History: %@", nil), studySelected.name];
                     [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                     
                     @try
