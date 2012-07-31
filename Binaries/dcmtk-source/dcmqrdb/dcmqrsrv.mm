@@ -432,8 +432,17 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         // or the remote peer closes the association
         while (cond.good() && (firstLoop || options_.keepDBHandleDuringAssociation_) )
         {
+            int timeout;
+            
+            if( firstLoop)
+                timeout = 5;
+            else
+                timeout = options_.dimse_timeout_;
+            
+            cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, timeout, &presID, &msg, NULL);
+            
             firstLoop = OFFalse;
-            cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, options_.dimse_timeout_, &presID, &msg, NULL);
+            
             /* did peer release, abort, or do we have a valid message ? */
             if (cond.good())
             {
