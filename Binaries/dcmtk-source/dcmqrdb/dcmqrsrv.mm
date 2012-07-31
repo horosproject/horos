@@ -495,24 +495,27 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 					break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 
-                    if (options_.verbose_) {
+                    if (options_.verbose_)
                         printf("dispatch: late C-CANCEL-RQ, ignoring\n");
-                    }
+                    unlockFile();
                     break;
 				
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
                     DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+                    unlockFile();
                     /* the condition will be returned, the caller will abort the association. */
                 }
             }
             else if ((cond == DUL_PEERREQUESTEDRELEASE)||(cond == DUL_PEERABORTEDASSOCIATION))
             {
+                unlockFile();
                 // association gone
             }
             else
             {
+                unlockFile();
                 // the condition will be returned, the caller will abort the assosiation.
             }
         }
