@@ -48,6 +48,7 @@
 #include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
 #include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
 #include "dcmetinf.h"
+#include "dul.h"
 #import "dcmqrdbq.h"
 
 #include <signal.h>
@@ -435,7 +436,12 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
             int timeout;
             
             if( firstLoop)
-                timeout = 5;
+            {
+                timeout = dcmConnectionTimeout.get();
+                
+                if( timeout <= 0)
+                    timeout = 5;
+            }
             else
                 timeout = options_.dimse_timeout_;
             
@@ -486,11 +492,13 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     else
                         writeStateProcess( "C-GET SCP...");
 					if( activateCGETSCP_)
+                        //* unlockFile(); is done in DCMTKDataHandlerCategory.mm
 						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
                     else
 					{
 						cond = DIMSE_BADCOMMANDTYPE;
 						DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
+                        unlockFile();
 					}
 					break;
                 case DIMSE_C_CANCEL_RQ:

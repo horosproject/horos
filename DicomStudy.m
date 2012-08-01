@@ -255,6 +255,29 @@ static NSRecursiveLock *dbModifyLock = nil;
     return [self primitiveValueForKey: @"studyName"];
 }
 
+- (NSString*) performingPhysician
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [[self primitiveValueForKey: @"performingPhysician"] capitalizedString];
+    
+    return [self primitiveValueForKey: @"performingPhysician"];
+}
+
+- (NSString*) referringPhysician
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [[self primitiveValueForKey: @"referringPhysician"] capitalizedString];
+    
+    return [self primitiveValueForKey: @"referringPhysician"];
+}
+
+- (NSString*) institutionName
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [[self primitiveValueForKey: @"institutionName"] capitalizedString];
+    
+    return [self primitiveValueForKey: @"institutionName"];
+}
 
 - (NSString*) name
 {

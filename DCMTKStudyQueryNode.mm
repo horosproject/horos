@@ -300,6 +300,9 @@
 
 - (NSString*) performingPhysician // Match DicomStudy
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_performingPhysician capitalizedString];
+    
     return _performingPhysician;
 }
 
@@ -340,11 +343,17 @@
 
 - (NSString*) referringPhysician
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_referringPhysician capitalizedString];
+    
     return _referringPhysician;
 }
 
 - (NSString*) institutionName // Match DicomStudy
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_institutionName capitalizedString];
+    
     return _institutionName;
 }
 

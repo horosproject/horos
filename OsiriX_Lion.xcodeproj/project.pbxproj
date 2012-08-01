@@ -930,7 +930,7 @@
 		AB0CA46205BE159500F52729 /* ColorTransferView.m in Sources */ = {isa = PBXBuildFile; fileRef = AB0CA46005BE159500F52729 /* ColorTransferView.m */; };
 		AB0DF7440FD79FDE00A7C57E /* dvpssp.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0DF7430FD79FDE00A7C57E /* dvpssp.h */; };
 		AB0DF7460FD79FEA00A7C57E /* dviface.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0DF7450FD79FEA00A7C57E /* dviface.h */; };
-		AB0F20AD06460F7F0075465D /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
+		AB0F20AD06460F7F0075465D /* Burner.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.icns */; };
 		AB10FA231129302A009EB238 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA221129302A009EB238 /* PopUpArrows.png */; };
 		AB10FA241129302A009EB238 /* PopUpArrows.png in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA221129302A009EB238 /* PopUpArrows.png */; };
 		AB10FA680B96C95500D74684 /* OsirixDownload.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB10FA670B96C95500D74684 /* OsirixDownload.icns */; };
@@ -7247,7 +7247,7 @@
 		CEC705A110A5C844008935EA /* QTExportVR.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB726C85063F3AD500787EF6 /* QTExportVR.icns */; };
 		CEC705A210A5C844008935EA /* SmallLogo.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB92A3A70642B32D0048DC15 /* SmallLogo.tif */; };
 		CEC705A310A5C844008935EA /* Stereo.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABF09BB80642FD220044FE6C /* Stereo.icns */; };
-		CEC705A410A5C844008935EA /* Burner.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.tif */; };
+		CEC705A410A5C844008935EA /* Burner.icns in Resources */ = {isa = PBXBuildFile; fileRef = AB0F20AB06460F7F0075465D /* Burner.icns */; };
 		CEC705A510A5C844008935EA /* Studies.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB73E1480649839300545980 /* Studies.tif */; };
 		CEC705A610A5C844008935EA /* iPod.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABE1E8AE0649F4150028E2E0 /* iPod.icns */; };
 		CEC705A710A5C844008935EA /* Album.tif in Resources */ = {isa = PBXBuildFile; fileRef = BF8DE5DA06507355005DB40E /* Album.tif */; };
@@ -9033,7 +9033,7 @@
 		AB0DF7430FD79FDE00A7C57E /* dvpssp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dvpssp.h; path = "Binaries/dcmtk-source/dcmpstat/dvpssp.h"; sourceTree = SOURCE_ROOT; };
 		AB0DF7450FD79FEA00A7C57E /* dviface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dviface.h; path = "Binaries/dcmtk-source/dcmpstat/dviface.h"; sourceTree = SOURCE_ROOT; };
 		AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		AB0F20AB06460F7F0075465D /* Burner.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Burner.tif; sourceTree = "<group>"; };
+		AB0F20AB06460F7F0075465D /* Burner.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Burner.icns; sourceTree = "<group>"; };
 		AB0F3A2C1046BD2B004129DD /* OsiriXAPI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OsiriXAPI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB10FA221129302A009EB238 /* PopUpArrows.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = PopUpArrows.png; path = nitrogen/Resources/PopUpArrows.png; sourceTree = SOURCE_ROOT; };
 		AB10FA670B96C95500D74684 /* OsirixDownload.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OsirixDownload.icns; sourceTree = "<group>"; };
@@ -16009,7 +16009,7 @@
 				7E54308107A05F7500500ABB /* burn_iris */,
 				7E54309007A05F7500500ABB /* burn_throb.tif */,
 				CEC171F70874839C0021C3FC /* BurnAnimation */,
-				AB0F20AB06460F7F0075465D /* Burner.tif */,
+				AB0F20AB06460F7F0075465D /* Burner.icns */,
 				7E2BE3D90715DBC50017898A /* cd.icns */,
 				7E2BE4180715E5040017898A /* CD.tif */,
 				59C447E01451705800D71580 /* Eject_gray.pdf */,
@@ -26444,7 +26444,7 @@
 				AB726C87063F3AD500787EF6 /* QTExportVR.icns in Resources */,
 				AB92A3A90642B32D0048DC15 /* SmallLogo.tif in Resources */,
 				ABF09BBA0642FD220044FE6C /* Stereo.icns in Resources */,
-				AB0F20AD06460F7F0075465D /* Burner.tif in Resources */,
+				AB0F20AD06460F7F0075465D /* Burner.icns in Resources */,
 				AB73E14A0649839300545980 /* Studies.tif in Resources */,
 				ABE1E8B00649F4150028E2E0 /* iPod.icns in Resources */,
 				BF8DE5E206507355005DB40E /* Album.tif in Resources */,
@@ -26900,7 +26900,7 @@
 				CEC705A110A5C844008935EA /* QTExportVR.icns in Resources */,
 				CEC705A210A5C844008935EA /* SmallLogo.tif in Resources */,
 				CEC705A310A5C844008935EA /* Stereo.icns in Resources */,
-				CEC705A410A5C844008935EA /* Burner.tif in Resources */,
+				CEC705A410A5C844008935EA /* Burner.icns in Resources */,
 				CEC705A510A5C844008935EA /* Studies.tif in Resources */,
 				CEC705A610A5C844008935EA /* iPod.icns in Resources */,
 				CEC705A710A5C844008935EA /* Album.tif in Resources */,

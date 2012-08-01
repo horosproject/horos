@@ -1706,7 +1706,7 @@ extern NSManagedObjectContext *staticContext;
 		context = 0L;
 		
 		// TO AVOID DEADLOCK
-		
+		// See DcmQueryRetrieveSCP::unlockFile dcmqrsrv.mm
 		BOOL fileExist = YES;
 		char dir[ 1024];
 		sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
