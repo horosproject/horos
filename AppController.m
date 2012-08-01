@@ -2658,7 +2658,7 @@ static BOOL initialized = NO;
                     processors = 1;
                 
 				NSLog(@"Number of processors: %d/%d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
-				
+				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
 				#ifdef NDEBUG
 				#else
 				NSLog( @"**** DEBUG MODE ****");
