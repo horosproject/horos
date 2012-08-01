@@ -1135,7 +1135,7 @@
     if( runBurnAnimation)
         return;
     
-	if( irisAnimationIndex > 13)
+	if( irisAnimationIndex > 17)
         irisAnimationIndex = 0;
     
     NSString *animation = [NSString stringWithFormat:@"burn_iris%02d.tif", irisAnimationIndex++];
