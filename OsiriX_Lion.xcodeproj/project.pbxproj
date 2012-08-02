@@ -808,7 +808,6 @@
 		A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */; };
 		A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */; };
 		A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */; };
-		A9B4119D0890423C00913770 /* osirix16x16.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tif */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
@@ -1068,7 +1067,6 @@
 		AB154F830627413600BD57AF /* SRView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F7F0627413600BD57AF /* SRView.h */; };
 		AB154F840627413600BD57AF /* SRController.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB154F800627413600BD57AF /* SRController.mm */; };
 		AB154F850627413600BD57AF /* SRController.h in Headers */ = {isa = PBXBuildFile; fileRef = AB154F810627413600BD57AF /* SRController.h */; };
-		AB17D1C90AF2137C00231B11 /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		AB1B31A10EB06AFA0061FA40 /* Jet.plist in Resources */ = {isa = PBXBuildFile; fileRef = AB1B31A00EB06AFA0061FA40 /* Jet.plist */; };
 		AB1CB35C0618A37E00CD966B /* MyPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1CB35A0618A37E00CD966B /* MyPoint.h */; };
 		AB1CB35D0618A37E00CD966B /* MyPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = AB1CB35B0618A37E00CD966B /* MyPoint.m */; };
@@ -1669,7 +1667,7 @@
 		ABBB64CA063587B200D9531F /* Preferences.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6498063587B200D9531F /* Preferences.icns */; };
 		ABBB64CB063587B200D9531F /* Presets.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6499063587B200D9531F /* Presets.tif */; };
 		ABBB64CC063587B200D9531F /* Prev.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649A063587B200D9531F /* Prev.tif */; };
-		ABBB64CD063587B200D9531F /* Print.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649B063587B200D9531F /* Print.icns */; };
+		ABBB64CD063587B200D9531F /* Print.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649B063587B200D9531F /* Print.tiff */; };
 		ABBB64CE063587B200D9531F /* QTExport.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649C063587B200D9531F /* QTExport.pdf */; };
 		ABBB64CF063587B200D9531F /* QueryRetrieve.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649D063587B200D9531F /* QueryRetrieve.pdf */; };
 		ABBB64D0063587B200D9531F /* Rectangle.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649E063587B200D9531F /* Rectangle.tif */; };
@@ -3484,7 +3482,6 @@
 		CE6915021316AC8600EE7317 /* PluginManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90202BB0B980CD60001A00B /* PluginManagerController.m */; };
 		CE69151B1316AD9800EE7317 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		CE69151C1316AD9900EE7317 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
-		CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CE6C77ED09739B3100F951C2 /* Rotate3DCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */; };
 		CE6C77EE09739B3100F951C2 /* Rotate3DCameraCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */; };
 		CE6CD06D0CFB0462001DF429 /* OsiriXToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */; };
@@ -7251,7 +7248,7 @@
 		CEC7058310A5C844008935EA /* Preferences.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6498063587B200D9531F /* Preferences.icns */; };
 		CEC7058410A5C844008935EA /* Presets.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6499063587B200D9531F /* Presets.tif */; };
 		CEC7058510A5C844008935EA /* Prev.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649A063587B200D9531F /* Prev.tif */; };
-		CEC7058610A5C844008935EA /* Print.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649B063587B200D9531F /* Print.icns */; };
+		CEC7058610A5C844008935EA /* Print.tiff in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649B063587B200D9531F /* Print.tiff */; };
 		CEC7058710A5C844008935EA /* QTExport.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649C063587B200D9531F /* QTExport.pdf */; };
 		CEC7058810A5C844008935EA /* QueryRetrieve.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649D063587B200D9531F /* QueryRetrieve.pdf */; };
 		CEC7058910A5C844008935EA /* Rectangle.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649E063587B200D9531F /* Rectangle.tif */; };
@@ -7322,7 +7319,6 @@
 		CEC705DD10A5C844008935EA /* Revert.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE4E00BE0830B72F008DAFAE /* Revert.tif */; };
 		CEC705E110A5C844008935EA /* 3DRotateCamera.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEC3B292086C87D900DFD83E /* 3DRotateCamera.tif */; };
 		CEC705F510A5C844008935EA /* FlyThru.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE1D97CE0883B65E005A3A22 /* FlyThru.pdf */; };
-		CEC705F610A5C844008935EA /* osirix16x16.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B4119C0890423C00913770 /* osirix16x16.tif */; };
 		CEC705F710A5C844008935EA /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		CEC705F810A5C844008935EA /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		CEC705F910A5C844008935EA /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
@@ -7336,7 +7332,6 @@
 		CEC7060110A5C844008935EA /* smalltrash.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEB1DA6608A3B1040058C303 /* smalltrash.tif */; };
 		CEC7060210A5C844008935EA /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
 		CEC7060310A5C844008935EA /* Point.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEFC048108D4B1AA00058461 /* Point.tif */; };
-		CEC7060410A5C844008935EA /* FixedIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */; };
 		CEC7060510A5C844008935EA /* verticalSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E54108FEB58E0060285A /* verticalSplitView.tif */; };
 		CEC7060610A5C844008935EA /* horizontalSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E54608FEB59B0060285A /* horizontalSplitView.tif */; };
 		CEC7060710A5C844008935EA /* turnSplitView.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9F6E54B08FEB5A70060285A /* turnSplitView.tif */; };
@@ -7399,7 +7394,6 @@
 		CEC7064A10A5C844008935EA /* SagSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F50AEE146900108895 /* SagSmall.tif */; };
 		CEC7064B10A5C844008935EA /* CorSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F60AEE146900108895 /* CorSmall.tif */; };
 		CEC7064C10A5C844008935EA /* AxialSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABD559F70AEE146900108895 /* AxialSmall.tif */; };
-		CEC7064E10A5C844008935EA /* SmallPrinter.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */; };
 		CEC7064F10A5C844008935EA /* away.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7E0AF2548C00DBEEA2 /* away.tif */; };
 		CEC7065010A5C844008935EA /* available.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABB36D7F0AF2548C00DBEEA2 /* available.tif */; };
 		CEC7065210A5C844008935EA /* SagSmallOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = AB7598280AEE62CE005EE3A9 /* SagSmallOpposite.tif */; };
@@ -8979,7 +8973,6 @@
 		A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportPages.icns; sourceTree = "<group>"; };
 		A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportRTF.icns; sourceTree = "<group>"; };
 		A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportWord.icns; sourceTree = "<group>"; };
-		A9B4119C0890423C00913770 /* osirix16x16.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = osirix16x16.tif; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tif; sourceTree = "<group>"; };
@@ -9151,7 +9144,6 @@
 		AB154F7F0627413600BD57AF /* SRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRView.h; sourceTree = "<group>"; };
 		AB154F800627413600BD57AF /* SRController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = SRController.mm; sourceTree = "<group>"; };
 		AB154F810627413600BD57AF /* SRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SRController.h; sourceTree = "<group>"; };
-		AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SmallPrinter.tif; sourceTree = "<group>"; };
 		AB1B31A00EB06AFA0061FA40 /* Jet.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Jet.plist; sourceTree = "<group>"; };
 		AB1CB35A0618A37E00CD966B /* MyPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyPoint.h; sourceTree = "<group>"; };
 		AB1CB35B0618A37E00CD966B /* MyPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyPoint.m; sourceTree = "<group>"; };
@@ -9354,7 +9346,7 @@
 		ABBB6498063587B200D9531F /* Preferences.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Preferences.icns; sourceTree = "<group>"; };
 		ABBB6499063587B200D9531F /* Presets.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Presets.tif; sourceTree = "<group>"; };
 		ABBB649A063587B200D9531F /* Prev.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Prev.tif; sourceTree = "<group>"; };
-		ABBB649B063587B200D9531F /* Print.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Print.icns; sourceTree = "<group>"; };
+		ABBB649B063587B200D9531F /* Print.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Print.tiff; sourceTree = "<group>"; };
 		ABBB649C063587B200D9531F /* QTExport.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QTExport.pdf; sourceTree = "<group>"; };
 		ABBB649D063587B200D9531F /* QueryRetrieve.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QueryRetrieve.pdf; sourceTree = "<group>"; };
 		ABBB649E063587B200D9531F /* Rectangle.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rectangle.tif; sourceTree = "<group>"; };
@@ -10509,7 +10501,6 @@
 		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
 		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
 		CE6693C60AF551210073D923 /* libxerces-c.27.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libxerces-c.27.dylib"; path = "AYDicomPrint/libxerces-c.27.dylib"; sourceTree = "<group>"; };
-		CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = FixedIP.tif; sourceTree = "<group>"; };
 		CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCursor.tif; path = Cursors/Rotate3DCursor.tif; sourceTree = "<group>"; };
 		CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Rotate3DCameraCursor.tif; path = Cursors/Rotate3DCameraCursor.tif; sourceTree = "<group>"; };
 		CE6CD06B0CFB0462001DF429 /* OsiriXToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OsiriXToolbar.h; sourceTree = "<group>"; };
@@ -16059,7 +16050,6 @@
 				A9EFC40915C6CBD6000D1179 /* Export.pdf */,
 				AB85C65B0BFADA9500C4B52E /* FileIcon.tif */,
 				AB95C0380A2B08ED00380C65 /* FileNotFound.tif */,
-				CE6B2E1F08DAFC6500872E84 /* FixedIP.tif */,
 				CE90D8C3095F5B48004FC7E2 /* FlipData.tif */,
 				BF1833CF09AD833D0046C295 /* FlipHorizontal.tif */,
 				BF1833D009AD833D0046C295 /* FlipVertical.tif */,
@@ -16114,7 +16104,6 @@
 				CEE619EE0912C73000C31D78 /* OrientationWidget.tif */,
 				A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */,
 				ABBB6495063587B200D9531F /* Osirix.icns */,
-				A9B4119C0890423C00913770 /* osirix16x16.tif */,
 				AB10FA670B96C95500D74684 /* OsirixDownload.icns */,
 				A97B73970CB380EF00E5348D /* osirixplugin.icns */,
 				CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */,
@@ -16132,7 +16121,7 @@
 				ABBB6498063587B200D9531F /* Preferences.icns */,
 				ABBB6499063587B200D9531F /* Presets.tif */,
 				ABBB649A063587B200D9531F /* Prev.tif */,
-				ABBB649B063587B200D9531F /* Print.icns */,
+				ABBB649B063587B200D9531F /* Print.tiff */,
 				CEBD8E5B0B675A75008FD772 /* Propagate.tif */,
 				CEBD8EF40B6761CC008FD772 /* PropagateOn.tif */,
 				A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */,
@@ -16181,7 +16170,6 @@
 				BF8449020A65F407000E9830 /* smallKey.tif */,
 				BFED84AA0A717E2500119174 /* smallKeyPlus.tif */,
 				AB92A3A70642B32D0048DC15 /* SmallLogo.tif */,
-				AB17D1C80AF2137C00231B11 /* SmallPrinter.tif */,
 				CEB1DA6608A3B1040058C303 /* smalltrash.tif */,
 				BF8DE5E006507355005DB40E /* SmartAlbum.tif */,
 				BF8DE5E106507355005DB40E /* SmartIcon.tif */,
@@ -26430,7 +26418,7 @@
 				ABBB64CA063587B200D9531F /* Preferences.icns in Resources */,
 				ABBB64CB063587B200D9531F /* Presets.tif in Resources */,
 				ABBB64CC063587B200D9531F /* Prev.tif in Resources */,
-				ABBB64CD063587B200D9531F /* Print.icns in Resources */,
+				ABBB64CD063587B200D9531F /* Print.tiff in Resources */,
 				ABBB64CE063587B200D9531F /* QTExport.pdf in Resources */,
 				ABBB64CF063587B200D9531F /* QueryRetrieve.pdf in Resources */,
 				ABBB64D0063587B200D9531F /* Rectangle.tif in Resources */,
@@ -26501,7 +26489,6 @@
 				CE4E00BF0830B72F008DAFAE /* Revert.tif in Resources */,
 				CEC3B293086C87D900DFD83E /* 3DRotateCamera.tif in Resources */,
 				CE1D97D00883B661005A3A22 /* FlyThru.pdf in Resources */,
-				A9B4119D0890423C00913770 /* osirix16x16.tif in Resources */,
 				A9B411B70890492F00913770 /* small_album.tif in Resources */,
 				A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */,
 				A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */,
@@ -26515,7 +26502,6 @@
 				CEB1DA6908A3B1040058C303 /* smalltrash.tif in Resources */,
 				CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */,
 				CEFC048208D4B1AA00058461 /* Point.tif in Resources */,
-				CE6B2E2008DAFC6500872E84 /* FixedIP.tif in Resources */,
 				A9F6E54208FEB58E0060285A /* verticalSplitView.tif in Resources */,
 				A9F6E54708FEB59B0060285A /* horizontalSplitView.tif in Resources */,
 				A9F6E54C08FEB5A70060285A /* turnSplitView.tif in Resources */,
@@ -26583,7 +26569,6 @@
 				ABD559FE0AEE146900108895 /* SagSmall.tif in Resources */,
 				ABD559FF0AEE146900108895 /* CorSmall.tif in Resources */,
 				ABD55A000AEE146900108895 /* AxialSmall.tif in Resources */,
-				AB17D1C90AF2137C00231B11 /* SmallPrinter.tif in Resources */,
 				ABB36D800AF2548C00DBEEA2 /* away.tif in Resources */,
 				ABB36D810AF2548C00DBEEA2 /* available.tif in Resources */,
 				AB3886AC0B2449CD00831F74 /* SagSmallOpposite.tif in Resources */,
@@ -26890,7 +26875,7 @@
 				CEC7058310A5C844008935EA /* Preferences.icns in Resources */,
 				CEC7058410A5C844008935EA /* Presets.tif in Resources */,
 				CEC7058510A5C844008935EA /* Prev.tif in Resources */,
-				CEC7058610A5C844008935EA /* Print.icns in Resources */,
+				CEC7058610A5C844008935EA /* Print.tiff in Resources */,
 				CEC7058710A5C844008935EA /* QTExport.pdf in Resources */,
 				CEC7058810A5C844008935EA /* QueryRetrieve.pdf in Resources */,
 				CEC7058910A5C844008935EA /* Rectangle.tif in Resources */,
@@ -26961,7 +26946,6 @@
 				CEC705DD10A5C844008935EA /* Revert.tif in Resources */,
 				CEC705E110A5C844008935EA /* 3DRotateCamera.tif in Resources */,
 				CEC705F510A5C844008935EA /* FlyThru.pdf in Resources */,
-				CEC705F610A5C844008935EA /* osirix16x16.tif in Resources */,
 				CEC705F710A5C844008935EA /* small_album.tif in Resources */,
 				CEC705F810A5C844008935EA /* small_smartAlbum.tif in Resources */,
 				CEC705F910A5C844008935EA /* small_sharedAlbum.tif in Resources */,
@@ -26975,7 +26959,6 @@
 				CEC7060110A5C844008935EA /* smalltrash.tif in Resources */,
 				CEC7060210A5C844008935EA /* SagOpposite.tif in Resources */,
 				CEC7060310A5C844008935EA /* Point.tif in Resources */,
-				CEC7060410A5C844008935EA /* FixedIP.tif in Resources */,
 				CEC7060510A5C844008935EA /* verticalSplitView.tif in Resources */,
 				CEC7060610A5C844008935EA /* horizontalSplitView.tif in Resources */,
 				CEC7060710A5C844008935EA /* turnSplitView.tif in Resources */,
@@ -27038,7 +27021,6 @@
 				CEC7064A10A5C844008935EA /* SagSmall.tif in Resources */,
 				CEC7064B10A5C844008935EA /* CorSmall.tif in Resources */,
 				CEC7064C10A5C844008935EA /* AxialSmall.tif in Resources */,
-				CEC7064E10A5C844008935EA /* SmallPrinter.tif in Resources */,
 				CEC7064F10A5C844008935EA /* away.tif in Resources */,
 				CEC7065010A5C844008935EA /* available.tif in Resources */,
 				CEC7065210A5C844008935EA /* SagSmallOpposite.tif in Resources */,

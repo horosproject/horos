@@ -105,7 +105,7 @@ extern BOOL FULL32BITPIPELINE;
 
 static	BOOL SYNCSERIES = NO, ViewBoundsDidChangeProtect = NO, recursiveCloseWindowsProtected = NO;
 
-static NSString* 	ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
+static NSString* ViewerToolbarIdentifier				= @"Viewer Toolbar Identifier";
 static NSString*	QTSaveToolbarItemIdentifier			= @"QTExport.pdf";
 static NSString*	iPhotoToolbarItemIdentifier			= @"iPhoto2";
 static NSString*	PlayToolbarItemIdentifier			= @"Play.pdf";
@@ -144,9 +144,9 @@ static NSString*	VRPanelToolbarItemIdentifier		= @"MIP.tif";
 static NSString*	ShutterToolbarItemIdentifier		= @"Shutter";
 static NSString*	PropagateSettingsToolbarItemIdentifier		= @"PropagateSettings";
 static NSString*	OrientationToolbarItemIdentifier	= @"Orientation";
-static NSString*    WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
-static NSString*    AnnotationsToolbarItemIdentifier   = @"Annotations";
-static NSString*	PrintToolbarItemIdentifier			= @"Print.icns";
+static NSString* WindowsTilingToolbarItemIdentifier   = @"WindowsTiling";
+static NSString* AnnotationsToolbarItemIdentifier   = @"Annotations";
+static NSString*	PrintToolbarItemIdentifier			= @"Print.tiff";
 static NSString*	LUT12BitToolbarItemIdentifier		= @"LUT12Bit";
 static NSString*	NavigatorToolbarItemIdentifier		= @"Navigator";
 static NSString*	ThreeDPositionToolbarItemIdentifier	= @"3DPosition";

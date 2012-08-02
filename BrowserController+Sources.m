@@ -997,7 +997,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 -(void)willDisplayCell:(PrettyCell*)cell
 {
 	cell.font = [NSFont boldSystemFontOfSize:11];
-	cell.image = [NSImage imageNamed:@"osirix16x16.tif"];
+	cell.image = [NSImage imageNamed:@"Osirix.icns"];
 }
 
 -(NSString*)description

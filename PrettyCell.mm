@@ -34,6 +34,7 @@
         
         [self setImagePosition:NSImageLeft];
         [self setAlignment:NSLeftTextAlignment];
+        [self setImageScaling: NSImageScaleProportionallyUpOrDown];
         [self setHighlightsBy:NSNoCellMask];
         [self setShowsStateBy:NSNoCellMask];
         [self setBordered:NO];

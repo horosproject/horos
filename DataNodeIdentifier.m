@@ -201,7 +201,7 @@
         return;
     }
     
-    cell.image = [NSImage imageNamed:@"FixedIP.tif"];
+    cell.image = [NSImage imageNamed:@"Network.tif"];
 }
 
 @end
