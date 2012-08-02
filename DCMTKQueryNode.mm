@@ -458,22 +458,42 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 - (NSString *)uid{
 	return _uid;
 }
-- (NSString *)theDescription{
-	return _theDescription;
+- (NSString *)theDescription
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_theDescription capitalizedString];
+        
+    return _theDescription;
 }
-- (NSString *)name{
+- (NSString *)name
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_name capitalizedString];
+    
 	return _name;
 }
 - (NSString *)accessionNumber{
 	return _accessionNumber;
 }
-- (NSString *)referringPhysician{
+- (NSString *)referringPhysician
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_referringPhysician capitalizedString];
+    
 	return _referringPhysician;
 }
-- (NSString *)performingPhysician{
+- (NSString *)performingPhysician
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_performingPhysician capitalizedString];
+    
 	return _performingPhysician;
 }
-- (NSString *)institutionName{
+- (NSString *)institutionName
+{
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"CapitalizedString"])
+        return [_institutionName capitalizedString];
+    
 	return _institutionName;
 }
 - (NSString *)comments{

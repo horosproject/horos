@@ -61,7 +61,9 @@ extern int delayedTileWindows;
 {
 	[AppController resizeWindowWithAnimation: [self window] newSize: rect];
     
-    if( showWindow)
+    BOOL wasAlreadyVisible = [[self window] isVisible];
+    
+    if( showWindow && wasAlreadyVisible)
         [[self window] orderFront:self];
 }
 
@@ -696,7 +698,7 @@ extern int delayedTileWindows;
 		
 		if( [tree count] > 0)
 		{
-			for( int i = [tree count]-1; i--; i >= 0)
+			for( int i = [tree count]-1; i >= 0; i--)
 				[table expandItem: [tree objectAtIndex: i]];
 		}
 		

@@ -4225,7 +4225,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSString *patName = @"";
                     
                     if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-                        patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                     
                     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
                     
@@ -4390,7 +4390,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                     NSString *patName = @"";
                     
                     if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
-                        patName = [NSString stringWithFormat: @"%@ %@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
+                        patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                     
                     if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
                     
