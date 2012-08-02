@@ -86,22 +86,12 @@
 
 -(NSImage*)shadowImage
 {
-	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[self TIFFRepresentation]];
-	NSUInteger w = bitmap.pixelsWide, h = bitmap.pixelsHigh;
-    
-	for (NSUInteger y = 0; y < h; ++y)
-		for (NSUInteger x = 0; x < w; ++x) {
-			NSColor* c = [bitmap colorAtX:x y:y];
-			c = [c shadowWithLevel:[c alphaComponent]/4];
-			[bitmap setColor:c atX:x y:y];
-		}
-	
 	NSImage* dark = [[NSImage alloc] initWithSize:[self size]];
 	[dark lockFocus];
-	[bitmap drawInRect: NSMakeRect( 0, 0, self.size.width, self.size.height)];
+	[self drawInRect: NSMakeRect( 0, 0, self.size.width, self.size.height) fromRect: NSMakeRect( 0, 0, self.size.width, self.size.height) operation: NSCompositeSourceOver fraction: 1.0];
+    [[NSColor colorWithCalibratedWhite: 0 alpha: 0.5] set];
+    NSRectFillUsingOperation( NSMakeRect( 0, 0, self.size.width, self.size.height), NSCompositeSourceAtop);
 	[dark unlockFocus];
-    
-    [bitmap release];
     
 	return [dark autorelease];
 }
