@@ -16,7 +16,11 @@
 
 @implementation NSDate (N2)
 
-+(id)dateWithYYYYMMDD:(NSString*)datestr HHMMss:(NSString*)timestr {
++(id)dateWithYYYYMMDD:(NSString*)datestr HHMMss:(NSString*)timestr
+{
+    if ( timestr.length < 8)
+        return nil;
+    
 	NSDateComponents* dc = [NSDateComponents new];
 	
 	dc.year = [[datestr substringWithRange:NSMakeRange(0,4)] integerValue];

@@ -330,7 +330,10 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                 OSStatus err;
                 UInt32 passwordLength = 0U;
                 void *passwordBytes = NULL;
-                err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
+                
+                @try
+                {
+                    err = SecKeychainFindInternetPassword(/*keychainOrArray*/ NULL,
                                                       (UInt32)[hostname length], [hostname UTF8String],
                                                       /*securityDomainLength*/ 0U, /*securityDomain*/ NULL,
                                                       (UInt32)[username length], [username UTF8String],
@@ -339,6 +342,11 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                                                       kSecProtocolTypeSMTP, kSecAuthenticationTypeAny,
                                                       &passwordLength, &passwordBytes,
                                                       /*itemRef*/ NULL);
+                }
+                @catch (NSException *e)
+                {
+                    NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                }
                 
                 if (err != noErr)
                 {

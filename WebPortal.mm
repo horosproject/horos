@@ -146,8 +146,8 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
     
-    
-    [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
+    if (NSUserDefaults.webPortalEnabled)
+        [CSMailMailClient mailClient]; //If authentication is required to read email password: ask it now !
 }
 #endif
 

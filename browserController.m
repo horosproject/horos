@@ -6129,7 +6129,7 @@ static NSConditionLock *threadLock = nil;
             if( [item isDistant])
             {
                 // Check to see if already in retrieving mode, if not download it
-                [self retrieveComparativeStudy: item select: NO open: NO];
+                [self retrieveComparativeStudy: item select: YES open: NO];
             }
             else
             {
