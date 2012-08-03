@@ -7411,7 +7411,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[self getOrientationText:string :vectors+3 :YES];
 	[self DrawCStringGL: string : fontListGL :size.size.width/2 :stringSize.height + 3 rightAlignment: NO useStringTexture: YES];
 	
-	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :12 + stringSize.height];
+	if( curDCM.laterality ) [self DrawNSStringGL: curDCM.laterality : fontListGL :size.size.width/2 :stringSize.height + stringSize.height];
 	
 	//Bottom
 	[self getOrientationText:string :vectors+3 :NO];
