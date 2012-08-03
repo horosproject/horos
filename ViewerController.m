@@ -4156,6 +4156,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 			i = 0;
 			for( id s in studiesArray)
 			{
+                if( [s isKindOfClass: [DicomStudy class]] && [[s valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+                     s = study;
+                     
                 if( [s isKindOfClass: [DicomStudy class]]) //Local Study DicomStudy
                 {
                     [seriesArray addObject: [[BrowserController currentBrowser] childrenArray: s]];
@@ -4192,6 +4195,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setTarget: self];
                 [cell setBordered: YES];
                 [cell setLineBreakMode: NSLineBreakByCharWrapping];
+                
+                if( [curStudy isKindOfClass: [DicomStudy class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+                    curStudy = study;
                 
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
