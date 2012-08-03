@@ -1011,40 +1011,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 @end
 
-/*@implementation BonjourDataNodeIdentifier
-
-@synthesize service = _service;
-
--(void)dealloc
-{
-	self.service = nil;
-	[super dealloc];
-}
-
--(void)willDisplayCell:(PrettyCell*)cell
-{
-	[super willDisplayCell:cell];
-	
-	NSImage* bonjour = [NSImage imageNamed:@"bonjour_whitebg.png"];
-	
-	NSImage* image = [[[NSImage alloc] initWithSize:cell.image.size] autorelease];
-	[image lockFocus];
-	[cell.image drawInRect:NSMakeRect(0,0,cell.image.size.width,cell.image.size.height) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
-	[bonjour drawInRect:NSMakeRect(1,1,14,14) fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1];
-	[image unlockFocus];
-	
-	cell.image = image;
-}
-
--(NSInteger)port
-{
-	NSInteger port;
-	[RemoteDicomDatabase address:self.location toHost:NULL port:&port];
-	return port;
-}
-
-@end*/
-
 
 @implementation MountedDatabaseNodeIdentifier
 
