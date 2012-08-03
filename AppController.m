@@ -3586,7 +3586,7 @@ static BOOL initialized = NO;
 	
 //	[self checkForOsirixMimeType];
 	
-//	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
+	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 	
 //	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
 
@@ -3599,7 +3599,7 @@ static BOOL initialized = NO;
 
 - (IBAction) updateViews:(id) sender
 {
-	NSArray				*winList = [NSApp windows];
+	NSArray *winList = [NSApp windows];
 	
 	for( id loopItem in winList)
 	{
