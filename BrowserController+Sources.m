@@ -874,17 +874,6 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     {
         [self _analyzeVolumeAtPath:[[notification.userInfo objectForKey: NSWorkspaceVolumeURLKey] path]];
     }
-	
-//	for (BrowserSource* bs in _browser.sources)
-//		if (bs.type == BrowserSourceTypeLocal && [bs.location hasPrefix:root]) {
-//			NSButton* button = [[[NSButton alloc] initWithFrame:NSMakeRect(0, 0, 16, 16)] autorelease];
-//			button.image = [NSImage imageNamed:@"iPodEjectOff.tif"];
-//			button.alternateImage = [NSImage imageNamed:@"iPodEjectOn.tif"];
-//			button.gradientType = NSGradientNone;
-//			button.bezelStyle = 0;
-//			bs.extraView = button;
-//		}
-			
 }
 
 
