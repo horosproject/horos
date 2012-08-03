@@ -72,6 +72,9 @@ typedef NSInteger CPRExportRotationSpan;
 	// To be able to use Cocoa bindings with toolbar...
 	IBOutlet NSView *tbLOD, *tbThickSlab, *tbWLWW, *tbTools, *tbShading, *tbMovie, *tbBlending, *tbSyncZoomLevel, *tbHighResolution;
 	
+    IBOutlet NSView *tbPathAssistant;
+    IBOutlet NSView *testView;
+    
 	NSToolbar *toolbar;
 	
 	IBOutlet NSMatrix *toolsMatrix;
@@ -87,7 +90,7 @@ typedef NSInteger CPRExportRotationSpan;
     CPRType cprType;
     ViewsPosition viewsPosition;
     
-    CPRVolumeData *cprVolumeData;
+    CPRVolumeData *cprVolumeData;   
     CPRCurvedPath *curvedPath;
     CPRDisplayInfo *displayInfo;
     N3Vector baseNormal; // this value will depend on which view gets clicked first, it will be used as the basis for deciding what normal to use for what angle
@@ -96,7 +99,9 @@ typedef NSInteger CPRExportRotationSpan;
     
     FlyAssistant * assistant;
     NSMutableArray * centerline;
-    BOOL assistantPathMode;
+    NSMutableArray * delationCost;
+    NSMutableArray * delHistory;
+    NSMutableArray * delNodes;
  	
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
@@ -196,7 +201,7 @@ typedef NSInteger CPRExportRotationSpan;
 @property (nonatomic) ViewsPosition viewsPosition;
 @property (nonatomic, readonly) CPRView *cprView;
 
-@property (nonatomic) BOOL assistantPathMode;
+//@property (nonatomic) BOOL assistantPathMode;3
 
 // export related properties
 @property (nonatomic, retain) NSString *exportSeriesName;
@@ -250,7 +255,9 @@ typedef NSInteger CPRExportRotationSpan;
 - (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
 - (void) setupToolbar;
-- (void) assistantOnAddNode:(NSNotification*) note;
+- (IBAction)removeNode:(id)sender;
+- (IBAction)undoLastNodeRemoval:(id)sender;
 - (IBAction)runFlyAssistant:(id)sender;
-- (IBAction)switchPathAssistantMode:(id)sender;
+- (float) costFunction:(NSUInteger)index;
+- (IBAction)openSimplifyPath:(id)sender;
 @end

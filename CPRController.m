@@ -58,7 +58,7 @@ static float deg2rad = M_PI / 180.0;
 @synthesize clippingRangeThickness, clippingRangeMode, mousePosition, mouseViewID, originalPix, wlwwMenuItems, LOD;
 @synthesize colorAxis1, colorAxis2, colorAxis3, displayMousePosition, movieRate, blendingPercentage, horizontalSplit1, horizontalSplit2, verticalSplit, lowLOD;
 @synthesize mprView1, mprView2, mprView3, curMovieIndex, maxMovieIndex, blendingMode, blendingModeAvailable, highResolutionMode;
-@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView, assistantPathMode;
+@synthesize curvedPath, displayInfo, curvedPathCreationMode, curvedPathColor, straightenedCPRAngle, cprType, cprView;//, assistantPathMode;
 
 // export related synthesize
 @synthesize exportSeriesName;
@@ -221,7 +221,6 @@ static float deg2rad = M_PI / 180.0;
 		for( int i = 0; i < [popupRoi numberOfItems]; i++)
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
 		
-        assistantPathMode = NO;
         int dim[3];
         DCMPix* firstObject = [pix objectAtIndex:0];
         dim[0] = [firstObject pwidth];
@@ -250,10 +249,9 @@ static float deg2rad = M_PI / 180.0;
         assistant = [[FlyAssistant alloc] initWithVolume:(float*)[volume bytes] WidthDimension:dim Spacing:spacing ResampleVoxelSize:resamplesize];
         [assistant setCenterlineResampleStepLength:3.0];
         centerline = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver: self
-                                                 selector: @selector(assistantOnAddNode:)
-                                                     name: OsirixNodeAdded2CurvePathNotification
-                                                   object: nil];
+        delationCost = [[NSMutableArray alloc] init];
+        delHistory = [[NSMutableArray alloc] init];
+        delNodes = [[NSMutableArray alloc] init];
         curvedPath = [[CPRCurvedPath alloc] init];
         displayInfo = [[CPRDisplayInfo alloc] init];
         
@@ -660,6 +658,9 @@ static float deg2rad = M_PI / 180.0;
     
     [assistant release];
     [centerline release];
+    [delationCost release];
+    [delHistory release];
+    [delNodes release];
 	
     [HR_PixList release];
     [HR_FileList release];
@@ -1045,7 +1046,7 @@ static float deg2rad = M_PI / 180.0;
 	}
 }
 
-- (void) assistantOnAddNode:(NSNotification*) note
+- (void) assistedCurvedPath:(NSNotification*) note
 {
     unsigned int nodeCount = [curvedPath.nodes count];
     if ( nodeCount > 1) {
@@ -1104,7 +1105,7 @@ static float deg2rad = M_PI / 180.0;
                     if(err!=ERROR_DISTTRANSNOTFINISH)
                         break;
                     
-                    for(unsigned int i=0;i<[centerline count];i++)
+                    for(unsigned int i=0;i<[centerline count] - 1;i++)
                     {
                         pt = [centerline objectAtIndex:i];
                         node.x = pt.x;
@@ -1133,10 +1134,20 @@ static float deg2rad = M_PI / 180.0;
         node.z = pt.z;
         [newCP addPatientNode:N3VectorApplyTransform(node, volumeData2PatientTransform)];
         
-        
-        
         self.curvedPath = newCP;
         
+        [delationCost removeAllObjects];
+        NSUInteger pathSize = [[curvedPath nodes] count];
+        for (NSUInteger i = 0 ; i < pathSize; ++i)
+        {
+            [delationCost addObject:[NSNumber numberWithFloat:[self costFunction:i]]];
+        }
+        
+        if (pathSize != [delationCost count]) {
+            NSLog(@"Trouble.");
+        } else {
+            NSLog(@"No trouble.");
+        }
         mprView1.curvedPath = curvedPath;
         mprView2.curvedPath = curvedPath;
         mprView3.curvedPath = curvedPath;
@@ -1144,8 +1155,6 @@ static float deg2rad = M_PI / 180.0;
         topTransverseView.curvedPath = curvedPath;
         middleTransverseView.curvedPath = curvedPath;
         bottomTransverseView.curvedPath = curvedPath;
-        
-        
         
         [waiting close];
         [waiting release];
@@ -3738,7 +3747,7 @@ static float deg2rad = M_PI / 180.0;
 //	{
 //		[toolbarItem setLabel: NSLocalizedString(@"Movie Export",nil)];
 //		[toolbarItem setPaletteLabel:NSLocalizedString(@"Movie Export",nil)];
-//		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.pdf"]];
+//		[toolbarItem setImage: [NSImage imageNamed: @"QTExport.icns"]];
 //		[toolbarItem setTarget: self];
 //		[toolbarItem setAction: @selector( exportQuicktime:)];
 //    }
@@ -3774,6 +3783,15 @@ static float deg2rad = M_PI / 180.0;
 		
 		[toolbarItem setView: tbTools];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbTools frame]), NSHeight([tbTools frame]))];
+    }
+	else if ([itemIdent isEqualToString: @"tbPathAssistant"])
+	{
+		[toolbarItem setLabel: NSLocalizedString(@"Path Assistant",nil)];
+		[toolbarItem setPaletteLabel:NSLocalizedString( @"Path Assistant",nil)];
+		[toolbarItem setToolTip:NSLocalizedString(@"Automatically finds a path between two points", nil)];
+		
+		[toolbarItem setView: tbPathAssistant];
+		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbPathAssistant frame]), NSHeight([tbPathAssistant frame]))];
     }
     else if ([itemIdent isEqualToString: @"tbHighRes"])
 	{
@@ -3853,21 +3871,6 @@ static float deg2rad = M_PI / 180.0;
 		[toolbarItem setView: tbSyncZoomLevel];
 		[toolbarItem setMinSize: NSMakeSize(NSWidth([tbSyncZoomLevel frame]), NSHeight([tbSyncZoomLevel frame]))];
     }
-    // bd : assistant
-	else if ([itemIdent isEqualToString:@"PathAssistant"])
-	{
-		// Set up the standard properties 
-		[toolbarItem setLabel:NSLocalizedString(@"Path Assistant", nil)];
-		[toolbarItem setPaletteLabel:NSLocalizedString(@"Path Assistant", nil)];
-		[toolbarItem setToolTip:NSLocalizedString(@"Automatically finds a path between two points", nil)];
-		
-		// Use a custom view, a text field, for the search item 
-		[toolbarItem setImage:[NSImage imageNamed:@"PathAssistant"]];
-		// target is not set, it will be the first responder
-		[toolbarItem setTarget:self];
-		[toolbarItem setAction:@selector(runFlyAssistant:)];
-    }
-    // \bd assistant
 	else
 	{
 		[toolbarItem release];
@@ -3879,7 +3882,7 @@ static float deg2rad = M_PI / 180.0;
 
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
 {
-    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+    return [NSArray arrayWithObjects: @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"testDelNode", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", NSToolbarFlexibleSpaceItemIdentifier, @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
@@ -3888,7 +3891,7 @@ static float deg2rad = M_PI / 180.0;
             NSToolbarFlexibleSpaceItemIdentifier,
             NSToolbarSpaceItemIdentifier,
             NSToolbarSeparatorItemIdentifier,
-            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", @"PathAssistant", nil];
+            @"tbTools", @"tbWLWW", @"tbStraightenedCPRAngle", @"tbCPRType", @"tbHighRes", @"tbPathAssistant", @"tbCPRPathMode", @"tbViewsPosition", @"tbThickSlab", @"Reset.pdf", @"Export.icns", @"curvedPath.icns", @"BestRendering.pdf", @"AxisColors", @"AxisShowHide", @"CPRAxisShowHide", @"MousePositionShowHide", @"syncZoomLevel", nil];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
@@ -4532,6 +4535,116 @@ static float deg2rad = M_PI / 180.0;
     }
 }
 
+- (float) costFunction:(NSUInteger)index
+{
+    float cost;
+    assert(index >= 0);
+    assert(index < [[curvedPath nodes] count]);
+    NSUInteger n = [[curvedPath nodes] count];
+    if (index == 0 || index == [[curvedPath nodes] count] - 1)
+    {
+        cost = MAXFLOAT;
+//        N3Vector next = [[[curvedPath nodes] objectAtIndex:index+1] N3VectorValue];
+//        cost = (cur.x - next.x) * (cur.x - next.x) + (cur.y - next.y) * (cur.y - next.y) + (cur.z - next.z) * (cur.z - next.z);
+//    }
+//    else if (index == [[curvedPath nodes] count] - 1)
+//    {
+//        N3Vector prev = [[[curvedPath nodes] objectAtIndex:index-1] N3VectorValue];
+//        cost = (cur.x - prev.x) * (cur.x - prev.x) + (cur.y - prev.y) * (cur.y - prev.y) + (cur.z - prev.z) * (cur.z - prev.z);
+    }
+    else
+    {
+        N3Vector next = [[[curvedPath nodes] objectAtIndex:index+1] N3VectorValue];
+        N3Vector cur  = [[[curvedPath nodes] objectAtIndex:index  ] N3VectorValue];
+        N3Vector prev = [[[curvedPath nodes] objectAtIndex:index-1] N3VectorValue];
+        cost = (cur.x - next.x) * (cur.x - next.x) + (cur.y - next.y) * (cur.y - next.y) + (cur.z - next.z) * (cur.z - next.z)
+             + (cur.x - prev.x) * (cur.x - prev.x) + (cur.y - prev.y) * (cur.y - prev.y) + (cur.z - prev.z) * (cur.z - prev.z);
+    }
+    
+    return cost;
+}
+
+- (IBAction)removeNode:(id)sender
+{
+    NSUInteger delCount = [delationCost count];
+    
+    if (delCount > 3) // prevents the removal of too many points: CPR view is shown with at least 3 points.
+    {
+        NSUInteger index;
+        float cost = MAXFLOAT;
+        // Find the index of the node that lowers the delation cost
+        for (NSUInteger i = 0; i < delCount; ++i)
+        {
+            if (cost > [[delationCost objectAtIndex:i] floatValue])
+            {
+                index = i;
+                cost = [[delationCost objectAtIndex:i] floatValue];
+            }
+        }
+        
+        // Remove the node
+        N3Vector node = [[[curvedPath nodes] objectAtIndex:index] N3VectorValue];
+        [self.curvedPath removeNodeAtIndex:index];
+        [delationCost removeObjectAtIndex:index];
+        [delHistory addObject:[NSNumber numberWithUnsignedInteger:index]];
+        [delNodes addObject:[NSValue valueWithN3Vector:node]];
+        
+        // Update the cost list
+        if (index > 0)
+        {
+            [delationCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
+        }
+        
+        if (index < delCount - 1)
+        {
+            [delationCost replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:[self costFunction:index]]];
+        }
+        
+        // Update the curved path on all views
+        mprView1.curvedPath = curvedPath;
+        mprView2.curvedPath = curvedPath;
+        mprView3.curvedPath = curvedPath;
+        cprView.curvedPath = curvedPath;
+        topTransverseView.curvedPath = curvedPath;
+        middleTransverseView.curvedPath = curvedPath;
+        bottomTransverseView.curvedPath = curvedPath;
+    }
+}
+
+- (IBAction)undoLastNodeRemoval:(id)sender
+{
+    if ([delHistory count] > 0)
+    {
+        NSUInteger index = [[delHistory lastObject] unsignedIntegerValue];
+        [delHistory removeLastObject];
+        
+        [curvedPath insertPatientNode:[[delNodes lastObject] N3VectorValue] atIndex:index];
+        [delNodes removeLastObject];
+        // Update the cost list
+        // the index in delHistory and delationCost do not include first and last two indexes of centerline (can't remoce first and last points)
+        [delationCost insertObject:[NSNumber numberWithFloat:[self costFunction:index]] atIndex:index];
+        
+        if (index > 0)
+        {
+            [delationCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
+        }
+        
+        if (index < [delationCost count] - 1)
+        {
+            [delationCost replaceObjectAtIndex:index+1 withObject:[NSNumber numberWithFloat:[self costFunction:index+1]]];
+        }
+        
+        // Update the curved path on all views
+        mprView1.curvedPath = curvedPath;
+        mprView2.curvedPath = curvedPath;
+        mprView3.curvedPath = curvedPath;
+        cprView.curvedPath = curvedPath;
+        topTransverseView.curvedPath = curvedPath;
+        middleTransverseView.curvedPath = curvedPath;
+        bottomTransverseView.curvedPath = curvedPath;
+    }
+}
+
 #pragma mark CPRViewDelegate Methods
 
 - (NSMutableArray *)_delegateCurveViewDebugging
@@ -4736,31 +4849,27 @@ static float deg2rad = M_PI / 180.0;
 - (IBAction)runFlyAssistant:(id)sender;
 {
     if ([curvedPath.nodes count] > 1) {
-        [self assistantOnAddNode:nil];
-        mprView1.curvedPath = curvedPath;
-        mprView2.curvedPath = curvedPath;
-        mprView3.curvedPath = curvedPath;
-        cprView.curvedPath = curvedPath;
-        topTransverseView.curvedPath = curvedPath;
-        middleTransverseView.curvedPath = curvedPath;
-        bottomTransverseView.curvedPath = curvedPath;    
+        [self assistedCurvedPath:nil];
     }
     else
          NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant can not find a path with at least two points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 }
 
 
-- (IBAction)switchPathAssistantMode:(id)sender;
-{
-    assistantPathMode = !assistantPathMode;
-    mprView1.pathAssistantMode = assistantPathMode;
-    mprView2.pathAssistantMode = assistantPathMode;
-    mprView3.pathAssistantMode = assistantPathMode;
-    if (assistantPathMode) {
-        NSLog(@"Path Assistant enabled.");
-	}
-    else
-        NSLog(@"Path Assistant disabled.");
+//- (IBAction)switchPathAssistantMode:(id)sender;
+//{
+//    assistantPathMode = !assistantPathMode;
+//    mprView1.pathAssistantMode = assistantPathMode;
+//    mprView2.pathAssistantMode = assistantPathMode;
+//    mprView3.pathAssistantMode = assistantPathMode;
+//    if (assistantPathMode) {
+//        NSLog(@"Path Assistant enabled.");
+//	}
+//    else
+//        NSLog(@"Path Assistant disabled.");
+//}
+
+- (IBAction)openSimplifyPath:(id)sender {
 }
 
 - (void)CPRViewDidEditAssistedCurvedPath:(id)CPRMPRDCMView
@@ -4781,6 +4890,5 @@ static float deg2rad = M_PI / 180.0;
     middleTransverseView.curvedPath = curvedPath;
     bottomTransverseView.curvedPath = curvedPath;
 }
-
 
 @end

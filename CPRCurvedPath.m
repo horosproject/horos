@@ -252,6 +252,29 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
     }
 }
 
+- (void)insertPatientNode:(N3Vector)node atIndex:(NSUInteger)index // adds the point to z = 0 in the arbitrary coordinate space to a given index
+{
+    assert(index >= 0);
+    if ([_nodes count] && N3VectorDistance([[_nodes lastObject] N3VectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
+        NSLog(@"Warning, CPRCurvedPath trying to add a node too close to the last node");
+        return; // don't bother adding the point if it is already the last point
+    }
+    
+    assert(N3VectorIsZero(node) == false);
+    
+    if (index < [_nodes count]) {
+        [_nodes insertObject:[NSValue valueWithN3Vector:node] atIndex:index];
+    } else {
+        [_nodes addObject:[NSValue valueWithN3Vector:node]];
+    }
+    
+    if ([_nodes count] >= 2) {
+        self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
+    } else {
+        self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
+    }
+}
+
 - (void)addPatientNode:(N3Vector)node
 {
     if ([_nodes count] && N3VectorDistance([[_nodes lastObject] N3VectorValue], node) < _CPRCurvedPathNodeSpacingThreshold) {
@@ -310,18 +333,14 @@ static CPRCurvedPathControlToken _controlTokenForElement(NSInteger element)
 
 - (void)removeNodeAtIndex:(NSInteger)index
 {
-    if (index >= 0 && index < [_nodes count]) {
-        [_nodes removeObjectAtIndex:index];
-        
-        if ([_nodes count] >= 2) {
-            self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
-        } else {
-            self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
-        }
-    }
-    else
-    {
-        NSLog(@"Invalid index: %d", index);
+    assert(index >= 0);
+    assert(index < [_nodes count]);
+    [_nodes removeObjectAtIndex:index];
+    
+    if ([_nodes count] >= 2) {
+        self.bezierPath = [[[N3MutableBezierPath alloc] initWithNodeArray:_nodes style:N3BezierNodeOpenEndsStyle] autorelease];
+    } else {
+        self.bezierPath = [[[N3MutableBezierPath alloc] init] autorelease];
     }
 }
 
