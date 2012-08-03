@@ -280,7 +280,7 @@
                 {
                     [writeVolumePath release];
                     writeVolumePath = nil;
-                    if( selectedUSB != NSNotFound)
+                    if( selectedUSB != NSNotFound && selectedUSB < [self volumes].count)
                         writeVolumePath = [[[self volumes] objectAtIndex: selectedUSB] retain];
                     
                     if( writeVolumePath == nil)
