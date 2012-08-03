@@ -3586,7 +3586,7 @@ static BOOL initialized = NO;
 	
 //	[self checkForOsirixMimeType];
 	
-	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
+//	*(long*)0 = 0xDEADBEEF;	// Test for ILCrashReporter
 	
 //	[html2pdf pdfFromURL: @"http://zimbra.latour.ch"];
 
