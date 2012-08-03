@@ -11072,12 +11072,15 @@ static BOOL needToRezoom;
 					
 					loadList = nil;
 					
-					NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
-					
-					if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine onlyImages: YES];
-					if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile onlyImages: YES];
-					
-					if( loadList) [toOpenArray addObject: loadList];
+                    if( matrixViewArray.count > [cell tag])
+                    {
+                        NSManagedObject*  curFile = [matrixViewArray objectAtIndex: [cell tag]];
+                        
+                        if( [[curFile valueForKey:@"type"] isEqualToString: @"Image"]) loadList = [self childrenArray: selectedLine onlyImages: YES];
+                        if( [[curFile valueForKey:@"type"] isEqualToString: @"Series"]) loadList = [self childrenArray: curFile onlyImages: YES];
+                        
+                        if( loadList) [toOpenArray addObject: loadList];
+                    }
 				}
 			}
 			
