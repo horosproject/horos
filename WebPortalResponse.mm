@@ -460,14 +460,19 @@
 	[super dealloc];
 }
 
--(NSObject*)valueForKey:(NSString*)key context:(id)context {
-	for (WebPortalProxyObjectTransformer* t in transformers)
-		@try {
+-(NSObject*)valueForKey:(NSString*)key context:(id)context
+{
+    static NSString *WebPortalProxyLock = @"WebPortalProxyLock";
+    
+    @synchronized( WebPortalProxyLock)
+    {
+        for (WebPortalProxyObjectTransformer* t in transformers)
+            @try {
 			id r = [t valueForKey:key object:object context:context];
 			if (r) return r;
-		} @catch (NSException * e) {
-		}
-	
+            } @catch (NSException * e) {
+            }
+	}
 	return [object valueForKey:key];
 }
 
@@ -548,6 +553,7 @@
 		return [NSNumber numberWithBool: (!wpc.user || wpc.user.downloadZIP.boolValue) && !wpc.requestIsIOS];
 	
 	if ([key isEqual:@"proposeShare"])
+    {
 		if (!wpc.user || wpc.user.shareStudyWithUser.boolValue) {
 			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 			req.entity = [wpc.portal.database entityForName:@"User"];
@@ -555,7 +561,7 @@
 			return [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
 		} else
 			return [NSNumber numberWithBool:NO];
-	
+	}
 	if ([key hasPrefix:@"getParameters"] || [key hasPrefix:@"allParameters"]) {
 		NSString* rest = [key substringFromIndex:13];
 		if (rest.length && [rest characterAtIndex:0] == '(' && [rest characterAtIndex:rest.length-1] == ')') {
