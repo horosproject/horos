@@ -1113,15 +1113,11 @@ Z2h0IEFwcGxlLCBJbmMuLCAyMDA5AA</bytes>
 							<string key="NSContents"/>
 							<reference key="NSSupport" ref="24"/>
 							<reference key="NSControlView" ref="480667006"/>
-							<int key="NSButtonFlags">-926662401</int>
+							<int key="NSButtonFlags">918831359</int>
 							<int key="NSButtonFlags2">66</int>
 							<object class="NSCustomResource" key="NSNormalImage">
 								<string key="NSClassName">NSImage</string>
 								<string key="NSResourceName">Autofill</string>
-							</object>
-							<object class="NSCustomResource" key="NSAlternateImage">
-								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">AutofillPressed</string>
 							</object>
 							<string key="NSAlternateContents"/>
 							<string key="NSKeyEquivalent"/>
@@ -2642,8 +2638,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="Autofill">{256, 256}</string>
-			<string key="AutofillPressed">{28, 25}</string>
+			<string key="Autofill">{128, 128}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSRadioButton">{16, 15}</string>
