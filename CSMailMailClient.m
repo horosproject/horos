@@ -346,6 +346,8 @@ void QuitAndSleep(NSString* bundleIdentifier, float seconds)
                 @catch (NSException *e)
                 {
                     NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                    
+                    // tccutil reset AddressBook
                 }
                 
                 if (err != noErr)

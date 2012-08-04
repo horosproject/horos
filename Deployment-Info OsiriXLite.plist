@@ -247,5 +247,7 @@
 	</array>
 	<key>OSAScriptingDefinition</key>
 	<string>OsiriX.sdef</string>
+	<key>New item</key>
+	<string>Your email account will be used to AutoFill the contact information in the crash reporter.</string>
 </dict>
 </plist>

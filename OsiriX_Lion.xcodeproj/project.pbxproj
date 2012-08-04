@@ -3457,7 +3457,6 @@
 		CE5EABCE0935E702006D85DD /* HotMetal.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC30935E702006D85DD /* HotMetal.plist */; };
 		CE5EABCF0935E702006D85DD /* HotGreen.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE5EABC40935E702006D85DD /* HotGreen.plist */; };
 		CE5F9D740AE813A40042280F /* localizedTemplatesPages in Resources */ = {isa = PBXBuildFile; fileRef = CE5F9D730AE813A40042280F /* localizedTemplatesPages */; };
-		CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CE65D9F115C4843300E9D94C /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65D9F015C4843300E9D94C /* DiskArbitration.framework */; };
 		CE65D9F215C4843300E9D94C /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE65D9F015C4843300E9D94C /* DiskArbitration.framework */; };
 		CE6692DA0AF545F90073D923 /* printView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE6692D80AF545F90073D923 /* printView.h */; };
@@ -3482,7 +3481,6 @@
 		CE74456A06DBA4CB0034D05E /* ITK.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE74456806DBA4CB0034D05E /* ITK.mm */; settings = {COMPILER_FLAGS = "-I ./ITK180 -I ./ITK180/Code -I ./ITK180/Code/Algorithms -I ./ITK180/Code/BasicFilters -I ./ITK180/Code/Common -I ./ITK180/Code/Numerics -I ./ITK180/Code/IO -I ./ITK180/Code/Numerics/FEM -I ./ITK180/Code/Numerics/Statistics -I ./ITK180/Code/SpatialObject -I ./ITK180/Code/Utilities/MetaIO -I ./ITK180/Code/Utilities/expat -I ./ITK180/Code/Utilities/NrrdIO -I ./ITK180/Code/Utilities/DICOMParser -I ./ITK180/Utilities -I ./ITK180/Utilities/vxl/vcl -I ./ITK180/Utilities/vxl/core"; }; };
 		CE74824206C9701200FFA74C /* trash.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE74824006C9701200FFA74C /* trash.icns */; };
 		CE74DEB008CCE0C1005D12A7 /* SagOpposite.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */; };
-		CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A17105D4DE200CE6AAF /* AddressBook.framework */; };
 		CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A18105D4DE200CE6AAF /* Security.framework */; };
 		CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		CE79D9890FD84C350043DD73 /* DCMAbstractSyntaxUID.m in Sources */ = {isa = PBXBuildFile; fileRef = CE79D9870FD84C350043DD73 /* DCMAbstractSyntaxUID.m */; };
@@ -7290,7 +7288,6 @@
 		CEC705C310A5C844008935EA /* StartupDisk.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE3FD0715DC0D0017898A /* StartupDisk.tif */; };
 		CEC705C410A5C844008935EA /* CD.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7E2BE4180715E5040017898A /* CD.tif */; };
 		CEC705C510A5C844008935EA /* iPhoto.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE99E88E073AB4C500725ABC /* iPhoto.icns */; };
-		CEC705C610A5C844008935EA /* iPhotoSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE646B150751D8D9002962B7 /* iPhotoSmall.tif */; };
 		CEC705C710A5C844008935EA /* Empty.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE49E2C50760B93500444203 /* Empty.tif */; };
 		CEC705C810A5C844008935EA /* VR Muscles-Bones.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE1606620769EFE60036CAD3 /* VR Muscles-Bones.plist */; };
 		CEC705C910A5C844008935EA /* Sync.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CE522648077C48D900EED851 /* Sync.pdf */; };
@@ -7760,7 +7757,6 @@
 		CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
 		CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9F09B681F500545F5E /* libxml2.dylib */; };
 		CEC709D410A5C844008935EA /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3AA009B681F500545F5E /* libz.dylib */; };
-		CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A17105D4DE200CE6AAF /* AddressBook.framework */; };
 		CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A18105D4DE200CE6AAF /* Security.framework */; };
 		CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE790A19105D4DE200CE6AAF /* WebKit.framework */; };
 		CEC7FC6E10A5C844008935EA /* MyOutlineView.h in Headers */ = {isa = PBXBuildFile; fileRef = AB0813D6057C698900A72813 /* MyOutlineView.h */; };
@@ -10438,7 +10434,6 @@
 		CE5EABC30935E702006D85DD /* HotMetal.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = HotMetal.plist; sourceTree = "<group>"; };
 		CE5EABC40935E702006D85DD /* HotGreen.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = HotGreen.plist; sourceTree = "<group>"; };
 		CE5F9D730AE813A40042280F /* localizedTemplatesPages */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = localizedTemplatesPages; path = Binaries/localizedTemplatesPages; sourceTree = "<group>"; };
-		CE646B150751D8D9002962B7 /* iPhotoSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = iPhotoSmall.tif; path = Binaries/Icons/iPhotoSmall.tif; sourceTree = SOURCE_ROOT; };
 		CE65D9F015C4843300E9D94C /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = ../../../../System/Library/Frameworks/DiskArbitration.framework; sourceTree = "<group>"; };
 		CE6692D80AF545F90073D923 /* printView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = printView.h; sourceTree = "<group>"; };
 		CE6692D90AF545F90073D923 /* printView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = printView.m; sourceTree = "<group>"; };
@@ -10456,7 +10451,6 @@
 		CE74456806DBA4CB0034D05E /* ITK.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ITK.mm; sourceTree = "<group>"; };
 		CE74824006C9701200FFA74C /* trash.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trash.icns; sourceTree = "<group>"; };
 		CE74DEAF08CCE0C1005D12A7 /* SagOpposite.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SagOpposite.tif; sourceTree = "<group>"; };
-		CE790A17105D4DE200CE6AAF /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		CE790A18105D4DE200CE6AAF /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		CE790A19105D4DE200CE6AAF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		CE79D9860FD84C350043DD73 /* DCMAbstractSyntaxUID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMAbstractSyntaxUID.h; sourceTree = "<group>"; };
@@ -14171,7 +14165,6 @@
 				CE586CC40C74B75D00DB7D5A /* libdcmprintscu.dylib in Frameworks */,
 				ABE881450FC1444D009F5C80 /* ILCrashReporter.framework in Frameworks */,
 				CE8D057E0FD8505000165DDE /* OsiriX.framework in Frameworks */,
-				CE790A1A105D4DE200CE6AAF /* AddressBook.framework in Frameworks */,
 				CE790A1B105D4DE200CE6AAF /* Security.framework in Frameworks */,
 				CE790A1C105D4DE200CE6AAF /* WebKit.framework in Frameworks */,
 				8406956310B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
@@ -14360,7 +14353,6 @@
 				CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */,
 				CEC709D310A5C844008935EA /* libxml2.dylib in Frameworks */,
 				CEC709D410A5C844008935EA /* libz.dylib in Frameworks */,
-				CEC70A0910A5C844008935EA /* AddressBook.framework in Frameworks */,
 				CEC70A0A10A5C844008935EA /* Security.framework in Frameworks */,
 				CEC70A0B10A5C844008935EA /* WebKit.framework in Frameworks */,
 				8406956410B6800E00C37AD0 /* SystemConfiguration.framework in Frameworks */,
@@ -14431,7 +14423,6 @@
 			isa = PBXGroup;
 			children = (
 				AB5E1A300595697700C48BEB /* Accelerate.framework */,
-				CE790A17105D4DE200CE6AAF /* AddressBook.framework */,
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
@@ -15990,7 +15981,6 @@
 				CE2BFE56153B177C00037546 /* iPad.png */,
 				CE03A3CB0EA2AE0300951EF4 /* iPhone.tif */,
 				CE99E88E073AB4C500725ABC /* iPhoto.icns */,
-				CE646B150751D8D9002962B7 /* iPhotoSmall.tif */,
 				ABE1E8AE0649F4150028E2E0 /* iPod.icns */,
 				CEDEF7D50D020E9100CADB15 /* JPEGSmall.tif */,
 				AB9E05460B30107A00661F7E /* key.png */,
@@ -26386,7 +26376,6 @@
 				7E2BE3FE0715DC0D0017898A /* StartupDisk.tif in Resources */,
 				7E2BE4190715E5040017898A /* CD.tif in Resources */,
 				CE99E890073AB4C500725ABC /* iPhoto.icns in Resources */,
-				CE646B1B0751D8D9002962B7 /* iPhotoSmall.tif in Resources */,
 				CE49E2CA0760B93500444203 /* Empty.tif in Resources */,
 				CE16066E0769EFE60036CAD3 /* VR Muscles-Bones.plist in Resources */,
 				CE52264F077C48D900EED851 /* Sync.pdf in Resources */,
@@ -26821,7 +26810,6 @@
 				CEC705C310A5C844008935EA /* StartupDisk.tif in Resources */,
 				CEC705C410A5C844008935EA /* CD.tif in Resources */,
 				CEC705C510A5C844008935EA /* iPhoto.icns in Resources */,
-				CEC705C610A5C844008935EA /* iPhotoSmall.tif in Resources */,
 				CEC705C710A5C844008935EA /* Empty.tif in Resources */,
 				CEC705C810A5C844008935EA /* VR Muscles-Bones.plist in Resources */,
 				CEC705C910A5C844008935EA /* Sync.pdf in Resources */,

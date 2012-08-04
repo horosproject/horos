@@ -253,5 +253,7 @@
 	</array>
 	<key>OSAScriptingDefinition</key>
 	<string>OsiriX.sdef</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Your email account will be used for the built-in Web Server to send email, and to AutoFill the contact information in the crash reporter. If you don&apos;t allow access, some functions will be disabled.</string>
 </dict>
 </plist>
