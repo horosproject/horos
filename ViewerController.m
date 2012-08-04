@@ -5060,11 +5060,6 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setImage: [NSImage imageNamed: @"iPhoto"]];
 	[toolbarItem setTarget: self];
 	[toolbarItem setAction: @selector(export2iPhoto:)];
-	
-//	// Use a custom view, a text field, for the search item 
-//	[toolbarItem setView: iPhotoView];
-//	[toolbarItem setMinSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
-	[toolbarItem setMaxSize:NSMakeSize(NSWidth([iPhotoView frame]), NSHeight([iPhotoView frame]))];
     }
 	else if ([itemIdent isEqualToString: MailToolbarItemIdentifier])
 	{

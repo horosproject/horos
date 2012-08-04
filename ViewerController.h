@@ -104,7 +104,7 @@ enum
 	IBOutlet NSView         *ConvView;
 	IBOutlet NSView         *FusionView;
 	IBOutlet NSView			*BlendingView;
-	IBOutlet NSView			*movieView, *serieView, *patientView, *iPhotoView, *keyImages, *PagePad;
+	IBOutlet NSView			*movieView, *serieView, *patientView, *keyImages, *PagePad;
 	IBOutlet NSView         *RGBFactorsView;
 	IBOutlet NSTextField    *speedText;
     IBOutlet NSPopUpButton  *wlwwPopup;

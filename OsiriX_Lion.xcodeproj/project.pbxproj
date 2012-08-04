@@ -8128,8 +8128,6 @@
 		CEDDD88010DCC93500FFE72B /* PSGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDDD87E10DCC93500FFE72B /* PSGenerator.m */; };
 		CEDDD88110DCC93500FFE72B /* PSGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDDD87D10DCC93500FFE72B /* PSGenerator.h */; };
 		CEDDD88210DCC93500FFE72B /* PSGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDDD87E10DCC93500FFE72B /* PSGenerator.m */; };
-		CEDE441615CD084B007D4200 /* AutofillPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDE441515CD084B007D4200 /* AutofillPressed.tif */; };
-		CEDE441715CD084B007D4200 /* AutofillPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDE441515CD084B007D4200 /* AutofillPressed.tif */; };
 		CEDE5B6207F206B5003034B6 /* ROIDefaultsWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */; };
 		CEDE5B6307F206B5003034B6 /* ROIDefaultsWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */; };
 		CEDEF7D60D020E9100CADB15 /* TIFFSmall.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */; };
@@ -14065,7 +14063,6 @@
 		CEDCFB3F0B4C4E3900510ABD /* SyncSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SyncSmall.tif; sourceTree = "<group>"; };
 		CEDDD87D10DCC93500FFE72B /* PSGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSGenerator.h; sourceTree = "<group>"; };
 		CEDDD87E10DCC93500FFE72B /* PSGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSGenerator.m; sourceTree = "<group>"; };
-		CEDE441515CD084B007D4200 /* AutofillPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = AutofillPressed.tif; sourceTree = "<group>"; };
 		CEDE5B5C07F206B5003034B6 /* ROIDefaultsWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ROIDefaultsWindow.m; sourceTree = "<group>"; };
 		CEDE5B5D07F206B5003034B6 /* ROIDefaultsWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ROIDefaultsWindow.h; sourceTree = "<group>"; };
 		CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = TIFFSmall.tif; sourceTree = "<group>"; };
@@ -15925,7 +15922,6 @@
 				A91BF49615BD8A8700B7BA23 /* Anonymizer.pdf */,
 				ABBB647F063587B200D9531F /* Arrow.tif */,
 				CED80C7A0BF187930058A469 /* Autofill.tif */,
-				CEDE441515CD084B007D4200 /* AutofillPressed.tif */,
 				ABB36D7F0AF2548C00DBEEA2 /* available.tif */,
 				ABB36D7E0AF2548C00DBEEA2 /* away.tif */,
 				ABBB6480063587B200D9531F /* Axial.tif */,
@@ -26730,7 +26726,6 @@
 				A9701A9E15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA015C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */,
-				CEDE441615CD084B007D4200 /* AutofillPressed.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27094,7 +27089,6 @@
 				A9701A9F15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA115C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA315C9587C0019EE55 /* burn_anim11.tif in Resources */,
-				CEDE441715CD084B007D4200 /* AutofillPressed.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
