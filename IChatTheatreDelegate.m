@@ -15,6 +15,7 @@
 #import "IChatTheatreDelegate.h"
 #import <InstantMessage/IMService.h>
 #import <InstantMessage/IMAVManager.h>
+#import <AddressBook/AddressBook.h>
 #import "ViewerController.h"
 #import "OrthogonalMPRViewer.h"
 #import "VRController.h"
@@ -38,21 +39,41 @@ static IChatTheatreDelegate	*iChatDelegate = nil;
 	iChatDelegate = nil;
 }
 
++ (IChatTheatreDelegate*) initSharedDelegate
+{
+    if( [ABAddressBook sharedAddressBook] == nil)
+        return nil;
+    
+    if( iChatDelegate == nil)
+        iChatDelegate = [[IChatTheatreDelegate alloc] init];
+    
+    return iChatDelegate;
+}
+
 + (IChatTheatreDelegate*) sharedDelegate
 {
-	if( iChatDelegate == nil) iChatDelegate = [[IChatTheatreDelegate alloc] init];
-	return iChatDelegate;
+    return iChatDelegate;
 }
 
 - (id)init
 {
-	if(![super init]) return nil;
-	[[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:) name:IMAVManagerStateChangedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowChanged:) name:NSWindowDidBecomeKeyNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixDCMViewDidBecomeFirstResponderNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRViewDidBecomeFirstResponderNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRCameraDidChangeNotification object:nil];
-	
+    @try
+    {
+        if(![super init])
+            return nil;
+        [[IMService notificationCenter] addObserver:self selector:@selector(_stateChanged:) name:IMAVManagerStateChangedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowChanged:) name:NSWindowDidBecomeKeyNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixDCMViewDidBecomeFirstResponderNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRViewDidBecomeFirstResponderNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(focusChanged:) name:OsirixVRCameraDidChangeNotification object:nil];
+        
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"********* iChatTheatreDelegate exception: %@", e);
+        return nil;
+    }
+    
 	return self;
 }
 
@@ -184,9 +205,19 @@ static IChatTheatreDelegate	*iChatDelegate = nil;
 
 - (BOOL)isIChatTheatreRunning;
 {
-	if([[IMAVManager sharedAVManager] state] == IMAVInactive)
-		return NO;
-	return YES;
+    @try
+    {
+        if([[IMAVManager sharedAVManager] state] == IMAVInactive)
+            return NO;
+        else
+            return YES;
+    }
+    @catch (NSException *e)
+    {
+        NSLog( @"**** isIChatTheatreRunning: %@", e);
+    }
+	
+	return NO;
 }
 
 

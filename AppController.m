@@ -2543,7 +2543,6 @@ static NSDate *lastWarningDate = nil;
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(getUrl:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
     
 	#ifndef OSIRIX_LIGHT
-	[IChatTheatreDelegate sharedDelegate];
     [VRView testGraphicBoard];
 	#endif
 	
@@ -3594,7 +3593,6 @@ static BOOL initialized = NO;
 		NSLog( @"/*\\ /*\\ KDU Engine AVAILABLE /*\\ /*\\");
 	else
 		NSLog( @"KDU Engine NOT available");
-	
 }
 
 - (IBAction) updateViews:(id) sender
@@ -3881,9 +3879,7 @@ static BOOL initialized = NO;
 
 -(void) dealloc
 {
-    NSNotificationCenter *nc;
-    nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver: self];
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
 	
     [browserController release];
 	[dcmtkQRSCP release];

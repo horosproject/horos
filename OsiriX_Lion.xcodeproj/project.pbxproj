@@ -2904,7 +2904,6 @@
 		CE2BE05E1524344D00AE6156 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BE05D1524344D00AE6156 /* Growl.framework */; };
 		CE2BFE57153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
 		CE2BFE58153B177C00037546 /* iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = CE2BFE56153B177C00037546 /* iPad.png */; };
-		CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CE39BFA306BC5DAE006D6824 /* Scripting_Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */; };
 		CE39BFA406BC5DAE006D6824 /* Scripting_Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */; };
@@ -3609,6 +3608,9 @@
 		CEA4F07A15AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
 		CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
 		CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
+		CEA9237215CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
+		CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
+		CEA9237515CE436E00D3385F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237415CE436E00D3385F /* AddressBook.framework */; };
 		CEAA6F420E50C084008802D2 /* OsiriXSCPDataHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = BF9201E90883667800A3D77B /* OsiriXSCPDataHandler.mm */; };
 		CEAA6F430E50C085008802D2 /* OsiriXSCPDataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = BF9201E80883667800A3D77B /* OsiriXSCPDataHandler.h */; };
 		CEAE02E00DE7E33B00E9BD01 /* DICOMDestination.tif in Resources */ = {isa = PBXBuildFile; fileRef = CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */; };
@@ -7751,7 +7753,6 @@
 		CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E3E38650715FFDC0049E72E /* PreferencePanes.framework */; };
 		CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303B07A05E7100500ABB /* DiscRecording.framework */; };
 		CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */; };
-		CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C82E20C708B310093C162 /* InstantMessage.framework */; };
 		CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5F14C20B14E12700B309B9 /* CoreVideo.framework */; };
 		CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9D09B681F500545F5E /* libcrypto.dylib */; };
 		CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFBF3A9E09B681F500545F5E /* libssl.dylib */; };
@@ -10346,7 +10347,6 @@
 		CE289B020D00ADBA004F0A93 /* Mail.scpt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.scpt; name = Mail.scpt; path = Binaries/Mail.scpt; sourceTree = "<group>"; };
 		CE2BE05D1524344D00AE6156 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Growl.framework; path = Binaries/Growl.framework; sourceTree = "<group>"; };
 		CE2BFE56153B177C00037546 /* iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iPad.png; sourceTree = "<group>"; };
-		CE2C82E20C708B310093C162 /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = /System/Library/Frameworks/InstantMessage.framework; sourceTree = "<absolute>"; };
 		CE3368571595888D00167676 /* WebPortalDB 7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "WebPortalDB 7.xcdatamodel"; sourceTree = "<group>"; };
 		CE39BF9F06BC5DAE006D6824 /* Scripting_Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scripting_Additions.h; sourceTree = "<group>"; };
 		CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Scripting_Additions.m; sourceTree = "<group>"; };
@@ -10523,6 +10523,8 @@
 		CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSIPACSOnDemandPreferencePane.m; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.m"; sourceTree = "<group>"; };
 		CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSIPACSOnDemandPreferencePane.h; path = "Preference Panes/OSIPACSOnDemandPreferencePane/OSIPACSOnDemandPreferencePane.h"; sourceTree = "<group>"; };
 		CEA4F07C15AEA606009584C7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSIPACSOnDemandPreferencePane/English.lproj/OSIPACSOnDemand.xib"; sourceTree = "<group>"; };
+		CEA9237115CE3F7C00D3385F /* InstantMessage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InstantMessage.framework; path = ../../../../System/Library/Frameworks/InstantMessage.framework; sourceTree = "<group>"; };
+		CEA9237415CE436E00D3385F /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = ../../../../System/Library/Frameworks/AddressBook.framework; sourceTree = "<group>"; };
 		CEAE02DF0DE7E33B00E9BD01 /* DICOMDestination.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = DICOMDestination.tif; sourceTree = "<group>"; };
 		CEAF4ECC089D6E9400DE46AF /* OsiriXTables.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = OsiriXTables.pdf; sourceTree = "<group>"; };
 		CEB1DA6608A3B1040058C303 /* smalltrash.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = smalltrash.tif; sourceTree = "<group>"; };
@@ -14154,7 +14156,6 @@
 				7E54303D07A05E7100500ABB /* DiscRecording.framework in Frameworks */,
 				7E54303E07A05E7100500ABB /* DiscRecordingUI.framework in Frameworks */,
 				CEFE605A0979B1DB00891EA9 /* DotMacKit.framework in Frameworks */,
-				CE2C82E30C708B310093C162 /* InstantMessage.framework in Frameworks */,
 				CE2C82EC0C708B380093C162 /* CoreVideo.framework in Frameworks */,
 				A97E19EF0CDF55E50065EE29 /* 3DconnexionClient.framework in Frameworks */,
 				CE6693C70AF551210073D923 /* libxerces-c.27.dylib in Frameworks */,
@@ -14294,6 +14295,8 @@
 				8476BC2F1599D4B200451331 /* AVFoundation.framework in Frameworks */,
 				8476BC341599D7E900451331 /* CoreMedia.framework in Frameworks */,
 				CE65D9F115C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
+				CEA9237215CE3F7C00D3385F /* InstantMessage.framework in Frameworks */,
+				CEA9237515CE436E00D3385F /* AddressBook.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14347,7 +14350,6 @@
 				CEC709C710A5C844008935EA /* PreferencePanes.framework in Frameworks */,
 				CEC709C810A5C844008935EA /* DiscRecording.framework in Frameworks */,
 				CEC709C910A5C844008935EA /* DiscRecordingUI.framework in Frameworks */,
-				CEC709CC10A5C844008935EA /* InstantMessage.framework in Frameworks */,
 				CEC709CD10A5C844008935EA /* CoreVideo.framework in Frameworks */,
 				CEC709D110A5C844008935EA /* libcrypto.dylib in Frameworks */,
 				CEC709D210A5C844008935EA /* libssl.dylib in Frameworks */,
@@ -14365,6 +14367,7 @@
 				8476BC301599D4B200451331 /* AVFoundation.framework in Frameworks */,
 				8476BC351599D7E900451331 /* CoreMedia.framework in Frameworks */,
 				CE65D9F215C4843300E9D94C /* DiskArbitration.framework in Frameworks */,
+				CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14423,29 +14426,30 @@
 			isa = PBXGroup;
 			children = (
 				AB5E1A300595697700C48BEB /* Accelerate.framework */,
+				CEA9237415CE436E00D3385F /* AddressBook.framework */,
 				AB38FC99057A9B050041FEBB /* AGL.framework */,
 				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
 				ABFF0A95056D97800066794C /* ApplicationServices.framework */,
 				8476BC2E1599D4B200451331 /* AVFoundation.framework */,
-				8476BC331599D7E900451331 /* CoreMedia.framework */,
 				CEF0E6DA06AEF5CB001FF9E5 /* Carbon.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				8476BC331599D7E900451331 /* CoreMedia.framework */,
 				BF5F14C20B14E12700B309B9 /* CoreVideo.framework */,
-				CE65D9F015C4843300E9D94C /* DiskArbitration.framework */,
 				7E54303B07A05E7100500ABB /* DiscRecording.framework */,
 				7E54303C07A05E7100500ABB /* DiscRecordingUI.framework */,
+				CE65D9F015C4843300E9D94C /* DiskArbitration.framework */,
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
-				CE2C82E20C708B310093C162 /* InstantMessage.framework */,
+				CEA9237115CE3F7C00D3385F /* InstantMessage.framework */,
 				AB6D320C05B3159D0002F793 /* IOKit.framework */,
 				BFBF3A9D09B681F500545F5E /* libcrypto.dylib */,
 				BFBF3A9E09B681F500545F5E /* libssl.dylib */,
 				BFBF3A9F09B681F500545F5E /* libxml2.dylib */,
 				BFBF3AA009B681F500545F5E /* libz.dylib */,
-				84321F22147E9BDA00C86CC1 /* Quartz.framework */,
-				841524C4113D6BDB008250E6 /* QuartzCore.framework */,
 				CEF0E4BB06AEC91F001FF9E5 /* Message.framework */,
 				AB0EA93B056EDC7E004BBDD3 /* OpenGL.framework */,
 				7E3E38650715FFDC0049E72E /* PreferencePanes.framework */,
+				84321F22147E9BDA00C86CC1 /* Quartz.framework */,
+				841524C4113D6BDB008250E6 /* QuartzCore.framework */,
 				CE790A18105D4DE200CE6AAF /* Security.framework */,
 				A997B15610E0C412004C5BB1 /* SecurityInterface.framework */,
 				8406956210B6800E00C37AD0 /* SystemConfiguration.framework */,

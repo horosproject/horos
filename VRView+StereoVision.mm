@@ -75,8 +75,8 @@ dddd
 
 #include <CoreVideo/CVPixelBuffer.h>
 
-#import <InstantMessage/IMService.h>
-#import <InstantMessage/IMAVManager.h>
+//#import <InstantMessage/IMService.h>
+//#import <InstantMessage/IMAVManager.h>
 
 
 #if USE3DCONNEXION

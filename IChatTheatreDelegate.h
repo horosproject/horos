@@ -29,6 +29,7 @@
 
 /** Release the shared delegate */
 + (void) releaseSharedDelegate;
++ (IChatTheatreDelegate*) initSharedDelegate;
 
 /** Notification sent iChat Theater state has changed */
 - (void)_stateChanged:(NSNotification *)aNotification;

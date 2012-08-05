@@ -7490,7 +7490,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
 	#ifndef OSIRIX_LIGHT
-	if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && cgl_ctx==[_alternateContext CGLContextObj])
+	if( iChatRunning && cgl_ctx==[_alternateContext CGLContextObj])
 	{
 		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
 		iChatFontGL = [NSFont systemFontOfSize: 12];
@@ -8196,9 +8196,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	
 	#ifndef OSIRIX_LIGHT
-	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+    iChatRunning = NO;
+    if( is2DViewer)
+        iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	#else
-	BOOL iChatRunning = NO;
+    iChatRunning = NO;
 	#endif
 	
 	if( is2DViewer)
@@ -8318,7 +8320,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			// highlight the visible part of the view (the part visible through iChat)
 			#ifndef OSIRIX_LIGHT
-			if([[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning] && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
+			if( iChatRunning && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
 			{
 				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale

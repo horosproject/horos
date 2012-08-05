@@ -79,8 +79,8 @@
 #import "HornRegistration.h"
 #import "BonjourBrowser.h"
 #import "PluginManager.h"
-#import <InstantMessage/IMService.h>
-#import <InstantMessage/IMAVManager.h>
+//#import <InstantMessage/IMService.h>
+//#import <InstantMessage/IMAVManager.h>
 #import "DCMObject.h"
 #import "DCMAttributeTag.h"
 #import "NavigatorWindowController.h"
@@ -447,7 +447,6 @@ return YES;
 	
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
-	
 	if( [item action] == @selector( showHideMatrix:))
 	{
 		[item setState: [self matrixIsVisible]? NSOnState : NSOffState ];
@@ -5750,6 +5749,7 @@ return YES;
             return NO;
     
     BOOL enable = YES;
+    
     if ([[toolbarItem itemIdentifier] isEqualToString: PlayToolbarItemIdentifier])
     {
         if([fileList[ curMovieIndex] count] == 1 && [[[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] <=  1) enable = NO;
@@ -18325,9 +18325,16 @@ int i,j,l;
 #ifndef OSIRIX_LIGHT
 - (void)iChatBroadcast:(id)sender
 {
-	[[IChatTheatreDelegate sharedDelegate] showIChatHelp];
-	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
-	[[NSWorkspace sharedWorkspace] launchApplication:path];
+    if( [IChatTheatreDelegate initSharedDelegate])
+    {
+        [[IChatTheatreDelegate sharedDelegate] showIChatHelp];
+        NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+        [[NSWorkspace sharedWorkspace] launchApplication:path];
+    }
+    else
+    {
+        NSRunAlertPanel(NSLocalizedString( @"Address Book", nil), NSLocalizedString(@"Access to address book is required to start an iChat session. See Privacy tab in System Preferences.", nil), nil, nil, nil);
+    }
 }
 
 - (void) notificationiChatBroadcast:(NSNotification*)note

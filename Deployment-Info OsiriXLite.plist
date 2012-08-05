@@ -248,6 +248,6 @@
 	<key>OSAScriptingDefinition</key>
 	<string>OsiriX.sdef</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Your email will be used to AutoFill the contact information in the crash reporter.</string>
+	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
 </dict>
 </plist>

@@ -286,6 +286,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	BOOL avoidMouseMovedRecursive;
 	BOOL avoidChangeWLWWRecursive;
 	BOOL TextureComputed32bitPipeline;
+    
+    BOOL iChatRunning;
 	
 	NSImage *loupeImage, *loupeMaskImage;
 	GLuint loupeTextureID, loupeTextureWidth, loupeTextureHeight;

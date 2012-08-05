@@ -1907,7 +1907,7 @@ public:
 		
 		advancedCLUT = NO;
 		
-		[[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
+//        [[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	}
     
     return self;
@@ -2158,7 +2158,7 @@ public:
 	
     [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
     
-	[[IMService notificationCenter] removeObserver: self];
+//	[[IMService notificationCenter] removeObserver: self];
 	
 	[dcmSeriesString release];
 	[deleteRegion lock];
