@@ -169,7 +169,7 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	
 	if( curArray == nil) curArray = [[NSMutableArray alloc] initWithCapacity:0];
 	else [curArray removeAllObjects];
-
+    float backingScaleFactor = [NSOpenGLContext currentContext].view.window.backingScaleFactor;
 	blackColor = [ NSColor blackColor ];
 	attribDict = [ NSDictionary dictionaryWithObjectsAndKeys: font, NSFontAttributeName, [ NSColor whiteColor ], NSForegroundColorAttributeName, blackColor, NSBackgroundColorAttributeName, nil ];
 	charRect.origin.x = charRect.origin.y = 0;
@@ -192,7 +192,10 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 				charRect = NSIntegralRect( charRect );
 			}	
 			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
-			curSizeArray[currentUnichar] = charRect.size.width * [[NSScreen mainScreen] backingScaleFactor];
+            
+            
+            
+			curSizeArray[currentUnichar] = charRect.size.width * backingScaleFactor;
 			[theImage setSize: charRect.size];
 			
 			if([theImage size].width > 0 && [theImage size].height > 0)
@@ -311,8 +314,6 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
    glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
    glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
    
-//    float f = [[NSScreen mainScreen] backingScaleFactor]; // retina
-    
    retval = TRUE;
    for( dListNum = base, currentUnichar = first; currentUnichar < first + count;
         dListNum++, currentUnichar++ )

@@ -1713,7 +1713,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
 
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
-			[stringTex genTexture];
+			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
 			[_stringTextureCache setObject:stringTex forKey:str];
 			[stringTex release];
 		}

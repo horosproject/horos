@@ -109,10 +109,6 @@
 - (void) drawWithBounds:(NSRect)bounds; // will update the texture if required due to change in settings (note context should be setup to be orthographic scaled to per pixel scale)
 - (void) drawAtPoint:(NSPoint)point;
 
-// these will force the texture to be regenerated at the next draw
-- (void) setMargins:(NSSize)size; // set offset size and size to fit with offset
-- (void) useStaticFrame:(NSSize)size; // set static frame size and size to frame
-- (void) useDynamicFrame; // set static frame size and size to frame
 
 - (void) setString:(NSAttributedString *)attributedString; // set string after initial creation
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation

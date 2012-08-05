@@ -301,17 +301,6 @@
 
 #pragma mark Margin Size
 
-// these will force the texture to be regenerated at the next draw
-- (void) setMargins:(NSSize)size // set offset size and size to fit with offset
-{
-	marginSize = size;
-	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
-		frameSize.width = 0.0f;
-		frameSize.height = 0.0f;
-	}
-	requiresUpdate = YES;
-}
-
 - (NSSize) marginSize
 {
 	return marginSize;
@@ -345,23 +334,6 @@
 - (BOOL) staticFrame
 {
 	return staticFrame;
-}
-
-- (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
-{
-	frameSize = size;
-	staticFrame = YES;
-	requiresUpdate = YES;
-}
-
-- (void) useDynamicFrame
-{
-	if (staticFrame) { // set to dynamic frame and set to regen texture
-		staticFrame = NO;
-		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
-		frameSize.height = 0.0f;
-		requiresUpdate = YES;
-	}
 }
 
 #pragma mark String

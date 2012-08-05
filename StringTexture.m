@@ -158,7 +158,12 @@
 	antialiasing = a;
 }
 
-- (GLuint) genTexture; // generates the texture without drawing texture to current context
+- (GLuint) genTexture;
+{
+    return [self genTextureWithBackingScaleFactor: [[NSScreen mainScreen] backingScaleFactor]];
+}
+
+- (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor; // generates the texture without drawing texture to current context
 {
 	NSImage * image;
 	
@@ -175,8 +180,6 @@
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) // find frame size if we have not already found it
     {
 		frameSize = [string size]; // current string size
-//        frameSize.width *= [[NSScreen mainScreen] backingScaleFactor]; // retina
-//        frameSize.height *= [[NSScreen mainScreen] backingScaleFactor]; // retina
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -209,8 +212,8 @@
 		
 		[image unlockFocus];
 	
-		texSize.width = [bitmap size].width * [[NSScreen mainScreen] backingScaleFactor]; // retina
-		texSize.height = [bitmap size].height  * [[NSScreen mainScreen] backingScaleFactor]; // retina
+		texSize.width = [bitmap size].width * backingScaleFactor; // retina
+		texSize.height = [bitmap size].height  * backingScaleFactor; // retina
 		
 		glGenTextures (1, &texName);
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
@@ -245,7 +248,7 @@
 		texName = [[textArray objectAtIndex: index] intValue];
 	
 	if (!texName)
-		texName = [self genTexture];
+		texName = [self genTextureWithBackingScaleFactor: currentContext.view.window.backingScaleFactor];
 	
 	if (texName)
 	{
@@ -326,7 +329,7 @@
 		texName = [[textArray objectAtIndex: index] intValue];
 	
 	if (!texName)
-		texName = [self genTexture];
+		texName = [self genTextureWithBackingScaleFactor: currentContext.view.window.backingScaleFactor];
 	
 	if (texName) // if successful
 		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height*ratio)];
@@ -336,45 +339,6 @@
 - (void) drawAtPoint:(NSPoint)point
 {
 	[self drawAtPoint: point ratio: 1.0];
-}
-
-
-// these will force the texture to be regenerated at the next draw
-- (void) setMargins:(NSSize)size // set offset size and size to fit with offset
-{
-	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
-	if( [textArray count]) NSLog( @"** not all texture were deleted...");
-	
-	marginSize = size;
-	if (NO == staticFrame) { // ensure dynamic frame sizes will be recalculated
-		frameSize.width = 0.0f;
-		frameSize.height = 0.0f;
-	}
-	[self genTexture];
-}
-
-- (void) useStaticFrame:(NSSize)size // set static frame size and size to frame
-{
-	while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
-	if( [textArray count]) NSLog( @"** not all texture were deleted...");
-	
-	frameSize = size;
-	staticFrame = YES;
-	[self genTexture];
-}
-
-- (void) useDynamicFrame
-{
-	if (staticFrame)
-	{ // set to dynamic frame and set to regen texture
-		while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
-		if( [textArray count]) NSLog( @"** not all texture were deleted...");
-		
-		staticFrame = NO;
-		frameSize.width = 0.0f; // ensure frame sizes will be recalculated
-		frameSize.height = 0.0f;
-		[self genTexture];
-	}
 }
 
 - (void) setString:(NSAttributedString *)attributedString // set string after initial creation
@@ -389,7 +353,6 @@
 		frameSize.width = 0.0f;
 		frameSize.height = 0.0f;
 	}
-	[self genTexture];
 }
 
 - (void) setString:(NSString *)aString withAttributes:(NSDictionary *)attribs; // set string after initial creation
@@ -406,7 +369,6 @@
 	[color retain];
 	[textColor release];
 	textColor = color;
-	[self genTexture];
 }
 
 - (void) setBoxColor:(NSColor *)color // set default text color
@@ -417,7 +379,6 @@
 	[color retain];
 	[boxColor release];
 	boxColor = color;
-	[self genTexture];
 }
 
 - (void) setBorderColor:(NSColor *)color // set default text color
@@ -428,7 +389,6 @@
 	[color retain];
 	[borderColor release];
 	borderColor = color;
-	[self genTexture];
 }
 
 @end
