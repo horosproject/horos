@@ -21,11 +21,11 @@
 @implementation ROIVolumeManagerController
 
 - (id) initWithViewer:(Window3DController*) v
-{	
+{
+    self = [super initWithWindowNibName:@"ROIVolumeManager"];
+    
 	roiVolumes = [[NSMutableArray alloc] initWithCapacity:0];
 	[roiVolumes setArray:[v roiVolumes]];
-	
-	self = [super initWithWindowNibName:@"ROIVolumeManager"];
 	
 	viewer = v;
 		

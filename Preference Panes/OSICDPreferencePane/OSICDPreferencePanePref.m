@@ -20,7 +20,7 @@
 {
 	if( self = [super init])
 	{
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSICDPreferencePanePref" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSICDPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];

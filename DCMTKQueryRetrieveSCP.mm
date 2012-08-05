@@ -417,7 +417,7 @@ void errmsg(const char* msg, ...)
 			
 			if (!tLayer->checkPrivateKeyMatchesCertificate())
 			{
-				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from %@private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile];
+				NSString *errMessage = [NSString stringWithFormat: @"DICOM Network Failure (storescp TLS) : Unable to load certificate from private key '%@' and certificate '%@' do not match", _privateKeyFile, _certificateFile];
 				[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: errMessage waitUntilDone: NO];
 				return;
 			}

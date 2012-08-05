@@ -84,7 +84,7 @@
 
 - (id)initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC;
 {
-	[super initWithWindowNibName:@"LLScoutView"];
+	self = [super initWithWindowNibName:@"LLScoutView"];
 	[[self window] setDelegate:self];
 	[[self window] setShowsResizeIndicator:NO];
 		

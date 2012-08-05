@@ -104,16 +104,16 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	if( failed)
 	{
-		if( !a) 		free(a);
-		if( !c) 		free(c);
-		if( !cx)		free(cx);
-		if( !cy)		free(cy);
-		if( !d) 		free(d);
-		if( !g) 		free(g);
-		if( !gam)		free(gam);
-		if( !h) 		free(h);
-		if( !px)		free(px);
-		if( !py)		free(py);
+		if( a) 		free(a);
+		if( c) 		free(c);
+		if( cx)		free(cx);
+		if( cy)		free(cy);
+		if( d) 		free(d);
+		if( g) 		free(g);
+		if( gam)		free(gam);
+		if( h) 		free(h);
+		if( px)		free(px);
+		if( py)		free(py);
 		
 		return 0;
 	}

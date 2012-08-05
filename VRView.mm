@@ -902,7 +902,7 @@ public:
 	
 	WaitRendering	*www = nil;
 	
-	if( showWait) [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
+	if( showWait) www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D data...", nil)];
 	[www start];
 	
     double a[ 6];

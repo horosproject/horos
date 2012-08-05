@@ -942,7 +942,7 @@ static BOOL						ComPACSTested = NO, isComPACS = NO;
 
 	NSEnumerator *pathEnum = [paths objectEnumerator];
     NSString *path;
-	NSString *completePluginPath;
+	NSString *completePluginPath = nil;
 	BOOL found = NO;
 	
 	while((path = [pathEnum nextObject]) && !found)
@@ -1188,7 +1188,7 @@ NSInteger sortPluginArray(id plugin1, id plugin2, void *context)
 		BOOL active = [[PluginManager activeDirectories] containsObject:path];
 		BOOL allUsers = ([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath] || [path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]]);
 		
-		NSString *availability;
+		NSString *availability = nil;
 		if([path isEqualToString:sysActivePath] || [path isEqualToString:sysInactivePath])
 			availability = [[PluginManager availabilities] objectAtIndex:1];
 		else if([path isEqualToString:[PluginManager appActivePluginsDirectoryPath]] || [path isEqualToString:[PluginManager appInactivePluginsDirectoryPath]])

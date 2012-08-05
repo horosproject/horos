@@ -1032,7 +1032,7 @@ extern int ANNOTATIONS;
 			float startlevel;
 			float endlevel;
 			
-			float eWW, eWL;
+			float eWW = 5, eWL = 5;
 			
 			switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"PETWindowingMode"])
 			{

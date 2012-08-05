@@ -6616,7 +6616,7 @@ return YES;
 {
     DicomImage* firstObject = [fileList[curMovieIndex] count]? [fileList[curMovieIndex] objectAtIndex:0] : nil;
     
-    if( [patientUID compare: firstObject.series.study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+    if( firstObject && [patientUID compare: firstObject.series.study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
         [self buildMatrixPreview: NO];
 }
 
@@ -7398,6 +7398,7 @@ return YES;
 	
 	switch( [[NSUserDefaults standardUserDefaults] integerForKey: @"MULTIPLESCREENS"])
 	{
+        default:
 		case 0:		// use main screen only
 			screenRect    = [[[NSScreen screens] objectAtIndex:0] visibleFrame];
 		break;

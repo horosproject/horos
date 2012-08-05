@@ -200,10 +200,7 @@ static NSMutableArray *cachedServersArray = nil;
 	BOOL retrieveMode = CMOVERetrieveMode;
 	
 	if( [dict valueForKey: @"CGET"])
-	{
-		NSString *cg = [[[NSString alloc] initWithData: [dict valueForKey: @"CGET"] encoding:NSUTF8StringEncoding] autorelease];
 		retrieveMode = CGETRetrieveMode;
-	}
 	
 	NSMutableDictionary* s = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 					 [NSNumber numberWithBool:YES] , @"QR",

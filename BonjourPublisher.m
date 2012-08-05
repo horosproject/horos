@@ -125,7 +125,7 @@ extern const char *GetPrivateIP();
 
 - (void) toggleSharing:(BOOL) activated
 {
-    uint16_t chosenPort;
+    uint16_t chosenPort = 0;
     if( !listeningSocket)
 	{
         // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with

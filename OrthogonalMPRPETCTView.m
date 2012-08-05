@@ -35,7 +35,7 @@
 
 - (id)initWithFrame:(NSRect)frameRect
 {
-	[super initWithFrame:frameRect];
+	self = [super initWithFrame:frameRect];
 	blendingFactor = 0.5f;
 	return self;
 }

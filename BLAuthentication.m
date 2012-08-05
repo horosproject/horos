@@ -29,7 +29,7 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
         commandtemplate = "echo $$; \"$@\"";
     }
 	char command[1024];
-	char ** args;
+	char ** args = nil;
 	OSStatus result;
 	int argcount = 0;
 	int i;
@@ -73,6 +73,7 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
                                                 authorization, "/bin/sh",  options, args, &commPipe );
 	if (result != noErr) {
 		unlink (stderrpath);
+        free( args);
 		return result;
 	}
 	
@@ -115,6 +116,9 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	}
     
     [[NSFileManager defaultManager] removeItemAtPath: [[[NSFileManager defaultManager] currentDirectoryPath] stringByAppendingPathComponent: @"1"] error: nil];
+    
+    if( args)
+        free( args);
     
 	return noErr;
 }
@@ -176,7 +180,9 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 		err = AuthorizationCreate(&rights, kAuthorizationEmptyEnvironment, flags, &authorizationRef);
 	}
     	
-	if( numItems < 1 ) {
+	if( numItems < 1 )
+    {
+        free( items);
 		return authorized;
 	}
 
@@ -203,7 +209,8 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	if(authorized)
 		AuthorizationFreeItemSet(authorizedRights);
 	
-	free(items);
+    if( items)
+        free(items);
 	
     return authorized;
 }
@@ -242,8 +249,11 @@ OSStatus AuthorizationExecuteWithPrivilegesStdErrAndPid (
 	int i = 0;
 	
 	if( numItems < 1 )
+    {
+        free( items);
 		return authorized;
-	
+	}
+    
 	while( i < numItems && i < 20 ) {
 		[[forCommands objectAtIndex:i] getCString:paths[i]];
 		

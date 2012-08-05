@@ -1064,8 +1064,8 @@ static float deg2rad = M_PI / 180.0;
             N3Vector na = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:i] N3VectorValue], patient2VolumeDataTransform);
             N3Vector nb = N3VectorApplyTransform([[curvedPath.nodes objectAtIndex:i+1] N3VectorValue], patient2VolumeDataTransform);
             
-            Point3D *pta = [[Point3D alloc] initWithX:na.x y:na.y z:na.z];
-            Point3D *ptb = [[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z];
+            Point3D *pta = [[[Point3D alloc] initWithX:na.x y:na.y z:na.z] autorelease];
+            Point3D *ptb = [[[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z] autorelease];
             
             [centerline removeAllObjects];
 
@@ -1125,8 +1125,6 @@ static float deg2rad = M_PI / 180.0;
                     return;
                 }        
             }
-            [pta release];
-            [ptb release];
         }
         pt = [centerline lastObject];
         node.x = pt.x;

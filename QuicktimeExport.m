@@ -98,7 +98,7 @@
     
     CVPixelBufferUnlockBaseAddress(buffer, 0);
     CFRelease(ctxt);
-    
+    CGColorSpaceRelease(cs);
     return buffer;
 }
 
@@ -269,6 +269,8 @@
             if( aborted == NO)
                 return fileName;
         }
+        
+        [writer release];
     }
 	
 	return nil;

@@ -21,7 +21,7 @@
 
 - (id) init
 {
-	[super init];
+	self = [super init];
 	xSpline = vtkCardinalSpline::New();
 	ySpline = vtkCardinalSpline::New();
 	zSpline = vtkCardinalSpline::New();

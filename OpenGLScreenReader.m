@@ -132,6 +132,7 @@
 
     // Get rid of bitmap
     CFRelease(bitmap);
+    CGColorSpaceRelease( cSpace);
     
     return image;
 }

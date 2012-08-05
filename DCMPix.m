@@ -150,7 +150,6 @@ double MySubtractTime( uint64_t endTime, uint64_t startTime)
 unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height, int width, int iconWidth, long wl, long ww, BOOL isRGB)
 // create an icon from an 12 or 16 bit image
 {
-	unsigned char		*iconPtr;
 	float				ratio;
 	long				i, j;
 	long				line, destWidth, destHeight;
@@ -173,10 +172,11 @@ unsigned char* CreateIconFrom16 (float* image,  unsigned char*icon,  int height,
 	destHeight = (float) height / ratio;
 	
 	// allocate the memory for the icon 
-	iconPtr = icon;
 	
 	if( diff)
 	{
+        unsigned char *iconPtr = nil;
+        
 		if( isRGB)
 		{
 			int x;
@@ -1755,7 +1755,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (float*) getLineROIValue :(long*) numberOfValues :(ROI*) roi
 {
-    long			count, no, size;
+    long			count = 0, no, size;
 	float			*values;
 	long			*xPoints, *yPoints;
     NSPoint			upleft, downright;

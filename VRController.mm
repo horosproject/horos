@@ -3060,8 +3060,8 @@ return YES;
 						{
 							if(![settingsGroups containsObject:[settings objectForKey:@"groupName"]])
 								[settingsGroups addObject:[settings objectForKey:@"groupName"]];
-							[settings release];
 						}
+                        [settings release];
 					}
 				}
 			}
@@ -3110,8 +3110,8 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 						{
 							[settingsList addObject:settings];
 						}
-						[settings release];
 					}
+                    [settings release];
 				}
 			}
 		}

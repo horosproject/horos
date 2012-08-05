@@ -22,7 +22,7 @@
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(id) newViewer
 {
-	[super initWithPixList: pix : files : vData : vC : bC : newViewer];
+	self = [super initWithPixList: pix : files : vData : vC : bC : newViewer];
 
 	isBlending = (bC != nil);
 	

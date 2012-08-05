@@ -154,7 +154,6 @@ static int validFilePathDepth = 0;
 	NSMutableArray *result = [NSMutableArray array];
 	long i, start, length;
 	char *buffer;
-	NSString *file;
 	
 	buffer = (char*) [data UTF8String];
 	
@@ -174,7 +173,7 @@ static int validFilePathDepth = 0;
 			
 			if( i-start-1 > 0)
 			{
-				file = [dirpath stringByAppendingString:[[NSString alloc] initWithBytes:&(buffer[start+1]) length:i-start-1 encoding:NSUTF8StringEncoding]];
+				NSString *file = [dirpath stringByAppendingString:[[[NSString alloc] initWithBytes:&(buffer[start+1]) length:i-start-1 encoding:NSUTF8StringEncoding] autorelease]];
 				
 				NSString *ext = [file pathExtension];
 				
@@ -200,10 +199,10 @@ static int validFilePathDepth = 0;
     NSData *inData = nil;
     NSString *s = @"";
     
-	dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
-	
     self = [super init];
     
+	dirpath = [[NSString alloc] initWithFormat: @"%@/", [srcFile stringByDeletingLastPathComponent]];
+	
 //	const char *args[ 4];
 //	
 //	args[ 0] = [srcFile UTF8String];

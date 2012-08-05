@@ -22,7 +22,7 @@
 
 - (id) initWithWindow3DController: (Window3DController*) aWindow3DController
 {
-	[super init];
+	self = [super init];
 	controller = aWindow3DController;
 	return self;
 }

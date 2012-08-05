@@ -282,7 +282,7 @@ static BonjourBrowser *currentBrowser = nil;
     if ([[sender addresses] count] > 0)
     {
         NSData * address;
-        struct sockaddr * socketAddress;
+        struct sockaddr * socketAddress = nil;
         NSString * ipAddressString = nil;
         NSString * portString = nil;
         char buffer[256];

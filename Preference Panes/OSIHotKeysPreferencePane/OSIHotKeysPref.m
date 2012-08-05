@@ -22,7 +22,7 @@ static OSIHotKeysPref *currentKeysPref = 0L;
 {
 	if( self = [super init])
 	{
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIHotKeysPref" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIHotKeysPref" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];

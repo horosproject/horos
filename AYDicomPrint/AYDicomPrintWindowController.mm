@@ -472,6 +472,7 @@ NSString *mediumTag[] = {@"Blue Film", @"Clear Film", @"Paper"};
 	{
 		[self performSelectorOnMainThread: @selector(_setProgressMessage:) withObject: NSLocalizedString( @"There are no images selected.", nil) waitUntilDone: NO];
 		[images release];
+        [dicomConverter release];
 		[pool release];
 		return;
 	}

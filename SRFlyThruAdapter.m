@@ -22,7 +22,7 @@
 @implementation SRFlyThruAdapter
 - (id) initWithSRController: (SRController*) aSRController
 {
-	[super initWithWindow3DController: aSRController];
+	self = [super initWithWindow3DController: aSRController];
 	return self;
 }
 

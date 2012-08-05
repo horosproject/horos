@@ -52,7 +52,7 @@
                 [languages addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys: [file stringByDeletingPathExtension], @"language", [NSNumber numberWithBool: NO], @"active", nil]];
         }
         
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIGeneralPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];

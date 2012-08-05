@@ -120,6 +120,9 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 }
 
 -(id)initWithPort:(NSInteger)port connectionClass:(Class)classs {
+    
+    self = [super init];
+    
 	_clients = [[NSMutableArray alloc] init];
 	_class = classs;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:N2ConnectionStatusDidChangeNotification object:NULL];
@@ -193,6 +196,9 @@ static void accept(CFSocketRef socket, CFSocketCallBackType type, CFDataRef addr
 }
 
 -(id)initWithPath:(NSString*)path connectionClass:(Class)classs {
+    
+    self = [super init];
+    
 	_clients = [[NSMutableArray alloc] init];
 	_class = classs;
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionStatusDidChange:) name:N2ConnectionStatusDidChangeNotification object:NULL];

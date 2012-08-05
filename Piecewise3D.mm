@@ -22,7 +22,7 @@
 
 - (id) init
 {
-	[super init];
+	self = [super init];
 	xPiecewise = vtkPiecewiseFunction::New();
 	yPiecewise = vtkPiecewiseFunction::New();
 	zPiecewise = vtkPiecewiseFunction::New();

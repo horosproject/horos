@@ -5126,8 +5126,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	NSPoint current = [self currentPointInView:event];
 	
-	float previousScale = scaleValue;
-	
 	[self setScaleValue: (startScaleValue + (current.y - start.y) / (80. * [curDCM pwidth] / 512.))];
 	
 	NSPoint o = NSMakePoint( 0, 0);

@@ -73,7 +73,7 @@
 {
 	if( self = [super init])
 	{
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSILocationsPreferencePanePref" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSILocationsPreferencePanePref" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];

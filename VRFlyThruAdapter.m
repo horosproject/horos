@@ -20,7 +20,7 @@
 
 - (id) initWithVRController: (VRController*) aVRController
 {
-	[super initWithWindow3DController: aVRController];
+	self = [super initWithWindow3DController: aVRController];
 		
 	return self;
 }

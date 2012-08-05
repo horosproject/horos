@@ -47,7 +47,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 {
 	if( self = [super init])
 	{
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSICustomImageAnnotations" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSICustomImageAnnotations" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];

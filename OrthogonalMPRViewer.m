@@ -1775,13 +1775,13 @@ return YES;
 	
 	if( [sender tag] == 0)
 	{
-			[dcmFrom setIntValue:curIndex];
-			[dcmFromTextField setIntValue:curIndex];
+        [dcmFrom setIntValue:curIndex];
+        [dcmFromTextField setIntValue:curIndex];
 	}
 	else
 	{
-			[dcmTo setIntValue:curIndex];
-			[dcmToTextField setIntValue:curIndex];
+        [dcmTo setIntValue:curIndex];
+        [dcmToTextField setIntValue:curIndex];
 	}
 	
 	[dcmInterval display];

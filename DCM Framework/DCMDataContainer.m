@@ -641,7 +641,10 @@ void signal_EXC(int sig_num)
                     free( ptr);
             }
             else
+            {
+                free( ptr);
                 NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+            }
         }
         else
             NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");

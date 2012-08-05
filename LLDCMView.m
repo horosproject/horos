@@ -169,7 +169,7 @@
 
 - (id)initWithFrame:(NSRect)frameRect
 {
-	[super initWithFrame:frameRect];
+	self = [super initWithFrame:frameRect];
 	
 	return self;
 }

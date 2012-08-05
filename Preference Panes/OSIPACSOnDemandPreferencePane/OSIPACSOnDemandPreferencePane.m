@@ -145,7 +145,7 @@ static NSMatrix *gDateMatrix = nil;
 {
 	if( self = [super init])
 	{
-		NSNib *nib = [[NSNib alloc] initWithNibNamed: @"OSIPACSOnDemand" bundle: nil];
+		NSNib *nib = [[[NSNib alloc] initWithNibNamed: @"OSIPACSOnDemand" bundle: nil] autorelease];
 		[nib instantiateNibWithOwner:self topLevelObjects: nil];
 		
 		[self setMainView: [mainWindow contentView]];
