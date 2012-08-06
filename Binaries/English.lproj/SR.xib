@@ -2795,7 +2795,7 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="1048074889">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSPopUpButton" id="476790051">
@@ -2803,6 +2803,7 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{4, 0}, {48, 35}}</string>
 						<reference key="NSSuperview" ref="1048074889"/>
+						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSPopUpButtonCell" key="NSCell" id="186271389">
 							<int key="NSCellFlags">-2076180416</int>
@@ -2810,7 +2811,7 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 							<reference key="NSSupport" ref="12519626"/>
 							<reference key="NSControlView" ref="476790051"/>
 							<int key="NSButtonFlags">109068288</int>
-							<int key="NSButtonFlags2">2</int>
+							<int key="NSButtonFlags2">66</int>
 							<object class="NSMutableString" key="NSAlternateContents">
 								<characters key="NS.bytes"/>
 							</object>
@@ -2914,6 +2915,8 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{58, 37}</string>
+				<reference key="NSSuperview"/>
+				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -5071,7 +5074,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					</array>
 					<string key="NSFrameSize">{345, 200}</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1400, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10745,8 +10748,8 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="3D">{31, 34}</string>
-			<string key="3DRotate">{28, 28}</string>
-			<string key="3DRotateCamera">{28, 28}</string>
+			<string key="3DRotate">{128, 128}</string>
+			<string key="3DRotateCamera">{128, 128}</string>
 			<string key="AxialSmall">{60, 60}</string>
 			<string key="CorSmall">{60, 60}</string>
 			<string key="Move">{177, 178}</string>
