@@ -606,8 +606,6 @@
 		84ADF482115B622D00FE18B2 /* Window3DController+StereoVision.h in Headers */ = {isa = PBXBuildFile; fileRef = 84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */; };
 		84ADF483115B622D00FE18B2 /* Window3DController+StereoVision.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */; };
 		84B5EA4311A2BC0900193FDB /* dsr2html in Resources */ = {isa = PBXBuildFile; fileRef = 84B5EA4211A2BC0900193FDB /* dsr2html */; };
-		84B996A112FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
-		84B996A212FC0669005A4356 /* curvedROI.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84B996A012FC0669005A4356 /* curvedROI.tif */; };
 		84C4510B10033B8100138F70 /* OSIWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 84C450F51003384000138F70 /* OSIWindow.m */; };
 		84C4510C10033B8200138F70 /* OSIWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 84C450F41003384000138F70 /* OSIWindow.h */; };
 		84CD250D11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom in Resources */ = {isa = PBXBuildFile; fileRef = 84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */; };
@@ -856,6 +854,8 @@
 		A9B23D5015D00D73000E47C3 /* bonesRemoval.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D4E15D00D73000E47C3 /* bonesRemoval.pdf */; };
 		A9B23D5215D01089000E47C3 /* Cross.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5115D01089000E47C3 /* Cross.pdf */; };
 		A9B23D5315D01089000E47C3 /* Cross.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5115D01089000E47C3 /* Cross.pdf */; };
+		A9B23D5515D012C9000E47C3 /* curvedROI.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5415D012C9000E47C3 /* curvedROI.pdf */; };
+		A9B23D5615D012C9000E47C3 /* curvedROI.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5415D012C9000E47C3 /* curvedROI.pdf */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
@@ -8769,7 +8769,6 @@
 		84ADF470115B622D00FE18B2 /* Window3DController+StereoVision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Window3DController+StereoVision.h"; sourceTree = "<group>"; };
 		84ADF471115B622D00FE18B2 /* Window3DController+StereoVision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Window3DController+StereoVision.m"; sourceTree = "<group>"; };
 		84B5EA4211A2BC0900193FDB /* dsr2html */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = dsr2html; sourceTree = "<group>"; };
-		84B996A012FC0669005A4356 /* curvedROI.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = curvedROI.tif; sourceTree = "<group>"; };
 		84C450F41003384000138F70 /* OSIWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIWindow.h; sourceTree = "<group>"; };
 		84C450F51003384000138F70 /* OSIWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIWindow.m; sourceTree = "<group>"; };
 		84CD250C11EC5564004669D6 /* OsiriXDB_Previous_DataModel2.4.mom */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = OsiriXDB_Previous_DataModel2.4.mom; sourceTree = "<group>"; };
@@ -8948,6 +8947,7 @@
 		A9B23D4B15D00B81000E47C3 /* 3DCut.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = 3DCut.pdf; sourceTree = "<group>"; };
 		A9B23D4E15D00D73000E47C3 /* bonesRemoval.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = bonesRemoval.pdf; sourceTree = "<group>"; };
 		A9B23D5115D01089000E47C3 /* Cross.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Cross.pdf; sourceTree = "<group>"; };
+		A9B23D5415D012C9000E47C3 /* curvedROI.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = curvedROI.pdf; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tif; sourceTree = "<group>"; };
@@ -15947,7 +15947,7 @@
 				8483ABA50E1BE33900C21B31 /* crossCursor.tif */,
 				BFD4BFEF06F2A96900EC9A90 /* Cursors */,
 				848CE28E145AC9AE00BEB249 /* curvedPath.icns */,
-				84B996A012FC0669005A4356 /* curvedROI.tif */,
+				A9B23D5415D012C9000E47C3 /* curvedROI.pdf */,
 				A922F3BA0C631F3C0007AB98 /* CustomImageAnnotations.png */,
 				ABBB6488063587B200D9531F /* DAT.icns */,
 				CE8CDAF112B3C88D00268E4F /* DatabaseIcon.tif */,
@@ -26601,7 +26601,6 @@
 				CE72D7C31263702500874EF6 /* Pause.pdf in Resources */,
 				CE8CDAF212B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
 				CE90551812F5B68100263AB6 /* CPR.xib in Resources */,
-				84B996A112FC0669005A4356 /* curvedROI.tif in Resources */,
 				CEB9898E133500D30083F3FD /* OSIWebSharingPreferencePanePref.xib in Resources */,
 				CEB98A02133507AC0083F3FD /* OSIViewerPreferencePanePref.xib in Resources */,
 				CEB98A0C133507BB0083F3FD /* OSIPETPreferencePanePref.xib in Resources */,
@@ -26719,6 +26718,7 @@
 				A9B23D4C15D00B82000E47C3 /* 3DCut.pdf in Resources */,
 				A9B23D4F15D00D73000E47C3 /* bonesRemoval.pdf in Resources */,
 				A9B23D5215D01089000E47C3 /* Cross.pdf in Resources */,
+				A9B23D5515D012C9000E47C3 /* curvedROI.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26981,7 +26981,6 @@
 				A9A80E4F11F744FC009F54B9 /* Activity_Stop.tif in Resources */,
 				CE72D7C41263702500874EF6 /* Pause.pdf in Resources */,
 				CE8CDAF312B3C88D00268E4F /* DatabaseIcon.tif in Resources */,
-				84B996A212FC0669005A4356 /* curvedROI.tif in Resources */,
 				CEB98A05133507AC0083F3FD /* OSIViewerPreferencePanePref.xib in Resources */,
 				CEB98A0F133507BB0083F3FD /* OSIPETPreferencePanePref.xib in Resources */,
 				CEB98BCE133508040083F3FD /* OSIHotKeysPref.xib in Resources */,
@@ -27081,6 +27080,7 @@
 				A9B23D4D15D00B82000E47C3 /* 3DCut.pdf in Resources */,
 				A9B23D5015D00D73000E47C3 /* bonesRemoval.pdf in Resources */,
 				A9B23D5315D01089000E47C3 /* Cross.pdf in Resources */,
+				A9B23D5615D012C9000E47C3 /* curvedROI.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
