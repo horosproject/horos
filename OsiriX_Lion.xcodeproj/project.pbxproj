@@ -810,6 +810,14 @@
 		A9ADBBD10ADE80E60022DFC7 /* ReportPages.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */; };
 		A9ADBBD20ADE80E60022DFC7 /* ReportRTF.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */; };
 		A9ADBBD30ADE80E60022DFC7 /* ReportWord.icns in Resources */ = {isa = PBXBuildFile; fileRef = A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */; };
+		A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0215CFDF62000E47C3 /* Move.pdf */; };
+		A9B23D0415CFDF62000E47C3 /* Move.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0215CFDF62000E47C3 /* Move.pdf */; };
+		A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0615CFDF76000E47C3 /* Stack.pdf */; };
+		A9B23D0815CFDF76000E47C3 /* Stack.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0615CFDF76000E47C3 /* Stack.pdf */; };
+		A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0915CFDF81000E47C3 /* Zoom.pdf */; };
+		A9B23D0B15CFDF81000E47C3 /* Zoom.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0915CFDF81000E47C3 /* Zoom.pdf */; };
+		A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0C15CFDF8E000E47C3 /* Rotate.pdf */; };
+		A9B23D0E15CFDF8E000E47C3 /* Rotate.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D0C15CFDF8E000E47C3 /* Rotate.pdf */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
@@ -1657,7 +1665,6 @@
 		ABBB64BE063587B200D9531F /* Length.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648C063587B200D9531F /* Length.tif */; };
 		ABBB64BF063587B200D9531F /* Logo.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648D063587B200D9531F /* Logo.tif */; };
 		ABBB64C0063587B200D9531F /* MIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648E063587B200D9531F /* MIP.tif */; };
-		ABBB64C1063587B200D9531F /* Move.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648F063587B200D9531F /* Move.tif */; };
 		ABBB64C2063587B200D9531F /* Movie.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6490063587B200D9531F /* Movie.pdf */; };
 		ABBB64C3063587B200D9531F /* MPR.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6491063587B200D9531F /* MPR.tif */; };
 		ABBB64C4063587B200D9531F /* MPR3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6492063587B200D9531F /* MPR3D.tif */; };
@@ -1674,17 +1681,14 @@
 		ABBB64CF063587B200D9531F /* QueryRetrieve.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649D063587B200D9531F /* QueryRetrieve.pdf */; };
 		ABBB64D0063587B200D9531F /* Rectangle.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649E063587B200D9531F /* Rectangle.tif */; };
 		ABBB64D1063587B200D9531F /* roi.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649F063587B200D9531F /* roi.icns */; };
-		ABBB64D2063587B200D9531F /* Rotate.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A0063587B200D9531F /* Rotate.tif */; };
 		ABBB64D3063587B200D9531F /* Sag.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A1063587B200D9531F /* Sag.tif */; };
 		ABBB64D4063587B200D9531F /* Send.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A2063587B200D9531F /* Send.pdf */; };
 		ABBB64D5063587B200D9531F /* SRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A3063587B200D9531F /* SRSettings.tif */; };
-		ABBB64D6063587B200D9531F /* Stack.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A4063587B200D9531F /* Stack.tif */; };
 		ABBB64D7063587B200D9531F /* Surface.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A5063587B200D9531F /* Surface.tif */; };
 		ABBB64D8063587B200D9531F /* Text.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A6063587B200D9531F /* Text.tif */; };
 		ABBB64D9063587B200D9531F /* Viewer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A7063587B200D9531F /* Viewer.pdf */; };
 		ABBB64DA063587B200D9531F /* VolumeRendering.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A8063587B200D9531F /* VolumeRendering.tif */; };
 		ABBB64DC063587B200D9531F /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
-		ABBB64DD063587B200D9531F /* Zoom.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tif */; };
 		ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tif */; };
 		ABC3E5520B330A58006704E3 /* DNDArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = ABC3E5500B330A58006704E3 /* DNDArrayController.m */; };
 		ABC3E5530B330A58006704E3 /* DNDArrayController.h in Headers */ = {isa = PBXBuildFile; fileRef = ABC3E5510B330A58006704E3 /* DNDArrayController.h */; };
@@ -7223,7 +7227,6 @@
 		CEC7057710A5C844008935EA /* Length.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648C063587B200D9531F /* Length.tif */; };
 		CEC7057810A5C844008935EA /* Logo.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648D063587B200D9531F /* Logo.tif */; };
 		CEC7057910A5C844008935EA /* MIP.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648E063587B200D9531F /* MIP.tif */; };
-		CEC7057A10A5C844008935EA /* Move.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB648F063587B200D9531F /* Move.tif */; };
 		CEC7057B10A5C844008935EA /* Movie.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6490063587B200D9531F /* Movie.pdf */; };
 		CEC7057C10A5C844008935EA /* MPR.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6491063587B200D9531F /* MPR.tif */; };
 		CEC7057D10A5C844008935EA /* MPR3D.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB6492063587B200D9531F /* MPR3D.tif */; };
@@ -7240,17 +7243,14 @@
 		CEC7058810A5C844008935EA /* QueryRetrieve.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649D063587B200D9531F /* QueryRetrieve.pdf */; };
 		CEC7058910A5C844008935EA /* Rectangle.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649E063587B200D9531F /* Rectangle.tif */; };
 		CEC7058A10A5C844008935EA /* roi.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB649F063587B200D9531F /* roi.icns */; };
-		CEC7058B10A5C844008935EA /* Rotate.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A0063587B200D9531F /* Rotate.tif */; };
 		CEC7058C10A5C844008935EA /* Sag.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A1063587B200D9531F /* Sag.tif */; };
 		CEC7058D10A5C844008935EA /* Send.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A2063587B200D9531F /* Send.pdf */; };
 		CEC7058E10A5C844008935EA /* SRSettings.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A3063587B200D9531F /* SRSettings.tif */; };
-		CEC7058F10A5C844008935EA /* Stack.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A4063587B200D9531F /* Stack.tif */; };
 		CEC7059010A5C844008935EA /* Surface.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A5063587B200D9531F /* Surface.tif */; };
 		CEC7059110A5C844008935EA /* Text.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A6063587B200D9531F /* Text.tif */; };
 		CEC7059210A5C844008935EA /* Viewer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A7063587B200D9531F /* Viewer.pdf */; };
 		CEC7059310A5C844008935EA /* VolumeRendering.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A8063587B200D9531F /* VolumeRendering.tif */; };
 		CEC7059510A5C844008935EA /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
-		CEC7059610A5C844008935EA /* Zoom.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tif */; };
 		CEC7059710A5C844008935EA /* ZoomToFit.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tif */; };
 		CEC7059810A5C844008935EA /* add.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD51063D6938005B99B4 /* add.tif */; };
 		CEC7059910A5C844008935EA /* minus.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABDEBD52063D6938005B99B4 /* minus.tif */; };
@@ -8927,6 +8927,10 @@
 		A9ADBBCE0ADE80E60022DFC7 /* ReportPages.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportPages.icns; sourceTree = "<group>"; };
 		A9ADBBCF0ADE80E60022DFC7 /* ReportRTF.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportRTF.icns; sourceTree = "<group>"; };
 		A9ADBBD00ADE80E60022DFC7 /* ReportWord.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ReportWord.icns; sourceTree = "<group>"; };
+		A9B23D0215CFDF62000E47C3 /* Move.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Move.pdf; sourceTree = "<group>"; };
+		A9B23D0615CFDF76000E47C3 /* Stack.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Stack.pdf; sourceTree = "<group>"; };
+		A9B23D0915CFDF81000E47C3 /* Zoom.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Zoom.pdf; sourceTree = "<group>"; };
+		A9B23D0C15CFDF8E000E47C3 /* Rotate.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Rotate.pdf; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tif; sourceTree = "<group>"; };
@@ -9288,7 +9292,6 @@
 		ABBB648C063587B200D9531F /* Length.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Length.tif; sourceTree = "<group>"; };
 		ABBB648D063587B200D9531F /* Logo.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Logo.tif; sourceTree = "<group>"; };
 		ABBB648E063587B200D9531F /* MIP.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MIP.tif; sourceTree = "<group>"; };
-		ABBB648F063587B200D9531F /* Move.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Move.tif; sourceTree = "<group>"; };
 		ABBB6490063587B200D9531F /* Movie.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Movie.pdf; sourceTree = "<group>"; };
 		ABBB6491063587B200D9531F /* MPR.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MPR.tif; sourceTree = "<group>"; };
 		ABBB6492063587B200D9531F /* MPR3D.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = MPR3D.tif; sourceTree = "<group>"; };
@@ -9305,17 +9308,14 @@
 		ABBB649D063587B200D9531F /* QueryRetrieve.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = QueryRetrieve.pdf; sourceTree = "<group>"; };
 		ABBB649E063587B200D9531F /* Rectangle.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rectangle.tif; sourceTree = "<group>"; };
 		ABBB649F063587B200D9531F /* roi.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = roi.icns; sourceTree = "<group>"; };
-		ABBB64A0063587B200D9531F /* Rotate.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Rotate.tif; sourceTree = "<group>"; };
 		ABBB64A1063587B200D9531F /* Sag.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Sag.tif; sourceTree = "<group>"; };
 		ABBB64A2063587B200D9531F /* Send.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Send.pdf; sourceTree = "<group>"; };
 		ABBB64A3063587B200D9531F /* SRSettings.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = SRSettings.tif; sourceTree = "<group>"; };
-		ABBB64A4063587B200D9531F /* Stack.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Stack.tif; sourceTree = "<group>"; };
 		ABBB64A5063587B200D9531F /* Surface.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Surface.tif; sourceTree = "<group>"; };
 		ABBB64A6063587B200D9531F /* Text.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Text.tif; sourceTree = "<group>"; };
 		ABBB64A7063587B200D9531F /* Viewer.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Viewer.pdf; sourceTree = "<group>"; };
 		ABBB64A8063587B200D9531F /* VolumeRendering.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = VolumeRendering.tif; sourceTree = "<group>"; };
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
-		ABBB64AB063587B200D9531F /* Zoom.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Zoom.tif; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
 		ABBFDA3F063480490011BD0A /* Deployment-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "Deployment-Info.plist"; sourceTree = "<group>"; };
 		ABC3E5500B330A58006704E3 /* DNDArrayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = DNDArrayController.m; sourceTree = "<group>"; };
@@ -16001,7 +16001,7 @@
 				ABDEBD52063D6938005B99B4 /* minus.tif */,
 				5997896F11B7B40B002DB107 /* MinusButton.png */,
 				ABBB648E063587B200D9531F /* MIP.tif */,
-				ABBB648F063587B200D9531F /* Move.tif */,
+				A9B23D0215CFDF62000E47C3 /* Move.pdf */,
 				ABBB6490063587B200D9531F /* Movie.pdf */,
 				CE1366B40B41D0F200944876 /* mpeg2.tif */,
 				ABBB6491063587B200D9531F /* MPR.tif */,
@@ -16063,7 +16063,7 @@
 				84A220E60F25E41800C6C3EB /* ROIs.tif */,
 				AB9693BF0E823E3A00F09EEA /* ROIsAndKeys.tif */,
 				A9044D370BBAA29200F36689 /* ROISelector.tif */,
-				ABBB64A0063587B200D9531F /* Rotate.tif */,
+				A9B23D0C15CFDF8E000E47C3 /* Rotate.pdf */,
 				CE6C77EC09739B3100F951C2 /* Rotate3DCameraCursor.tif */,
 				CE6C77EB09739B3100F951C2 /* Rotate3DCursor.tif */,
 				7E2BE3D00715DB9A0017898A /* route.tif */,
@@ -16087,7 +16087,7 @@
 				AB7CB7B30A6E3922008DFCC9 /* smile.png */,
 				CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */,
 				ABBB64A3063587B200D9531F /* SRSettings.tif */,
-				ABBB64A4063587B200D9531F /* Stack.tif */,
+				A9B23D0615CFDF76000E47C3 /* Stack.pdf */,
 				7E2BE3FD0715DC0D0017898A /* StartupDisk.tif */,
 				ABF09BB80642FD220044FE6C /* Stereo.icns */,
 				AB73E1480649839300545980 /* Studies.tif */,
@@ -16109,7 +16109,7 @@
 				CEF30FD00945DEA300824A2B /* windows.tif */,
 				A934924115CFC45D0029326E /* WLWW.pdf */,
 				ABBB64AA063587B200D9531F /* XML.icns */,
-				ABBB64AB063587B200D9531F /* Zoom.tif */,
+				A9B23D0915CFDF81000E47C3 /* Zoom.pdf */,
 				ABBB64AC063587B200D9531F /* ZoomToFit.tif */,
 				ABBB6495063587B200D9531F /* Osirix.icns */,
 			);
@@ -26312,7 +26312,6 @@
 				ABBB64BE063587B200D9531F /* Length.tif in Resources */,
 				ABBB64BF063587B200D9531F /* Logo.tif in Resources */,
 				ABBB64C0063587B200D9531F /* MIP.tif in Resources */,
-				ABBB64C1063587B200D9531F /* Move.tif in Resources */,
 				ABBB64C2063587B200D9531F /* Movie.pdf in Resources */,
 				ABBB64C3063587B200D9531F /* MPR.tif in Resources */,
 				ABBB64C4063587B200D9531F /* MPR3D.tif in Resources */,
@@ -26329,17 +26328,14 @@
 				ABBB64CF063587B200D9531F /* QueryRetrieve.pdf in Resources */,
 				ABBB64D0063587B200D9531F /* Rectangle.tif in Resources */,
 				ABBB64D1063587B200D9531F /* roi.icns in Resources */,
-				ABBB64D2063587B200D9531F /* Rotate.tif in Resources */,
 				ABBB64D3063587B200D9531F /* Sag.tif in Resources */,
 				ABBB64D4063587B200D9531F /* Send.pdf in Resources */,
 				ABBB64D5063587B200D9531F /* SRSettings.tif in Resources */,
-				ABBB64D6063587B200D9531F /* Stack.tif in Resources */,
 				ABBB64D7063587B200D9531F /* Surface.tif in Resources */,
 				ABBB64D8063587B200D9531F /* Text.tif in Resources */,
 				ABBB64D9063587B200D9531F /* Viewer.pdf in Resources */,
 				ABBB64DA063587B200D9531F /* VolumeRendering.tif in Resources */,
 				ABBB64DC063587B200D9531F /* XML.icns in Resources */,
-				ABBB64DD063587B200D9531F /* Zoom.tif in Resources */,
 				ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */,
 				ABDEBD6C063D693F005B99B4 /* add.tif in Resources */,
 				ABDEBD6D063D693F005B99B4 /* minus.tif in Resources */,
@@ -26719,6 +26715,10 @@
 				A9701AA015C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */,
 				A934924215CFC45D0029326E /* WLWW.pdf in Resources */,
+				A9B23D0315CFDF62000E47C3 /* Move.pdf in Resources */,
+				A9B23D0715CFDF76000E47C3 /* Stack.pdf in Resources */,
+				A9B23D0A15CFDF81000E47C3 /* Zoom.pdf in Resources */,
+				A9B23D0D15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26746,7 +26746,6 @@
 				CEC7057710A5C844008935EA /* Length.tif in Resources */,
 				CEC7057810A5C844008935EA /* Logo.tif in Resources */,
 				CEC7057910A5C844008935EA /* MIP.tif in Resources */,
-				CEC7057A10A5C844008935EA /* Move.tif in Resources */,
 				CEC7057B10A5C844008935EA /* Movie.pdf in Resources */,
 				CEC7057C10A5C844008935EA /* MPR.tif in Resources */,
 				CEC7057D10A5C844008935EA /* MPR3D.tif in Resources */,
@@ -26763,17 +26762,14 @@
 				CEC7058810A5C844008935EA /* QueryRetrieve.pdf in Resources */,
 				CEC7058910A5C844008935EA /* Rectangle.tif in Resources */,
 				CEC7058A10A5C844008935EA /* roi.icns in Resources */,
-				CEC7058B10A5C844008935EA /* Rotate.tif in Resources */,
 				CEC7058C10A5C844008935EA /* Sag.tif in Resources */,
 				CEC7058D10A5C844008935EA /* Send.pdf in Resources */,
 				CEC7058E10A5C844008935EA /* SRSettings.tif in Resources */,
-				CEC7058F10A5C844008935EA /* Stack.tif in Resources */,
 				CEC7059010A5C844008935EA /* Surface.tif in Resources */,
 				CEC7059110A5C844008935EA /* Text.tif in Resources */,
 				CEC7059210A5C844008935EA /* Viewer.pdf in Resources */,
 				CEC7059310A5C844008935EA /* VolumeRendering.tif in Resources */,
 				CEC7059510A5C844008935EA /* XML.icns in Resources */,
-				CEC7059610A5C844008935EA /* Zoom.tif in Resources */,
 				CEC7059710A5C844008935EA /* ZoomToFit.tif in Resources */,
 				CEC7059810A5C844008935EA /* add.tif in Resources */,
 				CEC7059910A5C844008935EA /* minus.tif in Resources */,
@@ -27081,6 +27077,10 @@
 				A9701AA115C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA315C9587C0019EE55 /* burn_anim11.tif in Resources */,
 				A934924315CFC45D0029326E /* WLWW.pdf in Resources */,
+				A9B23D0415CFDF62000E47C3 /* Move.pdf in Resources */,
+				A9B23D0815CFDF76000E47C3 /* Stack.pdf in Resources */,
+				A9B23D0B15CFDF81000E47C3 /* Zoom.pdf in Resources */,
+				A9B23D0E15CFDF8E000E47C3 /* Rotate.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2248,7 +2248,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSSupport" ref="670336972"/>
 										<reference key="NSControlView" ref="874006650"/>
 										<int key="NSButtonFlags">-1228128256</int>
-										<int key="NSButtonFlags2">130</int>
+										<int key="NSButtonFlags2">66</int>
 										<object class="NSCustomResource" key="NSNormalImage" id="566989259">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">WLWW</string>
@@ -2266,7 +2266,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSControlView" ref="874006650"/>
 										<int key="NSTag">1</int>
 										<int key="NSButtonFlags">-1228128256</int>
-										<int key="NSButtonFlags2">2</int>
+										<int key="NSButtonFlags2">66</int>
 										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">Move</string>
@@ -2302,7 +2302,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSControlView" ref="874006650"/>
 										<int key="NSTag">3</int>
 										<int key="NSButtonFlags">-1228128256</int>
-										<int key="NSButtonFlags2">2</int>
+										<int key="NSButtonFlags2">66</int>
 										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">Rotate</string>
@@ -2320,7 +2320,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<reference key="NSControlView" ref="874006650"/>
 										<int key="NSTag">4</int>
 										<int key="NSButtonFlags">-1228128256</int>
-										<int key="NSButtonFlags2">2</int>
+										<int key="NSButtonFlags2">66</int>
 										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">Stack</string>
@@ -8177,7 +8177,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="3DRotateCamera">{28, 28}</string>
 			<string key="Length">{28, 28}</string>
-			<string key="Move">{28, 28}</string>
+			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSRefreshFreestandingTemplate">{14, 14}</string>
@@ -8185,10 +8185,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="PathAssistant">{64, 64}</string>
 			<string key="Propagate">{32, 32}</string>
 			<string key="PropagateOn">{32, 32}</string>
-			<string key="Rotate">{28, 28}</string>
-			<string key="Stack">{32, 32}</string>
+			<string key="Rotate">{147, 177}</string>
+			<string key="Stack">{337, 324}</string>
 			<string key="WLWW">{107, 107}</string>
-			<string key="Zoom">{28, 28}</string>
+			<string key="Zoom">{508, 568}</string>
 			<string key="curvedROI">{23, 23}</string>
 			<string key="horizontalPosition">{20, 20}</string>
 			<string key="normalPosition">{20, 20}</string>

@@ -1267,7 +1267,7 @@
 								</object>
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">130</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="832814714">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">WLWW</string>
@@ -1285,7 +1285,7 @@
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">1</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Move</string>
@@ -1321,7 +1321,7 @@
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">3</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Rotate</string>
@@ -17970,18 +17970,18 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 			<string key="HUDRightArrowButtonNeutral">{20, 20}</string>
 			<string key="HUDRightArrowButtonPressed">{20, 20}</string>
 			<string key="Length">{28, 28}</string>
-			<string key="Move">{28, 28}</string>
+			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
 			<string key="Oval">{28, 28}</string>
 			<string key="Point">{28, 28}</string>
-			<string key="Rotate">{28, 28}</string>
+			<string key="Rotate">{147, 177}</string>
 			<string key="SagSmall">{60, 60}</string>
 			<string key="SagSmallOpposite">{60, 60}</string>
 			<string key="Stereo">{32, 32}</string>
 			<string key="WLWW">{107, 107}</string>
-			<string key="Zoom">{28, 28}</string>
+			<string key="Zoom">{508, 568}</string>
 			<string key="bonesRemoval">{28, 28}</string>
 			<string key="smalltrash">{25, 25}</string>
 		</dictionary>
