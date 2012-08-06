@@ -305,7 +305,7 @@
 										<reference key="NSControlView" ref="412922932"/>
 										<int key="NSTag">8</int>
 										<int key="NSButtonFlags">-1232322560</int>
-										<int key="NSButtonFlags2">2</int>
+										<int key="NSButtonFlags2">66</int>
 										<object class="NSCustomResource" key="NSNormalImage">
 											<string key="NSClassName">NSImage</string>
 											<string key="NSResourceName">Cross</string>
@@ -3957,7 +3957,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="Angle">{128, 128}</string>
-			<string key="Cross">{28, 28}</string>
+			<string key="Cross">{128, 128}</string>
 			<string key="Length">{128, 128}</string>
 			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
