@@ -98,6 +98,8 @@
 #import "WindowLayoutManager.h"
 #import "DCMTKStudyQueryNode.h"
 
+#define ToolsMenuIconSize NSMakeSize(28.0, 28.0)
+
 int delayedTileWindows = NO;
 
 extern  ToolbarPanelController  *toolbarPanel[ 10];
@@ -711,7 +713,10 @@ return YES;
 		else [item setState:NSOffState];
 		
 		if( [item image] == nil)
+		{
 			[item setImage: [self imageForROI: [item tag]]];
+			[[item image] setSize:ToolsMenuIconSize];
+		}
 	}
 	else if( [item action] == @selector( ApplyCLUT:))
 	{
@@ -2147,7 +2152,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
 		NSString *title;
 		NSString *image;
-		NSSize imageSize = NSMakeSize(28.0, 28.0);
+
 		NSMenuItem *subItem;
 		int i = 0;
 		
@@ -2161,7 +2166,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[item setTag:tag];
 				
 				[item setTarget:self];
-				[[item image] setSize:imageSize];
+				[[item image] setSize:ToolsMenuIconSize];
 				[submenu addItem:item];
 				[item release];
 			}
@@ -2175,7 +2180,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[item setTag:i++];
 			[item setTarget:self];
 			[item setImage:[NSImage imageNamed:image]];
-			[[item image] setSize:imageSize];
+			[[item image] setSize:ToolsMenuIconSize];
 			[contextualMenu addItem:item];
 			[item release];
 		}
@@ -2191,7 +2196,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		else
 			[item setImage: [self imageForROI: tMesure]];
 		
-		[[item image] setSize:imageSize];
+		[[item image] setSize:ToolsMenuIconSize];
 		
 		[contextualMenu addItem:item];
 		[item release];
@@ -13524,6 +13529,7 @@ int i,j,l;
 	NSButtonCell *cell = [toolsMatrix cellAtRow:0 column:5];
 	[cell setTag: roitype];
 	[cell setImage: [self imageForROI: roitype]];
+	[[cell image] setSize:ToolsMenuIconSize];
 	
 	[toolsMatrix selectCellAtRow:0 column:5];
 	
@@ -19012,6 +19018,7 @@ int i,j,l;
 		if( [[popupRoi itemAtIndex: i] image] == nil)
 		{
 			[[popupRoi itemAtIndex: i] setImage: [self imageForROI: [[popupRoi itemAtIndex: i] tag]]];
+			[[[popupRoi itemAtIndex: i] image] setSize:ToolsMenuIconSize];
 		}
 	}
 	
