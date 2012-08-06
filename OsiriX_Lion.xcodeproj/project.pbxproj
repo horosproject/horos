@@ -623,12 +623,6 @@
 		84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
 		84E1924713699BBB008DCFC8 /* WADODownload.h in Headers */ = {isa = PBXBuildFile; fileRef = 84E191F91369966A008DCFC8 /* WADODownload.h */; };
 		84E1924813699BBB008DCFC8 /* WADODownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 84E191FA1369966A008DCFC8 /* WADODownload.m */; };
-		84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98213F41800005A5D02 /* horizontalPosition.tif */; };
-		84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98213F41800005A5D02 /* horizontalPosition.tif */; };
-		84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98313F41800005A5D02 /* normalPosition.tif */; };
-		84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98313F41800005A5D02 /* normalPosition.tif */; };
-		84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
-		84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */ = {isa = PBXBuildFile; fileRef = 84EBD98413F41800005A5D02 /* verticalPosition.tif */; };
 		84F453570FC3DF5400D29666 /* ILCrashReporter.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = ABE881440FC1444D009F5C80 /* ILCrashReporter.framework */; };
 		A0344496143DE4AA003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
 		A0344498143DE4AB003E1AFA /* DCMUSRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = A085E104141E53210072BF0D /* DCMUSRegion.m */; };
@@ -856,6 +850,12 @@
 		A9B23D5315D01089000E47C3 /* Cross.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5115D01089000E47C3 /* Cross.pdf */; };
 		A9B23D5515D012C9000E47C3 /* curvedROI.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5415D012C9000E47C3 /* curvedROI.pdf */; };
 		A9B23D5615D012C9000E47C3 /* curvedROI.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D5415D012C9000E47C3 /* curvedROI.pdf */; };
+		A9B23D6915D018A4000E47C3 /* horizontalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6815D018A4000E47C3 /* horizontalPosition.pdf */; };
+		A9B23D6A15D018A4000E47C3 /* horizontalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6815D018A4000E47C3 /* horizontalPosition.pdf */; };
+		A9B23D6D15D018B6000E47C3 /* normalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6C15D018B6000E47C3 /* normalPosition.pdf */; };
+		A9B23D6E15D018B6000E47C3 /* normalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6C15D018B6000E47C3 /* normalPosition.pdf */; };
+		A9B23D7015D018C5000E47C3 /* verticalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6F15D018C5000E47C3 /* verticalPosition.pdf */; };
+		A9B23D7115D018C5000E47C3 /* verticalPosition.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A9B23D6F15D018C5000E47C3 /* verticalPosition.pdf */; };
 		A9B411B70890492F00913770 /* small_album.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B30890492F00913770 /* small_album.tif */; };
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
@@ -8778,9 +8778,6 @@
 		84D7BBE2154A941A007B5A86 /* NSNotificationCenter+N2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "NSNotificationCenter+N2.mm"; path = "nitrogen/Sources/NSNotificationCenter+N2.mm"; sourceTree = "<group>"; };
 		84E191F91369966A008DCFC8 /* WADODownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WADODownload.h; sourceTree = "<group>"; };
 		84E191FA1369966A008DCFC8 /* WADODownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WADODownload.m; sourceTree = "<group>"; };
-		84EBD98213F41800005A5D02 /* horizontalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = horizontalPosition.tif; sourceTree = "<group>"; };
-		84EBD98313F41800005A5D02 /* normalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = normalPosition.tif; sourceTree = "<group>"; };
-		84EBD98413F41800005A5D02 /* verticalPosition.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = verticalPosition.tif; sourceTree = "<group>"; };
 		A085E103141E53210072BF0D /* DCMUSRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMUSRegion.h; sourceTree = "<group>"; };
 		A085E104141E53210072BF0D /* DCMUSRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DCMUSRegion.m; sourceTree = "<group>"; };
 		A90202BA0B980CD60001A00B /* PluginManagerController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = PluginManagerController.h; sourceTree = "<group>"; };
@@ -8948,6 +8945,9 @@
 		A9B23D4E15D00D73000E47C3 /* bonesRemoval.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = bonesRemoval.pdf; sourceTree = "<group>"; };
 		A9B23D5115D01089000E47C3 /* Cross.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Cross.pdf; sourceTree = "<group>"; };
 		A9B23D5415D012C9000E47C3 /* curvedROI.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = curvedROI.pdf; sourceTree = "<group>"; };
+		A9B23D6815D018A4000E47C3 /* horizontalPosition.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = horizontalPosition.pdf; sourceTree = "<group>"; };
+		A9B23D6C15D018B6000E47C3 /* normalPosition.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = normalPosition.pdf; sourceTree = "<group>"; };
+		A9B23D6F15D018C5000E47C3 /* verticalPosition.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = verticalPosition.pdf; sourceTree = "<group>"; };
 		A9B411B30890492F00913770 /* small_album.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_album.tif; sourceTree = "<group>"; };
 		A9B411B40890492F00913770 /* small_smartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_smartAlbum.tif; sourceTree = "<group>"; };
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tif; sourceTree = "<group>"; };
@@ -15973,7 +15973,7 @@
 				7E2BE3E20715DBD40017898A /* GeneralPreferences.tif */,
 				7E9C6D24066D2BCD00D33966 /* greenLight.tif */,
 				CED1FD1A1035E9BB0076AB33 /* GrowingRegion.png */,
-				84EBD98213F41800005A5D02 /* horizontalPosition.tif */,
+				A9B23D6815D018A4000E47C3 /* horizontalPosition.pdf */,
 				A9F6E54608FEB59B0060285A /* horizontalSplitView.tif */,
 				A917CF190BF49314002F415E /* HUDLeftArrowButtonNeutral.tif */,
 				A917CF1A0BF49314002F415E /* HUDLeftArrowButtonPressed.tif */,
@@ -16013,7 +16013,7 @@
 				A9B23D3615CFFCC4000E47C3 /* Navigator.pdf */,
 				7E2BE3F40715DBFB0017898A /* Network.tif */,
 				ABBB6493063587B200D9531F /* Next.tif */,
-				84EBD98313F41800005A5D02 /* normalPosition.tif */,
+				A9B23D6C15D018B6000E47C3 /* normalPosition.pdf */,
 				A9B23D1E15CFE917000E47C3 /* Opened Polygon.pdf */,
 				CEE619EE0912C73000C31D78 /* OrientationWidget.tif */,
 				A9FEC13F0907EBA600B218BE /* orthogonalReslice.tif */,
@@ -16102,7 +16102,7 @@
 				CEDEF7D30D020E9100CADB15 /* TIFFSmall.tif */,
 				CE74824006C9701200FFA74C /* trash.icns */,
 				A9F6E54B08FEB5A70060285A /* turnSplitView.tif */,
-				84EBD98413F41800005A5D02 /* verticalPosition.tif */,
+				A9B23D6F15D018C5000E47C3 /* verticalPosition.pdf */,
 				A9F6E54108FEB58E0060285A /* verticalSplitView.tif */,
 				ABBB64A7063587B200D9531F /* Viewer.pdf */,
 				ABBB64A8063587B200D9531F /* VolumeRendering.tif */,
@@ -26618,9 +26618,6 @@
 				CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */,
 				CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */,
 				CE9E11D013DBB5DD008B2848 /* OsiriX.sdef in Resources */,
-				84EBD98513F41800005A5D02 /* horizontalPosition.tif in Resources */,
-				84EBD98713F41800005A5D02 /* normalPosition.tif in Resources */,
-				84EBD98913F41800005A5D02 /* verticalPosition.tif in Resources */,
 				59C447E21451705900D71580 /* Eject_gray.pdf in Resources */,
 				59C447E41451705900D71580 /* Eject_lightgray.pdf in Resources */,
 				848CE28F145AC9AE00BEB249 /* curvedPath.icns in Resources */,
@@ -26719,6 +26716,9 @@
 				A9B23D4F15D00D73000E47C3 /* bonesRemoval.pdf in Resources */,
 				A9B23D5215D01089000E47C3 /* Cross.pdf in Resources */,
 				A9B23D5515D012C9000E47C3 /* curvedROI.pdf in Resources */,
+				A9B23D6915D018A4000E47C3 /* horizontalPosition.pdf in Resources */,
+				A9B23D6D15D018B6000E47C3 /* normalPosition.pdf in Resources */,
+				A9B23D7015D018C5000E47C3 /* verticalPosition.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26992,9 +26992,6 @@
 				CEB98C5A1335084F0083F3FD /* Security.tiff in Resources */,
 				CEB98C621335085D0083F3FD /* OSICDPreferencePanePref.xib in Resources */,
 				CE9E11D113DBB5DD008B2848 /* OsiriX.sdef in Resources */,
-				84EBD98613F41800005A5D02 /* horizontalPosition.tif in Resources */,
-				84EBD98813F41800005A5D02 /* normalPosition.tif in Resources */,
-				84EBD98A13F41800005A5D02 /* verticalPosition.tif in Resources */,
 				59C447E31451705900D71580 /* Eject_gray.pdf in Resources */,
 				59C447E51451705900D71580 /* Eject_lightgray.pdf in Resources */,
 				848CE290145AC9AE00BEB249 /* curvedPath.icns in Resources */,
@@ -27081,6 +27078,9 @@
 				A9B23D5015D00D73000E47C3 /* bonesRemoval.pdf in Resources */,
 				A9B23D5315D01089000E47C3 /* Cross.pdf in Resources */,
 				A9B23D5615D012C9000E47C3 /* curvedROI.pdf in Resources */,
+				A9B23D6A15D018A4000E47C3 /* horizontalPosition.pdf in Resources */,
+				A9B23D6E15D018B6000E47C3 /* normalPosition.pdf in Resources */,
+				A9B23D7115D018C5000E47C3 /* verticalPosition.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
