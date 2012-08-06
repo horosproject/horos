@@ -501,7 +501,7 @@
 								<reference key="NSControlView" ref="471761858"/>
 								<int key="NSTag">5</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Length</string>
@@ -24473,7 +24473,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 			<string key="AxialSmall">{60, 60}</string>
 			<string key="CorSmall">{60, 60}</string>
 			<string key="JPEGSmall">{128, 128}</string>
-			<string key="Length">{28, 28}</string>
+			<string key="Length">{128, 128}</string>
 			<string key="Mail">{128, 128}</string>
 			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
@@ -24484,11 +24484,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 			<string key="Propagate">{32, 32}</string>
 			<string key="PropagateOn">{32, 32}</string>
 			<string key="ReportPages">{128, 128}</string>
-			<string key="Rotate">{147, 177}</string>
+			<string key="Rotate">{176, 177}</string>
 			<string key="SUV">{64, 64}</string>
 			<string key="SagSmall">{60, 60}</string>
 			<string key="Shutter">{36, 36}</string>
-			<string key="Stack">{337, 324}</string>
+			<string key="Stack">{337, 330}</string>
 			<string key="TIFFSmall">{128, 128}</string>
 			<string key="Tiling1x1">{59, 59}</string>
 			<string key="Tiling1x2">{59, 59}</string>
@@ -24502,7 +24502,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA</b
 			<string key="Tiling3x2">{61, 60}</string>
 			<string key="Tiling3x3">{61, 60}</string>
 			<string key="WLWW">{107, 107}</string>
-			<string key="Zoom">{508, 568}</string>
+			<string key="Zoom">{539, 570}</string>
 			<string key="iPhoto">{128, 128}</string>
 			<string key="page.tif">{128, 128}</string>
 		</dictionary>

@@ -333,7 +333,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="840768770"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{333, 249}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -729,7 +729,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">7</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotate</string>
@@ -747,7 +747,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">18</int>
 								<int key="NSButtonFlags">-1232322560</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotateCamera</string>
@@ -765,7 +765,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">5</int>
 								<int key="NSButtonFlags">-1232322560</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Length</string>
@@ -783,7 +783,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">16</int>
 								<int key="NSButtonFlags">-1232322560</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">Point</string>
@@ -801,7 +801,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">17</int>
 								<int key="NSButtonFlags">-1232322560</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="641174190">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DCut</string>
@@ -819,7 +819,7 @@
 								<reference key="NSControlView" ref="277302075"/>
 								<int key="NSTag">21</int>
 								<int key="NSButtonFlags">-1232322560</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">bonesRemoval</string>
@@ -1171,7 +1171,7 @@ Lg</string>
 					<string key="NSFrameSize">{552, 306}</string>
 					<reference key="NSNextKeyView" ref="692593456"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{552, 328}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1442,7 +1442,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 					<string key="NSFrameSize">{552, 261}</string>
 					<reference key="NSNextKeyView" ref="377130572"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{552, 283}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -1851,7 +1851,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{548, 179}</string>
 					<reference key="NSNextKeyView" ref="178094087"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{548, 201}</string>
 				<string key="NSMaxSize">{548, 201}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2356,7 +2356,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{399, 209}</string>
 					<reference key="NSNextKeyView" ref="596348139"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{399, 231}</string>
 				<string key="NSMaxSize">{399, 231}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -2848,7 +2848,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{369, 131}</string>
 					<reference key="NSNextKeyView" ref="204807266"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{369, 153}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3672,7 +3672,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string key="NSFrameSize">{584, 322}</string>
 					<reference key="NSNextKeyView" ref="991319620"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{584, 344}</string>
 				<string key="NSMaxSize">{584, 344}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -3957,7 +3957,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 					<string key="NSFrameSize">{333, 191}</string>
 					<reference key="NSNextKeyView" ref="932778623"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{333, 213}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -4311,7 +4311,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{263, 117}</string>
 					<reference key="NSNextKeyView" ref="1061422677"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{263, 133}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -4346,7 +4346,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{490, 372}</string>
 					<reference key="NSNextKeyView" ref="10257548"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
 				<string key="NSMinSize">{200, 222}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9131,7 +9131,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">VRView</string>
-					<string key="superclassName">NSView</string>
+					<string key="superclassName">VTKView</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="IBPropagate3DPointsSettings:">id</string>
 						<string key="IBSetSelected3DPointColor:">id</string>
@@ -9541,16 +9541,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="3DRotateCamera">{28, 28}</string>
 			<string key="AxialSmall">{60, 60}</string>
 			<string key="CorSmall">{60, 60}</string>
-			<string key="Length">{28, 28}</string>
+			<string key="Length">{128, 128}</string>
 			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
-			<string key="Point">{28, 28}</string>
-			<string key="Rotate">{147, 177}</string>
+			<string key="Point">{196, 196}</string>
+			<string key="Rotate">{176, 177}</string>
 			<string key="SagSmall">{60, 60}</string>
 			<string key="SagSmallOpposite">{60, 60}</string>
 			<string key="WLWW">{107, 107}</string>
-			<string key="Zoom">{508, 568}</string>
+			<string key="Zoom">{539, 570}</string>
 			<string key="bonesRemoval">{28, 28}</string>
 			<string key="smalltrash">{25, 25}</string>
 		</dictionary>
