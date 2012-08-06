@@ -675,6 +675,8 @@
 		A9333D310F56E70B0097DAB7 /* MPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A9333D2F0F56E70B0097DAB7 /* MPRController.h */; };
 		A9333D320F56E70B0097DAB7 /* MPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A9333D300F56E70B0097DAB7 /* MPRController.m */; };
 		A9333D3A0F56E9670097DAB7 /* MPR.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9333D380F56E9670097DAB7 /* MPR.xib */; };
+		A934924215CFC45D0029326E /* WLWW.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A934924115CFC45D0029326E /* WLWW.pdf */; };
+		A934924315CFC45D0029326E /* WLWW.pdf in Resources */ = {isa = PBXBuildFile; fileRef = A934924115CFC45D0029326E /* WLWW.pdf */; };
 		A93CFFA60A516A5100078038 /* LLMPRController.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF980A516A5000078038 /* LLMPRController.h */; };
 		A93CFFA70A516A5100078038 /* LLMPRController.m in Sources */ = {isa = PBXBuildFile; fileRef = A93CFF990A516A5000078038 /* LLMPRController.m */; };
 		A93CFFA80A516A5100078038 /* LLMPRView.h in Headers */ = {isa = PBXBuildFile; fileRef = A93CFF9A0A516A5000078038 /* LLMPRView.h */; };
@@ -1681,7 +1683,6 @@
 		ABBB64D8063587B200D9531F /* Text.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A6063587B200D9531F /* Text.tif */; };
 		ABBB64D9063587B200D9531F /* Viewer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A7063587B200D9531F /* Viewer.pdf */; };
 		ABBB64DA063587B200D9531F /* VolumeRendering.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A8063587B200D9531F /* VolumeRendering.tif */; };
-		ABBB64DB063587B200D9531F /* WLWW.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A9063587B200D9531F /* WLWW.tif */; };
 		ABBB64DC063587B200D9531F /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
 		ABBB64DD063587B200D9531F /* Zoom.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tif */; };
 		ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tif */; };
@@ -7248,7 +7249,6 @@
 		CEC7059110A5C844008935EA /* Text.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A6063587B200D9531F /* Text.tif */; };
 		CEC7059210A5C844008935EA /* Viewer.pdf in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A7063587B200D9531F /* Viewer.pdf */; };
 		CEC7059310A5C844008935EA /* VolumeRendering.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A8063587B200D9531F /* VolumeRendering.tif */; };
-		CEC7059410A5C844008935EA /* WLWW.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64A9063587B200D9531F /* WLWW.tif */; };
 		CEC7059510A5C844008935EA /* XML.icns in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AA063587B200D9531F /* XML.icns */; };
 		CEC7059610A5C844008935EA /* Zoom.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AB063587B200D9531F /* Zoom.tif */; };
 		CEC7059710A5C844008935EA /* ZoomToFit.tif in Resources */ = {isa = PBXBuildFile; fileRef = ABBB64AC063587B200D9531F /* ZoomToFit.tif */; };
@@ -8825,6 +8825,7 @@
 		A9333D2F0F56E70B0097DAB7 /* MPRController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPRController.h; sourceTree = "<group>"; };
 		A9333D300F56E70B0097DAB7 /* MPRController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MPRController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A9333D390F56E9670097DAB7 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/MPR.xib; sourceTree = "<group>"; };
+		A934924115CFC45D0029326E /* WLWW.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = WLWW.pdf; sourceTree = "<group>"; };
 		A93CFF980A516A5000078038 /* LLMPRController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRController.h; sourceTree = "<group>"; };
 		A93CFF990A516A5000078038 /* LLMPRController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LLMPRController.m; sourceTree = "<group>"; };
 		A93CFF9A0A516A5000078038 /* LLMPRView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LLMPRView.h; sourceTree = "<group>"; };
@@ -9313,7 +9314,6 @@
 		ABBB64A6063587B200D9531F /* Text.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Text.tif; sourceTree = "<group>"; };
 		ABBB64A7063587B200D9531F /* Viewer.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Viewer.pdf; sourceTree = "<group>"; };
 		ABBB64A8063587B200D9531F /* VolumeRendering.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = VolumeRendering.tif; sourceTree = "<group>"; };
-		ABBB64A9063587B200D9531F /* WLWW.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = WLWW.tif; sourceTree = "<group>"; };
 		ABBB64AA063587B200D9531F /* XML.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = XML.icns; sourceTree = "<group>"; };
 		ABBB64AB063587B200D9531F /* Zoom.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Zoom.tif; sourceTree = "<group>"; };
 		ABBB64AC063587B200D9531F /* ZoomToFit.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = ZoomToFit.tif; sourceTree = "<group>"; };
@@ -16107,7 +16107,7 @@
 				ABBB64A7063587B200D9531F /* Viewer.pdf */,
 				ABBB64A8063587B200D9531F /* VolumeRendering.tif */,
 				CEF30FD00945DEA300824A2B /* windows.tif */,
-				ABBB64A9063587B200D9531F /* WLWW.tif */,
+				A934924115CFC45D0029326E /* WLWW.pdf */,
 				ABBB64AA063587B200D9531F /* XML.icns */,
 				ABBB64AB063587B200D9531F /* Zoom.tif */,
 				ABBB64AC063587B200D9531F /* ZoomToFit.tif */,
@@ -26338,7 +26338,6 @@
 				ABBB64D8063587B200D9531F /* Text.tif in Resources */,
 				ABBB64D9063587B200D9531F /* Viewer.pdf in Resources */,
 				ABBB64DA063587B200D9531F /* VolumeRendering.tif in Resources */,
-				ABBB64DB063587B200D9531F /* WLWW.tif in Resources */,
 				ABBB64DC063587B200D9531F /* XML.icns in Resources */,
 				ABBB64DD063587B200D9531F /* Zoom.tif in Resources */,
 				ABBB64DE063587B200D9531F /* ZoomToFit.tif in Resources */,
@@ -26719,6 +26718,7 @@
 				A9701A9E15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA015C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */,
+				A934924215CFC45D0029326E /* WLWW.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26772,7 +26772,6 @@
 				CEC7059110A5C844008935EA /* Text.tif in Resources */,
 				CEC7059210A5C844008935EA /* Viewer.pdf in Resources */,
 				CEC7059310A5C844008935EA /* VolumeRendering.tif in Resources */,
-				CEC7059410A5C844008935EA /* WLWW.tif in Resources */,
 				CEC7059510A5C844008935EA /* XML.icns in Resources */,
 				CEC7059610A5C844008935EA /* Zoom.tif in Resources */,
 				CEC7059710A5C844008935EA /* ZoomToFit.tif in Resources */,
@@ -27081,6 +27080,7 @@
 				A9701A9F15C9587C0019EE55 /* burn_anim09.tif in Resources */,
 				A9701AA115C9587C0019EE55 /* burn_anim10.tif in Resources */,
 				A9701AA315C9587C0019EE55 /* burn_anim11.tif in Resources */,
+				A934924315CFC45D0029326E /* WLWW.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
