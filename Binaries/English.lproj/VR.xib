@@ -1339,7 +1339,7 @@
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">7</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotate</string>
@@ -1429,7 +1429,7 @@
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">17</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="1002400346">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DCut</string>
@@ -1447,7 +1447,7 @@
 								<reference key="NSControlView" ref="232133402"/>
 								<int key="NSTag">21</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage" id="469029702">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">bonesRemoval</string>
@@ -1467,7 +1467,7 @@
 							<reference key="NSSupport" ref="24"/>
 							<int key="NSTag">21</int>
 							<int key="NSButtonFlags">-1232322560</int>
-							<int key="NSButtonFlags2">2</int>
+							<int key="NSButtonFlags2">66</int>
 							<reference key="NSNormalImage" ref="469029702"/>
 							<string key="NSAlternateContents"/>
 							<string key="NSKeyEquivalent"/>
@@ -17961,8 +17961,8 @@ ARcABAAAAAEAAAACARwAAwAAAAEAAQAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="3DCut">{28, 28}</string>
-			<string key="3DRotate">{28, 28}</string>
-			<string key="3DRotateCamera">{28, 28}</string>
+			<string key="3DRotate">{128, 128}</string>
+			<string key="3DRotateCamera">{128, 128}</string>
 			<string key="AxialSmall">{60, 60}</string>
 			<string key="CorSmall">{60, 60}</string>
 			<string key="HUDLeftArrowButtonNeutral">{20, 20}</string>

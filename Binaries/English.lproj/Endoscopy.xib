@@ -252,7 +252,7 @@
 								<reference key="NSControlView" ref="960576406"/>
 								<int key="NSTag">7</int>
 								<int key="NSButtonFlags">-1228652544</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
 									<string key="NSResourceName">3DRotate</string>
@@ -269,7 +269,7 @@
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="960576406"/>
 								<int key="NSTag">18</int>
-								<int key="NSButtonFlags">-1232322560</int>
+								<int key="NSButtonFlags">-1228652544</int>
 								<int key="NSButtonFlags2">66</int>
 								<object class="NSCustomResource" key="NSNormalImage">
 									<string key="NSClassName">NSImage</string>
@@ -9114,8 +9114,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="3DRotate">{28, 28}</string>
-			<string key="3DRotateCamera">{28, 28}</string>
+			<string key="3DRotate">{128, 128}</string>
+			<string key="3DRotateCamera">{128, 128}</string>
 			<string key="Angle">{128, 128}</string>
 			<string key="Cross">{28, 28}</string>
 			<string key="FlyThru">{604, 604}</string>
