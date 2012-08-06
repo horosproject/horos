@@ -2147,6 +2147,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSEnumerator *enumerator3 = [[popupRoi itemArray] objectEnumerator];
 		NSString *title;
 		NSString *image;
+		NSSize imageSize = NSMakeSize(28.0, 28.0);
 		NSMenuItem *subItem;
 		int i = 0;
 		
@@ -2160,6 +2161,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 				[item setTag:tag];
 				
 				[item setTarget:self];
+				[[item image] setSize:imageSize];
 				[submenu addItem:item];
 				[item release];
 			}
@@ -2173,6 +2175,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[item setTag:i++];
 			[item setTarget:self];
 			[item setImage:[NSImage imageNamed:image]];
+			[[item image] setSize:imageSize];
 			[contextualMenu addItem:item];
 			[item release];
 		}
@@ -2187,6 +2190,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			[item setImage: [self imageForROI: [imageView currentTool]]];
 		else
 			[item setImage: [self imageForROI: tMesure]];
+		
+		[[item image] setSize:imageSize];
 		
 		[contextualMenu addItem:item];
 		[item release];
