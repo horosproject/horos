@@ -209,6 +209,11 @@
     return [DCMCalendarDate dicomDateTimeWithDicomDate: _date dicomTime: _time];
 }
 
+- (NSNumber*) rawNoFiles // Match DicomStudy
+{
+    return _numberImages;
+}
+
 - (NSNumber*) numberOfImages // Match DicomStudy
 {
     return _numberImages;

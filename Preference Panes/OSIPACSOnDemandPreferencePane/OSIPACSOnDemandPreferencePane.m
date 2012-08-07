@@ -189,9 +189,8 @@ static NSMatrix *gDateMatrix = nil;
         if( [[src valueForKey: @"activated"] boolValue] == YES)
             [srcArray addObject: src];
     }
-    
-    if( [srcArray count] == 0 && [sourcesTable selectedRow] >= 0)
-        [srcArray addObject: [sourcesArray objectAtIndex: [sourcesTable selectedRow]]];
+    if( srcArray.count == 0)
+        [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"searchForComparativeStudiesOnDICOMNodes"];
     
     [[NSUserDefaults standardUserDefaults] setValue: srcArray forKey: @"comparativeSearchDICOMNodes"];
     

@@ -732,7 +732,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             {
             
             }
-            else NSLog( @"setupNetworkWithSyntax error : queryWithValues DCMTKQueryNode");
+            else NSLog( @"---- SetupNetworkWithSyntax error : queryWithValues DCMTKQueryNode");
             
             if (dataset != NULL) delete dataset;
         }
@@ -1719,10 +1719,16 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
                 [NSThread detachNewThreadSelector: @selector( requestAssociationThread:) toTarget: self withObject: dict];
 				[NSThread sleepForTimeInterval: 0.1];
 				
-				while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
+				while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 				{
 					[wait run];
 					[NSThread sleepForTimeInterval: 0.1];
+                    
+                    if( [lock tryLock])
+                    {
+                        [lock unlock];
+                        break;
+                    }
 				}
 				
 				if( [wait aborted] || _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
@@ -1732,7 +1738,6 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				}
 				else
 				{
-					[lock unlock];
 					cond = globalCondition;
 					
 					if( cond == EC_Normal)
@@ -1812,10 +1817,16 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 						[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
 						[NSThread sleepForTimeInterval: 0.1];
 						
-						while( [lock tryLock] == NO && [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
+						while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
 						{
 							[wait run];
 							[NSThread sleepForTimeInterval: 0.1];
+                            
+                            if( [lock tryLock])
+                            {
+                                [lock unlock];
+                                break;
+                            }
 						}
 						
 						if( [wait aborted] || _abortAssociation || [NSThread currentThread].isCancelled || [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"])
@@ -1825,7 +1836,6 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 						}
 						else
 						{
-							[lock unlock];
 							cond = globalCondition;
 						}
 						[lock release];
@@ -1940,7 +1950,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			else
 				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
-            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+            NSLog( @"---- DCMTKQueryNode failed: %@", e);
             
 			succeed = NO;
             

@@ -3479,7 +3479,7 @@ static NSConditionLock *threadLock = nil;
     
     if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
     {
-        NSLog( @"--- Search For Search Field: %@ (%d)", curSearchString, curSearchType);
+        NSLog( @"Search For Search Field: %@ (%d)", curSearchString, curSearchType);
         
         if( [curSearchString length] > 2 || (_searchString.length >= 2 && searchType == 5))
         {
@@ -3613,7 +3613,7 @@ static NSConditionLock *threadLock = nil;
     
     if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
     {
-        NSLog( @"--- Search time interval: %@ to %@", from, to);
+        NSLog( @"Search time interval: %@ to %@", from, to);
         
         {
             if( !searchForComparativeStudiesLock)
@@ -3743,7 +3743,7 @@ static NSConditionLock *threadLock = nil;
     
     if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]]) // There was maybe other locks in the queue...
     {
-        NSLog( @"--- Search album: %@", albumName);
+        NSLog( @"Search album: %@", albumName);
         
         lastRefreshSmartAlbumDistantStudies = [NSDate timeIntervalSinceReferenceDate];
         
@@ -3823,7 +3823,7 @@ static NSConditionLock *threadLock = nil;
     
     if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
     {
-        NSLog( @"--- Search history: %@", studySelected.patientUID);
+        NSLog( @"Search history: %@", studySelected.patientUID);
         NSMutableArray *mergedStudies = nil;
         
         lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];

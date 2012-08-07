@@ -2187,12 +2187,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     NSString *studyTime = nil, *studyDate = nil;
                     
-                    val = Papy3GetElement (theGroupP, papImageDateGr, &nbVal, &itemType);
+                    val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
                         studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
                     else
                     {
-                        val = Papy3GetElement (theGroupP, papAcquisitionDateGr, &nbVal, &itemType);
+                        val = Papy3GetElement (theGroupP, papImageDateGr, &nbVal, &itemType);
                         if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0)
                             studyDate = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
                         else
@@ -2210,12 +2210,12 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     }
                     if( [studyDate length] != 6) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
                     
-                    val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
+                    val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
                     if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && atof( val->a) > 0)
                         studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
                     else
                     {
-                        val = Papy3GetElement (theGroupP, papAcquisitionTimeGr, &nbVal, &itemType);
+                        val = Papy3GetElement (theGroupP, papImageTimeGr, &nbVal, &itemType);
                         if (val != NULL && val->a && validAPointer( itemType) && strlen( val->a) > 0 && atof( val->a) > 0)
                             studyTime = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
                         else
