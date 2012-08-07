@@ -253,16 +253,16 @@
 }
 
 -(NSString*)destinationOfAliasOrSymlinkAtPath:(NSString*)path resolved:(BOOL*)r {
-	if (![self fileExistsAtPath:path]) {
+	//if (![self fileExistsAtPath:path]) {
 		NSString* temp = [self destinationOfAliasAtPath:path];
 		if (temp) {
 			if (r) *r = YES;
 			return temp;
 		}
 		
-		if (r) *r = NO;
-		return path;
-	}
+	//	if (r) *r = NO;
+	//	return path;
+	//}
 	
 	NSDictionary* attrs = [self attributesOfItemAtPath:path error:NULL];
 	if ([[attrs objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink]) {
