@@ -4207,13 +4207,15 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setBordered: YES];
                 [cell setLineBreakMode: NSLineBreakByCharWrapping];
                 
+                NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
+                
 #ifndef OSIRIX_LIGHT
                 if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                     curStudy = study;
 #endif
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
-                    NSArray *series = [seriesArray objectAtIndex: [studiesArray indexOfObject: curStudy]];
+                    NSArray *series = [seriesArray objectAtIndex: curStudyIndex];
                     NSArray *images = [[BrowserController currentBrowser] imagesArray: curStudy preferredObject: oAny];
                     
                     if( [series count] != [images count])
