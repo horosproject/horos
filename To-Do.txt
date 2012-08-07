@@ -1,3 +1,5 @@
+- CPU v GPU
+
 - Retina: VR (implication for MPR, CPR), SR
 - Retina: iChat? (multiple monitors?)
 - 10.7: Core Layout for xib
