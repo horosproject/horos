@@ -165,6 +165,12 @@
 
 - (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor; // generates the texture without drawing texture to current context
 {
+    if( backingScaleFactor == 0)
+    {
+        NSLog( @"-- genTextureWithBackingScaleFactor backingScaleFactor == 0");
+        backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
+    }
+    
 	NSImage * image;
 	
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];

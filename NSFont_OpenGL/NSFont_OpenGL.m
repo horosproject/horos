@@ -169,8 +169,10 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 	
 	if( curArray == nil) curArray = [[NSMutableArray alloc] initWithCapacity:0];
 	else [curArray removeAllObjects];
-    float backingScaleFactor = [NSOpenGLContext currentContext].view.window.backingScaleFactor;
-	blackColor = [ NSColor blackColor ];
+    
+    float backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
+    
+    blackColor = [ NSColor blackColor ];
 	attribDict = [ NSDictionary dictionaryWithObjectsAndKeys: font, NSFontAttributeName, [ NSColor whiteColor ], NSForegroundColorAttributeName, blackColor, NSBackgroundColorAttributeName, nil ];
 	charRect.origin.x = charRect.origin.y = 0;
 	retval = TRUE;
@@ -192,8 +194,6 @@ static  unsigned char			*charPtrArray[ MAXCOUNT], *charPtrArrayPreview[ MAXCOUNT
 				charRect = NSIntegralRect( charRect );
 			}	
 			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
-            
-            
             
 			curSizeArray[currentUnichar] = charRect.size.width * backingScaleFactor;
 			[theImage setSize: charRect.size];

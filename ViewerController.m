@@ -4165,9 +4165,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 			i = 0;
 			for( id s in studiesArray)
 			{
-                if( [s isKindOfClass: [DicomStudy class]] && [[s valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+                #ifndef OSIRIX_LIGHT
+                if( [s isKindOfClass: [DCMTKStudyQueryNode class]] && [[s valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                      s = study;
-                     
+                #endif
+                
                 if( [s isKindOfClass: [DicomStudy class]]) //Local Study DicomStudy
                 {
                     [seriesArray addObject: [[BrowserController currentBrowser] childrenArray: s]];
@@ -4205,9 +4207,10 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setBordered: YES];
                 [cell setLineBreakMode: NSLineBreakByCharWrapping];
                 
-                if( [curStudy isKindOfClass: [DicomStudy class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
+#ifndef OSIRIX_LIGHT
+                if( [curStudy isKindOfClass: [DCMTKStudyQueryNode class]] && [[curStudy valueForKey: @"studyInstanceUID"] isEqualToString: study.studyInstanceUID]) // For the current study, always take the local images
                     curStudy = study;
-                
+#endif
                 if( [curStudy isKindOfClass: [DicomStudy class]])
                 {
                     NSArray *series = [seriesArray objectAtIndex: [studiesArray indexOfObject: curStudy]];

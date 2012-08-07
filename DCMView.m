@@ -1062,7 +1062,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glColor4f(1.0,1.0,0.0,repulsorAlpha);
 	
-	NSPoint pt = [self convertFromNSView2iChat: repulsorPosition];
+    NSPoint pt = repulsorPosition;
+    pt = [self convertPointToBacking: pt];
+    pt = [self convertFromNSView2iChat: pt];
 	
 	glBegin(GL_POLYGON);	
 	for(i = 0; i < circleRes ; i++)
@@ -1101,10 +1103,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	#define ROISELECTORREGION_G 0.8
 	#define ROISELECTORREGION_B 1.0
 
-	NSPoint startPt, endPt;
-	startPt = [self convertFromView2iChat: ROISelectorStartPoint];
-	endPt = [self convertFromView2iChat: ROISelectorEndPoint];
-
+	NSPoint startPt = ROISelectorStartPoint, endPt = ROISelectorEndPoint;
+    
+    startPt = [self convertPointToBacking: startPt];
+    endPt = [self convertPointToBacking: endPt];
+    
+	startPt = [self convertFromView2iChat: startPt];
+	endPt = [self convertFromView2iChat: endPt];
+    
 	// inside: fill
 	glColor4f(ROISELECTORREGION_R, ROISELECTORREGION_G, ROISELECTORREGION_B, 0.3);
 	glBegin(GL_POLYGON);		
@@ -4122,8 +4128,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				ROISelectorStartPoint = tempPt;
 				ROISelectorEndPoint = tempPt;
 				
-				ROISelectorStartPoint.y = [self drawingFrameRect].size.height - ROISelectorStartPoint.y;
-				ROISelectorEndPoint.y = [self drawingFrameRect].size.height - ROISelectorEndPoint.y;
+				ROISelectorStartPoint.y = [self frame].size.height - ROISelectorStartPoint.y;
+				ROISelectorEndPoint.y = [self frame].size.height - ROISelectorEndPoint.y;
 				
 				[self deleteMouseDownTimer];
 				
@@ -5558,60 +5564,74 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	NSRect rect;
 	
-	if( rotation == 0 ) {	
-		NSPoint tempStartPoint = [self ConvertFromUpLeftView2GL:ROISelectorStartPoint];
-		NSPoint tempEndPoint = [self ConvertFromUpLeftView2GL:ROISelectorEndPoint];
-		
+	if( rotation == 0)
+    {
+        NSPoint tempStartPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorStartPoint]];
+        NSPoint tempEndPoint = [self ConvertFromUpLeftView2GL: [self convertPointToBacking: ROISelectorEndPoint]];
+        
 		rect = NSMakeRect(min(tempStartPoint.x, tempEndPoint.x), min(tempStartPoint.y, tempEndPoint.y), fabsf(tempStartPoint.x - tempEndPoint.x), fabsf(tempStartPoint.y - tempEndPoint.y));
 		
 		if(rect.size.width<1)rect.size.width=1;
 		if(rect.size.height<1)rect.size.height=1;
 	}
-	else {
-		polyRect[ 0] = [self ConvertFromUpLeftView2GL:ROISelectorStartPoint];
-		polyRect[ 1] = [self ConvertFromUpLeftView2GL:NSMakePoint(ROISelectorStartPoint.x,ROISelectorStartPoint.y - (ROISelectorStartPoint.y-ROISelectorEndPoint.y))];
-		polyRect[ 2] = [self ConvertFromUpLeftView2GL:ROISelectorEndPoint];
-		polyRect[ 3] = [self ConvertFromUpLeftView2GL:NSMakePoint(ROISelectorStartPoint.x - (ROISelectorStartPoint.x-ROISelectorEndPoint.x),ROISelectorStartPoint.y)];
+	else
+    {
+        NSPoint tempStartPoint = [self convertPointToBacking: ROISelectorStartPoint];
+        NSPoint tempEndPoint = [self convertPointToBacking: ROISelectorEndPoint];
+        
+		polyRect[ 0] = [self ConvertFromUpLeftView2GL:tempStartPoint];
+		polyRect[ 1] = [self ConvertFromUpLeftView2GL:NSMakePoint(tempStartPoint.x,tempStartPoint.y - (tempStartPoint.y-tempEndPoint.y))];
+		polyRect[ 2] = [self ConvertFromUpLeftView2GL:tempEndPoint];
+		polyRect[ 3] = [self ConvertFromUpLeftView2GL:NSMakePoint(tempStartPoint.x - (tempStartPoint.x-tempEndPoint.x),tempStartPoint.y)];
 	}
 	
 	// select ROIs in the selection rectangle
-	for( int i=0; i<[curRoiList count]; i++ ) {
-		ROI *roi = [curRoiList objectAtIndex:i];
+	for( ROI *roi in [NSArray arrayWithArray: curRoiList])
+    {
 		BOOL intersected = NO;
 		long roiType = [roi type];
 		
-		if( rotation == 0 ) {
-			if( roiType==tText ) {
+		if( rotation == 0)
+        {
+			if( roiType == tText)
+            {
 				float w = [roi rect].size.width/scaleValue;
 				float h = [roi rect].size.height/scaleValue;
 				NSPoint o = [roi rect].origin;
 				NSRect curROIRect = NSMakeRect( o.x-w/2.0, o.y-h/2.0, w, h);
 				intersected = NSIntersectsRect(rect, curROIRect);
 			}
-			else if(roiType==tROI) {
+			else if(roiType==tROI)
+            {
 				intersected = NSIntersectsRect(rect, [roi rect]);
 			}
-			else if(roiType==t2DPoint) {
+			else if(roiType==t2DPoint)
+            {
 				intersected = NSPointInRect([[[roi points] objectAtIndex:0] point], rect);
 			}
-			else {
-				points = [[curRoiList objectAtIndex:i] splinePoints];
+			else
+            {
+				points = [roi splinePoints];
 				NSPoint p1, p2;
-				for( int j=0; j<[points count]-1 && !intersected; j++ ) {
+				for( int j=0; j<[points count]-1 && !intersected; j++ )
+                {
 					p1 = [[points objectAtIndex:j] point];
 					p2 = [[points objectAtIndex:j+1] point];
 					intersected = lineIntersectsRect(p1, p2,  rect);
 				}
 				// last segment: between last point and first one
-				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow) {
+				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+                {
 					p1 = [[points lastObject] point];
 					p2 = [[points objectAtIndex:0] point];
 					intersected = lineIntersectsRect(p1, p2,  rect);
 				}
 			}
 		}
-		else {
-			if(roiType==tText) {
+		else
+        {
+			if(roiType==tText)
+            {
 				float w = roi.rect.size.width/scaleValue;
 				float h = roi.rect.size.height/scaleValue;
 				NSPoint o = roi.rect.origin;
@@ -5622,28 +5642,33 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMaxY( curROIRect)) inPolygon:polyRect size:4];
 				if(!intersected) intersected = [DCMPix IsPoint: NSMakePoint( NSMaxX( curROIRect), NSMinY( curROIRect)) inPolygon:polyRect size:4];
 			}
-			else if(roiType==t2DPoint ) {
+			else if(roiType==t2DPoint)
+            {
 				intersected = [DCMPix IsPoint: [[[roi points] objectAtIndex:0] point] inPolygon:polyRect size:4];
 			}
-			else {
-				points = [[curRoiList objectAtIndex:i] splinePoints];
-				for( int j=0; j<[points count] && !intersected; j++ ) {
+			else
+            {
+				points = [roi splinePoints];
+				for( int j=0; j<[points count] && !intersected; j++ )
+                {
 					intersected = [DCMPix IsPoint: [[points objectAtIndex:j] point] inPolygon:polyRect size:4];
 				}
 				
-				if( !intersected ) {
+				if( !intersected)
+                {
 					NSPoint	*p = malloc( sizeof( NSPoint) * [points count]);
 					for( int j=0; j<[points count]; j++)  p[ j] = [[points objectAtIndex:j] point];
-					for( int j=0; j<4 && !intersected; j++ ) {
+					for( int j=0; j<4 && !intersected; j++ )
 						intersected = [DCMPix IsPoint: polyRect[j] inPolygon:p size:[points count]];
-					}
 					free(p);
 				}
 				
-				if( !intersected ) {
-					points = [[curRoiList objectAtIndex:i] splinePoints];
+				if( !intersected)
+                {
+					points = [roi splinePoints];
 					NSPoint p1, p2;
-					for( int j=0; j<[points count]-1 && !intersected; j++ ) {
+					for( int j=0; j<[points count]-1 && !intersected; j++)
+                    {
 						p1 = [[points objectAtIndex:j] point];
 						p2 = [[points objectAtIndex:j+1] point];
 						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
@@ -5653,7 +5678,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					}
 					
 					// last segment: between last point and first one
-					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow) {
+					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+                    {
 						p1 = [[points lastObject] point];
 						p2 = [[points objectAtIndex:0] point];
 						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
@@ -5665,7 +5691,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if(intersected) {
+		if(intersected)
+        {
 			if([event modifierFlags] & NSShiftKeyMask) // invert the mode: selected->sleep, sleep->selected
 			{
 				long mode = [roi ROImode];
