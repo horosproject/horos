@@ -4159,6 +4159,8 @@ static volatile int numberOfThreadsForRelisce = 0;
         
 		if ([studiesArray count])
 		{
+            studiesArray = [NSArray arrayWithArray: studiesArray];
+            
 			NSArray *displayedSeries = [ViewerController getDisplayedSeries];
 			NSMutableArray *seriesArray = [NSMutableArray array];
 			
