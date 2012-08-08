@@ -3852,7 +3852,7 @@
 		CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C6A1335086B0083F3FD /* RoutesTableView.m */; };
 		CEB98C791335087D0083F3FD /* OSI3DPreferencePanePref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */; };
 		CEB98C7A1335087D0083F3FD /* OSI3DPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */; };
-		CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */; };
+		CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.mm in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C781335087D0083F3FD /* OSI3DPreferencePane.mm */; };
 		CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB98C801335088C0083F3FD /* AYDicomPrintPref.m */; };
 		CEB98C851335088C0083F3FD /* AYDicomPrintPref.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEB98C811335088C0083F3FD /* AYDicomPrintPref.xib */; };
 		CEBA5FE011B244EA005F3A0E /* SpectroIcon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEBA5FDF11B244EA005F3A0E /* SpectroIcon.jpg */; };
@@ -10684,7 +10684,7 @@
 		CEB98C6A1335086B0083F3FD /* RoutesTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoutesTableView.m; path = "Preference Panes/OSIAutoroutingPreferencePane/RoutesTableView.m"; sourceTree = "<group>"; };
 		CEB98C761335087D0083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/OSI3DPreferencePane/English.lproj/OSI3DPreferencePanePref.xib"; sourceTree = "<group>"; };
 		CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSI3DPreferencePane.h; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.h"; sourceTree = "<group>"; };
-		CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSI3DPreferencePane.m; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.m"; sourceTree = "<group>"; };
+		CEB98C781335087D0083F3FD /* OSI3DPreferencePane.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = OSI3DPreferencePane.mm; path = "Preference Panes/OSI3DPreferencePane/OSI3DPreferencePane.mm"; sourceTree = "<group>"; };
 		CEB98C7F1335088C0083F3FD /* AYDicomPrintPref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AYDicomPrintPref.h; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.h"; sourceTree = "<group>"; };
 		CEB98C801335088C0083F3FD /* AYDicomPrintPref.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AYDicomPrintPref.m; path = "Preference Panes/AYDicomPrintPreferencePane/AYDicomPrintPref.m"; sourceTree = "<group>"; };
 		CEB98C821335088C0083F3FD /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = "Preference Panes/AYDicomPrintPreferencePane/English.lproj/AYDicomPrintPref.xib"; sourceTree = "<group>"; };
@@ -17809,7 +17809,7 @@
 			children = (
 				CEB98C751335087D0083F3FD /* OSI3DPreferencePanePref.xib */,
 				CEB98C771335087D0083F3FD /* OSI3DPreferencePane.h */,
-				CEB98C781335087D0083F3FD /* OSI3DPreferencePane.m */,
+				CEB98C781335087D0083F3FD /* OSI3DPreferencePane.mm */,
 			);
 			name = 3D;
 			sourceTree = "<group>";
@@ -27933,7 +27933,7 @@
 				CEB98C611335085D0083F3FD /* OSICDPreferencePanePref.m in Sources */,
 				CEB98C6D1335086B0083F3FD /* OSIAutoroutingPreferencePanePref.m in Sources */,
 				CEB98C6F1335086B0083F3FD /* RoutesTableView.m in Sources */,
-				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.m in Sources */,
+				CEB98C7B1335087D0083F3FD /* OSI3DPreferencePane.mm in Sources */,
 				CEB98C841335088C0083F3FD /* AYDicomPrintPref.m in Sources */,
 				59B696651337C957009356ED /* N2DirectoryEnumerator.mm in Sources */,
 				84E191FC1369966A008DCFC8 /* WADODownload.m in Sources */,

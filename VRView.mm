@@ -861,7 +861,7 @@ public:
         
         vram /= 1024*1024;
         
-        if( vram < 512)
+        if( vram <= 512)
         {
             NSRunCriticalAlertPanel( NSLocalizedString(@"GPU Rendering", nil), [NSString stringWithFormat: NSLocalizedString( @"Your graphic board has only %d MB of VRAM. Performances will be very limited with large dataset.", nil), vram], NSLocalizedString( @"OK", nil), nil, nil);
         }

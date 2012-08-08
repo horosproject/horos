@@ -28,6 +28,7 @@
 #import "N2Operators.h"
 #import "NSUserDefaults+OsiriX.h"
 
+static NSString *WebPortalResponseLock = @"WebPortalResponseLock";
 
 @implementation WebPortalResponse
 
@@ -139,52 +140,56 @@
 	NSArray* parts = [keyPath componentsSeparatedByString:@"."];
 	NSString* part0 = [parts objectAtIndex:0];
 	
-	/*if ([part0 isEqual:@"Defaults"]) {
-		o = [NSUserDefaultsController sharedUserDefaultsController];
-		keyPath = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."];
-	}*/
+    @synchronized( WebPortalResponseLock)
+    {
+        
+        /*if ([part0 isEqual:@"Defaults"]) {
+            o = [NSUserDefaultsController sharedUserDefaultsController];
+            keyPath = [[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."];
+        }*/
 
-	if ([o isKindOfClass: [NSString class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[StringTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass: [NSDate class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
-//	if ([o isKindOfClass:NSArray.class])
-//		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
-//	if ([o isKindOfClass:NSSet.class])
-//		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass: [WebPortalUser class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalUserTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass: [DicomStudy class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomStudyTransformer create]] valueForKeyPath:keyPath context:context];
-	if ([o isKindOfClass: [DicomSeries class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[DicomSeriesTransformer create]] valueForKeyPath:keyPath context:context];
-	
-	if ([o isKindOfClass: [NSManagedObject class]])
-		return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalProxyObjectTransformer create]] valueForKeyPath:keyPath context:context];
+        if ([o isKindOfClass: [NSString class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[StringTransformer create]] valueForKeyPath:keyPath context:context];
+        if ([o isKindOfClass: [NSDate class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[DateTransformer create]] valueForKeyPath:keyPath context:context];
+    //	if ([o isKindOfClass:NSArray.class])
+    //		return [self object:[WebPortalProxy createWithObject:o transformer:[ArrayTransformer create]] valueForKeyPath:keyPath context:context];
+    //	if ([o isKindOfClass:NSSet.class])
+    //		return [self object:[WebPortalProxy createWithObject:o transformer:[SetTransformer create]] valueForKeyPath:keyPath context:context];
+        if ([o isKindOfClass: [WebPortalUser class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalUserTransformer create]] valueForKeyPath:keyPath context:context];
+        if ([o isKindOfClass: [DicomStudy class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[DicomStudyTransformer create]] valueForKeyPath:keyPath context:context];
+        if ([o isKindOfClass: [DicomSeries class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[DicomSeriesTransformer create]] valueForKeyPath:keyPath context:context];
+        
+        if ([o isKindOfClass: [NSManagedObject class]])
+            return [self object:[WebPortalProxy createWithObject:o transformer:[WebPortalProxyObjectTransformer create]] valueForKeyPath:keyPath context:context];
 
-	/*@try {
-		id value = [o valueForKeyPath:keyPath];
-		if (value)
-			return value;
-	} @catch (NSException* e) {
-	}*/
-	
-	@try {
-		id value = NULL;
-		if ([o isKindOfClass: [WebPortalProxy class]])
-			value = [o valueForKey:part0 context:context];
-		else {
-			if ([o isKindOfClass: [NSArray class]] || [o isKindOfClass: [NSSet class]])
-				part0 = [@"@" stringByAppendingString:part0];
-			value = [o valueForKey:part0];
-		}
-		if (parts.count > 1)
-			return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
-		return value;
-	} @catch (NSException* e) {
-		NSLog(@"[WebPortalRosponse object:valueForKeyPath:context] %@", e);
-	}
-	
+        /*@try {
+            id value = [o valueForKeyPath:keyPath];
+            if (value)
+                return value;
+        } @catch (NSException* e) {
+        }*/
+        
+        @try {
+            id value = NULL;
+            if ([o isKindOfClass: [WebPortalProxy class]])
+                value = [o valueForKey:part0 context:context];
+            else {
+                if ([o isKindOfClass: [NSArray class]] || [o isKindOfClass: [NSSet class]])
+                    part0 = [@"@" stringByAppendingString:part0];
+                value = [o valueForKey:part0];
+            }
+            if (parts.count > 1)
+                return [self object:value valueForKeyPath:[[parts subarrayWithRange:NSMakeRange(1,parts.count-1)] componentsJoinedByString:@"."] context:context];
+            return value;
+        } @catch (NSException* e) {
+            NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
+        }
+    }
+    
 	return NULL;
 }
 
@@ -462,9 +467,7 @@
 
 -(NSObject*)valueForKey:(NSString*)key context:(id)context
 {
-    static NSString *WebPortalProxyLock = @"WebPortalProxyLock";
-    
-    @synchronized( WebPortalProxyLock)
+    @synchronized( WebPortalResponseLock)
     {
         for (WebPortalProxyObjectTransformer* t in transformers)
             @try {
@@ -558,7 +561,19 @@
 			NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
 			req.entity = [wpc.portal.database entityForName:@"User"];
 			req.predicate = [NSPredicate predicateWithValue:YES];
-			return [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
+            
+            NSNumber *result = [NSNumber numberWithBool:NO];
+            [wpc.portal.database.managedObjectContext lock];
+            @try {
+                result = [NSNumber numberWithBool: [wpc.portal.database.managedObjectContext countForFetchRequest:req error:NULL] > (wpc.user? 1 : 0) ];
+            }
+            @catch (NSException *e) {
+                NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
+            }
+            @finally {
+                [wpc.portal.database.managedObjectContext unlock];
+            }
+			return result;
 		} else
 			return [NSNumber numberWithBool:NO];
 	}
@@ -759,7 +774,7 @@ NSString* iPhoneCompatibleNumericalFormat(NSString* aString) { // this is to avo
 		}
 		@catch (NSException * e)
 		{
-			NSLog(@"[WebPortalRosponse object:valueForKeyPath:context] %@", e);
+			NSLog(@"***** [WebPortalRosponse object:valueForKeyPath:context] %@", e);
 		}
 		
 		return otherStudies;
