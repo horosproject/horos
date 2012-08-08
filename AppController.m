@@ -3888,9 +3888,9 @@ static BOOL initialized = NO;
 	[dcmtkQRSCPTLS release];
 	dcmtkQRSCPTLS = nil;
 	
-	#ifndef OSIRIX_LIGHT
-	[IChatTheatreDelegate releaseSharedDelegate];
-	#endif
+//	#ifndef OSIRIX_LIGHT
+//	[IChatTheatreDelegate releaseSharedDelegate];
+//	#endif
 	
     [super dealloc];
 }

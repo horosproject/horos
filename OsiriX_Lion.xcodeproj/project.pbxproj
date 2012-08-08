@@ -755,8 +755,6 @@
 		A9701AA115C9587C0019EE55 /* burn_anim10.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8A15C9587C0019EE55 /* burn_anim10.tif */; };
 		A9701AA215C9587C0019EE55 /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8B15C9587C0019EE55 /* burn_anim11.tif */; };
 		A9701AA315C9587C0019EE55 /* burn_anim11.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9701A8B15C9587C0019EE55 /* burn_anim11.tif */; };
-		A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */; };
-		A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */; };
 		A97569581237D132003F00D3 /* PathAssistant.png in Resources */ = {isa = PBXBuildFile; fileRef = A97569571237D132003F00D3 /* PathAssistant.png */; };
 		A977ECAD0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */; };
 		A977ECAE0CD1F7E500C418D8 /* QRalreadyInDatabase.tif in Resources */ = {isa = PBXBuildFile; fileRef = A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */; };
@@ -860,8 +858,6 @@
 		A9B411B80890492F00913770 /* small_smartAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411B40890492F00913770 /* small_smartAlbum.tif */; };
 		A9B411EF0890498600913770 /* small_sharedAlbum.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B411EE0890498600913770 /* small_sharedAlbum.tif */; };
 		A9B412D5089180A200913770 /* bonjour.tif in Resources */ = {isa = PBXBuildFile; fileRef = A9B412D4089180A200913770 /* bonjour.tif */; };
-		A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */; };
-		A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */; };
 		A9C4D9470F72987900B5B9A1 /* Loupe.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9C4D9450F72987900B5B9A1 /* Loupe.xib */; };
 		A9C5496510FF2C9F0026EA70 /* DICOMTLS.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */; };
 		A9C5496610FF2C9F0026EA70 /* DICOMTLS.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */; };
@@ -8878,8 +8874,6 @@
 		A9701A8915C9587C0019EE55 /* burn_anim09.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim09.tif; sourceTree = "<group>"; };
 		A9701A8A15C9587C0019EE55 /* burn_anim10.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim10.tif; sourceTree = "<group>"; };
 		A9701A8B15C9587C0019EE55 /* burn_anim11.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = burn_anim11.tif; sourceTree = "<group>"; };
-		A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreHelpWindowController.h; sourceTree = "<group>"; };
-		A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreHelpWindowController.m; sourceTree = "<group>"; };
 		A97569571237D132003F00D3 /* PathAssistant.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PathAssistant.png; sourceTree = "<group>"; };
 		A977ECAB0CD1F7E500C418D8 /* QRpartiallyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRpartiallyInDatabase.tif; path = DatabaseStates/QRpartiallyInDatabase.tif; sourceTree = "<group>"; };
 		A977ECAC0CD1F7E500C418D8 /* QRalreadyInDatabase.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = QRalreadyInDatabase.tif; path = DatabaseStates/QRalreadyInDatabase.tif; sourceTree = "<group>"; };
@@ -8953,8 +8947,6 @@
 		A9B411C10890496400913770 /* small_sharedSmartAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedSmartAlbum.tif; sourceTree = "<group>"; };
 		A9B411EE0890498600913770 /* small_sharedAlbum.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = small_sharedAlbum.tif; sourceTree = "<group>"; };
 		A9B412D4089180A200913770 /* bonjour.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = bonjour.tif; sourceTree = "<group>"; };
-		A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IChatTheatreDelegate.h; sourceTree = "<group>"; };
-		A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IChatTheatreDelegate.m; sourceTree = "<group>"; };
 		A9C4D9460F72987900B5B9A1 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/Loupe.xib; sourceTree = "<group>"; };
 		A9C5496310FF2C9F0026EA70 /* DICOMTLS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DICOMTLS.h; sourceTree = "<group>"; };
 		A9C5496410FF2C9F0026EA70 /* DICOMTLS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DICOMTLS.m; sourceTree = "<group>"; };
@@ -16128,7 +16120,6 @@
 				A99B7E4F08858D0D004328C0 /* Bonjour */,
 				590A3DCF12A9293C004581C2 /* Web Portal */,
 				CE9101AA0C86A6B800D8D273 /* XMLRPC Service */,
-				CE234015119E7B4800D83C19 /* iChat */,
 				CE234014119E7B1500D83C19 /* File Reading */,
 				CE234016119E7B5500D83C19 /* SmartAlbums */,
 				AB142DFC05600D76008461A0 /* AppController.h */,
@@ -17458,17 +17449,6 @@
 				AB87FA740C06BEB200CD2976 /* NIfTI_Library */,
 			);
 			name = "File Reading";
-			sourceTree = "<group>";
-		};
-		CE234015119E7B4800D83C19 /* iChat */ = {
-			isa = PBXGroup;
-			children = (
-				A9BDE5900C9823DC000A161F /* IChatTheatreDelegate.h */,
-				A9BDE5910C9823DC000A161F /* IChatTheatreDelegate.m */,
-				A97520690CAA98BA005D172F /* IChatTheatreHelpWindowController.h */,
-				A975206A0CAA98BA005D172F /* IChatTheatreHelpWindowController.m */,
-			);
-			name = iChat;
 			sourceTree = "<group>";
 		};
 		CE234016119E7B5500D83C19 /* SmartAlbums */ = {
@@ -21821,9 +21801,7 @@
 				AB64A2DB0C4E0F61000E0981 /* HornRegistration.h in Headers */,
 				CE882AC60C889B6500D4F982 /* XMLRPCMethods.h in Headers */,
 				32E422150C97301600E193CA /* altivecFunctions.h in Headers */,
-				A9BDE5920C9823DC000A161F /* IChatTheatreDelegate.h in Headers */,
 				CED2CF980C9B288C0047F123 /* CIADICOMField.h in Headers */,
-				A975206B0CAA98BA005D172F /* IChatTheatreHelpWindowController.h in Headers */,
 				DB5961380CAB447B00809190 /* OSIVoxel.h in Headers */,
 				BF6F18DC0CAD6ACF006DE602 /* FlyThruStepsArrayController.h in Headers */,
 				A978DE910CB0D4BE00FB2C3D /* NFHUDSlider.h in Headers */,
@@ -27707,10 +27685,8 @@
 				AB64A2DA0C4E0F61000E0981 /* HornRegistration.mm in Sources */,
 				CE51BAF511E2289C006D180E /* OsiriXDB_DataModel.xcdatamodeld in Sources */,
 				CE882AC70C889B6500D4F982 /* XMLRPCMethods.mm in Sources */,
-				A9BDE5930C9823DC000A161F /* IChatTheatreDelegate.m in Sources */,
 				CED2CF970C9B288C0047F123 /* CIADICOMField.m in Sources */,
 				A98FFBE60CA92B58000291C8 /* altivecFunctions.c in Sources */,
-				A975206C0CAA98BA005D172F /* IChatTheatreHelpWindowController.m in Sources */,
 				DB5961390CAB447B00809190 /* OSIVoxel.m in Sources */,
 				BF6F18DD0CAD6AD0006DE602 /* FlyThruStepsArrayController.m in Sources */,
 				A978DE9B0CB0D4BE00FB2C3D /* NFHUDButtonCell.m in Sources */,

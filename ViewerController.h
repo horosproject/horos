@@ -267,7 +267,7 @@ enum
     NSWindow                *StartingWindow;
     NSView                  *contentView;
     
-    NSTimer					*timer, *movieTimer, *timeriChat;
+    NSTimer					*timer, *movieTimer;//, *timeriChat;
     NSTimeInterval			lastTime, lastTimeFrame;
 	NSTimeInterval			lastMovieTime;
 	
@@ -810,7 +810,7 @@ enum
 - (void) setFusionMode:(long) m;
 - (short) curMovieIndex;
 #ifndef OSIRIX_LIGHT
-- (id) findiChatButton;
+//- (id) findiChatButton;
 - (IBAction) Panel3D:(id) sender;
 #endif
 - (void) convertPETtoSUV;

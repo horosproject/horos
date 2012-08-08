@@ -33,7 +33,7 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
-#import "IChatTheatreDelegate.h"
+//#import "IChatTheatreDelegate.h"
 #import "NSUserDefaultsController+OsiriX.h"
 //#import "LoupeController.h"
 #include <OpenGL/CGLMacro.h>
@@ -1695,7 +1695,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-		if( iChatStringTextureCache == nil) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
+//		if( iChatStringTextureCache == nil) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
 		
 		NSMutableDictionary *_stringTextureCache;
 		if (fontL == iChatFontListGL)
@@ -2241,8 +2241,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[stringTextureCache release];
     stringTextureCache = 0L;
     
-	[iChatStringTextureCache release];
-	iChatStringTextureCache = nil;
+//	[iChatStringTextureCache release];
+//	iChatStringTextureCache = nil;
     
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
@@ -2269,11 +2269,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
 //	[self clearGLContext];
 
-	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
-    iChatCursorTextureBuffer = nil;
+//	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
+//    iChatCursorTextureBuffer = nil;
     
-	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
-	iChatCursorTextureName = 0;
+//	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
+//	iChatCursorTextureName = 0;
     
 	[showDescriptionInLargeText release];
 	showDescriptionInLargeText = nil;
@@ -7514,15 +7514,15 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glLineWidth(1.0 * self.window.backingScaleFactor);
 	
-	#ifndef OSIRIX_LIGHT
-	if( iChatRunning && cgl_ctx==[_alternateContext CGLContextObj])
-	{
-		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
-		iChatFontGL = [NSFont systemFontOfSize: 12];
-		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :1];
-		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
-	}
-	#endif
+//	#ifndef OSIRIX_LIGHT
+//	if( iChatRunning && cgl_ctx==[_alternateContext CGLContextObj])
+//	{
+//		if(!iChatFontListGL) iChatFontListGL = glGenLists(150);
+//		iChatFontGL = [NSFont systemFontOfSize: 12];
+//		[iChatFontGL makeGLDisplayListFirst:' ' count:150 base:iChatFontListGL :iChatFontListGLSize :1];
+//		iChatStringSize = [DCMView sizeOfString:@"B" forFont:iChatFontGL];
+//	}
+//	#endif
 	
 	GLuint fontList;
 	NSSize _stringSize;
@@ -8220,13 +8220,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
 	
-	#ifndef OSIRIX_LIGHT
-    iChatRunning = NO;
-    if( is2DViewer)
-        iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
-	#else
-    iChatRunning = NO;
-	#endif
+//	#ifndef OSIRIX_LIGHT
+//    iChatRunning = NO;
+//    if( is2DViewer)
+//        iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+//	#else
+//    iChatRunning = NO;
+//	#endif
 	
 	if( is2DViewer)
 		frontMost = [ViewerController isFrontMost2DViewer: [self window]];
@@ -8237,12 +8237,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		[self updatePresentationStateFromSeries];
 	}
 	
-	if( iChatRunning)
-	{
-		if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
-		[drawLock lock];
-	}
-	else
+//	if( iChatRunning)
+//	{
+//		if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
+//		[drawLock lock];
+//	}
+//	else
 	{
 		[drawLock release];
 		drawLock = nil;
@@ -8252,7 +8252,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@try 
 	{
-		if( needToLoadTexture || iChatRunning)
+		if( needToLoadTexture)// || iChatRunning)
 			[self loadTexturesCompute];
 		
 		if( noScale)
@@ -8344,68 +8344,68 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 			
 			// highlight the visible part of the view (the part visible through iChat)
-			#ifndef OSIRIX_LIGHT
-			if( iChatRunning && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
-			{
-				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
-				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
-				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
-				NSPoint topLeft;
-				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
-				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
-					
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glEnable(GL_BLEND);
-				
-				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-				glLineWidth(1.0 * self.window.backingScaleFactor);
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, 0.0);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, 0.0);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-					glVertex2f(0.0, topLeft.y+iChatHeight);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-				glEnd();
-
-				glBegin(GL_QUADS);
-					glVertex2f(0.0, topLeft.y+iChatHeight);
-					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
-					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
-					glVertex2f(0.0, drawingFrameRect.size.height);
-				glEnd();
-
-				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
-				glBegin(GL_LINE_LOOP);
-					glVertex2f(topLeft.x, topLeft.y);
-					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
-					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
-				glEnd();
-				
-				glLineWidth(1.0 * self.window.backingScaleFactor);
-				glDisable(GL_BLEND);
-				
-				// label
-				NSPoint iChatTheatreSharedViewLabelPosition;
-				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
-				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
-
-				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
-			}
-			#endif
+//			#ifndef OSIRIX_LIGHT
+//			if( iChatRunning && ctx!=_alternateContext && [[self window] isMainWindow] && isKeyView && iChatWidth>0 && iChatHeight>0)
+//			{
+//				glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
+//				glScalef (2.0f / drawingFrameRect.size.width, -2.0f /  drawingFrameRect.size.height, 1.0f); // scale to port per pixel scale
+//				glTranslatef (-(drawingFrameRect.size.width) / 2.0f, -(drawingFrameRect.size.height) / 2.0f, 0.0f); // translate center to upper left
+//				NSPoint topLeft;
+//				topLeft.x = drawingFrameRect.size.width/2 - iChatWidth/2.0;
+//				topLeft.y = drawingFrameRect.size.height/2 - iChatHeight/2.0;
+//					
+//				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//				glEnable(GL_BLEND);
+//				
+//				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
+//				glLineWidth(1.0 * self.window.backingScaleFactor);
+//				glBegin(GL_QUADS);
+//					glVertex2f(0.0, 0.0);
+//					glVertex2f(0.0, topLeft.y);
+//					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+//					glVertex2f(drawingFrameRect.size.width, 0.0);
+//				glEnd();
+//
+//				glBegin(GL_QUADS);
+//					glVertex2f(0.0, topLeft.y);
+//					glVertex2f(topLeft.x, topLeft.y);
+//					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+//					glVertex2f(0.0, topLeft.y+iChatHeight);
+//				glEnd();
+//
+//				glBegin(GL_QUADS);
+//					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+//					glVertex2f(drawingFrameRect.size.width, topLeft.y);
+//					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+//					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+//				glEnd();
+//
+//				glBegin(GL_QUADS);
+//					glVertex2f(0.0, topLeft.y+iChatHeight);
+//					glVertex2f(drawingFrameRect.size.width, topLeft.y+iChatHeight);
+//					glVertex2f(drawingFrameRect.size.width, drawingFrameRect.size.height);
+//					glVertex2f(0.0, drawingFrameRect.size.height);
+//				glEnd();
+//
+//				glColor4f (1.0f, 1.0f, 1.0f, 0.8f);
+//				glBegin(GL_LINE_LOOP);
+//					glVertex2f(topLeft.x, topLeft.y);
+//					glVertex2f(topLeft.x, topLeft.y+iChatHeight);
+//					glVertex2f(topLeft.x+iChatWidth, topLeft.y+iChatHeight);
+//					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
+//				glEnd();
+//				
+//				glLineWidth(1.0 * self.window.backingScaleFactor);
+//				glDisable(GL_BLEND);
+//				
+//				// label
+//				NSPoint iChatTheatreSharedViewLabelPosition;
+//				iChatTheatreSharedViewLabelPosition.x = drawingFrameRect.size.width/2.0;
+//				iChatTheatreSharedViewLabelPosition.y = topLeft.y;
+//
+//				[self DrawNSStringGL:NSLocalizedString(@"iChat Theatre shared view", nil) :fontListGL :iChatTheatreSharedViewLabelPosition.x :iChatTheatreSharedViewLabelPosition.y align:DCMViewTextAlignCenter useStringTexture:YES];
+//			}
+//			#endif
 			// ***********************
 			// DRAW CLUT BARS ********
 			
@@ -9244,7 +9244,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( ctx == _alternateContext)
 		drawingFrameRect = savedDrawingFrameRect;
 	
-	if(iChatRunning) [drawLock unlock];
+//	if(iChatRunning) [drawLock unlock];
 	
 	(void) [self _checkHasChanged:YES];
 	

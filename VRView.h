@@ -625,7 +625,7 @@ typedef char* VTKStereoVRView;
 - (void)drawImage:(NSImage *)image inBounds:(NSRect)rect;
 - (BOOL)checkHasChanged;
 - (void)setIChatFrame:(BOOL)boo;
-- (void)_iChatStateChanged:(NSNotification *)aNotification;
+//- (void)_iChatStateChanged:(NSNotification *)aNotification;
 
 - (void)yaw:(float)degrees;
 - (void)panX:(double)x Y:(double)y;

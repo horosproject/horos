@@ -39,7 +39,7 @@
 @class ThreadPoolServer;
 @class ThreadPerConnectionServer;
 
-#import "IChatTheatreDelegate.h"
+//#import "IChatTheatreDelegate.h"
 
 @class PreferenceController;
 @class BrowserController;

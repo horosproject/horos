@@ -32,7 +32,7 @@
 #import "BrowserController.h"
 #import "DICOMExport.h"
 #import "DefaultsOsiriX.h" // for HotKeys
-#import "IChatTheatreDelegate.h"
+//#import "IChatTheatreDelegate.h"
 #import "DicomImage.h"
 #import "Notifications.h"
 #import "NSUserDefaultsController+OsiriX.h"
@@ -1907,7 +1907,7 @@ public:
 		
 		advancedCLUT = NO;
 		
-        [[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
+//        [[IMService notificationCenter] addObserver:self selector:@selector(_iChatStateChanged:) name:IMAVManagerStateChangedNotification object:nil];
 	}
     
     return self;
@@ -2085,9 +2085,9 @@ public:
 {
 	if( drawLock == nil) drawLock = [[NSRecursiveLock alloc] init];
 	
-	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
+//	BOOL iChatRunning = [[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning];
 	
-	if(iChatRunning) [drawLock lock];
+//	if(iChatRunning) [drawLock lock];
 	
 	@try
 	{
@@ -2147,7 +2147,7 @@ public:
 		NSLog( @"Exception during drawRect: %@", e);
 	}
 
-	if(iChatRunning) [drawLock unlock];
+//	if(iChatRunning) [drawLock unlock];
 }
 
 -(void)dealloc
@@ -2877,7 +2877,7 @@ public:
 	
 	if( [self get3DPixelUnder2DPositionX:mouseLocStart.x Y:mouseLocStart.y pixel:pix position:pos value:&value])
 	{
-		long sliceNo;
+		int sliceNo;
 		if( [[[controller viewer2D] imageView] flippedData]) sliceNo = pix[ 2];
 		else sliceNo = [pixList count] -1 -pix[ 2];
 	
@@ -8874,10 +8874,10 @@ public:
 	}
 }
 
-- (void)_iChatStateChanged:(NSNotification *)aNotification;
-{
-	[self setIChatFrame:[[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning]];	
-}
+//- (void)_iChatStateChanged:(NSNotification *)aNotification;
+//{
+//	[self setIChatFrame:[[IChatTheatreDelegate sharedDelegate] isIChatTheatreRunning]];
+//}
 
 - (BOOL)becomeFirstResponder
 {

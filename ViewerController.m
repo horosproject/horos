@@ -128,7 +128,7 @@ static NSString*	ReconstructionToolbarItemIdentifier = @"Reconstruction";
 static NSString*	RGBFactorToolbarItemIdentifier		= @"RGB";
 static NSString*	ExportToolbarItemIdentifier			= @"Export.icns";
 static NSString*	MailToolbarItemIdentifier			= @"Mail.icns";
-static NSString*	iChatBroadCastToolbarItemIdentifier = @"iChat.icns";
+//static NSString*	iChatBroadCastToolbarItemIdentifier = @"iChat.icns";
 static NSString*	StatusToolbarItemIdentifier			= @"status";
 static NSString*	SyncSeriesToolbarItemIdentifier		= @"Sync.pdf";
 static NSString*	ResetToolbarItemIdentifier			= @"Reset.pdf";
@@ -2742,12 +2742,12 @@ static volatile int numberOfThreadsForRelisce = 0;
         timer = nil;
     }
 	
-	if( timeriChat)
-    {
-        [timeriChat invalidate];
-        [timeriChat release];
-        timeriChat = nil;
-    }
+//	if( timeriChat)
+//    {
+//        [timeriChat invalidate];
+//        [timeriChat release];
+//        timeriChat = nil;
+//    }
 	
 	if(t12BitTimer)
 	{
@@ -5223,18 +5223,18 @@ static ViewerController *draggedController = nil;
 	[toolbarItem setTarget: [AppController sharedAppController]];
 	[toolbarItem setAction: @selector(tileWindows:)];
     } 
-	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
-	
-	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
-	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
-	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
-//	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
-	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
-	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
-//	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
-	[toolbarItem setTarget: self];
-	[toolbarItem setAction: @selector(iChatBroadcast:)];
-    } 
+//	else if ([itemIdent isEqualToString: iChatBroadCastToolbarItemIdentifier]) {
+//	
+//	[toolbarItem setLabel: NSLocalizedString(@"iChat", nil)];
+//	[toolbarItem setPaletteLabel: NSLocalizedString(@"iChat", nil)];
+//	[toolbarItem setToolTip: NSLocalizedString(@"iChat", nil)];
+////	[toolbarItem setImage: [NSImage imageNamed: iChatBroadCastToolbarItemIdentifier]]; //	/Applications/iChat/Contents/Resources/Prefs_Camera.icns is maybe a better image...
+//	NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+//	[toolbarItem setImage: [[NSWorkspace sharedWorkspace] iconForFile:path]];
+////	[toolbarItem setImage: [NSImage imageNamed:NSImageNameIChatTheaterTemplate]];
+//	[toolbarItem setTarget: self];
+//	[toolbarItem setAction: @selector(iChatBroadcast:)];
+//    } 
     else if([itemIdent isEqualToString: SpeedToolbarItemIdentifier]) {
 //	NSMenu *submenu = nil;
 //	NSMenuItem *submenuItem = nil, *menuFormRep = nil;
@@ -5669,7 +5669,7 @@ static ViewerController *draggedController = nil;
 														RGBFactorToolbarItemIdentifier,
 														FilterToolbarItemIdentifier,
 														ToolsToolbarItemIdentifier,
-														iChatBroadCastToolbarItemIdentifier,
+//														iChatBroadCastToolbarItemIdentifier,
 														StatusToolbarItemIdentifier,
 														KeyImagesToolbarItemIdentifier,
 														ReportToolbarItemIdentifier,
@@ -5797,10 +5797,10 @@ return YES;
         if([fileList[ curMovieIndex] count] == 1 && [[[fileList[ curMovieIndex] objectAtIndex:0] valueForKey:@"numberOfFrames"] intValue] <=  1) enable = NO;
     }
 	
-	if ([[toolbarItem itemIdentifier] isEqualToString: iChatBroadCastToolbarItemIdentifier])
-	{
-		enable = YES;
-	}
+//	if ([[toolbarItem itemIdentifier] isEqualToString: iChatBroadCastToolbarItemIdentifier])
+//	{
+//		enable = YES;
+//	}
 	
 	if([[toolbarItem itemIdentifier] isEqualToString: SUVToolbarItemIdentifier])
 	{
@@ -18338,48 +18338,48 @@ int i,j,l;
 	}
 }
 
-#define ICHAT_WIDTH 640
-#define ICHAT_HEIGHT 480
-
-#ifndef OSIRIX_LIGHT
-- (void)iChatBroadcast:(id)sender
-{
-    if( [IChatTheatreDelegate initSharedDelegate])
-    {
-        [[IChatTheatreDelegate sharedDelegate] showIChatHelp];
-        NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
-        [[NSWorkspace sharedWorkspace] launchApplication:path];
-    }
-    else
-    {
-        NSRunAlertPanel(NSLocalizedString( @"Address Book", nil), NSLocalizedString(@"Access to address book is required to start an iChat session. See Privacy tab in System Preferences.", nil), nil, nil, nil);
-    }
-}
-
-- (void) notificationiChatBroadcast:(NSNotification*)note
-{
-	if( timeriChat) [self iChatBroadcast:[self findiChatButton]];
-}
-
-
--(id) findiChatButton
-{
-//	for( x = 0; x < [[NSScreen screens] count]; x++)
-	{
-		NSArray *items = [toolbar items];
-		
-		for( id loopItem in items)
-		{
-			if( [[loopItem itemIdentifier] isEqualToString:iChatBroadCastToolbarItemIdentifier] == YES)
-			{
-				return loopItem;
-			}
-		}
-	}
-	
-	return nil;
-}
-#endif
+//#define ICHAT_WIDTH 640
+//#define ICHAT_HEIGHT 480
+//
+//#ifndef OSIRIX_LIGHT
+//- (void)iChatBroadcast:(id)sender
+//{
+//    if( [IChatTheatreDelegate initSharedDelegate])
+//    {
+//        [[IChatTheatreDelegate sharedDelegate] showIChatHelp];
+//        NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.iChat"];
+//        [[NSWorkspace sharedWorkspace] launchApplication:path];
+//    }
+//    else
+//    {
+//        NSRunAlertPanel(NSLocalizedString( @"Address Book", nil), NSLocalizedString(@"Access to address book is required to start an iChat session. See Privacy tab in System Preferences.", nil), nil, nil, nil);
+//    }
+//}
+//
+//- (void) notificationiChatBroadcast:(NSNotification*)note
+//{
+//	if( timeriChat) [self iChatBroadcast:[self findiChatButton]];
+//}
+//
+//
+//-(id) findiChatButton
+//{
+////	for( x = 0; x < [[NSScreen screens] count]; x++)
+//	{
+//		NSArray *items = [toolbar items];
+//		
+//		for( id loopItem in items)
+//		{
+//			if( [[loopItem itemIdentifier] isEqualToString:iChatBroadCastToolbarItemIdentifier] == YES)
+//			{
+//				return loopItem;
+//			}
+//		}
+//	}
+//	
+//	return nil;
+//}
+//#endif
 
 - (void)exportTextFieldDidChange:(NSNotification *)note
 {
@@ -18986,7 +18986,7 @@ int i,j,l;
     [nc addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 	[nc addObserver:self selector:@selector(recomputeROI:) name:OsirixRecomputeROINotification object:nil];
 	[nc addObserver:self selector:@selector(notificationStopPlaying:) name:OsirixStopPlayingNotification object:nil];
-	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:OsirixChatBroadcastNotification object:nil];
+//	[nc addObserver:self selector:@selector(notificationiChatBroadcast:) name:OsirixChatBroadcastNotification object:nil];
 	[nc addObserver:self selector:@selector(notificationSyncSeries:) name:OsirixSyncSeriesNotification object:nil];
 	[nc	addObserver:self selector:@selector(exportTextFieldDidChange:) name:NSControlTextDidChangeNotification object:nil];
 	[nc addObserver:self selector:@selector(updateReportToolbarIcon:) name:OsirixReportModeChangedNotification object:nil];
