@@ -1193,7 +1193,7 @@ extern int splitPosition[ 3];
 			[[pixArray objectAtIndex: i] setArrayPix:pixArray :i];
 		
 		[self setPixels:pixArray files:NULL rois:NULL firstImage:0 level:'i' reset:YES];
-		[self setScaleValueCentered: 0.8];
+		[self setScaleValueCentered: 0.8 * self.window.backingScaleFactor];
 		
 		//[self setWLWW:wl :ww];
 		[[self windowController] propagateWLWW: [[self windowController] mprView1]];
