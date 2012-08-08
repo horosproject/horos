@@ -2100,6 +2100,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         if (privateInformationCreatorUID.length)
                             [dicomElements setObject:privateInformationCreatorUID forKey:@"PrivateInformationCreatorUID"];
                     }
+                    
+                    theErr = Papy3GroupFree (&theGroupP, TRUE);
                 }
                 
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
