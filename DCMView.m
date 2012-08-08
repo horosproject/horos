@@ -8004,7 +8004,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     #if __LP64__
     #else
-    if( size.size.width * sf > 700 && [AppController isFDACleared] == NO)
+    if( size.size.width > 700 && [AppController isFDACleared] == NO)
     {
         if( warningNotice == nil && [self class] == [DCMView class] && fullText)
         {
