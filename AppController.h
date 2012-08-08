@@ -253,8 +253,6 @@ extern AppController* OsiriX;
 + (void)set12BitInvocation:(NSInvocation*)invocation;
 + (NSInvocation*)fill12BitBufferInvocation;
 
--(void)verifyHardwareInterpolation;
-
 #pragma mark -
 -(WebPortal*)defaultWebPortal;
 

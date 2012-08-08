@@ -238,7 +238,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	GLString		*showDescriptionInLargeText, *warningNotice;
 	
 	//Context for rendering to iChat
-	NSOpenGLContext *_alternateContext;
+//	NSOpenGLContext *_alternateContext;
 	
 	BOOL			drawing;
 	
@@ -470,8 +470,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void)subDrawRect: (NSRect)aRect;  // Subclassable, default does nothing.
 - (void) updateImage;
 - (BOOL) shouldPropagate;
-- (NSPoint) convertFromView2iChat: (NSPoint) a;
-- (NSPoint) convertFromNSView2iChat: (NSPoint) a;
+//- (NSPoint) convertFromView2iChat: (NSPoint) a;
+//- (NSPoint) convertFromNSView2iChat: (NSPoint) a;
 - (void) annotMenu:(id) sender;
 - (ROI*) clickInROI: (NSPoint) tempPt;
 - (void) switchShowDescriptionInLarge;
