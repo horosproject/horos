@@ -2089,9 +2089,20 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 }
                 
                 if (gIsPapyFile [fileNb] == DICOM10) theErr = Papy3FSeek (gPapyFile [fileNb], SEEK_SET, 132L);
+
+                theErr = Papy3GotoGroupNb(fileNb, (PapyShort)0x0002);
+                if (theErr >= 0 && Papy3GroupRead(fileNb, &theGroupP) > 0)
+                {
+                    val = Papy3GetElement(theGroupP, papPrivateInformationCreatorUIDGr, &nbVal, &itemType);
+                    if (val != NULL && val->a && validAPointer( itemType))
+                    {
+                        NSString* privateInformationCreatorUID = [NSString stringWithCString:val->a encoding: NSISOLatin1StringEncoding];
+                        if (privateInformationCreatorUID.length)
+                            [dicomElements setObject:privateInformationCreatorUID forKey:@"PrivateInformationCreatorUID"];
+                    }
+                }
                 
                 theErr = Papy3GotoGroupNb (fileNb, (PapyShort) 0x0008);
-                
                 if( theErr >= 0 && Papy3GroupRead (fileNb, &theGroupP) > 0)
                 {
                     val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &itemType);
@@ -3344,6 +3355,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			fileType = [@"DICOM" retain];
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
+        
+        NSString* privateInformationCreatorUID = [dcmObject attributeValueWithName:@"PrivateInformationCreatorUID"];
+        if (privateInformationCreatorUID.length)
+            [dicomElements setObject:privateInformationCreatorUID forKey:@"PrivateInformationCreatorUID"];
 		
 		NSMutableArray	*imageTypeArray = [NSMutableArray arrayWithArray: [dcmObject attributeArrayWithName:@"ImageType"]];
 		if( [imageTypeArray count] > 2)

@@ -520,22 +520,22 @@ static DicomDatabase* activeLocalDatabase = nil;
     if (![NSThread isMainThread])
         [self performSelectorOnMainThread:@selector(observeIndependentDatabaseNotification:) withObject:notification waitUntilDone:NO];
     else {
-        NSDictionary* userInfo = nil;
+        NSMutableDictionary* userInfo = [NSMutableDictionary dictionary];
         
         NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
         if (independentObjects) {
             NSArray* selfObjects = [self objectsWithIDs:independentObjects];
             if (selfObjects.count != independentObjects.count)
                 NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
-            userInfo = [NSDictionary dictionaryWithObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+            [userInfo setObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
         }
         
-        independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
-        if (independentObjects) {
-            NSArray* selfObjects = [self objectsWithIDs:independentObjects];
-            if (selfObjects.count != independentObjects.count)
-                NSLog(@"Warning: independent database is notifying about %d new images, but the main database can only find %d.", (int)independentObjects.count, (int)selfObjects.count);
-            userInfo = [NSDictionary dictionaryWithObject:selfObjects forKey:OsirixAddToDBNotificationImagesArray];
+        NSDictionary* independentDictionary = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesPerAETDictionary];
+        if (independentDictionary) {
+            NSMutableDictionary* selfDictionary = [NSMutableDictionary dictionary];
+            for (NSString* key in independentDictionary)
+                [selfDictionary setObject:[self objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
+            [userInfo setObject:selfDictionary forKey:OsirixAddToDBNotificationImagesPerAETDictionary];
         }
         
         [NSNotificationCenter.defaultCenter postNotificationName:notification.name object:self userInfo:userInfo];
@@ -1345,6 +1345,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
  
  album
  
+ 
+ addFilesDescribedInDictionaries:postNotifications:rereadExistingItems:generatedByOsiriX:
+ 
  */
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
@@ -1354,6 +1357,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* newStudies = [NSMutableArray array];
+
+    NSMutableDictionary* addedImagesPerCreatorUID = [NSMutableDictionary dictionary];
+    NSMutableDictionary* completeAddedImagesPerCreatorUID = [NSMutableDictionary dictionary];
     
     BOOL newStudy = NO;
 
@@ -1694,6 +1700,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							}
 							
 							[completeAddedImageObjects addObject:image];
+                            
+                            NSString* imagePrivateInformationCreatorUID = [curDict objectForKey:@"PrivateInformationCreatorUID"];
+                            if (!imagePrivateInformationCreatorUID.length)
+                                imagePrivateInformationCreatorUID = [NSUserDefaults.standardUserDefaults stringForKey:@"AETITLE"];
+                            
+                            NSMutableArray* completeAddedImagesForImageCreator = [completeAddedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
+                            if (!completeAddedImagesForImageCreator)
+                                [completeAddedImagesPerCreatorUID setObject:(completeAddedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
+                            
+                            [completeAddedImagesForImageCreator addObject:image];
 							
 							if (newObject || inParseExistingObject)
 							{
@@ -1869,6 +1885,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								}
 								
 								[addedImageObjects addObject:image];
+                                
+                                NSMutableArray* addedImagesForImageCreator = [addedImagesPerCreatorUID objectForKey:imagePrivateInformationCreatorUID];
+                                if (!addedImagesForImageCreator)
+                                    [addedImagesPerCreatorUID setObject:(addedImagesForImageCreator = [NSMutableArray array]) forKey:imagePrivateInformationCreatorUID];
+                                
+                                [addedImagesForImageCreator addObject:image];
 								
 //								if(seriesTable && [addedSeries containsObject: seriesTable] == NO)
 //									[addedSeries addObject: seriesTable];
@@ -1988,9 +2010,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: addedImageObjects, OsirixAddToDBNotificationImagesArray, addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
                 
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:completeAddedImageObjects, OsirixAddToDBNotificationImagesArray, completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
                 
 				if (postNotifications)
                 {
@@ -1999,9 +2021,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                         [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddNewStudiesDBNotification object:self userInfo: [NSDictionary dictionaryWithObject:newStudies forKey: OsirixAddToDBNotificationImagesArray]];
                     }
                     
-                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObject:addedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: addedImageObjects, OsirixAddToDBNotificationImagesArray, addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
                     
-                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObject:completeAddedImageObjects forKey:OsirixAddToDBNotificationImagesArray]];
+                    [NSNotificationCenter.defaultCenter postNotificationOnMainThreadName:OsirixAddToDBCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: completeAddedImageObjects, OsirixAddToDBNotificationImagesArray, completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
 				}
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);

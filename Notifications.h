@@ -44,6 +44,7 @@ extern NSString* const OsirixGLFontChangeNotification;
 extern NSString* const OsirixAddToDBNotification;
 extern NSString* const OsirixAddNewStudiesDBNotification;
 extern NSString* const OsirixAddToDBNotificationImagesArray;
+extern NSString* const OsirixAddToDBNotificationImagesPerAETDictionary;
 extern NSString* const OsirixAddToDBCompleteNotification;
 extern NSString* const OsirixAddToDBCompleteNotificationImagesArray __deprecated; // use OsirixAddToDBNotificationImagesArray
 extern NSString* const OsirixDicomDatabaseDidChangeContextNotification;

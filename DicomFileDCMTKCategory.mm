@@ -291,6 +291,11 @@ extern NSRecursiveLock *PapyrusLock;
 			[dicomElements setObject:fileType forKey:@"fileType"];
 		}
 		
+        // PrivateInformationCreatorUID
+		if (fileformat.getMetaInfo()->findAndGetString(DCM_PrivateInformationCreatorUID, string, OFFalse).good() && string != NULL) {
+            [dicomElements setObject:[NSString stringWithCString:string encoding:NSISOLatin1StringEncoding] forKey:@"PrivateInformationCreatorUID"];
+        }
+        
 		if ([self autoFillComments]  == YES) // ||[self checkForLAVIM] == YES)
 		{
 			if( [self autoFillComments])

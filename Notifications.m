@@ -46,6 +46,7 @@ NSString* const OsirixAddNewStudiesDBNotification = @"OsirixAddNewStudiesDBNotif
 NSString* const OsirixDicomDatabaseDidChangeContextNotification = @"OsirixDicomDatabaseDidChangeContextNotification";
 #define OsiriXAddToDBArrayKey @"OsiriXAddToDBArray"
 NSString* const OsirixAddToDBNotificationImagesArray = OsiriXAddToDBArrayKey;
+NSString* const OsirixAddToDBNotificationImagesPerAETDictionary = @"PerAETDictionary";
 NSString* const OsirixAddToDBCompleteNotification = @"OsirixAddToDBCompleteNotification";
 NSString* const OsirixAddToDBCompleteNotificationImagesArray = OsiriXAddToDBArrayKey; // is deprecated in favor of OsirixAddToDBNotificationImagesArray
 NSString* const _O2AddToDBAnywayNotification = @"_O2AddToDBAnywayNotification";
