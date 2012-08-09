@@ -3013,9 +3013,9 @@ static NSConditionLock *threadLock = nil;
 
 	NSSortDescriptor *sortInstance = nil, *sortLocation = nil, *sortDate = nil;
 
-	sortDate = [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
-	sortInstance = [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease];
-	sortLocation = [[[NSSortDescriptor alloc] initWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO] autorelease];
+	sortDate = [NSSortDescriptor sortDescriptorWithKey: @"date" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
+	sortInstance = [NSSortDescriptor sortDescriptorWithKey: @"instanceNumber" ascending: YES];
+	sortLocation = [NSSortDescriptor sortDescriptorWithKey: @"sliceLocation" ascending: (sortSeriesBySliceLocation > 0) ? YES : NO];
 
 	NSArray *sortDescriptors = nil;
 
