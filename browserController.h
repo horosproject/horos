@@ -549,6 +549,7 @@ extern NSString* O2AlbumDragType;
 - (void) queryDICOM:(id) sender;
 - (IBAction) querySelectedStudy:(id) sender;
 - (void) retrieveComparativeStudy: (DCMTKStudyQueryNode*) study select: (BOOL) select open:(BOOL) open;
+- (void) refreshComparativeStudies: (NSArray*) newStudies;
 #endif
 
 - (void) refreshComparativeStudiesIfNeeded:(id) timer;

@@ -209,16 +209,6 @@
     return [DCMCalendarDate dicomDateTimeWithDicomDate: _date dicomTime: _time];
 }
 
-- (NSNumber*) rawNoFiles // Match DicomStudy
-{
-    return _numberImages;
-}
-
-- (NSNumber*) numberOfImages // Match DicomStudy
-{
-    return _numberImages;
-}
-
 - (NSString*) studyInstanceUID // Match DicomStudy
 {
     return _uid;
@@ -281,6 +271,16 @@
 - (NSDate*) dateAdded // Match DicomStudy
 {
     return nil;
+}
+
+- (NSNumber*) rawNoFiles // Match DicomStudy
+{
+    return _numberImages;
+}
+
+- (NSNumber*) numberOfImages // Match DicomStudy
+{
+    return _numberImages;
 }
 
 - (NSNumber*) noFiles

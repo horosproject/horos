@@ -1206,10 +1206,49 @@ static NSConditionLock *threadLock = nil;
     {
         [self outlineViewRefresh];
         [self refreshAlbums];
-	}
+        
+        #ifndef OSIRIX_LIGHT
+        //If PACS On-Demand is activated, check if a local study has more or same number of images of a distant study
+        NSMutableArray *patientStudies = [NSMutableArray array];
+        for( DicomStudy *study in [[notification.userInfo valueForKey: OsirixAddToDBNotificationImagesArray] valueForKeyPath: @"series.study"])
+        {
+            if( [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                [patientStudies addObject: study];
+        }
+        
+        if( patientStudies.count && self.comparativeStudies.count)
+        {
+            NSMutableArray *copyComparativeStudies = [NSMutableArray arrayWithArray: self.comparativeStudies];
+            BOOL modifications = NO;
+            
+            for( id distantStudy in [NSArray arrayWithArray: copyComparativeStudies])
+            {
+                if( [distantStudy isKindOfClass: [DCMTKStudyQueryNode class]])
+                {
+                    DicomStudy *localStudy = nil;
+                    
+                    for( DicomStudy *localAddedStudy in patientStudies)
+                    {
+                        if( [localAddedStudy.studyInstanceUID isEqualToString: [distantStudy valueForKey: @"studyInstanceUID"]])
+                            localStudy = localAddedStudy;
+                    }
+                    
+                    if( localStudy && [[localStudy rawNoFiles] intValue] >= [[distantStudy noFiles] intValue])
+                    {
+                        modifications = YES;
+                        [copyComparativeStudies replaceObjectAtIndex: [copyComparativeStudies indexOfObject: distantStudy] withObject: localStudy];
+                    }
+                }
+            }
+            
+            if( modifications)
+                [self refreshComparativeStudies: copyComparativeStudies];
+        }
+        #endif
+    }
 }
 
--(void)_reactToDatabaseAdd
+-(void)_refreshDatabaseDisplay
 {
     [self outlineViewRefresh];
     [self refreshAlbums];
@@ -3524,7 +3563,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantSearchType = curSearchType;
                         
                         if( curSearchType == searchType && [curSearchString isEqualToString: _searchString]) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {
@@ -3657,7 +3696,7 @@ static NSConditionLock *threadLock = nil;
                         self.distantTimeIntervalEnd = to;
                         
                         if( [from isEqualToDate: timeIntervalStart] && (to == nil || [to isEqualToDate: timeIntervalEnd])) // There was maybe other locks in the queue...
-                            [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {
@@ -3791,7 +3830,7 @@ static NSConditionLock *threadLock = nil;
                         self.smartAlbumDistantName = albumName;
                         
                         if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]])
-                            [self performSelectorOnMainThread: @selector( _reactToDatabaseAdd) withObject: nil waitUntilDone: NO];
+                            [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
                     {

@@ -67,6 +67,7 @@
 - (NSSet *) paths;
 - (NSSet *) keyImages;
 - (NSSet *) images;
+- (NSNumber *) rawNoFiles;
 - (NSString*) modalities;
 - (NSArray *) imageSeries;
 - (NSArray *) keyObjectSeries;
