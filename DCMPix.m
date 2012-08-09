@@ -8794,6 +8794,7 @@ END_CREATE_ROIS:
 								err = Papy3GroupFree (&theGroupP, TRUE);
 								[PapyrusLock unlock];
 						}
+                        else NSLog( @"Papy3GotoGroupNb0x7FE0 failed: frame %d", imageNb);
 					
 						#pragma mark RGB or fPlanar
 					
