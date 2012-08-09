@@ -2603,11 +2603,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     
                     if( NOLOCALIZER && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
                     {
-                        NSString	*n;
-                        
-                        n = [[NSString alloc] initWithString: @"LOCALIZER"];
                         [serieID release];
-                        serieID = n;
+                        serieID = [[NSString alloc] initWithString: @"LOCALIZER"];
                         
                         [serie release];
                         serie = [[NSString alloc] initWithString: @"Localizers"];
