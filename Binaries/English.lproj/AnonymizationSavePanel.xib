@@ -54,6 +54,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{486, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="56125626">
 								<int key="NSCellFlags">67108864</int>
@@ -79,6 +80,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{286, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="791605891">
 								<int key="NSCellFlags">67108864</int>
@@ -100,6 +102,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{386, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="132953788">
 								<int key="NSCellFlags">67108864</int>
@@ -121,6 +124,7 @@
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{186, 12}, {100, 32}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
+							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="299957405">
 								<int key="NSCellFlags">67108864</int>
@@ -142,11 +146,13 @@
 							<int key="NSvFlags">274</int>
 							<string key="NSFrame">{{0, 40}, {600, 260}}</string>
 							<reference key="NSSuperview" ref="587855618"/>
+							<reference key="NSWindow"/>
 							<string key="NSClassName">NSView</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{600, 300}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
@@ -398,7 +404,70 @@
 			<nil key="sourceID"/>
 			<int key="maxID">33</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">AnonymizationPanelController</string>
+					<string key="superclassName">NSWindowController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="actionCancel:">NSView</string>
+						<string key="actionOk:">NSView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="actionCancel:">
+							<string key="name">actionCancel:</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBActionInfo" key="actionOk:">
+							<string key="name">actionOk:</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+					</dictionary>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">containerView</string>
+						<string key="NS.object.0">NSView</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">containerView</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">containerView</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/AnonymizationPanelController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">AnonymizationSavePanelController</string>
+					<string key="superclassName">AnonymizationPanelController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="actionAdd:">NSView</string>
+						<string key="actionOk:">NSView</string>
+						<string key="actionReplace:">NSView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="actionAdd:">
+							<string key="name">actionAdd:</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBActionInfo" key="actionOk:">
+							<string key="name">actionOk:</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBActionInfo" key="actionReplace:">
+							<string key="name">actionReplace:</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/AnonymizationSavePanelController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">

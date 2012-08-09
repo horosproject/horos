@@ -63,6 +63,7 @@
 							</set>
 							<string key="NSFrame">{{109, 34}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="75594032"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="167387232">
@@ -85,6 +86,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{77, 43}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="201411474"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -116,6 +118,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{119, 83}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="599788510"/>
 							<int key="NSTag">2</int>
 							<bool key="NSEnabled">YES</bool>
@@ -147,6 +150,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{119, 4}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="489103783"/>
 							<int key="NSTag">3</int>
 							<bool key="NSEnabled">YES</bool>
@@ -179,6 +183,7 @@
 							</set>
 							<string key="NSFrame">{{228, 34}, {48, 48}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1028499908"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -202,6 +207,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{237, 83}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1041642540"/>
 							<int key="NSTag">4</int>
 							<bool key="NSEnabled">YES</bool>
@@ -226,6 +232,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{237, 3}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<int key="NSTag">5</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="664481628">
@@ -249,6 +256,7 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{4, 29}, {71, 58}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="429653169"/>
 							<bool key="NSEnabled">YES</bool>
 							<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -528,6 +536,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{160, 43}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="680776736"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="941237424">
@@ -551,6 +560,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{196, 43}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="926880769"/>
 							<int key="NSTag">7</int>
 							<bool key="NSEnabled">YES</bool>
@@ -575,6 +585,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{279, 43}, {29, 28}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="581996194"/>
 							<int key="NSTag">6</int>
 							<bool key="NSEnabled">YES</bool>
@@ -599,6 +610,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{164, 89}, {60, 16}}</string>
 							<reference key="NSSuperview" ref="1006"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="382473678"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1005549072">
@@ -623,11 +635,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</array>
 					<string key="NSFrameSize">{311, 113}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="22204746"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName"/>
+				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
+				<bool key="NSAutorecalculatesContentBorderThicknessMaxY">NO</bool>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 		</array>
@@ -1027,7 +1042,64 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="sourceID"/>
 			<int key="maxID">84</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">ThreeDPanView</string>
+					<string key="superclassName">NSImageView</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/ThreeDPanView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">ThreeDPositionController</string>
+					<string key="superclassName">NSWindowController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="changeMatrixMode:">id</string>
+						<string key="changePosition:">id</string>
+						<string key="reset:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="changeMatrixMode:">
+							<string key="name">changeMatrixMode:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="changePosition:">
+							<string key="name">changePosition:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="reset:">
+							<string key="name">reset:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="axialPan">ThreeDPanView</string>
+						<string key="matrixMode">NSMatrix</string>
+						<string key="verticalPan">ThreeDPanView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="axialPan">
+							<string key="name">axialPan</string>
+							<string key="candidateClassName">ThreeDPanView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="matrixMode">
+							<string key="name">matrixMode</string>
+							<string key="candidateClassName">NSMatrix</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="verticalPan">
+							<string key="name">verticalPan</string>
+							<string key="candidateClassName">ThreeDPanView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/ThreeDPositionController.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginDeclaredDependencyDefaults">

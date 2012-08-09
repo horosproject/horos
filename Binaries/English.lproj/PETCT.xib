@@ -393,7 +393,7 @@
 												<reference key="NSControlView" ref="383375389"/>
 												<int key="NSTag">8</int>
 												<int key="NSButtonFlags">-1232322560</int>
-												<int key="NSButtonFlags2">2</int>
+												<int key="NSButtonFlags2">66</int>
 												<object class="NSCustomResource" key="NSNormalImage">
 													<string key="NSClassName">NSImage</string>
 													<string key="NSResourceName">Cross</string>
@@ -450,7 +450,7 @@
 						<string key="NSExtension">NSResponder</string>
 					</object>
 				</array>
-				<string key="NSFrameSize">{290, 38}</string>
+				<string key="NSFrameSize">{275, 38}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
@@ -4407,14 +4407,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="Angle">{128, 128}</string>
-			<string key="Cross">{28, 28}</string>
-			<string key="Length">{128, 128}</string>
+			<string key="Angle">{197, 201}</string>
+			<string key="Cross">{196, 196}</string>
+			<string key="Length">{197, 197}</string>
 			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSSwitch">{15, 15}</string>
-			<string key="Oval">{128, 128}</string>
+			<string key="Oval">{196, 196}</string>
 			<string key="Rotate">{176, 177}</string>
 			<string key="Stack">{337, 330}</string>
 			<string key="WLWW">{107, 107}</string>
