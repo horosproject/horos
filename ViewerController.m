@@ -4207,7 +4207,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                 [cell setAction: @selector( matrixPreviewSwitchHidden:)];
                 [cell setTarget: self];
                 [cell setBordered: YES];
-                [cell setLineBreakMode: NSLineBreakByCharWrapping];
+                [cell setLineBreakMode: NSLineBreakByWordWrapping];
                 
                 NSUInteger curStudyIndex = [studiesArray indexOfObject: curStudy];
                 
@@ -4249,7 +4249,11 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
                         patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                     
-                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
+                    if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
+                        patName = @"";
+                    
+                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        patName = @"";
                     
                     if( [stateText length] == 0 && [comment length] == 0)
                         [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), action]];
@@ -4277,6 +4281,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             [cell setTarget: self];
                             [cell setButtonType:NSMomentaryPushInButton];
                             [cell setEnabled:YES];
+                            [cell setLineBreakMode: NSLineBreakByCharWrapping];
                             
                             NSString *name = [curSeries valueForKey:@"name"];
                             
@@ -4414,7 +4419,11 @@ static volatile int numberOfThreadsForRelisce = 0;
                     if( [curStudy valueForKey:@"name"] && [curStudy valueForKey:@"dateOfBirth"])
                         patName = [NSString stringWithFormat: @"%@\r%@", [curStudy valueForKey:@"name"], [NSUserDefaults formatDate:[curStudy valueForKey:@"dateOfBirth"]]];
                     
-                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull) patName = @"";
+                    if( [[curStudy valueForKey:@"name"] isEqualToString: study.name])
+                        patName = @"";
+                    
+                    if ([[NSUserDefaults standardUserDefaults] integerForKey: @"ANNOTATIONS"] != annotFull)
+                        patName = @"";
                     
                     if( [stateText length] == 0 && [comment length] == 0)
                         [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, action]];
