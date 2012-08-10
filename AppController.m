@@ -3423,8 +3423,10 @@ static BOOL initialized = NO;
 	[checkSN64Browser setDelegate:self];
 	[checkSN64Browser searchForServicesOfType:@"_snosirix._tcp." inDomain:@""];
 	
+    #ifndef OSIRIX_LIGHT
 	[NSTimer scheduledTimerWithTimeInterval: 5 target: self selector: @selector( checkSN64:) userInfo: nil repeats: NO];
 	#endif
+    #endif
 	
 	#ifndef OSIRIX_LIGHT
 	#ifndef MACAPPSTORE

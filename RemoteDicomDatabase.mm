@@ -274,21 +274,18 @@
 	if (cstr) [data appendBytes:cstr length:cstrlen];
 }
 
-NSString* const FailedToConnectExceptionMessage = @"Failed to connect to the remote host. Is database sharing activated on the distant computer?";
-NSString* const InvalidResponseExceptionMessage = @"Invalid response data from remote host.";
-
 -(NSString*)fetchDatabaseVersion {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBVER" length:6];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding] autorelease];
 }
 
 -(BOOL)fetchIsPasswordProtected {
 	NSMutableData* request = [NSMutableData dataWithBytes:"ISPWD" length:6];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(@"Invalid response data from remote host.", nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
@@ -296,16 +293,16 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
 	[RemoteDicomDatabase _data:request appendStringUTF8:password];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(@"Invalid response data from remote host.", nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
 -(unsigned int)fetchDatabaseIndexSize {
 	NSMutableData* request = [NSMutableData dataWithBytes:"DBSIZ" length:6];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
+	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(@"Invalid response data from remote host.", nil)];
 	return NSSwapBigIntToHost(*((int*)response.bytes));
 }
 
@@ -381,8 +378,8 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 -(NSTimeInterval)fetchDatabaseTimestamp {
 	NSMutableData* request = [NSMutableData dataWithBytes:"VERSI" length:6];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
-	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(InvalidResponseExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
+	if (response.length != sizeof(NSSwappedDouble)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(@"Invalid response data from remote host.", nil)];
 	return NSSwapBigDoubleToHost(*((NSSwappedDouble*)response.bytes));
 }
 
@@ -390,7 +387,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	if (!port) port = 8780;
 	NSMutableData* request = [NSMutableData dataWithBytes:"GETDI" length:6];
 	NSData* response = [N2Connection sendSynchronousRequest:request toAddress:address port:port];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
 	return [NSUnarchiver unarchiveObjectWithData:response];
 }
 
@@ -496,7 +493,7 @@ NSString* const InvalidResponseExceptionMessage = @"Invalid response data from r
 	[RemoteDicomDatabase _data:request appendInt:pathData.length];
 	[request appendData:pathData];
 	NSData* response = [self synchronousRequest:request urgent:YES];
-	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(FailedToConnectExceptionMessage, nil)];
+	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
 	return [[[NSString alloc] initWithData:response encoding:NSUnicodeStringEncoding] autorelease];
 }
 
