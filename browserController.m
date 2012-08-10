@@ -4084,7 +4084,16 @@ static NSConditionLock *threadLock = nil;
             [request setPredicate: [NSPredicate predicateWithFormat: @"(studyInstanceUID == %@)", [comparativeStudyWaited studyInstanceUID]]];
             
             NSError *error = nil;
-            NSArray *studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+            NSArray *studyArray = nil;
+            [self.managedObjectContext lock];
+            @try {
+                studyArray = [self.managedObjectContext executeFetchRequest:request error:&error];
+            }
+            @catch (NSException *e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+            [self.managedObjectContext unlock];
+            
             if( [studyArray count] > 0)
             {
                 DicomStudy *study = [studyArray objectAtIndex: 0];
@@ -4108,7 +4117,7 @@ static NSConditionLock *threadLock = nil;
                             if( comparativeStudyWaitedToOpen)
                                 [self databaseOpenStudy: study];
                             
-                            if( [[self window] firstResponder] != searchField)
+                            if( [[self window] firstResponder] != searchField && [[self window] firstResponder] != searchField.currentEditor)
                                 [[self window] makeFirstResponder: databaseOutline];
                         }
                     }
@@ -4349,7 +4358,7 @@ static NSConditionLock *threadLock = nil;
 	
 	BOOL firstResponderMatrix = NO;
 	
-	if( [[self window] firstResponder] == oMatrix && [[self window] firstResponder] != searchField)
+	if( [[self window] firstResponder] == oMatrix && [[self window] firstResponder] != searchField && [[self window] firstResponder] != searchField.currentEditor)
 	{
 		[[self window] makeFirstResponder: databaseOutline];
 		firstResponderMatrix = YES;
@@ -4359,7 +4368,7 @@ static NSConditionLock *threadLock = nil;
     
 	[imageView display];
 	
-	if( firstResponderMatrix && [[self window] firstResponder] != searchField)
+	if( firstResponderMatrix && [[self window] firstResponder] != searchField && [[self window] firstResponder] != searchField.currentEditor)
 		[[self window] makeFirstResponder: oMatrix];
 }
 
@@ -9794,7 +9803,7 @@ static BOOL needToRezoom;
 //                    else // local study -> select it
 //                    #endif
                     {
-                        if( [self selectThisStudy: study] && [[self window] firstResponder] != searchField)
+                        if( [self selectThisStudy: study] && [[self window] firstResponder] != searchField && [[self window] firstResponder] != searchField.currentEditor)
                             [[self window] makeFirstResponder: databaseOutline];
                     }
                 }
