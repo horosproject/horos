@@ -4021,7 +4021,7 @@ static NSConditionLock *threadLock = nil;
     
     dontSelectStudyFromComparativeStudies = YES;
     
-    self.comparativeStudies = newStudies;
+    self.comparativeStudies = [NSArray arrayWithArray: newStudies];
     [comparativeTable reloadData];
     
     if( studySelected.name)
