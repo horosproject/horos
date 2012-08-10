@@ -76,8 +76,6 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 	BOOL dontReenterCrossReferenceLines;
 	
 	BOOL dontCheckRoiChange;
-    
-    BOOL pathAssistantMode;
 }
 
 @property (assign) id <CPRViewDelegate> delegate;
@@ -90,7 +88,6 @@ typedef NSInteger CPRMPRDCMViewCPRType;
 @property (nonatomic) BOOL displayCrossLines, dontUseAutoLOD;
 @property (readonly) VRView *vrView;
 @property (readonly) BOOL rotateLines, moveCenter;
-@property BOOL pathAssistantMode;
 @property (nonatomic, assign) CPRMPRDCMViewCPRType CPRType;
 
 - (BOOL)is2DTool:(short)tool;

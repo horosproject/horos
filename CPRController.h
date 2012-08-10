@@ -97,11 +97,13 @@ typedef NSInteger CPRExportRotationSpan;
     NSColor *curvedPathColor;
     BOOL curvedPathCreationMode;
     
+    // Fly Assistant and CurvedPath simplification
     FlyAssistant * assistant;
     NSMutableArray * centerline;
-    NSMutableArray * delationCost;
+    NSMutableArray * nodeRemovalCost;
     NSMutableArray * delHistory;
     NSMutableArray * delNodes;
+    IBOutlet NSSlider *pathSimplificationSlider;
  	
 	// Blending
 	DCMView *blendedMprView1, *blendedMprView2, *blendedMprView3;
@@ -255,9 +257,11 @@ typedef NSInteger CPRExportRotationSpan;
 - (void) loadBezierPathFromFile:(NSString*) f;
 - (NSDictionary*)exportDCMImage16bitWithWidth:(NSUInteger)width height:(NSUInteger)height fullDepth:(BOOL)fullDepth withDicomExport:(DICOMExport *)dicomExport; // dicomExport can be nil
 - (void) setupToolbar;
-- (IBAction)removeNode:(id)sender;
-- (IBAction)undoLastNodeRemoval:(id)sender;
+- (void)removeNode;
+- (void)undoLastNodeRemoval;
+- (void)updateCurvedPathCost;
+- (void)resetSlider;
 - (IBAction)runFlyAssistant:(id)sender;
+- (IBAction)onSliderMove:(id)sender;
 - (float) costFunction:(NSUInteger)index;
-- (IBAction)openSimplifyPath:(id)sender;
 @end

@@ -1285,6 +1285,7 @@ extern int splitPosition[ 3];
 //        _draggingCenterlinePath = nil;
 //        _draggingMidHeightPoint = N3VectorZero;
 //        _draggingProjectionNormal = N3VectorZero;
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCurvedPathCostNotification object:nil];
         [self _sendDidEditCurvedPath];
         
         if (_draggedNode >= 0) {
@@ -1316,10 +1317,11 @@ extern int splitPosition[ 3];
     if(( c == NSDeleteCharacter || c == NSDeleteFunctionKey) && _isDraggingNode && _draggedNode != -1)
 	{
 		// Delete node
-			[_curvedPath removeNodeAtIndex:_draggedNode];
-            _draggedNode = -1;
-			[self setNeedsDisplay:YES];
-            [self _setNeedsNewRequest];
+        [_curvedPath removeNodeAtIndex:_draggedNode];
+        _draggedNode = -1;
+        [self setNeedsDisplay:YES];
+        [self _setNeedsNewRequest];
+        [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCurvedPathCostNotification object:nil];
     }
     else
         [super keyDown:theEvent];

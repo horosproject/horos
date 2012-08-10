@@ -249,7 +249,7 @@ static float deg2rad = M_PI / 180.0;
         assistant = [[FlyAssistant alloc] initWithVolume:(float*)[volume bytes] WidthDimension:dim Spacing:spacing ResampleVoxelSize:resamplesize];
         [assistant setCenterlineResampleStepLength:3.0];
         centerline = [[NSMutableArray alloc] init];
-        delationCost = [[NSMutableArray alloc] init];
+        nodeRemovalCost = [[NSMutableArray alloc] init];
         delHistory = [[NSMutableArray alloc] init];
         delNodes = [[NSMutableArray alloc] init];
         curvedPath = [[CPRCurvedPath alloc] init];
@@ -390,7 +390,10 @@ static float deg2rad = M_PI / 180.0;
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(CloseViewerNotification:) name:OsirixCloseViewerNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(changeWLWW:) name: OsirixChangeWLWWNotification object: nil];
-		
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(updateCurvedPathCost) name:OsirixUpdateCurvedPathCostNotification object: nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(resetSlider) name:OsirixDeletedCurvedPathNotification object: nil];
+
 		[shadingCheck setAction:@selector(switchShading:)];
 		[shadingCheck setTarget:self];
 		
@@ -658,7 +661,7 @@ static float deg2rad = M_PI / 180.0;
     
     [assistant release];
     [centerline release];
-    [delationCost release];
+    [nodeRemovalCost release];
     [delHistory release];
     [delNodes release];
 	
@@ -1134,18 +1137,9 @@ static float deg2rad = M_PI / 180.0;
         
         self.curvedPath = newCP;
         
-        [delationCost removeAllObjects];
-        NSUInteger pathSize = [[curvedPath nodes] count];
-        for (NSUInteger i = 0 ; i < pathSize; ++i)
-        {
-            [delationCost addObject:[NSNumber numberWithFloat:[self costFunction:i]]];
-        }
+        [self updateCurvedPathCost];
+        [pathSimplificationSlider setDoubleValue:[pathSimplificationSlider maxValue]];
         
-        if (pathSize != [delationCost count]) {
-            NSLog(@"Trouble.");
-        } else {
-            NSLog(@"No trouble.");
-        }
         mprView1.curvedPath = curvedPath;
         mprView2.curvedPath = curvedPath;
         mprView3.curvedPath = curvedPath;
@@ -4542,13 +4536,6 @@ static float deg2rad = M_PI / 180.0;
     if (index == 0 || index == [[curvedPath nodes] count] - 1)
     {
         cost = MAXFLOAT;
-//        N3Vector next = [[[curvedPath nodes] objectAtIndex:index+1] N3VectorValue];
-//        cost = (cur.x - next.x) * (cur.x - next.x) + (cur.y - next.y) * (cur.y - next.y) + (cur.z - next.z) * (cur.z - next.z);
-//    }
-//    else if (index == [[curvedPath nodes] count] - 1)
-//    {
-//        N3Vector prev = [[[curvedPath nodes] objectAtIndex:index-1] N3VectorValue];
-//        cost = (cur.x - prev.x) * (cur.x - prev.x) + (cur.y - prev.y) * (cur.y - prev.y) + (cur.z - prev.z) * (cur.z - prev.z);
     }
     else
     {
@@ -4562,9 +4549,9 @@ static float deg2rad = M_PI / 180.0;
     return cost;
 }
 
-- (IBAction)removeNode:(id)sender
+- (void)removeNode
 {
-    NSUInteger delCount = [delationCost count];
+    NSUInteger delCount = [nodeRemovalCost count];
     
     if (delCount > 3) // prevents the removal of too many points: CPR view is shown with at least 3 points.
     {
@@ -4573,29 +4560,29 @@ static float deg2rad = M_PI / 180.0;
         // Find the index of the node that lowers the delation cost
         for (NSUInteger i = 0; i < delCount; ++i)
         {
-            if (cost > [[delationCost objectAtIndex:i] floatValue])
+            if (cost > [[nodeRemovalCost objectAtIndex:i] floatValue])
             {
                 index = i;
-                cost = [[delationCost objectAtIndex:i] floatValue];
+                cost = [[nodeRemovalCost objectAtIndex:i] floatValue];
             }
         }
         
         // Remove the node
         N3Vector node = [[[curvedPath nodes] objectAtIndex:index] N3VectorValue];
         [self.curvedPath removeNodeAtIndex:index];
-        [delationCost removeObjectAtIndex:index];
+        [nodeRemovalCost removeObjectAtIndex:index];
         [delHistory addObject:[NSNumber numberWithUnsignedInteger:index]];
         [delNodes addObject:[NSValue valueWithN3Vector:node]];
         
         // Update the cost list
         if (index > 0)
         {
-            [delationCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
+            [nodeRemovalCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
         }
         
         if (index < delCount - 1)
         {
-            [delationCost replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:[self costFunction:index]]];
+            [nodeRemovalCost replaceObjectAtIndex:index withObject:[NSNumber numberWithFloat:[self costFunction:index]]];
         }
         
         // Update the curved path on all views
@@ -4609,7 +4596,7 @@ static float deg2rad = M_PI / 180.0;
     }
 }
 
-- (IBAction)undoLastNodeRemoval:(id)sender
+- (void)undoLastNodeRemoval
 {
     if ([delHistory count] > 0)
     {
@@ -4620,16 +4607,16 @@ static float deg2rad = M_PI / 180.0;
         [delNodes removeLastObject];
         // Update the cost list
         // the index in delHistory and delationCost do not include first and last two indexes of centerline (can't remoce first and last points)
-        [delationCost insertObject:[NSNumber numberWithFloat:[self costFunction:index]] atIndex:index];
+        [nodeRemovalCost insertObject:[NSNumber numberWithFloat:[self costFunction:index]] atIndex:index];
         
         if (index > 0)
         {
-            [delationCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
+            [nodeRemovalCost replaceObjectAtIndex:index-1 withObject:[NSNumber numberWithFloat:[self costFunction:index-1]]];
         }
         
-        if (index < [delationCost count] - 1)
+        if (index < [nodeRemovalCost count] - 1)
         {
-            [delationCost replaceObjectAtIndex:index+1 withObject:[NSNumber numberWithFloat:[self costFunction:index+1]]];
+            [nodeRemovalCost replaceObjectAtIndex:index+1 withObject:[NSNumber numberWithFloat:[self costFunction:index+1]]];
         }
         
         // Update the curved path on all views
@@ -4641,6 +4628,24 @@ static float deg2rad = M_PI / 180.0;
         middleTransverseView.curvedPath = curvedPath;
         bottomTransverseView.curvedPath = curvedPath;
     }
+}
+
+- (void) updateCurvedPathCost
+{
+    [nodeRemovalCost removeAllObjects];
+    NSUInteger pathSize = [[curvedPath nodes] count];
+    for (NSUInteger i = 0; i < pathSize ; ++i)
+    {
+        [nodeRemovalCost addObject:[NSNumber numberWithFloat:[self costFunction:i]]];
+    }
+}
+
+- (void) resetSlider
+{
+    [nodeRemovalCost removeAllObjects];
+    [delNodes removeAllObjects];
+    [delHistory removeAllObjects];
+    [pathSimplificationSlider setDoubleValue:[pathSimplificationSlider maxValue]];
 }
 
 #pragma mark CPRViewDelegate Methods
@@ -4846,28 +4851,42 @@ static float deg2rad = M_PI / 180.0;
 
 - (IBAction)runFlyAssistant:(id)sender;
 {
-    if ([curvedPath.nodes count] > 1) {
+    if( [curvedPath.nodes count] > 1 && [curvedPath.nodes count] <= 5)
         [self assistedCurvedPath:nil];
-    }
     else
-         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant can not find a path with at least two points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+         NSRunAlertPanel(NSLocalizedString(@"Path Assistant error", nil), NSLocalizedString(@"Path Assistant requires at least 2 points, and no more than 5 points. Use the Curved Path tool to define at least two points.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+    
+    [self willChangeValueForKey: @"onSliderEnabled"];
+    [self didChangeValueForKey: @"onSliderEnabled"];
 }
 
+- (BOOL) onSliderEnabled
+{
+    if ([centerline count] && [[curvedPath nodes] count] > 2)
+        return YES;
+    else
+        return NO;
+}
 
-//- (IBAction)switchPathAssistantMode:(id)sender;
-//{
-//    assistantPathMode = !assistantPathMode;
-//    mprView1.pathAssistantMode = assistantPathMode;
-//    mprView2.pathAssistantMode = assistantPathMode;
-//    mprView3.pathAssistantMode = assistantPathMode;
-//    if (assistantPathMode) {
-//        NSLog(@"Path Assistant enabled.");
-//	}
-//    else
-//        NSLog(@"Path Assistant disabled.");
-//}
-
-- (IBAction)openSimplifyPath:(id)sender {
+- (IBAction)onSliderMove:(id)sender
+{
+    if ([centerline count] && [[curvedPath nodes] count] > 2)
+    {
+        int targetValue = ([centerline count] - 3) * [pathSimplificationSlider floatValue] / 100 + 3;
+        while ([[curvedPath nodes] count] != targetValue)
+        {
+            if (targetValue < [[curvedPath nodes] count])
+            {
+                [self removeNode];
+            }
+            else
+            {
+                [self undoLastNodeRemoval];
+            }
+        }
+    }
+    [self willChangeValueForKey: @"onSliderEnabled"];
+    [self didChangeValueForKey: @"onSliderEnabled"];
 }
 
 - (void)CPRViewDidEditAssistedCurvedPath:(id)CPRMPRDCMView

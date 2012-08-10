@@ -1101,8 +1101,6 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[presetPreviewArray release];
 	[presetNameArray release];
 	
-	[super dealloc];
-	
 	[view prepareForRelease];
 	
 	[presetPreview1 prepareForRelease];
@@ -1115,6 +1113,8 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 	[presetPreview8 prepareForRelease];
 	[presetPreview9 prepareForRelease];
 	[selectedPresetPreview prepareForRelease];
+    
+    [super dealloc];
 }
 
 - (void) CloseViewerNotification: (NSNotification*) note

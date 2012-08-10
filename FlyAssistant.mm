@@ -166,9 +166,12 @@
                 float inValue = -MAXFLOAT;
                 for (unsigned int i = inputx; i <= inputx+1; ++i) {
                     for (unsigned int j = inputy; j <= inputy+1; ++j) {
-                        for (unsigned int k = inputz; k <= inputz+1; ++k) {
-                            if (inValue < input[k*inputImageSize+j*inputWidth+i]) {
-                                inValue = input[k*inputImageSize+j*inputWidth+i];
+                        for (unsigned int k = inputz; k <= inputz+1; ++k)
+                        {
+                            if( k < inputDepth && j < inputHeight && i < inputWidth)
+                            {
+                                if (inValue < input[k*inputImageSize+j*inputWidth+i])
+                                    inValue = input[k*inputImageSize+j*inputWidth+i];
                             }
                         }
                     }

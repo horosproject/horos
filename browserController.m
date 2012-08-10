@@ -2634,11 +2634,11 @@ static NSConditionLock *threadLock = nil;
 	}
 	else sortDescriptors = [databaseOutline sortDescriptors];
 	
-	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && [outlineViewArray count] > 0)
+	if( filtered == YES && [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogether"] && outlineViewArray.count > 0)
 	{
 		@try
 		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"])
+			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"] && outlineViewArray.count < 1000)
 			{
 				outlineViewArray = [outlineViewArray sortedArrayUsingDescriptors: sortDescriptors];
 				
@@ -4349,7 +4349,7 @@ static NSConditionLock *threadLock = nil;
 	
 	BOOL firstResponderMatrix = NO;
 	
-	if( [[self window] firstResponder] == oMatrix)
+	if( [[self window] firstResponder] == oMatrix && [[self window] firstResponder] != searchField)
 	{
 		[[self window] makeFirstResponder: databaseOutline];
 		firstResponderMatrix = YES;
@@ -4359,7 +4359,7 @@ static NSConditionLock *threadLock = nil;
     
 	[imageView display];
 	
-	if( firstResponderMatrix)
+	if( firstResponderMatrix && [[self window] firstResponder] != searchField)
 		[[self window] makeFirstResponder: oMatrix];
 }
 
@@ -11488,7 +11488,8 @@ static NSArray*	openSubSeriesArray = nil;
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subFrom"];
 	[self setValue:[NSNumber numberWithInt:1] forKey:@"subInterval"];
 	
-    if (!subSeriesWindowIsOn) {
+    if (!subSeriesWindowIsOn)
+    {
         subSeriesWindowIsOn = YES;
         [NSApp beginSheet: subSeriesWindow
            modalForWindow: [NSApp mainWindow]
@@ -17931,14 +17932,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 			case 7:			// All Fields
 				s = [NSString stringWithFormat:@"%@", _searchString];
 				
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] > 0) 
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", [DicomStudy soundex: s], s, s, s, s, s, s, s, s, s, s, s, s, s];
-				else
+				else if( [s length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(name CONTAINS[cd] %@) OR (patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (comment CONTAINS[cd] %@) OR (comment2 CONTAINS[cd] %@) OR (comment3 CONTAINS[cd] %@) OR (comment4 CONTAINS[cd] %@) OR (studyName CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@) OR (performingPhysician CONTAINS[cd] %@) OR (referringPhysician CONTAINS[cd] %@) OR (institutionName CONTAINS[cd] %@)", s, s, s, s, s, s, s, s, s, s, s, s, s];
+                else if( [s length] >= 2)
+                    predicate = [NSPredicate predicateWithFormat: @"(patientID CONTAINS[cd] %@) OR (id CONTAINS[cd] %@) OR (modality CONTAINS[cd] %@) OR (accessionNumber CONTAINS[cd] %@)", s, s, s, s];
 			break;
 			
 			case 0:			// Patient Name
-				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] > 0)
+				if( [[NSUserDefaults standardUserDefaults] boolForKey: @"useSoundexForName"] && [_searchString length] >= 3)
 					predicate = [NSPredicate predicateWithFormat: @"(soundex CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", [DicomStudy soundex: _searchString], s];
 				else
 					predicate = [NSPredicate predicateWithFormat: @"name CONTAINS[cd] %@", _searchString];

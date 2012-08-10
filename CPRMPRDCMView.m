@@ -82,7 +82,6 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 @synthesize displayInfo;
 @synthesize dontUseAutoLOD, pix, camera, angleMPR, vrView, viewExport, toIntervalExport, fromIntervalExport, rotateLines, moveCenter, displayCrossLines, LOD;
 @synthesize CPRType = _CPRType;
-@synthesize pathAssistantMode;
 
 - (BOOL)becomeFirstResponder
 {
@@ -1008,10 +1007,13 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			[self sendDidEditCurvedPath];
 			draggedToken = CPRCurvedPathControlTokenNone;
 			[self setNeedsDisplay:YES];
+            // update costs
+            [[NSNotificationCenter defaultCenter] postNotificationName:OsirixUpdateCurvedPathCostNotification object:nil];
 		}
-		else // Delete the entire curve?
+		else // Delete the entire curve
 		{
 			[self deleteCurrentCurvedPath];
+            [[NSNotificationCenter defaultCenter] postNotificationName:OsirixDeletedCurvedPathNotification object:nil];
 		}
 	}
     else if( c == NSUpArrowFunctionKey || c == NSDownArrowFunctionKey || c == NSRightArrowFunctionKey || c ==  NSLeftArrowFunctionKey)
@@ -1733,18 +1735,7 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
                             }
                             [curvedPath addNode:mouseLocation transform:viewToDicomTransform];
                             [self sendDidUpdateCurvedPath];
-                            if (pathAssistantMode) {
-                                // 1. ajouter le point au curvedPath local (addNode appelle la création de courbe de Bézier, pas utile dans ce cas.
-                                // 2. mettre à jour le curvedPath du CPRController (fait ici avec sendDidUpdateCurvedPath)
-                                // 3. lancer l'algo du flyAssistant
-                                [[NSNotificationCenter defaultCenter] postNotificationName:OsirixNodeAdded2CurvePathNotification object:self userInfo:nil];
-                                // 4. mettre à jour tous les curvedPath
-                                [self sendDidEditAssistedCurvedPath];
-                            }
-                            else
-                            {
-                                [self sendDidEditCurvedPath];
-                            }
+                            [self sendDidEditCurvedPath];
 							[self setNeedsDisplay:YES];
 							
 							// Center the views to the last point
