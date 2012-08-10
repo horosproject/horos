@@ -4256,9 +4256,9 @@ static volatile int numberOfThreadsForRelisce = 0;
                         patName = @"";
                     
                     if( [stateText length] == 0 && [comment length] == 0)
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), action]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), action]];
                     else 
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@ : %d %@\r%@\r%@\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, (int) [series count], NSLocalizedString( @"series", nil), stateText, comment, action]];
                     
                     [cell setBackgroundColor: [NSColor whiteColor]];
                     
@@ -4333,7 +4333,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                             if( name == nil)
                                 name = @"";
                             
-                            [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [BrowserController DateTimeWithSecondsFormat: [curSeries valueForKey:@"date"]], count, type]];
+                            [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%d %@", name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curSeries valueForKey:@"date"]], count, type]];
                             
                             [previewMatrix setToolTip:[NSString stringWithFormat: NSLocalizedString(@"Series ID:%@\rRight mouse button to\ropen in new window", nil), [curSeries valueForKey:@"id"]] forCell:cell];
                             
@@ -4426,7 +4426,7 @@ static volatile int numberOfThreadsForRelisce = 0;
                         patName = @"";
                     
                     if( [stateText length] == 0 && [comment length] == 0)
-                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@\r\r%@", patName, name, [BrowserController DateTimeWithSecondsFormat: [curStudy valueForKey:@"date"]], modality, action]];
+                        [cell setTitle:[NSString stringWithFormat:@"%@\r%@\r%@\r%@\r\r%@", patName, name, [[NSUserDefaults dateTimeFormatter] stringFromDate: [curStudy valueForKey:@"date"]], modality, action]];
                     
                     [cell setBackgroundColor: [NSColor whiteColor]];
                     
