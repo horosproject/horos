@@ -3786,7 +3786,7 @@ static BOOL initialized = NO;
     if( [sender isKindOfClass:[NSString class]] && [sender isEqualToString: @"crash"])
         verboseAfterCrash = YES;
     
-	if( [AppController hasMacOSXLeopard])
+	if( [AppController hasMacOSXLion])
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/versionLeopard.xml"];
 	else
 		url = [NSURL URLWithString:@"http://www.osirix-viewer.com/version.xml"];

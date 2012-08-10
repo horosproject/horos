@@ -206,7 +206,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>9903M</string>
+	<string>10255M</string>
 	<key>LSCanProvideIMVideoDataSource</key>
 	<string>Yes</string>
 	<key>NSAppleScriptEnabled</key>
@@ -217,8 +217,6 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>SVNRevision</key>
-	<string>$Rev: 7578 $ $Date: 2010-09-02 22:53:14 +0200 (Thu, 02 Sep 2010) $</string>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>
@@ -249,5 +247,7 @@
 	<string>OsiriX.sdef</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Your account will be used for the built-in iChat sharing service. If you don&apos;t allow access, you cannot use the iChat functions.</string>
+	<key>SVNRevision</key>
+	<string>$Rev: 10202 $ $Date: 2012-08-05 08:41:13 +0200 (Dim, 05 aoû 2012) $</string>
 </dict>
 </plist>
