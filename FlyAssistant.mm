@@ -913,21 +913,17 @@ typedef GreaterPathNodeOnF NodeCompare;
 			currentlabel=LABELOFPOINTB;
 		}
         
-        if( z < 0)
-            z = 0;
-        if( y < 0)
-            y = 0;
-        if( x < 0)
-            x = 0;
-        
-        if( z >= inputDepth)
-            z = inputDepth-1;
-        if( y >= inputHeight)
-            y = inputHeight-1;
-        if( x >= inputWidth)
-            x = inputWidth-1;
-        
 		currentindex = z*distmapImageSize + y*distmapWidth + x;
+        
+        if( currentindex >= distmapVolumeSize)
+        {
+            NSLog( @"***** currentindex >= distmapVolumeSize");
+            free(costmap);
+            free(labelmap);
+            
+            return ERROR_DISTTRANSNOTFINISH;
+        }
+        
 		currentcost=0;
 		costmap[currentindex]=0;
 		labelmap[currentindex]=OPTIMIZED|currentlabel|DIRECTIONTOSELF;//13 is the direction that pointing to itself

@@ -8019,7 +8019,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( annotations > annotNone)
         {
             glColor4f( 1.0, 1.0, 1.0, 1.0);
-            [warningNotice drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height)];
+            
+            NSRect r = NSMakeRect( drawingFrameRect.size.width/2 - [self convertSizeToBacking: [warningNotice frameSize]].width/2, drawingFrameRect.size.height - 35*sf - [self convertSizeToBacking: [warningNotice frameSize]].height, [self convertSizeToBacking: [warningNotice frameSize]].width, [self convertSizeToBacking: [warningNotice frameSize]].height);
+            
+            [warningNotice drawWithBounds: r];
         }
     }
     #endif
@@ -8060,9 +8063,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	@synchronized (self)
 	{
-        // Get view dimensions in pixels
-//        NSLog( @"%@, %@", NSStringFromRect( [self frame]), NSStringFromRect([self convertRectToBacking: [self frame]]));
         NSRect backingBounds = [self convertRectToBacking: [self frame]]; // Retina
+        
+        if( previousScalingFactor != self.window.backingScaleFactor)
+        {
+            previousScalingFactor = self.window.backingScaleFactor;
+            
+            [warningNotice release];
+            warningNotice = nil;
+            [DCMView purgeStringTextureCache];
+        }
         
 		[self drawRect: backingBounds withContext: [self openGLContext]];
 	}
@@ -8994,8 +9004,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						glTranslatef (-drawingFrameRect.size.width / 2.0f, -drawingFrameRect.size.height / 2.0f, 0.0f);
                         
                         glColor4f( 1.0, 1.0, 1.0, 1.0);
-                
-						[showDescriptionInLargeText drawAtPoint:NSMakePoint(drawingFrameRect.size.width/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width/2, drawingFrameRect.size.height/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height/2)];
+                        
+                        NSRect r = NSMakeRect( drawingFrameRect.size.width/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width/2, drawingFrameRect.size.height/2 - [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height/2, [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].width, [self convertSizeToBacking: [showDescriptionInLargeText frameSize]].height);
+                        
+						[showDescriptionInLargeText drawWithBounds: r];
 						
 						glPopMatrix(); // GL_MODELVIEW
 					glMatrixMode (GL_PROJECTION);
@@ -11605,9 +11617,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	labelFont = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]] retain];
 	if( labelFont == nil) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
 	
-	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2];
+	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2 :self.window.backingScaleFactor];
 	[ROI setFontHeight: [self convertSizeToBacking: [DCMView sizeOfString: @"B" forFont: labelFont]].height];
-	
+    
 	[self setNeedsDisplay:YES];
 }
 
@@ -11626,7 +11638,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
 	if( fontGL == nil) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
 	
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0];
+	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0 :self.window.backingScaleFactor];
 	stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
 	
 	@synchronized( globalStringTextureCache)

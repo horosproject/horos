@@ -333,8 +333,6 @@ static BOOL protectedReentryWindowDidResize = NO;
 	{
 		if(/*!Button() && */windowIsMovedByTheUserO == YES && dontEnterMagneticFunctions == NO && [[NSUserDefaults standardUserDefaults] boolForKey:@"MagneticWindows"] && NSIsEmptyRect( savedWindowsFrameO) == NO)
 		{
-			NSLog(@"windowDidMove:");
-			
 			if( Button() == 0) windowIsMovedByTheUserO = NO;
 			
 			NSEnumerator	*e;

@@ -1474,7 +1474,7 @@ extern "C"
 		[context unlock];
 	}
 	else
-		NSLog( @"Warning! Not a series class !");
+		NSLog( @"Warning! Not a series class ! %@", [item class]);
 	
 	return seriesArray;
 }

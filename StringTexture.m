@@ -160,14 +160,16 @@
 
 - (GLuint) genTexture;
 {
+    NSLog( @"******** WE SHOULD NOT BE HERE, use genTextureWithBackingScaleFactor instead");
+    
     return [self genTextureWithBackingScaleFactor: [[NSScreen mainScreen] backingScaleFactor]];
 }
 
 - (GLuint) genTextureWithBackingScaleFactor: (float) backingScaleFactor; // generates the texture without drawing texture to current context
 {
-    if( backingScaleFactor == 0)
+    if( backingScaleFactor != 1.0 && backingScaleFactor != 2.0)
     {
-        NSLog( @"-- genTextureWithBackingScaleFactor backingScaleFactor == 0");
+        NSLog( @"******** genTextureWithBackingScaleFactor backingScaleFactor == %f", backingScaleFactor);
         backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
     }
     

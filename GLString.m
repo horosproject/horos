@@ -176,6 +176,10 @@
 	
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
+        
+        frameSize.width = (int) frameSize.width;
+        frameSize.height = (int) frameSize.height;
+        
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -212,7 +216,7 @@
 		texSize.height = [bitmap pixelsHigh];
 		
 		if ((cgl_ctx = CGLGetCurrentContext ())) // if we successfully retrieve a current context (required)
-		{ 
+		{
 			glPushAttrib(GL_TEXTURE_BIT);
 			if (0 != texName) glDeleteTextures( 1, &texName);
 			glGenTextures (1, &texName);
@@ -325,6 +329,10 @@
 {
 	if ((NO == staticFrame) && (0.0f == frameSize.width) && (0.0f == frameSize.height)) { // find frame size if we have not already found it
 		frameSize = [string size]; // current string size
+        
+        frameSize.width = (int) frameSize.width;
+        frameSize.height = (int) frameSize.height;
+        
 		frameSize.width += marginSize.width * 2.0f; // add padding
 		frameSize.height += marginSize.height * 2.0f;
 	}
@@ -390,14 +398,6 @@
 		
 		glPopAttrib();
 	}
-}
-
-- (void) drawAtPoint:(NSPoint)point
-{
-	if (requiresUpdate)
-		[self genTexture]; // ensure size is calculated for bounds
-	if (texName) // if successful
-		[self drawWithBounds:NSMakeRect (point.x, point.y, texSize.width, texSize.height)];
 }
 
 @end

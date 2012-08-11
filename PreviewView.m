@@ -32,7 +32,7 @@
 		[fontGL release];
 		fontGL = [[NSFont systemFontOfSize: 12] retain];
 		
-		[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :1];
+		[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :1 :self.window.backingScaleFactor];
 		stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
 		
 		[DCMView purgeStringTextureCache];
