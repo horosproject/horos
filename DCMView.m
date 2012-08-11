@@ -1693,32 +1693,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			}
 		}
 		
-//		if( iChatStringTextureCache == nil) iChatStringTextureCache = [[NSMutableDictionary alloc] initWithCapacity: STRCAPACITY];
-		
-		NSMutableDictionary *_stringTextureCache;
-		if (fontL == iChatFontListGL)
-			_stringTextureCache = iChatStringTextureCache;
-		else
-			_stringTextureCache = stringTextureCache;
-			
-		StringTexture *stringTex = [_stringTextureCache objectForKey: str];
+		StringTexture *stringTex = [stringTextureCache objectForKey: str];
 		if( stringTex == nil)
 		{
-			if( [_stringTextureCache count] > STRCAPACITY)
+			if( [stringTextureCache count] > STRCAPACITY)
 			{
-				[_stringTextureCache removeAllObjects];
+				[stringTextureCache removeAllObjects];
 				NSLog(@"String texture cache purged.");
 			}
 			NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
 			
 			if( fontL == labelFontListGL) [stanStringAttrib setObject:labelFont forKey:NSFontAttributeName];
-			else if( fontL == iChatFontListGL) [stanStringAttrib setObject:iChatFontGL forKey:NSFontAttributeName];
+//			else if( fontL == iChatFontListGL) [stanStringAttrib setObject:iChatFontGL forKey:NSFontAttributeName];
 			else [stanStringAttrib setObject:fontGL forKey:NSFontAttributeName];
 			[stanStringAttrib setObject:[NSColor whiteColor] forKey:NSForegroundColorAttributeName];
-
+            
 			stringTex = [[StringTexture alloc] initWithString:str withAttributes:stanStringAttrib];
 			[stringTex genTextureWithBackingScaleFactor:self.window.backingScaleFactor];
-			[_stringTextureCache setObject:stringTex forKey:str];
+			[stringTextureCache setObject:stringTex forKey:str];
 			[stringTex release];
 		}
 		
@@ -1741,13 +1733,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         else
             glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
         
-		[stringTex drawAtPoint:NSMakePoint( xc+1, yc+1)];
+		[stringTex drawWithBounds: NSMakeRect( xc+1, yc+1, [stringTex texSize].width, [stringTex texSize].height)];
 		
         if( whiteBackground)
             glColor4f (0.0f, 0.0f, 0.0f, 1.0f);
         else
             glColor4f (1.0f, 1.0f, 1.0f, 1.0f);
-		[stringTex drawAtPoint:NSMakePoint( xc, yc)];
+		[stringTex drawWithBounds: NSMakeRect( xc, yc, [stringTex texSize].width, [stringTex texSize].height)];
 		
 		glDisable(GL_BLEND);
 		glDisable (GL_TEXTURE_RECTANGLE_EXT);
@@ -1758,13 +1750,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if(align==DCMViewTextAlignRight)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize] + 2*self.window.backingScaleFactor;
-			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2*self.window.backingScaleFactor;
+//			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize] + 2*self.window.backingScaleFactor;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize] + 2;
 		}
 		else if(align==DCMViewTextAlignCenter)
 		{
 			if( fontL == labelFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:labelFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
-			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
+//			else if( fontL == iChatFontListGL) x -= [DCMView lengthOfString:cstrOut forFont:iChatFontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
 			else x -= [DCMView lengthOfString:cstrOut forFont:fontListGLSize]/2.0 + 2*self.window.backingScaleFactor;
 		}
 		
@@ -2197,8 +2189,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
     labelFontListGL = 0;
     
-	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
-	iChatFontListGL = 0;
+//	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
+//	iChatFontListGL = 0;
     
 	if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
     loupeTextureID = 0;
@@ -2227,7 +2219,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[fontColor release]; fontColor = nil;
 	[fontGL release]; fontGL = nil;
 	[labelFont release]; labelFont = nil;
-	[iChatFontGL release]; iChatFontGL = nil;
+//	[iChatFontGL release]; iChatFontGL = nil;
 	[yearOld release]; yearOld = nil;
 	
 	[cursor release]; cursor = nil;
@@ -6255,8 +6247,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	fontColor = nil;
 	
-	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
-	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixLabelGLFontChangeNotification object: self];
+//	[[NSNotificationCenter defaultCenter] postNotificationName:OsirixGLFontChangeNotification object: self];
 	
 	currentTool = tWL;
 		
@@ -7174,7 +7166,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	glEnable (TEXTRECTMODE); // enable texturing
 	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); 
-
+    
+    float sf = self.window.backingScaleFactor;
+    
 	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
 			// use remaining to determine next texture size
@@ -8002,7 +7996,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     
     #if __LP64__
     #else
-    if( size.size.width > 700 && [AppController isFDACleared] == NO)
+    if( size.size.width > 500*sf && [AppController isFDACleared] == NO)
     {
         if( warningNotice == nil && [self class] == [DCMView class] && fullText)
         {
@@ -8067,11 +8061,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         
         if( previousScalingFactor != self.window.backingScaleFactor)
         {
+            if( previousScalingFactor)
+                scaleValue *= self.window.backingScaleFactor / previousScalingFactor;
+            
             previousScalingFactor = self.window.backingScaleFactor;
             
             [warningNotice release];
             warningNotice = nil;
             [DCMView purgeStringTextureCache];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixLabelGLFontChangeNotification object: self];
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixGLFontChangeNotification object: self];
+            
+            for( ROI *r in curRoiList)
+                [r setRoiFont: labelFontListGL :labelFontListGLSize :self];
         }
         
 		[self drawRect: backingBounds withContext: [self openGLContext]];
@@ -8227,7 +8230,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSRect savedDrawingFrameRect;
 	long clutBars = CLUTBARS, annotations = ANNOTATIONS;
 	BOOL frontMost = NO, is2DViewer = [self is2DViewer];
-	
+	float sf = self.window.backingScaleFactor;
+    
 //	#ifndef OSIRIX_LIGHT
 //    iChatRunning = NO;
 //    if( is2DViewer)
@@ -8340,7 +8344,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					glEnable(GL_BLEND);
 					
 					glColor4f (249./255., 240./255., 140./255., [[self windowController] highLighted]);
-					glLineWidth(1.0 * self.window.backingScaleFactor);
+					glLineWidth(1.0 * sf);
 					glBegin(GL_QUADS);
 						glVertex2f(0.0, 0.0);
 						glVertex2f(0.0, drawingFrameRect.size.height);
@@ -8366,7 +8370,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //				glEnable(GL_BLEND);
 //				
 //				glColor4f (0.0f, 0.0f, 0.0f, 0.7f);
-//				glLineWidth(1.0 * self.window.backingScaleFactor);
+//				glLineWidth(1.0 * sf);
 //				glBegin(GL_QUADS);
 //					glVertex2f(0.0, 0.0);
 //					glVertex2f(0.0, topLeft.y);
@@ -8403,7 +8407,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //					glVertex2f(topLeft.x+iChatWidth, topLeft.y);
 //				glEnd();
 //				
-//				glLineWidth(1.0 * self.window.backingScaleFactor);
+//				glLineWidth(1.0 * sf);
 //				glDisable(GL_BLEND);
 //				
 //				// label
@@ -8439,43 +8443,43 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//					glLoadIdentity (); // reset model view matrix to identity (eliminates rotation basically)
 	//					glScalef (2.0f /(xFlipped ? -(drawingFrameRect.size.width) : drawingFrameRect.size.width), -2.0f / (yFlipped ? -(drawingFrameRect.size.height) : drawingFrameRect.size.height), 1.0f);
 					
-					glLineWidth(1.0 * self.window.backingScaleFactor);
+					glLineWidth(1.0 * sf);
 					glBegin(GL_LINES);
 					for( int i = 0; i < 256; i++ )
 					{
 						glColor3ub ( redTable[ i], greenTable[ i], blueTable[ i]);
 						
-						glVertex2f(  widthhalf - BARPOSX1, heighthalf - (-128.f + i));
-						glVertex2f(  widthhalf - BARPOSX2, heighthalf - (-128.f + i));
+						glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
+						glVertex2f(  widthhalf - BARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
 					}
 					glColor3ub ( 128, 128, 128);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX2 , heighthalf - -128.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);			glVertex2f(  widthhalf - BARPOSX2 , heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX1, heighthalf - -128.f);		glVertex2f(  widthhalf - BARPOSX1, heighthalf - 127.f);
-					glVertex2f(  widthhalf - BARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  widthhalf - BARPOSX2, heighthalf - 127.f);
+					glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - -128.f*sf);		glVertex2f(  widthhalf - BARPOSX2*sf , heighthalf - -128.f*sf);
+					glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - 127.f*sf);			glVertex2f(  widthhalf - BARPOSX2*sf , heighthalf - 127.f*sf);
+					glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - -128.f*sf);		glVertex2f(  widthhalf - BARPOSX1*sf, heighthalf - 127.f*sf);
+					glVertex2f(  widthhalf - BARPOSX2*sf ,heighthalf -  -128.f*sf);		glVertex2f(  widthhalf - BARPOSX2*sf, heighthalf - 127.f*sf);
 					glEnd();
 					
 					if( curWW < 50 )
 					{
 						tempString = [NSString stringWithFormat: @"%0.4f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - -133*sf rightAlignment: YES useStringTexture: NO];
 						
 						tempString = [NSString stringWithFormat: @"%0.4f", curWL];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 						
 						tempString = [NSString stringWithFormat: @"%0.4f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 120*sf rightAlignment: YES useStringTexture: NO];
 					}
 					else
 					{
 						tempString = [NSString stringWithFormat: @"%0.0f", curWL - curWW/2];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - -133 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - -133*sf rightAlignment: YES useStringTexture: NO];
 						
 						tempString = [NSString stringWithFormat: @"%0.0f", curWL];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 0 rightAlignment: YES useStringTexture: NO];
 						
 						tempString = [NSString stringWithFormat: @"%0.0f", curWL + curWW/2];
-						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1: heighthalf - 120 rightAlignment: YES useStringTexture: NO];
+						[self DrawNSStringGL: tempString : fontListGL :widthhalf - BARPOSX1*sf: heighthalf - 120*sf rightAlignment: YES useStringTexture: NO];
 					}
 				} //clutBars == barOrigin || clutBars == barBoth
 				
@@ -8505,7 +8509,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 						heighthalf = 0;
 						
-						glLineWidth(1.0 * self.window.backingScaleFactor);
+						glLineWidth(1.0 * sf);
 						glBegin(GL_LINES);
 						
 						if( bred)
@@ -8514,18 +8518,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							{
 								glColor3ub ( bred[ i], bgreen[ i], bblue[ i]);
 								
-								glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - (-128.f + i));
-								glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - (-128.f + i));
+								glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - (-128.f*sf + i*sf));
+								glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - (-128.f*sf + i*sf));
 							}
 						}
 						else
 							NSLog( @"bred == nil");
 						
 						glColor3ub ( 128, 128, 128);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - -128.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);		glVertex2f(  -widthhalf + BBARPOSX2 , heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - -128.f);		glVertex2f(  -widthhalf + BBARPOSX1, heighthalf - 127.f);
-						glVertex2f(  -widthhalf + BBARPOSX2 ,heighthalf -  -128.f);		glVertex2f(  -widthhalf + BBARPOSX2, heighthalf - 127.f);
+						glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - -128.f*sf);		glVertex2f(  -widthhalf + BBARPOSX2*sf , heighthalf - -128.f*sf);
+						glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - 127.f*sf);         glVertex2f(  -widthhalf + BBARPOSX2*sf , heighthalf - 127.f*sf);
+						glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - -128.f*sf);		glVertex2f(  -widthhalf + BBARPOSX1*sf, heighthalf - 127.f*sf);
+						glVertex2f(  -widthhalf + BBARPOSX2*sf ,heighthalf -  -128.f*sf);		glVertex2f(  -widthhalf + BBARPOSX2*sf, heighthalf - 127.f*sf);
 						glEnd();
 						
 						[blendingView getWLWW: &bwl :&bww];
@@ -8533,24 +8537,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						if( curWW < 50)
 						{
 							tempString = [NSString stringWithFormat: @"%0.4f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - -133*sf];
 							
 							tempString = [NSString stringWithFormat: @"%0.4f", bwl];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - 0];
 							
 							tempString = [NSString stringWithFormat: @"%0.4f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - 120*sf];
 						}
 						else
 						{
 							tempString = [NSString stringWithFormat: @"%0.0f", bwl - bww/2];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - -133];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - -133*sf];
 							
 							tempString = [NSString stringWithFormat: @"%0.0f", bwl];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 0];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - 0];
 							
 							tempString = [NSString stringWithFormat: @"%0.0f", bwl + bww/2];
-							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1 + 4: heighthalf - 120];
+							[self DrawNSStringGL: tempString : fontListGL :-widthhalf + BBARPOSX1*sf + 4*sf: heighthalf - 120*sf];
 						}
 					}
 				} //blendingView
@@ -8576,14 +8580,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						
 	//					glEnable(GL_BLEND);
 						glColor4f (1.0f, 0.0f, 0.0f, 0.8f);
-						glLineWidth(8.0 * self.window.backingScaleFactor);
+						glLineWidth(8.0 * sf);
 						glBegin(GL_LINE_LOOP);
 							glVertex2f(  -widthhalf, -heighthalf);
 							glVertex2f(  -widthhalf, heighthalf);
 							glVertex2f(  widthhalf, heighthalf);
 							glVertex2f(  widthhalf, -heighthalf);
 						glEnd();
-						glLineWidth(1.0 * self.window.backingScaleFactor);
+						glLineWidth(1.0 * sf);
 	//					glDisable(GL_BLEND);
 					}
 				}  //drawLines for ImageView Frames
@@ -8594,14 +8598,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					float widthhalf = drawingFrameRect.size.width/2 - 1;
 					
 					glColor3f (0.5f, 0.5f, 0.5f);
-					glLineWidth(1.0 * self.window.backingScaleFactor);
+					glLineWidth(1.0 * sf);
 					glBegin(GL_LINE_LOOP);
 						glVertex2f(  -widthhalf, -heighthalf);
 						glVertex2f(  -widthhalf, heighthalf);
 						glVertex2f(  widthhalf, heighthalf);
 						glVertex2f(  widthhalf, -heighthalf);
 					glEnd();
-					glLineWidth(1.0 * self.window.backingScaleFactor);
+					glLineWidth(1.0 * sf);
 					
 					if (isKeyView && frontMost)
 					{
@@ -8609,14 +8613,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						float widthhalf = drawingFrameRect.size.width/2 - 1;
 						
 						glColor3f (1.0f, 0.0f, 0.0f);
-						glLineWidth(2.0 * self.window.backingScaleFactor);
+						glLineWidth(2.0 * sf);
 						glBegin(GL_LINE_LOOP);
 							glVertex2f(  -widthhalf, -heighthalf);
 							glVertex2f(  -widthhalf, heighthalf);
 							glVertex2f(  widthhalf, heighthalf);
 							glVertex2f(  widthhalf, -heighthalf);
 						glEnd();
-						glLineWidth(1.0 * self.window.backingScaleFactor);
+						glLineWidth(1.0 * sf);
 					}
 				}
 				
@@ -8730,12 +8734,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //								if( sliceFromTo[ 0][ 0] != HUGE_VALF)
 //								{
 //									glColor3f (0.0f, 0.6f, 0.0f);
-//									glLineWidth(2.0 * self.window.backingScaleFactor);
+//									glLineWidth(2.0 * sf);
 //									[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 //									
 //									if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
 //									{
-//										glLineWidth(2.0 * self.window.backingScaleFactor);
+//										glLineWidth(2.0 * sf);
 //										[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 //									}
 //								}
@@ -8749,20 +8753,20 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								{
 									glColor3f (1.0f, 0.6f, 0.0f);
 									
-									glLineWidth(2.0 * self.window.backingScaleFactor);
+									glLineWidth(2.0 * sf);
 									[self drawCrossLines: sliceFromToS ctx: cgl_ctx perpendicular: NO];
 									
-									glLineWidth(2.0 * self.window.backingScaleFactor);
+									glLineWidth(2.0 * sf);
 									[self drawCrossLines: sliceFromToE ctx: cgl_ctx perpendicular: NO];
 								}
 								
 								glColor3f (0.0f, 0.6f, 0.0f);
-								glLineWidth(2.0 * self.window.backingScaleFactor);
+								glLineWidth(2.0 * sf);
 								[self drawCrossLines: sliceFromTo ctx: cgl_ctx perpendicular: YES];
 								
 								if( sliceFromTo2[ 0][ 0] != HUGE_VALF)
 								{
-									glLineWidth(2.0 * self.window.backingScaleFactor);
+									glLineWidth(2.0 * sf);
 									[self drawCrossLines: sliceFromTo2 ctx: cgl_ctx perpendicular: YES];
 								}
 							}
@@ -8773,7 +8777,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						float tempPoint3D[ 2];
 						
-						glLineWidth(2.0 * self.window.backingScaleFactor);
+						glLineWidth(2.0 * sf);
 						
 						tempPoint3D[0] = slicePoint3D[ 0] / curDCM.pixelSpacingX;
 						tempPoint3D[1] = slicePoint3D[ 1] / curDCM.pixelSpacingY;
@@ -8782,7 +8786,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						tempPoint3D[1] -= curDCM.pheight * 0.5f;
 
 						glColor3f (0.0f, 0.6f, 0.0f);
-						glLineWidth(2.0 * self.window.backingScaleFactor);
+						glLineWidth(2.0 * sf);
 
 						if( sliceFromTo[ 0][ 0] != HUGE_VALF && (sliceVector[ 0] != 0 || sliceVector[ 1] != 0  || sliceVector[ 2] != 0))
 						{
@@ -8823,7 +8827,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 							
 							glEnd();
 						}
-						glLineWidth(1.0 * self.window.backingScaleFactor);
+						glLineWidth(1.0 * sf);
 					}
 					
 					glDisable(GL_LINE_SMOOTH);
@@ -8840,11 +8844,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				 if( annotations >= annotBase)
 				 {
 					//** PIXELSPACING LINES
-					float yOffset = 24;
-					float xOffset = 32;
-					//float xOffset = 10;
-					//float yOffset = 12;
-					glLineWidth( 1.0 * self.window.backingScaleFactor);
+					float yOffset = 24*sf;
+					float xOffset = 32*sf;
+					glLineWidth( 1.0 * sf);
 					glBegin(GL_LINES);
 					
 					if( curDCM.pixelSpacingX != 0 && curDCM.pixelSpacingX * 1000.0 < 1)
@@ -8859,6 +8861,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							short length = ( i % 10 == 0 )? 10 : 5;
 							
+                            length *= sf;
+                            
 							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
 							glVertex2f(i*scaleValue *0.001/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
 							
@@ -8878,6 +8882,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							short length = (i % 5 == 0) ? 10 : 5;
 						
+                            length *= sf;
+                            
 							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset);
 							glVertex2f(i*scaleValue *10/curDCM.pixelSpacingX, drawingFrameRect.size.height/2 - yOffset - length);
 							
@@ -9197,7 +9203,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 			
 	//		glColor4f ( 0, 0, 0 , 0.8);
-	//		glLineWidth( 3 * self.window.backingScaleFactor);
+	//		glLineWidth( 3 * sf);
 	//		
 	//		int resol = LENSSIZE*4*scaleValue;
 	//		
@@ -9219,7 +9225,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	//			glVertex2f( eventLocation.x + f *cos(angle), eventLocation.y + f *sin(angle));
 	//		}
 	//		glEnd();
-	//		glPointSize( 3 * self.window.backingScaleFactor);
+	//		glPointSize( 3 * sf);
 	//		glBegin( GL_POINTS);
 	//		for( int i = 0; i < resol ; i++ )
 	//		{
@@ -11104,7 +11110,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( isRGB)
 		intFULL32BITPIPELINE = NO;
 	
-	if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+	if( (localColorTransfer == YES) || (blending == YES))
 		intFULL32BITPIPELINE = NO;
 		
 	if( curDCM.needToCompute8bitRepresentation == YES && intFULL32BITPIPELINE == NO)
@@ -11115,7 +11121,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( curDCM.isLUT12Bit)
 		{
 		}
-		else if((localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+		else if((localColorTransfer == YES) || (blending == YES))
 		{
 			vImage_Buffer src, dest;
 			
@@ -11188,7 +11194,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 		}
 	}
-	else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+	else if( (localColorTransfer == YES) || (blending == YES))
 	{
 	    if( *colorBufPtr) free( *colorBufPtr);
 
@@ -11269,7 +11275,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			if( curDCM.isLUT12Bit)
 				src.data = (char*) curDCM.LUT12baseAddr;
 		}
-		else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+		else if( (localColorTransfer == YES) || (blending == YES))
 		{
 			rowBytes = *tW * 4;
 			
@@ -11313,7 +11319,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			baseAddr = *rAddr;
 			dst.data = baseAddr;
 			
-			if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
+			if( (localColorTransfer == YES) || (blending == YES) || (isRGB == YES) || ([curDCM thickSlabVRActivated] == YES))
 				vImageScale_ARGB8888( &src, &dst, nil, QUALITY);	
 			else
 			{
@@ -11329,7 +11335,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		}
 		else
 		{
-			if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+			if( (localColorTransfer == YES) || (blending == YES))
 			{
 				*tW = curDCM.pwidth;
 				rowBytes = curDCM.pwidth;
@@ -11365,7 +11371,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				*tW = curDCM.pwidth;
 			}
 		}
-		else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+		else if( (localColorTransfer == YES) || (blending == YES))
 		{
 			*tW = curDCM.pwidth;
 			rowBytes = curDCM.pwidth;
@@ -11418,7 +11424,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								offsetY * rowBytes +
 								offsetX * 4;
 				}
-				else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES))
+				else if( (localColorTransfer == YES) || (blending == YES))
 					pBuffer =   (unsigned char*) baseAddr +
 								offsetY * rowBytes * 4 +
 								offsetX * 4;
@@ -11488,7 +11494,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						#else
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
-						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else if( (localColorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						else
 						{
 							float min = curWL - curWW / 2;
@@ -11514,10 +11520,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 					{
 						#if __BIG_ENDIAN__
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
-						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
+						else if( (localColorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8_REV, pBuffer);
 						#else
 						if( isRGB == YES || [curDCM thickSlabVRActivated] == YES) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
-						else if( (localColorTransfer == YES) || (iChatDrawing == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
+						else if( (localColorTransfer == YES) || (blending == YES)) glTexImage2D (TEXTRECTMODE, 0, GL_RGBA, currWidth, currHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_INT_8_8_8_8, pBuffer);
 						#endif
 						else glTexImage2D (TEXTRECTMODE, 0, GL_INTENSITY8, currWidth, currHeight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, pBuffer);
 					}
@@ -11618,7 +11624,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( labelFont == nil) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
 	
 	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2 :self.window.backingScaleFactor];
-	[ROI setFontHeight: [self convertSizeToBacking: [DCMView sizeOfString: @"B" forFont: labelFont]].height];
+	[ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
     
 	[self setNeedsDisplay:YES];
 }

@@ -68,6 +68,10 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
 		for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
 		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+        
+        for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreviewScale2[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayScale2[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROIScale2[ i] = 0;
 		
 		fontOpenGLInitialized = YES;
 	}
@@ -164,6 +168,10 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreview[ i] = 0;
 		for( i = 0; i < MAXCOUNT; i++) charPtrArray[ i] = 0;
 		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROI[ i] = 0;
+        
+        for( i = 0; i < MAXCOUNT; i++) charPtrArrayPreviewScale2[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayScale2[ i] = 0;
+		for( i = 0; i < MAXCOUNT; i++) charPtrArrayROIScale2[ i] = 0;
 		
 		fontOpenGLInitialized = YES;
 	}
@@ -243,26 +251,29 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 		@try
 		{
 			currentChar = [NSString stringWithCharacters:&currentUnichar length:1];
-			charSize = [currentChar sizeWithAttributes:attribDict];
+			charSize = [currentChar sizeWithAttributes: attribDict];
 			charRect.size = charSize;
             
 			charRect = NSIntegralRect( charRect);
 			if( charRect.size.width <= 0 && charRect.size.height <= 0 ) // character with no glyph in the current font
 			{
 				currentChar = @"?";
-				charSize = [currentChar sizeWithAttributes:attribDict ];
+				charSize = [currentChar sizeWithAttributes: attribDict];
                 
 				charRect.size = charSize;
 				charRect = NSIntegralRect( charRect );
 			}	
-			theImage = [[NSImage alloc ] initWithSize:NSMakeSize( 0, 0 ) ];
+			theImage = [[NSImage alloc] initWithSize:NSMakeSize( 0, 0)];
             
-			curSizeArray[currentUnichar] = charRect.size.width * scaling;
 			[theImage setSize: charRect.size];
 			
 			if([theImage size].width > 0 && [theImage size].height > 0)
 			{
 				[theImage lockFocus];
+                
+                if( scaling == 1) // On Retina system, this will cancel the default 2x resolution in the NSImage "world"
+                    [[NSAffineTransform transform] set];
+                
 				[blackColor set];
 				[NSBezierPath fillRect:charRect];
 				[[NSGraphicsContext currentContext] setShouldAntialias: NO];
@@ -274,6 +285,11 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 			
 			if( bitmap)
 			{
+                if( scaling == 1 && bitmap.pixelsWide / charRect.size.width == 2) //We dont want a Retina image, on a Retina OS...
+                    curSizeArray[currentUnichar] = bitmap.pixelsWide/2;
+                else
+                    curSizeArray[currentUnichar] = bitmap.pixelsWide;
+                
 				[curArray addObject: bitmap];
 				[theImage release];
 				
@@ -418,10 +434,10 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
 			
             if( bitmap)
             {
-                glNewList( dListNum, GL_COMPILE );
+                glNewList( dListNum, GL_COMPILE);
                 
                 if( curPtrArray[ currentUnichar])
-                    glBitmap( [bitmap pixelsWide], [bitmap pixelsHigh], 0, 0, [bitmap  pixelsWide], 0, curPtrArray[ currentUnichar]);
+                    glBitmap( [bitmap pixelsWide], [bitmap pixelsHigh], 0, 0, curSizeArray[currentUnichar], 0, curPtrArray[ currentUnichar]);
                 
                 glEndList();
             }
@@ -452,7 +468,7 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
    bytesPerRow = [bitmap bytesPerRow];
    samplesPerPixel = [bitmap samplesPerPixel];
    
-   newBuffer = calloc( ceil( (float) bytesPerRow / 8.0 ), pixelsHigh );
+   newBuffer = calloc( ceil( (float) bytesPerRow / 8.0 ), pixelsHigh);
    if( newBuffer == NULL )
    {
 		NSLog(@"Failed to calloc() memory in");
@@ -465,22 +481,22 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
     * read at last row, write to first row as Cocoa and OpenGL have opposite
     * y origins
     */
-   for( rowIndex = pixelsHigh - 1; rowIndex >= 0; rowIndex-- )
+   for( rowIndex = pixelsHigh - 1; rowIndex >= 0; rowIndex --)
    {
       currentBit = 0x80;
       byteValue = 0;
-      for( colIndex = 0; colIndex < pixelsWide; colIndex++ )
+      for( colIndex = 0; colIndex < pixelsWide; colIndex ++)
       {
-         if( bitmapBytes[ rowIndex * bytesPerRow + colIndex * samplesPerPixel ] ) byteValue |= currentBit;
+         if( bitmapBytes[ rowIndex * bytesPerRow + colIndex * samplesPerPixel]) byteValue |= currentBit;
          currentBit >>= 1;
-         if( currentBit == 0 )
+         if( currentBit == 0)
          {
             *movingBuffer++ = byteValue;
             currentBit = 0x80;
             byteValue = 0;
          }
       }
-      if( currentBit != 0x80 )
+      if( currentBit != 0x80)
          *movingBuffer++ = byteValue;
    }
 	

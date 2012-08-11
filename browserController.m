@@ -12239,6 +12239,7 @@ static NSArray*	openSubSeriesArray = nil;
 	[subSeriesWindow setFrame: f display: NO];
 	#endif
 	
+    [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
 
 //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];

@@ -4303,6 +4303,8 @@ static BOOL initialized = NO;
                     return;
 			}
 		}
+        
+        [win setAnimationBehavior: NSWindowAnimationBehaviorNone];
 	}
     
     [self tileWindows: sender windows: viewersList display2DViewerToolbar: USETOOLBARPANEL];

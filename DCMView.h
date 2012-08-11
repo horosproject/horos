@@ -262,17 +262,17 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 	int				resampledBaseAddrSize, blendingResampledBaseAddrSize;
 		
 	// iChat
-	float			iChatWidth, iChatHeight;
-	unsigned char*	iChatCursorTextureBuffer;
-	GLuint			iChatCursorTextureName;
-	NSSize			iChatCursorImageSize;
-	NSPoint			iChatCursorHotSpot;
-	BOOL			iChatDrawing;
-	GLuint			iChatFontListGL;
-	NSFont			*iChatFontGL;
-	long			iChatFontListGLSize[ 256];
-	NSMutableDictionary	*iChatStringTextureCache;
-	NSSize			iChatStringSize;
+//	float			iChatWidth, iChatHeight;
+//	unsigned char*	iChatCursorTextureBuffer;
+//	GLuint			iChatCursorTextureName;
+//	NSSize			iChatCursorImageSize;
+//	NSPoint			iChatCursorHotSpot;
+//	BOOL			iChatDrawing;
+//	GLuint			iChatFontListGL;
+//	NSFont			*iChatFontGL;
+//	long			iChatFontListGLSize[ 256];
+//	NSMutableDictionary	*iChatStringTextureCache;
+//	NSSize			iChatStringSize;
 	NSRect			drawingFrameRect;
 	
 	BOOL			exceptionDisplayed;

@@ -201,6 +201,9 @@
 	{
 		[image lockFocus];
 		
+        if( backingScaleFactor == 1) // On Retina system, this will cancel the default 2x resolution in the NSImage "world"
+            [[NSAffineTransform transform] set];
+        
 		[[NSGraphicsContext currentContext] setShouldAntialias: antialiasing];
 		
 		if ([boxColor alphaComponent])
@@ -219,9 +222,9 @@
 		bitmap = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect (0.0f, 0.0f, frameSize.width, frameSize.height)];
 		
 		[image unlockFocus];
-	
+        
 		texSize.width = [bitmap size].width * backingScaleFactor; // retina
-		texSize.height = [bitmap size].height  * backingScaleFactor; // retina
+		texSize.height = [bitmap size].height * backingScaleFactor; // retina
 		
 		glGenTextures (1, &texName);
 		glBindTexture (GL_TEXTURE_RECTANGLE_EXT, texName);
@@ -230,7 +233,7 @@
 		glPixelStorei (GL_UNPACK_CLIENT_STORAGE_APPLE, 1);
 		glTexParameteri (GL_TEXTURE_RECTANGLE_EXT, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_CACHED_APPLE);
 		
-		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, texSize.width, texSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
+		glTexImage2D (GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, bitmap.pixelsWide, bitmap.pixelsHigh, 0, GL_RGBA, GL_UNSIGNED_BYTE, [bitmap bitmapData]);
 		
 		[ctxArray addObject: currentContext];
 		[textArray addObject: [NSNumber numberWithInt: texName]];

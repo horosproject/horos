@@ -1506,7 +1506,7 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 
 	float xx, yy;
 	
-	line *= fontHeight;
+	line *= fontHeight*curView.window.backingScaleFactor;
 	
 	xx = x + 1.0f;
 	yy = y + (line + 1.0);
@@ -3783,14 +3783,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 			
 			glLoadIdentity();
 			
+            float sf = curView.window.backingScaleFactor;
+            
 			glScalef( 2.0f /([curView drawingFrameRect].size.width), -2.0f / ([curView drawingFrameRect].size.height), 1.0f);
 			
-			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3, curView.window.backingScaleFactor);
+			gl_round_box(GL_POLYGON, drawRect.origin.x, drawRect.origin.y-1, drawRect.origin.x+drawRect.size.width, drawRect.origin.y+drawRect.size.height, 3, sf);
 			
 			NSPoint tPt;
 			
-			tPt.x = drawRect.origin.x + 4;
-			tPt.y = drawRect.origin.y + (fontHeight + 2);
+			tPt.x = drawRect.origin.x + 4*sf;
+			tPt.y = drawRect.origin.y + (fontHeight*sf + 2*sf);
 			
 			long line = 0;
 			
@@ -3835,7 +3837,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l5[0]) line++;
 	maxWidth = [self maxStringWidth:l5 max: maxWidth];	if( l6[0]) line++;
 	
-	drawRect.size.height = line * fontHeight + 4;
+	drawRect.size.height = line * fontHeight*curView.window.backingScaleFactor + 4;
 	drawRect.size.width = maxWidth + 8;
 	
 	if( type == tDynAngle || type == tAxis || type == tCPolygon || type == tOPolygon || type == tPencil)
