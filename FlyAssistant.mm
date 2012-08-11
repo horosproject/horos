@@ -808,10 +808,39 @@ typedef GreaterPathNodeOnF NodeCompare;
 		return ERROR_NOENOUGHMEM;
 	}
     
+    if( pta.z < 0)
+        pta.z = 0;
+    if( pta.y < 0)
+        pta.y = 0;
+    if( pta.x < 0)
+        pta.x = 0;
+    
+    if( pta.z >= inputDepth)
+        pta.z = inputDepth-1;
+    if( pta.y >= inputHeight)
+        pta.y = inputHeight-1;
+    if( pta.x >= inputWidth)
+        pta.x = inputWidth-1;
+    
+    if( ptb.z < 0)
+        ptb.z = 0;
+    if( ptb.y < 0)
+        ptb.y = 0;
+    if( ptb.x < 0)
+        ptb.x = 0;
+    
+    if( ptb.z >= inputDepth)
+        ptb.z = inputDepth-1;
+    if( ptb.y >= inputHeight)
+        ptb.y = inputHeight-1;
+    if( ptb.x >= inputWidth)
+        ptb.x = inputWidth-1;
+    
     // check that origin != destination
     if (pta.x == ptb.x &&
         pta.y == ptb.y &&
-        pta.z == ptb.z ) {
+        pta.z == ptb.z )
+    {
         NSLog(@"Can not define path from point to itself.");
         return ERROR_CANNOTFINDPATH;
     }
@@ -883,7 +912,21 @@ typedef GreaterPathNodeOnF NodeCompare;
 			x=ptb.x; y=ptb.y; z=ptb.z;
 			currentlabel=LABELOFPOINTB;
 		}
-
+        
+        if( z < 0)
+            z = 0;
+        if( y < 0)
+            y = 0;
+        if( x < 0)
+            x = 0;
+        
+        if( z >= inputDepth)
+            z = inputDepth-1;
+        if( y >= inputHeight)
+            y = inputHeight-1;
+        if( x >= inputWidth)
+            x = inputWidth-1;
+        
 		currentindex = z*distmapImageSize + y*distmapWidth + x;
 		currentcost=0;
 		costmap[currentindex]=0;
