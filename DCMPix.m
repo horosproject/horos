@@ -5563,14 +5563,6 @@ END_CREATE_ROIS:
 		NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 		[pdfImage addRepresentation: rep];
 		
-		NSSize newSize;
-		
-		newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-		newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-		
-		[pdfImage setScalesWhenResized:YES];
-		[pdfImage setSize: newSize];
-		
 		[self getDataFromNSImage: pdfImage];
 		
 		#ifdef OSIRIX_VIEWER
@@ -5620,14 +5612,6 @@ END_CREATE_ROIS:
 			
 			NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 			[pdfImage addRepresentation: rep];
-			
-			NSSize newSize;
-			
-			newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-			newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-			
-			[pdfImage setScalesWhenResized:YES];
-			[pdfImage setSize: newSize];
 			
 			[self getDataFromNSImage: pdfImage];
 			
@@ -8345,14 +8329,6 @@ END_CREATE_ROIS:
 									NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 									[pdfImage addRepresentation: rep];
 									
-									NSSize newSize;
-									
-									newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-									newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-
-									[pdfImage setScalesWhenResized:YES];
-									[pdfImage setSize: newSize];
-									
 									[self getDataFromNSImage: pdfImage];
 								}
 								
@@ -8398,14 +8374,6 @@ END_CREATE_ROIS:
 							
 							NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
 							[pdfImage addRepresentation: rep];
-							
-							NSSize newSize;
-							
-							newSize.width = ceil( [rep bounds].size.width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-							newSize.height = ceil( [rep bounds].size.height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-							
-							[pdfImage setScalesWhenResized:YES];
-							[pdfImage setSize: newSize];
 							
 							[self getDataFromNSImage: pdfImage];
 							
@@ -9052,16 +9020,29 @@ END_CREATE_ROIS:
         if( r)
         {
             [r lockFocus];
+            
             [[NSColor whiteColor] set];
             NSRectFill( NSMakeRect( 0, 0, [r size].width, [r size].height));
-            [otherImage drawInRect: NSMakeRect(0,0,[r size].width, [r size].height) fromRect:NSMakeRect(0,0,[otherImage size].width, [otherImage size].height) operation: NSCompositeSourceOver fraction: 1.0];
+            
+            [[NSAffineTransform transform] set]; // On Retina system, this will cancel the default 2x resolution in the NSImage "world"
+            
+            [otherImage drawInRect: NSMakeRect( 0, 0, [r size].width, [r size].height)
+                          fromRect: NSMakeRect( 0, 0, [otherImage size].width, [otherImage size].height)
+                         operation: NSCompositeSourceOver
+                          fraction: 1.0];
+            
             [r unlockFocus];
             
             NSBitmapImageRep *TIFFRep = [[NSBitmapImageRep alloc] initWithData: [r TIFFRepresentation]];
             if( TIFFRep)
             {
-                height = [TIFFRep pixelsHigh];
-                width = [TIFFRep pixelsWide];
+                BOOL retina = NO;
+                
+                if( [r size].height != TIFFRep.pixelsHigh)
+                    retina = YES;
+                
+                height = [r size].height;
+                width = [r size].width;
                 
                 if( savedHeightInDB != 0 && savedHeightInDB != height)
                 {
@@ -9080,8 +9061,12 @@ END_CREATE_ROIS:
                     if( width > savedWidthInDB)
                         width = savedWidthInDB;
                 }
-
+                
                 unsigned char *srcImage = [TIFFRep bitmapData];
+                
+                if( retina)
+                    srcImage += height * [TIFFRep bytesPerRow];
+                
                 unsigned char *argbImage = nil, *srcPtr = nil, *tmpPtr = nil;
                 
                 int totSize = height * width * 4;
@@ -10041,14 +10026,6 @@ END_CREATE_ROIS:
 					
 					if( [extension isEqualToString:@"pdf"])
 					{
-						NSSize newSize;
-						
-						newSize.width = ceil( [otherImage size].width * 1.5);		// Increase PDF resolution to 72 * X DPI !
-						newSize.height = ceil( [otherImage size].height * 1.5);		// KEEP THIS VALUE IN SYNC WITH DICOMFILE.M
-						
-						[otherImage setScalesWhenResized:YES];
-						[otherImage setSize: newSize];
-						
 						id tempID = [otherImage bestRepresentationForDevice:nil];
 						
 						if( [tempID isKindOfClass: [NSPDFImageRep class]])

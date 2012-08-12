@@ -337,18 +337,26 @@ static volatile BOOL waitForRunningProcess = NO;
 
 -(NSArray*)albumsInDatabase
 {
-    @synchronized (self)
-    {
-		if (_cachedAlbums && _cachedAlbumsContext && _cachedAlbumsContext == _database.managedObjectContext)
-			return [[_cachedAlbums copy] autorelease];
-	}
-
-	NSArray* r = [_database albums];
+    NSArray* r = nil;
     
-    @synchronized (self) {
-        [_cachedAlbums release];
-        _cachedAlbums = [r retain];
-        _cachedAlbumsContext = _database.managedObjectContext;
+    @try
+    {
+        @synchronized (self)
+        {
+            if (_cachedAlbums && _cachedAlbumsContext && _cachedAlbumsContext == _database.managedObjectContext)
+                return [[_cachedAlbums copy] autorelease];
+        }
+
+        r = [_database albums];
+        
+        @synchronized (self) {
+            [_cachedAlbums release];
+            _cachedAlbums = [r retain];
+            _cachedAlbumsContext = _database.managedObjectContext;
+        }
+    }
+    @catch (NSException *e) {
+        N2LogException(e);
     }
     
     return [[r copy] autorelease];

@@ -785,16 +785,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 				{
 					if( otherImage && [extension isEqualToString:@"pdf"])
 					{
-						NSSize newSize = [otherImage size];
-							
-						newSize.width *= 1.5;		// Increase PDF resolution to 72 * X DPI !
-						newSize.height *= 1.5;		// KEEP THIS VALUE IN SYNC WITH DCMPIX.M
-						
-						[otherImage setScalesWhenResized:YES];
-						[otherImage setSize: newSize];
-						
-						height = ceil( [otherImage size].height);
-						width = ceil( [otherImage size].width);
+						height = [otherImage size].height;
+						width = [otherImage size].width;
 					}
 					else
 					{
@@ -3003,8 +2995,21 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithBytes: element->value->a length: element->length]];
                         NoOfFrames = [rep pageCount];
                         
-                        height = ceil( [rep bounds].size.height * 1.5);
-                        width = ceil( [rep bounds].size.width * 1.5);
+                        NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                        [pdfImage addRepresentation: rep];
+                        
+                        NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+                        
+                        if( bitRep.pixelsWide > pdfImage.size.width)
+                        {
+                            height = bitRep.pixelsHigh;
+                            width = bitRep.pixelsWide;
+                        }
+                        else
+                        {
+                            height = pdfImage.size.height;
+                            width = pdfImage.size.width;
+                        }
                     }
                     
                     theErr = Papy3GroupFree (&theGroupP, TRUE);
@@ -3022,8 +3027,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         NSPDFImageRep *rep = [self PDFImageRep];
                         
                         NoOfFrames = [rep pageCount];
-                        height = ceil( [rep bounds].size.height * 1.5);
-                        width = ceil( [rep bounds].size.width * 1.5);
+                        
+                        NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                        [pdfImage addRepresentation: rep];
+                        
+                        NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+                        
+                        if( bitRep.pixelsWide > pdfImage.size.width)
+                        {
+                            height = bitRep.pixelsHigh;
+                            width = bitRep.pixelsWide;
+                        }
+                        else
+                        {
+                            height = pdfImage.size.height;
+                            width = pdfImage.size.width;
+                        }
                     }
                     @catch (NSException * e)
                     {
@@ -3671,8 +3690,21 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];						
 			NoOfFrames = [rep pageCount];
 			
-			height = ceil( [rep bounds].size.height * 1.5);
-			width = ceil( [rep bounds].size.width * 1.5);
+			NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+            [pdfImage addRepresentation: rep];
+            
+            NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+            
+            if( bitRep.pixelsWide > pdfImage.size.width)
+            {
+                height = bitRep.pixelsHigh;
+                width = bitRep.pixelsWide;
+            }
+            else
+            {
+                height = pdfImage.size.height;
+                width = pdfImage.size.width;
+            }
 		}
 		
 		#ifdef OSIRIX_VIEWER
@@ -3686,8 +3718,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 					NSPDFImageRep *rep = [self PDFImageRep];
 					
 					NoOfFrames = [rep pageCount];
-					height = ceil( [rep bounds].size.height * 1.5);
-					width = ceil( [rep bounds].size.width * 1.5);
+					
+                    NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                    [pdfImage addRepresentation: rep];
+                    
+                    NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+                    
+                    if( bitRep.pixelsWide > pdfImage.size.width)
+                    {
+                        height = bitRep.pixelsHigh;
+                        width = bitRep.pixelsWide;
+                    }
+                    else
+                    {
+                        height = pdfImage.size.height;
+                        width = pdfImage.size.width;
+                    }
 				}
 				@catch (NSException * e)
 				{

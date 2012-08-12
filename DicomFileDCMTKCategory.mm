@@ -944,9 +944,23 @@ extern NSRecursiveLock *PapyrusLock;
 				NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData:pdfData];
 				
 				NoOfFrames = [rep pageCount];
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);
-			}							
+				
+                NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                [pdfImage addRepresentation: rep];
+                
+                NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+                
+                if( bitRep.pixelsWide > pdfImage.size.width)
+                {
+                    height = bitRep.pixelsHigh;
+                    width = bitRep.pixelsWide;
+                }
+                else
+                {
+                    height = pdfImage.size.height;
+                    width = pdfImage.size.width;
+                }
+			}
 		}
 		
 		#ifdef OSIRIX_VIEWER
@@ -958,8 +972,22 @@ extern NSRecursiveLock *PapyrusLock;
 				NSPDFImageRep *rep = [self PDFImageRep];
 			
 				NoOfFrames = [rep pageCount];
-				height = ceil( [rep bounds].size.height * 1.5);
-				width = ceil( [rep bounds].size.width * 1.5);						
+				
+                NSImage *pdfImage = [[[NSImage alloc] init] autorelease];
+                [pdfImage addRepresentation: rep];
+                
+                NSBitmapImageRep *bitRep = [NSBitmapImageRep imageRepWithData: [pdfImage TIFFRepresentation]];
+                
+                if( bitRep.pixelsWide > pdfImage.size.width)
+                {
+                    height = bitRep.pixelsHigh;
+                    width = bitRep.pixelsWide;
+                }
+                else
+                {
+                    height = pdfImage.size.height;
+                    width = pdfImage.size.width;
+                }
 			}
 			
 			NSString *referencedSOPInstanceUID = [SRAnnotation getImageRefSOPInstanceUID: filePath];
