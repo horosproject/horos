@@ -337,7 +337,10 @@ static volatile BOOL waitForRunningProcess = NO;
 
 -(NSArray*)albumsInDatabase
 {
-    NSArray* r = nil;
+    NSArray* r = [NSArray array];
+    
+    if( _database.managedObjectContext == nil)
+        return r;
     
     @try
     {
@@ -9260,7 +9263,9 @@ static BOOL needToRezoom;
 
 - (NSArray*) albumArray
 {
-	if (!_database) return [NSArray array];
+	if( !_database) return [NSArray array];
+    if( !_database.managedObjectContext) return [NSArray array];
+    
 	return [[NSArray arrayWithObject:[NSDictionary dictionaryWithObject: NSLocalizedString(@"Database", nil) forKey:@"name"]] arrayByAddingObjectsFromArray:[self albumsInDatabase]];
 }
 
