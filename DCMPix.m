@@ -10575,7 +10575,7 @@ END_CREATE_ROIS:
 		{
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
-			if( dst.data)
+			if( dst.data && src.data)
 				vImageHorizontalReflect_PlanarF ( &src, &dst, 0);
 			
 			if( src.data != [self fImage]) free( src.data);
@@ -10589,7 +10589,7 @@ END_CREATE_ROIS:
 		{
 			dst = src;
 			dst.data = malloc( dst.height * dst.rowBytes);
-			if( dst.data)
+			if( dst.data && src.data)
 				vImageVerticalReflect_PlanarF ( &src, &dst, 0);
 			
 			if( src.data != [self fImage]) free( src.data);
@@ -10605,11 +10605,12 @@ END_CREATE_ROIS:
 		dst.width = [self pwidth]*scale;
 		dst.rowBytes = dst.width*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
-		if( dst.data)
+		if( dst.data && src.data)
 			vImageScale_PlanarF( &src, &dst, nil, kvImageHighQualityResampling);
 		
 		// Rotation
-		if( src.data != [self fImage]) free( src.data);
+		if( src.data != [self fImage])
+            free( src.data);
 		if( dst.data == nil) return nil;
 		
 		src = dst;
@@ -10619,7 +10620,7 @@ END_CREATE_ROIS:
 		dst.rowBytes = newW*4;
 		dst.data = malloc( dst.height * dst.rowBytes);
 		
-		if( dst.data)
+		if( dst.data && src.data)
 		{
 			int v = r;
 			if( v % 90 == 0)

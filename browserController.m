@@ -9042,11 +9042,11 @@ static BOOL withReset = NO;
     
     DicomAlbum* album = [self.albumArray objectAtIndex:row];
     
-    if (NSRunInformationalAlertPanelRelativeToWindow(NSLocalizedString(@"Delete Album", nil),
+    if (NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Album", nil),
                                                      [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil), album.name],
                                                      NSLocalizedString(@"OK",nil),
                                                      NSLocalizedString(@"Cancel",nil),
-                                                     nil, self.window) == NSAlertDefaultReturn)
+                                                     nil) == NSAlertDefaultReturn)
     {
         [self.database lock];
         @try
