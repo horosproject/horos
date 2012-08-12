@@ -159,55 +159,15 @@
         AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
         if (!error)
         {
-            NSImage	*firstImage = [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]]; 
-            
-            // Define video settings to be passed to the AVAssetWriterInput instance
-            
-            NSString *c = [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"];
-            
-            NSDictionary *videoSettings = nil;
-            
-            if( [c isEqualToString: AVVideoCodecH264])
-            {
-                double bitsPerSecond = firstImage.size.width * firstImage.size.height * fps * 4; //Maximum bit rate for best quality
-                
-                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           c, AVVideoCodecKey, 
-                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                            [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                            [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                            nil], AVVideoCompressionPropertiesKey,
-                                           [NSNumber numberWithInt: firstImage.size.width], AVVideoWidthKey, 
-                                           [NSNumber numberWithInt: firstImage.size.height], AVVideoHeightKey, nil];
-            }
-            else if( [c isEqualToString: AVVideoCodecJPEG])
-            {
-                videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 c, AVVideoCodecKey,
-                                 [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
-                                 [NSNumber numberWithInt: firstImage.size.width], AVVideoWidthKey, 
-                                 [NSNumber numberWithInt: firstImage.size.height], AVVideoHeightKey, nil];
-            }
-            
-            // Instanciate the AVAssetWriterInput
-            AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
-            // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
-            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
-            // Add the writer input to the writer and begin writing
-            [writer addInput:writerInput];
-            [writer startWriting];
-            
-            BOOL aborted = NO;
-            CMTime nextPresentationTimeStamp;
-            
-            nextPresentationTimeStamp = kCMTimeZero;
-            
-            [writer startSessionAtSourceTime:nextPresentationTimeStamp];
-            
             Wait *wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil)] autorelease];
             [wait showWindow:self];
             [wait setCancel:YES];
             [[wait progress] setMaxValue: numberOfFrames];
+            
+            AVAssetWriterInput *writerInput = nil;
+            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = nil;
+            CMTime nextPresentationTimeStamp = kCMTimeZero;
+            BOOL aborted = NO;
             
             for( int curSample = 0; curSample < numberOfFrames; curSample++)
             {
@@ -215,16 +175,53 @@
                 
                 CVPixelBufferRef buffer = nil;
                 
-                if( curSample < numberOfFrames)
+                NSDisableScreenUpdates();
+                NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
+                NSEnableScreenUpdates();
+                
+                if( im)
                 {
-                    NSDisableScreenUpdates();
-                    NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
+                    if( writerInput == nil)
+                    {
+                        // Define video settings to be passed to the AVAssetWriterInput instance
+                        
+                        NSString *c = [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"];
+                        
+                        NSDictionary *videoSettings = nil;
+                        
+                        if( [c isEqualToString: AVVideoCodecH264])
+                        {
+                            double bitsPerSecond = im.size.width * im.size.height * fps * 4; //Maximum bit rate for best quality
+                            
+                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             c, AVVideoCodecKey,
+                                             [NSDictionary dictionaryWithObjectsAndKeys:
+                                              [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                              [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                              nil], AVVideoCompressionPropertiesKey,
+                                             [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                             [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                        }
+                        else if( [c isEqualToString: AVVideoCodecJPEG])
+                        {
+                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                             c, AVVideoCodecKey,
+                                             [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
+                                             [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                             [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                        }
+                        
+                        writerInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
+                        
+                        pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil] retain];
+                        
+                        [writer addInput:writerInput];
+                        [writer startWriting];
+                        [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+                    }
                     
                     buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
-                    NSEnableScreenUpdates();
                 }
-                
-                [pool release];
                 
                 if( buffer)
                 {
@@ -238,20 +235,17 @@
                     
                     nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
                     
-                    CVPixelBufferRelease(buffer);                    
-                    
-                    [wait incrementBy: 1];
-                    if( [wait aborted])
-                    {
-                        curSample = numberOfFrames;
-                        aborted = YES;
-                    }
+                    CVPixelBufferRelease(buffer);
                 }
-                else
+                
+                [wait incrementBy: 1];
+                if( [wait aborted])
                 {
                     curSample = numberOfFrames;
-                    break;
+                    aborted = YES;
                 }
+                
+                [pool release];
             }
             [writerInput markAsFinished];
             [writer finishWriting];
@@ -259,6 +253,9 @@
             [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
             
             [wait close];
+            
+            [writerInput release];
+            [pixelBufferAdaptor release];
             
             if( openIt && aborted == NO)
             {
