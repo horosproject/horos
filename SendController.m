@@ -324,8 +324,6 @@ static volatile int sendControllerObjects = 0;
     NSMutableArray *arrayOfPatientNames = [NSMutableArray array];
     DicomDatabase *database = nil;
     
-    [[DicomStudy dbModifyLock] lock];
-	
 	@try
 	{
         [objectsToSend sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"series.study.patientUID" ascending:YES]]];
@@ -371,8 +369,6 @@ static volatile int sendControllerObjects = 0;
 	{
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
-    
-    [[DicomStudy dbModifyLock] unlock];
     
     if( arraysOfFiles.count)
     {
@@ -443,8 +439,6 @@ static volatile int sendControllerObjects = 0;
     NSArray *arrayOfPatientNames = [dict objectForKey: @"arrayOfPatientNames"];
     DicomDatabase *database = [dict objectForKey: @"database"];
     
-	[[DicomStudy dbModifyLock] lock];
-	
 	@try
 	{
         for( int i = 0;i < arraysOfFiles.count;i++)
@@ -456,8 +450,6 @@ static volatile int sendControllerObjects = 0;
 	{
 		NSLog( @"***** sendDICOMFilesOffis exception: %@", e);
 	}
-    
-    [[DicomStudy dbModifyLock] unlock];
     
 	//need to unlock to allow release of self after send complete
 	[_lock performSelectorOnMainThread:@selector( unlock) withObject:nil waitUntilDone: NO];
