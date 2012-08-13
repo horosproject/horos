@@ -42,13 +42,14 @@
 	[_threadsController setObjectClass:[NSThread class]];
     
     // cleanup timer
-	_timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(cleanupFinishedThreads:) userInfo:nil repeats:YES];
+	_timer = [[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(cleanupFinishedThreads:) userInfo:nil repeats:YES] retain];
     
 	return self;
 }
 
 -(void)dealloc {
     [_timer invalidate];
+    [_timer release];
 	[_threadsController release];
 	[super dealloc];
 }

@@ -261,7 +261,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	self.cache = [NSMutableDictionary dictionary];
 	self.locks = [NSMutableDictionary dictionary];
 	
-    temporaryUsersTimer = [NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector( deleteTemporaryUsers:) userInfo:NULL repeats:YES];
+    temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector( deleteTemporaryUsers:) userInfo:NULL repeats:YES] retain];
 	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
 	
@@ -305,9 +305,11 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	[self invalidate];
 	
 	[notificationsTimer invalidate];
+    [notificationsTimer release];
     notificationsTimer = nil;
     
     [temporaryUsersTimer invalidate];
+    [temporaryUsersTimer release];
     temporaryUsersTimer = nil;
     
 	self.notificationsEnabled = NO;
@@ -482,6 +484,15 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 //		} @catch (NSException* e) {
 //			NSLog(@"Exception: [WebPortal stopAcceptingConnections] %@", e);
 //		}
+        
+        [notificationsTimer invalidate];
+        [notificationsTimer release];
+        notificationsTimer = nil;
+        
+        [temporaryUsersTimer invalidate];
+        [temporaryUsersTimer release];
+        temporaryUsersTimer = nil;
+        
 		NSLog( @"----- cannot stop web server -> you have to restart OsiriX");
 	}
 	
@@ -692,10 +703,11 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		if (!flag)
         {
 			[notificationsTimer invalidate];
+            [notificationsTimer release];
 			notificationsTimer = nil;
 		}
         else if( self.notificationsInterval > 0)
-			notificationsTimer = [NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES];
+			notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 	}
 }
 
@@ -707,10 +719,11 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 		if (self.notificationsEnabled)
         {
 			[notificationsTimer invalidate];
+            [notificationsTimer release];
             notificationsTimer = nil;
             
             if( self.notificationsInterval > 0)
-                notificationsTimer = [NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES];
+                notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 		}
 	}
 }

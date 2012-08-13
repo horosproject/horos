@@ -88,8 +88,6 @@ NSString * const _CPRGeneratorRunLoopMode = @"_CPRGeneratorRunLoopMode";
         _observedOperations = [[NSMutableSet alloc] init];
         _finishedOperations = [[NSMutableArray alloc] init];
         _generatedFrameTimes = [[NSMutableArray alloc] init];
-        
-//        [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(_logFrameRate:) userInfo:nil repeats:YES];
     }
     return self;
 }
