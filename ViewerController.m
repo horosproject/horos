@@ -98,8 +98,6 @@
 #import "WindowLayoutManager.h"
 #import "DCMTKStudyQueryNode.h"
 
-#define ToolsMenuIconSize NSMakeSize(28.0, 28.0)
-
 int delayedTileWindows = NO;
 
 extern  ToolbarPanelController  *toolbarPanel[ 10];

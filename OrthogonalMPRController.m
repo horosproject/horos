@@ -1040,13 +1040,15 @@
 			NSNumber *tag;
 			int i = 0;
 			
-			for (title in titles) {
+			for (title in titles)
+            {
 				image = [enumerator2 nextObject];
 				tag = [enumerator3 nextObject];
 				item = [[NSMenuItem alloc] initWithTitle: title action: @selector(changeTool:) keyEquivalent:@""];
 				[item setTag:[tag intValue]];
 				//[item setTarget:self];
 				[item setImage:[NSImage imageNamed:image]];
+                [[item image] setSize:ToolsMenuIconSize];
 				[contextual addItem:item];
 				[item release];
 			}

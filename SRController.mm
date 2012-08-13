@@ -1235,10 +1235,12 @@ return YES;
 	NSEnumerator *imageEnumerator = [images objectEnumerator];
 	NSEnumerator *tagEnumerator = [tags objectEnumerator];
 	NSString *title;
-	while (title = [titleEnumerator nextObject]) {
+	while (title = [titleEnumerator nextObject])
+    {
 		subItem = [[NSMenuItem alloc] initWithTitle:title action: @selector(setDefaultTool:) keyEquivalent:@""];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
 		[subItem setImage:[NSImage imageNamed:[imageEnumerator nextObject]]];
+        [[subItem image] setSize:ToolsMenuIconSize];
 		[subItem setTarget:self];
 		[toolsSubmenu addItem:subItem];
 		[subItem release];
@@ -1246,7 +1248,7 @@ return YES;
 	[toolsSubmenu release];
 	[item release];
 	
-	//View	
+	//View
 	item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"View", nil) action: nil  keyEquivalent:@""];
 	[contextual addItem:item];
 	NSMenu *viewSubmenu =  [[NSMenu alloc] initWithTitle:NSLocalizedString(@"View", nil)];
@@ -1254,28 +1256,24 @@ return YES;
 	
 		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Axial", nil) action: @selector(axView:) keyEquivalent:@""];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: AxToolbarItemIdentifier]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
 		[subItem release];
 		
 		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Right", nil) action: @selector(saView:) keyEquivalent:@""];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: SaToolbarItemIdentifier]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
 		[subItem release];
 		
 		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Sagittal Left", nil) action: @selector(saViewOpposite:) keyEquivalent:@""];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: SaOppositeToolbarItemIdentifier]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
 		[subItem release];
 		
 		subItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Coronal", nil) action: @selector(coView:) keyEquivalent:@""];
 		[subItem setTag:[[tagEnumerator nextObject] intValue]];
-		//[subItem setImage:[NSImage imageNamed: CoToolbarItemIdentifier]];
 		[subItem setTarget:view];
 		[viewSubmenu addItem:subItem];
 		[subItem release];

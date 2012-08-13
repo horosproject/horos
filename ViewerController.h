@@ -39,6 +39,7 @@
 @class CPRController;
 @class ViewerController;
 
+#define ToolsMenuIconSize NSMakeSize(28.0, 28.0)
 
 @interface NSObject(OsiriXPluginDraggingDestination)
 - (BOOL)performPluginDragOperation:(id <NSDraggingInfo>)sender destination:(ViewerController*)vc;
