@@ -70,7 +70,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{20, 106}, {293, 22}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="599982874"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="345426981">
@@ -110,7 +109,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 136}, {233, 17}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="19241947"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="505731299">
@@ -142,7 +140,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{222, 66}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1008108403"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
@@ -168,7 +165,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{125, 66}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="429661228"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="112429568">
@@ -194,7 +190,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 195}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="376111689"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="34159287">
@@ -213,7 +208,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 165}, {114, 17}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="780655275"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="718444100">
@@ -232,7 +226,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{136, 193}, {114, 22}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="188102034"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="526548381">
@@ -252,7 +245,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{136, 164}, {114, 22}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="820067480"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="923989273">
@@ -272,7 +264,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{17, 9}, {299, 45}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="98620464">
 								<int key="NSCellFlags">67108864</int>
@@ -294,7 +285,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{255, 195}, {50, 17}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="921817005"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="430731799">
@@ -313,7 +303,6 @@
 							<int key="NSvFlags">256</int>
 							<string key="NSFrame">{{255, 170}, {50, 17}}</string>
 							<reference key="NSSuperview" ref="712499691"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1041825106"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="1048842333">
@@ -330,7 +319,6 @@
 					</array>
 					<string key="NSFrameSize">{333, 227}</string>
 					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="840768770"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -339,7 +327,7 @@
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="521993195">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSPopUpButton" id="542212162">
@@ -626,6 +614,7 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{186, 47}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -640,7 +629,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{0, 1}, {302, 34}}</string>
 						<reference key="NSSuperview" ref="558672855"/>
-						<reference key="NSWindow"/>
 						<bool key="NSEnabled">YES</bool>
 						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						<int key="NSNumRows">1</int>
@@ -854,14 +842,13 @@
 				</array>
 				<string key="NSFrameSize">{305, 36}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="1012247003">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSTextField" id="172314561">
@@ -931,6 +918,7 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{117, 33}</string>
+				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="172314561"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -950,7 +938,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{552, 306}</string>
 				<object class="NSView" key="NSWindowView" id="516774658">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="804481638">
@@ -1169,6 +1157,7 @@ Lg</string>
 						</object>
 					</array>
 					<string key="NSFrameSize">{552, 306}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="692593456"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1177,7 +1166,7 @@ Lg</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="945839359">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSTextField" id="856324598">
@@ -1241,6 +1230,7 @@ Lg</string>
 					</object>
 				</array>
 				<string key="NSFrameSize">{104, 27}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -1259,7 +1249,7 @@ Lg</string>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{552, 261}</string>
 				<object class="NSView" key="NSWindowView" id="142080429">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="111727455">
@@ -1440,6 +1430,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 						</object>
 					</array>
 					<string key="NSFrameSize">{552, 261}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="377130572"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1461,7 +1452,7 @@ ZSBtZW51OiBzZWxlY3QgaXQgd2hpbGUgaG9sZGluZyBkb3duIHRoZSBhbHQvb3B0aW9uIGtleS4</str
 				<string key="NSWindowContentMaxSize">{548, 179}</string>
 				<string key="NSWindowContentMinSize">{548, 179}</string>
 				<object class="NSView" key="NSWindowView" id="743869056">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSlider" id="747691661">
@@ -1849,6 +1840,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{548, 179}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="178094087"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1857,7 +1849,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="403576153">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSButton" id="149728776">
@@ -1985,6 +1977,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{173, 35}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -2004,7 +1997,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSWindowContentMaxSize">{399, 209}</string>
 				<string key="NSWindowContentMinSize">{399, 209}</string>
 				<object class="NSView" key="NSWindowView" id="1008757708">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="596348139">
@@ -2354,6 +2347,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{399, 209}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="596348139"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -2362,7 +2356,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="479572638">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSBox" id="652778712">
@@ -2471,6 +2465,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{149, 48}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -2489,7 +2484,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{369, 131}</string>
 				<object class="NSView" key="NSWindowView" id="166634211">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSForm" id="204807266">
@@ -2846,6 +2841,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{369, 131}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="204807266"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -2854,7 +2850,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="350000042">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="652754664">
@@ -2975,6 +2971,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{66, 42}</string>
+				<reference key="NSSuperview"/>
 				<string key="NSClassName">NSView</string>
 				<string key="NSExtension">NSResponder</string>
 			</object>
@@ -2992,7 +2989,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<string key="NSWindowContentMaxSize">{584, 322}</string>
 				<string key="NSWindowContentMinSize">{584, 322}</string>
 				<object class="NSView" key="NSWindowView" id="107712523">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="244522552">
@@ -3670,6 +3667,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{584, 322}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="991319620"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -3690,7 +3688,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{333, 191}</string>
 				<object class="NSView" key="NSWindowView" id="1020050384">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="162935316">
@@ -3955,6 +3953,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{333, 191}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="932778623"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -3963,7 +3962,7 @@ QXBwbGUgQ29tcHV0ZXIsIEluYy4sIDIwMDUAAAAAA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="102831028">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="464156373">
@@ -4069,13 +4068,14 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{120, 37}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
 				<string key="NSExtension">NSResponder</string>
 			</object>
 			<object class="NSCustomView" id="550085799">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="1023471336">
@@ -4095,7 +4095,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<reference key="NSSupport" ref="24"/>
 								<reference key="NSControlView" ref="1023471336"/>
 								<int key="NSButtonFlags">-2037628928</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<reference key="NSNormalImage" ref="641174190"/>
 								<string key="NSAlternateContents"/>
 								<string key="NSKeyEquivalent"/>
@@ -4110,7 +4110,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 								<reference key="NSControlView" ref="1023471336"/>
 								<int key="NSTag">1</int>
 								<int key="NSButtonFlags">-2037628928</int>
-								<int key="NSButtonFlags2">2</int>
+								<int key="NSButtonFlags2">66</int>
 								<reference key="NSNormalImage" ref="641174190"/>
 								<string key="NSAlternateContents"/>
 								<string key="NSKeyEquivalent"/>
@@ -4158,6 +4158,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{111, 48}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -4176,7 +4177,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{263, 117}</string>
 				<object class="NSView" key="NSWindowView" id="47373967">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSlider" id="1024480275">
@@ -4309,6 +4310,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{263, 117}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="1061422677"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -4331,7 +4333,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{200, 200}</string>
 				<object class="NSView" key="NSWindowView" id="446525197">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSCustomView" id="10257548">
@@ -4344,6 +4346,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{490, 372}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="10257548"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -4352,7 +4355,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomView" id="222162871">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="305559997">
@@ -4460,6 +4463,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{165, 49}</string>
+				<reference key="NSSuperview"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
 				</object>
@@ -4500,7 +4504,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<bool key="NS.allowsfloats">YES</bool>
 			</object>
 			<object class="NSCustomView" id="244843565">
-				<nil key="NSNextResponder"/>
+				<reference key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSMatrix" id="781276255">
@@ -4567,6 +4571,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 				</array>
 				<string key="NSFrameSize">{59, 36}</string>
+				<reference key="NSSuperview"/>
 				<reference key="NSNextKeyView" ref="781276255"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -8301,163 +8306,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<object class="IBPartialClassDescription">
-					<string key="className">CLUTOpacityView</string>
-					<string key="superclassName">NSView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="computeHistogram:">id</string>
-						<string key="copy:">id</string>
-						<string key="cut:">id</string>
-						<string key="delete:">id</string>
-						<string key="newCurve:">id</string>
-						<string key="niceDisplay:">id</string>
-						<string key="paste:">id</string>
-						<string key="redo:">id</string>
-						<string key="removeAllCurves:">id</string>
-						<string key="save:">id</string>
-						<string key="scroll:">id</string>
-						<string key="sendToBack:">id</string>
-						<string key="setHistogramOpacity:">id</string>
-						<string key="setLineWidth:">id</string>
-						<string key="setPointDiameter:">id</string>
-						<string key="setZoomFator:">id</string>
-						<string key="undo:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="computeHistogram:">
-							<string key="name">computeHistogram:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="copy:">
-							<string key="name">copy:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="cut:">
-							<string key="name">cut:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="delete:">
-							<string key="name">delete:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="newCurve:">
-							<string key="name">newCurve:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="niceDisplay:">
-							<string key="name">niceDisplay:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="paste:">
-							<string key="name">paste:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="redo:">
-							<string key="name">redo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="removeAllCurves:">
-							<string key="name">removeAllCurves:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="save:">
-							<string key="name">save:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="scroll:">
-							<string key="name">scroll:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendToBack:">
-							<string key="name">sendToBack:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setHistogramOpacity:">
-							<string key="name">setHistogramOpacity:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setLineWidth:">
-							<string key="name">setLineWidth:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setPointDiameter:">
-							<string key="name">setPointDiameter:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setZoomFator:">
-							<string key="name">setZoomFator:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="undo:">
-							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="chooseNameAndSaveWindow">NSWindow</string>
-						<string key="clutSavedName">NSTextField</string>
-						<string key="vrView">VRView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="chooseNameAndSaveWindow">
-							<string key="name">chooseNameAndSaveWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutSavedName">
-							<string key="name">clutSavedName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="vrView">
-							<string key="name">vrView</string>
-							<string key="candidateClassName">VRView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/CLUTOpacityView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ColorTransferView</string>
-					<string key="superclassName">NSView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">renderButton:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">renderButton:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">renderButton:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="pick">NSColorWell</string>
-						<string key="position">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="pick">
-							<string key="name">pick</string>
-							<string key="candidateClassName">NSColorWell</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="position">
-							<string key="name">position</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ColorTransferView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ColorView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ColorView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
 					<string key="className">FirstResponder</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key=":">id</string>
@@ -8478,1049 +8326,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="minorKey"/>
 					</object>
 				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">OSIWindowController</string>
-					<string key="superclassName">NSWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="applyShading:">id</string>
-						<string key="redo:">id</string>
-						<string key="undo:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="applyShading:">
-							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="redo:">
-							<string key="name">redo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="undo:">
-							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/OSIWindowController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">OpacityTransferView</string>
-					<string key="superclassName">NSView</string>
-					<object class="NSMutableDictionary" key="actions">
-						<string key="NS.key.0">renderButton:</string>
-						<string key="NS.object.0">id</string>
-					</object>
-					<object class="NSMutableDictionary" key="actionInfosByName">
-						<string key="NS.key.0">renderButton:</string>
-						<object class="IBActionInfo" key="NS.object.0">
-							<string key="name">renderButton:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</object>
-					<object class="NSMutableDictionary" key="outlets">
-						<string key="NS.key.0">position</string>
-						<string key="NS.object.0">NSTextField</string>
-					</object>
-					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<string key="NS.key.0">position</string>
-						<object class="IBToOneOutletInfo" key="NS.object.0">
-							<string key="name">position</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</object>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/OpacityTransferView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">SelectionView</string>
-					<string key="superclassName">NSView</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/SelectionView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">ShadingArrayController</string>
-					<string key="superclassName">NSArrayController</string>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/ShadingArrayController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">VRController</string>
-					<string key="superclassName">Window3DController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="ApplyGeometrieSettings:">id</string>
-						<string key="applyConvolution:">id</string>
-						<string key="applyShading:">id</string>
-						<string key="close3DSettingsSavePanel:">id</string>
-						<string key="displayPresetsForSelectedGroup:">id</string>
-						<string key="editGrowingRegion:">id</string>
-						<string key="editShadingValues:">id</string>
-						<string key="enable3DSettingsSaveButton:">id</string>
-						<string key="endEditGrowingRegion:">id</string>
-						<string key="flyThruControllerInit:">id</string>
-						<string key="load3DSettings:">id</string>
-						<string key="nextPresetPage:">id</string>
-						<string key="previousPresetPage:">id</string>
-						<string key="roiGetManager:">id</string>
-						<string key="save3DSettings:">id</string>
-						<string key="setDefaultTool:">id</string>
-						<string key="setMode:">id</string>
-						<string key="setOrientation:">id</string>
-						<string key="show3DSettingsNewGroupTextField:">id</string>
-						<string key="showCLUTOpacityPanel:">id</string>
-						<string key="showPresetInfoPanel:">id</string>
-						<string key="undo:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="ApplyGeometrieSettings:">
-							<string key="name">ApplyGeometrieSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="applyConvolution:">
-							<string key="name">applyConvolution:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="applyShading:">
-							<string key="name">applyShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="close3DSettingsSavePanel:">
-							<string key="name">close3DSettingsSavePanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="displayPresetsForSelectedGroup:">
-							<string key="name">displayPresetsForSelectedGroup:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="editGrowingRegion:">
-							<string key="name">editGrowingRegion:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="editShadingValues:">
-							<string key="name">editShadingValues:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="enable3DSettingsSaveButton:">
-							<string key="name">enable3DSettingsSaveButton:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endEditGrowingRegion:">
-							<string key="name">endEditGrowingRegion:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="flyThruControllerInit:">
-							<string key="name">flyThruControllerInit:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="load3DSettings:">
-							<string key="name">load3DSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="nextPresetPage:">
-							<string key="name">nextPresetPage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="previousPresetPage:">
-							<string key="name">previousPresetPage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="roiGetManager:">
-							<string key="name">roiGetManager:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="save3DSettings:">
-							<string key="name">save3DSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setDefaultTool:">
-							<string key="name">setDefaultTool:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setMode:">
-							<string key="name">setMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setOrientation:">
-							<string key="name">setOrientation:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="show3DSettingsNewGroupTextField:">
-							<string key="name">show3DSettingsNewGroupTextField:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showCLUTOpacityPanel:">
-							<string key="name">showCLUTOpacityPanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="showPresetInfoPanel:">
-							<string key="name">showPresetInfoPanel:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="undo:">
-							<string key="name">undo:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="BackgroundColorView">NSView</string>
-						<string key="BlendingView">NSView</string>
-						<string key="CLUTEditorsView">NSView</string>
-						<string key="ClippingRangeView">NSView</string>
-						<string key="LODView">NSView</string>
-						<string key="OrientationsView">NSView</string>
-						<string key="VRGeometrieSettingsWindow">NSWindow</string>
-						<string key="WLWWView">NSView</string>
-						<string key="blendingPercentage">NSTextField</string>
-						<string key="blendingSlider">NSSlider</string>
-						<string key="clutOpacityDrawer">NSDrawer</string>
-						<string key="clutOpacityView">CLUTOpacityView</string>
-						<string key="convolutionMenu">NSPopUpButton</string>
-						<string key="convolutionView">NSView</string>
-						<string key="distanceValue">NSTextField</string>
-						<string key="editDeleteValue">NSWindow</string>
-						<string key="engineView">NSView</string>
-						<string key="eyeDistance">NSTextField</string>
-						<string key="growingRegionWindow">NSWindow</string>
-						<string key="heightValue">NSTextField</string>
-						<string key="infoBackgroundColorTextField">NSTextField</string>
-						<string key="infoBackgroundColorView">ColorView</string>
-						<string key="infoCLUTTextField">NSTextField</string>
-						<string key="infoConvolutionFilterTextField">NSTextField</string>
-						<string key="infoNameTextField">NSTextField</string>
-						<string key="infoOpacityTextField">NSTextField</string>
-						<string key="infoProjectionTextField">NSTextField</string>
-						<string key="infoShadingsTextField">NSTextField</string>
-						<string key="infoWLWWTextField">NSTextField</string>
-						<string key="modeMatrix">NSMatrix</string>
-						<string key="modeView">NSView</string>
-						<string key="moviePlayStop">NSButton</string>
-						<string key="moviePosSlider">NSSlider</string>
-						<string key="movieRateSlider">NSSlider</string>
-						<string key="movieTextSlide">NSTextField</string>
-						<string key="movieView">NSView</string>
-						<string key="nextPresetPageButton">NSButton</string>
-						<string key="numberOfPresetInGroupTextField">NSTextField</string>
-						<string key="perspectiveView">NSView</string>
-						<string key="presetName1">NSTextField</string>
-						<string key="presetName2">NSTextField</string>
-						<string key="presetName3">NSTextField</string>
-						<string key="presetName4">NSTextField</string>
-						<string key="presetName5">NSTextField</string>
-						<string key="presetName6">NSTextField</string>
-						<string key="presetName7">NSTextField</string>
-						<string key="presetName8">NSTextField</string>
-						<string key="presetName9">NSTextField</string>
-						<string key="presetPreview1">VRPresetPreview</string>
-						<string key="presetPreview2">VRPresetPreview</string>
-						<string key="presetPreview3">VRPresetPreview</string>
-						<string key="presetPreview4">VRPresetPreview</string>
-						<string key="presetPreview5">VRPresetPreview</string>
-						<string key="presetPreview6">VRPresetPreview</string>
-						<string key="presetPreview7">VRPresetPreview</string>
-						<string key="presetPreview8">VRPresetPreview</string>
-						<string key="presetPreview9">VRPresetPreview</string>
-						<string key="presetsApplyButton">NSButton</string>
-						<string key="presetsGroupPopUpButton">NSPopUpButton</string>
-						<string key="presetsInfoPanel">NSWindow</string>
-						<string key="presetsPanel">NSWindow</string>
-						<string key="previousPresetPageButton">NSButton</string>
-						<string key="save3DSettingsWindow">NSWindow</string>
-						<string key="scissorStateView">NSView</string>
-						<string key="settingsBackgroundColorTextField">NSTextField</string>
-						<string key="settingsCLUTTextField">NSTextField</string>
-						<string key="settingsConvolutionFilterTextField">NSTextField</string>
-						<string key="settingsGroupPopUpButton">NSPopUpButton</string>
-						<string key="settingsNameTextField">NSTextField</string>
-						<string key="settingsNewGroupNameLabelTextField">NSTextField</string>
-						<string key="settingsNewGroupNameTextField">NSTextField</string>
-						<string key="settingsOpacityTextField">NSTextField</string>
-						<string key="settingsProjectionTextField">NSTextField</string>
-						<string key="settingsSaveButton">NSButton</string>
-						<string key="settingsShadingsTextField">NSTextField</string>
-						<string key="settingsWLWWTextField">NSTextField</string>
-						<string key="shadingCheck">NSButton</string>
-						<string key="shadingEditWindow">NSWindow</string>
-						<string key="shadingPanel">NSPanel</string>
-						<string key="shadingValues">NSTextField</string>
-						<string key="shadingView">NSView</string>
-						<string key="shadingsPresetsController">ShadingArrayController</string>
-						<string key="stereoIconView">NSView</string>
-						<string key="toolsMatrix">NSMatrix</string>
-						<string key="toolsView">NSView</string>
-						<string key="view">VRView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="BackgroundColorView">
-							<string key="name">BackgroundColorView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="BlendingView">
-							<string key="name">BlendingView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="CLUTEditorsView">
-							<string key="name">CLUTEditorsView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="ClippingRangeView">
-							<string key="name">ClippingRangeView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="LODView">
-							<string key="name">LODView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="OrientationsView">
-							<string key="name">OrientationsView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="VRGeometrieSettingsWindow">
-							<string key="name">VRGeometrieSettingsWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="WLWWView">
-							<string key="name">WLWWView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="blendingPercentage">
-							<string key="name">blendingPercentage</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="blendingSlider">
-							<string key="name">blendingSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutOpacityDrawer">
-							<string key="name">clutOpacityDrawer</string>
-							<string key="candidateClassName">NSDrawer</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutOpacityView">
-							<string key="name">clutOpacityView</string>
-							<string key="candidateClassName">CLUTOpacityView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="convolutionMenu">
-							<string key="name">convolutionMenu</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="convolutionView">
-							<string key="name">convolutionView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="distanceValue">
-							<string key="name">distanceValue</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="editDeleteValue">
-							<string key="name">editDeleteValue</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="engineView">
-							<string key="name">engineView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="eyeDistance">
-							<string key="name">eyeDistance</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="growingRegionWindow">
-							<string key="name">growingRegionWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="heightValue">
-							<string key="name">heightValue</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoBackgroundColorTextField">
-							<string key="name">infoBackgroundColorTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoBackgroundColorView">
-							<string key="name">infoBackgroundColorView</string>
-							<string key="candidateClassName">ColorView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoCLUTTextField">
-							<string key="name">infoCLUTTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoConvolutionFilterTextField">
-							<string key="name">infoConvolutionFilterTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoNameTextField">
-							<string key="name">infoNameTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoOpacityTextField">
-							<string key="name">infoOpacityTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoProjectionTextField">
-							<string key="name">infoProjectionTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoShadingsTextField">
-							<string key="name">infoShadingsTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="infoWLWWTextField">
-							<string key="name">infoWLWWTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="modeMatrix">
-							<string key="name">modeMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="modeView">
-							<string key="name">modeView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="moviePlayStop">
-							<string key="name">moviePlayStop</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="moviePosSlider">
-							<string key="name">moviePosSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="movieRateSlider">
-							<string key="name">movieRateSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="movieTextSlide">
-							<string key="name">movieTextSlide</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="movieView">
-							<string key="name">movieView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="nextPresetPageButton">
-							<string key="name">nextPresetPageButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="numberOfPresetInGroupTextField">
-							<string key="name">numberOfPresetInGroupTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="perspectiveView">
-							<string key="name">perspectiveView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName1">
-							<string key="name">presetName1</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName2">
-							<string key="name">presetName2</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName3">
-							<string key="name">presetName3</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName4">
-							<string key="name">presetName4</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName5">
-							<string key="name">presetName5</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName6">
-							<string key="name">presetName6</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName7">
-							<string key="name">presetName7</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName8">
-							<string key="name">presetName8</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetName9">
-							<string key="name">presetName9</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview1">
-							<string key="name">presetPreview1</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview2">
-							<string key="name">presetPreview2</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview3">
-							<string key="name">presetPreview3</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview4">
-							<string key="name">presetPreview4</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview5">
-							<string key="name">presetPreview5</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview6">
-							<string key="name">presetPreview6</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview7">
-							<string key="name">presetPreview7</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview8">
-							<string key="name">presetPreview8</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetPreview9">
-							<string key="name">presetPreview9</string>
-							<string key="candidateClassName">VRPresetPreview</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetsApplyButton">
-							<string key="name">presetsApplyButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetsGroupPopUpButton">
-							<string key="name">presetsGroupPopUpButton</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetsInfoPanel">
-							<string key="name">presetsInfoPanel</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="presetsPanel">
-							<string key="name">presetsPanel</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="previousPresetPageButton">
-							<string key="name">previousPresetPageButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="save3DSettingsWindow">
-							<string key="name">save3DSettingsWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="scissorStateView">
-							<string key="name">scissorStateView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsBackgroundColorTextField">
-							<string key="name">settingsBackgroundColorTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsCLUTTextField">
-							<string key="name">settingsCLUTTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsConvolutionFilterTextField">
-							<string key="name">settingsConvolutionFilterTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsGroupPopUpButton">
-							<string key="name">settingsGroupPopUpButton</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsNameTextField">
-							<string key="name">settingsNameTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsNewGroupNameLabelTextField">
-							<string key="name">settingsNewGroupNameLabelTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsNewGroupNameTextField">
-							<string key="name">settingsNewGroupNameTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsOpacityTextField">
-							<string key="name">settingsOpacityTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsProjectionTextField">
-							<string key="name">settingsProjectionTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsSaveButton">
-							<string key="name">settingsSaveButton</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsShadingsTextField">
-							<string key="name">settingsShadingsTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="settingsWLWWTextField">
-							<string key="name">settingsWLWWTextField</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingCheck">
-							<string key="name">shadingCheck</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingEditWindow">
-							<string key="name">shadingEditWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingPanel">
-							<string key="name">shadingPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingValues">
-							<string key="name">shadingValues</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingView">
-							<string key="name">shadingView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingsPresetsController">
-							<string key="name">shadingsPresetsController</string>
-							<string key="candidateClassName">ShadingArrayController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="stereoIconView">
-							<string key="name">stereoIconView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toolsMatrix">
-							<string key="name">toolsMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toolsView">
-							<string key="name">toolsView</string>
-							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="view">
-							<string key="name">view</string>
-							<string key="candidateClassName">VRView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/VRController.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">VRPresetPreview</string>
-					<string key="superclassName">VRView</string>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="presetController">VRController</string>
-						<string key="selectionView">SelectionView</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="presetController">
-							<string key="name">presetController</string>
-							<string key="candidateClassName">VRController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="selectionView">
-							<string key="name">selectionView</string>
-							<string key="candidateClassName">SelectionView</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/VRPresetPreview.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">VRView</string>
-					<string key="superclassName">VTKView</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="IBPropagate3DPointsSettings:">id</string>
-						<string key="IBSetSelected3DPointColor:">id</string>
-						<string key="IBSetSelected3DPointRadius:">id</string>
-						<string key="SwitchStereoMode:">id</string>
-						<string key="changeColor:">id</string>
-						<string key="changeColorWith:">NSColor</string>
-						<string key="endDCMExportSettings:">id</string>
-						<string key="endQuicktimeSettings:">id</string>
-						<string key="exportQuicktime:">id</string>
-						<string key="invertedSides:">id</string>
-						<string key="resetImage:">id</string>
-						<string key="save3DPointsDefaultProperties:">id</string>
-						<string key="scissorStateButtons:">id</string>
-						<string key="setCurrentdcmExport:">id</string>
-						<string key="setRenderMode:">id</string>
-						<string key="switchShading:">id</string>
-						<string key="switchToSeriesRadio:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="IBPropagate3DPointsSettings:">
-							<string key="name">IBPropagate3DPointsSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="IBSetSelected3DPointColor:">
-							<string key="name">IBSetSelected3DPointColor:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="IBSetSelected3DPointRadius:">
-							<string key="name">IBSetSelected3DPointRadius:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="SwitchStereoMode:">
-							<string key="name">SwitchStereoMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeColor:">
-							<string key="name">changeColor:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="changeColorWith:">
-							<string key="name">changeColorWith:</string>
-							<string key="candidateClassName">NSColor</string>
-						</object>
-						<object class="IBActionInfo" key="endDCMExportSettings:">
-							<string key="name">endDCMExportSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endQuicktimeSettings:">
-							<string key="name">endQuicktimeSettings:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="exportQuicktime:">
-							<string key="name">exportQuicktime:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="invertedSides:">
-							<string key="name">invertedSides:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="resetImage:">
-							<string key="name">resetImage:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="save3DPointsDefaultProperties:">
-							<string key="name">save3DPointsDefaultProperties:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="scissorStateButtons:">
-							<string key="name">scissorStateButtons:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setCurrentdcmExport:">
-							<string key="name">setCurrentdcmExport:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="setRenderMode:">
-							<string key="name">setRenderMode:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchShading:">
-							<string key="name">switchShading:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="switchToSeriesRadio:">
-							<string key="name">switchToSeriesRadio:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="VRFrames">NSMatrix</string>
-						<string key="VRquality">NSMatrix</string>
-						<string key="backgroundColor">NSColorWell</string>
-						<string key="clutOpacityView">CLUTOpacityView</string>
-						<string key="controller">VRController</string>
-						<string key="dcmBox">NSBox</string>
-						<string key="dcmExportDepth">NSMatrix</string>
-						<string key="dcmExportMode">NSMatrix</string>
-						<string key="dcmSeriesName">NSTextField</string>
-						<string key="dcmframesSlider">NSSlider</string>
-						<string key="dcmorientation">NSMatrix</string>
-						<string key="dcmquality">NSMatrix</string>
-						<string key="dcmrotation">NSMatrix</string>
-						<string key="export3DVRWindow">NSWindow</string>
-						<string key="export3DWindow">NSWindow</string>
-						<string key="exportDCMWindow">NSWindow</string>
-						<string key="framesSlider">NSSlider</string>
-						<string key="orientation">NSMatrix</string>
-						<string key="pixelInformation">NSTextField</string>
-						<string key="point3DColorWell">NSColorWell</string>
-						<string key="point3DInfoPanel">NSPanel</string>
-						<string key="point3DPropagateToAll">NSButton</string>
-						<string key="point3DRadiusSlider">NSSlider</string>
-						<string key="point3DSetDefault">NSButton</string>
-						<string key="quality">NSMatrix</string>
-						<string key="rotation">NSMatrix</string>
-						<string key="scissorStateMatrix">NSMatrix</string>
-						<string key="shadingController">NSObjectController</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="VRFrames">
-							<string key="name">VRFrames</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="VRquality">
-							<string key="name">VRquality</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="backgroundColor">
-							<string key="name">backgroundColor</string>
-							<string key="candidateClassName">NSColorWell</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutOpacityView">
-							<string key="name">clutOpacityView</string>
-							<string key="candidateClassName">CLUTOpacityView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="controller">
-							<string key="name">controller</string>
-							<string key="candidateClassName">VRController</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmBox">
-							<string key="name">dcmBox</string>
-							<string key="candidateClassName">NSBox</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmExportDepth">
-							<string key="name">dcmExportDepth</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmExportMode">
-							<string key="name">dcmExportMode</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmSeriesName">
-							<string key="name">dcmSeriesName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmframesSlider">
-							<string key="name">dcmframesSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmorientation">
-							<string key="name">dcmorientation</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmquality">
-							<string key="name">dcmquality</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="dcmrotation">
-							<string key="name">dcmrotation</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="export3DVRWindow">
-							<string key="name">export3DVRWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="export3DWindow">
-							<string key="name">export3DWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="exportDCMWindow">
-							<string key="name">exportDCMWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="framesSlider">
-							<string key="name">framesSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="orientation">
-							<string key="name">orientation</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="pixelInformation">
-							<string key="name">pixelInformation</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="point3DColorWell">
-							<string key="name">point3DColorWell</string>
-							<string key="candidateClassName">NSColorWell</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="point3DInfoPanel">
-							<string key="name">point3DInfoPanel</string>
-							<string key="candidateClassName">NSPanel</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="point3DPropagateToAll">
-							<string key="name">point3DPropagateToAll</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="point3DRadiusSlider">
-							<string key="name">point3DRadiusSlider</string>
-							<string key="candidateClassName">NSSlider</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="point3DSetDefault">
-							<string key="name">point3DSetDefault</string>
-							<string key="candidateClassName">NSButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="quality">
-							<string key="name">quality</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="rotation">
-							<string key="name">rotation</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="scissorStateMatrix">
-							<string key="name">scissorStateMatrix</string>
-							<string key="candidateClassName">NSMatrix</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="shadingController">
-							<string key="name">shadingController</string>
-							<string key="candidateClassName">NSObjectController</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/VRView.h</string>
-					</object>
-				</object>
-				<object class="IBPartialClassDescription">
-					<string key="className">Window3DController</string>
-					<string key="superclassName">OSIWindowController</string>
-					<dictionary class="NSMutableDictionary" key="actions">
-						<string key="AddCLUT:">id</string>
-						<string key="SetWLWW:">id</string>
-						<string key="clutAction:">id</string>
-						<string key="endCLUT:">id</string>
-						<string key="endNameWLWW:">id</string>
-						<string key="endOpacity:">id</string>
-						<string key="endSetWLWW:">id</string>
-						<string key="fullScreenMenu:">id</string>
-						<string key="updateSetWLWW:">id</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="actionInfosByName">
-						<object class="IBActionInfo" key="AddCLUT:">
-							<string key="name">AddCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="SetWLWW:">
-							<string key="name">SetWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="clutAction:">
-							<string key="name">clutAction:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endCLUT:">
-							<string key="name">endCLUT:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endNameWLWW:">
-							<string key="name">endNameWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endOpacity:">
-							<string key="name">endOpacity:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="endSetWLWW:">
-							<string key="name">endSetWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="fullScreenMenu:">
-							<string key="name">fullScreenMenu:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="updateSetWLWW:">
-							<string key="name">updateSetWLWW:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="outlets">
-						<string key="OpacityName">NSTextField</string>
-						<string key="OpacityPopup">NSPopUpButton</string>
-						<string key="OpacityView">OpacityTransferView</string>
-						<string key="addCLUTWindow">NSWindow</string>
-						<string key="addOpacityWindow">NSWindow</string>
-						<string key="addWLWWWindow">NSWindow</string>
-						<string key="clutName">NSTextField</string>
-						<string key="clutPopup">NSPopUpButton</string>
-						<string key="clutView">ColorTransferView</string>
-						<string key="fromset">NSTextField</string>
-						<string key="newName">NSTextField</string>
-						<string key="setWLWWWindow">NSWindow</string>
-						<string key="toset">NSTextField</string>
-						<string key="wl">NSTextField</string>
-						<string key="wlset">NSTextField</string>
-						<string key="wlwwPopup">NSPopUpButton</string>
-						<string key="ww">NSTextField</string>
-						<string key="wwset">NSTextField</string>
-					</dictionary>
-					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
-						<object class="IBToOneOutletInfo" key="OpacityName">
-							<string key="name">OpacityName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="OpacityPopup">
-							<string key="name">OpacityPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="OpacityView">
-							<string key="name">OpacityView</string>
-							<string key="candidateClassName">OpacityTransferView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="addCLUTWindow">
-							<string key="name">addCLUTWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="addOpacityWindow">
-							<string key="name">addOpacityWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="addWLWWWindow">
-							<string key="name">addWLWWWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutName">
-							<string key="name">clutName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutPopup">
-							<string key="name">clutPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clutView">
-							<string key="name">clutView</string>
-							<string key="candidateClassName">ColorTransferView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="fromset">
-							<string key="name">fromset</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="newName">
-							<string key="name">newName</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="setWLWWWindow">
-							<string key="name">setWLWWWindow</string>
-							<string key="candidateClassName">NSWindow</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="toset">
-							<string key="name">toset</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wl">
-							<string key="name">wl</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wlset">
-							<string key="name">wlset</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wlwwPopup">
-							<string key="name">wlwwPopup</string>
-							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="ww">
-							<string key="name">ww</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="wwset">
-							<string key="name">wwset</string>
-							<string key="candidateClassName">NSTextField</string>
-						</object>
-					</dictionary>
-					<object class="IBClassDescriptionSource" key="sourceIdentifier">
-						<string key="majorKey">IBProjectSource</string>
-						<string key="minorKey">./Classes/Window3DController.h</string>
-					</object>
-				</object>
 			</array>
 		</object>
 		<int key="IBDocument.localizationMode">0</int>
@@ -9536,12 +8341,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="3DCut">{28, 28}</string>
-			<string key="3DRotate">{28, 28}</string>
-			<string key="3DRotateCamera">{28, 28}</string>
+			<string key="3DCut">{71, 71}</string>
+			<string key="3DRotate">{165, 165}</string>
+			<string key="3DRotateCamera">{98, 101}</string>
 			<string key="AxialSmall">{60, 60}</string>
 			<string key="CorSmall">{60, 60}</string>
-			<string key="Length">{128, 128}</string>
+			<string key="Length">{197, 197}</string>
 			<string key="Move">{177, 178}</string>
 			<string key="NSMenuCheckmark">{11, 11}</string>
 			<string key="NSMenuMixedState">{10, 3}</string>
@@ -9551,7 +8356,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<string key="SagSmallOpposite">{60, 60}</string>
 			<string key="WLWW">{107, 107}</string>
 			<string key="Zoom">{539, 570}</string>
-			<string key="bonesRemoval">{28, 28}</string>
+			<string key="bonesRemoval">{308, 308}</string>
 			<string key="smalltrash">{25, 25}</string>
 		</dictionary>
 	</data>

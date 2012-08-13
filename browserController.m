@@ -12399,7 +12399,7 @@ static NSArray*	openSubSeriesArray = nil;
 		
         //Something in the delete queue? Write it to the disk
         [self saveDeleteQueue];
-
+        
     //	[self emptyAutoroutingQueue:self];
 
 	//	[BrowserController tryLock: autoroutingInProgress during: 120];
@@ -12427,6 +12427,8 @@ static NSArray*	openSubSeriesArray = nil;
 	
 	NSLog( @"browserPrepareForClose");
 	
+    [self saveLoadAlbumsSortDescriptors];
+    
 	[[DicomStudy dbModifyLock] lock];
 	[[DicomStudy dbModifyLock] unlock];
 	
