@@ -527,7 +527,10 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
         [aTask setLaunchPath:@"/usr/bin/unzip"];
         [aTask setArguments:args];
         [aTask launch];
-        [aTask waitUntilExit];
+        while( [aTask isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
         [aTask release];
 	}
     @catch (NSException *e)

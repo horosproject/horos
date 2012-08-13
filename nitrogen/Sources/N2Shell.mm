@@ -42,7 +42,10 @@
 	[task setStandardError:[NSPipe pipe]];
 	
 	[task launch];
-	[task waitUntilExit];
+	while( [task isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	
 	NSString* stdout = [[[[NSString alloc] initWithData:[[[task standardOutput] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 //	NSString* stderr = [[[[NSString alloc] initWithData:[[[task standardError] fileHandleForReading] readDataToEndOfFile] encoding:NSUTF8StringEncoding] autorelease] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

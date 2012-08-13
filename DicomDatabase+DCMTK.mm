@@ -142,7 +142,10 @@
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
-				[theTask waitUntilExit];
+				while( [theTask isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 			} @catch (NSException *e) {
 				N2LogExceptionWithStackTrace(e);
 			}
@@ -295,7 +298,10 @@
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"decompressList", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
-				[theTask waitUntilExit];
+				while( [theTask isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 			}
             @catch (NSException *e)
             {

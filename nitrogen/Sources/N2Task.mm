@@ -149,7 +149,7 @@ static int getfd(id object, BOOL read, int def) { // http://www.quantum-step.com
 
 -(void)waitUntilExit {
 	while (self.isRunning)
-		[NSThread sleepForTimeInterval:0.001];
+		[NSThread sleepForTimeInterval:0.01];
 }
 
 

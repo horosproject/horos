@@ -604,7 +604,10 @@ static id aedesc_to_id(AEDesc *desc)
 	[unzip setArguments: [NSArray arrayWithObjects: aPath, @"-d", @"OOOsiriX", nil]];
 	[unzip launch];
 
-	[unzip waitUntilExit];
+	while( [unzip isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	int status = [unzip terminationStatus];
  
 	if (status == 0)
@@ -633,7 +636,10 @@ static id aedesc_to_id(AEDesc *desc)
 	[unzip setArguments: [NSArray arrayWithObjects: @"-q", @"-r", aPath, @"content.xml", nil]];
 	[unzip launch];
 
-	[unzip waitUntilExit];
+	while( [unzip isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	status = [unzip terminationStatus];
  
 	if (status == 0)
@@ -695,7 +701,10 @@ static id aedesc_to_id(AEDesc *desc)
 	[gzip setArguments:[NSArray arrayWithObjects:@"-d", @"index.xml.gz", nil]];
 	[gzip launch];
 
-	[gzip waitUntilExit];
+	while( [gzip isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	int status = [gzip terminationStatus];
  
 	if (status == 0)
@@ -724,7 +733,10 @@ static id aedesc_to_id(AEDesc *desc)
 	[gzip setArguments:[NSArray arrayWithObjects:@"index.xml", nil]];
 	[gzip launch];
 
-	[gzip waitUntilExit];
+	while( [gzip isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	status = [gzip terminationStatus];
  
 	if (status == 0)

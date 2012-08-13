@@ -5903,7 +5903,10 @@ static NSConditionLock *threadLock = nil;
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
 					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [im valueForKey: @"completePath"], htmlpath, nil]];		
 					[aTask launch];
-					[aTask waitUntilExit];		
+					while( [aTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    
+                    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					[aTask interrupt];
 				}
 				
@@ -5913,7 +5916,10 @@ static NSConditionLock *threadLock = nil;
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 					[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
 					[aTask launch];
-					[aTask waitUntilExit];		
+					while( [aTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    
+                    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					[aTask interrupt];
 				}
 				
@@ -13222,7 +13228,10 @@ static NSArray*	openSubSeriesArray = nil;
 			args = [NSArray arrayWithObjects: @"-qq", @"-o", @"-d", destination, file, nil];
 		[t setArguments: args];
 		[t launch];
-		[t waitUntilExit];
+		while( [t isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[t waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	}
 	@catch ( NSException *e)
 	{
@@ -14033,7 +14042,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
 					[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", [curImage valueForKey: @"completePath"], htmlpath, nil]];		
 					[aTask launch];
-					[aTask waitUntilExit];		
+					while( [aTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    
+                    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					[aTask interrupt];
 				}
 				
@@ -14043,7 +14055,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 					[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 					[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
 					[aTask launch];
-					[aTask waitUntilExit];		
+					while( [aTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    
+                    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					[aTask interrupt];
 				}
 				
@@ -15163,7 +15178,10 @@ static volatile int numberOfThreadsForJPEG = 0;
 						[theTask setArguments:theArguments];		
 						
 						[theTask launch];
-						[theTask waitUntilExit];
+						while( [theTask isRunning])
+                            [NSThread sleepForTimeInterval: 0.1];
+                        
+                        //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 						[theTask release];
 						
 						[pool release];
@@ -15312,8 +15330,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				[t setArguments: args];
                 [t launch];
-				[t waitUntilExit];
-//				while( [t isRunning]) [NSThread sleepForTimeInterval: 0.01];
+//				[t waitUntilExit];
+				while( [t isRunning]) [NSThread sleepForTimeInterval: 0.01];
 				
 				free( objs);
 			}
@@ -15381,7 +15399,10 @@ static volatile int numberOfThreadsForJPEG = 0;
                 
                 [t setArguments: args];
                 [t launch];
-                [t waitUntilExit];
+                while( [t isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[t waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
                 
                 if( [t terminationStatus] == 0 && deleteSource == YES)
                 {
@@ -16898,8 +16919,8 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		else
 		{
-			[toolbarItem release];
-			toolbarItem = nil;
+//			[toolbarItem release];
+//			toolbarItem = nil;
 		}
 	}
 	

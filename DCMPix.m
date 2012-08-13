@@ -5592,7 +5592,10 @@ END_CREATE_ROIS:
 				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
 				[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items",srcFile, htmlpath, nil]];		
 				[aTask launch];
-				[aTask waitUntilExit];		
+				while( [aTask isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 				[aTask interrupt];
 			}
 			
@@ -5602,7 +5605,10 @@ END_CREATE_ROIS:
 				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 				[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
 				[aTask launch];
-				[aTask waitUntilExit];		
+				while( [aTask isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 				[aTask interrupt];
 			}
 			
@@ -8354,7 +8360,11 @@ END_CREATE_ROIS:
 								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"/dsr2html"]];
 								[aTask setArguments: [NSArray arrayWithObjects: @"+X1", @"--unknown-relationship", @"--ignore-constraints", @"--ignore-item-errors", @"--skip-invalid-items", srcFile, htmlpath, nil]];		
 								[aTask launch];
-								[aTask waitUntilExit];		
+                                
+                                while( [aTask isRunning])
+                                    [NSThread sleepForTimeInterval: 0.1];
+                                
+								//[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 								[aTask interrupt];
 							}
 							
@@ -8364,7 +8374,11 @@ END_CREATE_ROIS:
 								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
 								[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
 								[aTask launch];
-								[aTask waitUntilExit];		
+                                
+                                while( [aTask isRunning])
+                                    [NSThread sleepForTimeInterval: 0.1];
+//								[aTask waitUntilExit];      // <- This is VERY DANGEROUS : the main runloop is continuing...
+                                
 								[aTask interrupt];
 							}
 							

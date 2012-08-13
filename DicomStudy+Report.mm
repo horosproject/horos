@@ -86,7 +86,10 @@
             [task setEnvironment:[NSDictionary dictionaryWithObject:urelinklibPath forKey:@"DYLD_LIBRARY_PATH"]];
             [task setStandardOutput:[NSPipe pipe]];
             [task launch];
-            [task waitUntilExit];
+            while( [task isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
+            //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
             
             if ([task terminationStatus] == 0)
                 succeeded = YES;

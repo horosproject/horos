@@ -224,7 +224,11 @@ int main(int argc, const char *argv[])
 						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
-						[t waitUntilExit];
+                        
+                        while( [t isRunning])
+                            [NSThread sleepForTimeInterval: 0.1];
+                        
+                        //[t waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					}
 					@catch ( NSException *e)
 					{
@@ -530,7 +534,10 @@ int main(int argc, const char *argv[])
 						NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", tempCurFileDest, curFile, nil];
 						[t setArguments: args];
 						[t launch];
-						[t waitUntilExit];
+						while( [t isRunning])
+                            [NSThread sleepForTimeInterval: 0.1];
+                        
+                        //[t waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 					}
 					@catch ( NSException *e)
 					{

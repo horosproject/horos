@@ -3286,7 +3286,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		[theTask setArguments:[NSArray arrayWithObjects: self.sqlFilePath, @".dump", nil]];
 		
 		[theTask launch];
-		[theTask waitUntilExit];
+		
+        while( [theTask isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+        
 		int dumpStatus = [theTask terminationStatus];
 		[theTask release];
 		
@@ -3300,7 +3305,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			[theTask setArguments:[NSArray arrayWithObjects: repairedDBFinalFile, nil]];		
 			
 			[theTask launch];
-			[theTask waitUntilExit];
+			while( [theTask isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
+            //[theTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 			
 			if ([theTask terminationStatus] == 0) {
 				NSInteger tag = 0;

@@ -244,7 +244,10 @@ static int validFilePathDepth = 0;
 		s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
     }
 	
-    [aTask waitUntilExit];
+    while( [aTask isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 	[aTask release];
     aTask = nil;
 	

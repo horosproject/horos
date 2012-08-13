@@ -603,7 +603,10 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			NSArray *args = [NSArray arrayWithObjects: @"-o", @"-d", @"osirixUnzippedFolder", POSTfilename, nil];
 			[t setArguments: args];
 			[t launch];
-			[t waitUntilExit];
+			while( [t isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
+            //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 		}
 		@catch( NSException *e)
 		{

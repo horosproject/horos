@@ -59,7 +59,10 @@
 
 	[makeImageTask setArguments:args];
 	[makeImageTask launch];
-	[makeImageTask waitUntilExit];
+    while( [makeImageTask isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 }
 
 
@@ -520,7 +523,12 @@
     
     NSString *newName = cdName;
     
-    [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]] waitUntilExit];
+    NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]];
+    
+    while( [t isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
     
     [NSThread sleepForTimeInterval: 1];
     
@@ -530,14 +538,26 @@
         if( newName.length > 10)
             newName = [newName substringToIndex: 10];
         
-        [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, [newName uppercaseString], nil]] waitUntilExit];
+        NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, [newName uppercaseString], nil]];
+        
+        while( [t isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[t waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+        
         [NSThread sleepForTimeInterval: 1];
         
         if( [[NSFileManager defaultManager] fileExistsAtPath: [[writeVolumePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: newName]] == NO)
         {
             newName = @"DICOM";
             
-            [[NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]] waitUntilExit];
+            NSTask *t = [NSTask launchedTaskWithLaunchPath: @"/usr/sbin/diskutil" arguments: [NSArray arrayWithObjects: @"rename", writeVolumePath, newName, nil]];
+            
+            while( [t isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
+            //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+            
             [NSThread sleepForTimeInterval: 1];
         }
     }
@@ -839,7 +859,11 @@
 		[duTool setStandardOutput:fromDu];
 		[duTool setArguments:args];
 		[duTool launch];
-		[duTool waitUntilExit];
+		
+        while( [duTool isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        //[duTool waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
 		
 		duOutput = [[fromPipe fileHandleForReading] availableData];
 		[duOutput getBytes:aBuffer];
@@ -972,7 +996,12 @@
                 [unzipTask setCurrentDirectoryPath: burnFolder];
                 [unzipTask setArguments: [NSArray arrayWithObjects: @"-o", [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: @"OsiriX Launcher.zip"], nil]]; // -o to override existing report w/ same name
                 [unzipTask launch];
-                [unzipTask waitUntilExit];
+                
+                while( [unzipTask isRunning])
+                    [NSThread sleepForTimeInterval: 0.1];
+                
+                //[unzipTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+                
                 [unzipTask release];
             }
             
