@@ -113,14 +113,17 @@
         }
 	
 	thread.status = NSLocalizedString(@"Opening database...", nil);
-	RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
-	
-	thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
-	
+    
     @try
     {
+        RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
+        
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Sending %d %@...", nil), imagePaths.count, (imagePaths.count == 1 ? NSLocalizedString(@"file", nil) : NSLocalizedString(@"files", nil)) ];
+        
+        
         [dstDatabase uploadFilesAtPaths:imagePaths imageObjects:nil];
-	} @catch (NSException* e)
+    }
+    @catch (NSException* e)
     {
         thread.status = NSLocalizedString(@"Error: destination is unavailable", nil);
         N2LogExceptionWithStackTrace(e);
@@ -202,10 +205,11 @@
 		if (!dstAET || !dstPort || !dstSyntax)
         {
 			thread.status = NSLocalizedString(@"Fetching destination information...", nil);
-			RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
             NSDictionary* dstInfo = nil;
             @try
             {
+                RemoteDicomDatabase* dstDatabase = [RemoteDicomDatabase databaseForLocation:destination.location name:destination.description update:NO];
+                
                 dstInfo = [dstDatabase fetchDicomDestinationInfo];
             } @catch (NSException* e)
             {

@@ -52,31 +52,25 @@
 }
 
 +(RemoteDicomDatabase*)databaseForLocation:(NSString*)location name:(NSString*)name update:(BOOL)flagUpdate {
-    RemoteDicomDatabase* db = nil;
-    @try
-    {
-        NSHost* host;
-        NSInteger port;
-        [RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
-        
-        if (!host.addresses.count && !host.names.count)
-            [NSException raise:NSGenericException format:@"%@", NSLocalizedString(@"This remote database is unaccessible because its address could not be resolved.", nil)];
-        
-        NSArray* dbs = [DicomDatabase allDatabases];
-        for (RemoteDicomDatabase* db in dbs)
-            if ([db isKindOfClass:[RemoteDicomDatabase class]])
-                if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port) {
-                    if (flagUpdate)
-                        [db update];
-                    return db;
-                }
-        
-        db = [[[self alloc] initWithHost:host port:port update:flagUpdate] autorelease];
-        if (name) db.name = name;
-    }
-    @catch (NSException *e) {
-        NSLog( @"******** RemoteDicomDatabase databaseForLocation exception: %@", e);
-    }
+	NSHost* host;
+	NSInteger port;
+	[RemoteDatabaseNodeIdentifier location:location toHost:&host port:&port];
+	
+    if (!host.addresses.count && !host.names.count)
+        [NSException raise:NSGenericException format:@"%@", NSLocalizedString(@"This remote database is unaccessible because its address could not be resolved.", nil)];
+    
+	NSArray* dbs = [DicomDatabase allDatabases];
+	for (RemoteDicomDatabase* db in dbs)
+		if ([db isKindOfClass:[RemoteDicomDatabase class]])
+			if ([[(RemoteDicomDatabase*)db host] isEqualToHost:host] && [(RemoteDicomDatabase*)db port] == port) {
+				if (flagUpdate)
+					[db update];
+				return db;
+			}
+	
+	RemoteDicomDatabase* db = [[[self alloc] initWithHost:host port:port update:flagUpdate] autorelease];
+	if (name) db.name = name;
+	
 	return db;
 }
 
