@@ -21,7 +21,7 @@
 	@private
 	NSManagedObjectContext* _managedObjectContext;
     id _mainDatabase;
-    BOOL _isDeallocating;
+    volatile BOOL _isDeallocating;
 }
 
 @property(readonly,retain) NSString* sqlFilePath;
