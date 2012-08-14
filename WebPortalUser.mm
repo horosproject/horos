@@ -271,7 +271,10 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	return YES;
 }
 
--(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error {
+-(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error
+{
+    [WebPortal.defaultWebPortal.dicomDatabase lock];
+    
 	@try {
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
 		request.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:self.managedObjectContext];
@@ -288,6 +291,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		*error = [NSError osirixErrorWithCode:-31 localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"Error: %@", nil), e]];
 		return NO;
 	}
+    @finally {
+        [WebPortal.defaultWebPortal.dicomDatabase unlock];
+    }
 	
 	return YES;
 }
@@ -328,6 +334,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             if( studiesArray == nil)
             {
+                [WebPortal.defaultWebPortal.dicomDatabase lock];
+                
                 // Find all studies
                 NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
                 req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
@@ -339,6 +347,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
                     if( studiesArray)
                         [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
                 }
+                
+                [WebPortal.defaultWebPortal.dicomDatabase unlock];
             }
             
             specificArray = [NSMutableArray array];
