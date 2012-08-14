@@ -42,6 +42,8 @@ extern NSString* const OsirixDataDirName;
 	NSRecursiveLock* _routingLock;
 	// +Clean
 	NSRecursiveLock* _cleanLock;
+    
+    volatile BOOL _deallocating;
 }
 
 +(void)initializeDicomDatabaseClass;

@@ -475,11 +475,16 @@ static DicomDatabase* activeLocalDatabase = nil;
 
 -(void)dealloc
 {
+    if( _deallocating)
+        return;
+    _deallocating = YES;
+    
     for(id key in [NSDictionary dictionaryWithDictionary: databasesDictionary])
     {
         if ( [[databasesDictionary objectForKey: key] pointerValue] == (void*) self)
             [databasesDictionary removeObjectForKey: key];
     }
+    
     
     [databasesDictionaryLock unlock]; //We are locked from -(oneway void) release
     
