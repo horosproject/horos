@@ -549,7 +549,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="579790439">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Prefer standard JPEG instead of JPEG2000 compression for DICOM files</string>
+												<string key="NSContents">Prefer standard JPEG instead of JPEG2000 / JPEG LS compression for DICOM files</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="184313264"/>
 												<int key="NSButtonFlags">1211912448</int>
@@ -572,7 +572,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrame">{{236, 12}, {437, 20}}</string>
 											<reference key="NSSuperview" ref="185696618"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPathCell" key="NSCell" id="84108953">
 												<int key="NSCellFlags">337641473</int>

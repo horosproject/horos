@@ -1039,7 +1039,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)processFilesAtPaths:(NSArray*)paths intoDirAtPath:(NSString*)destDir mode:(int)mode
 {
-	NSString* nameFormat = mode == Compress ? NSLocalizedString(@"Compressing %d DICOM files...", nil) : NSLocalizedString(@"Decompressing %d DICOM files...", nil);
+	NSString* nameFormat = mode == Compress ? NSLocalizedString(@"Compressing %d files...", nil) : NSLocalizedString(@"Decompressing %d files...", nil);
 	
 	NSThread* thread = [NSThread currentThread];
 //	[thread pushLevel];

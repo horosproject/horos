@@ -7368,7 +7368,8 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         [pix orientation: vectors];
         
         BOOL currParallel = NO;
-        if (parto && parto[6] == vectors[6] && parto[7] == vectors[7] && parto[8] == vectors[8]) // are parallel!
+        
+        if (parto && fabs( parto[6] - vectors[6]) < 0.005 && fabs( parto[7] - vectors[7]) < 0.005 && fabs( parto[8] - vectors[8]) < 0.005) // are parallel!
             currParallel = YES;
 		
 		orig[ 0] = [pix originX];
@@ -7395,7 +7396,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( ii != -1 )
 	{
-		if( distance > curDCM.sliceThickness * 2) ii = -1;
+		if( curDCM.sliceThickness != 0 && distance > curDCM.sliceThickness * 2) ii = -1;
 	}
 	
 	if( distanceResult)

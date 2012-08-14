@@ -962,15 +962,43 @@
         
         if( [newFiles count] > 0 && cancelled == NO)
         {
-            switch( [compressionMode selectedTag])
+            NSArray *copyCompressionSettings = nil;
+            NSArray *copyCompressionSettingsLowRes = nil;
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"JPEGinsteadJPEG2000"] && [compressionMode selectedTag] == 1) // Temporarily switch the prefs... ugly....
             {
-                case 1:
-                    [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
-                break;
+                copyCompressionSettings = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettings"];
+                copyCompressionSettingsLowRes = [[NSUserDefaults standardUserDefaults] objectForKey: @"CompressionSettingsLowRes"];
                 
-                case 2:
-                    [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
-                break;
+                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", [NSNumber numberWithInt: compression_JPEG], @"compression", @"0", @"quality", nil]] forKey: @"CompressionSettings"];
+                
+                [[NSUserDefaults standardUserDefaults] setObject: [NSArray arrayWithObject: [NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString( @"default", nil), @"modality", [NSNumber numberWithInt: compression_JPEG], @"compression", @"0", @"quality", nil]] forKey: @"CompressionSettingsLowRes"];
+                
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+            
+            @try
+            {
+                switch( [compressionMode selectedTag])
+                {
+                    case 1:
+                        [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'C']];
+                    break;
+                    
+                    case 2:
+                        [[BrowserController currentBrowser] decompressArrayOfFiles: compressedArray work: [NSNumber numberWithChar: 'D']];
+                    break;
+                }
+            }
+            @catch (NSException *e) {
+                NSLog(@"Exception while prepareCDContent compression: %@", e);
+            }
+            
+            if( copyCompressionSettings && copyCompressionSettingsLowRes)
+            {
+                [[NSUserDefaults standardUserDefaults] setObject: copyCompressionSettings forKey:@"CompressionSettings"];
+                [[NSUserDefaults standardUserDefaults] setObject: copyCompressionSettingsLowRes forKey:@"CompressionSettingsLowRes"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
             }
             
             thread.name = NSLocalizedString( @"Burning...", nil);

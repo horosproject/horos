@@ -138,7 +138,8 @@
 			NSArray *subArray = [NSArray arrayWithObjects: objs count: no];
 			
 			NSTask *theTask = [[NSTask alloc] init];
-			@try {
+			@try
+            {
 				[theTask setLaunchPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Decompress"]];
 				[theTask setArguments:[[NSArray arrayWithObjects: dest, @"compress", nil] arrayByAddingObjectsFromArray: subArray]];
 				[theTask launch];
