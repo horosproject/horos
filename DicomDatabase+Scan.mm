@@ -443,6 +443,9 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([extension isEqualToString: @"html"])
                         continue;
                     
+                    if ([extension isEqualToString: @"doc"])
+                        continue;
+                    
                     if ([extension isEqualToString: @"txt"])
                         continue;
                     
