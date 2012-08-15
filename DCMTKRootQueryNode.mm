@@ -15,6 +15,7 @@
 #import "DCMTKRootQueryNode.h"
 #import "DCMTKStudyQueryNode.h"
 #import <OsiriX/DCMCalendarDate.h>
+#import "dicomFile.h"
 
 #include "dcdeftag.h"
 
@@ -77,14 +78,28 @@
 	
     @synchronized( _children)
 	{
-        [_children addObject:[DCMTKStudyQueryNode queryNodeWithDataset:dataset
-                callingAET:_callingAET  
-                calledAET:_calledAET
-                hostname:_hostname 
-                port:_port 
-                transferSyntax:_transferSyntax
-                compression: _compression
-                extraParameters:_extraParameters]];
+        DCMTKStudyQueryNode *newNode = [DCMTKStudyQueryNode queryNodeWithDataset:dataset
+                                                                      callingAET:_callingAET
+                                                                       calledAET:_calledAET
+                                                                        hostname:_hostname
+                                                                            port:_port
+                                                                  transferSyntax:_transferSyntax
+                                                                     compression: _compression
+                                                                 extraParameters:_extraParameters];
+        
+        BOOL alreadyHere = NO;
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
+        {
+            //Is it already here?
+            for( DCMTKStudyQueryNode* s in _children)
+            {
+                if( [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.name isEqualToString: newNode.name] && [s.accessionNumber isEqualToString: newNode.accessionNumber] && [s.numberImages intValue] == [newNode.numberImages intValue] && [s.date isEqualToDate: newNode.date])
+                    alreadyHere = YES;
+            }
+        }
+        
+        if( alreadyHere == NO)
+            [_children addObject: newNode];
         
         [[NSNotificationCenter defaultCenter] postNotificationName: @"realtimeCFindResults" object: self];  
     }

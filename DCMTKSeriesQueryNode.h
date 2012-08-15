@@ -22,4 +22,6 @@
 	NSString *_studyInstanceUID;
 }
 
+- (NSString*) studyInstanceUID;
+
 @end

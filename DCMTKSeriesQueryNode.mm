@@ -160,6 +160,11 @@
 	return dataset;
 }
 
+- (NSString*) studyInstanceUID
+{
+    return _studyInstanceUID;
+}
+
 - (void)addChild:(DcmDataset *)dataset
 {
 	if (!_children)

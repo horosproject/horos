@@ -23,5 +23,6 @@
 }
 
 - (NSString*) seriesInstanceUID;
+- (NSString*) studyInstanceUID;
 
 @end

@@ -1018,6 +1018,7 @@ static NSHost *currentHost = nil;
     [defaultValues setObject:@"1" forKey:@"allow_qr_blank_query"];
     [defaultValues setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
     [defaultValues setObject:@"1" forKey: @"usePatientIDForComparativeSearch"];
+	[defaultValues setObject:@"1" forKey:@"QRRemoveDuplicateEntries"];
     
 	#ifdef MACAPPSTORE
 	[defaultValues setObject:@"1" forKey:@"MACAPPSTORE"];
@@ -1542,7 +1543,6 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:NSLocalizedString(@"Growing Region", nil) forKey:@"growingRegionROIName"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"displayCalciumScore"];
 	[defaultValues setObject:[NSNumber numberWithInt:0] forKey:@"CalciumScoreCTType"];
-	
 	
 	
 	[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:OsirixWadoServiceEnabledDefaultsKey];

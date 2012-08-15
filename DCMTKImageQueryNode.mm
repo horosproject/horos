@@ -116,6 +116,11 @@
 	return _seriesInstanceUID;
 }
 
+- (NSString*) studyInstanceUID
+{
+	return _studyInstanceUID;
+}
+
 - (void) dealloc
 {
 	[_seriesInstanceUID release];

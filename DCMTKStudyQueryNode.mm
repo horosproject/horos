@@ -437,25 +437,52 @@
     {
         if( strcmp( queryLevel, "IMAGE") == 0)
         {
-            [_children addObject:[DCMTKImageQueryNode queryNodeWithDataset:dataset
-                    callingAET:_callingAET  
-                    calledAET:_calledAET
-                    hostname:_hostname 
-                    port:_port 
-                    transferSyntax:_transferSyntax
-                    compression: _compression
-                    extraParameters: _extraParameters]];
+            DCMTKImageQueryNode *newNode = [DCMTKImageQueryNode queryNodeWithDataset:dataset
+                                                                          callingAET:_callingAET
+                                                                           calledAET:_calledAET
+                                                                            hostname:_hostname
+                                                                                port:_port
+                                                                      transferSyntax:_transferSyntax
+                                                                         compression: _compression
+                                                                     extraParameters: _extraParameters];
+            BOOL alreadyHere = NO;
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
+            {
+                //Is it already here?
+                for( DCMTKImageQueryNode* s in _children)
+                {
+                    if( [s.seriesInstanceUID isEqualToString: newNode.seriesInstanceUID] && [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid] && [s.date isEqualToDate: newNode.date])
+                        alreadyHere = YES;
+                }
+            }
+            
+            if( alreadyHere == NO)
+                [_children addObject: newNode];
         }
         else if( strcmp( queryLevel, "SERIES") == 0)
         {
-            [_children addObject:[DCMTKSeriesQueryNode queryNodeWithDataset:dataset
-                    callingAET:_callingAET  
-                    calledAET:_calledAET
-                    hostname:_hostname 
-                    port:_port 
-                    transferSyntax:_transferSyntax
-                    compression: _compression
-                    extraParameters: _extraParameters]];
+            DCMTKSeriesQueryNode *newNode = [DCMTKSeriesQueryNode queryNodeWithDataset:dataset
+                                                                           callingAET:_callingAET
+                                                                            calledAET:_calledAET
+                                                                             hostname:_hostname
+                                                                                 port:_port
+                                                                       transferSyntax:_transferSyntax
+                                                                          compression: _compression
+                                                                      extraParameters: _extraParameters];
+            
+            BOOL alreadyHere = NO;
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"QRRemoveDuplicateEntries"])
+            {
+                //Is it already here?
+                for( DCMTKSeriesQueryNode* s in _children)
+                {
+                    if( [s.studyInstanceUID isEqualToString: newNode.studyInstanceUID] && [s.uid isEqualToString: newNode.uid])
+                        alreadyHere = YES;
+                }
+            }
+            
+            if( alreadyHere == NO)
+                [_children addObject: newNode];
         }
         else NSLog( @"******** unknown queryLevel *****");
         
