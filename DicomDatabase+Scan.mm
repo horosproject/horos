@@ -381,10 +381,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
 }
 
--(BOOL)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume {
+-(BOOL)scanAtPath:(NSString*)path isVolume:(BOOL)isVolume
+{
 	NSThread* thread = [NSThread currentThread];
 	[thread enterOperation];
-	@try {
+	@try
+    {
         NSArray* dicomImages = [NSMutableArray array];
 
         thread.status = NSLocalizedString(@"Scanning directories...", nil);
@@ -392,37 +394,72 @@ static NSString* _dcmElementKey(DcmElement* element) {
         NSMutableArray* pathsToScanAnyway = [NSMutableArray array];
         
         // first read the DICOMDIR file
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) {
+        if ([NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"])
+        {
             thread.status = NSLocalizedString(@"Looking for DICOMDIR...", nil);
             NSString* dicomdirPath = [[self class] _findDicomdirIn:allpaths];
-            if (dicomdirPath) {
+            if (dicomdirPath)
+            {
                 NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
                 thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
                 dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths pathsToScanAnyway:pathsToScanAnyway];
             }
-            
-        //	NSLog(@"DICOMDIR referenced %d images: %@", dicomImages.count, [dicomImages valueForKey:@"completePath"]);
         }
         
         BOOL doScan = (![NSUserDefaults.standardUserDefaults boolForKey:@"UseDICOMDIRFileCD"]) || (!dicomImages.count && [NSUserDefaults.standardUserDefaults boolForKey:@"ScanDiskIfDICOMDIRZero"]);
-        if (pathsToScanAnyway.count || doScan) {
+        if (pathsToScanAnyway.count || doScan)
+        {
             NSMutableArray* dicomFilePaths = [NSMutableArray arrayWithArray:pathsToScanAnyway];
             
-            if (doScan) {
+            if (doScan)
+            {
                 thread.status = NSLocalizedString(@"Looking for DICOM files...", nil);
                 thread.supportsCancel = YES;
-                for (NSInteger i = 0; i < allpaths.count; ++i) {
+                for (NSInteger i = 0; i < allpaths.count; ++i)
+                {
                     thread.progress = 1.0*i/allpaths.count;
                     NSString* path = [allpaths objectAtIndex:i];
                     
                     if ([dicomFilePaths containsObject:path])
                         continue;
                     
-                    if ([DicomFile isDICOMFile:path]) {
+                    NSString *extension = path.pathExtension.lowercaseString;
+                    
+                    if ([extension isEqualToString: @"jpg"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"tif"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"mp4"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"mov"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"avi"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"html"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"txt"])
+                        continue;
+                    
+                    if ([path.lowercaseString rangeOfString:@"/."].location != NSNotFound) //Don't scan hidden files
+                        continue;
+                    
+                    if ([path.lowercaseString rangeOfString:@".app"].location != NSNotFound) //Don't scan the content of MacOS application: OsiriX Lite
+                        continue;
+                        
+                    if ([DicomFile isDICOMFile:path])
+                    {
                         // avoid DICOMDIR files
                         if ([path.lastPathComponent.lowercaseString rangeOfString:@"dicomdir"].length == 0)
                             [dicomFilePaths addObject:path];
-                    } else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"]) {
+                    }
+                    else if ([path.pathExtension isEqualToString:@"zip"] || [path.pathExtension isEqualToString:@"osirixzip"])
+                    {
                         [thread enterOperation];
                         thread.status = NSLocalizedString(@"Processing ZIP file...", @"");
 
@@ -431,7 +468,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
                         NSString* tempPath = [NSFileManager.defaultManager tmpFilePathInDir:self.tempDirPath];
                         [NSFileManager.defaultManager confirmDirectoryAtPath:tempPath];
                         
-                        if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO) { // needs password
+                        if ([BrowserController unzipFile:path withPassword:nil destination:tempPath] == NO)
+                        { // needs password
                             [self performSelectorOnMainThread:@selector(_requestZipPassword:) withObject:[NSArray arrayWithObjects: path, tempPath, NULL] waitUntilDone:YES];
                         }
                         

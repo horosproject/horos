@@ -31,7 +31,8 @@
 @synthesize filesOnly = _filesOnly;
 @synthesize recursive = _recursive;
 
--(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)m {
+-(id)initWithPath:(NSString*)path maxNumberOfFiles:(NSInteger)m
+{
 	self = [super init];
 	
 	counter = 0;
@@ -47,7 +48,8 @@
 	return self;
 }
 
--(void)dealloc {
+-(void)dealloc
+{
 	[currpath release];
 	while (DIRs.count)
 		[self popDIR];
@@ -58,20 +60,23 @@
 
 #pragma mark NSEnumerator API
 
--(NSArray*)allObjects {
+-(NSArray*)allObjects
+{
 	NSMutableArray* all = [NSMutableArray array];
 	
 	id i;
-	do {
+	do
+    {
 		i = [self nextObject];
-		//NSLog(@"i is %@", i);
 		if (i) [all addObject:i];
-	} while (i);
+	}
+    while (i);
 	
 	return all;
 }
 
--(id)nextObject {
+-(id)nextObject
+{
 	if (counter >= max)
 		return nil;
 	++counter;

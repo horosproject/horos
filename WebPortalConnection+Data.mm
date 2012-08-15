@@ -982,6 +982,17 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	response.mimeType = @"text/html";
 }
 
+- (void) sendEmailOnMainThread: (NSDictionary*) dict
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
+	NSString *ts = [dict objectForKey: @"template"];
+	NSDictionary *messageHeaders = [dict objectForKey: @"headers"];
+	
+	[[CSMailMailClient mailClient] deliverMessage:ts headers:messageHeaders];
+    
+	[pool release];
+}
 
 -(void)processPasswordForgottenHtml {
 	if (!self.portal.passwordRestoreAllowed)
@@ -1039,8 +1050,11 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                         
 						[self.portal updateLogEntryForStudy: nil withMessage: @"Password reset for user" forUser:u.name ip: nil];
 						
-						[[CSMailMailClient mailClient] deliverMessage: emailMessage headers: [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil]];
-						
+                        NSDictionary *messageHeaders = [NSDictionary dictionaryWithObjectsAndKeys: u.email, @"To", fromEmailAddress, @"Sender", emailSubject, @"Subject", nil];
+                        
+                        // NSAttributedString initWithHTML is NOT thread-safe
+                        [self performSelectorOnMainThread: @selector( sendEmailOnMainThread:) withObject: [NSDictionary dictionaryWithObjectsAndKeys: emailMessage, @"template", messageHeaders, @"headers", nil] waitUntilDone: NO];
+                        
 						[response.tokens addMessage:NSLocalizedString(@"You will shortly receive an email with your new password.", nil)];
 						
 						[self.portal.database save:NULL];
