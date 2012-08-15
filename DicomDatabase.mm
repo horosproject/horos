@@ -525,6 +525,9 @@ static DicomDatabase* activeLocalDatabase = nil;
     if (![NSThread isMainThread])
         [self performSelectorOnMainThread:@selector(observeIndependentDatabaseNotification:) withObject:notification waitUntilDone:NO];
     else {
+        
+        [self lock];
+        
         NSMutableDictionary* userInfo = [NSMutableDictionary dictionary];
         
         NSArray* independentObjects = [notification.userInfo objectForKey:OsirixAddToDBNotificationImagesArray];
@@ -544,6 +547,8 @@ static DicomDatabase* activeLocalDatabase = nil;
         }
         
         [NSNotificationCenter.defaultCenter postNotificationName:notification.name object:self userInfo:userInfo];
+        
+        [self unlock];
     }
 }
 
@@ -2221,10 +2226,16 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                         [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
                 }
                 
-                if ([objects count]) {
+                if ([objects count])
+                {
+                    [self lock];
+                    
                     @try {
                         BrowserController* bc = [BrowserController currentBrowser];
                         DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
+                        
+                        [mdatabase lock];
+                        
                         NSArray* mobjects = [mdatabase objectsWithIDs:objects];
                         
                         if (studySelected == NO) {
@@ -2249,9 +2260,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                                 }
                             }
                         }
+                        
+                        [mdatabase unlock];
+                        
                     } @catch (NSException* e) {
                         N2LogExceptionWithStackTrace(e);
                     } @finally {
+                        [self unlock];
                     }
                 }
                 
