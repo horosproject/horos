@@ -755,6 +755,8 @@ static NSRecursiveLock *dbModifyLock = nil;
     @finally {
         [self.managedObjectContext unlock];
     }
+    
+    return nil;
 }
 
 - (void) dealloc
@@ -1225,7 +1227,8 @@ static NSRecursiveLock *dbModifyLock = nil;
     @finally {
         [self.managedObjectContext unlock];
     }
-        return cachedRawNoFiles;
+
+    return cachedRawNoFiles;
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames

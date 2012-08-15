@@ -462,7 +462,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	@synchronized (self) {
         if( numberOfSeries) return numberOfSeries;
         
-        NSNumber	*f = [self primitiveValueForKey:@"storedNumberOfSeries"];
+        NSNumber *f = [self primitiveValueForKey:@"storedNumberOfSeries"];
         
         if( f == nil) f = [NSNumber numberWithInt: 1];
 
@@ -575,7 +575,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 	@synchronized (self) {
         if( isKeyImage) return isKeyImage;
         
-        NSNumber	*f = [self primitiveValueForKey:@"storedIsKeyImage"];
+        NSNumber *f = [self primitiveValueForKey:@"storedIsKeyImage"];
         
         if( f == nil)  f = [NSNumber numberWithBool: NO];
 
@@ -696,7 +696,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if( extension) return extension;
         
-        NSString	*f = [self primitiveValueForKey:@"storedExtension"];
+        NSString *f = [self primitiveValueForKey:@"storedExtension"];
         
         if( f == 0 || [f isEqualToString:@""]) f = @"dcm";
 
@@ -731,7 +731,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if( modality) return modality;
         
-        NSString	*f = [self primitiveValueForKey:@"storedModality"];
+        NSString *f = [self primitiveValueForKey:@"storedModality"];
         
         if( f == 0 || [f isEqualToString:@""]) f = @"CT";
 
@@ -766,7 +766,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     @synchronized (self) {
         if( fileType) return fileType;
         
-        NSString	*f = [self primitiveValueForKey:@"storedFileType"];
+        NSString *f = [self primitiveValueForKey:@"storedFileType"];
         
         if( f == 0 || [f isEqualToString:@""]) f =  @"DICOM";
         
@@ -948,7 +948,10 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
 
 -(NSString*) completePathWithDownload:(BOOL) download supportNonLocalDatabase: (BOOL) supportNonLocalDatabase
 {
-    @synchronized (self) {
+    [self.managedObjectContext lock];
+    
+    @try
+    {
         if( completePathCache && download == NO)
             return completePathCache;
     
@@ -1004,6 +1007,12 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
         #endif
         
         return [self valueForKey:@"path"];
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        [self.managedObjectContext unlock];
     }
     
     return nil; // to resolve a compiler warning: this line never executes
