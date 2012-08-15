@@ -446,6 +446,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([extension isEqualToString: @"txt"])
                         continue;
                     
+                    if ([extension isEqualToString: @"exe"])
+                        continue;
+                    
+                    if ([path.lowercaseString rangeOfString:@"/weasis/"].location != NSNotFound) //Don't scan weasis
+                        continue;
+                    
                     if ([path.lowercaseString rangeOfString:@"/."].location != NSNotFound) //Don't scan hidden files
                         continue;
                     
