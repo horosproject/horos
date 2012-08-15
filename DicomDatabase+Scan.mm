@@ -431,6 +431,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
                     if ([extension isEqualToString: @"tif"])
                         continue;
                     
+                    if ([extension isEqualToString: @"jpeg"])
+                        continue;
+                    
+                    if ([extension isEqualToString: @"tiff"])
+                        continue;
+                    
                     if ([extension isEqualToString: @"mp4"])
                         continue;
                     

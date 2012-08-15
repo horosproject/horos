@@ -2656,8 +2656,10 @@ static BOOL initialized = NO;
                 if (result == -1)
                     processors = 1;
                 
-				NSLog(@"Number of processors: %d/%d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
+                NSLog(@"*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*-+-*");
+				NSLog(@"Number of processors: %d / %d", processors, (int) [[NSProcessInfo processInfo] processorCount]);
 				NSLog(@"Main screen backingScaleFactor: %f", (float) [[NSScreen mainScreen] backingScaleFactor]);
+                NSLog(@"Version: %@ - %@", [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey], [[[NSBundle mainBundle] infoDictionary] objectForKey: @"CFBundleShortVersionString"]);
 				#ifdef NDEBUG
 				#else
 				NSLog( @"**** DEBUG MODE ****");

@@ -699,7 +699,9 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSString*) modalities
 {
-    @synchronized (self) {
+    [self.managedObjectContext lock];
+    @try
+    {
         if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
             return cachedModalites;
         
@@ -707,57 +709,52 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         NSString *m = nil;
         
-        [self.managedObjectContext lock];
-        @try {
-            NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
-            
-            NSMutableArray *r = [NSMutableArray array];
-            
-            BOOL SC = NO, SR = NO, PR = NO;
-            
-            for( NSString *mod in seriesModalities)
+        NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
+        
+        NSMutableArray *r = [NSMutableArray array];
+        
+        BOOL SC = NO, SR = NO, PR = NO;
+        
+        for( NSString *mod in seriesModalities)
+        {
+            if( [mod isEqualToString:@"SR"])
+                SR = YES;
+            else if( [mod isEqualToString:@"SC"])
+                SC = YES;
+            else if( [mod isEqualToString:@"PR"])
+                PR = YES;
+            else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+                [r addObject: @"RT"];
+            else if( [mod isEqualToString:@"KO"])
             {
-                if( [mod isEqualToString:@"SR"])
-                    SR = YES;
-                else if( [mod isEqualToString:@"SC"])
-                    SC = YES;
-                else if( [mod isEqualToString:@"PR"])
-                    PR = YES;
-                else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
-                    [r addObject: @"RT"];
-                else if( [mod isEqualToString:@"KO"])
-                {
-                }
-                else if([r containsString: mod] == NO)
-                    [r addObject: mod];
             }
-            
-            if( [r count] == 0)
+            else if([r containsString: mod] == NO)
+                [r addObject: mod];
+        }
+        
+        if( [r count] == 0)
+        {
+            if( SC) [r addObject: @"SC"];
+            else
             {
-                if( SC) [r addObject: @"SC"];
-                else
-                {
-                    if( SR) [r addObject: @"SR"];
-                    if( PR) [r addObject: @"PR"];
-                }
+                if( SR) [r addObject: @"SR"];
+                if( PR) [r addObject: @"PR"];
             }
-            
-            m = [r componentsJoinedByString:@"\\"];
+        }
+        
+        m = [r componentsJoinedByString:@"\\"];
 
-            cachedModalites = [m retain];
-            _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
-            
-            return m;
-        }
-        @catch (NSException* e) {
-            N2LogExceptionWithStackTrace(e);
-        }
-        @finally {
-            [self.managedObjectContext unlock];
-        }
+        cachedModalites = [m retain];
+        _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
+        
+        return m;
     }
-    
-    return nil;
+    @catch (NSException* e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        [self.managedObjectContext unlock];
+    }
 }
 
 - (void) dealloc
@@ -1206,7 +1203,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 
 - (NSNumber *) rawNoFiles
 {
-    @synchronized (self) {
+    [self.managedObjectContext lock];
+    @try  {
         int sum = 0;
         
         if (cachedRawNoFiles && _numberOfImagesWhenCachedRawNoFiles == self.numberOfImages.integerValue)
@@ -1214,26 +1212,20 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         [cachedRawNoFiles release]; cachedRawNoFiles = nil;
         
-        [self.managedObjectContext lock];
-        @try  {
-            for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
-                sum += [[s valueForKey: @"rawNoFiles"] intValue];
-            _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
-        }
-        @catch (NSException * e) 
-        {
-            N2LogExceptionWithStackTrace(e);
-        }
-        @finally {
-            [self.managedObjectContext unlock];
-        }
+        for( DicomSeries *s in [[self valueForKey:@"series"] allObjects])
+            sum += [[s valueForKey: @"rawNoFiles"] intValue];
+        _numberOfImagesWhenCachedRawNoFiles = self.numberOfImages.integerValue;
         
         cachedRawNoFiles = [[NSNumber numberWithInt:sum] retain];
-        
-        return cachedRawNoFiles;
     }
-    
-    return nil;
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    @finally {
+        [self.managedObjectContext unlock];
+    }
+        return cachedRawNoFiles;
 }
 
 - (NSNumber *) noFilesExcludingMultiFrames
