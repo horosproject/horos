@@ -6921,9 +6921,6 @@ return YES;
 			long minWindows = 1;
 			if( [self FullScreenON]) minWindows++;
 			
-			
-			[[[[BrowserController currentBrowser] database] managedObjectContext] lock];
-			
 			if( newViewerWindow == NO && [[[AppController sharedAppController] FindRelatedViewers:pixList[0]] count] > minWindows)
 			{
 				NSBeep();
@@ -6967,7 +6964,7 @@ return YES;
 				[self finalizeSeriesViewing];
 				
 				
-				[[[BrowserController currentBrowser] managedObjectContext] lock];
+				[[[BrowserController currentBrowser] database] lock];
 				
 				@try
 				{
@@ -7380,7 +7377,7 @@ return YES;
 					[[self window] close];
 				}
 				
-				[[[BrowserController currentBrowser] managedObjectContext] unlock];
+				[[[BrowserController currentBrowser] database] unlock];
 				
 				[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
 				
@@ -7391,8 +7388,6 @@ return YES;
                 
                 [self redrawToolbar];
 			}
-			
-			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixViewerDidChangeNotification object: self userInfo: nil];
 			
