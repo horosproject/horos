@@ -1071,7 +1071,7 @@ static float deg2rad = M_PI / 180.0;
             Point3D *ptb = [[[Point3D alloc] initWithX:nb.x y:nb.y z:nb.z] autorelease];
             
             [centerline removeAllObjects];
-
+            
             int err = [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
             if(!err)
             {
@@ -1102,7 +1102,6 @@ static float deg2rad = M_PI / 180.0;
                 
                 for(unsigned int i=0; i<5; i++)
                 {
-                    sleep(2);
                     [centerline removeAllObjects];
                     err= [assistant createCenterline:centerline FromPointA:pta ToPointB:ptb withSmoothing:NO];
                     if(err!=ERROR_DISTTRANSNOTFINISH)
@@ -4263,7 +4262,8 @@ static float deg2rad = M_PI / 180.0;
 //    N3Vector previousInitialNormal;
     CGFloat previousAngle;
 	
-	if (newCurvedPath != curvedPath) {
+	if (newCurvedPath != curvedPath)
+    {
 		previousAngle = curvedPath.angle;
 		[curvedPath release];
 		curvedPath = [newCurvedPath copy];
@@ -4292,7 +4292,10 @@ static float deg2rad = M_PI / 180.0;
 //				[self didChangeValueForKey:@"straightenedCPRAngle"];
 			}
 		}
-
+        
+        [self willChangeValueForKey: @"onSliderEnabled"];
+        [self didChangeValueForKey: @"onSliderEnabled"];
+        
 //        if (N3VectorEqualToVector(curvedPath.initialNormal, N3VectorZero)) {
 //			tangentAtStart = [curvedPath.bezierPath tangentAtStart];
 //			initialNormal = N3VectorNormalize(N3VectorCrossProduct(baseNormal, tangentAtStart));
@@ -4689,6 +4692,9 @@ static float deg2rad = M_PI / 180.0;
 {
 	assert([[self _delegateCurveViewDebugging] containsObject:[NSValue valueWithPointer:CPRMPRDCMView]] == YES);
 	
+    [centerline removeAllObjects];
+    [pathSimplificationSlider setDoubleValue:[pathSimplificationSlider maxValue]];
+    
 	self.curvedPath = [CPRMPRDCMView curvedPath];
 	
 	// this is a bit of a hack, but the -[self setCurvedPath] will change the initial angle if it was N3VectortZero
