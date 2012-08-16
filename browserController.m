@@ -8050,18 +8050,24 @@ static BOOL withReset = NO;
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
-
-    @try {
+    
+    DicomDatabase* idatabase = _database; //[database independentDatabase]; -- was creating conflits - Antoine
+    
+    @try
+    {
         NSArray* objectIDs = [dict valueForKey: @"objectIDs"];
         BOOL imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
         id database = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
-        DicomDatabase* idatabase = _database; //[database independentDatabase]; -- was creating conflits - Antoine
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
         
-        for (int i = 0; i < objectIDs.count; i++) {
-            @try {
+        for (int i = 0; i < objectIDs.count; i++)
+        {
+            [idatabase lock];
+            
+            @try
+            {
                 if (context != previewPix)
                     break; // changing the database selection makes previewPix change value
                 
@@ -8103,7 +8109,10 @@ static BOOL withReset = NO;
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
             }
-            
+            @finally {
+                [idatabase unlock];
+                [NSThread sleepForTimeInterval: 0.01];
+            }
             // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
             [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
         }
@@ -8111,6 +8120,7 @@ static BOOL withReset = NO;
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
     } @finally {
+        
         [pool release];
     }
 }
