@@ -7135,13 +7135,19 @@ static BOOL withReset = NO;
 			NSArray *vPixList = nil;
 			NSData *volumeData = nil;
 			
-			@synchronized( [v imageView])
-			{
+			[self.database lock];
+            @try {
 				// We need to temporarly retain all these objects, because this function is called on a separated thread (matrixLoadIcons)
 				vFileList = [[v fileList] copy];
 				vPixList = [[v pixList] copy];
 				volumeData = [[v volumeData] retain];
 			}
+            @catch (NSException * e) {
+                N2LogExceptionWithStackTrace(e);
+			}
+            @finally {
+                [self.database unlock];
+            }
 			
 			@try
 			{
