@@ -83,7 +83,7 @@ static int increment = 0, previousNumberOfScreens = 0;
         [[AppController sharedAppController] closeAllViewers: self];
         return;
     }
-        
+    
 	if ([[NSScreen screens] count] <= screen)
 		return;
 	
@@ -122,8 +122,6 @@ static int increment = 0, previousNumberOfScreens = 0;
 		if( [AppController hasMacOSXSnowLeopard])
 			[[self window] setCollectionBehavior: 1 << 6]; //NSWindowCollectionBehaviorIgnoresCycle
 		
-		[self applicationDidChangeScreenParameters:nil];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeMain:) name:NSWindowDidBecomeMainNotification object:0];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidResignMain:) name:NSWindowDidResignMainNotification object:0];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidBecomeKey:) name:NSWindowDidBecomeKeyNotification object:0];

@@ -75,7 +75,8 @@
 	 
 #define BUILTIN_DCMTK YES
 
-ToolbarPanelController *toolbarPanel[10] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
+#define MAXSCREENS 10
+ToolbarPanelController *toolbarPanel[ MAXSCREENS] = {nil, nil, nil, nil, nil, nil, nil, nil, nil, nil};
 
 static NSMenu *mainMenuCLUTMenu = nil, *mainMenuWLWWMenu = nil, *mainMenuConvMenu = nil, *mainOpacityMenu = nil;
 static NSDictionary *previousWLWWKeys = nil, *previousCLUTKeys = nil, *previousConvKeys = nil, *previousOpacityKeys = nil;
@@ -681,8 +682,8 @@ static NSDate *lastWarningDate = nil;
 
 +(BOOL) hasMacOSXLion
 {
-	OSErr						err;       
-	SInt32						osVersion;
+	OSErr err;       
+	SInt32 osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
@@ -698,8 +699,8 @@ static NSDate *lastWarningDate = nil;
 
 +(BOOL) hasMacOSXSnowLeopard
 {
-	OSErr						err;
-	SInt32						osVersion;
+	OSErr err;
+	SInt32 osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
@@ -714,8 +715,8 @@ static NSDate *lastWarningDate = nil;
 
 +(BOOL) hasMacOSXLeopard
 {
-	OSErr						err;       
-	SInt32						osVersion;
+	OSErr err;       
+	SInt32 osVersion;
 	
 	err = Gestalt ( gestaltSystemVersion, &osVersion );       
 	if ( err == noErr)       
@@ -737,20 +738,26 @@ static NSDate *lastWarningDate = nil;
 	[[AppController sharedAppController] performSelectorOnMainThread: @selector( pause) withObject: nil waitUntilDone: NO];
 }
 
+-(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
+{
+    NSLog( @"--- applicationDidChangeScreenParameters : resetToolbars");
+    [AppController resetToolbars];
+}
+
 + (void) resetToolbars
 {
 	int numberOfScreens = [[NSScreen screens] count] + 1; //Just in case, we connect a second monitor when using OsiriX.
 	
-	for( int i = 0; i < numberOfScreens; i++)
-	{
-		if( toolbarPanel[ i]) [toolbarPanel[ i] release];
+	for( int i = 0; i < MAXSCREENS; i++)
+    {
+		if( toolbarPanel[ i])
+            [toolbarPanel[ i] release];
+        
+        toolbarPanel[ i] = nil;
 	}
-	
+    
 	for( int i = 0; i < numberOfScreens; i++)
 		toolbarPanel[ i] = [[ToolbarPanelController alloc] initForScreen: i];
-	
-/*	for( int i = 0; i < numberOfScreens; i++)
-		[toolbarPanel[ i] fixSize];*/
 }
 
 + (void) resizeWindowWithAnimation:(NSWindow*) window newSize: (NSRect) newWindowFrame
@@ -3477,6 +3484,7 @@ static BOOL initialized = NO;
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateWLWWMenuNotification object: NSLocalizedString(@"Other", nil) userInfo: nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixUpdateConvolutionMenuNotification object:NSLocalizedString( @"No Filter", nil) userInfo: nil];
 	
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidChangeScreenParameters:) name:NSApplicationDidChangeScreenParametersNotification object:NSApp];
 	[AppController resetToolbars];
 	
 //	if( USETOOLBARPANEL) [[toolbarPanel window] makeKeyAndOrderFront:self];
