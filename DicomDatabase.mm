@@ -545,10 +545,9 @@ static DicomDatabase* activeLocalDatabase = nil;
                 [selfDictionary setObject:[self objectsWithIDs:[independentDictionary objectForKey:key]] forKey:key];
             [userInfo setObject:selfDictionary forKey:OsirixAddToDBNotificationImagesPerAETDictionary];
         }
+        [self unlock];
         
         [NSNotificationCenter.defaultCenter postNotificationName:notification.name object:self userInfo:userInfo];
-        
-        [self unlock];
     }
 }
 
