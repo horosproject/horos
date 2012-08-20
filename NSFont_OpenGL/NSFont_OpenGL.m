@@ -181,7 +181,7 @@ static  unsigned char			*charPtrArrayScale2[ MAXCOUNT], *charPtrArrayPreviewScal
         NSLog( @"******* ******* ******* ******* ******* *******");
         NSLog( @"******* UNKNOW scaling factor: %f", scaling);
         NSLog( @"******* ******* ******* ******* ******* *******");
-        scaling = 1.0;
+        scaling = [[NSScreen mainScreen] backingScaleFactor];
     }
     
     unsigned char **curPtrArray = nil;

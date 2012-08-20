@@ -14034,7 +14034,7 @@ int i,j,l;
 //	else [self setROIToolTag: tPlain];
 }
 
-- (NSLock*) roiLock { return roiLock;}
+- (NSRecursiveLock*) roiLock { return roiLock;}
 
 //obligatory class for protocol Schedulable.h
 -(void)performWorkUnits:(NSSet *)workUnits forScheduler:(Scheduler *)scheduler
@@ -18941,8 +18941,8 @@ int i,j,l;
 		}
 	}
 	
-	ThreadLoadImageLock = [[NSLock alloc] init];
-	roiLock = [[NSLock alloc] init];
+	ThreadLoadImageLock = [[NSRecursiveLock alloc] init];
+	roiLock = [[NSRecursiveLock alloc] init];
 	
 	factorPET2SUV = 1.0;
 	

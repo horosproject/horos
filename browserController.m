@@ -6773,12 +6773,16 @@ static NSConditionLock *threadLock = nil;
 	
 	[context retain];
 	[context lock];
-	
+    
+    NSMutableArray *viewersArray = [NSMutableArray array];
+    
 	@try
 	{
 		NSError	*error = nil;
 		NSArray *studiesArray = [context executeFetchRequest:dbRequest error:&error];
-		
+		NSArray	*seriesArray = [NSArray array];
+        
+        
 		if ([studiesArray count] > 0 && [studiesArray indexOfObject:study] != NSNotFound)
 		{
 			NSSortDescriptor * sort = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO];
@@ -6786,8 +6790,6 @@ static NSConditionLock *threadLock = nil;
 			[sort release];
 			
 			studiesArray = [studiesArray sortedArrayUsingDescriptors: sortDescriptors];
-			
-			NSArray	*seriesArray = [NSArray array];
 			
 			for(NSManagedObject	*curStudy in studiesArray)
 				seriesArray = [seriesArray arrayByAddingObjectsFromArray: [self childrenArray: curStudy]];
@@ -6819,10 +6821,13 @@ static NSConditionLock *threadLock = nil;
 						{
 							if( index >= 0 && index < [seriesArray count])
 							{
-								[self openViewerFromImages :[NSArray arrayWithObject: [self childrenArray: [seriesArray objectAtIndex: index]]] movie: NO viewer:vc keyImagesOnly: keyImages];
+                                [viewersArray addObject: [self childrenArray: [seriesArray objectAtIndex: index]]];
+								
 							}
 							else
 							{
+                                [viewersArray addObject: [NSNull null]];
+                                
 								// Close the viewer
 								[[vc window] performClose: self];
 							}
@@ -6835,14 +6840,26 @@ static NSConditionLock *threadLock = nil;
 			}
 		}
 	}
-	@catch ( NSException *e)
-	{
+	@catch ( NSException *e) {
         N2LogExceptionWithStackTrace(e);
 	}
-		
-	[context unlock];
-	[context release];
+    @finally {
+        [context unlock];
+        [context release];
+    }
 	
+	if( viewersArray.count == viewersList.count)
+    {
+        int i = 0;
+        for( ViewerController *vc in viewersList)
+        {
+            if( [viewersArray objectAtIndex: i] != [NSNull null])
+                [self openViewerFromImages: [NSArray arrayWithObject: [viewersArray objectAtIndex: i]] movie: NO viewer:vc keyImagesOnly: keyImages];
+            
+            i++;
+        }
+    }
+    
 	[viewersList release];
 	
 	if( previousNumberOf2DViewers != [[ViewerController getDisplayed2DViewers] count])

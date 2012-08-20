@@ -8060,7 +8060,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
         NSRect backingBounds = [self convertRectToBacking: [self frame]]; // Retina
         
-        if( previousScalingFactor != self.window.backingScaleFactor)
+        if( previousScalingFactor != self.window.backingScaleFactor && self.window.backingScaleFactor != 0)
         {
             if( previousScalingFactor)
                 scaleValue *= self.window.backingScaleFactor / previousScalingFactor;
@@ -11610,52 +11610,58 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 - (void) changeLabelGLFontNotification:(NSNotification*) note
 {
-	[[self openGLContext] makeCurrentContext];
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	if( labelFontListGL)
-		glDeleteLists (labelFontListGL, 150);
-	
-	labelFontListGL = glGenLists (150);
-	
-	[labelFont release];
-	
-	labelFont = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]] retain];
-	if( labelFont == nil) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
-	
-	[labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2 :self.window.backingScaleFactor];
-	[ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
-    
-	[self setNeedsDisplay:YES];
+    if( self.window.backingScaleFactor != 0)
+    {
+        [[self openGLContext] makeCurrentContext];
+        
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        
+        if( labelFontListGL)
+            glDeleteLists (labelFontListGL, 150);
+        
+        labelFontListGL = glGenLists (150);
+        
+        [labelFont release];
+        
+        labelFont = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"LabelFONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"LabelFONTSIZE"]] retain];
+        if( labelFont == nil) labelFont = [[NSFont fontWithName:@"Monaco" size:12] retain];
+        
+        [labelFont makeGLDisplayListFirst:' ' count:150 base: labelFontListGL :labelFontListGLSize :2 :self.window.backingScaleFactor];
+        [ROI setFontHeight: [DCMView sizeOfString: @"B" forFont: labelFont].height];
+        
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (void) changeGLFontNotification:(NSNotification*) note
 {
-	[[self openGLContext] makeCurrentContext];
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-	if( fontListGL)
-		glDeleteLists (fontListGL, 150);
-	fontListGL = glGenLists (150);
-	
-	[fontGL release];
+    if( self.window.backingScaleFactor != 0)
+    {
+        [[self openGLContext] makeCurrentContext];
+        
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        
+        if( fontListGL)
+            glDeleteLists (fontListGL, 150);
+        fontListGL = glGenLists (150);
+        
+        [fontGL release];
 
-	fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
-	if( fontGL == nil) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
-	
-	[fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0 :self.window.backingScaleFactor];
-	stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
-	
-	@synchronized( globalStringTextureCache)
-	{
-		[globalStringTextureCache removeObject: stringTextureCache];
-	}
-	[stringTextureCache release];
-	stringTextureCache = nil;
-	
-	[self setNeedsDisplay:YES];
+        fontGL = [[NSFont fontWithName: [[NSUserDefaults standardUserDefaults] stringForKey:@"FONTNAME"] size: [[NSUserDefaults standardUserDefaults] floatForKey: @"FONTSIZE"]] retain];
+        if( fontGL == nil) fontGL = [[NSFont fontWithName:@"Geneva" size:14] retain];
+        
+        [fontGL makeGLDisplayListFirst:' ' count:150 base: fontListGL :fontListGLSize :0 :self.window.backingScaleFactor];
+        stringSize = [self convertSizeToBacking: [DCMView sizeOfString:@"B" forFont:fontGL]];
+        
+        @synchronized( globalStringTextureCache)
+        {
+            [globalStringTextureCache removeObject: stringTextureCache];
+        }
+        [stringTextureCache release];
+        stringTextureCache = nil;
+        
+        [self setNeedsDisplay:YES];
+    }
 }
 
 - (void)changeFont:(id)sender

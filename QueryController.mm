@@ -3865,7 +3865,7 @@ extern "C"
         [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"AutoQRPatientModeMatrixIndex"]];
     else
         [PatientModeMatrix selectTabViewItemAtIndex: [[NSUserDefaults standardUserDefaults] integerForKey: @"QRPatientModeMatrixIndex"]];
-       
+    
 	[[self window] setFrameAutosaveName:@"QueryRetrieveWindow"];
 	
 	NSTableColumn *tableColumn = [outlineView tableColumnWithIdentifier: @"stateText"];

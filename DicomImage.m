@@ -954,7 +954,7 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
     {
         if( completePathCache && download == NO)
             return completePathCache;
-    
+        
         DicomDatabase* db = nil;
         BOOL isLocal = YES;
         if (supportNonLocalDatabase)
@@ -982,25 +982,22 @@ NSString* sopInstanceUIDDecode( unsigned char *r, int length)
                 if ([[NSFileManager defaultManager] fileExistsAtPath:temp])
                     return temp;
                 
-                @synchronized (self) {
-                    [completePathCache release]; completePathCache = nil;
-                    
-                    if (download)
-                        completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
-                    else completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
-                    
-                    return completePathCache;
-                }
+                [completePathCache release];
+                
+                if (download)
+                    completePathCache = [[(RemoteDicomDatabase*)db cacheDataForImage:self maxFiles:1] retain];
+                else
+                    completePathCache = [[(RemoteDicomDatabase*)db localPathForImage:self] retain];
+                
+                return completePathCache;
             }
             else
             {
                 if( [path characterAtIndex: 0] != '/')
                 {
-                    @synchronized (self) {
-                        [completePathCache release];
-                        completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
-                        return completePathCache;
-                    }
+                    [completePathCache release];
+                    completePathCache = [[DicomImage completePathForLocalPath: path directory: [DicomImage dbPathForManagedContext: [self managedObjectContext]]] retain];
+                    return completePathCache;
                 }
             }
         }

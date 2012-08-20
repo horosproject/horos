@@ -64,8 +64,8 @@ enum
 
 @interface ViewerController : OSIWindowController  <Schedulable, NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
-	NSLock	*ThreadLoadImageLock;
-	NSLock	*roiLock;
+	NSRecursiveLock	*ThreadLoadImageLock;
+	NSRecursiveLock	*roiLock;
 	NSConditionLock *subLoadingThread, *flipDataThread;
 	NSThread *loadingThread;
 	
@@ -548,7 +548,7 @@ enum
 - (ROI*)createLayerROIFromROI:(ROI*)roi;
 - (void)createLayerROIFromSelectedROI;
 - (IBAction)createLayerROIFromSelectedROI:(id)sender;
-- (NSLock*) roiLock;
+- (NSRecursiveLock*) roiLock;
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (IBAction) shutterOnOff:(id) sender;
