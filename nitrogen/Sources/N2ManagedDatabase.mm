@@ -310,6 +310,7 @@
 		} else {
             if (self.mainDatabase)
                 NSLog(@"ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR: creating independent context from already independent database");
+            
             [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(mergeChangesFromContextDidSaveNotification:) name:NSManagedObjectContextDidSaveNotification object:moc];
         }
         
@@ -344,7 +345,7 @@
         [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
-            [self.managedObjectContext save:NULL];
+//            [self.managedObjectContext save:NULL];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
