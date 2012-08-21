@@ -189,7 +189,7 @@
         //		NSMutableArray* methodParameterValues = [[doc nodesForXPath:@"methodCall/params//member/value" error:NULL] mutableArray];
         //		if ([methodParameterNames count] != [methodParameterValues count])
         //			[NSException raise:NSGenericException format:@"request parameters inconsistent", [methodNames count]];
-        NSArray* params = [methodCall nodesForXPath:@"params/param/value/*" error:NULL];
+        NSArray* params = [methodCall nodesForXPath:@"params/param/value" error:NULL];
         
         //		NSMutableDictionary* methodParameters = [NSMutableDictionary dictionaryWithCapacity:[methodParameterNames count]];
         //		for (int i = 0; i < [methodParameterNames count]; ++i)
