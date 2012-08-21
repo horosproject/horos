@@ -7664,6 +7664,13 @@ return YES;
 					[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 					[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 					[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+                    
+                    NSMutableArray *volumeDataArray = [NSMutableArray array];
+                    for( int z = 0; z < maxMovieIndex; z++)
+                        [volumeDataArray addObject: volumeData[ z]];
+                    
+                    [d setObject: volumeDataArray forKey: @"volumeDataArray"]; // We have to keep the volumeData valid (retained), for loading interruption support!
+                    
 					[self subLoadingThread: d];
 				}
 				

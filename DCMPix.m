@@ -3237,8 +3237,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	orientation[6] = orientation[1]*orientation[5] - orientation[2]*orientation[4];
 	orientation[7] = orientation[2]*orientation[3] - orientation[0]*orientation[5];
 	orientation[8] = orientation[0]*orientation[4] - orientation[1]*orientation[3];
-	
-	annotationsDictionary = [[NSMutableDictionary dictionary] retain];
 }
 
 - (id) initwithdata :(float*) im :(short) pixelSize :(long) xDim :(long) yDim :(float) xSpace :(float) ySpace :(float) oX :(float) oY :(float) oZ :(BOOL) volSize
@@ -3253,6 +3251,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
 		[self initParameters];
 		
+        annotationsDictionary = [[NSMutableDictionary alloc] init];
 		needToCompute8bitRepresentation = YES;
 		generated = YES;
 		imTot = 1;
@@ -3375,7 +3374,16 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		//-------------------------received parameters
 		srcFile = [s retain];
 		imageObj = [iO retain];
+        URIRepresentationAbsoluteString =  [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
 		
+        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
+            yearOld = [[imageObj valueForKeyPath: @"series.study.yearOld"] retain];
+            
+        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
+            yearOldAcquisition = [[imageObj valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
+        
+        [self loadCustomImageAnnotationsDBFields];
+        
 		savedHeightInDB = [[imageObj valueForKey:@"storedHeight"] intValue];
 		savedWidthInDB = [[imageObj valueForKey:@"storedWidth"] intValue];
 		
@@ -3387,6 +3395,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		isBonjour = hello;
 		
 		[self initParameters];
+        
+        annotationsDictionary = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -3408,34 +3418,25 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 - (id) copyWithZone:(NSZone *)zone
 {
-	DCMPix *copy = [[[self class] allocWithZone: zone] initWithPath:self->srcFile :self->imID :self->imTot :self->fExternalOwnedImage :self->frameNo :self->serieNo];
+    DCMPix *copy = [[DCMPix allocWithZone: zone] init];
+    if( copy == nil)
+        return nil;
+    
+    copy->srcFile = [self->srcFile retain];
+    copy->imageObj = [self->imageObj retain];
+    copy->URIRepresentationAbsoluteString = [self->URIRepresentationAbsoluteString retain];
+    copy->yearOld = [self->yearOld retain];
+    copy->yearOldAcquisition = [self->yearOldAcquisition retain];
+    copy->annotationsDBFields = [self->annotationsDBFields retain];
+    copy->imID = self->imID;
+    copy->imTot = self->imTot;
+    copy->fExternalOwnedImage = self->fExternalOwnedImage;
+    copy->frameNo = self->frameNo;
+    copy->serieNo = self->serieNo;
+    copy->isBonjour = self->isBonjour;
+    
+    [copy initParameters];
 	
-	if( copy == nil)
-	{
-		copy = [[[self class] allocWithZone: zone] init];
-		if( copy == nil) return nil;
-		
-		{
-			//-------------------------received parameters
-			copy->srcFile = [self->srcFile retain];
-			copy->imageObj = [self->imageObj retain];
-			copy->imID = self->imID;
-			copy->imTot = self->imTot;
-			copy->fExternalOwnedImage = self->fExternalOwnedImage;
-			copy->frameNo = self->frameNo;
-			copy->serieNo = self->serieNo;
-			copy->isBonjour = self->isBonjour;
-			
-			[self initParameters];
-		}
-	}
-	
-	if( copy == nil) return nil;
-	
-	[copy->imageObj release];
-	[copy->annotationsDictionary release];
-	
-	copy->imageObj = [self->imageObj retain];
 	copy->isBonjour = self->isBonjour;
 	copy->fImage = self->fImage;	// Don't load the image!
 	copy->height = self->height;
@@ -5035,8 +5036,7 @@ END_CREATE_ROIS:
 	#ifdef OSIRIX_VIEWER
 	[PapyrusLock lock];
 	
-	[annotationsDictionary release];
-	annotationsDictionary = [[NSMutableDictionary dictionary] retain];
+	[annotationsDictionary removeAllObjects];
 	
 	@try
 	{
@@ -9241,7 +9241,7 @@ END_CREATE_ROIS:
                     
                     @try 
                     {
-                        [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                        [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                         
                         //only try again if is strict DICOM
                         if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
@@ -10160,8 +10160,8 @@ END_CREATE_ROIS:
 			for( int i = 0; i < 128*128; i++)
 				fImage[ i ] = i;
 		}
-		
-		if( isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3
+        
+        if( isRGB)	// COMPUTE ALPHA MASK = ALPHA = R+G+B/3
 		{
 			unsigned char *argbPtr = (unsigned char*) fImage;
 			long ss = width * height;
@@ -10172,7 +10172,7 @@ END_CREATE_ROIS:
 				argbPtr+=4;
 			}
 		}
-	}
+    }
 }
 #pragma GCC diagnostic warning "-Wdeprecated-declarations"
 
@@ -12365,6 +12365,18 @@ END_CREATE_ROIS:
 	[imageObj release];
 	imageObj = nil;
     
+    [URIRepresentationAbsoluteString release];
+    URIRepresentationAbsoluteString = nil;
+    
+    [yearOld release];
+    yearOld = nil;
+    
+    [yearOldAcquisition release];
+    yearOldAcquisition = nil;
+    
+    [annotationsDBFields release];
+    annotationsDBFields = nil;
+    
 	if( oData) free( oData);
 	if( VOILUT_table) free( VOILUT_table);
 	
@@ -12498,9 +12510,10 @@ END_CREATE_ROIS:
         
         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
         
+        
         @try 
         {
-            [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
             
             DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
 		
@@ -12646,7 +12659,7 @@ END_CREATE_ROIS:
             
             @try 
             {
-                [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
                 
                 DCMObject *dcmObject = [DCMObject objectWithContentsOfFile:srcFile decodingPixelData:NO];
                 
@@ -12731,31 +12744,110 @@ END_CREATE_ROIS:
 }
 #endif
 
+- (void)loadCustomImageAnnotationsDBFields
+{
+    if( annotationsDBFields)
+        NSLog( @"***** loadCustomImageAnnotationsDBFields has been called several times !!");
+    
+    annotationsDBFields = [[NSMutableDictionary alloc] init];
+    
+    NSDictionary *annotationsForModality = nil;
+    @synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
+    {
+        annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: modalityString];
+        
+        if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+        if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
+        
+        annotationsForModality = [[annotationsForModality copy] autorelease];
+    }
+    
+    // image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
+    NSArray *keys = [annotationsForModality allKeys];
+    
+    for( NSString *key in keys)
+    {
+        if(![key isEqualToString:@"sameAsDefault"])
+        {
+            NSArray *annotations = [annotationsForModality objectForKey: key];
+            NSMutableArray *annotationsOUT = [NSMutableArray array];
+            
+            [imageObj.managedObjectContext lock];
+            
+            @try
+            {
+                for ( NSDictionary *annot in annotations)
+                {
+                    NSArray *content = [annot objectForKey:@"fullContent"];
+                    NSMutableArray *contentOUT = [NSMutableArray array];
+                    
+                    BOOL contentForLine = NO;
+                    for ( int f=0; f<[content count]; f++)
+                    {
+                        @try
+                        {
+                            NSDictionary *field = [content objectAtIndex:f];
+                            NSString *type = [field objectForKey:@"type"];
+                            NSString *value = nil;
+                            
+                            if([type isEqualToString:@"DB"])
+                            {
+                                @try
+                                {
+                                    NSString *fieldName = [field objectForKey:@"field"];
+                                    NSString *level = [field objectForKey:@"level"];
+                                    if([level isEqualToString:@"image"])
+                                        value = [imageObj valueForKey:fieldName];
+                                    
+                                    else if([level isEqualToString:@"series"])
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+                                    
+                                    else if([level isEqualToString:@"study"])
+                                    {
+                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+                                        
+                                        if( [fieldName isEqualToString:@"name"])
+                                            value = @"PatientName";
+                                    }
+                                    
+                                    if( value == nil)
+                                        [annotationsDBFields setObject: [NSNull null] forKey: [NSString stringWithFormat: @"%@ %@", fieldName, level]];
+                                    else
+                                        [annotationsDBFields setObject: value forKey: [NSString stringWithFormat: @"%@ %@", fieldName, level]];
+                                }
+                                @catch (NSException *e)
+                                {
+                                    NSLog(@"CustomImageAnnotations DB Exception: %@", e);
+                                    value = @"ERROR IN ANNOTATIONS - See Preferences->Annotations";
+                                }
+                            }
+                        }
+                        
+                        @catch (NSException *e)
+                        {
+                            NSLog(@"CustomImageAnnotations Exception: %@", e);
+                        }
+                    }
+                }
+            }
+            @catch( NSException *e) {
+                NSLog(@"CustomImageAnnotations Exception: %@", e);
+            }
+            @finally {
+                [imageObj.managedObjectContext unlock];
+            }
+        }
+    }
+}
+
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject
 {
-	@try 
+	@try
 	{
-        NSString *modality = nil;
-        
-        [imageObj.managedObjectContext lock];
-        @try
-        {
-            if( imageObj.isDeleted || imageObj.isFault)
-                return;
-        
-            modality = [imageObj valueForKeyPath:@"series.modality"];
-        }
-        @catch (NSException *e) {
-            NSLog(@"loadCustomImageAnnotationsPapyLink Exception: %@", e);
-        }
-        @finally {
-            [imageObj.managedObjectContext unlock];
-        }
-        
 		NSDictionary *annotationsForModality = nil;
 		@synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
 		{
-			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:modality];
+			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: modalityString];
 			
 			if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
 			if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
@@ -12766,15 +12858,13 @@ END_CREATE_ROIS:
 		// image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
 		NSArray *keys = [annotationsForModality allKeys];
 		
-		for ( NSString *key in keys)
+		for( NSString *key in keys)
 		{
 			if(![key isEqualToString:@"sameAsDefault"])
 			{
 				NSArray *annotations = [annotationsForModality objectForKey: key];
 				NSMutableArray *annotationsOUT = [NSMutableArray array];
 				
-                [imageObj.managedObjectContext lock];
-                
                 @try
                 {
                     for ( NSDictionary *annot in annotations)
@@ -12810,12 +12900,11 @@ END_CREATE_ROIS:
                                     else
                                         value = nil;
                                     
-                                    if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"PatientName";
+                                    if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010)
+                                        value = @"PatientName";
                                     
                                     if( [[field objectForKey:@"group"] intValue] == 0x0002 && [[field objectForKey:@"element"] intValue] == 0x0010)
-                                    {
                                         value = [BrowserController compressionString: value];
-                                    }
                                     
                                     if(value==nil || [value length] == 0) value = @"-";
                                     else contentForLine = YES;
@@ -12826,27 +12915,18 @@ END_CREATE_ROIS:
                                     {
                                         NSString *fieldName = [field objectForKey:@"field"];
                                         NSString *level = [field objectForKey:@"level"];
-                                        if([level isEqualToString:@"image"])
-                                        {
-                                            value = [imageObj valueForKey:fieldName];
-                                        }
-                                        else if([level isEqualToString:@"series"])
-                                        {
-                                            value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
-                                        }
-                                        else if([level isEqualToString:@"study"])
-                                        {
-                                            value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
-                                            
-                                            if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
-                                        }
+                                        
+                                        value = [annotationsDBFields objectForKey: [NSString stringWithFormat:@"%@ %@", fieldName, level]];
+                                        
+                                        if( (id) value == [NSNull null])
+                                            value = nil;
                                         
                                         if(value==nil) value = @"-";
                                         else contentForLine = YES;
                                         
                                         if( [value isKindOfClass: [NSDate class]])
                                         {
-                                            //									value = [value description];
+                                            //value = [value description];
                                             
                                             if([fieldName isEqualToString:@"dateOfBirth"])
                                                 value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
@@ -12870,23 +12950,12 @@ END_CREATE_ROIS:
                                     @try
                                     {
                                         value = [field objectForKey:@"field"];
+                                        
                                         if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
-                                        {
-                                            if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
-                                            {
-                                                value = [imageObj valueForKeyPath: @"series.study.yearOld"];
-                                            }
-                                            else value = nil;
-                                        }
+                                            value = yearOld;
                                         
                                         if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
-                                        {
-                                            if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
-                                            {
-                                                value = [imageObj valueForKeyPath: @"series.study.yearOldAcquisition"];
-                                            }
-                                            else value = nil;
-                                        }
+                                            value = yearOldAcquisition;
                                         
                                         if(value==nil || [value length] == 0) value = @"-";
                                         else contentForLine = YES;
@@ -12923,9 +12992,6 @@ END_CREATE_ROIS:
                 }
                 @catch( NSException *e) {
                     NSLog(@"CustomImageAnnotations Exception: %@", e);
-                }
-                @finally {
-                    [imageObj.managedObjectContext unlock];
                 }
                 
 				if( annotationsOUT)

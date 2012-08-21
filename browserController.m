@@ -1298,9 +1298,6 @@ static NSConditionLock *threadLock = nil;
 
 -(void)setDatabase:(DicomDatabase*)db
 {
-    if( db == nil)
-        return;
-    
 	[[db retain] autorelease]; // avoid multithreaded release
 	
 	if (_database != db)
@@ -2057,6 +2054,7 @@ static NSConditionLock *threadLock = nil;
 {
 	DicomDatabase* database = [[self.database retain] autorelease];
 	[self setDatabase:nil];
+    [self outlineViewRefresh];
 	
 	NSArray* io = [NSMutableArray arrayWithObjects: database, nil];
 	

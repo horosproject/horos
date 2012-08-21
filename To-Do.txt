@@ -1,5 +1,6 @@
-- Test Bonjour password
+- Test Bonjour password / Bonjour Browsing
 - Delete albums during comparative/album search?
+- Bonjour didRemove: BrowserSourcesHelper netServiceBrowser:didRemoveService:moreComing
 
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib

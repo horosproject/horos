@@ -42,6 +42,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 {
 //SOURCES
 	NSString            *srcFile;  /**< source File */
+    NSString            *URIRepresentationAbsoluteString;
 	BOOL				isBonjour;  /**< Flag to indicate if file is accessed over Bonjour */
 	BOOL				nonDICOM;   /**< Flag to indicate if file is not DICOM */
 
@@ -185,6 +186,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	
 /** custom annotations */
 	NSMutableDictionary *annotationsDictionary;
+    NSMutableDictionary *annotationsDBFields;
+    NSString            *yearOld, *yearOldAcquisition;
 	
 /** 12 bit monitors */
 	BOOL				isLUT12Bit;
@@ -677,6 +680,7 @@ Note setter is different to not break existing usage. :-( */
 #ifdef OSIRIX_VIEWER
 
 /** Custom Annotations */
+- (void)loadCustomImageAnnotationsDBFields;
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
 
