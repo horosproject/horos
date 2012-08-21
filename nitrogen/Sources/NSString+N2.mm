@@ -81,17 +81,17 @@ NSString* N2NonNullString(NSString* s) {
 		if (time < 60) {
 			unit = NSLocalizedString(@"second", nil);
 			units = NSLocalizedString(@"seconds", nil);
-			value = std::ceil(time);
+			value = std::floor(time);
 			time -= value;
 		} else if (time < 3600) {
 			unit = NSLocalizedString(@"minute", nil);
 			units = NSLocalizedString(@"minutes", nil);
-			value = std::ceil(time/60);
+			value = std::floor(time/60);
 			time -= value*60;
 		} else {
 			unit = NSLocalizedString(@"hour", nil);
 			units = NSLocalizedString(@"hours", nil);
-			value = std::ceil(time/3600);
+			value = std::floor(time/3600);
 			time -= value*3600;
 		}
 		
@@ -102,7 +102,7 @@ NSString* N2NonNullString(NSString* s) {
 	NSMutableString* s = [NSMutableString string];
 	for (NSInteger i = 0; i < rs.count; ++i)
     {
-		if (i > 1)
+		if (i > 0)
         {
 			if (i == rs.count-1) 
 				[s appendString:NSLocalizedString(@" and ", nil)];

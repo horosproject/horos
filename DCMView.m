@@ -6310,6 +6310,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[instructions setObject: [NSNumber numberWithFloat: [p sliceLocation]] forKey: @"Location"];
 	[instructions setObject: [NSNumber numberWithFloat: syncRelativeDiff] forKey: @"offsetsync"];
 	
+/*    float location[3];
+    [curDCM convertPixX:mouseXPos pixY:mouseYPos toDICOMCoords:location pixelCenter:YES];
+	[instructions setObject: [NSNumber numberWithFloat:location[0]] forKey: @"point3DX"];
+	[instructions setObject: [NSNumber numberWithFloat:location[1]] forKey: @"point3DY"];
+	[instructions setObject: [NSNumber numberWithFloat:location[2]] forKey: @"point3DZ"];*/
+    
 	if( p.frameofReferenceUID)
 		[instructions setObject: p.frameofReferenceUID forKey: @"frameofReferenceUID"];
 	

@@ -93,13 +93,8 @@
         return;
 	}
     
-	NSString* version = [(NSString*)CFHTTPMessageCopyVersion(request) autorelease];
-    if (!version)
-    {
-        [self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, kCFHTTPVersion1_0)];
-        CFRelease(request);
-        return;
-    }
+	/*NSString* version = [(NSString*)CFHTTPMessageCopyVersion(request) autorelease];
+    if (!version) version = (NSString*)kCFHTTPVersion1_1;
 	
     NSString* method = [(NSString*)CFHTTPMessageCopyRequestMethod(request) autorelease];
     if (!method)
@@ -114,7 +109,7 @@
 		[self writeAndReleaseResponse:CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, (CFStringRef)version)];
         CFRelease(request);
 		return;
-	}
+	}*/
 	
 	_executed = YES;
 	[self handleRequest:request];
