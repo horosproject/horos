@@ -2705,9 +2705,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	loadingPauseDelay = 0;
 	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-	
+    
 	// **************************
 
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
@@ -2754,13 +2752,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		t12BitTimer = nil;
 	}
 	
-	loadingPauseDelay = 0;
-	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-	while( ThreadLoadImage)
-		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-
 	[[NSNotificationCenter defaultCenter] postNotificationName: OsirixCloseViewerNotification object: self userInfo: nil];
 	
 	if( SYNCSERIES)
@@ -6714,24 +6705,9 @@ return YES;
 	
 	loadingPauseDelay = 0;
 	stopThreadLoadImage = YES;
-	[ThreadLoadImageLock lock];
-	[ThreadLoadImageLock unlock];
-
-	while( ThreadLoadImage)
-		[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 	
 	if( resampleRatio != 1)
 		resampleRatio = 1;
-	
-//	@try
-//	{
-//		[[fileList[0] objectAtIndex:0] setValue: nil forKeyPath:@"series.thumbnail"];
-//		[[BrowserController currentBrowser] buildThumbnail: [[fileList[0] objectAtIndex:0] valueForKey: @"series"]];
-//	}
-//	@catch( NSException *e)
-//	{
-//		NSLog( @"***** finalizeSeriesViewing : %@", e);
-//	}
 	
 	for( i = 0; i < maxMovieIndex; i++)
 	{
@@ -7572,16 +7548,6 @@ return YES;
 	
 	for( int i = from; i < to; i++)
 	{
-		/*if( loadingPauseDelay)
-		{
-			NSLog(@"loadingPause is starting...");
-			
-			while( loadingPauseDelay > [NSDate timeIntervalSinceReferenceDate])
-				[NSThread sleepForTimeInterval: 0.1];
-			
-			NSLog(@"loadingPause is over...");
-		}*/
-		
 		if( stopThreadLoadImage == NO)
 		{
 			[[BrowserController currentBrowser] getLocalDCMPath: [f objectAtIndex: i] : 5];
@@ -7672,6 +7638,12 @@ return YES;
 						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
 						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
 						[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+                        
+                        NSMutableArray *volumeDataArray = [NSMutableArray array];
+                        for( int z = 0; z < maxMovieIndex; z++)
+                            [volumeDataArray addObject: volumeData[ z]];
+                            
+                        [d setObject: volumeDataArray forKey: @"volumeDataArray"]; // We have to keep the volumeData valid (retained), for loading interruption support!
 						
 						[NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: d];
 					}
@@ -19932,7 +19904,8 @@ int i,j,l;
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		while( [ThreadLoadImageLock tryLock] == NO) [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+		while( [ThreadLoadImageLock tryLock] == NO)
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		
 		[ThreadLoadImageLock unlock];
 		

@@ -12735,11 +12735,23 @@ END_CREATE_ROIS:
 {
 	@try 
 	{
-        if( imageObj.isDeleted || imageObj.isFault)
-            return;
+        NSString *modality = nil;
         
-		NSString *modality = [imageObj valueForKeyPath:@"series.modality"]; // imageObj = link to database
-		
+        [imageObj.managedObjectContext lock];
+        @try
+        {
+            if( imageObj.isDeleted || imageObj.isFault)
+                return;
+        
+            modality = [imageObj valueForKeyPath:@"series.modality"];
+        }
+        @catch (NSException *e) {
+            NSLog(@"loadCustomImageAnnotationsPapyLink Exception: %@", e);
+        }
+        @finally {
+            [imageObj.managedObjectContext unlock];
+        }
+        
 		NSDictionary *annotationsForModality = nil;
 		@synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
 		{
@@ -12761,149 +12773,161 @@ END_CREATE_ROIS:
 				NSArray *annotations = [annotationsForModality objectForKey: key];
 				NSMutableArray *annotationsOUT = [NSMutableArray array];
 				
-				for ( NSDictionary *annot in annotations)
-				{
-					NSArray *content = [annot objectForKey:@"fullContent"];
-					NSMutableArray *contentOUT = [NSMutableArray array];
-					
-					BOOL contentForLine = NO;
-					for ( int f=0; f<[content count]; f++)
-					{
-						@try
-						{
-							NSDictionary *field = [content objectAtIndex:f];
-							NSString *type = [field objectForKey:@"type"];
-							NSString *value = nil;
-							
-							if( [type isEqualToString:@"DICOM"])
-							{
-								if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && repetitiontime != 0L)	// RepetitionTime
-								{
-									value = [NSString stringWithFormat:@"%.6g", [repetitiontime floatValue]];
-								}
-								else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && echotime != 0L)	// Echotime
-								{	
-									value = [NSString stringWithFormat:@"%.6g", [echotime floatValue]];;
-								}
-								else if(fileNb>=0)
-									value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
-								#ifndef OSIRIX_LIGHT
-								else if(dcmObject)
-									value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
-								#endif
-								else
-									value = nil;
-								
-								if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"PatientName";
-								
-								if( [[field objectForKey:@"group"] intValue] == 0x0002 && [[field objectForKey:@"element"] intValue] == 0x0010)
-								{
-									value = [BrowserController compressionString: value];
-								}
-								
-								if(value==nil || [value length] == 0) value = @"-";
-								else contentForLine = YES;
-							}
-							else if([type isEqualToString:@"DB"])
-							{
-                                @try
+                [imageObj.managedObjectContext lock];
+                
+                @try
+                {
+                    for ( NSDictionary *annot in annotations)
+                    {
+                        NSArray *content = [annot objectForKey:@"fullContent"];
+                        NSMutableArray *contentOUT = [NSMutableArray array];
+                        
+                        BOOL contentForLine = NO;
+                        for ( int f=0; f<[content count]; f++)
+                        {
+                            @try
+                            {
+                                NSDictionary *field = [content objectAtIndex:f];
+                                NSString *type = [field objectForKey:@"type"];
+                                NSString *value = nil;
+                                
+                                if( [type isEqualToString:@"DICOM"])
                                 {
-                                    NSString *fieldName = [field objectForKey:@"field"];
-                                    NSString *level = [field objectForKey:@"level"];
-                                    if([level isEqualToString:@"image"])
+                                    if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0080 && repetitiontime != 0L)	// RepetitionTime
                                     {
-                                        value = [imageObj valueForKey:fieldName];
+                                        value = [NSString stringWithFormat:@"%.6g", [repetitiontime floatValue]];
                                     }
-                                    else if([level isEqualToString:@"series"])
-                                    {
-                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+                                    else if( [[field objectForKey:@"group"] intValue] == 0x0018 && [[field objectForKey:@"element"] intValue] == 0x0081 && echotime != 0L)	// Echotime
+                                    {	
+                                        value = [NSString stringWithFormat:@"%.6g", [echotime floatValue]];;
                                     }
-                                    else if([level isEqualToString:@"study"])
-                                    {
-                                        value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
-                                        
-                                        if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
-                                    }
-                                    
-                                    if(value==nil) value = @"-";
-                                    else contentForLine = YES;
-                                    
-                                    if( [value isKindOfClass: [NSDate class]])
-                                    {
-                                        //									value = [value description];
-                                        
-                                        if([fieldName isEqualToString:@"dateOfBirth"])
-                                            value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
-                                        else
-                                            value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
-                                    }
+                                    else if(fileNb>=0)
+                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] papyLink:fileNb];
+                                    #ifndef OSIRIX_LIGHT
+                                    else if(dcmObject)
+                                        value = [self getDICOMFieldValueForGroup:[[field objectForKey:@"group"] intValue] element:[[field objectForKey:@"element"] intValue] DCMLink:dcmObject];
+                                    #endif
                                     else
-                                    {
-                                        value = [value description];
-                                        if( [value length] == 0) value = @"-";
-                                    }
-                                }
-                                @catch (NSException *e)
-                                {
-                                    NSLog(@"CustomImageAnnotations DB Exception: %@", e);
-                                    value = @"ERROR IN ANNOTATIONS - See Preferences->Annotations";
-                                }
-							}
-							else if([type isEqualToString:@"Special"])
-							{
-                                @try
-                                {
-                                    value = [field objectForKey:@"field"];
-                                    if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
-                                    {
-                                        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
-                                        {
-                                            value = [imageObj valueForKeyPath: @"series.study.yearOld"];
-                                        }
-                                        else value = nil;
-                                    }
+                                        value = nil;
                                     
-                                    if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+                                    if( [[field objectForKey:@"group"] intValue] == 0x0010 && [[field objectForKey:@"element"] intValue] == 0x0010) value = @"PatientName";
+                                    
+                                    if( [[field objectForKey:@"group"] intValue] == 0x0002 && [[field objectForKey:@"element"] intValue] == 0x0010)
                                     {
-                                        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
-                                        {
-                                            value = [imageObj valueForKeyPath: @"series.study.yearOldAcquisition"];
-                                        }
-                                        else value = nil;
+                                        value = [BrowserController compressionString: value];
                                     }
                                     
                                     if(value==nil || [value length] == 0) value = @"-";
                                     else contentForLine = YES;
                                 }
-                                @catch (NSException *e)
+                                else if([type isEqualToString:@"DB"])
                                 {
-                                    NSLog(@"CustomImageAnnotations Special Exception: %@", e);
-                                    value = @"ERROR IN ANNOTATIONS - See Preferences->Annotations";
+                                    @try
+                                    {
+                                        NSString *fieldName = [field objectForKey:@"field"];
+                                        NSString *level = [field objectForKey:@"level"];
+                                        if([level isEqualToString:@"image"])
+                                        {
+                                            value = [imageObj valueForKey:fieldName];
+                                        }
+                                        else if([level isEqualToString:@"series"])
+                                        {
+                                            value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.%@", fieldName]];
+                                        }
+                                        else if([level isEqualToString:@"study"])
+                                        {
+                                            value = [imageObj valueForKeyPath:[NSString stringWithFormat:@"series.study.%@", fieldName]];
+                                            
+                                            if( [fieldName isEqualToString:@"name"]) value = @"PatientName";
+                                        }
+                                        
+                                        if(value==nil) value = @"-";
+                                        else contentForLine = YES;
+                                        
+                                        if( [value isKindOfClass: [NSDate class]])
+                                        {
+                                            //									value = [value description];
+                                            
+                                            if([fieldName isEqualToString:@"dateOfBirth"])
+                                                value = [[NSUserDefaults dateFormatter] stringFromDate:(NSDate*)value];
+                                            else
+                                                value = [BrowserController DateTimeWithSecondsFormat: (NSDate *) value];
+                                        }
+                                        else
+                                        {
+                                            value = [value description];
+                                            if( [value length] == 0) value = @"-";
+                                        }
+                                    }
+                                    @catch (NSException *e)
+                                    {
+                                        NSLog(@"CustomImageAnnotations DB Exception: %@", e);
+                                        value = @"ERROR IN ANNOTATIONS - See Preferences->Annotations";
+                                    }
                                 }
-							}
-							else if([type isEqualToString:@"Manual"])
-							{
-								value = [field objectForKey:@"field"];
-								if(value==nil || [value length] == 0) value = @"-";
-								
-								if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
-							}
-							
-							if( value) [contentOUT addObject:value];
-						}
-						
-						@catch (NSException *e)
-						{
-							NSLog(@"CustomImageAnnotations Exception: %@", e);
-						}
-					}
-					
-					if( contentForLine)
-					{
-						if( contentOUT)
-							[annotationsOUT addObject:contentOUT];
-					}
-				}
+                                else if([type isEqualToString:@"Special"])
+                                {
+                                    @try
+                                    {
+                                        value = [field objectForKey:@"field"];
+                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Actual Age", nil)] || [value isEqualToString: (@"Patient's Actual Age")])
+                                        {
+                                            if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
+                                            {
+                                                value = [imageObj valueForKeyPath: @"series.study.yearOld"];
+                                            }
+                                            else value = nil;
+                                        }
+                                        
+                                        if ([value isEqualToString: NSLocalizedString(@"Patient's Age At Acquisition", nil)] || [value isEqualToString: (@"Patient's Age At Acquisition")])
+                                        {
+                                            if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
+                                            {
+                                                value = [imageObj valueForKeyPath: @"series.study.yearOldAcquisition"];
+                                            }
+                                            else value = nil;
+                                        }
+                                        
+                                        if(value==nil || [value length] == 0) value = @"-";
+                                        else contentForLine = YES;
+                                    }
+                                    @catch (NSException *e)
+                                    {
+                                        NSLog(@"CustomImageAnnotations Special Exception: %@", e);
+                                        value = @"ERROR IN ANNOTATIONS - See Preferences->Annotations";
+                                    }
+                                }
+                                else if([type isEqualToString:@"Manual"])
+                                {
+                                    value = [field objectForKey:@"field"];
+                                    if(value==nil || [value length] == 0) value = @"-";
+                                    
+                                    if(![value isEqualToString:@""]) value = [value stringByAppendingString:@" "];
+                                }
+                                
+                                if( value) [contentOUT addObject:value];
+                            }
+                            
+                            @catch (NSException *e)
+                            {
+                                NSLog(@"CustomImageAnnotations Exception: %@", e);
+                            }
+                        }
+                        
+                        if( contentForLine)
+                        {
+                            if( contentOUT)
+                                [annotationsOUT addObject:contentOUT];
+                        }
+                    }
+                }
+                @catch( NSException *e) {
+                    NSLog(@"CustomImageAnnotations Exception: %@", e);
+                }
+                @finally {
+                    [imageObj.managedObjectContext unlock];
+                }
+                
 				if( annotationsOUT)
 				{
 					@synchronized( annotationsDictionary)
