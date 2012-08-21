@@ -26,10 +26,13 @@
 	NSXMLElement* e = (NSXMLElement*)n;
 	
 	if ([[e name] isEqualToString:@"array"]) {
-		NSArray* values = [e nodesForXPath:@"data/value/*" error:NULL];
+		NSArray* values = [e nodesForXPath:@"data/value" error:NULL];
 		NSMutableArray* returnValues = [NSMutableArray arrayWithCapacity:[values count]];
-		for (NSXMLElement* v in values)
-			[returnValues addObject:[N2XMLRPC ParseElement:v]];
+		for (NSXMLElement* v in values) {
+            if (v.childCount)
+                [returnValues addObject:[N2XMLRPC ParseElement:[v childAtIndex:0]]];
+            else [returnValues addObject:[[v stringValue] xmlUnescapedString]];
+        }
 		return [NSArray arrayWithArray:returnValues];
 	}
 	
@@ -60,9 +63,18 @@
 	if ([[e name] isEqualToString:@"struct"]) {
 		NSArray* members = [e nodesForXPath:@"member" error:NULL];
 		NSMutableDictionary* returnMembers = [NSMutableDictionary dictionaryWithCapacity:[members count]];
-		for (NSXMLElement* m in members)
-			[returnMembers setObject:[N2XMLRPC ParseElement:[[m nodesForXPath:@"value/*" error:NULL] objectAtIndex:0]] forKey:[[[m nodesForXPath:@"name" error:NULL] objectAtIndex:0] stringValue]];
-		return [NSDictionary dictionaryWithDictionary:returnMembers];
+		
+        for (NSXMLElement* m in members) {
+            NSXMLElement* v = [[m nodesForXPath:@"value" error:NULL] objectAtIndex:0];
+           
+            id obj;
+            if (v.childCount)
+                obj = [N2XMLRPC ParseElement:[v childAtIndex:0]];
+            else obj = [[v stringValue] xmlUnescapedString];
+			
+            [returnMembers setObject:obj forKey:[[[[m nodesForXPath:@"name" error:NULL] objectAtIndex:0] stringValue] xmlUnescapedString]];
+		}
+        return [NSDictionary dictionaryWithDictionary:returnMembers];
 	}
 	
 	if ([[e name] isEqualToString:@"nil"]) {

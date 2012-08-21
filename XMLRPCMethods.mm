@@ -821,7 +821,7 @@
             return response;
         // older plugins returned a NSXMLDocument in the NSXMLDocumentResponse key
         doc = [notificationObject valueForKey:@"NSXMLDocumentResponse"];
-        return [N2XMLRPC ParseElement:[[doc objectsForXQuery:@"/methodResponse/params/param/value" error:NULL] objectAtIndex:0]];
+        return [N2XMLRPC ParseElement:[[doc objectsForXQuery:@"/methodResponse/params/param/value/*" error:NULL] objectAtIndex:0]];
     }
     
     return [super methodCall:methodName params:params error:error];
