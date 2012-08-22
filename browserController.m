@@ -8073,13 +8073,11 @@ static BOOL withReset = NO;
     
     [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     
-    DicomDatabase* idatabase = _database; //[database independentDatabase]; -- was creating conflits - Antoine
-    
     @try
     {
         NSArray* objectIDs = [dict valueForKey: @"objectIDs"];
         BOOL imageLevel = [[dict valueForKey:@"imageLevel"] boolValue];
-        id database = [dict valueForKey:@"DicomDatabase"];
+        DicomDatabase *idatabase = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
@@ -8103,7 +8101,7 @@ static BOOL withReset = NO;
                 
                 DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
                 if (dcmPix == nil) {
-                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![database isLocal] imageObj:[database objectWithID:image.objectID]] autorelease];
+                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj:[idatabase objectWithID:image.objectID]] autorelease];
                 }
                 
                 if (!imageLevel) {
