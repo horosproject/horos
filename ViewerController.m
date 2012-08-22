@@ -260,7 +260,7 @@ enum
 
 @implementation ViewerController
 
-@synthesize currentOrientationTool, loadingPercentage, speedSlider, loadingPauseDelay;
+@synthesize currentOrientationTool, speedSlider;
 @synthesize timer, keyImageCheck, injectionDateTime, blendedWindow;
 @synthesize blendingTypeWindow, blendingTypeMultiply, blendingTypeSubtract, blendingTypeRGB, blendingPlugins, blendingResample;
 
@@ -1066,7 +1066,6 @@ return YES;
 	[self changeImageData:newPixList :newDcmList :newData :NO];
 	[self setPostprocessed: YES];
 	
-	loadingPercentage = 1;
 	[self computeInterval];
 	[self setWindowTitle:self];
 	[imageView setIndex: [newPixList count]/2];
@@ -1543,7 +1542,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 		
 		[self setPostprocessed: YES];
 		
-		loadingPercentage = 1;
 		[self computeInterval];
 		[self setWindowTitle:self];
 		[imageView setIndex: [[xPix objectAtIndex: 0] count]/2];
@@ -2373,15 +2371,13 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSString *loading = @"         ";
 	
-	if( ThreadLoadImage == YES || loadingPercentage == 0)
+	if( loadingThread.isExecuting)
 	{
-		if( loadingPercentage != 1)
+		if( [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] != 1)
 		{
-			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), loadingPercentage * 100.];
+			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.];
 			[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:nil repeats:NO];
 		}
-		
-		loadingThread.progress = loadingPercentage;
 	}
 	
 	if( [fileList[ curMovieIndex] count])
@@ -2703,9 +2699,6 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	[imageView stopROIEditingForce: YES];
 	
-	loadingPauseDelay = 0;
-	stopThreadLoadImage = YES;
-    
 	// **************************
 
 	if( FullScreenOn == YES) [self fullScreenMenu: self];
@@ -6202,7 +6195,7 @@ return YES;
 	
 	if( c == NO)
 	{
-		if( ThreadLoadImage) return NO;
+		if( loadingThread.isExecuting) return NO;
 	}
 	
 	[self checkEverythingLoaded];
@@ -6269,7 +6262,6 @@ return YES;
                             
                             [self changeImageData: newPixList :newFileList :newVolumeData :NO];
                             
-                            loadingPercentage = 1;
                             [self computeInterval];
                             [self setWindowTitle:self];
                             
@@ -6558,7 +6550,7 @@ return YES;
 	
 	retainedToolbarItems = [[NSMutableArray alloc] initWithCapacity: 0];
 	
-	subLoadingThread = [[NSConditionLock alloc] init];
+	
 	
 	[self setupToolbar];
 	
@@ -6703,8 +6695,7 @@ return YES;
 {
 	int x,i,z;
 	
-	loadingPauseDelay = 0;
-	stopThreadLoadImage = YES;
+    [loadingThread cancel];
 	
 	if( resampleRatio != 1)
 		resampleRatio = 1;
@@ -6768,9 +6759,9 @@ return YES;
 	
 	[self finalizeSeriesViewing];
 	
-	[ThreadLoadImageLock release];
-	ThreadLoadImageLock = nil;
-	
+    [loadingThread release];
+    loadingThread = nil;
+    
 	[undoQueue release];
     undoQueue = nil;
     
@@ -6815,7 +6806,6 @@ return YES;
 	[retainedToolbarItems release]; retainedToolbarItems = nil;
 	[editedRadiopharmaceuticalStartTime release]; editedRadiopharmaceuticalStartTime = nil;
 	[editedAcquisitionTime release]; editedAcquisitionTime = nil;
-	[subLoadingThread release]; subLoadingThread = nil;
 	[toolbar release]; toolbar = nil;
 	[injectionDateTime release]; injectionDateTime = nil;
 	
@@ -7027,7 +7017,6 @@ return YES;
 					
 					DCMPix *curDCM = [pixList[0] objectAtIndex: imageIndex];
 					
-					loadingPercentage = 0;
 					[self setWindowTitle:self];
 					
 					[slider setMaxValue:[pixList[0] count]-1];
@@ -7383,8 +7372,6 @@ return YES;
 		if( v != self)
 			[v propagateSettings];
 	}
-	
-	loadingPauseDelay = 0;
 }
 
 - (void) showWindowTransition
@@ -7436,16 +7423,28 @@ return YES;
     
 	originalOrientation = -1;
 	
-	stopThreadLoadImage = NO;
-//	[self loadImageData: self];
-	
-//	loadingThread = [[[NSThread alloc] initWithTarget:self selector:@selector( loadImageData:) object: nil] autorelease];
-//	loadingThread.name = NSLocalizedString( @"Loading images...", nil);
-//	if( [[self currentSeries] valueForKey:@"name"])
-//		loadingThread.status = [[self currentSeries] valueForKey:@"name"];
-//	[[ThreadsManager defaultManager] addThreadAndStart: loadingThread];
-	
-	[NSThread detachNewThreadSelector: @selector(loadImageData:) toTarget: self withObject: nil];
+    [loadingThread release];
+    
+    NSMutableDictionary *d = [NSMutableDictionary dictionary];
+   
+    NSMutableArray *volumeDataArray = [NSMutableArray array];
+    NSMutableArray *pixListArray = [NSMutableArray array];
+    NSMutableArray *fileListArray = [NSMutableArray array];
+    for( int z = 0; z < maxMovieIndex; z++)
+    {
+        [volumeDataArray addObject: volumeData[ z]];
+        [pixListArray addObject: pixList[ z]];
+        [fileListArray addObject: fileList[ z]];
+    }
+    
+    [d setObject: volumeDataArray forKey: @"volumeDataArray"];
+    [d setObject: pixListArray forKey: @"pixListArray"];
+    [d setObject: fileListArray forKey: @"fileListArray"];
+    [d setObject: self forKey: @"viewerController"];
+    
+    loadingThread = [[NSThread alloc] initWithTarget: [ViewerController class] selector: @selector(loadImageData:) object: d];
+	[loadingThread start];
+    
 	[self setWindowTitle:self];
 }
 
@@ -7534,21 +7533,24 @@ return YES;
 	[pool release];
 }
 
-- (void) subLoadingThread: (NSDictionary*) dict
++ (void) subLoadingThread: (NSDictionary*) dict
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = @"Load Image Data Sub Thread";
     
+    NSThread *mainLoadingThread = [dict objectForKey: @"loadingThread"];
 	NSArray *p = [dict objectForKey: @"pixList"];
 	NSArray *f = [dict objectForKey: @"fileList"];
+    NSConditionLock *subLoadingThread = [dict objectForKey: @"subLoadingThread"];
 	int from = [[dict objectForKey: @"from"] intValue];
 	int to = [[dict objectForKey: @"to"] intValue];
 	int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
+    int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
 	
 	for( int i = from; i < to; i++)
 	{
-		if( stopThreadLoadImage == NO)
+		if( mainLoadingThread.isCancelled == NO)
 		{
 			[[BrowserController currentBrowser] getLocalDCMPath: [f objectAtIndex: i] : 5];
 			[[p objectAtIndex: i] CheckLoad];
@@ -7556,8 +7558,11 @@ return YES;
 		
 		if( from == 0)
 		{
-			loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
-			if( loadingPercentage >= 1) loadingPercentage = 0.99;
+			float loadingPercentage = (float) ((movieIndex*(to-from)) + i) / (float) (maxMovieIndex * (to-from));
+			if( loadingPercentage >= 1)
+                loadingPercentage = 0.99;
+            
+            [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
 		}
 	}
 	
@@ -7567,238 +7572,204 @@ return YES;
 	[pool release];
 }
 
--(void) loadImageData:(id) sender
+- (void) finishLoadImageData: (NSDictionary*) dict
+{
+    if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
+        return;
+    
+    NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
+    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
+    DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
+    
+    #pragma mark modality dependant code, once images are already displayed in 2D viewer
+    
+    if( [[pixListArray objectAtIndex: 0] count] > 0)
+    {
+        BOOL identicalChannelRepresentation = YES;
+        BOOL rgb = [[[pixListArray objectAtIndex: 0] lastObject] isRGB];
+        for( DCMPix *p in [pixListArray objectAtIndex: 0])
+        {
+            if( [p isRGB] != rgb)
+                identicalChannelRepresentation = NO;
+        }
+        
+        [imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
+    }
+    
+    for( NSArray *pList in pixListArray)
+    {
+        for( DCMPix *p in pList)
+        {
+            [p setMaxValueOfSeries: 0];
+            [p setMinValueOfSeries: 0];
+        }
+    }
+    
+    #pragma mark XA
+    enableSubtraction = FALSE;
+    subCtrlMinMaxComputed = NO;
+    if([[firstPix modalityString] isEqualToString:@"XA"] == YES)
+    {
+        if([[pixListArray objectAtIndex: 0] count] > 1)
+        {
+            long moviePixWidth = [firstPix pwidth];
+            long moviePixHeight = [firstPix pheight];
+            
+            enableSubtraction = TRUE;
+            //if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
+            
+            for( DCMPix *pix in [pixListArray objectAtIndex: 0])
+            {
+                if ( moviePixWidth != [pix pwidth]) enableSubtraction = FALSE;
+                if ( moviePixHeight != [pix pheight]) enableSubtraction = FALSE;
+            }
+        }
+    }
+    
+    [self enableSubtraction];
+    
+#pragma mark PET
+    
+    BOOL isPET = NO;
+    
+    if( [[firstPix modalityString] isEqualToString: @"PT"] == YES)
+        isPET = YES;
+    
+    if( isPET || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[firstPix modalityString] isEqualToString:@"NM"] == YES))
+    {
+        if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
+            [imageView updatePresentationStateFromSeries];
+    }
+    
+    if( isPET)
+    {
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
+        {
+            [self convertPETtoSUV];
+            [imageView setStartWLWW];
+        }
+    }
+    
+    if( [firstPix DCMPixShutterOnOff])
+        [self setShutterOnOffButton: [NSNumber numberWithBool: YES]];
+	
+    [self setWindowTitle:self];
+    
+    originalOrientation = -1;
+    [self computeIntervalAsync];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];
+}
+
++ (void) loadImageData:(id) dict
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     int i, x;
-	BOOL isPET = NO, compressed = NO;
+	BOOL compressed = NO;
 	
-	if( ThreadLoadImageLock == nil)
-	{
-		loadingThread = nil;
-		[pool release];
-		return;
-	}
+    NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
+    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
+    NSArray *volumeDataArray = [dict objectForKey: @"volumeDataArray"];
+    ViewerController *viewer = [dict objectForKey: @"viewerController"];
     
     [NSThread currentThread].name = @"Load Image Data";
     
-	[ThreadLoadImageLock lock];
+    DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
+    
 	@try 
 	{
-		ThreadLoadImage = YES;
-		
-		loadingPercentage = 0;
-		
-		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] == YES) isPET = YES;
-		
-		while( [[self window] isVisible] == NO && checkEverythingLoaded == NO && stopThreadLoadImage == NO)
-			[NSThread sleepForTimeInterval: 0.1];
-		
-		[DicomFile isDICOMFile: [[pixList[ 0] objectAtIndex:0] sourceFile] compressed: &compressed];
+		[DicomFile isDICOMFile: [firstPix sourceFile] compressed: &compressed];
 		
         if( compressed)
-            if( [BrowserController isItCD: [[pixList[ 0] objectAtIndex:0] sourceFile]]) //Always Single thread for CD/DVD
+            if( [BrowserController isItCD: [firstPix sourceFile]]) //Always Single thread for CD/DVD
                 compressed = NO;
         
 		if( compressed)
 			NSLog( @"start loading multiple thread");
 		else
 			NSLog( @"start loading single thread");
-			
-		for( x = 0; x < maxMovieIndex; x++)
+        
+        NSConditionLock *subLoadingThread = [[[NSConditionLock alloc] init] autorelease];
+        
+		for( x = 0; x < pixListArray.count; x++)
 		{
-			if( pixList[ x] && fileList[ x])
-			{
-				int mpprocessors = [[NSProcessInfo processInfo] processorCount];
-				if( mpprocessors < 1)
-					mpprocessors = 1;
-				
-				int numberOfThreadsForCompute = mpprocessors;
-				
-				if( compressed == NO)
-					numberOfThreadsForCompute = 1;
-				
-				totalNumberOfLoadingWindow ++;
-				
-				if( numberOfThreadsForCompute > 1)
-				{
-					[subLoadingThread lock];
-					[subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
-					
-					for( i = 0; i < numberOfThreadsForCompute; i++)
-					{
-						NSMutableDictionary *d = [NSMutableDictionary dictionary];
-						
-						[d setObject: pixList[ x] forKey: @"pixList"];
-						[d setObject: fileList[ x] forKey: @"fileList"];
-						
-						int from = (i * [pixList[ x] count]) / numberOfThreadsForCompute;
-						int to = ((i+1) * [pixList[ x] count]) / numberOfThreadsForCompute;
-						
-						[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-						[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-						[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
-                        
-                        NSMutableArray *volumeDataArray = [NSMutableArray array];
-                        for( int z = 0; z < maxMovieIndex; z++)
-                            [volumeDataArray addObject: volumeData[ z]];
-                            
-                        [d setObject: volumeDataArray forKey: @"volumeDataArray"]; // We have to keep the volumeData valid (retained), for loading interruption support!
-						
-						[NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: d];
-					}
-					
-					[subLoadingThread lockWhenCondition: 0];
-					[subLoadingThread unlock];
-				}
-				else
-				{
-					NSMutableDictionary *d = [NSMutableDictionary dictionary];
-					
-					[d setObject: pixList[ x] forKey: @"pixList"];
-					[d setObject: fileList[ x] forKey: @"fileList"];
-					
-					int from = 0;
-					int to = [pixList[ x] count];
-					
-					[d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
-					[d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
-					[d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+            int mpprocessors = [[NSProcessInfo processInfo] processorCount];
+            if( mpprocessors < 1)
+                mpprocessors = 1;
+            
+            int numberOfThreadsForCompute = mpprocessors;
+            
+            if( compressed == NO)
+                numberOfThreadsForCompute = 1;
+            
+            totalNumberOfLoadingWindow ++;
+            
+            NSMutableDictionary *d = [NSMutableDictionary dictionary];
+            
+            [d setObject: [NSThread currentThread] forKey: @"loadingThread"];
+            [d setObject: [pixListArray objectAtIndex: x] forKey: @"pixList"];
+            [d setObject: [fileListArray objectAtIndex: x] forKey: @"fileList"];
+            [d setObject: subLoadingThread forKey: @"subLoadingThread"];
+            [d setObject: [NSNumber numberWithInt: x] forKey: @"movieIndex"];
+            [d setObject: [NSNumber numberWithInt: pixListArray.count] forKey: @"maxMovieIndex"];
+            [d setObject: volumeDataArray forKey: @"volumeDataArray"];
+            
+            if( numberOfThreadsForCompute > 1)
+            {
+                [subLoadingThread lock];
+                [subLoadingThread unlockWithCondition: numberOfThreadsForCompute];
+                
+                for( i = 0; i < numberOfThreadsForCompute; i++)
+                {
+                    int from = (i * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
+                    int to = ((i+1) * [[pixListArray objectAtIndex: x] count]) / numberOfThreadsForCompute;
                     
-                    NSMutableArray *volumeDataArray = [NSMutableArray array];
-                    for( int z = 0; z < maxMovieIndex; z++)
-                        [volumeDataArray addObject: volumeData[ z]];
+                    NSMutableDictionary *dd = [NSMutableDictionary dictionaryWithDictionary: d];
                     
-                    [d setObject: volumeDataArray forKey: @"volumeDataArray"]; // We have to keep the volumeData valid (retained), for loading interruption support!
+                    [dd setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                    [dd setObject: [NSNumber numberWithInt: to] forKey: @"to"];
                     
-					[self subLoadingThread: d];
-				}
-				
-				totalNumberOfLoadingWindow --;
-			}
+                    [NSThread detachNewThreadSelector: @selector(subLoadingThread:) toTarget: self withObject: dd];
+                }
+                
+                [subLoadingThread lockWhenCondition: 0];
+                [subLoadingThread unlock];
+            }
+            else
+            {
+                int from = 0;
+                int to = [[pixListArray objectAtIndex: x] count];
+                
+                [d setObject: [NSNumber numberWithInt: from] forKey: @"from"];
+                [d setObject: [NSNumber numberWithInt: to] forKey: @"to"];
+                
+                [ViewerController subLoadingThread: d];
+            }
+            
+            totalNumberOfLoadingWindow --;
 		}
+        if( [[NSThread currentThread] isCancelled] == YES)
+            NSLog( @"thread was cancelled");
+        
 		NSLog( @"end loading");
 		
-		if( stopThreadLoadImage == YES)
+		if( [[NSThread currentThread] isCancelled] == YES)
 		{
-			ThreadLoadImage = NO;
-			loadingThread = nil;
 			[pool release];
 			return;
 		}
 		
-		loadingPercentage = (float) 1.0;
+		[[NSThread currentThread].threadDictionary setObject: [NSNumber numberWithFloat: 1.0] forKey: @"loadingPercentage"];
 	}
 	@catch (NSException * e) 
 	{
 		N2LogExceptionWithStackTrace(e);
 	}
-	@finally {
-        [ThreadLoadImageLock unlock];
-    }
 
-#pragma mark modality dependant code, once images are already displayed in 2D viewer
-	if( stopThreadLoadImage == NO)
-	{
-		if( [pixList[ 0] count] > 0)
-		{
-			BOOL identicalChannelRepresentation = YES;
-			BOOL rgb = [[pixList[ 0] lastObject] isRGB];
-			for( DCMPix *p in pixList[ 0])
-			{
-				if( [p isRGB] != rgb)
-					identicalChannelRepresentation = NO;
-			}
-			
-			[imageView setCOPYSETTINGSINSERIESdirectly: identicalChannelRepresentation];
-		}
-		
-		for( int y = 0; y < maxMovieIndex; y++)
-		{
-			for( DCMPix *p in pixList[ y])
-			{
-				[p setMaxValueOfSeries: 0];
-				[p setMinValueOfSeries: 0];
-			}
-		}
-		
-#pragma mark XA
-		enableSubtraction = FALSE;
-		subCtrlMinMaxComputed = NO;
-		if([[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"XA"] == YES)
-		{
-			if([pixList[ 0] count] > 1)
-			{
-				long moviePixWidth = [[pixList[ 0] objectAtIndex: 0] pwidth];
-				long moviePixHeight = [[pixList[ 0] objectAtIndex: 0] pheight];
-				
-                enableSubtraction = TRUE;
-                //if (moviePixWidth == moviePixHeight) enableSubtraction = TRUE;
-				
-				for( DCMPix *pix in pixList[ 0])
-				{
-					if ( moviePixWidth != [pix pwidth]) enableSubtraction = FALSE;
-					if ( moviePixHeight != [pix pheight]) enableSubtraction = FALSE;
-				}
-			}
-		}
-		
-		// You CANNOT call ANY GUI functions if you are NOT in the MAIN thread !!!!!!!!!!!!!!!!!!
-		[self performSelectorOnMainThread:@selector( enableSubtraction) withObject:nil waitUntilDone: NO];
-		
-#pragma mark PET	
-		
-		if( [[[fileList[ 0] objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"PT"] || ([[NSUserDefaults standardUserDefaults] boolForKey:@"mouseWindowingNM"] == YES && [[[fileList[ 0]  objectAtIndex:0] valueForKey:@"modality"] isEqualToString:@"NM"] == YES))
-		{
-			if( [[NSUserDefaults standardUserDefaults] integerForKey:@"DEFAULTPETWLWW"] != 0)
-				[imageView updatePresentationStateFromSeries];
-		}
-		
-		if( isPET)
-		{
-			if( [[NSUserDefaults standardUserDefaults] boolForKey: @"ConvertPETtoSUVautomatically"])
-			{
-				[self performSelectorOnMainThread:@selector( convertPETtoSUV) withObject:nil waitUntilDone: NO];
-				[imageView performSelectorOnMainThread:@selector( setStartWLWW) withObject:nil waitUntilDone: NO];
-			}
-		}
-		
-		if( [[pixList[0] objectAtIndex: 0] DCMPixShutterOnOff])
-		{
-			[self performSelectorOnMainThread:@selector( setShutterOnOffButton:) withObject: [NSNumber numberWithBool: YES] waitUntilDone: NO];
-		}
-	}
-	
-	loadingPercentage = 1;
-	
-	if( stopThreadLoadImage == NO)
-	{
-		[self performSelectorOnMainThread:@selector( setWindowTitle:) withObject:self waitUntilDone: NO];
-		
-		originalOrientation = -1;
-		[self performSelectorOnMainThread:@selector( computeIntervalAsync) withObject: nil waitUntilDone: NO];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock: ^{
-            [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:OsirixViewerControllerDidLoadImagesNotification object:self]];}];
-	}
-	
-	ThreadLoadImage = NO;
-	loadingThread = nil;
+    if( [[NSThread currentThread] isCancelled] == NO)
+        [viewer performSelectorOnMainThread: @selector( finishLoadImageData:) withObject: dict waitUntilDone: NO];
 	
     [pool release];
-}
-
--(void) setLoadingPause:(BOOL) lp
-{
-	if( [[BrowserController currentBrowser] isCurrentDatabaseBonjour] == NO && totalNumberOfLoadingWindow < 2)
-		return;
-	
-	for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-	{
-		if( lp)
-			v.loadingPauseDelay = [NSDate timeIntervalSinceReferenceDate] + 4;
-		else v.loadingPauseDelay = 0;
-	}
 }
 
 - (short) getNumberOfImages
@@ -8023,7 +7994,6 @@ return YES;
 		
 		[self setPostprocessed: YES];
 		
-		loadingPercentage = 1;
 		[self computeInterval];
 		[self setWindowTitle:self];
 		
@@ -15784,7 +15754,8 @@ int i,j,l;
     NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
     short           val;
     
-	if( loadingPercentage < 0.5) return;
+	if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
+        return;
 	
     if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
@@ -15849,7 +15820,8 @@ int i,j,l;
 	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 	short           val;
 	
-	if( loadingPercentage < 0.5) return;
+	if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
+        return;
 	
 	if( [pixList[ curMovieIndex] count] <= 1) return;
 
@@ -16106,7 +16078,6 @@ int i,j,l;
 			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 	}
 	
-	loadingPercentage = 1;
 	[self computeInterval];
 	[self setWindowTitle:self];
 	
@@ -16217,7 +16188,6 @@ int i,j,l;
 			[self addMovieSerie: [xPix objectAtIndex: j] :[xFiles objectAtIndex: j] :[xData objectAtIndex: j]];
 	}
 	
-	loadingPercentage = 1;
 	[self computeInterval];
 	[self setWindowTitle:self];
 	
@@ -18920,7 +18890,6 @@ int i,j,l;
 		}
 	}
 	
-	ThreadLoadImageLock = [[NSRecursiveLock alloc] init];
 	roiLock = [[NSRecursiveLock alloc] init];
 	
 	factorPET2SUV = 1.0;
@@ -19897,27 +19866,22 @@ int i,j,l;
 
 - (BOOL) isEverythingLoaded
 {
-	if( ThreadLoadImage == YES) return NO;
-	else if( ThreadLoadImage == NO && loadingPercentage == 1.0) return YES;
+	if( loadingThread.isExecuting == YES) return NO;
+	else if( loadingThread.isExecuting == NO) return YES;
 	else return NO;
 }
 
 -(void) checkEverythingLoaded
 {
-	if( ThreadLoadImage == YES)
+	if( loadingThread.isExecuting == YES)
 	{
 		checkEverythingLoaded = YES;
 		
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		while( [ThreadLoadImageLock tryLock] == NO)
+		while( loadingThread.isFinished == NO)
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
-		
-		[ThreadLoadImageLock unlock];
-		
-		while( ThreadLoadImage)
-			[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];		// To be sure that PerformOnMainThread has been called !
 		
 		[splash close];
 		[splash release];
@@ -19941,7 +19905,7 @@ int i,j,l;
 	{
 		for( int i = 0 ; i < [pixList[ x] count]; i++)
 		{
-			if( stopThreadLoadImage == NO)
+			if( [loadingThread isCancelled] == NO)
 			{
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
 				[pix revert];
@@ -19951,7 +19915,6 @@ int i,j,l;
 	
 	[self startLoadImageThread];
 	
-	ThreadLoadImage = YES;
 	[imageView updatePresentationStateFromSeries];
 	
 	[self checkEverythingLoaded];

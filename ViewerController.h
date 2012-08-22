@@ -64,9 +64,8 @@ enum
 
 @interface ViewerController : OSIWindowController  <Schedulable, NSWindowDelegate, NSSplitViewDelegate, NSToolbarDelegate>
 {
-	NSRecursiveLock	*ThreadLoadImageLock;
 	NSRecursiveLock	*roiLock;
-	NSConditionLock *subLoadingThread, *flipDataThread;
+	NSConditionLock *flipDataThread;
 	NSThread *loadingThread;
 	
 	IBOutlet StudyView		*studyView;
@@ -259,10 +258,6 @@ enum
 	
 	float					factorPET2SUV;
 	
-	volatile float			loadingPercentage;
-    
-	volatile BOOL			ThreadLoadImage, stopThreadLoadImage;
-	NSTimeInterval			loadingPauseDelay;
     BOOL                    FullScreenOn;
     NSWindow                *FullScreenWindow;
     NSWindow                *StartingWindow;
@@ -344,8 +339,6 @@ enum
 }
 @property(retain) NSCalendarDate *injectionDateTime;
 @property(readonly) short currentOrientationTool;
-@property(readonly) volatile float loadingPercentage;
-@property NSTimeInterval loadingPauseDelay;
 @property(readonly) NSTimer	*timer;
 @property(readonly) NSButton *keyImageCheck;
 @property(readonly) NSSlider *speedSlider;
@@ -552,7 +545,6 @@ enum
 - (void) brushTool:(id) sender;
 - (IBAction) setButtonTool:(id) sender;
 - (IBAction) shutterOnOff:(id) sender;
-- (void) setLoadingPause:(BOOL) lp;
 - (void) setImageIndex:(long) i;
 - (void) setImage:(NSManagedObject*) image;
 - (long) imageIndex;

@@ -1193,15 +1193,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 @end
 
-@interface DCMPix ()
-
-@property(readwrite,retain) NSString* imageType;
-
-@end
-
 @implementation DCMPix
 
-@synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage;
+@synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage, modalityString;
 @synthesize frameNo, notAbleToLoadImage, shutterPolygonal, SOPClassUID, frameofReferenceUID;
 @synthesize minValueOfSeries, maxValueOfSeries, factorPET2SUV, slope, offset;
 @synthesize isRGB, pwidth = width, pheight = height, checking;
@@ -3382,7 +3376,9 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
             yearOldAcquisition = [[imageObj valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
         
+        #ifdef OSIRIX_VIEWER
         [self loadCustomImageAnnotationsDBFields];
+        #endif
         
 		savedHeightInDB = [[imageObj valueForKey:@"storedHeight"] intValue];
 		savedWidthInDB = [[imageObj valueForKey:@"storedWidth"] intValue];
@@ -6684,7 +6680,7 @@ END_CREATE_ROIS:
 	if (!cineRate && val && val->a && validAPointer( elemType)) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 	
 	// Ultrasounds pixel spacing
-	if( [modalityString isEqualToString:@"US"])
+	if( [self.modalityString isEqualToString:@"US"])
 	{
 		val = Papy3GetElement (theGroupP, papSequenceofUltrasoundRegionsGr, &nbVal, &elemType);
 		if ( val != NULL)
@@ -7551,7 +7547,7 @@ END_CREATE_ROIS:
 		{
 			UValue_T *val3, *tmpVal3;
 			
-			modalityString = nil;
+			self.modalityString = nil;
 			
 			imageNb = 1 + frameNo; 
 			
@@ -7636,7 +7632,7 @@ END_CREATE_ROIS:
 				}
 				
 				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
-				if ( val && val->a && validAPointer( elemType)) modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+				if ( val && val->a && validAPointer( elemType)) self.modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 				
 				val = Papy3GetElement (theGroupP, papSOPClassUIDGr, &nbVal, &elemType);
 				if ( val && val->a && validAPointer( elemType)) self.SOPClassUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
@@ -8484,7 +8480,7 @@ END_CREATE_ROIS:
 								
 								if( gArrPhotoInterpret [fileNb] == MONOCHROME1) // INVERSE IMAGE!
 								{
-									if( [modalityString isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [modalityString isEqualToString:@"NM"] == YES))
+									if( [self.modalityString isEqualToString:@"PT"] == YES || ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpacityTableNM"] == YES && [self.modalityString isEqualToString:@"NM"] == YES))
 									{
 										inverseVal = NO;
 									}
@@ -12325,8 +12321,10 @@ END_CREATE_ROIS:
 {
 	[checking lock];
 	
-	if( shutterPolygonal) free( shutterPolygonal);
+	if( shutterPolygonal)
+        free( shutterPolygonal);
 	
+    [modalityString release];
 	[transferFunction release];
 	[positionerPrimaryAngle release];
 	[positionerSecondaryAngle release];
@@ -12344,7 +12342,6 @@ END_CREATE_ROIS:
 	[generatedName release];
 	[SOPClassUID release];
 	[frameofReferenceUID release];
-    
     [imageType release];
 	
 	if( fExternalOwnedImage == nil)
@@ -12754,7 +12751,7 @@ END_CREATE_ROIS:
     NSDictionary *annotationsForModality = nil;
     @synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
     {
-        annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: modalityString];
+        annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: self.modalityString];
         
         if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
         if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
@@ -12847,7 +12844,7 @@ END_CREATE_ROIS:
 		NSDictionary *annotationsForModality = nil;
 		@synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
 		{
-			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: modalityString];
+			annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey: self.modalityString];
 			
 			if(!annotationsForModality) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];
 			if([[annotationsForModality objectForKey:@"sameAsDefault"] intValue]==1) annotationsForModality = [gCUSTOM_IMAGE_ANNOTATIONS objectForKey:@"Default"];

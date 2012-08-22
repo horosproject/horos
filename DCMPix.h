@@ -213,7 +213,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property (readonly) NSRecursiveLock *checking;
 @property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
 
-@property(readonly,retain) NSString* imageType;
+@property(retain) NSString* imageType, *modalityString;
 
 // Dimensions in pixels
 @property (nonatomic) long pwidth, pheight;
@@ -678,7 +678,6 @@ Note setter is different to not break existing usage. :-( */
 #endif
 
 #ifdef OSIRIX_VIEWER
-
 /** Custom Annotations */
 - (void)loadCustomImageAnnotationsDBFields;
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;

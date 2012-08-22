@@ -2394,11 +2394,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 }
 
-- (void) resetLoadingPause:(id) sender
-{
-	[[self windowController] setLoadingPause: NO];
-}
-
 - (void) setIndex:(short) index
 {
 	[drawLock lock];
@@ -2410,10 +2405,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		BOOL	keepIt;
 		
 		[self stopROIEditing];
-			
-		if( [self is2DViewer] == YES)
-			[[self windowController] setLoadingPause: YES];
-			
+		
 		[[self window] setAcceptsMouseMovedEvents: YES];
 
 		if( dcmPixList && index > -1 && [dcmPixList count] > 0)
@@ -2501,12 +2493,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			[curROI release];
 			curROI = nil;
 			[self loadTextures];
-		}
-		
-		if( [self is2DViewer] == YES)
-		{
-			[NSObject cancelPreviousPerformRequestsWithTarget: self selector: @selector( resetLoadingPause:) object: nil];
-			[self performSelector: @selector( resetLoadingPause:) withObject:nil afterDelay: 0.5];
 		}
 		
 		NSEvent *event = [[NSApplication sharedApplication] currentEvent];
