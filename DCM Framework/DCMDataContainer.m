@@ -204,10 +204,12 @@ void signal_EXC(int sig_num)
 
 - (id)init{
 	if (self = [super init])
+    {
 		dicomData = [[NSMutableData data] retain];
 		_ptr = (unsigned char *)[dicomData bytes];
 		transferSyntaxForMetaheader = [[DCMTransferSyntax ExplicitVRLittleEndianTransferSyntax] retain];
 		[self initValues];
+    }
 	return self;
 }
 
@@ -592,7 +594,6 @@ void signal_EXC(int sig_num)
 - (NSMutableArray *)nextDateTimesWithLength:(int)length{
 	NSException *exception = [self testForLength:length];
 	//NSString *format;
-	NSRange range = {position, length};
 	NSMutableArray *times = [NSMutableArray array];
 	NSEnumerator *enumerator;
 	if (!exception) {

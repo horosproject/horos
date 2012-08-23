@@ -66,7 +66,7 @@
 	[addressTextField.cell setPlaceholderString:NSUserDefaults.defaultWebPortalAddress];
 	[portTextField.cell setPlaceholderString:[NSNumber numberWithInteger:NSUserDefaults.webPortalPortNumber].stringValue];
 	
-	[usersTable setSortDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]]];
+	[usersTable setSortDescriptors:[NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending:YES selector:@selector(localizedCaseInsensitiveCompare:)]]];
 }
 
 - (NSString*) UniqueLabelForSelectedServer;

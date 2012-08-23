@@ -1168,7 +1168,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	[response.tokens setObject:NSLocalizedString(@"Administration", @"Web Portal, admin, index, title") forKey:@"PageTitle"];
     
     // Ne faut-il pas un lock? Si. On switch to database objectsforentity et le lock est là.
-	[response.tokens setObject:[[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]]] forKey:@"Users"];
+	[response.tokens setObject:[[self.portal.database objectsForEntity:self.portal.database.userEntity] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]] forKey:@"Users"];
 	
 	response.templateString = [self.portal stringForPath:@"admin/index.html"];
 	response.mimeType = @"text/html";

@@ -44,7 +44,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 
 - (id) initWithPixList: (NSArray*) pix : (NSArray*) pixToSubstract :(NSArray*) files :(NSData*) vData :(ViewerController*) vC :(ViewerController*) bC :(LLScoutViewer*)sV;
 {
-	[super initWithWindowNibName:@"LLMPR"];
+	self = [super initWithWindowNibName:@"LLMPR"];
 
 	viewer = [vC retain]; // released in super-class
 	notInjectedViewer = [bC retain];

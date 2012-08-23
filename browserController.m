@@ -604,7 +604,7 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
-    return [_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+    return [db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
 }
 
 #pragma mark-
@@ -839,12 +839,11 @@ static NSConditionLock *threadLock = nil;
 	}
 	
 	NSMutableArray *objects = [NSMutableArray array];
-	NSMutableArray *files;
 	
 	if( matrixThumbnails)
-		files = [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
+        [self filesForDatabaseMatrixSelection: objects onlyImages: NO];
 	else
-		files = [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
+        [self filesForDatabaseOutlineSelection: objects onlyImages: NO];
 	
 	if( [sender representedObject]) // Only selected rule
 	{
@@ -6197,11 +6196,7 @@ static NSConditionLock *threadLock = nil;
 					NSMutableArray *children =  [NSMutableArray array];
 					
 					for ( int i = 0; i < count; i++)
-					{
                         [children addObject: [[self childrenArray: item] objectAtIndex:i]];
-                        
-                        NSLog( @"%@", [children.lastObject valueForKey: @"id"]);
-                    }
 					
 					[self viewerDICOMInt :NO  dcmFile:children viewer:nil];
 				}
@@ -8170,7 +8165,6 @@ static BOOL withReset = NO;
             }
             @finally {
                 [idatabase unlock];
-                [NSThread sleepForTimeInterval: 0.01];
             }
             // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
             [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];

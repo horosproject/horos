@@ -1052,8 +1052,9 @@ static float deg2rad = M_PI / 180.0;
 - (void) assistedCurvedPath:(NSNotification*) note
 {
     unsigned int nodeCount = [curvedPath.nodes count];
-    if ( nodeCount > 1) {
-        WaitRendering* waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)];
+    if ( nodeCount > 1)
+    {
+        WaitRendering* waiting = [[[WaitRendering alloc] init:NSLocalizedString(@"Finding Path...", nil)] autorelease];
         [waiting showWindow:self];
         N3AffineTransform patient2VolumeDataTransform = cprVolumeData.volumeTransform;
         N3AffineTransform volumeData2PatientTransform = N3AffineTransformInvert(patient2VolumeDataTransform);
@@ -1096,8 +1097,7 @@ static float deg2rad = M_PI / 180.0;
             else if(err==ERROR_DISTTRANSNOTFINISH)
             {
                 [waiting close];
-                [waiting release];
-                waiting = [[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)];
+                waiting = [[[WaitRendering alloc] init:NSLocalizedString(@"Distance Transform...", nil)] autorelease];
                 [waiting showWindow:self];
                 
                 for(unsigned int i=0; i<5; i++)
@@ -1119,11 +1119,13 @@ static float deg2rad = M_PI / 180.0;
                 if(err==ERROR_CANNOTFINDPATH)
                 {
                     NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    [waiting close];
                     return;
                 }
                 else if(err==ERROR_DISTTRANSNOTFINISH)
                 {
                     NSRunAlertPanel(NSLocalizedString(@"Unexpected error", nil), NSLocalizedString(@"Path Assistant failed to initialize!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                    [waiting close];
                     return;
                 }        
             }
@@ -1148,7 +1150,6 @@ static float deg2rad = M_PI / 180.0;
         bottomTransverseView.curvedPath = curvedPath;
         
         [waiting close];
-        [waiting release];
     }
     else {
         NSLog(@"Not enough points to launch assistant");

@@ -974,7 +974,7 @@ extern int delayedTileWindows;
     }
     else if( editingActivated == YES && modifiedValues.count > 0)
     {
-        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to stop editing the fieds? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Cancel Modifications", nil), NSLocalizedString(@"Continue Editing", nil), nil) == NSAlertDefaultReturn)
+        if( NSRunInformationalAlertPanel( NSLocalizedString( @"Cancel modifications", nil), NSLocalizedString(@"Are you sure you want to stop editing the fields? The modifications have not been applied. The DICOM files will NOT be modified.", nil), NSLocalizedString(@"Cancel Modifications", nil), NSLocalizedString(@"Continue Editing", nil), nil) == NSAlertDefaultReturn)
 		{
             [modificationsToApplyArray removeAllObjects];
             [modifiedValues removeAllObjects];

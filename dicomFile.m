@@ -3323,6 +3323,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                         }
                     }
                 }
+                
+                if( commentsField)
+                    [dicomElements setObject: commentsField forKey:@"commentsAutoFill"];
 			}
             
 //			if( CHECKFORLAVIM == YES)
