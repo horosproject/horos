@@ -2041,16 +2041,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				
 			if (postNotifications)
             {
-				if ([addedImageObjects count] > 0)  // && generatedByOsiriX == NO)
+				if ([addedImageObjects count] > 0 && generatedByOsiriX == NO)
                 {
 					growlString = [NSString stringWithFormat:NSLocalizedString(@"Patient: %@\r%@ to the database", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], N2LocalizedSingularPluralCount(addedImageObjects.count, @"image added", @"images added")];
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
-				
-				if (self.isLocal)
-					[self applyRoutingRules:nil toImages:addedImageObjects];
 			}
-			
+            if (self.isLocal)
+                [self applyRoutingRules:nil toImages:addedImageObjects];
 		}
 		@catch( NSException *ne)
 		{
