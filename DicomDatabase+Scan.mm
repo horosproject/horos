@@ -310,7 +310,21 @@ static NSString* _dcmElementKey(DcmElement* element) {
 
 -(NSArray*)scanDicomdirAt:(NSString*)path withPaths:(NSArray*)allpaths pathsToScanAnyway:(NSMutableArray*)pathsToScanAnyway {
 	NSThread* thread = [NSThread currentThread];
-
+    
+    // Test DICOMDIR validity on a separate process...
+    NSTask *aTask = [[[NSTask alloc] init] autorelease];
+    [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+    [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
+    [aTask launch];
+    while( [aTask isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
+    
+    if( [aTask terminationStatus] == 0)
+    {
+        NSLog( @"****** failed to read DICOMDIR");
+        return nil;
+    }
+    
 	DcmDicomDir dcmdir([path fileSystemRepresentation]);
 	DcmDirectoryRecord& record = dcmdir.getRootRecord();
 	NSMutableArray* items = [self _itemsInRecord:&record basePath:[path stringByDeletingLastPathComponent]];
@@ -402,6 +416,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             {
                 NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
                 thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
+                
                 dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths pathsToScanAnyway:pathsToScanAnyway];
             }
         }

@@ -291,7 +291,7 @@ static volatile BOOL waitForRunningProcess = NO;
 @synthesize TimeFormat, TimeWithSecondsFormat, temporaryNotificationEmail, customTextNotificationEmail;
 @synthesize DateTimeWithSecondsFormat, matrixViewArray, oMatrix, testPredicate;
 @synthesize databaseOutline, albumTable, comparativePatientUID, distantStudyMessage;
-@synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName;
+@synthesize bonjourSourcesBox, timeIntervalType, smartAlbumDistantName, selectedAlbumName;
 @synthesize bonjourBrowser, pathToEncryptedFile, comparativeStudies, distantTimeIntervalStart, distantTimeIntervalEnd;
 @synthesize searchString = _searchString, fetchPredicate = _fetchPredicate, distantSearchType, distantSearchString;
 @synthesize filterPredicate = _filterPredicate, filterPredicateDescription = _filterPredicateDescription;
@@ -1331,7 +1331,10 @@ static NSConditionLock *threadLock = nil;
 			[cachedFilesForDatabaseOutlineSelectionTreeObjects release]; cachedFilesForDatabaseOutlineSelectionTreeObjects = nil;
 			[cachedFilesForDatabaseOutlineSelectionIndex release]; cachedFilesForDatabaseOutlineSelectionIndex = nil;
 			
-            _cachedAlbumsContext = nil;
+            @synchronized (self)
+            {
+                _cachedAlbumsContext = nil;
+            }
             
 			[[LogManager currentLogManager] checkLogs: nil];
 			[self resetLogWindowController];
@@ -2798,11 +2801,6 @@ static NSConditionLock *threadLock = nil;
 		[(RemoteDicomDatabase*)_database initiateUpdate];
 }
 
-- (void) reloadAlbumTableData
-{
-	[albumTable reloadData];
-}
-
 - (void)_computeNumberOfStudiesForAlbumsThread
 {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -2824,7 +2822,7 @@ static NSConditionLock *threadLock = nil;
         _computingNumberOfStudiesForAlbums = YES;
         
         [NSThread currentThread].name = NSLocalizedString( @"Compute Albums...", nil);
-        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]]; // TO BE REMOVED: just to analyze the number of calls to this function
+        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
         
         DicomDatabase* idatabase = [self.database independentDatabase];
         if (!idatabase)
@@ -2929,7 +2927,7 @@ static NSConditionLock *threadLock = nil;
                         if( max > NoOfStudies.count)
                             max = NoOfStudies.count;
                         [_albumNoOfStudiesCache replaceObjectsInRange: NSMakeRange( 0, max) withObjectsFromArray: NoOfStudies];
-                        [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
+                        [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO];
                     }
                 }
                 
@@ -2941,7 +2939,7 @@ static NSConditionLock *threadLock = nil;
             {
                 [_albumNoOfStudiesCache removeAllObjects];
                 [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
-                [self performSelectorOnMainThread: @selector(reloadAlbumTableData) withObject: nil waitUntilDone: NO];
+                [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO];
             }
         }
         @catch (NSException * e)
@@ -3787,9 +3785,7 @@ static NSConditionLock *threadLock = nil;
     
     [NSThread currentThread].name = @"Search For Smart Album Distant Studies";
     
-    NSArray *albumArray = self.albumArray;
-    
-    if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]]) // There was maybe other locks in the queue...
+    if( [albumName isEqualToString: self.selectedAlbumName]) // There was maybe other locks in the queue...
     {
         NSLog( @"Search album: %@", albumName);
         
@@ -3812,7 +3808,7 @@ static NSConditionLock *threadLock = nil;
             
             [searchForComparativeStudiesLock lock];
             
-            if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]] && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue...
+            if( [albumName isEqualToString: self.selectedAlbumName] && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue...
             {
                 id lastObjectInQueue = nil;
                 
@@ -3838,7 +3834,7 @@ static NSConditionLock *threadLock = nil;
                         
                         self.smartAlbumDistantName = albumName;
                         
-                        if( [albumName isEqualToString: [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"]])
+                        if( [albumName isEqualToString: self.selectedAlbumName])
                             [self performSelectorOnMainThread: @selector( _refreshDatabaseDisplay) withObject: nil waitUntilDone: NO];
                     }
                     @catch (NSException* e)
@@ -3860,8 +3856,12 @@ static NSConditionLock *threadLock = nil;
     [pool release];
 }
 
-- (void) searchForComparativeStudies: (DicomStudy*) studySelected
+- (void) searchForComparativeStudies: (NSManagedObjectID*) studySelectedID
 {
+    DicomDatabase *idatabase = [self.database independentDatabase];
+    
+    DicomStudy *studySelected = [idatabase objectWithID: studySelectedID];
+    
     if( studySelected.patientUID.length == 0)
         return;
     
@@ -3880,16 +3880,16 @@ static NSConditionLock *threadLock = nil;
         {
             // Local studies
             NSArray *localStudies = nil;
-            [_database lock];
+            [idatabase lock];
             @try
             {
-                localStudies = [_database objectsForEntity: _database.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", studySelected.patientUID]];
+                localStudies = [idatabase objectsForEntity: idatabase.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", studySelected.patientUID]];
             }
             @catch (NSException* e)
             {
                 NSLog( @"*** Comparative Studies exception: %@", e);
             }
-            [_database unlock];
+            [idatabase unlock];
             
             mergedStudies = [NSMutableArray arrayWithArray: localStudies];
             [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
@@ -4030,7 +4030,16 @@ static NSConditionLock *threadLock = nil;
     
     dontSelectStudyFromComparativeStudies = YES;
     
-    self.comparativeStudies = [NSArray arrayWithArray: newStudies];
+    NSMutableArray *mainContextStudies = [NSMutableArray array];
+    for( id study in newStudies)
+    {
+        if( [study isKindOfClass: [DicomStudy class]])
+            [mainContextStudies addObject: [self.database objectWithID: [study objectID]]];
+        else
+            [mainContextStudies addObject: study];
+    }
+    
+    self.comparativeStudies = mainContextStudies;
     [comparativeTable reloadData];
     
     if( studySelected.name)
@@ -4061,7 +4070,7 @@ static NSConditionLock *threadLock = nil;
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
         
         [self computeTimeInterval];
     }
@@ -4318,7 +4327,7 @@ static NSConditionLock *threadLock = nil;
                     [comparativeTable reloadData];
                     [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: NSLocalizedString( @"History", nil)];
                     
-                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject:studySelected];
+                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
                 }
                 else
                 {
@@ -4799,7 +4808,7 @@ static NSConditionLock *threadLock = nil;
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: studySelected];
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
     }
 }
 
@@ -9063,6 +9072,16 @@ static BOOL withReset = NO;
                 if( albumTable.selectedRow > 0)	// We cannot delete the first item !
                 {
                     [context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
+                    @synchronized (self)
+                    {
+                        _cachedAlbumsContext = nil;
+                    }
+                    @synchronized(_albumNoOfStudiesCache)
+                    {
+                        [_albumNoOfStudiesCache removeAllObjects];
+                        [_distantAlbumNoOfStudiesCache removeAllObjects];
+                        [albumTable reloadData];
+                    }
                 }
                 
                 [_database save];
@@ -9807,6 +9826,13 @@ static BOOL needToRezoom;
     {
         if (aNotification.object == albumTable)
         {
+            NSArray	*albumArray = self.albumArray;
+            
+            self.selectedAlbumName = nil;
+            
+            if( [albumArray count] > albumTable.selectedRow)
+                self.selectedAlbumName = [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"];
+            
             // Clear search field
             [self setSearchString: nil];
             
@@ -9818,8 +9844,6 @@ static BOOL needToRezoom;
             // Distant Smart Albums
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] && albumTable.selectedRow > 0)
             {
-                NSArray	*albumArray = self.albumArray;
-                
                 if( [albumArray count] > albumTable.selectedRow)
                 {
                     DicomAlbum *album = [albumArray objectAtIndex: albumTable.selectedRow];

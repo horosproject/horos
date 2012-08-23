@@ -93,6 +93,7 @@ extern NSString* O2AlbumDragType;
 	NSMutableArray*         _albumNoOfStudiesCache;
     NSArray*                _cachedAlbums;
     NSManagedObjectContext* _cachedAlbumsContext;
+    NSString                *selectedAlbumName;
 	
 	NSArray							*outlineViewArray, *originalOutlineViewArray;
 	NSArray							*matrixViewArray;
@@ -268,7 +269,7 @@ extern NSString* O2AlbumDragType;
 @property(readonly) BonjourBrowser *bonjourBrowser;
 @property(readonly) const char *cfixedDocumentsDirectory __deprecated, *cfixedIncomingDirectory __deprecated, *cfixedTempNoIndexDirectory __deprecated, *cfixedIncomingNoIndexDirectory __deprecated;
 
-@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage, *distantSearchString;
+@property(retain) NSString *searchString, *CDpassword, *pathToEncryptedFile, *passwordForExportEncryption, *temporaryNotificationEmail, *customTextNotificationEmail, *comparativePatientUID, *smartAlbumDistantName, *distantStudyMessage, *distantSearchString, *selectedAlbumName;
 @property(retain) NSPredicate *fetchPredicate, *testPredicate;
 @property(retain) NSArray *comparativeStudies;
 @property(readonly) NSPredicate *filterPredicate;

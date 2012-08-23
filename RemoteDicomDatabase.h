@@ -26,6 +26,7 @@
 	NSTimer* _updateTimer;
 	NSTimeInterval _timestamp;
     MPSemaphoreID _connectionsSemaphoreId;
+    NSString *password;
 }
 
 @property(readonly,retain) NSString* address;

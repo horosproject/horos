@@ -33,7 +33,7 @@
 
 @interface RemoteDicomDatabase ()
 
-@property(readwrite,retain) NSString* address;
+@property(readwrite,retain) NSString* address, *password;
 @property(readwrite) NSInteger port;
 @property(readwrite,retain) NSHost* host;
 
@@ -135,6 +135,7 @@
 	
     MPDeleteSemaphore(_connectionsSemaphoreId);
     
+    self.password = nil;
 	self.address = nil;
 	self.host = nil;
 	
@@ -289,9 +290,9 @@
 	return NSSwapBigIntToHost(*((int*)response.bytes))? YES : NO;
 }
 
--(BOOL)fetchIsRightPassword:(NSString*)password {
+-(BOOL)fetchIsRightPassword:(NSString*)pwd {
 	NSMutableData* request = [NSMutableData dataWithBytes:"PASWD" length:6];
-	[RemoteDicomDatabase _data:request appendStringUTF8:password];
+	[RemoteDicomDatabase _data:request appendStringUTF8:pwd];
 	NSData* response = [self synchronousRequest:request urgent:YES];
 	if (!response.length) [NSException raise:NSObjectInaccessibleException format:@"%@", NSLocalizedString(@"Failed to connect to the remote host. Is database sharing activated on the distant computer?", nil)];
 	if (response.length != sizeof(int)) [NSException raise:NSInternalInconsistencyException format:@"%@", NSLocalizedString(@"Invalid response data from remote host.", nil)];
@@ -306,6 +307,8 @@
 	return NSSwapBigIntToHost(*((int*)response.bytes));
 }
 
+@synthesize password;
+
 -(NSString*)fetchDatabaseIndex {
 	NSThread* thread = [NSThread currentThread];
 	thread.status = NSLocalizedString(@"Negotiating with remote OsiriX...", nil);
@@ -319,13 +322,18 @@
 
 	BOOL isPasswordProtected = [self fetchIsPasswordProtected];
 	// if (isPasswordProtected) DLog(@"RDD is password protected", version);
-	NSString* password = nil;
-	if (isPasswordProtected) {
-		password = [[BrowserController currentBrowser] askPassword]; // TODO: awww
-		BOOL isRightPassword = [self fetchIsRightPassword:password];
+    
+	if (isPasswordProtected)
+    {
+        if( self.password == nil)
+            self.password = [[BrowserController currentBrowser] askPassword];
+        
+		BOOL isRightPassword = [self fetchIsRightPassword: self.password];
 		if (!isRightPassword)
+        {
+            self.password = nil;
 			[NSException raise:NSInvalidArgumentException format:@"%@", NSLocalizedString(@"Wrong password for remote database.", nil)];
-		// else DLog(@"RDD password ok");
+        }
 	}
 	
 	NSUInteger databaseIndexSize = [self fetchDatabaseIndexSize];

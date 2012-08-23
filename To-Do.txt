@@ -1,8 +1,7 @@
-- Test Bonjour password / Bonjour Browsing
-- Delete albums during comparative/album search?
-- Bonjour didRemove: BrowserSourcesHelper netServiceBrowser:didRemoveService:moreComing
+- Test Bonjour Browsing
 - Routing: study status no longer updates on remote machines
-- DICOMDIR: first test it on Decompress process...
+- DICOMDIR testing process?
+
 
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib

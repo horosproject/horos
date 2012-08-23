@@ -23,7 +23,7 @@
 #include "djrplol.h"
 #include "dcpixel.h"
 #include "dcrlerp.h"
-
+#include "dcdicdir.h"
 #include "dcdatset.h"
 #include "dcmetinf.h"
 #include "dcfilefo.h"
@@ -460,6 +460,15 @@ int main(int argc, const char *argv[])
 			}
 		}
 		
+        if( [what isEqualToString: @"testDICOMDIR"])
+        {
+            DcmDicomDir dcmdir( [[NSString stringWithUTF8String: argv[ 1]] fileSystemRepresentation]);
+            DcmDirectoryRecord& record = dcmdir.getRootRecord();
+            
+            for (unsigned int i = 0; i < record.card(); ++i)
+                DcmElement* element = record.getElement(i);
+        }
+        
 # pragma mark testFiles
 		if( [what isEqualToString: @"testFiles"])
 		{

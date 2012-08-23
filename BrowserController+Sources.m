@@ -738,7 +738,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             [_browser.sources removeObject:dni];
     }
 	
-    // if the disappearing node is active, seelct the default DB
+    // if the disappearing node is active, select the default DB
 	if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:dni])
 		[_browser setDatabase:DicomDatabase.defaultDatabase];
 	
