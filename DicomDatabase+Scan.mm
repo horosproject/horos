@@ -319,7 +319,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     while( [aTask isRunning])
         [NSThread sleepForTimeInterval: 0.1];
     
-    if( [aTask terminationStatus] == 0)
+    if( [aTask terminationStatus] != 0)
     {
         NSLog( @"****** failed to read DICOMDIR");
         return nil;
