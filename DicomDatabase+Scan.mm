@@ -321,7 +321,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
     
     if( [aTask terminationStatus] != 0)
     {
-        NSLog( @"****** failed to read DICOMDIR");
+        NSLog( @"****** failed to read DICOMDIR: %@", path);
         return nil;
     }
     

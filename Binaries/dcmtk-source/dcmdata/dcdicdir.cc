@@ -61,8 +61,6 @@ int mkstemp(char *);
 #undef timeval
 #endif
 
-static int protectionAboutInfiniteRecusive = 0;
-
 #include "ofstream.h"
 #include "dcdefine.h"
 #include "dcdicdir.h"
@@ -406,14 +404,7 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 {
     OFCondition l_error = EC_Normal;
     
-    protectionAboutInfiniteRecusive++;
-    
-    if( protectionAboutInfiniteRecusive > 100)
-    {
-        l_error = EC_IllegalCall;
-        printf( "******** DcmDicomDir::moveRecordToTree protectionAboutInfiniteRecusive > 100\n");
-    }
-    else if (toRecord  == NULL)
+    if (toRecord  == NULL)
         l_error = EC_IllegalCall;
     else if ( startRec != NULL )
     {
@@ -453,8 +444,6 @@ DCM_dcmdataDebug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) 
         moveRecordToTree( nextRec, fromDirSQ, toRecord );
     }
     
-    protectionAboutInfiniteRecusive--;
-    
     return l_error;
 }
 
@@ -492,8 +481,6 @@ OFCondition DcmDicomDir::convertLinearToTree()
     DcmDataset &dset = getDataset();    // guaranteed to exist
     DcmSequenceOfItems &localDirRecSeq = getDirRecSeq( dset );
     OFCondition l_error = resolveAllOffsets( dset );
-    
-    protectionAboutInfiniteRecusive = 0;
     
     // search for first directory record:
     DcmDirectoryRecord *firstRootRecord = NULL;

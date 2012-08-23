@@ -462,11 +462,15 @@ int main(int argc, const char *argv[])
 		
         if( [what isEqualToString: @"testDICOMDIR"])
         {
+            NSLog( @"-- Testing DICOMDIR: %@", [NSString stringWithUTF8String: argv[ 1]]);
+            
             DcmDicomDir dcmdir( [[NSString stringWithUTF8String: argv[ 1]] fileSystemRepresentation]);
             DcmDirectoryRecord& record = dcmdir.getRootRecord();
             
             for (unsigned int i = 0; i < record.card(); ++i)
                 DcmElement* element = record.getElement(i);
+            
+//            *(long*) 0x00 = 0xDEADBEEF;
         }
         
 # pragma mark testFiles

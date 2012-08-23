@@ -1,6 +1,5 @@
 - Test Bonjour Browsing
 - Routing: study status no longer updates on remote machines
-- DICOMDIR testing process?
 - Mutli-screen series order?
 
 - Retina: VR (implication for MPR, CPR), SR
