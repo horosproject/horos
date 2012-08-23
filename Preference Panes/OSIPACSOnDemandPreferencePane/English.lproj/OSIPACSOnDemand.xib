@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12A269</string>
+		<string key="IBDocument.SystemVersion">12B19</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
 		<string key="IBDocument.AppKitVersion">1187</string>
 		<string key="IBDocument.HIToolboxVersion">624.00</string>
@@ -2448,10 +2448,10 @@ OAA</bytes>
 						<int key="objectID">314</int>
 						<reference key="object" ref="382058554"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="745940580"/>
 							<reference ref="4887547"/>
 							<reference ref="172482458"/>
 							<reference ref="351758527"/>
+							<reference ref="745940580"/>
 						</array>
 						<reference key="parent" ref="827468134"/>
 					</object>

@@ -3726,6 +3726,9 @@ static NSConditionLock *threadLock = nil;
 
 - (NSArray*) distantStudiesForSmartAlbum: (NSString*) albumName
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return [NSArray array];
+    
 #ifndef OSIRIX_LIGHT
     if( !searchForComparativeStudiesLock)
         searchForComparativeStudiesLock = [NSRecursiveLock new];
@@ -3856,11 +3859,16 @@ static NSConditionLock *threadLock = nil;
     [pool release];
 }
 
-- (void) searchForComparativeStudies: (NSManagedObjectID*) studySelectedID
+- (void) searchForComparativeStudies: (id) studySelectedID
 {
     DicomDatabase *idatabase = [self.database independentDatabase];
     
-    DicomStudy *studySelected = [idatabase objectWithID: studySelectedID];
+    DicomStudy *studySelected = nil;
+    
+    if( [studySelectedID isKindOfClass: [NSManagedObjectID class]])
+        studySelected = [idatabase objectWithID: studySelectedID];
+    else
+        studySelected = studySelectedID; //DCMTKStudyQueryNode
     
     if( studySelected.patientUID.length == 0)
         return;
@@ -4070,7 +4078,13 @@ static NSConditionLock *threadLock = nil;
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
+        id object = nil;
+        if( [studySelected isKindOfClass: [DicomStudy class]])
+            object = [studySelected objectID];
+        else 
+            object = studySelected; // DCMTKStudyQueryNode
+        
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
         
         [self computeTimeInterval];
     }
@@ -4327,7 +4341,13 @@ static NSConditionLock *threadLock = nil;
                     [comparativeTable reloadData];
                     [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: NSLocalizedString( @"History", nil)];
                     
-                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
+                    id object = nil;
+                    if( [studySelected isKindOfClass: [DicomStudy class]])
+                        object = [studySelected objectID];
+                    else 
+                        object = studySelected; // DCMTKStudyQueryNode
+                    
+                    [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
                 }
                 else
                 {
@@ -4808,7 +4828,13 @@ static NSConditionLock *threadLock = nil;
         NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
         DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: [studySelected objectID]];
+        id object = nil;
+        if( [studySelected isKindOfClass: [DicomStudy class]])
+            object = [studySelected objectID];
+        else
+            object = studySelected;
+        
+        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
     }
 }
 
@@ -6171,7 +6197,11 @@ static NSConditionLock *threadLock = nil;
 					NSMutableArray *children =  [NSMutableArray array];
 					
 					for ( int i = 0; i < count; i++)
-						[children addObject:[[self childrenArray: item] objectAtIndex:i]];
+					{
+                        [children addObject: [[self childrenArray: item] objectAtIndex:i]];
+                        
+                        NSLog( @"%@", [children.lastObject valueForKey: @"id"]);
+                    }
 					
 					[self viewerDICOMInt :NO  dcmFile:children viewer:nil];
 				}
