@@ -153,8 +153,7 @@
 	
 	runBurnAnimation = NO;
 	
-	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidMountNotification object:nil];
-	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
+	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
     
 	[anonymizedFiles release];
 	[filesToBurn release];
