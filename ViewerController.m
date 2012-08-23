@@ -2694,7 +2694,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 #ifndef OSIRIX_LIGHT
 	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
 #endif
-
+    
+    [loadingThread cancel];
+    
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
 	[imageView stopROIEditingForce: YES];
