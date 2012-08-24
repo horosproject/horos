@@ -1049,6 +1049,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 -(void)initiateVolumeScan
 {
+    [_database release];
+    
 	_database = [[DicomDatabase databaseAtPath:self.location] retain];
     _database.isReadOnly = YES;
     _database.name = self.description;
