@@ -695,8 +695,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     	if (!bsk)
             return;
         
-        NSLog( @"Remove Service: %@ %@", service, bsk);
-        
+        NSLog( @"Remove Service: %@", bsk);
         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: bsk]];
         [_bonjourServices removeObject: bsk];
     }
@@ -756,7 +755,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         if ([[_browser sourceIdentifierForDatabase:_browser.database] isEqualToDataNodeIdentifier:dni])
             [_browser setDatabase:DicomDatabase.defaultDatabase];
 	
-        NSLog( @"Remove Service: %@ %@", service, bsk);
+        NSLog( @"Remove Service: %@", bsk);
         [_bonjourSources removeObjectAtIndex: [_bonjourServices indexOfObject: bsk]];
         [_bonjourServices removeObject: bsk];
     }
