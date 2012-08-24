@@ -1586,10 +1586,9 @@ return YES;
 				
 				for( i = from; i < to; i+=interval)
 				{
+                    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					@try 
 					{
-						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-						
 						NSDisableScreenUpdates();
 						[view setCrossPosition:x+i*deltaX+0.5 :y+i*deltaY+0.5];
 						[splitView display];
@@ -1602,8 +1601,6 @@ return YES;
 						
 						[splash incrementBy: 1];
 						
-						[pool release];
-						
 						if( [splash aborted])
 							break;
 					}
@@ -1611,6 +1608,9 @@ return YES;
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
+                    @finally {
+                        [pool release];
+                    }
 				}
 				
 				[view setCrossPosition:oldX+0.5 :oldY+0.5];

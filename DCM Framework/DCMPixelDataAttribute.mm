@@ -3645,18 +3645,26 @@ static inline int int_ceildivpow2(int a, int b) {
 				{
 					NSAutoreleasePool *subPool = [[NSAutoreleasePool alloc] init];
                     
-					NSRange range = NSMakeRange(i * frameLength, frameLength);
-                    
-                    void *ptr = malloc( range.length);
-                    if( ptr)
+                    @try
                     {
-                        memcpy( ptr, (unsigned char*) [rawData bytes] + range.location, range.length);
-                        [self addFrame: [NSMutableData dataWithBytesNoCopy: ptr length: range.length freeWhenDone: YES]];
-					}
-                    else
-                        NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+                        NSRange range = NSMakeRange(i * frameLength, frameLength);
+                        
+                        void *ptr = malloc( range.length);
+                        if( ptr)
+                        {
+                            memcpy( ptr, (unsigned char*) [rawData bytes] + range.location, range.length);
+                            [self addFrame: [NSMutableData dataWithBytesNoCopy: ptr length: range.length freeWhenDone: YES]];
+                        }
+                        else
+                            NSLog( @"****** NOT ENOUGH MEMORY ! UPGRADE TO OSIRIX 64-BIT");
+                    }
+                    @catch (NSException *exception) {
+                        NSLog( @"%@", exception);
+                    }
+                    @finally {
+                        [subPool release];
+                    }
                     
-                    [subPool release];
 				}
 			}
 		}

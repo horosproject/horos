@@ -2428,7 +2428,9 @@ return YES;
 						{
                             N2LogExceptionWithStackTrace(e);
 						}
-						[pool release];
+                        @finally {
+                            [pool release];
+                        }
 						
 						NSEnableScreenUpdates();
 						
@@ -2465,8 +2467,9 @@ return YES;
 						{
                             N2LogExceptionWithStackTrace(e);
 						}
-						
-						[pool release];
+						@finally {
+                            [pool release];
+                        }
 						
 						NSEnableScreenUpdates();
 						
@@ -2494,8 +2497,9 @@ return YES;
 						{
                             N2LogExceptionWithStackTrace(e);
 						}
-						
-						[pool release];
+						@finally {
+                            [pool release];
+                        }
 						
 						NSEnableScreenUpdates();
 						
@@ -2523,8 +2527,9 @@ return YES;
 						{
                             N2LogExceptionWithStackTrace(e);
 						}
-						
-						[pool release];
+						@finally {
+                            [pool release];
+                        }
 						
 						NSEnableScreenUpdates();
 						

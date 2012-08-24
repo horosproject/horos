@@ -63,14 +63,11 @@
 
 - (void)main
 {
-    NSAutoreleasePool *pool;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     double threadPriority;
     
     @try {
-        pool = [[NSAutoreleasePool alloc] init];
-        
         if ([self isCancelled]) {
-			[pool release];
             return;
         }
         
@@ -84,10 +81,11 @@
         }
         
         [NSThread setThreadPriority:threadPriority];
-        
-        [pool release];
     }
     @catch (...) {
+    }
+    @finally {
+        [pool release];
     }
 }
 

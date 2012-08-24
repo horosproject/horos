@@ -416,8 +416,9 @@ static NSRecursiveLock *DCMPixLoadingLock = nil;
 		{
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[pool release];
+		@finally {
+            [pool release];
+        }
 	}
 	
 	[pool release];
@@ -612,9 +613,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             
                             CVPixelBufferRef buffer = nil;
                             
+                            {
                             NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
                             if( im)
                                buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                            [im release];
+                            }
                             
                             [pool release];
                             

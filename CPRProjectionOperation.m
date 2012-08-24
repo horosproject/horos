@@ -41,7 +41,6 @@
 
 - (void)main
 {
-    NSAutoreleasePool *pool;
     float *floatBytes;
     CPRVolumeData *generatedVolume;
     NSInteger i;
@@ -50,17 +49,15 @@
 	N3AffineTransform volumeTransform;
 	CPRVolumeDataInlineBuffer inlineBuffer;
     
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
     @try {
-        pool = [[NSAutoreleasePool alloc] init];
-        
         if ([self isCancelled]) {
-			[pool release];
             return;
         }
         
 		if (_projectionMode == CPRProjectionModeNone) {
 			_generatedVolume = [_volumeData retain];
-			[pool release];
 			return;
 		}
 		
@@ -104,10 +101,11 @@
 		volumeTransform = N3AffineTransformConcat(_volumeData.volumeTransform, N3AffineTransformMakeScale(1.0, 1.0, 1.0/(CGFloat)_volumeData.pixelsDeep));
         _generatedVolume = [[CPRVolumeData alloc] initWithFloatBytesNoCopy:floatBytes pixelsWide:_volumeData.pixelsWide pixelsHigh:_volumeData.pixelsHigh pixelsDeep:1
                                                            volumeTransform:volumeTransform outOfBoundsValue:_volumeData.outOfBoundsValue freeWhenDone:YES];
-
-        [pool release];
     }
     @catch (...) {
+    }
+    @finally {
+        [pool release];
     }
 }
 

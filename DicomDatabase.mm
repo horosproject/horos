@@ -2277,8 +2277,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             N2LogExceptionWithStackTrace(e);
 		}
-		
-		[pool2 release];
+		@finally {
+            [pool2 release];
+        }
 	}
 	
     if (queue.operationCount) {
@@ -2841,8 +2842,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			thread.progress = 1.0*counter/studiesCount;
             
             NSAutoreleasePool	*poolLoop = [[NSAutoreleasePool alloc] init];
-			
-			
 			NSString *studyName = nil;
 			
 			@try

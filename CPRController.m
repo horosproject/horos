@@ -2710,76 +2710,83 @@ static float deg2rad = M_PI / 180.0;
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					if (self.exportRotationSpan == CPR180ExportRotationSpan)
-						angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * M_PI;
-					else
-						angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * 2.0*M_PI;
-					
-					if( self.exportImageFormat == CPR16BitExportImageFormat)
-					{
-                        if( cprType == CPRStraightenedType)
-                        {
-                            requestStraightened.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
-                            
-                            curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStraightened volumeData:cprView.volumeData];
-						}
+                    @try
+                    {
+                        if (self.exportRotationSpan == CPR180ExportRotationSpan)
+                            angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * M_PI;
                         else
+                            angle = ((CGFloat)i/(CGFloat)self.exportSequenceNumberOfFrames) * 2.0*M_PI;
+                        
+                        if( self.exportImageFormat == CPR16BitExportImageFormat)
                         {
-                            N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
-                            N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                            if( cprType == CPRStraightenedType)
+                            {
+                                requestStraightened.initialNormal = N3VectorApplyTransform(curvedPath.initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
+                                
+                                curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStraightened volumeData:cprView.volumeData];
+                            }
+                            else
+                            {
+                                N3Vector curveDirection = N3VectorSubtract([ curvedPath.bezierPath vectorAtEnd], [ curvedPath.bezierPath vectorAtStart]);
+                                N3Vector baseNormalVector = N3VectorNormalize(N3VectorCrossProduct( curvedPath.baseDirection, curveDirection));
+                                
+                                requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( angle, curveDirection));
+                                requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
+                                                                               [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                                
+                                curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStretched volumeData:cprView.volumeData];
+                            }
                             
-                            requestStretched.projectionNormal = N3VectorApplyTransform( baseNormalVector, N3AffineTransformMakeRotationAroundVector( angle, curveDirection));
-                            requestStretched.midHeightPoint = N3VectorLerp([ curvedPath.bezierPath topBoundingPlaneForNormal: requestStretched.projectionNormal].point, 
-                                                                           [ curvedPath.bezierPath bottomBoundingPlaneForNormal: requestStretched.projectionNormal].point, 0.5);
+                            if(curvedVolumeData)
+                            {
+                                imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:0];
+                                dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
+                                
+                                [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                                
+                                if( self.viewsPosition == VerticalPosition)
+                                    dicomExport.rotateRawDataBy90degrees = YES;
+                                
+                                [dicomExport setOffset:[imageRep offset]];
+                                [dicomExport setSigned:NO];
+                                
+                                [dicomExport setDefaultWWWL:windowWidth :windowLevel];
+                                
+                                if( [self isPlaneMeasurable])
+                                    [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+                                
+                                f = [dicomExport writeDCMFile: nil];
+                                if( f == nil)
+                                {
+                                    NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                                    break;
+                                }
+                                [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
+                            }
+                        }
+                        else // CPR8BitRGBExportImageFormat
+                        {
+                            [self CPRViewWillEditCurvedPath: mprView1];
+                            mprView1.curvedPath.initialNormal = N3VectorApplyTransform( initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
+                            [self CPRViewDidEditCurvedPath: mprView1];
                             
-                            curvedVolumeData = [CPRGenerator synchronousRequestVolume: requestStretched volumeData:cprView.volumeData];
-						}
-                        
-                        if(curvedVolumeData)
-						{
-							imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:0];
-							dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
-							
-							[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
-							
-                            if( self.viewsPosition == VerticalPosition)
-                                dicomExport.rotateRawDataBy90degrees = YES;
+                            [cprView waitUntilPixUpdate];
+                            // transverse view use synchronous generators, so this is no longer needed
+                            //						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                            //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
+                            //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
                             
-							[dicomExport setOffset:[imageRep offset]];
-							[dicomExport setSigned:NO];
-							
-							[dicomExport setDefaultWWWL:windowWidth :windowLevel];
-							
-                            if( [self isPlaneMeasurable])
-                                [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+                            BOOL exportSpacingAndOrigin = [self isPlaneMeasurable];
                             
-							f = [dicomExport writeDCMFile: nil];
-							if( f == nil)
-							{
-								NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-								break;
-							}
-							[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
-						}
-					}
-					else // CPR8BitRGBExportImageFormat
-					{
-						[self CPRViewWillEditCurvedPath: mprView1];
-						mprView1.curvedPath.initialNormal = N3VectorApplyTransform( initialNormal, N3AffineTransformMakeRotationAroundVector(angle, [curvedPath.bezierPath tangentAtStart]));
-						[self CPRViewDidEditCurvedPath: mprView1];
-						
-						[cprView waitUntilPixUpdate];
-                        // transverse view use synchronous generators, so this is no longer needed
-                        //						[topTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-                        //						[middleTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-                        //						[bottomTransverseView runMainRunLoopUntilAllRequestsAreFinished];
-						
-                        BOOL exportSpacingAndOrigin = [self isPlaneMeasurable];
-                        
-						[producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
-					}
-					
-					[pool release];
+                            [producedFiles addObject: [[cprView reformationView] exportDCMCurrentImage: dicomExport size: resizeImage views: views viewsRect: viewsRect exportSpacingAndOrigin: exportSpacingAndOrigin]];
+                        }
+                    }
+                    @catch (NSException *e) {
+                        NSLog( @"%@", e);
+                    }
+                    @finally {
+                        [pool release];
+                    }
 					
 					[progress incrementBy: 1];
 					if( [progress aborted])
@@ -2855,6 +2862,7 @@ static float deg2rad = M_PI / 180.0;
 						NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 						
                         //						if (self.exportImageFormat == CPR16BitExportImageFormat)
+                        @try
 						{  
                             if (self.exportReverseSliceOrder == NO)
                                 imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex:i];
@@ -2884,8 +2892,12 @@ static float deg2rad = M_PI / 180.0;
                             }
                             [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
                         }
-						
-						[pool release];
+						@catch (NSException *e) {
+                            NSLog( @"%@", e);
+                        }
+                        @finally {
+                            [pool release];
+                        }
 						
 						[progress incrementBy: 1];
 						if( [progress aborted])
@@ -2908,42 +2920,48 @@ static float deg2rad = M_PI / 180.0;
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 					
-					curvedVolumeData = [CPRGenerator synchronousRequestVolume: r volumeData:cprView.volumeData];
-					if(curvedVolumeData)
-					{
-						imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
-						
-						dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
-						
-						[dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
-						
-						[dicomExport setOffset:[imageRep offset]];
-						[dicomExport setSlope:[imageRep slope]];
-						[dicomExport setSigned:NO];
-						
-						[dicomExport setDefaultWWWL:windowWidth :windowLevel];
-						
-						[dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
-						
-                        [imageRep getOrientation:orientation];
-                        origin[0] = [imageRep originX];
-                        origin[1] = [imageRep originY];
-                        origin[2] = [imageRep originZ];
-                        
-                        [dicomExport setOrientation:orientation];
-                        [dicomExport setPosition:origin];
-						
-						f = [dicomExport writeDCMFile: nil];
-						if( f == nil)
-						{
-							NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
-							break;
-						}
-						[producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
-					}
-                    
-					[pool release];
-                    
+                    @try {
+                        curvedVolumeData = [CPRGenerator synchronousRequestVolume: r volumeData:cprView.volumeData];
+                        if(curvedVolumeData)
+                        {
+                            imageRep = [curvedVolumeData unsignedInt16ImageRepForSliceAtIndex: 0];
+                            
+                            dataPtr = (unsigned char *)[imageRep unsignedInt16Data];
+                            
+                            [dicomExport setPixelData:dataPtr samplesPerPixel:1 bitsPerSample:16 width:exportWidth height:exportHeight];
+                            
+                            [dicomExport setOffset:[imageRep offset]];
+                            [dicomExport setSlope:[imageRep slope]];
+                            [dicomExport setSigned:NO];
+                            
+                            [dicomExport setDefaultWWWL:windowWidth :windowLevel];
+                            
+                            [dicomExport setPixelSpacing:[imageRep pixelSpacingX]:[imageRep pixelSpacingY]];
+                            
+                            [imageRep getOrientation:orientation];
+                            origin[0] = [imageRep originX];
+                            origin[1] = [imageRep originY];
+                            origin[2] = [imageRep originZ];
+                            
+                            [dicomExport setOrientation:orientation];
+                            [dicomExport setPosition:origin];
+                            
+                            f = [dicomExport writeDCMFile: nil];
+                            if( f == nil)
+                            {
+                                NSRunCriticalAlertPanel( NSLocalizedString(@"Error", nil),  NSLocalizedString( @"Error during the creation of the DICOM File!", nil), NSLocalizedString(@"OK", nil), nil, nil);
+                                break;
+                            }
+                            [producedFiles addObject: [NSDictionary dictionaryWithObjectsAndKeys: f, @"file", nil]];
+                        }
+                    }
+                    @catch (NSException *e) {
+                        NSLog( @"%@", e);
+                    }
+                    @finally {
+                        [pool release];
+                    }
+					
 					[progress incrementBy: 1];
 					if( [progress aborted])
 						break;

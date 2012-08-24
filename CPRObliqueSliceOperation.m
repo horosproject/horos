@@ -104,7 +104,6 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
 
 - (void)main
 {
-    NSAutoreleasePool *pool;
     NSInteger i;
     NSInteger y;
     NSInteger z;
@@ -124,10 +123,10 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
     NSMutableSet *fillOperations;
 	NSOperationQueue *fillQueue;
     
-    pool = nil;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     @try {
-        pool = [[NSAutoreleasePool alloc] init];
+        
         
         if ([self isCancelled] == NO && self.request.pixelsHigh > 0) {        
             pixelsWide = self.request.pixelsWide;
@@ -161,7 +160,6 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
                 [self didChangeValueForKey:@"isFinished"];
                 [self didChangeValueForKey:@"didFail"];
                 
-                [pool release];
                 return;
             }
             
@@ -218,11 +216,8 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
             _operationFinished = YES;
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
-			[pool release];
             return;
         }
-        
-        [pool release];
     }
     @catch (...) {
         [self willChangeValueForKey:@"isFinished"];
@@ -231,6 +226,9 @@ static NSOperationQueue *_obliqueSliceOperationFillQueue = nil;
         _operationFinished = YES;
         [self didChangeValueForKey:@"isExecuting"];
         [self didChangeValueForKey:@"isFinished"];
+    }
+    @finally {
+        [pool release];
     }
 }
 

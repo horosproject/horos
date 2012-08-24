@@ -298,8 +298,6 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (void)_rebuildOSIROIs
 {
-	NSAutoreleasePool *pool;
-    
     NSArray *watchedROIs;
     
 	// because the OsiriX ROI post notifications at super weird times (like within dealloc!?!?!) 
@@ -313,7 +311,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
         return;
     }
     
-	pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	_rebuildingROIs = YES;
 	

@@ -64,78 +64,87 @@ static int validFilePathDepth = 0;
 		{
 			NSAutoreleasePool *pool2 = [[NSAutoreleasePool alloc] init];
 			
-			filePath = [startDirectory stringByAppendingPathComponent: filePath];
-			
-			NSString *uppercaseFilePath = [filePath uppercaseString];
-			
-			BOOL isDirectory = NO;
-			if( [[NSFileManager defaultManager] fileExistsAtPath: filePath isDirectory: &isDirectory])
-			{
-				if( isDirectory == NO)
-				{
-					@try
-					{
-						NSString *ext = [uppercaseFilePath pathExtension];
-						
-						// only files with DCM or no extension, or a number like 82873.9982.9928.22
-						if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
-						{
-							NSString *cutFilePath = nil;
-							
-							if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
-								cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
-							else
-								cutFilePath = uppercaseFilePath;
-							
-							if( [cutFilePath length] < 2000)
-							{
-								NSAutoreleasePool *pool3 = [[NSAutoreleasePool alloc] init];
-								
-								BOOL found = NO;
-								
-								for( NSString *s in dicomdirFileList)
-								{
-									if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
-									{
-										[files addObject: filePath];
-										found = YES;
-										break;
-									}
-									
-									if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
-									{
-										if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
-										{
-											[files addObject: filePath];
-											found = YES;
-											break;
-										}
-									}
-								}
-								
-//								if( found == NO)
-//									NSLog( @"--- Not found in DICOMDIR: %@", cutFilePath);
-								
-								[pool3 release];
-							}
-						}
-					}
-					@catch (NSException *e)
-					{
-						NSLog( @"**** _testForValidFilePath exception: %@", e);
-					}
-				}
-				else if( validFilePathDepth < 8)
-				{
-					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					
-					[self _testForValidFilePath: dicomdirFileList path: filePath files:files];
-				
-					[pool release];
-				}
-			}
-			
-			[pool2 release];
+            @try
+            {
+                filePath = [startDirectory stringByAppendingPathComponent: filePath];
+                
+                NSString *uppercaseFilePath = [filePath uppercaseString];
+                
+                BOOL isDirectory = NO;
+                if( [[NSFileManager defaultManager] fileExistsAtPath: filePath isDirectory: &isDirectory])
+                {
+                    if( isDirectory == NO)
+                    {
+                        @try
+                        {
+                            NSString *ext = [uppercaseFilePath pathExtension];
+                            
+                            // only files with DCM or no extension, or a number like 82873.9982.9928.22
+                            if ([ext isEqualToString: @"DCM"] || [ext isEqualToString: @""] || [ext length] > 4 || [ext length] < 3 || [ext holdsIntegerValue] == YES)
+                            {
+                                NSString *cutFilePath = nil;
+                                
+                                if( [ext length] <= 4 && [ext length] >= 3 && [ext holdsIntegerValue] == NO)
+                                    cutFilePath = [uppercaseFilePath stringByDeletingPathExtension];
+                                else
+                                    cutFilePath = uppercaseFilePath;
+                                
+                                if( [cutFilePath length] < 2000)
+                                {
+                                    NSAutoreleasePool *pool3 = [[NSAutoreleasePool alloc] init];
+                                    
+                                    @try {
+                                        BOOL found = NO;
+                                        
+                                        for( NSString *s in dicomdirFileList)
+                                        {
+                                            if ([cutFilePath isEqualToString: s] || [[cutFilePath stringByDeletingPathExtension] isEqualToString: s] || [filePath isEqualToString: s])
+                                            {
+                                                [files addObject: filePath];
+                                                found = YES;
+                                                break;
+                                            }
+                                            
+                                            if( [[s pathExtension] isEqualToString: @""])	/// for this case: 738495.		// GE Scanner
+                                            {
+                                                if( [[cutFilePath stringByDeletingPathExtension] isEqualToString: [s stringByDeletingPathExtension]])
+                                                {
+                                                    [files addObject: filePath];
+                                                    found = YES;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    @catch (...) {
+                                    }
+                                    @finally {
+                                        [pool3 release];
+                                    }
+                                }
+                            }
+                        }
+                        @catch (NSException *e)
+                        {
+                            NSLog( @"**** _testForValidFilePath exception: %@", e);
+                        }
+                    }
+                    else if( validFilePathDepth < 8)
+                    {
+                        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+                        
+                        [self _testForValidFilePath: dicomdirFileList path: filePath files:files];
+                    
+                        [pool release];
+                    }
+                }
+            }
+            @catch (NSException *e) {
+                NSLog( @"%@", e);
+            }
+            @finally {
+                [pool2 release];
+            }
 		}
 	}
 	@catch (NSException * e) 

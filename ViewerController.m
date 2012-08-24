@@ -11507,8 +11507,9 @@ short				matrix[25];
 						{
 							NSLog( @"saveROI failed: %@", [ne description]);
 						}
-						
-						[pool release];
+						@finally {
+                            [pool release];
+                        }
 					}
 				}
 			}

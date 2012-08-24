@@ -104,7 +104,6 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
 
 - (void)main
 {
-    NSAutoreleasePool *pool;
     CGFloat bezierLength;
     CGFloat projectedBezierLength;
     CGFloat fillDistance;
@@ -130,11 +129,9 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
     NSMutableSet *fillOperations;
 	NSOperationQueue *fillQueue;
     
-    pool = nil;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     @try {
-        pool = [[NSAutoreleasePool alloc] init];
-        
         if ([self isCancelled] == NO && self.request.pixelsHigh > 0) {        
             flattenedBezierCore = N3BezierCoreCreateMutableCopy([self.request.bezierPath N3BezierCore]);
             N3BezierCoreSubdivide(flattenedBezierCore, 3.0);
@@ -181,7 +178,6 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
                 
                 N3BezierCoreRelease(flattenedBezierCore);
                 N3BezierCoreRelease(projectedBezierCore);
-                [pool release];
                 return;
             }
             
@@ -271,11 +267,8 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
             _operationFinished = YES;
             [self didChangeValueForKey:@"isExecuting"];
             [self didChangeValueForKey:@"isFinished"];
-			[pool release];
             return;
         }
-        
-        [pool release];
     }
     @catch (...) {
         [self willChangeValueForKey:@"isFinished"];
@@ -284,6 +277,9 @@ static NSOperationQueue *_stretchedOperationFillQueue = nil;
         _operationFinished = YES;
         [self didChangeValueForKey:@"isExecuting"];
         [self didChangeValueForKey:@"isFinished"];
+    }
+    @finally {
+        [pool release];
     }
 }
 

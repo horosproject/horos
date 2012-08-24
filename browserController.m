@@ -1886,9 +1886,10 @@ static NSConditionLock *threadLock = nil;
 				{
                     N2LogExceptionWithStackTrace(e);
 				}
+                @finally {
+                    [pool release];
+                }
 				[splash incrementBy:1];
-				
-				[pool release];
 				
 				if( [splash aborted])
 					break;
