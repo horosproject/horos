@@ -166,6 +166,7 @@ static NSMenu *opacityPresetsMenu = nil;
 volatile static int totalNumberOfLoadingWindow = 0;
 
 static int numberOf2DViewer = 0;
+static NSMutableArray *arrayOf2DViewers = nil;
 
 // compares the names of 2 ROIs.
 // using the option NSNumericSearch => "Point 1" < "Point 5" < "Point 21".
@@ -351,48 +352,27 @@ static int hotKeyToolCrossTable[] =
 
 + (NSMutableArray*) get2DViewers // on screen and off screen
 {
-	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
+	@synchronized( arrayOf2DViewers)
+    {
+        return [[arrayOf2DViewers copy] autorelease];
+    }
 	
-	{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		NSMutableArray *viewersCtrl = [[NSMutableArray alloc] initWithCapacity: numberOf2DViewer];
-		
-		NSArray *winList = [NSApp windows];
-		for( NSWindow *w in winList)
-		{
-			if( [w windowController])
-				[viewersCtrl addObject: [w windowController]];
-		}
-		
-		for( NSWindowController *ctrl in viewersCtrl)
-		{
-			if( [ctrl isKindOfClass:[ViewerController class]])
-			{
-				if( [(ViewerController*) ctrl windowWillClose] == NO)
-					[viewersList addObject: ctrl];
-			}
-		}
-		
-		[viewersCtrl release];
-		[pool release];
-	}
-	
-	return viewersList;
+	return nil;
 }
 
 + (NSMutableArray*) getDisplayed2DViewers
 {
 	NSMutableArray *viewersList = [NSMutableArray arrayWithCapacity: numberOf2DViewer];
     
-    for( NSWindow *w in [NSApp orderedWindows])
+    for( ViewerController *w in [ViewerController get2DViewers])
     {
-        if( [w isKindOfClass: [NSFullScreenWindow class]])
+        if( [[w window] isKindOfClass: [NSFullScreenWindow class]])
         {
         }
-        else if( [[w windowController] isKindOfClass:[ViewerController class]])
+        else if( [w isKindOfClass:[ViewerController class]])
         {
-            if( [(ViewerController*) [w windowController] windowWillClose] == NO)
-                [viewersList addObject: [w windowController]];
+            if( [w windowWillClose] == NO)
+                [viewersList addObject: w];
         }
     }
 	
@@ -2771,7 +2751,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[self autorelease];
 	
 	numberOf2DViewer--;
-	if( numberOf2DViewer == 0)
+	@synchronized( arrayOf2DViewers)
+    {
+        [arrayOf2DViewers removeObject: self];
+    }
+    
+    if( numberOf2DViewer == 0)
 	{
 		[AppController setUSETOOLBARPANEL: NO];
 		for( int i = 0; i < [[NSScreen screens] count]; i++)
@@ -18874,7 +18859,16 @@ int i,j,l;
 	[[self window] zoom: self];
 	
 	numberOf2DViewer++;
-	if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
+	
+    @synchronized( arrayOf2DViewers)
+    {
+        if( arrayOf2DViewers == nil)
+            arrayOf2DViewers = [[NSMutableArray alloc] init];
+        
+        [arrayOf2DViewers addObject: self];
+    }
+    
+    if( numberOf2DViewer > 1 || [[NSUserDefaults standardUserDefaults] boolForKey: @"USEALWAYSTOOLBARPANEL2"] == YES)
 	{
 		if( [AppController USETOOLBARPANEL] == NO)
 		{

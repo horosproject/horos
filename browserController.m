@@ -1305,6 +1305,8 @@ static NSConditionLock *threadLock = nil;
         {
 			[self willChangeValueForKey:@"database"];
 			
+            [matrixLoadIconsThread cancel];
+            
             [self saveLoadAlbumsSortDescriptors];
             
 			[self waitForRunningProcesses];
@@ -4320,7 +4322,10 @@ static NSConditionLock *threadLock = nil;
                 }
 				
 				NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
-				[NSThread detachNewThreadSelector: @selector(matrixLoadIcons:) toTarget: self withObject: dict];
+                [matrixLoadIconsThread cancel];
+                [matrixLoadIconsThread release];
+                matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
+                [matrixLoadIconsThread start];
 				
 				if( previousItem == item)
 					[oMatrix selectCellWithTag: cellId];
@@ -8086,9 +8091,13 @@ static BOOL withReset = NO;
 
 -(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context
 {
-    if (context == previewPix)
-    { // this makes sure that the selection hasn't changed since the matrixLoadIcons call
-        @synchronized( previewPixThumbnails)
+    if( [[NSThread currentThread] isCancelled])
+        return;
+    
+    @synchronized( previewPixThumbnails)
+    {
+        if (context == previewPix)
+        // this makes sure that the selection hasn't changed since the matrixLoadIcons call
         {
             [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
             [previewPix addObject:pix];
@@ -8106,6 +8115,8 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
+    [NSThread currentThread].name = @"matrixLoadIcons";
+    
     [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     
     @try
@@ -8115,16 +8126,16 @@ static BOOL withReset = NO;
         DicomDatabase *idatabase = [dict valueForKey:@"DicomDatabase"];
         id context = [dict valueForKey:@"Context"];
         
+        idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
+        
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
         
         for (int i = 0; i < objectIDs.count; i++)
         {
-            [idatabase lock];
-            
             @try
             {
-                if (context != previewPix)
-                    break; // changing the database selection makes previewPix change value
+                if( [[NSThread currentThread] isCancelled])
+                    break;
                 
                 DicomImage* image = [idatabase objectWithID:[objectIDs objectAtIndex:i]];
                 if (!image) break; // the objects don't exist anymore, the selection has very likely changed after this call
@@ -8136,7 +8147,7 @@ static BOOL withReset = NO;
                 
                 DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
                 if (dcmPix == nil) {
-                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj:[idatabase objectWithID:image.objectID]] autorelease];
+                    dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj: image] autorelease];
                 }
                 
                 if (!imageLevel) {
@@ -8163,9 +8174,6 @@ static BOOL withReset = NO;
                 }
             } @catch (NSException* e) {
                 N2LogExceptionWithStackTrace(e);
-            }
-            @finally {
-                [idatabase unlock];
             }
             // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
             [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];

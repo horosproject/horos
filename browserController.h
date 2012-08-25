@@ -226,6 +226,7 @@ extern NSString* O2AlbumDragType;
     IBOutlet NSButton *banner;
     
     NSTimeInterval _timeIntervalOfLastLoadIconsDisplayIcons;
+    NSThread *matrixLoadIconsThread;
     
     BOOL subSeriesWindowIsOn;
     
