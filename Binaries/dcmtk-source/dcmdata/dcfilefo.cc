@@ -563,7 +563,8 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             }
             if (metaInfo && metaInfo->transferState() != ERW_ready)
             {
-                errorFlag = metaInfo->read(inStream, xfer, glenc, maxReadLength);
+                // Do read metaheader not in given transfer syntax (always Little Endian Explicit)
+                errorFlag = metaInfo->read(inStream, EXS_Unknown, glenc, maxReadLength);
             }
 
             // read MetaInfo() from Tag(0002,0010) and determine xfer

@@ -114,12 +114,20 @@ size_t DSRTree::addNode(DSRTreeNode *node,
                 case AM_afterCurrent:
                     node->Prev = NodeCursor;
                     node->Next = NodeCursor->Next;
+                    /* connect to current node */
+                    if (NodeCursor->Next != NULL)
+                        (NodeCursor->Next)->Prev = node;
                     NodeCursor->Next = node;
                     ++Position;
                     break;
                 case AM_beforeCurrent:
                     node->Prev = NodeCursor->Prev;
                     node->Next = NodeCursor;
+                    /* connect to current node */
+                    if ((NodeCursor->Prev != NULL) && (Position > 1))
+                        (NodeCursor->Prev)->Next = node;
+                    else if (!NodeCursorStack.empty() && (Position == 1))
+                        NodeCursorStack.top()->Down = node;
                     NodeCursor->Prev = node;
                     break;
                 case AM_belowCurrent:

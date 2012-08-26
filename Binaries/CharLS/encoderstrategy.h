@@ -82,7 +82,7 @@ protected:
 #endif
 
 		bitpos -= length;
-		if (bitpos >= 0)
+		if (bitpos > 0)
 		{
 			valcurrent = valcurrent | (value << bitpos);
 			return;
@@ -92,7 +92,8 @@ protected:
 		Flush();
 
 		ASSERT(bitpos >=0);
-		valcurrent |= value << bitpos;
+        if (bitpos < 32)
+            valcurrent |= value << bitpos;
 	}
 
 	void EndScan()
