@@ -1,3 +1,5 @@
+- Multi monitor series order
+
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center

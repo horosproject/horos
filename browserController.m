@@ -7691,7 +7691,7 @@ static BOOL withReset = NO;
                         singleType = NSLocalizedString(@"Page", nil);
                         pluralType = NSLocalizedString(@"Pages", nil);
                     }
-                    else if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] >= 1)
+                    else if( count == 1 && [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue] > 1)
                     {
                         count = [[[[curFile valueForKey:@"images"] anyObject] valueForKey:@"numberOfFrames"] intValue];
                         singleType = NSLocalizedString(@"Frame", nil);
