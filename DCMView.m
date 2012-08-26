@@ -33,9 +33,9 @@
 #import "OrthogonalMPRPETCTView.h"
 #import "ROIWindow.h"
 #import "ToolbarPanel.h"
-//#import "IChatTheatreDelegate.h"
 #import "NSUserDefaultsController+OsiriX.h"
-//#import "LoupeController.h"
+#import "DicomSeries.h"
+#import "DicomImage.h"
 #include <OpenGL/CGLMacro.h>
 #include <OpenGL/CGLCurrent.h>
 #include <OpenGL/CGLContext.h>
@@ -2092,7 +2092,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				if( [dcmPixList count] > 1)
 				{
-					if( [[dcmPixList objectAtIndex: 0] sliceLocation] == [[dcmPixList lastObject] sliceLocation]) volumicSeries = NO;
+					if( [(DCMPix*)[dcmPixList objectAtIndex: 0] sliceLocation] == [(DCMPix*)[dcmPixList lastObject] sliceLocation]) volumicSeries = NO;
 				}
 				else volumicSeries = NO;
 			}
@@ -3760,7 +3760,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 
 	[instructions setObject: self forKey: @"view"];
 	[instructions setObject: [NSNumber numberWithLong: pos] forKey: @"Pos"];
-	[instructions setObject: [NSNumber numberWithFloat:[[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
+	[instructions setObject: [NSNumber numberWithFloat:[(DCMPix*)[dcmPixList objectAtIndex:curImage] sliceLocation]] forKey: @"Location"];
 
 	if( [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"])
 		[instructions setObject: [[dcmFilesList objectAtIndex: curImage] valueForKeyPath:@"series.study.studyInstanceUID"] forKey: @"studyID"];
@@ -6646,7 +6646,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 									{
 										everythingLoaded = [[dcmPixList objectAtIndex: i] isLoaded];
 										if( everythingLoaded)
-											slicePosition = [[dcmPixList objectAtIndex: i] sliceLocation];
+											slicePosition = [(DCMPix*)[dcmPixList objectAtIndex: i] sliceLocation];
 										else
 											slicePosition = [[[dcmFilesList objectAtIndex: i] valueForKey:@"sliceLocation"] floatValue];
 										
@@ -6659,9 +6659,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 											{						
 												if( [otherView syncSeriesIndex] != -1)
 												{
-													slicePosition -= [[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
+													slicePosition -= [(DCMPix*)[dcmPixList objectAtIndex: syncSeriesIndex] sliceLocation];
 													
-													fdiff = slicePosition - (loc - [[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
+													fdiff = slicePosition - (loc - [(DCMPix*)[[otherView dcmPixList] objectAtIndex: [otherView syncSeriesIndex]] sliceLocation]);
 												}
 												else if( [[NSUserDefaults standardUserDefaults] boolForKey:@"SAMESTUDY"]) noSlicePosition = YES;
 											}
@@ -6689,7 +6689,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 										if( [[dcmPixList objectAtIndex: 1] isLoaded] && [[dcmPixList objectAtIndex: 0] isLoaded]) everythingLoaded = YES;
 										else everythingLoaded = NO;
 										
-										if( everythingLoaded) sliceDistance = fabs( [[dcmPixList objectAtIndex: 1] sliceLocation] - [[dcmPixList objectAtIndex: 0] sliceLocation]);
+										if( everythingLoaded) sliceDistance = fabs( [(DCMPix*)[dcmPixList objectAtIndex: 1] sliceLocation] - [(DCMPix*)[dcmPixList objectAtIndex: 0] sliceLocation]);
 										else sliceDistance = fabs( [[[dcmFilesList objectAtIndex: 1] valueForKey:@"sliceLocation"] floatValue] - [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue]);
 										
 										if( fabs( smallestdiff) > sliceDistance * 2)
@@ -7450,13 +7450,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			float vv = fabs( (maxVal-1) * [[dcmPixList objectAtIndex:0] sliceInterval]);
 			
 			vv += curDCM.sliceThickness;
-			
+            
 			float pp;
 			
 			if( flippedData)
-				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
+				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage - maxVal+1] sliceLocation])/2.;
 			else
-				pp = ([[dcmPixList objectAtIndex: curImage] sliceLocation] + [[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
+				pp = ([(DCMPix*)[dcmPixList objectAtIndex: curImage] sliceLocation] + [(DCMPix*)[dcmPixList objectAtIndex: curImage + maxVal-1] sliceLocation])/2.;
 				
 			*thickness = vv;
 			*location = pp;
@@ -12134,23 +12134,26 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 }
 
 //Database links
-- (NSManagedObject *)imageObj
+- (DicomImage *)imageObj
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
-        return [dcmFilesList objectAtIndex: curImage];
+        if( curImage >= 0) return [dcmFilesList objectAtIndex: curImage];
+        else return [curDCM imageObj];
 	}
-	else return nil;
+    
+    return nil;
 }
 
-- (NSManagedObject *)seriesObj
+- (DicomSeries *)seriesObj
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
-		if( curDCM) return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
-		else return nil;
+		if( curImage >= 0) return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
+        else return [curDCM seriesObj];
 	}
-	else return nil;
+    
+    return nil;
 }
 
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage

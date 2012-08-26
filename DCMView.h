@@ -81,7 +81,7 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 @class ROI;
 @class OrthogonalMPRController;
 @class DICOMExport;
-//@class LoupeController;
+@class DicomImage, DicomSeries;
 @class DCMObject;
 
 @interface DCMExportPlugin: NSObject
@@ -450,8 +450,8 @@ typedef enum {DCMViewTextAlignLeft, DCMViewTextAlignCenter, DCMViewTextAlignRigh
 - (void) updateTilingViews;
 - (void) becomeMainWindow;
 - (void) checkCursor;
-- (NSManagedObject *)imageObj;
-- (NSManagedObject *)seriesObj;
+- (DicomImage *)imageObj;
+- (DicomSeries *)seriesObj;
 - (void) updatePresentationStateFromSeries;
 - (void) updatePresentationStateFromSeriesOnlyImageLevel: (BOOL) onlyImage;
 - (void) setCursorForView: (long) tool;
