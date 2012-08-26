@@ -9254,7 +9254,7 @@ END_CREATE_ROIS:
 			
 			[srcFile release];
 			srcFile = nil;
-			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
+			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID] :0];
 			[srcFile retain];
 			
 			if( srcFile == nil)
@@ -12815,7 +12815,7 @@ END_CREATE_ROIS:
             NSArray *annotations = [annotationsForModality objectForKey: key];
             NSMutableArray *annotationsOUT = [NSMutableArray array];
             
-            DicomImage *imageObj = [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
+            DicomImage *imageObj = (DicomImage*) [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID];
             
             [imageObj.managedObjectContext lock];
             
