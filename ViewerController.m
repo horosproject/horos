@@ -766,107 +766,115 @@ return YES;
 	
 	int i, indexImage;
 	
-	for( ViewerController *win in displayedViewers)
-	{
-		DCMView *view = [win imageView];
-		if ([[view curDCM] generated])
-			continue;
-		
-		NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
-		
-		if( [win studyInstanceUID] && [[view seriesObj] valueForKey:@"seriesInstanceUID"])
-		{		
-			NSRect	r = [[win window] frame];
-			[dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
-			[dict setObject: [NSNumber numberWithInt: [view rows]] forKey:@"rows"];
-			[dict setObject: [NSNumber numberWithInt: [view columns]] forKey:@"columns"];
-			
-			if( [view flippedData]) indexImage = [win getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
-			else indexImage = [[[win seriesView] firstView] curImage];
-			
-			[dict setObject: [NSNumber numberWithInt: indexImage] forKey:@"index"];
-			
-			if( [[view curDCM] SUVConverted] == NO)
-			{
-				[dict setObject: [NSNumber numberWithFloat: [view curWL]] forKey:@"wl"];
-				[dict setObject: [NSNumber numberWithFloat: [view curWW]] forKey:@"ww"];
-			}
-			else
-			{
-				[dict setObject: [NSNumber numberWithFloat: [view curWL] / [win factorPET2SUV]] forKey:@"wl"];
-				[dict setObject: [NSNumber numberWithFloat: [view curWW] / [win factorPET2SUV]] forKey:@"ww"];
-			}
-			[dict setObject: [NSNumber numberWithFloat: [view scaleValue]] forKey:@"scale"];
-			[dict setObject: [NSNumber numberWithFloat: [view origin].x] forKey:@"x"];
-			[dict setObject: [NSNumber numberWithFloat: [view origin].y] forKey:@"y"];
-			[dict setObject: [NSNumber numberWithFloat: [view rotation]] forKey:@"rotation"];
-			[dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"xFlipped"];
-			[dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"yFlipped"];
-			
-			[dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
-			
-			NSMutableArray *seriesUIDs = [NSMutableArray array];
-			for( int x = 0 ; x <  [win maxMovieIndex] ; x++)
-			{
-				DCMPix *dcmPix = [[win pixList: x] objectAtIndex: 0];
-				
-				if( dcmPix.seriesObj)
-					[seriesUIDs addObject: [dcmPix.seriesObj valueForKey:@"seriesInstanceUID"]];
-			}
-			
-			BOOL allSeriesUIDidentical = YES;
-			
-			for( NSString *uid in seriesUIDs)
-			{
-				if( [uid isEqualToString: [seriesUIDs lastObject]] == NO) allSeriesUIDidentical = NO;
-			}
-			
-			if( allSeriesUIDidentical == NO)
-				[dict setObject: [seriesUIDs componentsJoinedByString:@"\\**\\"] forKey:@"seriesInstanceUID"];
-			else
-				[dict setObject: [seriesUIDs lastObject] forKey:@"seriesInstanceUID"];
-			
-			if( [win maxMovieIndex] > 1)
-				[dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
-			else
-				[dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
+    @try
+    {
+        for( ViewerController *win in displayedViewers)
+        {
+            DCMView *view = [win imageView];
+            if ([[view curDCM] generated])
+                continue;
             
-            if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
-                [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
+            NSMutableDictionary	*dict = [NSMutableDictionary dictionary];
             
-			[state addObject: dict];
-		}
-	}
-	
-	if( [displayedViewers count] != [state count]) return;	//We will save the states ONLY if we can save the state of ALL DISPLAYED windows !:!:!:
-	
-//	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
-//	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
-//	[state writeToFile: tmp atomically: YES];
-	
-	NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: kCFPropertyListXMLFormat_v1_0 errorDescription: nil];
-	
-	NSMutableArray	*studiesArray = [NSMutableArray array];
-	
-	for( ViewerController *win in displayedViewers)
-	{
-		DCMView *view = [win imageView];
-		if ([[view curDCM] generated])
-			continue;
+            if( [win studyInstanceUID] && [[view seriesObj] valueForKey:@"seriesInstanceUID"])
+            {		
+                NSRect	r = [[win window] frame];
+                [dict setObject: [NSString stringWithFormat: @"%f %f %f %f", r.origin.x, r.origin.y, r.size.width, r.size.height]  forKey:@"window position"];
+                [dict setObject: [NSNumber numberWithInt: [view rows]] forKey:@"rows"];
+                [dict setObject: [NSNumber numberWithInt: [view columns]] forKey:@"columns"];
+                
+                if( [view flippedData]) indexImage = [win getNumberOfImages] -1 -[[[win seriesView] firstView] curImage];
+                else indexImage = [[[win seriesView] firstView] curImage];
+                
+                [dict setObject: [NSNumber numberWithInt: indexImage] forKey:@"index"];
+                
+                if( [[view curDCM] SUVConverted] == NO)
+                {
+                    [dict setObject: [NSNumber numberWithFloat: [view curWL]] forKey:@"wl"];
+                    [dict setObject: [NSNumber numberWithFloat: [view curWW]] forKey:@"ww"];
+                }
+                else
+                {
+                    [dict setObject: [NSNumber numberWithFloat: [view curWL] / [win factorPET2SUV]] forKey:@"wl"];
+                    [dict setObject: [NSNumber numberWithFloat: [view curWW] / [win factorPET2SUV]] forKey:@"ww"];
+                }
+                [dict setObject: [NSNumber numberWithFloat: [view scaleValue]] forKey:@"scale"];
+                [dict setObject: [NSNumber numberWithFloat: [view origin].x] forKey:@"x"];
+                [dict setObject: [NSNumber numberWithFloat: [view origin].y] forKey:@"y"];
+                [dict setObject: [NSNumber numberWithFloat: [view rotation]] forKey:@"rotation"];
+                [dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"xFlipped"];
+                [dict setObject: [NSNumber numberWithBool: [view xFlipped]] forKey:@"yFlipped"];
+                
+                [dict setObject: [win studyInstanceUID] forKey:@"studyInstanceUID"];
+                
+                NSMutableArray *seriesUIDs = [NSMutableArray array];
+                for( int x = 0 ; x <  [win maxMovieIndex] ; x++)
+                {
+                    DCMPix *dcmPix = [[win pixList: x] objectAtIndex: 0];
+                    
+                    if( dcmPix.seriesObj)
+                        [seriesUIDs addObject: [dcmPix.seriesObj valueForKey:@"seriesInstanceUID"]];
+                }
+                
+                BOOL allSeriesUIDidentical = YES;
+                
+                for( NSString *uid in seriesUIDs)
+                {
+                    if( [uid isEqualToString: [seriesUIDs lastObject]] == NO) allSeriesUIDidentical = NO;
+                }
+                
+                if( allSeriesUIDidentical == NO)
+                    [dict setObject: [seriesUIDs componentsJoinedByString:@"\\**\\"] forKey:@"seriesInstanceUID"];
+                else if( seriesUIDs.count)
+                    [dict setObject: [seriesUIDs lastObject] forKey:@"seriesInstanceUID"];
+                
+                if( [win maxMovieIndex] > 1)
+                    [dict setObject: [NSNumber numberWithBool: YES] forKey:@"4DData"];
+                else
+                    [dict setObject: [NSNumber numberWithBool: NO] forKey:@"4DData"];
+                
+                if( [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"])
+                    [dict setObject: [[NSUserDefaults standardUserDefaults] objectForKey:@"LastWindowsTilingRowsColumns"] forKey:@"LastWindowsTilingRowsColumns"];
+                
+                [state addObject: dict];
+            }
+        }
+        
+        if( [displayedViewers count] != [state count]) return;	//We will save the states ONLY if we can save the state of ALL DISPLAYED windows !:!:!:
+        
+    //	NSString	*tmp = [NSString stringWithFormat:@"/tmp/windowsState"];
+    //	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+    //	[state writeToFile: tmp atomically: YES];
+        
+        NSData *windowsState = [NSPropertyListSerialization dataFromPropertyList: state  format: kCFPropertyListXMLFormat_v1_0 errorDescription: nil];
+        
+        NSMutableArray	*studiesArray = [NSMutableArray array];
+        
+        for( ViewerController *win in displayedViewers)
+        {
+            DCMView *view = [win imageView];
+            if ([[view curDCM] generated])
+                continue;
 
-		if( [[view seriesObj] valueForKey:@"seriesInstanceUID"])
-		{
-			if( [studiesArray containsObject: [[view seriesObj] valueForKey:@"study"]] == NO)
-				[studiesArray addObject: [[view seriesObj] valueForKey:@"study"]];
-		}
-	}
-	
-	for( NSManagedObject *study in studiesArray)
-	{
-		[study setValue: windowsState forKey:@"windowsState"];
-	}
-	
-//	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+            if( [[view seriesObj] valueForKey:@"seriesInstanceUID"])
+            {
+                if( [studiesArray containsObject: [[view seriesObj] valueForKey:@"study"]] == NO)
+                    [studiesArray addObject: [[view seriesObj] valueForKey:@"study"]];
+            }
+        }
+        
+        for( NSManagedObject *study in studiesArray)
+        {
+            [study setValue: windowsState forKey:@"windowsState"];
+        }
+        
+    //	[[NSFileManager defaultManager] removeFileAtPath: tmp handler:nil];
+            
+            
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace( e);
+    }
 }
 
 - (void) executeUndo:(NSMutableArray*) u

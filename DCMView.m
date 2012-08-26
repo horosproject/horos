@@ -12138,7 +12138,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
+#ifdef NDEBUG
+#else
+        if( [NSThread isMainThread] == NO)
+            NSLog( @"--- warning this object should be used only on the main thread. Create your own Context !");
+#endif
         if( curImage >= 0) return [dcmFilesList objectAtIndex: curImage];
+        else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
+            return [dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]];
         else return [curDCM imageObj];
 	}
     
@@ -12149,7 +12156,14 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
+#ifdef NDEBUG
+#else
+        if( [NSThread isMainThread] == NO)
+            NSLog( @"--- warning this object should be used only on the main thread. Create your own Context !");
+#endif
 		if( curImage >= 0) return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
+        else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
+            return [[dcmFilesList objectAtIndex: [dcmPixList indexOfObject: curDCM]] valueForKey: @"series"];
         else return [curDCM seriesObj];
 	}
     
