@@ -5006,19 +5006,25 @@ static BOOL initialized = NO;
 
 - (NSManagedObjectContext*) defaultWebPortalManagedObjectContext
 {
-	#ifndef OSIRIX_LIGHT
-	return [[[WebPortal defaultWebPortal] database] managedObjectContext];
-	#else
-	static NSManagedObjectContext *fakeContext = nil;
-	if( fakeContext == nil)
-	{
-		fakeContext  = [[NSManagedObjectContext alloc] init];
-		NSManagedObjectModel *model = [[[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/WebPortalDB.momd"]]] autorelease];
-		NSPersistentStoreCoordinator *psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
-		[fakeContext setPersistentStoreCoordinator: psc];
-	}
-	return fakeContext;
-	#endif
+    @try
+    {
+        #ifndef OSIRIX_LIGHT
+        return [[[WebPortal defaultWebPortal] database] managedObjectContext];
+        #endif
+    }
+    @catch (NSException *e) {
+        NSLog( @"***** defaultWebPortalManagedObjectContext : %@", e);
+    }
+    
+    static NSManagedObjectContext *fakeContext = nil;
+    if( fakeContext == nil)
+    {
+        fakeContext  = [[NSManagedObjectContext alloc] init];
+        NSManagedObjectModel *model = [[[NSManagedObjectModel alloc] initWithContentsOfURL: [NSURL fileURLWithPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/WebPortalDB.momd"]]] autorelease];
+        NSPersistentStoreCoordinator *psc = [[[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: model] autorelease];
+        [fakeContext setPersistentStoreCoordinator: psc];
+    }
+    return fakeContext;
 }
 
 -(WebPortal*)defaultWebPortal {

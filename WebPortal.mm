@@ -227,6 +227,10 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 
 +(WebPortal*)defaultWebPortal {
 	static WebPortal* defaultWebPortal = NULL;
+    
+    if( DefaultWebPortalDatabasePath == nil)
+        return nil;
+    
 	if (!defaultWebPortal)
 		defaultWebPortal = [[self alloc] initWithDatabaseAtPath:DefaultWebPortalDatabasePath dicomDatabase:[DicomDatabase defaultDatabase]];
 	

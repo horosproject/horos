@@ -230,6 +230,9 @@
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	sqlFilePath = sqlFilePath.stringByExpandingTildeInPath;
 	
+    if( sqlFilePath.length == 0)
+        return nil;
+    
     N2ManagedObjectContext* moc = [[[N2ManagedObjectContext alloc] init] autorelease];
     //	NSLog(@"---------- NEW %@ at %@", moc, sqlFilePath);
 	moc.undoManager = nil;
