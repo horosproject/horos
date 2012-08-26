@@ -1665,12 +1665,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							local = YES;
 						
 						NSArray	*imagesArray = [[seriesTable valueForKey:@"images"] allObjects];
+                        NSArray *imagesArraySopInstanceUID = [imagesArray valueForKey:@"sopInstanceUID"];
 						int numberOfFrames = [[curDict objectForKey: @"numberOfFrames"] intValue];
 						if (numberOfFrames == 0) numberOfFrames = 1;
 						
 						for( int f = 0 ; f < numberOfFrames; f++)
 						{
-							NSInteger index = imagesArray.count? [[imagesArray valueForKey:@"sopInstanceUID"] indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
+							NSInteger index = imagesArray.count? [imagesArraySopInstanceUID indexOfObject:[curDict objectForKey: [@"SOPUID" stringByAppendingString: SeriesNum]]] : NSNotFound;
 							
 							if (index != NSNotFound)
 							{
