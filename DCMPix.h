@@ -46,7 +46,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	NSString            *srcFile;  /**< source File */
     NSString            *URIRepresentationAbsoluteString;
 	BOOL				isBonjour;  /**< Flag to indicate if file is accessed over Bonjour */
-	BOOL				nonDICOM;   /**< Flag to indicate if file is not DICOM */
+    BOOL                fileTypeHasPrefixDICOM;
     int                 numberOfFrames;
     
 //BUFFERS	

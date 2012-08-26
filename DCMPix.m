@@ -3398,7 +3398,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		imageObjectID = [[iO objectID] retain];
         
         URIRepresentationAbsoluteString =  [[[[[iO valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
-		numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
+		fileTypeHasPrefixDICOM = [[iO valueForKey:@"fileType"] hasPrefix:@"DICOM"];
+        numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
         
         if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
             yearOld = [[iO valueForKeyPath: @"series.study.yearOld"] retain];
@@ -3451,6 +3452,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     copy->srcFile = [self->srcFile retain];
     copy->imageObjectID = [self->imageObjectID retain];
     copy->URIRepresentationAbsoluteString = [self->URIRepresentationAbsoluteString retain];
+    copy->fileTypeHasPrefixDICOM = self->fileTypeHasPrefixDICOM;
     copy->yearOld = [self->yearOld retain];
     copy->yearOldAcquisition = [self->yearOldAcquisition retain];
     copy->annotationsDBFields = [self->annotationsDBFields retain];
@@ -3464,7 +3466,6 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     
     [copy initParameters];
 	
-	copy->isBonjour = self->isBonjour;
 	copy->fImage = self->fImage;	// Don't load the image!
 	copy->height = self->height;
 	copy->width = self->width;
@@ -9044,9 +9045,9 @@ END_CREATE_ROIS:
 	BOOL readable = YES;
 	
 #ifdef OSIRIX_VIEWER
-	if( [[[BrowserController currentBrowser] database] objectWithID: imageObjectID])
+	if( imageObjectID)
 	{
-		if( [[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] valueForKey:@"fileType"] hasPrefix:@"DICOM"] == NO) readable = NO;
+        if( fileTypeHasPrefixDICOM == NO) readable = NO;
 	}
 	else
 #endif
