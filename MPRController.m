@@ -64,7 +64,7 @@ static float deg2rad = M_PI/180.0;
 	DCMPix *emptyPix = [[DCMPix alloc] initWithData: imagePtr :32 :w :h :[oP pixelSpacingX] :[oP pixelSpacingY] :[oP originX] :[oP originY] :[oP originZ]];
 	free( imagePtr);
 	
-	[emptyPix setImageObj: [oP imageObj]];
+	[emptyPix setImageObjectID: [oP imageObjectID]];
 	[emptyPix setSrcFile: [oP srcFile]];
 	[emptyPix setAnnotationsDictionary: [oP annotationsDictionary]];
 	

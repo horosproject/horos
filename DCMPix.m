@@ -1211,7 +1211,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize flipAngle, laterality, viewPosition, patientPosition;
 
 @synthesize serieNo, pixArray, pixPos, transferFunctionPtr;
-@synthesize stackMode, generated, generatedName, imageObj;
+@synthesize stackMode, generated, generatedName, imageObjectID;
 @synthesize srcFile, annotationsDictionary;
 
 // US Regions
@@ -1226,6 +1226,24 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize units, decayCorrection, displaySUVValue;
 
 @synthesize isLUT12Bit;
+
+- (DicomImage*) imageObj
+{
+#ifdef OSIRIX_VIEWER
+    return [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
+#else
+    return nil;
+#endif
+}
+
+- (DicomSeries*) seriesObj
+{
+#ifdef OSIRIX_VIEWER
+    return [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] valueForKey: @"series"];
+#else
+    return nil;
+#endif
+}
 
 + (BOOL) IsPoint:(NSPoint) x inPolygon:(NSPoint*) pts size:(int) no
 {
@@ -3367,21 +3385,23 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     {
 		//-------------------------received parameters
 		srcFile = [s retain];
-		imageObj = [iO retain];
-        URIRepresentationAbsoluteString =  [[[[[imageObj valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
-		
-        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"])
-            yearOld = [[imageObj valueForKeyPath: @"series.study.yearOld"] retain];
+		imageObjectID = [[iO objectID] retain];
+        
+        URIRepresentationAbsoluteString =  [[[[[iO valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
+		numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
+        
+        if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
+            yearOld = [[iO valueForKeyPath: @"series.study.yearOld"] retain];
             
-        if( [imageObj valueForKeyPath: @"series.study.dateOfBirth"] && [imageObj valueForKeyPath: @"series.study.date"])
-            yearOldAcquisition = [[imageObj valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
+        if( [iO valueForKeyPath: @"series.study.dateOfBirth"] && [iO valueForKeyPath: @"series.study.date"])
+            yearOldAcquisition = [[iO valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
         
         #ifdef OSIRIX_VIEWER
         [self loadCustomImageAnnotationsDBFields];
         #endif
         
-		savedHeightInDB = [[imageObj valueForKey:@"storedHeight"] intValue];
-		savedWidthInDB = [[imageObj valueForKey:@"storedWidth"] intValue];
+		savedHeightInDB = [[iO valueForKey:@"storedHeight"] intValue];
+		savedWidthInDB = [[iO valueForKey:@"storedWidth"] intValue];
 		
 		imID = pos;
 		imTot = tot;
@@ -3419,7 +3439,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
         return nil;
     
     copy->srcFile = [self->srcFile retain];
-    copy->imageObj = [self->imageObj retain];
+    copy->imageObjectID = [self->imageObjectID retain];
     copy->URIRepresentationAbsoluteString = [self->URIRepresentationAbsoluteString retain];
     copy->yearOld = [self->yearOld retain];
     copy->yearOldAcquisition = [self->yearOldAcquisition retain];
@@ -3430,6 +3450,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
     copy->frameNo = self->frameNo;
     copy->serieNo = self->serieNo;
     copy->isBonjour = self->isBonjour;
+    copy->numberOfFrames = copy->numberOfFrames;
     
     [copy initParameters];
 	
@@ -3520,11 +3541,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		height = NSSwapLittleShortToHost(header.ny);
 		width = NSSwapLittleShortToHost(header.nx);
 		
+        #ifdef OSIRIX_VIEWER
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int) width);
-			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
 		}
@@ -3533,10 +3555,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
 		}
+        #endif
 		
 		maxImage = NSSwapLittleShortToHost(header.npic);
 		
@@ -3740,11 +3763,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		height = h;
 		width = w;
 		
+        #ifdef OSIRIX_VIEWER
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
 		}
@@ -3753,11 +3777,12 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
 		}
-		
+        #endif
+        
 		totSize = (height+1) * (width+1);
 		
 		if( tifspp == 3)	// RGB
@@ -4326,28 +4351,30 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				
 				case 256:
 					width = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-					
+					#ifdef OSIRIX_VIEWER
 					if( savedWidthInDB != 0 && savedWidthInDB != width)
 					{
                         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-						[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 						if( width > savedWidthInDB)
 							width = savedWidthInDB;
 					}
+                    #endif
 				break;
 				
 				case 257:
 					height = ((TAG1[11] & MASK2) << 24) | ((TAG1[10] & MASK2) << 16) | ((TAG1[9] & MASK2) << 8) | (TAG1[8] & MASK2);
-					
+					#ifdef OSIRIX_VIEWER
 					if( savedHeightInDB != 0 && savedHeightInDB != height)
 					{
                         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-						[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+						[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 						if( height > savedHeightInDB)
 							height = savedHeightInDB;
 					}
+                    #endif
 				break;
 				
 					// GJ: don't need to parse these tags as things are wriiten now
@@ -5053,7 +5080,7 @@ END_CREATE_ROIS:
 				
 				[self loadCustomImageAnnotationsPapyLink:fileNb DCMLink:nil];
 				
-				if( [[imageObj valueForKey: @"numberOfFrames"] intValue] <= 1)
+				if( numberOfFrames <= 1)
 					[self clearCachedPapyGroups];
 			}
 		}
@@ -5288,11 +5315,12 @@ END_CREATE_ROIS:
 		width =  [[dcmObject attributeValueWithName:@"Columns"] intValue];
 	}
 	
+    #ifdef OSIRIX_VIEWER
 	if( savedHeightInDB != 0 && savedHeightInDB != height)
 	{
         if( savedHeightInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-		[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 		if( height > savedHeightInDB)
 			height = savedHeightInDB;
 	}
@@ -5301,10 +5329,11 @@ END_CREATE_ROIS:
 	{
         if( savedWidthInDB != OsirixDicomImageSizeUnknown)
             NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-		[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+		[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 		if( width > savedWidthInDB)
 			width = savedWidthInDB;
 	}
+    #endif
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
 	if( shutterRect_h == 0) shutterRect_h = height;
@@ -7028,14 +7057,16 @@ END_CREATE_ROIS:
 	if ( val)
 	{
 		height = (int) (*val).us;
+#ifdef OSIRIX_VIEWER
 		if( savedHeightInDB != 0 && savedHeightInDB != height)
 		{
             if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height - %d versus %d", (int)savedHeightInDB, (int)height);
-			[imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
 			if( height > savedHeightInDB)
 				height = savedHeightInDB;
 		}
+#endif
 	}
 	
 	// COLUMNS
@@ -7043,14 +7074,16 @@ END_CREATE_ROIS:
 	if ( val)
 	{
 		width = (int) (*val).us;
+#ifdef OSIRIX_VIEWER
 		if( savedWidthInDB != 0 && savedWidthInDB != width)
 		{
             if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                 NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width - %d versus %d", (int)savedWidthInDB, (int)width);
-			[imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+			[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
 			if( width > savedWidthInDB)
 				width = savedWidthInDB;
 		}
+#endif
 	}
 	
 	if( shutterRect_w == 0) shutterRect_w = width;
@@ -9000,11 +9033,13 @@ END_CREATE_ROIS:
 {
 	BOOL readable = YES;
 	
-	if( imageObj)
+#ifdef OSIRIX_VIEWER
+	if( [[[BrowserController currentBrowser] database] objectWithID: imageObjectID])
 	{
-		if( [[imageObj valueForKey:@"fileType"] hasPrefix:@"DICOM"] == NO) readable = NO;
+		if( [[[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] valueForKey:@"fileType"] hasPrefix:@"DICOM"] == NO) readable = NO;
 	}
 	else
+#endif
 	{
 		readable = [DicomFile isDICOMFile: file];
     }
@@ -9054,11 +9089,12 @@ END_CREATE_ROIS:
                 height = [r size].height;
                 width = [r size].width;
                 
+#ifdef OSIRIX_VIEWER
                 if( savedHeightInDB != 0 && savedHeightInDB != height)
                 {
                     if( savedHeightInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'height'] intValue] != height. New: %d / DB: %d", (int)height, (int)savedHeightInDB);
-                    [imageObj setValue: [NSNumber numberWithInt: height] forKey: @"height"];
+                    [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: height] forKey: @"height"];
                     if( height > savedHeightInDB)
                         height = savedHeightInDB;
                 }
@@ -9067,11 +9103,11 @@ END_CREATE_ROIS:
                 {
                     if( savedWidthInDB != OsirixDicomImageSizeUnknown)
                         NSLog( @"******* [[imageObj valueForKey:@'width'] intValue] != width. New: %d / DB: %d", (int)width, (int)savedWidthInDB);
-                    [imageObj setValue: [NSNumber numberWithInt: width] forKey: @"width"];
+                    [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] setValue: [NSNumber numberWithInt: width] forKey: @"width"];
                     if( width > savedWidthInDB)
                         width = savedWidthInDB;
                 }
-                
+#endif
                 unsigned char *srcImage = [TIFFRep bitmapData];
                 
                 if( retina)
@@ -9207,7 +9243,7 @@ END_CREATE_ROIS:
 			
 			[srcFile release];
 			srcFile = nil;
-			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: imageObj :0];
+			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
 			[srcFile retain];
 			
 			if( srcFile == nil)
@@ -9266,7 +9302,7 @@ END_CREATE_ROIS:
 				}
 				#endif
 				
-				if( [[imageObj valueForKey: @"numberOfFrames"] intValue] <= 1)
+				if( numberOfFrames <= 1)
 					[self clearCachedPapyGroups];
 			}
 			
@@ -12359,8 +12395,8 @@ END_CREATE_ROIS:
 		free( baseAddr);
 		baseAddr = nil;
 	}
-	[imageObj release];
-	imageObj = nil;
+	[imageObjectID release];
+	imageObjectID = nil;
     
     [URIRepresentationAbsoluteString release];
     URIRepresentationAbsoluteString = nil;
@@ -12465,15 +12501,13 @@ END_CREATE_ROIS:
 #pragma mark -
 #pragma mark Database links
 
-- (NSManagedObject*)seriesObj { return [imageObj valueForKey:@"series"]; }
-
 - (NSString *)description
 {
 	NSMutableString *description = [NSMutableString string];
 	[description appendString:NSStringFromClass([self class])];
 	[description appendString:[NSString stringWithFormat:@" <%lx>", (unsigned long) self]];
 	[description appendString:[NSString stringWithFormat: @" source File: %@\n", srcFile]];
-	[description appendString:[NSString stringWithFormat: @"core Data Image: %@\n", imageObj]];
+	[description appendString:[NSString stringWithFormat: @"core Data Image ID: %@\n", imageObjectID]];
 	[description appendString:[NSString stringWithFormat: @"width: %d\n", (int) width]];
 	[description appendString:[NSString stringWithFormat: @"height: %d\n", (int) height]];
 	[description appendString:[NSString stringWithFormat: @"pixelRatio: %f\n", pixelRatio]];
@@ -12743,6 +12777,7 @@ END_CREATE_ROIS:
 
 - (void)loadCustomImageAnnotationsDBFields
 {
+#ifdef OSIRIX_VIEWER
     if( annotationsDBFields)
         NSLog( @"***** loadCustomImageAnnotationsDBFields has been called several times !!");
     
@@ -12768,6 +12803,8 @@ END_CREATE_ROIS:
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
             NSMutableArray *annotationsOUT = [NSMutableArray array];
+            
+            DicomImage *imageObj = [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
             
             [imageObj.managedObjectContext lock];
             
@@ -12835,6 +12872,7 @@ END_CREATE_ROIS:
             }
         }
     }
+#endif
 }
 
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject

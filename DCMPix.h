@@ -35,6 +35,8 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class ThickSlabController;
 @class DCMObject;
 @class Point3D;
+@class DicomImage;
+@class DicomSeries;
 
 /** \brief Represents an image for display */
 
@@ -45,10 +47,11 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
     NSString            *URIRepresentationAbsoluteString;
 	BOOL				isBonjour;  /**< Flag to indicate if file is accessed over Bonjour */
 	BOOL				nonDICOM;   /**< Flag to indicate if file is not DICOM */
-
+    int                 numberOfFrames;
+    
 //BUFFERS	
 	NSArray				*pixArray;
-    NSManagedObject		*imageObj;	/**< Core data object for image */
+    NSManagedObjectID	*imageObjectID;	/**< Core data object ID for image */
 	float				*fImage /**< float buffer of image Data */, *fExternalOwnedImage;  /**< float buffer of image Data - provided by another source, not owned by this object, not release by this object */
 	
 //DICOM TAGS
@@ -297,8 +300,7 @@ Note setter is different to not break existing usage. :-( */
 @property(retain) NSString *sourceFile;
 
 /** Database links */
-@property(readonly) NSManagedObject *seriesObj;
-@property(retain) NSManagedObject *imageObj;
+@property(retain) NSManagedObjectID *imageObjectID;
 @property(retain) NSString *srcFile, *SOPClassUID;
 @property(retain) NSMutableDictionary *annotationsDictionary;
 
@@ -449,7 +451,8 @@ Note setter is different to not break existing usage. :-( */
 /** Return index & sliceCoords */
 +(int) nearestSliceInPixelList: (NSArray*)pixlist withDICOMCoords: (float*)dc sliceCoords: (float*) sc;  
 
-
+- (DicomImage*) imageObj;
+- (DicomSeries*) seriesObj;
 
 - (BOOL) thickSlabVRActivated; /**< Activate Thick Slab VR */
 

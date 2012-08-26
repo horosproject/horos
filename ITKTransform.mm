@@ -230,8 +230,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 			[curPix setDecayFactor: [originalPix decayFactor]];
 			[curPix setUnits: [originalPix units]];
 			
-			
-			[curPix setImageObj: [originalPix imageObj]];
+			[curPix setImageObjectID: [originalPix imageObjectID]];
 			
 			[curPix reloadAnnotations];
 			

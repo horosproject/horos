@@ -2311,25 +2311,29 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			
 			if( COPYSETTINGSINSERIES)
 			{
-				[pix.imageObj setValue: nil forKey:@"windowWidth"];
-				[pix.imageObj setValue: nil forKey:@"windowLevel"];
-				[pix.imageObj setValue: nil forKey:@"scale"];
-				[pix.imageObj setValue: nil forKey:@"rotationAngle"];
-				[pix.imageObj setValue: nil forKey:@"yFlipped"];
-				[pix.imageObj setValue: nil forKey:@"xFlipped"];
-				[pix.imageObj setValue: nil forKey:@"xOffset"];
-				[pix.imageObj setValue: nil forKey:@"yOffset"];
+                DicomImage *im = pix.imageObj;
+                
+				[im setValue: nil forKey:@"windowWidth"];
+				[im setValue: nil forKey:@"windowLevel"];
+				[im setValue: nil forKey:@"scale"];
+				[im setValue: nil forKey:@"rotationAngle"];
+				[im setValue: nil forKey:@"yFlipped"];
+				[im setValue: nil forKey:@"xFlipped"];
+				[im setValue: nil forKey:@"xOffset"];
+				[im setValue: nil forKey:@"yOffset"];
 			}
 			else
 			{
-				[pix.imageObj setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
-				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-				[pix.imageObj setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-				[pix.imageObj setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+                DicomImage *im = pix.imageObj;
+                
+				[im setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+				[im setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+				[im setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+				[im setValue:[NSNumber numberWithFloat:rotation] forKey:@"rotationAngle"];
+				[im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+				[im setValue:[NSNumber numberWithBool:yFlipped] forKey:@"xFlipped"];
+				[im setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+				[im setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
 			}
 		}
 	}
@@ -12134,8 +12138,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
-		if( curDCM)	return curDCM.imageObj;
-		else return nil;
+        return [dcmFilesList objectAtIndex: curImage];
 	}
 	else return nil;
 }
@@ -12144,7 +12147,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 {
 	if( stringID == nil || [stringID isEqualToString:@"previewDatabase"])
 	{
-		if( curDCM) return curDCM.seriesObj;
+		if( curDCM) return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
 		else return nil;
 	}
 	else return nil;

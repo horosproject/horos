@@ -820,7 +820,7 @@ extern int splitPosition[ 3];
 		}
 		[self.curvedVolumeData releaseInlineBuffer:&inlineBuffer];
         
-		[newPix setImageObj: [[[self windowController] originalPix] imageObj]];
+		[newPix setImageObjectID: [[[self windowController] originalPix] imageObjectID]];
 		[newPix setSrcFile: [[[self windowController] originalPix] srcFile]];
 		[newPix setAnnotationsDictionary: [[[self windowController] originalPix] annotationsDictionary]];
 		
