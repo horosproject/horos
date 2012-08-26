@@ -4722,14 +4722,16 @@ static BOOL initialized = NO;
 			{
 				if( [[[viewersList objectAtIndex:i] window] screen] != screen)
 				{
-					[viewersList removeObject: [hiddenWindows lastObject]];
-					[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
+					[viewersList removeObject: [hiddenWindows objectAtIndex: 0]];
+					[viewersList insertObject: [hiddenWindows objectAtIndex: 0] atIndex: i];
 					
-					[hiddenWindows removeObject: [hiddenWindows lastObject]];
+					[hiddenWindows removeObject: [hiddenWindows objectAtIndex: 0]];
 				}
 			}
 			
 			[[viewersList objectAtIndex:i] setWindowFrame:frame showWindow:YES animate: YES];
+            
+            [hiddenWindows removeObject: [viewersList objectAtIndex:i]];
 		}
 		
 		lastRows = 1;
@@ -4771,14 +4773,16 @@ static BOOL initialized = NO;
 				{
 					if( [[[viewersList objectAtIndex:i] window] screen] != screen)
 					{
-						[viewersList removeObject: [hiddenWindows lastObject]];
-						[viewersList insertObject: [hiddenWindows lastObject] atIndex: i];
+						[viewersList removeObject: [hiddenWindows objectAtIndex: 0]];
+						[viewersList insertObject: [hiddenWindows objectAtIndex: 0] atIndex: i];
 						
-						[hiddenWindows removeObject: [hiddenWindows lastObject]];
+						[hiddenWindows removeObject: [hiddenWindows objectAtIndex: 0]];
 					}
 				}
 				
 				[viewersForThisScreen addObject: [viewersList objectAtIndex:i]];
+                
+                [hiddenWindows removeObject: [viewersList objectAtIndex:i]];
 			}
 			
 			if( [viewersForThisScreen count])
