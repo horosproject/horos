@@ -12141,7 +12141,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #ifdef NDEBUG
 #else
         if( [NSThread isMainThread] == NO)
-            NSLog( @"--- warning this object should be used only on the main thread. Create your own Context !");
+            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
         if( curImage >= 0) return [dcmFilesList objectAtIndex: curImage];
         else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)
@@ -12159,7 +12159,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 #ifdef NDEBUG
 #else
         if( [NSThread isMainThread] == NO)
-            NSLog( @"--- warning this object should be used only on the main thread. Create your own Context !");
+            NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
 #endif
 		if( curImage >= 0) return [[dcmFilesList objectAtIndex: curImage] valueForKey: @"series"];
         else if( [dcmPixList indexOfObject: curDCM] != NSNotFound)

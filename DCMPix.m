@@ -1230,6 +1230,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (DicomImage*) imageObj
 {
 #ifdef OSIRIX_VIEWER
+#ifdef NDEBUG
+#else
+    if( [NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#endif
     return [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
 #else
     return nil;
@@ -1239,6 +1244,11 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 - (DicomSeries*) seriesObj
 {
 #ifdef OSIRIX_VIEWER
+#ifdef NDEBUG
+#else
+    if( [NSThread isMainThread] == NO)
+        NSLog( @"******************* warning this object should be used only on the main thread. Create your own Context !");
+#endif
     return [[[[BrowserController currentBrowser] database] objectWithID: imageObjectID] valueForKey: @"series"];
 #else
     return nil;
