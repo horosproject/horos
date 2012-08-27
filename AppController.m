@@ -741,6 +741,8 @@ static NSDate *lastWarningDate = nil;
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
     NSLog( @"--- applicationDidChangeScreenParameters : resetToolbars");
+    [[AppController sharedAppController] closeAllViewers: self];
+    
     [AppController resetToolbars];
 }
 

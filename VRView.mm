@@ -2158,7 +2158,7 @@ public:
 	
     [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
     
-	[[IMService notificationCenter] removeObserver: self];
+//	[[IMService notificationCenter] removeObserver: self];
 	
 	[dcmSeriesString release];
 	[deleteRegion lock];

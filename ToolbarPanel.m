@@ -22,7 +22,7 @@
 extern BOOL USETOOLBARPANEL;
 
 static 	NSMutableDictionary *associatedScreen = nil;
-static int increment = 0, previousNumberOfScreens = 0;
+static int increment = 0;
 
 @implementation ToolbarPanelController
 
@@ -74,16 +74,6 @@ static int increment = 0, previousNumberOfScreens = 0;
 
 -(void)applicationDidChangeScreenParameters:(NSNotification*)aNotification
 {
-    if( previousNumberOfScreens == 0)
-        previousNumberOfScreens = [[NSScreen screens] count];
-    
-    if( [[NSScreen screens] count] != previousNumberOfScreens)
-    {
-        previousNumberOfScreens = [[NSScreen screens] count];
-        [[AppController sharedAppController] closeAllViewers: self];
-        return;
-    }
-    
 	if ([[NSScreen screens] count] <= screen)
 		return;
 	

@@ -548,6 +548,26 @@ static NSString*	PathAssistantToolbarItemIdentifier		= @"PathAssistant";
 #pragma mark-
 #pragma mark VR Viewer methods
 
+- (int) engine
+{
+    return vrController.view.engine;
+}
+
+- (void) setEngine: (int) newEngine
+{
+	vrController.view.engine = newEngine;
+}
+
+- (float) lodDisplayed
+{
+    return vrController.view.lodDisplayed;
+}
+
+- (void) setLodDisplayed: (float) newValue
+{
+    vrController.view.lodDisplayed = newValue;
+}
+
 - (IBAction) flyThruControllerInit:(id) sender
 {
 	[vrController flyThruControllerInit:sender];

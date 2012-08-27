@@ -51,6 +51,8 @@
 	
 	BOOL								exportAllViews;
 	
+    float lodDisplayed;
+    int engine;
 	
 	// Fly assistant
 	FlyAssistant* assistant;
@@ -87,6 +89,8 @@
 
 
 @property(readonly) EndoscopyVRController *vrController;
+@property float lodDisplayed;
+@property int engine;
 
 - (id) initWithPixList: (NSMutableArray*) pix :(NSArray*) files :(NSData*) vData :(ViewerController*) bC : (ViewerController*) vC;
 - (BOOL) is2DViewer;
