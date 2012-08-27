@@ -4327,7 +4327,7 @@ static NSConditionLock *threadLock = nil;
                     int thumbnailsToGenerate = 0;
                     for( DicomImage* im in files)
                     {
-                        if( im.series.thumbnail == nil)
+                        if( [im.series primitiveValueForKey:@"thumbnail"] == nil)
                             thumbnailsToGenerate++;
                     }
                     
