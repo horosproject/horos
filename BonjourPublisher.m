@@ -520,7 +520,9 @@ extern const char *GetPrivateIP();
 							while ( [data length] < pos + fileSize && (readData = [incomingConnection availableData]) && [readData length]) [data appendData: readData];
 							
 							NSString *dstPath = [[BrowserController currentBrowser] getNewFileDatabasePath: @"dcm"];
-							[[data subdataWithRange: NSMakeRange(pos,fileSize)] writeToFile: dstPath atomically: YES];
+                            
+                            NSData *dcmData = [NSData dataWithBytesNoCopy: (char*)[data bytes] + pos  length: fileSize freeWhenDone: NO];
+							[dcmData writeToFile: dstPath atomically: YES];
 							
 							[savedFiles addObject: dstPath];
 							
