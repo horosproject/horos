@@ -95,6 +95,11 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 	NSConditionLock* conditionLock = [io objectAtIndex:0];
 	NSThread* motherThread = [io objectAtIndex:1];
 	
+//    static int maxThread = 0;
+//    
+//    maxThread++;
+//    NSLog( @"%d", maxThread);
+    
     /* This part is being removed because this is not the place to limit the number of simultaneous connections. This is a general-purpose class that is supposed to be used by many parts of OsiriX and plugins. It's the classes that use this that must limit the number of simultaneous requests.
 #define MAX_SIMULTANEOUS_SYNCHRONOUS_CONNECTIONS 10
     static MPSemaphoreID semaphoreId = 0;
@@ -146,6 +151,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		[pool release];
 		[conditionLock lockWhenCondition:0];
 		[conditionLock unlockWithCondition:1];
+        
+//        maxThread--;
 	}
 }
 

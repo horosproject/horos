@@ -2525,6 +2525,9 @@ static volatile int numberOfThreadsForRelisce = 0;
         {
             if( [[ViewerController getDisplayed2DViewers] lastObject] != self)
                 [[[[ViewerController getDisplayed2DViewers] lastObject] window] close];
+            
+            else if( [[ViewerController getDisplayed2DViewers] objectAtIndex: 0] != self)
+                [[[[ViewerController getDisplayed2DViewers] objectAtIndex: 0] window] close];
         }
     }
     

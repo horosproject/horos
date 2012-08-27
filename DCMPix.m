@@ -3391,29 +3391,48 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	if( hello == NO && s != nil)
 		if( [[NSFileManager defaultManager] fileExistsAtPath:s] == NO) return nil;
 	
+//#if NDEBUG
+//#else
+//    if( [NSThread isMainThread] == NO)
+//        NSLog( @"***** Warning: DCMPix initWithPath should be created in the main thread");
+//#endif
+    
     if( self = [super init])
     {
 		//-------------------------received parameters
 		srcFile = [s retain];
-		imageObjectID = [[iO objectID] retain];
         
-        URIRepresentationAbsoluteString =  [[[[[iO valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
-		fileTypeHasPrefixDICOM = [[iO valueForKey:@"fileType"] hasPrefix:@"DICOM"];
-        numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
-        
-        if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
-            yearOld = [[iO valueForKeyPath: @"series.study.yearOld"] retain];
+        [iO.managedObjectContext lock];
+        @try
+        {
+            imageObjectID = [[iO objectID] retain];
             
-        if( [iO valueForKeyPath: @"series.study.dateOfBirth"] && [iO valueForKeyPath: @"series.study.date"])
-            yearOldAcquisition = [[iO valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
+            URIRepresentationAbsoluteString =  [[[[[iO valueForKeyPath:@"series.study"] objectID] URIRepresentation] absoluteString] retain];
+            fileTypeHasPrefixDICOM = [[iO valueForKey:@"fileType"] hasPrefix:@"DICOM"];
+            numberOfFrames = [[iO valueForKey: @"numberOfFrames"] intValue];
+            
+            if( [iO valueForKeyPath: @"series.study.dateOfBirth"])
+                yearOld = [[iO valueForKeyPath: @"series.study.yearOld"] retain];
+                
+            if( [iO valueForKeyPath: @"series.study.dateOfBirth"] && [iO valueForKeyPath: @"series.study.date"])
+                yearOldAcquisition = [[iO valueForKeyPath: @"series.study.yearOldAcquisition"] retain];
+            
+            #ifdef OSIRIX_VIEWER
+            [self loadCustomImageAnnotationsDBFields: (DicomImage*) iO];
+            #endif
+            
+            savedHeightInDB = [[iO valueForKey:@"storedHeight"] intValue];
+            savedWidthInDB = [[iO valueForKey:@"storedWidth"] intValue];
+        }
+        @catch ( NSException *e)
+        {
+            N2LogExceptionWithStackTrace( e);
+        }
+        @finally
+        {
+            [iO.managedObjectContext unlock];
+        }
         
-        #ifdef OSIRIX_VIEWER
-        [self loadCustomImageAnnotationsDBFields];
-        #endif
-        
-		savedHeightInDB = [[iO valueForKey:@"storedHeight"] intValue];
-		savedWidthInDB = [[iO valueForKey:@"storedWidth"] intValue];
-		
 		imID = pos;
 		imTot = tot;
 		fExternalOwnedImage = ptr;
@@ -12790,7 +12809,7 @@ END_CREATE_ROIS:
 }
 #endif
 
-- (void)loadCustomImageAnnotationsDBFields
+- (void)loadCustomImageAnnotationsDBFields: (DicomImage*) imageObj
 {
 #ifdef OSIRIX_VIEWER
     if( annotationsDBFields)
@@ -12811,13 +12830,6 @@ END_CREATE_ROIS:
     
     // image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
     NSArray *keys = [annotationsForModality allKeys];
-    
-    DicomImage *imageObj = nil;
-    
-    if( [NSThread isMainThread])
-        imageObj = (DicomImage*) [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
-    else
-        imageObj = (DicomImage*) [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID];
     
     [imageObj.managedObjectContext lock];
     

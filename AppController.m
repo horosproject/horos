@@ -4960,9 +4960,12 @@ static BOOL initialized = NO;
                 ++templatesCount;
             }
     if (!templatesCount)
+    {
         if ([[NSFileManager defaultManager] fileExistsAtPath:oldReportFilePath])
             [[NSFileManager defaultManager] createSymbolicLinkAtPath:[wordTemplatesOsirixDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] pathContent:oldReportFilePath];
-        else [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
+        else
+            [[NSFileManager defaultManager] copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"ReportTemplate.doc"] toPath:[templatesDirPath stringByAppendingPathComponent:@"OsiriX Basic Report Template.doc"] error:NULL];
+    }
 #endif
 #endif
 }

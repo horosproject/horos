@@ -682,7 +682,7 @@ Note setter is different to not break existing usage. :-( */
 
 #ifdef OSIRIX_VIEWER
 /** Custom Annotations */
-- (void)loadCustomImageAnnotationsDBFields;
+- (void)loadCustomImageAnnotationsDBFields: (DicomImage*) imageObj;
 - (void)loadCustomImageAnnotationsPapyLink:(int)fileNb DCMLink:(DCMObject*)dcmObject;
 - (NSString*) getDICOMFieldValueForGroup:(int)group element:(int)element papyLink:(short)fileNb;
 

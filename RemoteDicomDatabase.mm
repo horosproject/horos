@@ -104,7 +104,7 @@
 	self = [super initWithPath:path];
 	_baseBaseDirPath = [path retain];
 	_updateLock = [[NSRecursiveLock alloc] init];
-#define MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS 10
+#define MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS 5
     MPCreateSemaphore(MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS, MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS, &_connectionsSemaphoreId);
 
 	self.host = host;
