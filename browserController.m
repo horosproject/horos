@@ -7567,17 +7567,13 @@ static BOOL withReset = NO;
             [cell setTransparent:(i>=noOfImages)];
             [cell setEnabled:NO];
             [cell setFont:[NSFont systemFontOfSize:9]];
+            [cell setImagePosition: NSImageBelow];
             cell.title = NSLocalizedString(@"loading...", nil);
             cell.image = nil;
             cell.bezelStyle = NSShadowlessSquareBezelStyle;
         }
         
-    //	[oMatrix sizeToCells];
-        
         [imageView setPixels:nil files:nil rois:nil firstImage:0 level:0 reset:YES];
-        
-        [oMatrix setNeedsDisplay:YES];
-        //[self matrixDisplayIcons: self];
     }
 }
 
@@ -7749,6 +7745,7 @@ static BOOL withReset = NO;
                 [oMatrix setToolTip: NSLocalizedString(@"File not readable", nil) forCell:cell];
                 [cell setTitle: NSLocalizedString(@"File not readable", nil)];			
                 [cell setFont:[NSFont systemFontOfSize:9]];
+                [cell setImagePosition: NSImageBelow];
                 [cell setTransparent:NO];
                 [cell setEnabled:NO];
                 [cell setButtonType:NSPushOnPushOffButton];
@@ -8089,35 +8086,11 @@ static BOOL withReset = NO;
 	[self refreshMatrix: self];
 }
 
--(void)_matrixLoadIconsSetPix:(DCMPix*)pix thumbnail:(NSImage*)thumb index:(int)index context:(id)context
-{
-    if( [[NSThread currentThread] isCancelled])
-        return;
-    
-    @synchronized( previewPixThumbnails)
-    {
-        if (context == previewPix)
-        // this makes sure that the selection hasn't changed since the matrixLoadIcons call
-        {
-            [previewPixThumbnails replaceObjectAtIndex:index withObject:thumb];
-            [previewPix addObject:pix];
-            // only do it on a delayed basis
-            NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
-            if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5) {
-                _timeIntervalOfLastLoadIconsDisplayIcons = now;
-                [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
-            }
-        }
-    }
-}
-
 - (void)matrixLoadIcons: (NSDictionary*)dict
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
     [NSThread currentThread].name = @"matrixLoadIcons";
-    
-    [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     
     @try
     {
@@ -8129,6 +8102,8 @@ static BOOL withReset = NO;
         idatabase = [idatabase independentDatabase]; // INDEPENDANT CONTEXT !
         
         NSArray* objs = [idatabase objectsWithIDs:objectIDs];
+        NSMutableArray *tempPreviewPixThumbnails = [[previewPixThumbnails mutableCopy] autorelease];
+        NSMutableArray *tempPreviewPix = [[previewPix mutableCopy] autorelease];
         
         for (int i = 0; i < objectIDs.count; i++)
         {
@@ -8136,6 +8111,29 @@ static BOOL withReset = NO;
             {
                 if( [[NSThread currentThread] isCancelled])
                     break;
+                
+                if( i != 0)
+                {
+                    // only do it on a delayed basis
+                    NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
+                    if (now-_timeIntervalOfLastLoadIconsDisplayIcons > 0.5)
+                    {
+                        _timeIntervalOfLastLoadIconsDisplayIcons = now;
+                        @synchronized( previewPixThumbnails)
+                        {
+                            if( previewPix == context)
+                            {
+                                [previewPixThumbnails removeAllObjects];
+                                [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
+                                
+                                [previewPix removeAllObjects];
+                                [previewPix addObjectsFromArray: tempPreviewPix];
+                            }
+                        }
+                        
+                        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+                    }
+                }
                 
                 DicomImage* image = [idatabase objectWithID:[objectIDs objectAtIndex:i]];
                 if (!image) break; // the objects don't exist anymore, the selection has very likely changed after this call
@@ -8146,9 +8144,8 @@ static BOOL withReset = NO;
                 if (image.frameID) frame = image.frameID.intValue;
                 
                 DCMPix* dcmPix = [self getDCMPixFromViewerIfAvailable:image.completePath frameNumber: frame];
-                if (dcmPix == nil) {
+                if (dcmPix == nil)
                     dcmPix = [[[DCMPix alloc] initWithPath:image.completePath :0 :1 :nil :frame :0 isBonjour:![idatabase isLocal] imageObj: image] autorelease];
-                }
                 
                 if (!imageLevel) {
                     NSData* dbThmb = image.series.thumbnail;
@@ -8156,19 +8153,29 @@ static BOOL withReset = NO;
                         NSImageRep* rep = [[[NSBitmapImageRep alloc] initWithData:dbThmb] autorelease];
                         NSImage* dbIma = [[[NSImage alloc] initWithSize:[rep size]] autorelease];
                         [dbIma addRepresentation:rep];
-                        [self _matrixLoadIconsSetPix:(dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]) thumbnail:dbIma index:i context:context];
+                        
+                        DCMPix *pix = (dcmPix? dcmPix : [[[DCMPix alloc] myinitEmpty] autorelease]);
+                        
+                        [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: dbIma];
+                        [tempPreviewPix addObject: pix];
                         continue;
                     }
                 }
 
                 if (dcmPix) {
-                    if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF:image.series.seriesSOPClassUID]) {
-                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:[[NSWorkspace sharedWorkspace] iconForFileType: @"txt"] index:i context:context];
-                    } else {
+                    if ([DCMAbstractSyntaxUID isStructuredReport:image.series.seriesSOPClassUID] || [DCMAbstractSyntaxUID isPDF:image.series.seriesSOPClassUID])
+                    {
+                        [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: [[NSWorkspace sharedWorkspace] iconForFileType: @"txt"]];
+                        [tempPreviewPix addObject: dcmPix];
+                    }
+                    else
+                    {
                         NSImage* thumbnail = [dcmPix generateThumbnailImageWithWW:image.series.windowWidth.floatValue WL:image.series.windowLevel.floatValue];
                         [dcmPix revert:NO];	// <- Kill the raw data
                         if (thumbnail == nil || dcmPix.notAbleToLoadImage == YES) thumbnail = notFoundImage;
-                        [self _matrixLoadIconsSetPix:dcmPix thumbnail:thumbnail index:i context:context];
+                        
+                        [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: thumbnail];
+                        [tempPreviewPix addObject: dcmPix];
                     }
                     continue;
                 }
@@ -8176,8 +8183,23 @@ static BOOL withReset = NO;
                 N2LogExceptionWithStackTrace(e);
             }
             // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
-            [self _matrixLoadIconsSetPix:[[[DCMPix alloc] myinitEmpty] autorelease] thumbnail:notFoundImage index:i context:context];
+            
+            [tempPreviewPixThumbnails replaceObjectAtIndex: i withObject: notFoundImage];
+            [tempPreviewPix addObject: [[[DCMPix alloc] myinitEmpty] autorelease]];
         }
+        
+        @synchronized( previewPixThumbnails)
+        {
+            if( previewPix == context)
+            {
+                [previewPixThumbnails removeAllObjects];
+                [previewPixThumbnails addObjectsFromArray: tempPreviewPixThumbnails];
+                
+                [previewPix removeAllObjects];
+                [previewPix addObjectsFromArray: tempPreviewPix];
+            }
+        }
+        
         [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
     } @catch (NSException* e) {
         N2LogExceptionWithStackTrace(e);
