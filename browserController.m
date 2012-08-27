@@ -4335,11 +4335,13 @@ static NSConditionLock *threadLock = nil;
                         separateThread = NO;
                 }
                 
+                [matrixLoadIconsThread cancel];
+                [matrixLoadIconsThread release];
+                matrixLoadIconsThread = nil;
+                
                 NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
                 if( separateThread)
                 {
-                    [matrixLoadIconsThread cancel];
-                    [matrixLoadIconsThread release];
                     matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
                     [matrixLoadIconsThread start];
 				}
