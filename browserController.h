@@ -473,6 +473,7 @@ extern NSString* O2AlbumDragType;
 - (void) refreshColumns;
 - (NSString*) outlineViewRefresh;
 - (void) matrixInit:(long) noOfImages;
+- (void)matrixLoadIcons: (NSDictionary*)dict;
 - (NSArray*) albumArray;
 - (void) refreshAlbums;
 - (void) waitForRunningProcesses;

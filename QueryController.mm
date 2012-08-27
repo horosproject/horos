@@ -1508,27 +1508,30 @@ extern "C"
         {
             NSManagedObjectContext *independentContext = [[[BrowserController currentBrowser] database] independentContext];
             
-            [independentContext lock];
-            
-            @try
+            if( independentContext)
             {
-                NSError *error = nil;
-                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                [independentContext lock];
                 
-                request.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext: independentContext];
-                request.predicate = [NSPredicate predicateWithValue: YES];
-                
-                NSArray *result = [independentContext executeFetchRequest:request error: &error];
-                
-                local_studyArrayID = [result valueForKey: @"objectID"];
-                local_studyArrayInstanceUID = [result valueForKey:@"studyInstanceUID"];
-            }
-            @catch (NSException* e)
-            {
-                N2LogExceptionWithStackTrace(e);
-            }
-            @finally {
-                [independentContext unlock];
+                @try
+                {
+                    NSError *error = nil;
+                    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                    
+                    request.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext: independentContext];
+                    request.predicate = [NSPredicate predicateWithValue: YES];
+                    
+                    NSArray *result = [independentContext executeFetchRequest:request error: &error];
+                    
+                    local_studyArrayID = [result valueForKey: @"objectID"];
+                    local_studyArrayInstanceUID = [result valueForKey:@"studyInstanceUID"];
+                }
+                @catch (NSException* e)
+                {
+                    N2LogExceptionWithStackTrace(e);
+                }
+                @finally {
+                    [independentContext unlock];
+                }
             }
         }
         @catch (NSException * e)
@@ -1567,7 +1570,7 @@ extern "C"
 	{
 		@try
 		{
-			NSArray *result = nil;
+			NSArray *result = [NSArray array];
 			
             @synchronized (studyArrayInstanceUID)
             {
@@ -1576,10 +1579,12 @@ extern "C"
 
                 NSUInteger index = [studyArrayInstanceUID indexOfObject:[item valueForKey: @"uid"]];
                 
-                if( index == NSNotFound) result = [NSArray array];
-                else
+                if( index != NSNotFound)
                 {
-                    result = [NSArray arrayWithObject: [[[BrowserController currentBrowser] database] objectWithID: [studyArrayID objectAtIndex: index]]];
+                    DicomStudy *s = [[[BrowserController currentBrowser] database] objectWithID: [studyArrayID objectAtIndex: index]];
+                    
+                    if( s)
+                        result = [NSArray arrayWithObject: s];
                 }
             }
 			

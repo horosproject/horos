@@ -644,7 +644,8 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	
 	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
 	
-	while (i < images.count) {
+	while (i < images.count)
+    {
 		DicomImage* iImage = [images objectAtIndex:i++];
 		NSString* iLocalPath = [self localPathForImage:iImage];
 		
@@ -655,17 +656,6 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 		[remotePaths addObject:iImage.path];
 		
 		size += iImage.width.intValue*iImage.height.intValue*2*iImage.numberOfFrames.intValue;
-		
-		if ([iImage.path.pathExtension isEqualToString:@"zip"]) { // it is a ZIP
-//			NSLog(@"BONJOUR ZIP");
-			NSString* iPathXml = [iImage.path.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"];
-			if(![NSFileManager.defaultManager fileExistsAtPath:iPathXml]) {
-				// it has an XML descriptor with it
-//				NSLog(@"BONJOUR XML");
-				[localPaths addObject:[iLocalPath.stringByDeletingPathExtension stringByAppendingPathExtension:@"xml"]];
-				[remotePaths addObject:iPathXml];
-			}
-		}
 		
 		if (maxFiles == 1 || size >= maxFiles*512*512*2)
 			break;

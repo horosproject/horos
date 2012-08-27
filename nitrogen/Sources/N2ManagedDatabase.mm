@@ -28,58 +28,8 @@
 
 #define N2PersistentStoreCoordinator NSPersistentStoreCoordinator // for debug purposes, disable this #define and enable the commented N2PersistentStoreCoordinator implementation
 
-/*@interface N2PersistentStoreCoordinator : NSPersistentStoreCoordinator {
-    NSMutableArray* _lockhist;
-}
-
-@end
-
-@implementation N2PersistentStoreCoordinator 
-
--(id)initWithManagedObjectModel:(NSManagedObjectModel*)model {
-    if ((self = [super initWithManagedObjectModel:model])) {
-        _lockhist = [[NSMutableArray alloc] init];
-    }
-    
-    return self;
-}
-
--(void)dealloc {
-    if (_lockhist.count)
-        NSLog(@"[N2PersistentStoreCoordinator dealloc] with lock: %@", _lockhist);
-    [_lockhist release]; _lockhist = nil;
-    [super dealloc];
-}
-
--(void)lock {
-    [self retain];
-    [super lock];
-    // for debug
-    NSString* stack = nil;
-    @try {
-        [NSException raise:NSGenericException format:@""];
-    } @catch (NSException* e) {
-        stack = [e stackTrace];
-    }
-    if (stack)
-        [_lockhist addObject:stack];
-}
-
--(void)unlock {
-    [_lockhist removeLastObject];
-    [super unlock];
-    [self release];
-}
-
--(NSArray*)lockhist {
-    return _lockhist;
-}
-
-@end*/
-
 @interface N2ManagedObjectContext : NSManagedObjectContext {
 	N2ManagedDatabase* _database;
-//    NSMutableArray* lockhist;
 }
 
 @property(assign) N2ManagedDatabase* database;
@@ -91,12 +41,8 @@
 @synthesize database = _database;
 
 -(void)dealloc {
-//	NSLog(@"---------- DEL %@", self);
-//    [self save:NULL];
- /*   if (lockhist.count) NSLog(@"WARNING: releasing locked %@", lockhist);
-    if (lockhist) [lockhist release];*/
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 	self.database = nil;
-	[NSNotificationCenter.defaultCenter removeObserver:self]; // some bug? It seems the managedObjectContext gets notified by the persistentStore, and the notifications are still sent after the context's dealloc..
 	[super dealloc];
 }
 

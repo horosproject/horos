@@ -4736,7 +4736,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		goto END_CREATE_ROIS;
 	}
 	
-	NSManagedObjectContext *moc = [[BrowserController currentBrowser] managedObjectContextIndependentContext:YES];
+	NSManagedObjectContext *moc = [[[BrowserController currentBrowser] database] independentContext];
 	NSError *error = nil;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
 	request.entity = [NSEntityDescription entityForName: @"Image" inManagedObjectContext: moc];	
@@ -9254,7 +9254,11 @@ END_CREATE_ROIS:
 			
 			[srcFile release];
 			srcFile = nil;
-			srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID] :0];
+            
+            if( [NSThread isMainThread])
+                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[BrowserController currentBrowser] database] objectWithID: imageObjectID] :0];
+			else
+                srcFile = [[BrowserController currentBrowser] getLocalDCMPath: [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID] :0];
 			[srcFile retain];
 			
 			if( srcFile == nil)
@@ -12808,16 +12812,21 @@ END_CREATE_ROIS:
     // image sides (LowerLeft, LowerMiddle, LowerRight, MiddleLeft, MiddleRight, TopLeft, TopMiddle, TopRight) & sameAsDefault
     NSArray *keys = [annotationsForModality allKeys];
     
+    DicomImage *imageObj = nil;
+    
+    if( [NSThread isMainThread])
+        imageObj = (DicomImage*) [[[BrowserController currentBrowser] database] objectWithID: imageObjectID];
+    else
+        imageObj = (DicomImage*) [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID];
+    
+    [imageObj.managedObjectContext lock];
+    
     for( NSString *key in keys)
     {
         if(![key isEqualToString:@"sameAsDefault"])
         {
             NSArray *annotations = [annotationsForModality objectForKey: key];
             NSMutableArray *annotationsOUT = [NSMutableArray array];
-            
-            DicomImage *imageObj = (DicomImage*) [[[[BrowserController currentBrowser] database] independentContext] objectWithID: imageObjectID];
-            
-            [imageObj.managedObjectContext lock];
             
             @try
             {
@@ -12878,11 +12887,9 @@ END_CREATE_ROIS:
             @catch( NSException *e) {
                 NSLog(@"CustomImageAnnotations Exception: %@", e);
             }
-            @finally {
-                [imageObj.managedObjectContext unlock];
-            }
         }
     }
+    [imageObj.managedObjectContext unlock];
 #endif
 }
 

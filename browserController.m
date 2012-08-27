@@ -4321,12 +4321,31 @@ static NSConditionLock *threadLock = nil;
                     [[self managedObjectContext] unlock];
                 }
 				
-				NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
-                [matrixLoadIconsThread cancel];
-                [matrixLoadIconsThread release];
-                matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
-                [matrixLoadIconsThread start];
-				
+                BOOL separateThread = YES;
+                if( imageLevel == NO) // If series level, and less than 5 thumbnails to compute: do it on main thread: faster, and no-blinking icons...
+                {
+                    int thumbnailsToGenerate = 0;
+                    for( DicomImage* im in files)
+                    {
+                        if( im.series.thumbnail == nil)
+                            thumbnailsToGenerate++;
+                    }
+                    
+                    if( thumbnailsToGenerate < 5)
+                        separateThread = NO;
+                }
+                
+                NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys: _database, @"DicomDatabase", [files valueForKey:@"objectID"], @"objectIDs", [NSNumber numberWithBool: imageLevel], @"imageLevel", previewPix, @"Context", _database, @"DicomDatabase", nil];
+                if( separateThread)
+                {
+                    [matrixLoadIconsThread cancel];
+                    [matrixLoadIconsThread release];
+                    matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
+                    [matrixLoadIconsThread start];
+				}
+                else
+                    [self matrixLoadIcons: dict];
+                
 				if( previousItem == item)
 					[oMatrix selectCellWithTag: cellId];
 			}
@@ -8131,7 +8150,8 @@ static BOOL withReset = NO;
                             }
                         }
                         
-                        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+                        if( [NSThread isMainThread] == NO)
+                            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
                     }
                 }
                 
@@ -8179,7 +8199,9 @@ static BOOL withReset = NO;
                     }
                     continue;
                 }
-            } @catch (NSException* e) {
+            }
+            @catch (NSException* e)
+            {
                 N2LogExceptionWithStackTrace(e);
             }
             // successful iterations don't execute this (they continue to the next iteration), this is in case no image has been provided by this iteration (exception, no file, ...)
@@ -8200,11 +8222,17 @@ static BOOL withReset = NO;
             }
         }
         
-        [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
-    } @catch (NSException* e) {
+        if( [NSThread isMainThread] == NO)
+            [self performSelectorOnMainThread:@selector(matrixDisplayIcons:) withObject:nil waitUntilDone:NO];
+        else
+            [self matrixDisplayIcons: nil];
+    }
+    @catch (NSException* e)
+    {
         N2LogExceptionWithStackTrace(e);
-    } @finally {
-        
+    }
+    @finally
+    {
         [pool release];
     }
 }
