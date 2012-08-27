@@ -4189,22 +4189,25 @@ static NSConditionLock *threadLock = nil;
             #ifndef OSIRIX_LIGHT
             for( DCMTKStudyQueryNode *study in self.comparativeStudies)
             {
-                if( [study isKindOfClass: [DCMTKStudyQueryNode class]] && [study.studyInstanceUID isEqualToString: newStudy.studyInstanceUID])
+                if( [study.studyInstanceUID isEqualToString: newStudy.studyInstanceUID])
                 {
-                    NSUInteger index = [copy indexOfObject: study];
-                    if( index != NSNotFound)
+                    found = YES;
+                    if( [study isKindOfClass: [DCMTKStudyQueryNode class]])
                     {
-                        found = YES;
-                        [copy replaceObjectAtIndex: index withObject: newStudy];
+                        NSUInteger index = [copy indexOfObject: study];
+                        if( index != NSNotFound)
+                            [copy replaceObjectAtIndex: index withObject: newStudy];
                     }
                 }
             }
+            #endif
+            
             if( found == NO)
             {
                 [copy addObject: newStudy];
                 [copy sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
             }
-            #endif
+            
             self.comparativeStudies = copy;
             
             [comparativeTable reloadData];
