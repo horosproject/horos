@@ -2687,6 +2687,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 #endif
     
     [loadingThread cancel];
+    [loadingThread release];
+    loadingThread = nil;
     
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
@@ -6694,6 +6696,8 @@ return YES;
 	int x,i,z;
 	
     [loadingThread cancel];
+    [loadingThread release];
+    loadingThread = nil;
 	
 	if( resampleRatio != 1)
 		resampleRatio = 1;
@@ -7422,6 +7426,7 @@ return YES;
 	originalOrientation = -1;
 	
     [loadingThread release];
+    loadingThread = nil;
     
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
    
@@ -7572,6 +7577,9 @@ return YES;
 
 - (void) finishLoadImageData: (NSDictionary*) dict
 {
+    [loadingThread release];
+    loadingThread = nil;
+    
     if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
         return;
     
@@ -19888,7 +19896,7 @@ int i,j,l;
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		while( loadingThread.isFinished == NO)
+		while( loadingThread.isExecuting)
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		
 		[splash close];
@@ -19913,7 +19921,7 @@ int i,j,l;
 	{
 		for( int i = 0 ; i < [pixList[ x] count]; i++)
 		{
-			if( [loadingThread isCancelled] == NO)
+			if( [loadingThread isExecuting] == NO)
 			{
 				DCMPix* pix = [pixList[ x] objectAtIndex: i];
 				[pix revert];

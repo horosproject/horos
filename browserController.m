@@ -5518,7 +5518,7 @@ static NSConditionLock *threadLock = nil;
 {
 	if (_database == nil)
         return nil;
-	
+	[item retain];
 	[_database lock];
 	@try {
 		if ([item isFault] == NO)
@@ -5530,6 +5530,7 @@ static NSConditionLock *threadLock = nil;
 	}
     @finally {
         [_database unlock];
+        [item release];
     }
 
 	return nil;
