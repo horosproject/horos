@@ -1373,16 +1373,16 @@ extern "C"
 {
 	@try
 	{
-		if( [[tableColumn identifier] isEqualToString:@"comment"])
-		{
-			DatabaseIsEdited = YES;
-			return YES;
-		}
-		else
-		{
-			DatabaseIsEdited = NO;
-			return NO;
-		}
+//		if( [[tableColumn identifier] isEqualToString:@"comment"])
+//		{
+//			DatabaseIsEdited = YES;
+//			return YES;
+//		}
+//		else
+//		{
+//			DatabaseIsEdited = NO;
+//			return NO;
+//		}
 	}
 	@catch (NSException * e)
 	{
@@ -1799,20 +1799,20 @@ extern "C"
 	
 	@try
 	{
-		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
-		{
-			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
-				array = [self localStudy: item];
-			else
-				array = [self localSeries: item];
-			
-			if( [array count] > 0)
-			{
-                [[BrowserController currentBrowser] setDatabase:[DicomDatabase activeLocalDatabase]];
-				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
-			}
-			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
-		}
+// NOT EDITABLE...
+//		if( [[tableColumn identifier] isEqualToString: @"comment"] || [[tableColumn identifier] isEqualToString: @"stateText"])
+//		{
+//			if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] == YES)
+//				array = [self localStudy: item];
+//			else
+//				array = [self localSeries: item];
+//			
+//			if( [array count] > 0)
+//			{
+//				[[BrowserController currentBrowser] setDatabaseValue: object item: [array objectAtIndex: 0] forKey: [tableColumn identifier]];
+//			}
+//			else NSRunCriticalAlertPanel( NSLocalizedString(@"Study not available", nil), NSLocalizedString(@"The study is not available in the local Database, you cannot modify or set the comments/status fields.", nil), NSLocalizedString(@"OK", nil), nil, nil) ;
+//		}
 	}
 	@catch (NSException * e)
 	{
