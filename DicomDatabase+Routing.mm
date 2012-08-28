@@ -231,7 +231,7 @@
 				sent += objectsToSend.count;
 				
 				NSString* serverName = [copy objectForKey:@"server"];
-				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %@ to %@", nil), N2LocalizedSingularPluralCount(objectsToSend.count, @"file", @"files"), serverName];
+				thread.status = [NSString stringWithFormat:NSLocalizedString(@"Forwarding %@ to %@", nil), N2LocalizedSingularPluralCount(objectsToSend.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil)), serverName];
 				
 				NSDictionary* server = nil;
 				for (NSDictionary* aServer in serversArray)

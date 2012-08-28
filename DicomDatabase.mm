@@ -1175,7 +1175,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	NSString* tempDirPath = self.tempDirPath;
 	
 	[thread enterOperation];
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, @"file", @"files")];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 	
     NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
 	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex)
@@ -1273,7 +1273,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		
 		[thread enterOperationIgnoringLowerLevels];
-        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, @"file", @"files")];
+        thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 //        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
         NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
@@ -1360,7 +1360,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
 	NSThread* thread = [NSThread currentThread];
-    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, @"file", @"files")];
+    thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
     
 	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
@@ -2044,7 +2044,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
             {
 				if ([addedImageObjects count] > 0 && generatedByOsiriX == NO)
                 {
-					growlString = [NSString stringWithFormat:NSLocalizedString(@"Patient: %@\r%@ to the database", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], N2LocalizedSingularPluralCount(addedImageObjects.count, @"image added", @"images added")];
+					growlString = [NSString stringWithFormat:NSLocalizedString(@"Patient: %@\r%@ to the database", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], N2LocalizedSingularPluralCount(addedImageObjects.count, NSLocalizedString(@"image added", nil), NSLocalizedString(@"images added", nil))];
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 			}
@@ -2114,7 +2114,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			{
 				if ([[NSThread currentThread] isCancelled]) break;
                 
-                [NSThread currentThread].status = N2LocalizedSingularPluralCount(filesInput.count-i, @"file left", @"files left");
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount(filesInput.count-i, NSLocalizedString(@"file left", nil), NSLocalizedString(@"files left", nil));
                 [NSThread currentThread].progress = float(i)/filesInput.count;
 
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
@@ -2535,7 +2535,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 }
 			}
 			
-			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Processing %@...", nil), N2LocalizedSingularPluralCount(filesArray.count, @"file", @"files")];
+			thread.status = [NSString stringWithFormat:NSLocalizedString(@"Processing %@...", nil), N2LocalizedSingularPluralCount(filesArray.count, NSLocalizedString(@"file", nil),NSLocalizedString(@"files", nil))];
 			
 			NSArray* addedFiles = nil;
             if( thread.isCancelled == NO)
@@ -3204,7 +3204,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	
 		// ** Finish the rebuild
         
-		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@...", @"rebuild database thread status: Adding %@ (%@ = '120 files')"), N2LocalizedSingularPluralCount(filesArray.count, @"file", @"files")];
+		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@...", @"rebuild database thread status: Adding %@ (%@ = '120 files')"), N2LocalizedSingularPluralCount(filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 		[self addFilesAtPaths:filesArray postNotifications:NO];
 		
 		NSLog(@"End Rebuild");

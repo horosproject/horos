@@ -2554,7 +2554,7 @@ extern "C"
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
     
-    [numberOfStudies setStringValue:N2LocalizedSingularPluralCount(resultArray.count, @"study found", @"studies found")];
+    [numberOfStudies setStringValue:N2LocalizedSingularPluralCount(resultArray.count, NSLocalizedString( @"study found", nil), NSLocalizedString( @"studies found", nil))];
     
 	[l release];
 }
@@ -2896,7 +2896,7 @@ extern "C"
 			
 			NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
             t.name = NSLocalizedString( @"Retrieving images...", nil);
-            t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
+            t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString( @"study", nil), NSLocalizedString( @"studies", nil));
             if ([selectedItems count] > 1)
                 t.progress = 0;
 			t.supportsCancel = YES;
@@ -3257,7 +3257,7 @@ extern "C"
 				
 				NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( performRetrieve:) object: selectedItems] autorelease];
 				t.name = NSLocalizedString( @"Retrieving images...", nil);
-                t.status = N2LocalizedSingularPluralCount(selectedItems.count, @"study", @"studies");
+                t.status = N2LocalizedSingularPluralCount(selectedItems.count, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
                 if ([selectedItems count] > 1)
                     t.progress = 0;
 				

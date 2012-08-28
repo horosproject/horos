@@ -9505,7 +9505,7 @@ static BOOL needToRezoom;
             cell.title = [study studyName];
             cell.rightTextFirstLine = [study modality];
             cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
-            cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), @"image", @"images");
+            cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), NSLocalizedString(@"image", nil), NSLocalizedString(@"images", nil));
         }
         else
         {
@@ -9874,7 +9874,7 @@ static BOOL needToRezoom;
         
         NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
         t.name = NSLocalizedString( @"Retrieving images...", nil);
-        t.status = N2LocalizedSingularPluralCount( 1, @"study", @"studies");
+        t.status = N2LocalizedSingularPluralCount( 1, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
         t.supportsCancel = YES;
         [[ThreadsManager defaultManager] addThreadAndStart: t];
         
@@ -13315,7 +13315,7 @@ static NSArray*	openSubSeriesArray = nil;
             
             NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( emptyDeleteQueueThread) object:  nil] autorelease];
             t.name = NSLocalizedString( @"Deleting files...", nil);
-            t.status = N2LocalizedSingularPluralCount(deleteQueueArray.count, @"file", @"files");
+            t.status = N2LocalizedSingularPluralCount(deleteQueueArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
             t.progress = 0;
             t.supportsCancel = YES;
             [[ThreadsManager defaultManager] addThreadAndStart: t];
