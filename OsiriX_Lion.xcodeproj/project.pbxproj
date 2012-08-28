@@ -521,8 +521,6 @@
 		840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */; };
 		840C2D601588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
 		840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */; };
-		840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */; };
-		840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */; };
 		841524C5113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841524C6113D6BDB008250E6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 841524C4113D6BDB008250E6 /* QuartzCore.framework */; };
 		841721B810D8D745001A833F /* AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 841721A410D8D745001A833F /* AsyncSocket.h */; };
@@ -561,6 +559,8 @@
 		8476BC341599D7E900451331 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC331599D7E900451331 /* CoreMedia.framework */; };
 		8476BC351599D7E900451331 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC331599D7E900451331 /* CoreMedia.framework */; };
 		8476BC361599D7E900451331 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8476BC331599D7E900451331 /* CoreMedia.framework */; };
+		848327AB15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */; };
+		848327AC15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */; };
 		8483ABA60E1BE33900C21B31 /* crossCursor.tif in Resources */ = {isa = PBXBuildFile; fileRef = 8483ABA50E1BE33900C21B31 /* crossCursor.tif */; };
 		848631C30FE77E1F00B96E99 /* jpeg_memdest.h in Headers */ = {isa = PBXBuildFile; fileRef = 848631C10FE77E1F00B96E99 /* jpeg_memdest.h */; };
 		848A6BEB14C5BBA700C936C3 /* Tiling1x1.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */; };
@@ -8700,7 +8700,6 @@
 		8406956210B6800E00C37AD0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomIntervalPanel.h; sourceTree = "<group>"; };
 		840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomIntervalPanel.m; sourceTree = "<group>"; };
-		840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		841524C4113D6BDB008250E6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
 		841721A410D8D745001A833F /* AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncSocket.h; path = cocoahttpserver/AsyncSocket.h; sourceTree = "<group>"; };
 		841721A510D8D745001A833F /* AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncSocket.m; path = cocoahttpserver/AsyncSocket.m; sourceTree = "<group>"; };
@@ -8733,6 +8732,7 @@
 		8459A7260F5D63EF00146B28 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/VREmpty.xib; sourceTree = "<group>"; };
 		8476BC2E1599D4B200451331 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
 		8476BC331599D7E900451331 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = ../../../../System/Library/Frameworks/CoreMedia.framework; sourceTree = "<group>"; };
+		848327AA15ED08F3003BAEEB /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = Binaries/English.lproj/CustomIntervalPanel.xib; sourceTree = "<group>"; };
 		8483ABA50E1BE33900C21B31 /* crossCursor.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = crossCursor.tif; path = Cursors/crossCursor.tif; sourceTree = "<group>"; };
 		848631C10FE77E1F00B96E99 /* jpeg_memdest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = jpeg_memdest.h; path = Papyrus3/jpeg_memdest.h; sourceTree = "<group>"; };
 		848A6BE714C5BBA700C936C3 /* Tiling1x1.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = Tiling1x1.pdf; path = Binaries/Icons/Tiling/Tiling1x1.pdf; sourceTree = "<group>"; };
@@ -14585,6 +14585,7 @@
 				CE3F992C0C84724B00CB38F1 /* BurnViewer.xib */,
 				CE3F99000C84724B00CB38F1 /* CalciumScoring.xib */,
 				CE90551612F5B68100263AB6 /* CPR.xib */,
+				848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */,
 				CE3F990A0C84724B00CB38F1 /* Endoscopy.xib */,
 				CE3F98EC0C84724B00CB38F1 /* FlyThru.xib */,
 				CE3F99140C84724B00CB38F1 /* Histogram.xib */,
@@ -16144,7 +16145,6 @@
 				CE39BFA006BC5DAE006D6824 /* Scripting_Additions.m */,
 				840C2D5B1588CE4600C4FE09 /* CustomIntervalPanel.h */,
 				840C2D5C1588CE4600C4FE09 /* CustomIntervalPanel.m */,
-				840C2D5D1588CE4600C4FE09 /* CustomIntervalPanel.xib */,
 			);
 			name = Database;
 			sourceTree = "<group>";
@@ -26631,7 +26631,6 @@
 				71512E99152349E500B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 				CE2BFE57153B177C00037546 /* iPad.png in Resources */,
 				71CE3C19157F489C00AC0112 /* List.pdf in Resources */,
-				840C2D621588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 				CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */,
 				CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
 				A91BF49715BD8A8900B7BA23 /* Anonymizer.pdf in Resources */,
@@ -26697,6 +26696,7 @@
 				A9B23D6915D018A4000E47C3 /* horizontalPosition.pdf in Resources */,
 				A9B23D6D15D018B6000E47C3 /* normalPosition.pdf in Resources */,
 				A9B23D7015D018C5000E47C3 /* verticalPosition.pdf in Resources */,
+				848327AB15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26993,7 +26993,6 @@
 				71512E9F1523552400B87012 /* DiscMountedAskTheUserDialog.xib in Resources */,
 				CE2BFE58153B177C00037546 /* iPad.png in Resources */,
 				71CE3C1A157F489C00AC0112 /* List.pdf in Resources */,
-				840C2D631588CE4600C4FE09 /* CustomIntervalPanel.xib in Resources */,
 				CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */,
 				CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
 				A91BF49815BD8A8900B7BA23 /* Anonymizer.pdf in Resources */,
@@ -27059,6 +27058,7 @@
 				A9B23D6A15D018A4000E47C3 /* horizontalPosition.pdf in Resources */,
 				A9B23D6E15D018B6000E47C3 /* normalPosition.pdf in Resources */,
 				A9B23D7115D018C5000E47C3 /* verticalPosition.pdf in Resources */,
+				848327AC15ED08F4003BAEEB /* CustomIntervalPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29809,6 +29809,14 @@
 				8459A7260F5D63EF00146B28 /* English */,
 			);
 			name = VREmpty.xib;
+			sourceTree = "<group>";
+		};
+		848327A915ED08F3003BAEEB /* CustomIntervalPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				848327AA15ED08F3003BAEEB /* English */,
+			);
+			name = CustomIntervalPanel.xib;
 			sourceTree = "<group>";
 		};
 		A9333D380F56E9670097DAB7 /* MPR.xib */ = {
