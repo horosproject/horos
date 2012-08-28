@@ -6761,6 +6761,7 @@ return YES;
 	
 	[self finalizeSeriesViewing];
 	
+    [loadingThread cancel];
     [loadingThread release];
     loadingThread = nil;
     
@@ -7425,6 +7426,7 @@ return YES;
     
 	originalOrientation = -1;
 	
+    [loadingThread cancel];
     [loadingThread release];
     loadingThread = nil;
     
@@ -7577,6 +7579,7 @@ return YES;
 
 - (void) finishLoadImageData: (NSDictionary*) dict
 {
+    [loadingThread cancel];
     [loadingThread release];
     loadingThread = nil;
     
@@ -19921,11 +19924,8 @@ int i,j,l;
 	{
 		for( int i = 0 ; i < [pixList[ x] count]; i++)
 		{
-			if( [loadingThread isExecuting] == NO)
-			{
-				DCMPix* pix = [pixList[ x] objectAtIndex: i];
-				[pix revert];
-			}
+            DCMPix* pix = [pixList[ x] objectAtIndex: i];
+            [pix revert];
 		}
 	}
 	
