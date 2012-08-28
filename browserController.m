@@ -8114,7 +8114,8 @@ static BOOL withReset = NO;
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     
-    [NSThread currentThread].name = @"matrixLoadIcons";
+    if( [NSThread isMainThread] == NO)
+        [NSThread currentThread].name = @"matrixLoadIcons";
     
     @try
     {
