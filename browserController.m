@@ -13180,7 +13180,7 @@ static NSArray*	openSubSeriesArray = nil;
             if( f%20 == 0)
             {
                 [NSThread currentThread].progress = (float)f / (float)[copyArray count];
-                [NSThread currentThread].status = [NSString stringWithFormat:((copyArray.count-f) == 1? NSLocalizedString(@"%d file", nil) : NSLocalizedString(@"%d files", nil)), copyArray.count-f];
+                [NSThread currentThread].status = N2LocalizedSingularPluralCount( copyArray.count-f, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil));
                 
                 if( [NSThread currentThread].isCancelled) //The queue is saved as a plist, we can continue later...
                     break;

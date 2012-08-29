@@ -64,6 +64,7 @@
 #import "DicomDatabase.h"
 #import "N2MutableUInteger.h"
 #import "Window3DController.h"
+#import "N2Stuff.h"
 
 #include <OpenGL/OpenGL.h>
 
