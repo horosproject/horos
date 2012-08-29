@@ -2686,6 +2686,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
 #endif
     
+    [self.window makeFirstResponder: nil];
+    
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
     [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     
@@ -2968,6 +2970,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) windowDidResignMain:(NSNotification *)aNotification
 {
+    [self.window makeFirstResponder: nil];
+    
 	[imageView stopROIEditingForce: YES];
 	
 	[imageView sendSyncMessage: 0];
@@ -2978,6 +2982,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) windowDidResignKey:(NSNotification *)aNotification
 {
+    [self.window makeFirstResponder: nil];
+    
 	[imageView stopROIEditingForce: YES];
 	
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"AUTOHIDEMATRIX"]) [self autoHideMatrix];
@@ -2990,6 +2996,11 @@ static volatile int numberOfThreadsForRelisce = 0;
 {
 	int i;
 	
+    if( windowWillClose)
+        return;
+    
+    [self.window makeFirstResponder: nil];
+    
 	if( [OSIWindowController dontWindowDidChangeScreen])
 		return;
 	
