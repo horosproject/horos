@@ -9298,31 +9298,33 @@ END_CREATE_ROIS:
 					
                     #ifdef OSIRIX_VIEWER
 					#ifndef OSIRIX_LIGHT
-                    
-                    // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
-                    
-                    NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
-                    
-                    [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
-                    
-                    @try 
+                    if( success == NO)
                     {
-                        [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                        // It failed with Papyrus : potential crash with DCMFramework with a corrupted file
+                        // Only do it, if it failed: writing a file takes time... and slow down reading performances
                         
-                        //only try again if is strict DICOM
-                        if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
-                        {
-                            NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
-                            success = [self loadDICOMDCMFramework];
-                        }
+                        NSString *recoveryPath = [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingPathComponent:@"/ThumbnailPath"];
                         
                         [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                        
+                        @try 
+                        {
+                            [URIRepresentationAbsoluteString writeToFile: recoveryPath atomically: YES encoding: NSASCIIStringEncoding  error: nil];
+                            
+                            //only try again if is strict DICOM
+                            if (success == NO && [DCMObject isDICOM:[NSData dataWithContentsOfFile: srcFile]])
+                            {
+                                NSLog( @"DCMPix: Papyrus failed. Try DCMFramework : %@", srcFile);
+                                success = [self loadDICOMDCMFramework];
+                            }
+                            
+                            [[NSFileManager defaultManager] removeItemAtPath: recoveryPath error: nil];
+                        }
+                        @catch (NSException * e) 
+                        {
+                            NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
+                        }
                     }
-                    @catch (NSException * e) 
-                    {
-                        NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-                    }
-                    
 					#endif
                     #endif
 				}
