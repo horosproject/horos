@@ -766,8 +766,10 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	BOOL used = NO;
 	for (DataNodeIdentifier* ibs in _browser.sources.arrangedObjects)
 		if ([ibs isKindOfClass:[LocalDatabaseNodeIdentifier class]] && [ibs.location hasPrefix:path])
+        {
 			return; // device is somehow already listed as a source
-	
+        }
+    
 	NSTask* task = [[NSTask alloc] init];
 	[task setLaunchPath:@"/usr/sbin/diskutil"];
 	[task setArguments:[NSArray arrayWithObjects: @"info", @"-plist", path, NULL]];
@@ -796,6 +798,14 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	else // Is there a DICOMDIR at root?
     {
         if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent: @"DICOMDIR"]])
+        {
+            @try {
+                [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeGeneric]];
+            } @catch (NSException* e) {
+                N2LogExceptionWithStackTrace(e);
+            }
+        }
+        else if( [[NSFileManager defaultManager] fileExistsAtPath: [path stringByAppendingPathComponent: OsirixDataDirName]])
         {
             @try {
                 [_browser.sources addObject:[MountedDatabaseNodeIdentifier mountedDatabaseNodeIdentifierWithPath:path description:path.lastPathComponent dictionary:nil type:MountTypeGeneric]];
@@ -1117,7 +1127,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	
 	// does it contain an OsiriX Data folder?
 	BOOL isDir;
-	if ([[NSFileManager defaultManager] fileExistsAtPath:[path stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[devicePath stringByAppendingPathComponent:OsirixDataDirName] isDirectory:&isDir] && isDir) {
 		path = devicePath;
 		scan = NO;
 	}
@@ -1130,16 +1140,12 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	MountedDatabaseNodeIdentifier* bs = [[self class] localDatabaseNodeIdentifierWithPath:path description:description dictionary:dictionary];
 	bs.devicePath = devicePath;
     bs.mountType = type;
-//  bs.detected = YES;
 	[[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
 	
-	if (scan) {
+	if (scan)
 		[bs initiateVolumeScan];
-	}
-	
-    if (type == MountTypeIPod) {
+	else 
         bs.detected = YES;
-    }
     
 	return bs;
 }
