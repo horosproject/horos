@@ -125,6 +125,8 @@
 	N2Step* step = [[notification userInfo] objectForKey:N2StepsNotificationStep];
 	N2StepView* view = [self stepViewForStep:step];
 	
+    [view setPostsFrameChangedNotifications:NO];
+    
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:NSViewFrameDidChangeNotification object:view];
 	[view removeFromSuperview];
 	

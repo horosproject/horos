@@ -2686,6 +2686,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	[[OSIEnvironment sharedEnvironment] removeViewerController:self];
 #endif
     
+    [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
+    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
+    
     [loadingThread cancel];
     [loadingThread release];
     loadingThread = nil;
@@ -3796,6 +3799,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (void) setMatrixVisible: (BOOL) visible
 {
+    if( windowWillClose)
+        return;
+    
     BOOL currentlyVisible = [self matrixIsVisible];
     
     if (currentlyVisible != visible)
@@ -3862,6 +3868,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 	BOOL hide = NO;
 	NSWindow *window = nil;
 	
+    if( windowWillClose)
+        return;
+    
 	if( [self FullScreenON] == NO)
 	{
 		window = self.window;
@@ -3957,6 +3966,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) ViewFrameDidChange:(NSNotification*) note
 {
+    if( windowWillClose)
+        return;
+    
 	if( [[splitView subviews] count] > 1)
 	{
 		if ([note object] == [[splitView subviews] objectAtIndex: 1])
@@ -3969,6 +3981,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void)splitViewWillResizeSubviews:(NSNotification *)notification
 {
+    if( windowWillClose)
+        return;
+    
 	OSIWindow *window = (OSIWindow*)self.window;
 	
 	if( [window respondsToSelector:@selector( disableUpdatesUntilFlush)])
@@ -3982,6 +3997,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (CGFloat)splitView:(NSSplitView *)sender constrainSplitPosition:(CGFloat)proposedPosition ofSubviewAt:(NSInteger)offset
 {
+    if( windowWillClose)
+        return proposedPosition;
+    
     if (sender == splitView)
     {
 		CGFloat rcs = previewMatrix.cellSize.width;
@@ -4039,6 +4057,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(void) splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize
 {
+    if( windowWillClose)
+        return;
+    
     CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
     dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
     
@@ -6748,7 +6769,7 @@ return YES;
     [[self window] setDelegate: nil];
 	
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
-    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO]; 
+    [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     
     NSArray *windows = [NSApp windows];
     

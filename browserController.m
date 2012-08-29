@@ -10094,33 +10094,32 @@ static BOOL needToRezoom;
 	@try
 	{
 		//  (1) keyImages
-		
-		NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
-		
-        @try
-        {
-            for( NSArray *loadList in toOpenArray)
-            {
-                NSMutableArray *keyImagesArray = [NSMutableArray array];
-                
-                for( NSManagedObject *image in loadList)
-                {
-                    if( [image isKindOfClass: [DicomImage class]])
-                        if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
-                            [keyImagesArray addObject: image];
-                }
-                
-                if( [keyImagesArray count] > 0)
-                    [keyImagesToOpenArray addObject: keyImagesArray];
-            }
-        }
-        @catch (NSException *e)
-        {
-            N2LogException( e);
-        }
-        
 		if( keyImages)
-		{	
+		{
+            NSMutableArray *keyImagesToOpenArray = [NSMutableArray array];
+            
+            @try
+            {
+                for( NSArray *loadList in toOpenArray)
+                {
+                    NSMutableArray *keyImagesArray = [NSMutableArray array];
+                    
+                    for( NSManagedObject *image in loadList)
+                    {
+                        if( [image isKindOfClass: [DicomImage class]])
+                            if( [[image valueForKey:@"isKeyImage"] boolValue] == YES)
+                                [keyImagesArray addObject: image];
+                    }
+                    
+                    if( [keyImagesArray count] > 0)
+                        [keyImagesToOpenArray addObject: keyImagesArray];
+                }
+            }
+            @catch (NSException *e)
+            {
+                N2LogException( e);
+            }
+            
 			if( [keyImagesToOpenArray count] > 0) toOpenArray = keyImagesToOpenArray;
 			else
 			{
