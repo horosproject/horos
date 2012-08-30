@@ -1744,7 +1744,7 @@ extern "C"
 						return [[studyArray objectAtIndex: 0] valueForKey: @"stateText"];
 				}
 			}
-			else
+			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
 				NSArray *seriesArray = [self localSeries: item];
 				if( [seriesArray count])
@@ -1755,6 +1755,7 @@ extern "C"
 						return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
 				}
 			}
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
 		}
 		else if( [[tableColumn identifier] isEqualToString: @"comment"])
 		{
@@ -1767,7 +1768,7 @@ extern "C"
 				else
 					return [item valueForKey: @"comments"];
 			}
-			else
+			else if( [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
 			{
 				NSArray *seriesArray = [self localSeries: item];
 				if( [seriesArray count] > 0 && [[item valueForKey: @"comments"] length] == 0)
@@ -1775,14 +1776,19 @@ extern "C"
 				else
 					return [item valueForKey: @"comments"];
 			}
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
 		}
 		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
 		{
-			if( [[tableColumn identifier] isEqualToString: @"numberImages"])
-			{
-				return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
-			}
-			else return [item valueForKey: [tableColumn identifier]];		
+            if( [item isMemberOfClass:[DCMTKStudyQueryNode class]] || [item isMemberOfClass:[DCMTKSeriesQueryNode class]])
+            {
+                if( [[tableColumn identifier] isEqualToString: @"numberImages"])
+                {
+                    return [NSNumber numberWithInt: [[item valueForKey: [tableColumn identifier]] intValue]];
+                }
+                else return [item valueForKey: [tableColumn identifier]];
+            }
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
 		}	
 	}
 	@catch (NSException * e)
@@ -2020,7 +2026,10 @@ extern "C"
                 if( [temporaryCFindResultArray count])
                     [temporaryCFindResultArray sortUsingDescriptors: [self sortArray]];
                 
-                [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
+                if( [NSThread isMainThread])
+                    [self refreshList: temporaryCFindResultArray];
+                else
+                    [self performSelectorOnMainThread:@selector( refreshList:) withObject: temporaryCFindResultArray waitUntilDone: NO];
             }
             
             lastTemporaryCFindResultUpdate = [[NSDate date] timeIntervalSinceReferenceDate];
@@ -2059,7 +2068,7 @@ extern "C"
 		firstServerRealtimeResults = YES;
 		
         if( [NSThread isMainThread])
-            [self performSelectorOnMainThread:@selector( refreshList:) withObject: [NSArray array] waitUntilDone: NO]; // Clean the list
+            [self refreshList: [NSArray array]]; // Clean the list
         
 		for( NSString *s in [instance objectForKey: @"DICOMNodes"])
         {
@@ -2511,7 +2520,10 @@ extern "C"
 	
     if( autoQuery == NO)
     {
-        [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+        if( [NSThread isMainThread])
+            [self refreshList: tempResultArray];
+        else
+            [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
 	}
     else
     {
@@ -2520,8 +2532,12 @@ extern "C"
             if( index >= 0)
             {
                 if( index == currentAutoQR)
-                    [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
-                
+                {
+                    if( [NSThread isMainThread])
+                        [self refreshList: tempResultArray];
+                    else
+                        [self performSelectorOnMainThread:@selector( refreshList:) withObject: tempResultArray waitUntilDone: NO];
+                }
                 if( index < [autoQRInstances count])
                 {
                     // instance dictionary is a copy of autoQRInstances dictionary !
@@ -2550,6 +2566,9 @@ extern "C"
 {
 	[l retain];
 	
+    if( [NSThread isMainThread] == NO)
+        N2LogStackTrace( @"******* this function should be called in MAIN thread");
+    
 	[resultArray removeAllObjects];
 	[resultArray addObjectsFromArray: l];
 	[outlineView reloadData];
