@@ -4044,7 +4044,11 @@ static NSConditionLock *threadLock = nil;
     for( id study in newStudies)
     {
         if( [study isKindOfClass: [DicomStudy class]])
-            [mainContextStudies addObject: [self.database objectWithID: [study objectID]]];
+        {
+            id obj = [self.database objectWithID: [study objectID]];
+            if( obj)
+                [mainContextStudies addObject: obj];
+        }
         else
             [mainContextStudies addObject: study];
     }
