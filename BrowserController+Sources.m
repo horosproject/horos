@@ -1155,7 +1155,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[_database release];
     
     [_unmountButton removeFromSuperview];
-    [_unmountButton release];
+    [_unmountButton autorelease];
     
     [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL];
     self.devicePath = nil;

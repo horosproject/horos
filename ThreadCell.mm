@@ -59,10 +59,10 @@
 
 -(void)cleanup {
     [self.progressIndicator removeFromSuperview];
-	[_progressIndicator release]; _progressIndicator = nil;
+	[_progressIndicator autorelease]; _progressIndicator = nil;
 	
 	[self.cancelButton removeFromSuperview];
-	[_cancelButton release]; _cancelButton = nil;
+	[_cancelButton autorelease]; _cancelButton = nil;
 
 }
 

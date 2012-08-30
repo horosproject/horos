@@ -6746,11 +6746,24 @@ static NSConditionLock *threadLock = nil;
 	{
 		// If multiple viewer are opened, apply it to the entire list
 		for( ViewerController *v in [ViewerController get2DViewers])
+            [[v window] orderOut: self];
+        
+        for( ViewerController *v in [ViewerController get2DViewers])
             [v close];
 	}
 	else
+    {
+        [[viewer window] orderOut: self];
 		[viewer close];
 	
+    }
+    
+    if( delayedTileWindows)
+    {
+        delayedTileWindows = NO;
+        [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+    }
+    
 	NSManagedObject *study = [curImage valueForKeyPath:@"series.study"];
 	
 	NSInteger index = [outlineViewArray indexOfObject: study];
