@@ -146,6 +146,9 @@
 
 - (void)computeHistogram;
 {
+    if( windowWillClose)
+        return;
+    
     vrViewWindow = [vrView window];
     
 	vImage_Buffer buffer;
