@@ -1,3 +1,4 @@
+- Resample PET
 - Retina: DB didChangeScreen text size
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib
