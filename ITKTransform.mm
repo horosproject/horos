@@ -51,9 +51,9 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 
 + (float*) resampleWithParameters: (double*)theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*)  firstObjectOriginal noOfImages: (int) noOfImages length: (long*) length itkImage: (ITK*) itkImage
 {
-	double	vectorReference[ 9];
-	double	vectorOriginal[ 9];
-
+	double vectorReference[ 9], vectorOriginal[ 9];
+    float *fVolumePtr = nil;
+    
 	[firstObject orientationDouble: vectorReference];
 	[firstObjectOriginal orientationDouble: vectorOriginal];
     
@@ -133,6 +133,15 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
             resample->Update();
             
             resultBuff = resample->GetOutput()->GetBufferPointer();
+            
+            long mem = noOfImages * [firstObject pheight] * [firstObject pwidth] * sizeof(float);
+            
+            fVolumePtr = (float*) malloc( mem);
+            if( fVolumePtr && resultBuff)
+            {
+                memcpy( fVolumePtr, resultBuff, mem);
+                *length = mem;
+            }
         }
         @catch (NSException *e)
         {
@@ -147,18 +156,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
 	[splash close];
 	[splash release];
 	
-	long mem = noOfImages * [firstObject pheight] * [firstObject pwidth] * sizeof(float);
-	
-	float *fVolumePtr = (float*) malloc( mem);
-	if( fVolumePtr && resultBuff) 
-	{
-		memcpy( fVolumePtr, resultBuff, mem);
-		*length = mem;
-		
-		return fVolumePtr;
-	}
-	else return nil;
-        
+    return fVolumePtr;
 }
 
 + (float*) reorient2Dimage: (double*) theParameters firstObject: (DCMPix*) firstObject firstObjectOriginal: (DCMPix*) firstObjectOriginal length: (long*) length
