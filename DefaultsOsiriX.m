@@ -872,7 +872,7 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"StrechWindows"];
 	[defaultValues setObject:@"0" forKey:@"ROUTINGACTIVATED"];
 	[defaultValues setObject: @"0" forKey: @"AUTOHIDEMATRIX"];
-	[defaultValues setObject: @"1" forKey: @"AutoPlayAnimation"];
+	[defaultValues setObject: @"0" forKey: @"AutoPlayAnimation"];
 	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogether"];
 	[defaultValues setObject: @"1" forKey: @"KeepStudiesOfSamePatientTogetherAndGrouped"];
 	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMPIX4"];

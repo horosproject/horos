@@ -5656,15 +5656,18 @@ END_CREATE_ROIS:
 			
 			if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
 			{
-				NSTask *aTask = [[[NSTask alloc] init] autorelease];
-				[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-				[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
-				[aTask launch];
-				while( [aTask isRunning])
-                    [NSThread sleepForTimeInterval: 0.1];
-                
-                //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
-				[aTask interrupt];
+                if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]])
+                {
+                    NSTask *aTask = [[[NSTask alloc] init] autorelease];
+                    [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+                    [aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+                    [aTask launch];
+                    while( [aTask isRunning])
+                        [NSThread sleepForTimeInterval: 0.1];
+                    
+                    //[aTask waitUntilExit];		// <- This is VERY DANGEROUS : the main runloop is continuing...
+                    [aTask interrupt];
+                }
 			}
 			
 			NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];
@@ -8429,16 +8432,19 @@ END_CREATE_ROIS:
 							
 							if( [[NSFileManager defaultManager] fileExistsAtPath: [htmlpath stringByAppendingPathExtension: @"pdf"]] == NO)
 							{
-								NSTask *aTask = [[[NSTask alloc] init] autorelease];
-								[aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-								[aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
-								[aTask launch];
-                                
-                                while( [aTask isRunning])
-                                    [NSThread sleepForTimeInterval: 0.1];
-//								[aTask waitUntilExit];      // <- This is VERY DANGEROUS : the main runloop is continuing...
-                                
-								[aTask interrupt];
+                                if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]])
+                                {
+                                    NSTask *aTask = [[[NSTask alloc] init] autorelease];
+                                    [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+                                    [aTask setArguments: [NSArray arrayWithObjects: htmlpath, @"pdfFromURL", nil]];		
+                                    [aTask launch];
+                                    
+                                    while( [aTask isRunning])
+                                        [NSThread sleepForTimeInterval: 0.1];
+    //								[aTask waitUntilExit];      // <- This is VERY DANGEROUS : the main runloop is continuing...
+                                    
+                                    [aTask interrupt];
+                                }
 							}
 							
 							NSPDFImageRep *rep = [NSPDFImageRep imageRepWithData: [NSData dataWithContentsOfFile: [htmlpath stringByAppendingPathExtension: @"pdf"]]];

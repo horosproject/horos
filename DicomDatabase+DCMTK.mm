@@ -427,6 +427,10 @@
 }
 
 +(BOOL)testFiles:(NSArray*)files {
+    
+    if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]] == NO)
+        return YES;
+    
 	WaitRendering *splash = nil;
 	NSMutableArray *tasksArray = [NSMutableArray array];
 	int CHUNK_SIZE;

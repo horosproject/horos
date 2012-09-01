@@ -312,17 +312,20 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	NSThread* thread = [NSThread currentThread];
     
     // Test DICOMDIR validity on a separate process...
-    NSTask *aTask = [[[NSTask alloc] init] autorelease];
-    [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
-    [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
-    [aTask launch];
-    while( [aTask isRunning])
-        [NSThread sleepForTimeInterval: 0.1];
-    
-    if( [aTask terminationStatus] != 0)
+    if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]])
     {
-        NSLog( @"****** failed to read DICOMDIR: %@", path);
-        return nil;
+        NSTask *aTask = [[[NSTask alloc] init] autorelease];
+        [aTask setLaunchPath: [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"/Decompress"]];
+        [aTask setArguments: [NSArray arrayWithObjects: path, @"testDICOMDIR", nil]];
+        [aTask launch];
+        while( [aTask isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
+        
+        if( [aTask terminationStatus] != 0)
+        {
+            NSLog( @"****** failed to read DICOMDIR: %@", path);
+            return nil;
+        }
     }
     
 	DcmDicomDir dcmdir([path fileSystemRepresentation]);
@@ -417,7 +420,12 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 NSLog(@"Scanning DICOMDIR at %@", dicomdirPath);
                 thread.status = NSLocalizedString(@"Reading DICOMDIR...", nil);
                 
-                dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths pathsToScanAnyway:pathsToScanAnyway];
+                @try {
+                    dicomImages = [self scanDicomdirAt:dicomdirPath withPaths:allpaths pathsToScanAnyway:pathsToScanAnyway];
+                }
+                @catch (NSException *e) {
+                    N2LogExceptionWithStackTrace( e);
+                }
             }
         }
         

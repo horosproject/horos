@@ -3628,11 +3628,8 @@
 		CEA4F07515AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
 		CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07215AEA5FE009584C7 /* Cloud.png */; };
 		CEA4F07715AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
-		CEA4F07815AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA4F07315AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m */; };
 		CEA4F07915AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
-		CEA4F07A15AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */ = {isa = PBXBuildFile; fileRef = CEA4F07415AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h */; };
 		CEA4F07D15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
-		CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEA4F07B15AEA606009584C7 /* OSIPACSOnDemand.xib */; };
 		CEA9237215CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
 		CEA9237315CE3F7C00D3385F /* InstantMessage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237115CE3F7C00D3385F /* InstantMessage.framework */; };
 		CEA9237515CE436E00D3385F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEA9237415CE436E00D3385F /* AddressBook.framework */; };
@@ -26031,7 +26028,6 @@
 				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 				840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 				CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */,
-				CEA4F07A15AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26994,7 +26990,6 @@
 				CE2BFE58153B177C00037546 /* iPad.png in Resources */,
 				71CE3C1A157F489C00AC0112 /* List.pdf in Resources */,
 				CEA4F07615AEA5FE009584C7 /* Cloud.png in Resources */,
-				CEA4F07E15AEA606009584C7 /* OSIPACSOnDemand.xib in Resources */,
 				A91BF49815BD8A8900B7BA23 /* Anonymizer.pdf in Resources */,
 				A9EFC40B15C6CBD6000D1179 /* Export.pdf in Resources */,
 				A9EFC40E15C6CBE3000D1179 /* Import.pdf in Resources */,
@@ -29675,7 +29670,6 @@
 				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 				840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 				CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */,
-				CEA4F07815AEA5FE009584C7 /* OSIPACSOnDemandPreferencePane.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
