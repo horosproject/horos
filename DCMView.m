@@ -8059,8 +8059,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( previousScalingFactor != self.window.backingScaleFactor && self.window.backingScaleFactor != 0)
         {
             if( previousScalingFactor)
+            {
                 scaleValue *= self.window.backingScaleFactor / previousScalingFactor;
-            
+                origin.x *= self.window.backingScaleFactor / previousScalingFactor;
+                origin.y *= self.window.backingScaleFactor / previousScalingFactor;
+            }
             previousScalingFactor = self.window.backingScaleFactor;
             
             [warningNotice release];
