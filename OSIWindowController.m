@@ -45,9 +45,12 @@ static BOOL protectedReentryWindowDidResize = NO;
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:_database];
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:_database];
 			[[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextObjectsDidChangeNotification object:_database.managedObjectContext];
+            
+            [_database release];
+            _database = nil;
 		}
 		
-		_database = database;
+		_database = [database retain];
 		
 		if (_database) {
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeDatabaseAddNotification:) name:OsirixAddToDBNotification object:_database];
@@ -470,6 +473,8 @@ static BOOL protectedReentryWindowDidResize = NO;
 - (void) dealloc
 {
     NSLog(@"OSIWindowController released");
+    
+    self.database = nil;
     
     [NSObject cancelPreviousPerformRequestsWithTarget: self];
     

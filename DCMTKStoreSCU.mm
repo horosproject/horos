@@ -520,21 +520,28 @@ static OFBool decompressFile(DcmFileFormat fileformat, const char *fname, char *
 	else
 	#endif
 	{
-		  DcmDataset *dataset = fileformat.getDataset();
+        try
+        {
+              DcmDataset *dataset = fileformat.getDataset();
 
-		  // decompress data set if compressed
-		  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+              // decompress data set if compressed
+              dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
 
-		  // check if everything went well
-		  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
-		  {
-			fileformat.loadAllDataIntoMemory();
-			unlink( outfname);
-			cond = fileformat.saveFile( outfname, EXS_LittleEndianExplicit);
-			status =  (cond.good()) ? YES : NO;
-		  }
-		  else
-			status = NO;
+              // check if everything went well
+              if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+              {
+                fileformat.loadAllDataIntoMemory();
+                unlink( outfname);
+                cond = fileformat.saveFile( outfname, EXS_LittleEndianExplicit);
+                status =  (cond.good()) ? YES : NO;
+              }
+              else
+                status = NO;
+        }
+        catch( ...)
+        {
+            status = NO;
+        }
 	}
 	
 	return status;
@@ -598,56 +605,63 @@ static OFBool compressFile(DcmFileFormat fileformat, const char *fname, char *ou
         else
         #endif
         {
-            #ifndef OSIRIX_LIGHT
-            NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
-            
-            DcmItem *metaInfo = fileformat.getMetaInfo();
-            
-            DcmRepresentationParameter *params = nil;
-            DJ_RPLossy lossyParams( 90);
-            DJ_RPLossy JP2KParams( opt_Quality);
-            DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
-            DcmRLERepresentationParameter rleParams;
-            DJ_RPLossless losslessParams(6,0);
-            
-            if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
-                params = &losslessParams;
-            else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
-                params = &lossyParams; 
-            else if (opt_networkTransferSyntax == EXS_RLELossless)
-                params = &rleParams;
-            else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
-                params = &JP2KParamsLossLess; 
-            else if (opt_networkTransferSyntax == EXS_JPEG2000)
-                params = &JP2KParams;
-            else if (opt_networkTransferSyntax == EXS_JPEGLSLossless)
-                params = &JP2KParamsLossLess; 
-            else if (opt_networkTransferSyntax == EXS_JPEGLSLossy)
-                params = &JP2KParams;
-            
-            // this causes the lossless JPEG version of the dataset to be created
-            dataset->chooseRepresentation(opt_networkTransferSyntax, params);
-
-            // check if everything went well
-            if (dataset->canWriteXfer(opt_networkTransferSyntax))
+            try
             {
-                // force the meta-header UIDs to be re-generated when storing the file 
-                // since the UIDs in the data set may have changed 
-                //delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-                //delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                #ifndef OSIRIX_LIGHT
+                NSLog(@"SEND - Compress DCMTK JPEG: %s", fname);
                 
-                // store in lossless JPEG format
+                DcmItem *metaInfo = fileformat.getMetaInfo();
                 
-                fileformat.loadAllDataIntoMemory();
+                DcmRepresentationParameter *params = nil;
+                DJ_RPLossy lossyParams( 90);
+                DJ_RPLossy JP2KParams( opt_Quality);
+                DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
+                DcmRLERepresentationParameter rleParams;
+                DJ_RPLossless losslessParams(6,0);
                 
-                unlink( outfname);
+                if (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax)
+                    params = &losslessParams;
+                else if (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax)
+                    params = &lossyParams; 
+                else if (opt_networkTransferSyntax == EXS_RLELossless)
+                    params = &rleParams;
+                else if (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly)
+                    params = &JP2KParamsLossLess; 
+                else if (opt_networkTransferSyntax == EXS_JPEG2000)
+                    params = &JP2KParams;
+                else if (opt_networkTransferSyntax == EXS_JPEGLSLossless)
+                    params = &JP2KParamsLossLess; 
+                else if (opt_networkTransferSyntax == EXS_JPEGLSLossy)
+                    params = &JP2KParams;
                 
-                cond = fileformat.saveFile( outfname, opt_networkTransferSyntax);
-                status =  (cond.good()) ? YES : NO;
+                // this causes the lossless JPEG version of the dataset to be created
+                dataset->chooseRepresentation(opt_networkTransferSyntax, params);
+
+                // check if everything went well
+                if (dataset->canWriteXfer(opt_networkTransferSyntax))
+                {
+                    // force the meta-header UIDs to be re-generated when storing the file 
+                    // since the UIDs in the data set may have changed 
+                    //delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+                    //delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                    
+                    // store in lossless JPEG format
+                    
+                    fileformat.loadAllDataIntoMemory();
+                    
+                    unlink( outfname);
+                    
+                    cond = fileformat.saveFile( outfname, opt_networkTransferSyntax);
+                    status =  (cond.good()) ? YES : NO;
+                }
+                else
+                    status = NO;
+                #endif
             }
-            else
+            catch(...)
+            {
                 status = NO;
-            #endif
+            }
         }
     }
     else status = NO;

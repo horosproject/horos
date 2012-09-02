@@ -42,7 +42,7 @@ enum OsiriXBlendingTypes {BlendingPlugin = -1, BlendingFusion = 1, BlendingSubtr
 	DicomDatabase* _database;
 }
 
-@property(nonatomic,assign) DicomDatabase* database;
+@property(nonatomic,retain) DicomDatabase* database;
 -(void)refreshDatabase:(NSArray*)newImages;
 
 + (BOOL) dontWindowDidChangeScreen;
