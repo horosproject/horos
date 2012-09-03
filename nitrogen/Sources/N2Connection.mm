@@ -21,6 +21,7 @@
 #include <math.h>
 #include <algorithm>
 #include <iostream>
+#import "NSError+OsiriX.h"
 
 @interface N2Connection ()
 
@@ -132,8 +133,35 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		c.maximumReadSizePerEvent = 1024*32;
 		if (request.length) [c writeData:request];
 		
-		while (c.status != N2ConnectionStatusClosed && !motherThread.isCancelled) {
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
+//#define TIMEOUT 30
+//        int secondsStalled = 0;
+//        NSInteger lastAvailableSize = 0;
+//        NSTimeInterval lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
+        
+		while (c.status != N2ConnectionStatusClosed && !motherThread.isCancelled)
+        {
+			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
+            
+//            if( lastTimeInterval < [NSDate timeIntervalSinceReferenceDate])
+//            {
+//                lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
+//                if( [c availableSize] == lastAvailableSize)
+//                {
+//                    secondsStalled++;
+//                    NSLog( @"N2Connection stalled: %d", secondsStalled);
+//                }
+//                else
+//                {
+//                    secondsStalled = 0;
+//                    lastAvailableSize = [c availableSize];
+//                }
+//                
+//                if( secondsStalled >= TIMEOUT)
+//                {
+//                    c.error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"N2Connection timeout.", NULL)];
+//                    break;
+//                }
+//            }
 		}
 		
 		[io removeAllObjects];
