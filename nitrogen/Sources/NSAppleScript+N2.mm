@@ -8,6 +8,8 @@
 
 #import "NSAppleScript+N2.h"
 #import "NSAppleEventDescriptor+N2.h"
+#import "N2Debug.h"
+
 
 @implementation NSAppleScript (N2)
 
@@ -18,7 +20,14 @@
     NSAppleEventDescriptor* event = [NSAppleEventDescriptor appleEventWithEventClass:kCoreEventClass eventID:kAEOpenApplication targetDescriptor:nil returnID:kAutoGenerateReturnID transactionID:kAnyTransactionID];
     [event setDescriptor:[args appleEventDescriptor] forKeyword:keyDirectObject];
     
-    NSAppleEventDescriptor* r = [self executeAppleEvent:event error:errs];
+    NSAppleEventDescriptor* r = nil;
+    
+    @try {
+        r = [self executeAppleEvent:event error:errs];
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace( e);
+    }
     
     return [r object];
 }
