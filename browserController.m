@@ -4291,9 +4291,10 @@ static NSConditionLock *threadLock = nil;
 			
 			if( refreshMatrix)
 			{
-                NSArray* files = nil;
-                long cellId = 0;
+                NSArray *files = nil;
+                NSMutableArray *selectedRowColumns = [NSMutableArray array], *selectedCellsIDs = [NSMutableArray array];
                 BOOL imageLevel = NO;
+                
 				[[self managedObjectContext] lock];
 				@try {
                     [animationSlider setEnabled:NO];
@@ -4310,8 +4311,20 @@ static NSConditionLock *threadLock = nil;
                     else
                         matrixViewArray = [[self childrenArray: item] retain];
                     
-                    if( previousItem == item) cellId = [[oMatrix selectedCell] tag];
-                    else [oMatrix selectCellWithTag: 0];
+                    if( previousItem == item)
+                    {
+                        for( NSCell *cell in oMatrix.cells)
+                        {
+                            NSInteger row, column;
+                            if( cell.state == NSOnState && [oMatrix getRow: &row column: &column ofCell: cell])
+                            {
+                                [selectedCellsIDs addObject: [cell representedObject]]; // For NSMainThread situation
+                                [selectedRowColumns addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInteger: row], @"row", [NSNumber numberWithInteger: column], @"column", nil]]; //For background thread situation
+                            }
+                        }
+                    }
+                    else
+                        [oMatrix selectCellWithTag: 0];
                     
                     [self matrixInit: matrixViewArray.count];
                     
@@ -4351,12 +4364,30 @@ static NSConditionLock *threadLock = nil;
                 {
                     matrixLoadIconsThread = [[NSThread alloc] initWithTarget: self selector: @selector(matrixLoadIcons:) object: dict];
                     [matrixLoadIconsThread start];
+                    
+                    if( previousItem == item)
+                        for( NSDictionary *d in selectedRowColumns)
+                        {
+                            NSCell *cell = [oMatrix cellAtRow: [[d objectForKey: @"row"] intValue] column: [[d objectForKey: @"column"] intValue]];
+                            [cell setState: NSOnState];
+                            [cell setHighlighted: YES];
+                        }
 				}
                 else
+                {
                     [self matrixLoadIcons: dict];
-                
-				if( previousItem == item)
-					[oMatrix selectCellWithTag: cellId];
+                    if( previousItem == item)
+                    {
+                        for( NSCell *cell in [oMatrix cells])
+                        {
+                            if( [selectedCellsIDs containsObject: [cell representedObject]])
+                            {
+                                [cell setHighlighted: YES];
+                                [cell setState: NSOnState];
+                            }
+                        }
+                    }
+                }
 			}
 			
 			if( previousItem != item)
@@ -4767,7 +4798,7 @@ static NSConditionLock *threadLock = nil;
     
     for (NSManagedObject* o in treeObjs)
         if ([o isKindOfClass:[DicomSeries class]])
-            [studiesSet addObject:o];
+            [studiesSet addObject:[o valueForKey: @"study"]];
         else if ([o isKindOfClass:[DicomStudy class]])
             [studiesSet addObject:o];
 	
@@ -4809,25 +4840,25 @@ static NSConditionLock *threadLock = nil;
 		// Remove studies without series !
 		for( DicomStudy *study in studiesSet)
 		{
-			@try
-			{
+            @try
+            {
                 if( [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                     refreshComparative = YES;
                 
-				if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
-				{
-					NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
-					
-					[database.managedObjectContext deleteObject:study];
-				}
-				else if( [study isDeleted] == NO && [study isFault] == NO)
-				{
-					[study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
+                if( [study isDeleted] == NO && [study isFault] == NO && [[study valueForKey:@"imageSeries"] count] == 0)
+                {
+                    NSLog( @"Delete Study: %@ - %@", [study valueForKey:@"name"], [study valueForKey:@"patientID"]);
+                    
+                    [database.managedObjectContext deleteObject:study];
+                }
+                else if( [study isDeleted] == NO && [study isFault] == NO)
+                {
+                    [study setValue:[NSNumber numberWithInt:0]  forKey:@"numberOfImages"];
                     [study setValue:[study valueForKey: @"modalities"] forKey:@"modality"];
-				}
-			}
-			@catch( NSException *e)
-			{
+                }
+            }
+            @catch( NSException *e)
+            {
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: study"*/);
             }
 		}
@@ -7686,6 +7717,7 @@ static BOOL withReset = NO;
                 [cell setFont:[NSFont systemFontOfSize:9]];
                 [cell setImagePosition: NSImageBelow];
                 [cell setAction: @selector(matrixPressed:)];
+                [cell setRepresentedObject: [curFile objectID]];
                 
                 if ( [modality isEqualToString: @"RTSTRUCT"])
                 {
@@ -7796,6 +7828,7 @@ static BOOL withReset = NO;
                 [cell setButtonType:NSPushOnPushOffButton];
                 [cell setBezelStyle:NSShadowlessSquareBezelStyle];
                 [cell setTag:i];
+                [cell setRepresentedObject: nil];
             }
         }
         @catch( NSException *ne)
