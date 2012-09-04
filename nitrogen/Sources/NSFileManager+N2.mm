@@ -37,7 +37,6 @@
 	NSString* path = [[self findSystemFolderOfType:kApplicationSupportFolderType forDomain:kUserDomain] stringByAppendingPathComponent:[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey]];
 	[self confirmDirectoryAtPath:path];
 	return path;
-
 }
 
 -(NSString*)tmpFilePathInDir:(NSString*)dirPath {
