@@ -33,3 +33,4 @@
 - Password DB in keychain
 - Reporter for Word
 - Windows default tiling: prefer vertical or horizontal orientation? 3 columns
+- DB: record audio files as DICOM SR

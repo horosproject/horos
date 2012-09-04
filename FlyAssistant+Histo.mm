@@ -162,7 +162,10 @@
     int limit = histoSize;
     int size = limit + 2 * window;
     vImagePixelCount original[size];// = (vImagePixelCount *)malloc(  * sizeof(vImagePixelCount) );
-
+    
+    if( window > limit)
+        return;
+    
     // body copy
     for (unsigned int i = 0; i < limit; ++i)
     {

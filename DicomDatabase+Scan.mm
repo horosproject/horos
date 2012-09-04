@@ -107,6 +107,9 @@ static NSString* _dcmElementKey(Uint16 group, Uint16 element) {
 }
 
 static NSString* _dcmElementKey(DcmElement* element) {
+    if( element == nil)
+        return _dcmElementKey(0x0, 0x0);
+    
 	const DcmTagKey& key = element->getTag();
 	return _dcmElementKey(key.getGroup(), key.getElement());
 }

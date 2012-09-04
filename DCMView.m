@@ -1609,15 +1609,19 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 	{
-		// Series Level
-		[[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-		
-		// Image Level
-		if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-			[[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
-		else
-			[[self imageObj] setValue: nil forKey:@"yFlipped"];
-		
+        @try {
+            // Series Level
+            [[self seriesObj]  setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+            
+            // Image Level
+            if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                [[self imageObj] setValue:[NSNumber numberWithBool:yFlipped] forKey:@"yFlipped"];
+            else
+                [[self imageObj] setValue: nil forKey:@"yFlipped"];
+		}
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
 		[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 	}
 	
@@ -1632,14 +1636,18 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	
 	if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
     {
-        [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-        
-        // Image Level
-        if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-            [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
-        else
-            [[self imageObj] setValue: nil forKey:@"xFlipped"];
-        
+        @try {
+            [[self seriesObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+            
+            // Image Level
+            if( (curImage >= 0 && dcmFilesList.count > curImage && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                [[self imageObj] setValue:[NSNumber numberWithBool:xFlipped] forKey:@"xFlipped"];
+            else
+                [[self imageObj] setValue: nil forKey:@"xFlipped"];
+        }
+        @catch ( NSException *e) {
+            N2LogException( e);
+        }
         [[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
     }
 	
@@ -5164,9 +5172,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
-			[[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
-			
+            @try {
+                [[self seriesObj] setValue:[NSNumber numberWithFloat:origin.x] forKey:@"xOffset"];
+                [[self seriesObj] setValue:[NSNumber numberWithFloat:origin.y] forKey:@"yOffset"];
+			}
+            @catch ( NSException *e) {
+                N2LogException( e);
+            }
 			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
@@ -5862,44 +5874,49 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
 		{
-			//set value for Series Object Presentation State
-			if( curDCM.SUVConverted == NO)
-			{
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-				[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				
-				// Image Level
-				if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-				{
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
-					[[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
-				}
-				else
-				{
-					[[self imageObj] setValue: nil forKey:@"windowWidth"];
-					[[self imageObj] setValue: nil forKey:@"windowLevel"];
-				}
-			}
-			else
-			{
-				if( [self is2DViewer] == YES)
-				{
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-					[[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-					
-					// Image Level
-					if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-					{
-						[[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
-						[[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
-					}
-					else
-					{
-						[[self imageObj] setValue: nil forKey:@"windowWidth"];
-						[[self imageObj] setValue: nil forKey:@"windowLevel"];
-					}
-				}
-			}
+            @try {
+                //set value for Series Object Presentation State
+                if( curDCM.SUVConverted == NO)
+                {
+                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                    [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    
+                    // Image Level
+                    if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                    {
+                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWW] forKey:@"windowWidth"];
+                        [[self imageObj] setValue:[NSNumber numberWithFloat:curWL] forKey:@"windowLevel"];
+                    }
+                    else
+                    {
+                        [[self imageObj] setValue: nil forKey:@"windowWidth"];
+                        [[self imageObj] setValue: nil forKey:@"windowLevel"];
+                    }
+                }
+                else
+                {
+                    if( [self is2DViewer] == YES)
+                    {
+                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                        [[self seriesObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+                        
+                        // Image Level
+                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                        {
+                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWW / [[self windowController] factorPET2SUV]] forKey:@"windowWidth"];
+                            [[self imageObj] setValue:[NSNumber numberWithFloat:curWL / [[self windowController] factorPET2SUV]] forKey:@"windowLevel"];
+                        }
+                        else
+                        {
+                            [[self imageObj] setValue: nil forKey:@"windowWidth"];
+                            [[self imageObj] setValue: nil forKey:@"windowLevel"];
+                        }
+                    }
+                }
+            }
+            @catch ( NSException *e) {
+                N2LogException( e);
+            }
 			[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 		}
 	}
@@ -10714,19 +10731,22 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		{
 			if( [[self windowController] isPostprocessed] == NO)
 			{
-				if( [[[[BrowserController currentBrowser] database] managedObjectContext]
- tryLock])
-				{				
-					// Series Level
-					[[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
-					[[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
-					
-					// Image Level
-					if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
-						[[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
-					else
-						[[self imageObj] setValue: nil forKey:@"scale"];
-					
+				if( [[[[BrowserController currentBrowser] database] managedObjectContext] tryLock])
+				{
+                    @try {
+                        // Series Level
+                        [[self seriesObj] setValue:[NSNumber numberWithFloat: scaleValue / sqrt( [self frame].size.height * [self frame].size.width)] forKey:@"scale"];
+                        [[self seriesObj] setValue:[NSNumber numberWithInt: 3] forKey: @"displayStyle"];
+                        
+                        // Image Level
+                        if( (curImage >= 0 && [DCMView noPropagateSettingsInSeriesForModality: [[dcmFilesList objectAtIndex: curImage] valueForKey:@"modality"]]) || COPYSETTINGSINSERIES == NO)
+                            [[self imageObj] setValue:[NSNumber numberWithFloat:scaleValue] forKey:@"scale"];
+                        else
+                            [[self imageObj] setValue: nil forKey:@"scale"];
+					}
+                    @catch ( NSException *e) {
+                        N2LogException( e);
+                    }
 					[[[[BrowserController currentBrowser] database] managedObjectContext] unlock];
 				}
 			}
