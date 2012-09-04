@@ -6048,7 +6048,17 @@ static NSConditionLock *threadLock = nil;
 }
 
 - (void) databaseOpenStudy: (NSManagedObject*) item
-{	
+{
+#ifndef  OSIRIX_LIGHT
+    if( [item isKindOfClass: [DCMTKStudyQueryNode class]])
+    {
+        // Check to see if already in retrieving mode, if not download it
+        [self retrieveComparativeStudy: (DCMTKStudyQueryNode*) item select: YES open: YES];
+        
+        return;
+    }
+#endif
+    
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
 	{
 		if( [self isUsingExternalViewer: item] == NO)
