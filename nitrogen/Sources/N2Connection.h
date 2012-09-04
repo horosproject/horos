@@ -39,9 +39,11 @@ enum N2ConnectionStatus {
 	BOOL _tlsFlag;
     BOOL _closeOnRemoteClose, _closeWhenDoneSending, _closeOnNextSpaceAvailable;
     NSError* _error;
+    NSTimeInterval lastEventTimeInterval;
 }
 
 @property(readonly) NSString* address;
+@property(readonly) NSTimeInterval lastEventTimeInterval;
 @property(nonatomic) NSInteger status;
 @property NSUInteger maximumReadSizePerEvent;
 @property BOOL closeOnRemoteClose;

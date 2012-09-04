@@ -52,6 +52,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 @synthesize error = _error;
 @synthesize closeWhenDoneSending = _closeWhenDoneSending;
 @synthesize closeOnNextSpaceAvailable = _closeOnNextSpaceAvailable;
+@synthesize lastEventTimeInterval;
 
 +(NSData*)sendSynchronousRequest:(NSData*)request toAddress:(NSString*)address port:(NSInteger)port {
 	return [self sendSynchronousRequest:request toAddress:address port:port tls:NO];
@@ -133,35 +134,26 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		c.maximumReadSizePerEvent = 1024*32;
 		if (request.length) [c writeData:request];
 		
-//#define TIMEOUT 30
-//        int secondsStalled = 0;
-//        NSInteger lastAvailableSize = 0;
-//        NSTimeInterval lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
+        #define TIMEOUT 60
+        NSTimeInterval lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
         
 		while (c.status != N2ConnectionStatusClosed && !motherThread.isCancelled)
         {
 			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow: 1]];
             
-//            if( lastTimeInterval < [NSDate timeIntervalSinceReferenceDate])
-//            {
-//                lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
-//                if( [c availableSize] == lastAvailableSize)
-//                {
-//                    secondsStalled++;
-//                    NSLog( @"N2Connection stalled: %d", secondsStalled);
-//                }
-//                else
-//                {
-//                    secondsStalled = 0;
-//                    lastAvailableSize = [c availableSize];
-//                }
-//                
-//                if( secondsStalled >= TIMEOUT)
-//                {
-//                    c.error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"N2Connection timeout.", NULL)];
-//                    break;
-//                }
-//            }
+            if( lastTimeInterval < [NSDate timeIntervalSinceReferenceDate])
+            {
+                lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
+                
+                NSLog( @"****** N2Connection stalled: %d", (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval));
+                
+                if( [NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval > TIMEOUT)
+                {
+                    N2LogStackTrace( @"N2Connection timeout.");
+                    c.error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"N2Connection timeout.", NULL)];
+                    break;
+                }
+            }
 		}
 		
 		[io removeAllObjects];
@@ -353,6 +345,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 //	NSLog(@"%@ stream:%@ handleEvent:%@", self, stream, NSEventName[(int)log2(event)+1]);
 	//#endif
 	
+    lastEventTimeInterval = [NSDate timeIntervalSinceReferenceDate];
+    
     switch (event) {
             
         case NSStreamEventOpenCompleted: {
