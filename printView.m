@@ -156,6 +156,7 @@
 	
 	int page = [[NSPrintOperation currentOperation] currentPage];
 	
+    
 	[NSColor blackColor];
 	
 	int x, y;

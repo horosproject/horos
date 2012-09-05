@@ -16388,16 +16388,16 @@ int i,j,l;
 		if( [[printSettings cellWithTag: 2] state]) [settings setObject: [printText stringValue] forKey: @"comments"];
 		if( [[printSettings cellWithTag: 0] state]) [settings setObject: @"YES" forKey: @"patientInfo"];
 		if( [[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
-
+        
 		//--------------------------Background color---------------------------------
-		if( [[printSettings cellWithTag: 3] state]) [settings setObject: @"YES" forKey: @"backgroundColor"];
-		CGFloat r, g, b;		
-		NSColor	*rgbColor = [[printColor color] colorUsingColorSpaceName: NSDeviceRGBColorSpace];		
-		[rgbColor getRed:&r green:&g blue:&b alpha:nil];
-		[settings setObject: [NSNumber numberWithFloat: r] forKey: @"backgroundColorR"];
-		[settings setObject: [NSNumber numberWithFloat: g] forKey: @"backgroundColorG"];
-		[settings setObject: [NSNumber numberWithFloat: b] forKey: @"backgroundColorB"];
-
+		if( [[printSettings cellWithTag: 3] state])
+        {
+            [settings setObject: @"YES" forKey: @"backgroundColor"];
+            [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorR"];
+            [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorG"];
+            [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorB"];
+        }
+        
 		//--------------------------Format ---------------------------------
 		[settings setObject: [NSNumber numberWithInt: [[printFormat selectedCell] tag]] forKey: @"format"];
 
@@ -16496,7 +16496,11 @@ int i,j,l;
 			[self setImageRows: 1 columns: 1];
 		
 		BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
-		
+		BOOL whiteBackground = imageView.whiteBackground;
+        
+        if( [[settings objectForKey: @"backgroundColor"] boolValue])
+            imageView.whiteBackground = YES;
+        
 		int i;
 		for( i = from; i < to; i += interval)
 		{
@@ -16580,7 +16584,8 @@ int i,j,l;
 			if( [splash aborted])
 				break;
 		}
-		
+        
+        imageView.whiteBackground = whiteBackground;
 		FULL32BITPIPELINE = copyFULL32BITPIPELINE;
 		
 		/////// ****************
@@ -16689,9 +16694,6 @@ int i,j,l;
 		else [[printSettings cellWithTag: 2] setState: NSOffState];
 		if( [p valueForKey: @"backgroundColor"]) [[printSettings cellWithTag: 3] setState: NSOnState];
 		else [[printSettings cellWithTag: 3] setState: NSOffState];
-		
-		[printColor setColor: [NSColor colorWithDeviceRed:[[p valueForKey: @"backgroundColorR"] floatValue] green:[[p valueForKey: @"backgroundColorG"] floatValue] blue:[[p valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0]];
-		
 		if( [p valueForKey: @"patientInfo"]) [[printSettings cellWithTag: 0] setState: NSOnState];
 		else [[printSettings cellWithTag: 0] setState: NSOffState];
 		if( [p valueForKey: @"studyInfo"]) [[printSettings cellWithTag: 1] setState: NSOnState];

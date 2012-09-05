@@ -305,7 +305,6 @@ enum
 	IBOutlet NSTextField	*printIntervalText, *printFromText, *printToText;
 	IBOutlet NSBox			*printBox;
 	IBOutlet NSMatrix		*printSettings;
-	IBOutlet NSColorWell	*printColor;
 	IBOutlet NSPopUpButton	*printLayout;
 	IBOutlet NSTextField	*printText, *printPagesToPrint;
 	
