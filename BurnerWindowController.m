@@ -1011,6 +1011,18 @@
                 NSString* weasisPath = [[AppController sharedAppController] weasisBasePath];
                 for (NSString* subpath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:weasisPath error:NULL])
                     [[NSFileManager defaultManager] copyItemAtPath:[weasisPath stringByAppendingPathComponent:subpath] toPath:[burnFolder stringByAppendingPathComponent:subpath] error:NULL];
+                
+                // Change Label in Autorun.inf
+                NSStringEncoding encoding;
+                NSString *autorunInf = [NSString stringWithContentsOfFile: [burnFolder stringByAppendingPathComponent: @"Autorun.inf"] usedEncoding: &encoding error: nil];
+                
+                if( autorunInf.length)
+                {
+                    autorunInf = [autorunInf stringByReplacingOccurrencesOfString: @"Label=Weasis" withString: [NSString stringWithFormat: @"Label=%@", cdName]];
+                    
+                    [[NSFileManager defaultManager] removeItemAtPath: [burnFolder stringByAppendingPathComponent: @"Autorun.inf"] error: nil];
+                    [autorunInf writeToFile: [burnFolder stringByAppendingPathComponent: @"Autorun.inf"] atomically: YES encoding: encoding  error: nil];
+                }
             }
             
             if( [[NSUserDefaults standardUserDefaults] boolForKey: @"BurnOsirixApplication"] && cancelled == NO)
