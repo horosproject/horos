@@ -134,7 +134,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
 		c.maximumReadSizePerEvent = 1024*32;
 		if (request.length) [c writeData:request];
 		
-        #define TIMEOUT 60
+        #define TIMEOUT 45
         NSTimeInterval lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
         
 		while (c.status != N2ConnectionStatusClosed && !motherThread.isCancelled)
@@ -145,7 +145,8 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
             {
                 lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
                 
-                NSLog( @"****** N2Connection stalled: %d", (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval));
+                if( c.lastEventTimeInterval > 0)
+                    NSLog( @"****** N2Connection stalled: %d", (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval));
                 
                 if( [NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval > TIMEOUT)
                 {
