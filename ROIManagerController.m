@@ -208,6 +208,8 @@ PURPOSE.
 {	
 	if( [note object] == viewer)
 	{
+        viewer = nil;
+        
 		NSLog( @"ROIManager CloseViewerNotification");
 		
 		[[self window] close];

@@ -2233,33 +2233,42 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                         DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                         
                         [mdatabase lock];
-                        
-                        NSArray* mobjects = [mdatabase objectsWithIDs:objects];
-                        
-                        if (studySelected == NO) {
-                            studySelected = YES;
-                            if ([[dict objectForKey:@"selectStudy"] boolValue])
-                                [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath:@"series.study.objectID"] waitUntilDone:NO];
-                        }
-                        
-                        if (bc.database == mdatabase && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
-                        {
-                            DicomAlbum* album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
+                        @try {
+                            NSArray* mobjects = [mdatabase objectsWithIDs:objects];
                             
-                            if (album.smartAlbum.boolValue == NO)
+                            if (studySelected == NO) {
+                                studySelected = YES;
+                                if ([[dict objectForKey:@"selectStudy"] boolValue])
+                                    [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath:@"series.study.objectID"] waitUntilDone:NO];
+                            }
+                            
+                            if (bc.database == mdatabase && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
                             {
-                                NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                                DicomAlbum* album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
                                 
-                                for (NSManagedObject* mobject in mobjects)
+                                if (album.smartAlbum.boolValue == NO)
                                 {
-                                    DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
-                                    [studies addObject:s];
-                                    [s archiveAnnotationsAsDICOMSR];
+                                    NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+                                    
+                                    for (NSManagedObject* mobject in mobjects)
+                                    {
+                                        DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
+                                        
+                                        if( s)
+                                        {
+                                            [studies addObject:s];
+                                            [s archiveAnnotationsAsDICOMSR];
+                                        }
+                                    }
                                 }
                             }
                         }
-                        
-                        [mdatabase unlock];
+                        @catch (NSException *e) {
+                            N2LogExceptionWithStackTrace(e);
+                        }
+                        @finally {
+                            [mdatabase unlock];
+                        }
                         
                     } @catch (NSException* e) {
                         N2LogExceptionWithStackTrace(e);

@@ -15839,6 +15839,9 @@ int i,j,l;
 	NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
 	short           val;
 	
+    if( windowWillClose)
+        return;
+    
 	if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
         return;
 	
