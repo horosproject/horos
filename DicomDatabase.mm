@@ -353,115 +353,124 @@ static DicomDatabase* activeLocalDatabase = nil;
 }*/
 
 -(id)initWithPath:(NSString*)p context:(NSManagedObjectContext*)c mainDatabase:(N2ManagedDatabase*)mainDbReference // reminder: context may be nil (assigned in -[N2ManagedDatabase initWithPath:] after calling this method)
-{ 
-	p = [DicomDatabase baseDirPathForPath:p];
-	p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
+{
+    @try {
+        p = [DicomDatabase baseDirPathForPath:p];
+        p = [NSFileManager.defaultManager destinationOfAliasOrSymlinkAtPath:p];
 
-    if (!mainDbReference)
-        mainDbReference = [DicomDatabase existingDatabaseAtPath:p];
-    
-	[NSFileManager.defaultManager confirmDirectoryAtPath:p];
-	
-	NSString* sqlFilePath = [DicomDatabase sqlFilePathForBasePath:p];
-	BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
+        if (!mainDbReference)
+            mainDbReference = [DicomDatabase existingDatabaseAtPath:p];
+        
+        [NSFileManager.defaultManager confirmDirectoryAtPath:p];
+        
+        NSString* sqlFilePath = [DicomDatabase sqlFilePathForBasePath:p];
+        BOOL isNewFile = ![NSFileManager.defaultManager fileExistsAtPath:sqlFilePath];
 
-	// init and register
-	
-	self.baseDirPath = p;
-	_dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
-	if (!_dataBaseDirPath) _dataBaseDirPath = p; // TODO: what if this path is not mounted?
-	[_dataBaseDirPath retain];
-    
-    BOOL isNewDb = ![NSFileManager.defaultManager fileExistsAtPath:[self dataDirPath]];
-	
-    [DicomDatabase knowAbout:self]; // retains self
-    
-	self = [super initWithPath:sqlFilePath context:c mainDatabase:mainDbReference];
-    
-	// post-init
-	
-    if (self.isMainDatabase) // is main (not independent)
-    {
-	    [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
+        // init and register
         
-        _dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
-        _processFilesLock = [[NSRecursiveLock alloc] init];
-        _importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
+        self.baseDirPath = p;
+        _dataBaseDirPath = [NSString stringWithContentsOfFile:[p stringByAppendingPathComponent:@"DBFOLDER_LOCATION"] encoding:NSUTF8StringEncoding error:NULL];
+        if (!_dataBaseDirPath) _dataBaseDirPath = p; // TODO: what if this path is not mounted?
+        [_dataBaseDirPath retain];
         
-        // create dirs if necessary
-        [NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
-        [NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
-        [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
-        [NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
-        [NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
-        if (self.baseDirPath) strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC)); else baseDirPathC[0] = 0;
-        if (self.incomingDirPath) strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC)); else incomingDirPathC[0] = 0;
-        if (self.tempDirPath) strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC)); else tempDirPathC[0] = 0;
+        BOOL isNewDb = ![NSFileManager.defaultManager fileExistsAtPath:[self dataDirPath]];
         
-        // if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
+        [DicomDatabase knowAbout:self]; // retains self
         
-        if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
-            [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+        self = [super initWithPath:sqlFilePath context:c mainDatabase:mainDbReference];
         
-        // report templates
-#ifndef MACAPPSTORE
-#ifndef OSIRIX_LIGHT
+        // post-init
         
-        for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
-            NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
-            if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp]) {
-                [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
-                [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfp];
+        if (self.isMainDatabase) // is main (not independent)
+        {
+            [NSFileManager.defaultManager removeItemAtPath:self.loadingFilePath error:nil];
+            
+            _dataFileIndex = [[N2MutableUInteger alloc] initWithUInteger:0];
+            _processFilesLock = [[NSRecursiveLock alloc] init];
+            _importFilesFromIncomingDirLock = [[NSRecursiveLock alloc] init];
+            
+            // create dirs if necessary
+            [NSFileManager.defaultManager confirmDirectoryAtPath:self.dataDirPath];
+            [NSFileManager.defaultManager confirmDirectoryAtPath:self.incomingDirPath];
+            [NSFileManager.defaultManager confirmDirectoryAtPath:self.tempDirPath];
+            [NSFileManager.defaultManager confirmDirectoryAtPath:self.reportsDirPath];
+            [NSFileManager.defaultManager confirmDirectoryAtPath:self.dumpDirPath];
+            
+            if (self.baseDirPath) strncpy(baseDirPathC, self.baseDirPath.fileSystemRepresentation, sizeof(baseDirPathC)); else baseDirPathC[0] = 0;
+            if (self.incomingDirPath) strncpy(incomingDirPathC, self.incomingDirPath.fileSystemRepresentation, sizeof(incomingDirPathC)); else incomingDirPathC[0] = 0;
+            if (self.tempDirPath) strncpy(tempDirPathC, self.tempDirPath.fileSystemRepresentation, sizeof(tempDirPathC)); else tempDirPathC[0] = 0;
+            
+            // if a TOBEINDEXED dir exists, move it into INCOMING so we will import the data
+            
+            if ([NSFileManager.defaultManager fileExistsAtPath:self.toBeIndexedDirPath])
+                [NSFileManager.defaultManager moveItemAtPath:self.toBeIndexedDirPath toPath:[self.incomingDirPath stringByAppendingPathComponent:@"TOBEINDEXED.noindex"] error:NULL];
+            
+            // report templates
+    #ifndef MACAPPSTORE
+    #ifndef OSIRIX_LIGHT
+            
+            for (NSString* rfn in [NSArray arrayWithObjects: @"ReportTemplate.rtf", @"ReportTemplate.odt", nil]) {
+                NSString* rfp = [self.baseDirPath stringByAppendingPathComponent:rfn];
+                if (rfp && ![NSFileManager.defaultManager fileExistsAtPath:rfp]) {
+                    [NSFileManager.defaultManager copyItemAtPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:rfn] toPath:rfp error:NULL];
+                    [NSFileManager.defaultManager applyFileModeOfParentToItemAtPath:rfp];
+                }
             }
-        }
-        
-        NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
-        if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
-            [NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
-        
-        NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
-        if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
-            [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
-        
-#endif
-#endif
+            
+            NSString* pagesTemplatesDirPath = [self.baseDirPath stringByAppendingPathComponent:@"PAGES TEMPLATES"];
+            if (![NSFileManager.defaultManager fileExistsAtPath:pagesTemplatesDirPath])
+                [NSFileManager.defaultManager createSymbolicLinkAtPath:pagesTemplatesDirPath withDestinationPath:[AppController checkForPagesTemplate] error:NULL];
+            
+            NSString* wordTemplatesOsirixDirPath = [self.baseDirPath stringByAppendingPathComponent:@"WORD TEMPLATES"];
+            if (![NSFileManager.defaultManager fileExistsAtPath:wordTemplatesOsirixDirPath])
+                [[NSFileManager defaultManager] createSymbolicLinkAtPath:wordTemplatesOsirixDirPath pathContent:[Reports wordTemplatesOsirixDirPath]];
+            
+    #endif
+    #endif
 
-        [self checkForHtmlTemplates];
+            [self checkForHtmlTemplates];
+            
+            if (isNewFile && [NSThread isMainThread] && ![p hasPrefix:@"/tmp/"] && !isNewDb) {
+                [NSThread.currentThread enterOperation];
+                NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
+                ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
+                [self rebuild:YES];
+                [tmfwc invalidate];
+                [tmfwc release];
+                [NSThread.currentThread exitOperation];
+            }
+            
+            if (isNewFile)
+                [self addDefaultAlbums];
+            [self modifyDefaultAlbums];
         
-        if (isNewFile && [NSThread isMainThread] && ![p hasPrefix:@"/tmp/"] && !isNewDb) {
-            [NSThread.currentThread enterOperation];
-            NSThread.currentThread.name = NSLocalizedString(@"Rebuilding default OsiriX database...", nil);
-            ThreadModalForWindowController* tmfwc = [[ThreadModalForWindowController alloc] initWithThread:[NSThread currentThread] window:nil];
-            [self rebuild:YES];
-            [tmfwc invalidate];
-            [tmfwc release];
-            [NSThread.currentThread exitOperation];
+            [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
         }
-        
-        if (isNewFile)
-            [self addDefaultAlbums];
-        [self modifyDefaultAlbums];
-	
-        [DicomDatabase syncImportFilesFromIncomingDirTimerWithUserDefaults];
-	}
-    else // is independentDatabase
-    {
-        _dataFileIndex = [[self.mainDatabase dataFileIndex] retain];
-        _processFilesLock = [[self.mainDatabase processFilesLock] retain];
-        _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
-        _hasPotentiallySlowDataAccess = [self.mainDatabase hasPotentiallySlowDataAccess];
-        
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
-        // the followindo notifications look like the previous ones but they're not the same. do not remove them! viewercontroller needs them ot it won't update the preview matrix with the added images
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddNewStudiesDBNotification object:self];
-        [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:self];
+        else // is independentDatabase
+        {
+            _dataFileIndex = [[self.mainDatabase dataFileIndex] retain];
+            _processFilesLock = [[self.mainDatabase processFilesLock] retain];
+            _importFilesFromIncomingDirLock = [[self.mainDatabase importFilesFromIncomingDirLock] retain];
+            _hasPotentiallySlowDataAccess = [self.mainDatabase hasPotentiallySlowDataAccess];
+            
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayNotification object:self];
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:_O2AddToDBAnywayCompleteNotification object:self];
+            // the followindo notifications look like the previous ones but they're not the same. do not remove them! viewercontroller needs them ot it won't update the preview matrix with the added images
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBNotification object:self];
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddToDBCompleteNotification object:self];
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:OsirixAddNewStudiesDBNotification object:self];
+            [NSNotificationCenter.defaultCenter addObserver:mainDbReference selector:@selector(observeIndependentDatabaseNotification:) name:O2DatabaseInvalidateAlbumsCacheNotification object:self];
+        }
+
+        [self initRouting];
+        [self initClean];
+            
+        }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace( e);
+        [self autorelease];
+        return nil;
     }
-
-    [self initRouting];
-    [self initClean];
     
 	return self;
 }
