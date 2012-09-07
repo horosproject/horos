@@ -86,6 +86,15 @@
 	{
 		DicomImage* image = [files objectAtIndex:[files count]/2];
 		
+        @try {
+            id value = [image valueForKey:key];
+            if (value)
+                return value;
+        }
+        @catch (NSException *exception) {
+            // do nothing
+        }
+        
 		id value = [DicomFile getDicomField: key forFile: image.completePath];
 		if( value)
 			return value;

@@ -105,7 +105,7 @@
                 @try
                 {
                     // We need to start the thread NOW, to be sure, it happens AFTER the addObject
-                    if (![thread isExecuting])
+                    if (![thread isExecuting]&&![thread isFinished])
                         [thread start];
                     
                 }
