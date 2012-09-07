@@ -3056,7 +3056,7 @@ static NSConditionLock *threadLock = nil;
         if( [item isDeleted])
             NSLog( @"----- isDeleted - childrenArray : we have to refresh the outlineView...");
         
-		return nil;
+		return [NSArray array];
 	}
 	
 	if ([[item valueForKey:@"type"] isEqualToString:@"Series"])
