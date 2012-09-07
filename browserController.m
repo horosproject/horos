@@ -4038,40 +4038,48 @@ static NSConditionLock *threadLock = nil;
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];
     DicomStudy *studySelected = [[item valueForKey: @"type"] isEqualToString: @"Study"] ? item : [item valueForKey: @"study"];
     
-    dontSelectStudyFromComparativeStudies = YES;
-    
-    NSMutableArray *mainContextStudies = [NSMutableArray array];
-    for( id study in newStudies)
+    if( item)
     {
-        if( [study isKindOfClass: [DicomStudy class]])
+        dontSelectStudyFromComparativeStudies = YES;
+        
+        NSMutableArray *mainContextStudies = [NSMutableArray array];
+        for( id study in newStudies)
         {
-            id obj = [self.database objectWithID: [study objectID]];
-            if( obj)
-                [mainContextStudies addObject: obj];
+            if( [study isKindOfClass: [DicomStudy class]])
+            {
+                id obj = [self.database objectWithID: [study objectID]];
+                if( obj)
+                    [mainContextStudies addObject: obj];
+            }
+            else
+                [mainContextStudies addObject: study];
         }
+        
+        self.comparativeStudies = mainContextStudies;
+        [comparativeTable reloadData];
+        
+        if( studySelected.name)
+            [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
+        
+        NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
+        
+        dontSelectStudyFromComparativeStudies = NO;
+        
+        if( index != NSNotFound)
+            [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
         else
-            [mainContextStudies addObject: study];
+            [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
+        
+        for( ViewerController *v in [ViewerController getDisplayed2DViewers])
+            [v comparativeRefresh: self.comparativePatientUID];
+        
+        [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
     }
-    
-    self.comparativeStudies = mainContextStudies;
-    [comparativeTable reloadData];
-    
-    if( studySelected.name)
-        [[[comparativeTable tableColumnWithIdentifier:@"Cell"] headerCell] setStringValue: studySelected.name];
-    
-    NSUInteger index = [[self.comparativeStudies valueForKey: @"studyInstanceUID"] indexOfObject: [studySelected valueForKey: @"studyInstanceUID"]];
-    
-    dontSelectStudyFromComparativeStudies = NO;
-    
-    if( index != NSNotFound)
-        [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: index] byExtendingSelection: NO];
     else
-        [comparativeTable selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection: NO];
-    
-    for( ViewerController *v in [ViewerController getDisplayed2DViewers])
-        [v comparativeRefresh: self.comparativePatientUID];
-    
-    [comparativeTable scrollRowToVisible: [comparativeTable selectedRow]];
+    {
+        self.comparativeStudies = nil;
+        [comparativeTable reloadData];
+    }
 }
 
 - (void) refreshComparativeStudiesIfNeeded:(id) timer
@@ -4090,7 +4098,8 @@ static NSConditionLock *threadLock = nil;
         else 
             object = studySelected; // DCMTKStudyQueryNode
         
-        [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
+        if( object)
+            [NSThread detachNewThreadSelector: @selector( searchForComparativeStudies:) toTarget:self withObject: object];
         
         [self computeTimeInterval];
     }
