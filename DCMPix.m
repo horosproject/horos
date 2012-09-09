@@ -6554,8 +6554,11 @@ END_CREATE_ROIS:
 + (void) purgeCachedDictionaries
 {
 	if( [NSThread isMainThread] == NO)
-		NSLog( @"--- purgeCachedDictionaries [NSThread isMainThread] == NO");
-	
+    {
+        [DCMPix performSelectorOnMainThread: @selector(purgeCachedDictionaries) withObject: nil waitUntilDone: NO];
+        return;
+    }
+    
 	if( purgeCacheLock == nil)
 		purgeCacheLock = [[NSConditionLock alloc] initWithCondition: 0];
 	

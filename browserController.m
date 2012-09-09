@@ -17737,13 +17737,16 @@ static volatile int numberOfThreadsForJPEG = 0;
 	@try
     {
 		DicomDatabase* db = [DicomDatabase databaseAtPath:path];
-		[self setDatabase:db];
+        if( db)
+            [self setDatabase:db];
+        else
+            [NSException raise:NSGenericException format: @"DicomDatabase == nil"];
 	}
     @catch (NSException* e)
     {
 		N2LogExceptionWithStackTrace(e);
-		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString(@"OsiriX cannot read this file/folder.", nil), nil, nil, nil);
-		[self resetToLocalDatabase]; // TODO: is this necessary?
+		NSRunAlertPanel(NSLocalizedString(@"OsiriX Database", nil), NSLocalizedString( @"OsiriX cannot read/create this file/folder. Permissions error?", nil), nil, nil, nil);
+		[self resetToLocalDatabase];
 	}
 	
 	[tmc invalidate];
