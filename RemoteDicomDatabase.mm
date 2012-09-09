@@ -115,7 +115,7 @@
 		@try {
 			[self update];
 		} @catch (...) {
-			[self release]; self = nil;
+			[self autorelease]; self = nil;
 			@throw;
 		}
 	

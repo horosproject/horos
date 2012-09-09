@@ -173,6 +173,8 @@
         backingScaleFactor = [[NSScreen mainScreen] backingScaleFactor];
     }
     
+    sf = backingScaleFactor;
+    
 	NSImage * image;
 	
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
@@ -254,7 +256,14 @@
 {
 	NSOpenGLContext *currentContext = [NSOpenGLContext currentContext];
 	GLuint texName = 0;
+    
+    if( sf != currentContext.view.window.backingScaleFactor)
+    {
+        while( [ctxArray count]) [self deleteTexture: [ctxArray lastObject]];
+    }
+    
 	NSUInteger index = [ctxArray indexOfObjectIdenticalTo: currentContext];
+    
 	if( index != NSNotFound)
 		texName = [[textArray objectAtIndex: index] intValue];
 	

@@ -7708,42 +7708,45 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						{
 							useStringTexture = NO;
 							
-							if(mouseXPos!=0 || mouseYPos!=0)
-							{
-                                NSString *pixelUnit = @"";
-                                
-                                if( curDCM.SUVConverted)
-                                    pixelUnit = @"SUV";
-                                
-								if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
-								else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue, pixelUnit];
-								
-								if( blendingView)
-								{
-                                    if( [blendingView curDCM].SUVConverted)
+                            if( stringID.length == 0 || [stringID isEqualToString: @"previewDatabase"])
+                            {
+                                if(mouseXPos!=0 || mouseYPos!=0)
+                                {
+                                    NSString *pixelUnit = @"";
+                                    
+                                    if( curDCM.SUVConverted)
                                         pixelUnit = @"SUV";
                                     
-									if( [blendingView curDCM].isRGB )
-										[tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
-									else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue, pixelUnit];
-								}
-								
-								if( curDCM.displaySUVValue )
-								{
-									if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO)
-									{
-										[tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
-									}
-								}
-								
-								if( blendingView )
-								{
-									if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
-									{
-										[tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
-									}
-								}
-							}
+                                    if( curDCM.isRGB ) [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValueR, pixelMouseValueG, pixelMouseValueB];
+                                    else [tempString appendFormat: NSLocalizedString( @"X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)mouseXPos, (int)mouseYPos, pixelMouseValue, pixelUnit];
+                                    
+                                    if( blendingView)
+                                    {
+                                        if( [blendingView curDCM].SUVConverted)
+                                            pixelUnit = @"SUV";
+                                        
+                                        if( [blendingView curDCM].isRGB )
+                                            [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: R:%ld G:%ld B:%ld", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValueR, blendingPixelMouseValueG, blendingPixelMouseValueB];
+                                        else [tempString2 appendFormat: NSLocalizedString( @"Fused Image : X: %d px Y: %d px Value: %2.2f %@", @"No special characters for this string, only ASCII characters."), (int)blendingMouseXPos, (int)blendingMouseYPos, blendingPixelMouseValue, pixelUnit];
+                                    }
+                                    
+                                    if( curDCM.displaySUVValue )
+                                    {
+                                        if( [curDCM hasSUV] == YES && curDCM.SUVConverted == NO)
+                                        {
+                                            [tempString3 appendFormat: NSLocalizedString( @"SUV: %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getSUV]];
+                                        }
+                                    }
+                                    
+                                    if( blendingView )
+                                    {
+                                        if( [[blendingView curDCM] displaySUVValue] && [[blendingView curDCM] hasSUV] && [[blendingView curDCM] SUVConverted] == NO)
+                                        {
+                                            [tempString4 appendFormat: NSLocalizedString( @"SUV (fused image): %.2f", @"SUV: Standard Uptake Value - No special characters for this string, only ASCII characters."), [self getBlendedSUV]];
+                                        }
+                                    }
+                                }
+                            }
 						}
 						else if([[annot objectAtIndex:j] isEqualToString:@"Zoom"] && fullText)
 						{
@@ -10609,7 +10612,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 	else data = [self getRawPixelsWidth :&width height:&height spp:&spp bpp:&bpp screenCapture:!originalSize force8bits: YES removeGraphical:NO squarePixels:YES allTiles: [[NSUserDefaults standardUserDefaults] boolForKey:@"includeAllTiledViews"] allowSmartCropping: [[NSUserDefaults standardUserDefaults] boolForKey: @"allowSmartCropping"] origin: nil spacing: nil];
 	
-	if( [stringID isEqualToString:@"copy"] )
+	if( [stringID isEqualToString:@"copy"])
 	{
 		if( [self is2DViewer] && (_imageColumns != 1 || _imageRows != 1))
 		{

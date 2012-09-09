@@ -106,7 +106,7 @@
   //  [lockhist removeLastObject];
     [super unlock];
 //    [self.persistentStoreCoordinator unlock];
-    [self release];
+    [self autorelease];
 }
 
 @end

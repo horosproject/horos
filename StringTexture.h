@@ -43,6 +43,7 @@
 	NSSize marginSize; // offset or frame size, default is 4 width 2 height
 	NSSize frameSize; // offset or frame size, default is 4 width 2 height
 	BOOL antialiasing;
+    float sf; // screen factor during creation
 }
 
 // this API requires a current rendering context and all operations will be performed in regards to thar context
