@@ -642,7 +642,7 @@ enum RemoteDicomDatabaseStudiesAlbumAction { RemoteDicomDatabaseStudiesAlbumActi
 	[self unlock];
     NSInteger size = 0, i = [images indexOfObject:image];
 	
-	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
+//	NSMutableArray* currentFetchXIDs = [NSMutableArray array];
 	
 	while (i < images.count)
     {

@@ -131,8 +131,8 @@ const static void *namesKey = &namesKey;
     {
         for( NSDictionary *observerDictionary in [self my_observersForNotificationName: notification.name])
         {
-            SEL selector = [[observerDictionary objectForKey: @"selector"] pointerValue];
-            id observer = [[observerDictionary objectForKey: @"observer"] pointerValue];
+//            SEL selector = [[observerDictionary objectForKey: @"selector"] pointerValue];
+//            id observer = [[observerDictionary objectForKey: @"observer"] pointerValue];
             
             if( selectors == nil)
                 selectors = [NSMutableArray array];

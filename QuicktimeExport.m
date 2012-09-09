@@ -85,7 +85,8 @@
     CGContextRef ctxt = CGBitmapContextCreate(rasterData, width, height, bitsPerComponent, bytesPerRow, cs, bi);
     if(ctxt == NULL)
     {
-        NSLog(@"could not create context");
+        NSLog(@"******** CVPixelBufferFromNSImage : could not create context");
+        CGColorSpaceRelease(cs);
         return NULL;
     }
     
@@ -156,6 +157,8 @@
         CMTime frameDuration = CMTimeMake( timeValue, 600);
         
         NSError *error = nil;
+        BOOL aborted = NO;
+        
         AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
         if (!error)
         {
@@ -167,7 +170,7 @@
             AVAssetWriterInput *writerInput = nil;
             AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = nil;
             CMTime nextPresentationTimeStamp = kCMTimeZero;
-            BOOL aborted = NO;
+            
             
             for( int curSample = 0; curSample < numberOfFrames; curSample++)
             {
@@ -262,12 +265,12 @@
                 NSWorkspace *ws = [NSWorkspace sharedWorkspace];
                 [ws openFile:fileName];
             }
-            
-            if( aborted == NO)
-                return fileName;
         }
         
         [writer release];
+        
+        if( aborted == NO)
+            return fileName;
     }
 	
 	return nil;

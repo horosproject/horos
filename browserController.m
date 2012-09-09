@@ -17790,25 +17790,25 @@ static volatile int numberOfThreadsForJPEG = 0;
 //	}
 }
 
--(NSInteger)indexOfDatabase:(DicomDatabase*)database
-{
-	for (NSDictionary* service in [bonjourBrowser services])
-    {
-		NSString* type = [service valueForKey:@"type"];
-		
-		if ([type isEqualToString:@"localPath"])
-        {
-			NSString* servicePath = [service valueForKey:@"Path"];
-		}
-        else
-        {
-			NSString* serviceAddress = [service valueForKey:@""];
-		}
-		
-	}
-	
-	return -1;
-}
+//-(NSInteger)indexOfDatabase:(DicomDatabase*)database
+//{
+//	for (NSDictionary* service in [bonjourBrowser services])
+//    {
+//		NSString* type = [service valueForKey:@"type"];
+//		
+//		if ([type isEqualToString:@"localPath"])
+//        {
+//			NSString* servicePath = [service valueForKey:@"Path"];
+//		}
+//        else
+//        {
+//			NSString* serviceAddress = [service valueForKey:@""];
+//		}
+//		
+//	}
+//	
+//	return -1;
+//}
 
 
 
@@ -18019,7 +18019,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 
 + (NSString *) defaultDocumentsDirectory // __deprecated
 {
-	NSString *dir = documentsDirectory();
+//	NSString *dir = documentsDirectory();
 	return [[DicomDatabase defaultDatabase] baseDirPath];
 }
 

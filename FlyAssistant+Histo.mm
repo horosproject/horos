@@ -34,7 +34,7 @@
 - (void) autoComputeThresholdFromPoint:(Point3D*)p
 {
     int position = (int)p.z*inputWidth*inputHeight+(int)p.y*inputWidth+(int)p.x;
-    float pixVal = input[position];
+//    float pixVal = input[position];
     [self autoComputeThresholdFromValue:input[position]];
 }
 

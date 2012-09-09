@@ -160,7 +160,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 }
 
 -(NSMutableArray*)_itemsInRecord:(DcmDirectoryRecord*)record context:(NSMutableArray*)context basePath:(NSString*)basepath {
-	NSString* tabs = [NSString stringByRepeatingString:@" " times:context.count*4];
+//	NSString* tabs = [NSString stringByRepeatingString:@" " times:context.count*4];
 	NSMutableArray* items = [NSMutableArray array];
 	NSMutableDictionary* elements = [NSMutableDictionary dictionary];
 	[context addObject:elements];

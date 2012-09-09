@@ -290,8 +290,7 @@
 	firstPix = [originalDCMPixList objectAtIndex: 0];
 	
 	DCMPix				*lastPix = [originalDCMPixList lastObject];
-	long				i;
-	long				size, x;
+	long				i, x;
 	float				orientation[ 9], newXSpace, newYSpace, origin[ 3], sliceInterval;
 	BOOL                isRGB = firstPix.isRGB;
 	
@@ -324,7 +323,7 @@
 		newYSpace = fabs(sliceInterval);
 	}
 	
-	size = sizeof(float) * newX * newY;	// image weight in bytes
+//	size = sizeof(float) * newX * newY;	// image weight in bytes
 	
 	// CREATE A NEW SERIES WITH *ONE* IMAGE !
 	

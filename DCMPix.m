@@ -1515,26 +1515,26 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 				*dst++ = *src++;
 				*dst++ = *src++;
 			}
-		}
-		
-		rep = [[[NSBitmapImageRep alloc]
-				initWithBitmapDataPlanes:nil
-				pixelsWide:width
-				pixelsHigh:height
-				bitsPerSample:8
-				samplesPerPixel:3
-				hasAlpha:NO
-				isPlanar:NO
-				colorSpaceName:NSCalibratedRGBColorSpace
-				bytesPerRow:width*3
-				bitsPerPixel:24] autorelease];
-		
-		memcpy( [rep bitmapData], buf, height*width*3);
-		
-		imageRep = [[[NSImage alloc] init] autorelease];
-		[imageRep addRepresentation:rep];
-		
-		free( buf);
+            
+            rep = [[[NSBitmapImageRep alloc]
+                    initWithBitmapDataPlanes:nil
+                    pixelsWide:width
+                    pixelsHigh:height
+                    bitsPerSample:8
+                    samplesPerPixel:3
+                    hasAlpha:NO
+                    isPlanar:NO
+                    colorSpaceName:NSCalibratedRGBColorSpace
+                    bytesPerRow:width*3
+                    bitsPerPixel:24] autorelease];
+            
+            memcpy( [rep bitmapData], buf, height*width*3);
+            
+            imageRep = [[[NSImage alloc] init] autorelease];
+            [imageRep addRepresentation:rep];
+            
+            free( buf);
+        }
 	}
 	else
 	{
@@ -10977,8 +10977,7 @@ END_CREATE_ROIS:
 +(int) nearestSliceInPixelList: (NSArray*)pixList withDICOMCoords: (float*)dicomCoords sliceCoords: (float*)nearestSliceCoords
 {
 	
-	unsigned int count = pixList.count,
-	nearestSliceIndx;
+	unsigned int count = pixList.count, nearestSliceIndx = 0;
 	
 	float minDist = MAXFLOAT;
 	
@@ -11684,7 +11683,7 @@ END_CREATE_ROIS:
 
 - (float*) computeThickSlabRGB
 {
-	long			diff;
+//	long			diff;
 	float			*fNext = NULL;
 	float			*fResult = malloc( height * width * sizeof(float));
 	long			next;
@@ -11701,7 +11700,7 @@ END_CREATE_ROIS:
 	
 	min = iwl - iww / 2; 
 	max = iwl + iww / 2;
-	diff = max - min;
+//	diff = max - min;
 	
 	switch( stackMode)
 	{
@@ -11764,10 +11763,9 @@ END_CREATE_ROIS:
 
 - (float*) computeThickSlab
 {
-	BOOL			flip = NO; // case 5
 	long			stacksize;
 	unsigned char   *rgbaImage;
-	float			min, max, iwl, iww;
+	float			iwl, iww;
 	float			*fResult = nil;
 	
 	if( fixed8bitsWLWW)
@@ -11781,13 +11779,12 @@ END_CREATE_ROIS:
 		iwl = wl;
 	}
 	
-	min = iwl - iww / 2; 
-	max = iwl + iww / 2;
+//	min = iwl - iww / 2;
+//	max = iwl + iww / 2;
 	
 	switch( stackMode)
 	{
 		case 4:		// Volume Rendering
-			flip = YES;
 		case 5:		// Volume Rendering
 			if( thickSlab)
 			{											

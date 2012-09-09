@@ -54,7 +54,7 @@
 	if( cond.good())
 	{
 		DcmDataset *dataset = fileformat.getDataset();
-		DcmItem *metaInfo = fileformat.getMetaInfo();
+//		DcmItem *metaInfo = fileformat.getMetaInfo();
 		DcmXfer original_xfer(dataset->getOriginalXfer());
 		if (original_xfer.isEncapsulated())
 		{

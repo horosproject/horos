@@ -769,7 +769,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 		else if (filexfer.getXfer() != opt_networkTransferSyntax)
 		{
 			// The file is already compressed, we will re-compress the file.....
-			E_TransferSyntax fileTS = filexfer.getXfer();
+//			E_TransferSyntax fileTS = filexfer.getXfer();
 			
 			if( (filexfer.getXfer() == EXS_JPEG2000LosslessOnly && preferredXfer.getXfer() == EXS_JPEG2000) ||
 				(filexfer.getXfer() == EXS_JPEG2000 && preferredXfer.getXfer() == EXS_JPEG2000LosslessOnly))
@@ -1239,7 +1239,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	#ifndef OSIRIX_LIGHT
 //	if( _secureConnection)
 //		[DDKeychain lockTmpFiles];
-	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, random()];	
+	NSString *uniqueStringID = [NSString stringWithFormat:@"%d.%d.%d", getpid(), inc++, (int) random()];
 	#endif
 	
 	@try

@@ -179,8 +179,7 @@
 	NSString *studyDate, *studyTime, *seriesName;
 	NSString *extension;
 
-	BOOL lastImageOfSeries, lastImageOfStudy;
-	lastImageOfSeries = lastImageOfStudy = NO;
+	BOOL lastImageOfSeries = NO, lastImageOfStudy = NO;
 	
 	uniqueSeriesID = 0;
 	

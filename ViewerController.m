@@ -7596,7 +7596,7 @@ return YES;
         return;
     
     NSArray *pixListArray = [dict objectForKey: @"pixListArray"];
-    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
+//    NSArray *fileListArray = [dict objectForKey: @"fileListArray"];
     DCMPix *firstPix = [[pixListArray objectAtIndex: 0] objectAtIndex: 0];
     
     #pragma mark modality dependant code, once images are already displayed in 2D viewer
@@ -13172,19 +13172,16 @@ int i,j,l;
 
 - (IBAction) roiHistogram:(id) sender
 {
-	long i;
-	
-	for( i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
+	for( int i = 0; i < [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] count]; i++)
 	{
 		long mode = [[[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i] ROImode];
 			
 		if( mode == ROI_selected || mode == ROI_selectedModify || mode == ROI_drawing)
 		{
 			ROI		*theROI = [[roiList[curMovieIndex] objectAtIndex: [imageView curImage]] objectAtIndex: i];
-			NSArray *winList = [NSApp windows];
 			BOOL	found = NO;
 			
-			for( id loopItem1 in winList)
+			for( id loopItem1 in [NSApp windows])
 			{
 				if( [[[loopItem1 windowController] windowNibName] isEqualToString:@"Histogram"])
 				{
@@ -13245,9 +13242,7 @@ int i,j,l;
 
 - (IBAction) roiDefaults:(id) sender
 {
-	NSArray *winList = [NSApp windows];
-				
-	for( id loopItem in winList)
+	for( id loopItem in [NSApp windows])
 	{
 		if( [[[loopItem windowController] windowNibName] isEqualToString:@"ROIDefaults"])
 		{
@@ -15156,7 +15151,6 @@ int i,j,l;
 
 -(void) propagateSettings
 {
-	NSArray *winList = [NSApp windows];
 	NSMutableArray *viewersList;
 	
 	if( [[[[fileList[0] objectAtIndex: 0] valueForKey:@"completePath"] lastPathComponent] isEqualToString:@"Empty.tif"] == YES) return;
@@ -15242,7 +15236,7 @@ int i,j,l;
 	// *** VR Viewers ***
 	viewersList = [NSMutableArray array];
 	
-	for( NSWindow *win in winList)
+	for( NSWindow *win in [NSApp windows])
 	{
 		if( [[[win windowController] windowNibName] isEqualToString:@"VR"] == YES || [[[win windowController] windowNibName] isEqualToString:@"VRPanel"] == YES)
 		{
@@ -20736,8 +20730,8 @@ int i,j,l;
 {
 	int columns = 1;
 	int rows = 1;
-	 int tag;
-     NSMenuItem *item;
+    int tag = 0;
+    NSMenuItem *item;
 
     if ([sender class] == [NSMenuItem class])
 	{

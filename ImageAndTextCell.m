@@ -20,8 +20,6 @@
 
 - (NSUInteger) hitTestForEvent:(NSEvent *)theEvent inRect:(NSRect)cellFrame ofView:(NSView *)controlView
 {
-	BOOL clickInButton = NO;
-	
 	if (lastImage != nil)
 	{
 		NSPoint pt = [controlView convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -41,7 +39,6 @@
 				lastImageAlternate = im;
 				
 				clickedInLastImage = YES;
-				clickInButton = YES;
 				
 				[controlView display];
 			}
@@ -57,7 +54,6 @@
 				lastImageAlternate = im;
 				
 				clickedInLastImage = NO;
-				clickInButton = NO;
 				
 				[controlView display];
 			}

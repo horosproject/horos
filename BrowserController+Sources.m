@@ -406,7 +406,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
         return;
     }
     
-    NSKeyValueChange changeKind = [[change valueForKey:NSKeyValueChangeKindKey] unsignedIntegerValue];
+//    NSKeyValueChange changeKind = [[change valueForKey:NSKeyValueChangeKindKey] unsignedIntegerValue];
 	
 	if (context == LocalBrowserSourcesContext)
     {

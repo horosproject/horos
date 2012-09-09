@@ -161,10 +161,10 @@
         return;
     }
     
-    NSString* path = self.location;
-    BOOL atMediaRoot = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] containsObject:path];
-    if (!atMediaRoot)
-        path = [path stringByDeletingLastPathComponent];
+//    NSString* path = self.location;
+//    BOOL atMediaRoot = [[[NSWorkspace sharedWorkspace] mountedLocalVolumePaths] containsObject:path];
+//    if (!atMediaRoot)
+//        path = [path stringByDeletingLastPathComponent];
     
     NSImage* im = [[NSWorkspace sharedWorkspace] iconForFile:self.location];
     im.size = [im sizeByScalingProportionallyToSize:NSMakeSize(16,16)];

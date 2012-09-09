@@ -2970,9 +2970,7 @@ static BOOL initialized = NO;
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey:@"doNotUseGrowl"]) return nil;
 	
-    NSArray *notifications;
-    notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
-
+    NSArray *notifications = [NSArray arrayWithObjects: @"newstudy", @"newfiles", @"delete", @"result", @"autorouting", @"autoquery", @"send", nil];
     NSDictionary *dict = nil;
 	
 #ifndef OSIRIX_LIGHT

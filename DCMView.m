@@ -6643,7 +6643,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
                             // if( (sliceVector[0] == 0 && sliceVector[1] == 0 && sliceVector[2] == 0) || syncSeriesIndex != -1)  // Planes are parallel !
 							{
 								BOOL	noSlicePosition = NO, everythingLoaded = YES;
-								float   firstSliceLocation;
+//								float   firstSliceLocation;
 								int		index = -1, i;
 								float   smallestdiff = -1, fdiff, slicePosition;
 								
@@ -6657,7 +6657,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 								}
 								else
 								{
-									firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
+//									firstSliceLocation = [[[dcmFilesList objectAtIndex: 0] valueForKey:@"sliceLocation"] floatValue];
 								
 									for( i = 0; i < [dcmFilesList count]; i++)
 									{
@@ -7180,7 +7180,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	glEnable (TEXTRECTMODE); // enable texturing
 	glColor4f (1.0f, 1.0f, 1.0f, 1.0f); 
     
-    float sf = self.window.backingScaleFactor;
+//    float sf = self.window.backingScaleFactor;
     
 	for (x = 0; x < tX; x++) // for all horizontal textures
 	{
@@ -8195,52 +8195,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (NSOpenGLContext*) offscreenDisplay: (NSRect) r
-{
-	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFAOffScreen, NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
-    NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
-	
-	NSOpenGLContext * c = [[[NSOpenGLContext alloc] initWithFormat: pixFmt shareContext: nil] autorelease];
-	
-	void* memBuffer = (void *) malloc (drawingFrameRect.size.width * drawingFrameRect.size.height * 4); 
-	[c setOffScreen: memBuffer width: drawingFrameRect.size.width height: drawingFrameRect.size.height rowbytes: drawingFrameRect.size.width*4];
-	
-//	NSOpenGLContext * c = [self openGLContext];
-	
-	[c makeCurrentContext];
-//	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-//	GLuint framebuffer, renderbuffer;
-//	GLenum status;
-//	// Set the width and height appropriately for you image
-//	GLuint texWidth = r.size.width,
-//		   texHeight = r.size.height;
-//		   
-//	//Set up a FBO with one renderbuffer attachment
-//	glGenFramebuffersEXT(1, &framebuffer);
-//	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer);
-//	glGenRenderbuffersEXT(1, &renderbuffer);
-//	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, renderbuffer);
-//	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, texWidth, texHeight);
-//	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
-//					 GL_RENDERBUFFER_EXT, renderbuffer);
-//	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-////	if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
-//					// Handle errors
-	
-	[self drawRect: r withContext: c];
-	
-	// Make the window the target
-//	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-	//Your code to use the contents
-	// ...
-	// Delete the renderbuffer attachment
-//	glDeleteRenderbuffersEXT(1, &renderbuffer);
-		
-	
-	
-	return c;
-}
+//- (NSOpenGLContext*) offscreenDisplay: (NSRect) r
+//{
+//	NSOpenGLPixelFormatAttribute attrs[] = { NSOpenGLPFAOffScreen, NSOpenGLPFADoubleBuffer, NSOpenGLPFADepthSize, (NSOpenGLPixelFormatAttribute)32, 0};
+//    NSOpenGLPixelFormat* pixFmt = [[[NSOpenGLPixelFormat alloc] initWithAttributes:attrs] autorelease];
+//	
+//	NSOpenGLContext * c = [[[NSOpenGLContext alloc] initWithFormat: pixFmt shareContext: nil] autorelease];
+//	
+//	void* memBuffer = (void *) malloc (drawingFrameRect.size.width * drawingFrameRect.size.height * 4); 
+//	[c setOffScreen: memBuffer width: drawingFrameRect.size.width height: drawingFrameRect.size.height rowbytes: drawingFrameRect.size.width*4];
+//	
+////	NSOpenGLContext * c = [self openGLContext];
+//	
+//	[c makeCurrentContext];
+////	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+//	
+////	GLuint framebuffer, renderbuffer;
+////	GLenum status;
+////	// Set the width and height appropriately for you image
+////	GLuint texWidth = r.size.width,
+////		   texHeight = r.size.height;
+////		   
+////	//Set up a FBO with one renderbuffer attachment
+////	glGenFramebuffersEXT(1, &framebuffer);
+////	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer);
+////	glGenRenderbuffersEXT(1, &renderbuffer);
+////	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, renderbuffer);
+////	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_RGBA8, texWidth, texHeight);
+////	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT,
+////					 GL_RENDERBUFFER_EXT, renderbuffer);
+////	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+//////	if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+////					// Handle errors
+//	
+//	[self drawRect: r withContext: c];
+//	
+//	// Make the window the target
+////	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+//	//Your code to use the contents
+//	// ...
+//	// Delete the renderbuffer attachment
+////	glDeleteRenderbuffersEXT(1, &renderbuffer);
+//		
+//	
+//	
+//	return c;
+//}
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
@@ -10205,7 +10205,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	NSString *f = nil;
 	float o[ 9], imOrigin[ 3], imSpacing[ 2];
 	long width, height, spp, bpp;
-	NSRect savedFrame = drawingFrameRect;
+//	NSRect savedFrame = drawingFrameRect;
 	
 	unsigned char *data = [self getRawPixelsViewWidth: &width height: &height spp: &spp bpp: &bpp screenCapture: YES force8bits: YES removeGraphical: YES squarePixels: YES allowSmartCropping: NO origin: imOrigin spacing: imSpacing offset: nil isSigned: nil];
 	
@@ -10219,23 +10219,23 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			{
 				unsigned char *cropData;
 				int cropHeight, cropWidth;
-				float rescale = 0;
-				NSPoint croppedOrigin;
+//				float rescale = 0;
+//				NSPoint croppedOrigin;
 				
 				if( width > height)
 				{
-					rescale = (float) size / (float) height;
+//					rescale = (float) size / (float) height;
 					cropHeight = height;
 					cropWidth = height;
 				}
 				else
 				{
-					rescale = (float) size / (float) width;
+//					rescale = (float) size / (float) width;
 					cropHeight = width;
 					cropWidth = width;
 				}
 				
-				croppedOrigin = NSMakePoint( ((width-cropWidth)/2.), ((height - cropHeight)/2.));
+//				croppedOrigin = NSMakePoint( ((width-cropWidth)/2.), ((height - cropHeight)/2.));
 				
 				cropData = data + spp*((width-cropWidth)/2) + spp*((height - cropHeight)/2)*width;
 				
@@ -12658,11 +12658,10 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		NSArray *wwwl = nil;
 		hotKey = [hotKey lowercaseString];
-		unichar key = [hotKey characterAtIndex:0];
-		
+        
 		if( [[DCMView hotKeyDictionary] objectForKey:hotKey])
 		{
-			key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
+			unichar key = [[[DCMView hotKeyDictionary] objectForKey:hotKey] intValue];
 			
 			switch (key)
 			{

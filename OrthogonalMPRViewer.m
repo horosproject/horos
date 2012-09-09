@@ -415,8 +415,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 -(void) ApplyOpacityString:(NSString*) str
 {
 	NSDictionary		*aOpacity;
-	NSArray				*array;
-	
+//	NSArray				*array;
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -436,7 +435,7 @@ static NSString*	VRPanelToolbarItemIdentifier			= @"MIP.tif";
 		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
 		if (aOpacity)
 		{
-			array = [aOpacity objectForKey:@"Points"];
+//			array = [aOpacity objectForKey:@"Points"];
 			
 			if( curOpacityMenu != str)
 			{

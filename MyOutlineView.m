@@ -287,8 +287,6 @@
 			[[BrowserController currentBrowser] addFilesAndFolderToDatabase: fileArray];
 		}
 	}
-	
-	[fileArray release];
 }
 
 - (void)concludeDragOperation:(id <NSDraggingInfo>)sender
@@ -316,7 +314,7 @@
         if ([desiredType isEqualToString:NSFilenamesPboardType])
         {	
 			//we have a list of file names in an NSData object
-            NSArray *fileArray = [[paste propertyListForType:@"NSFilenamesPboardType"] retain];
+            NSArray *fileArray = [paste propertyListForType:@"NSFilenamesPboardType"];
 			
 			[self performSelector:@selector(terminateDrag:) withObject:fileArray afterDelay:0.1];
 		}

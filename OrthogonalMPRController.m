@@ -452,8 +452,6 @@
 -(void) ApplyOpacityString:(NSString*) str
 {
 	NSDictionary		*aOpacity;
-	NSArray				*array;
-	
 	
 	if( [str isEqualToString:NSLocalizedString(@"Linear Table", nil)])
 	{
@@ -464,7 +462,7 @@
 		aOpacity = [[[NSUserDefaults standardUserDefaults] dictionaryForKey: @"OPACITY"] objectForKey: str];
 		if (aOpacity)
 		{
-			array = [aOpacity objectForKey:@"Points"];
+//			array = [aOpacity objectForKey:@"Points"];
 			
 			[self setTransferFunction: [OpacityTransferView tableWith4096Entries: [aOpacity objectForKey:@"Points"]]];
 		}

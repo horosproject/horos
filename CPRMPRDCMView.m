@@ -808,7 +808,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 			int viewIDA, viewIDB;
 			
 			switch (viewID)
-			{	
+			{
+                default:
 				case 1:
 					pixA = [windowController.mprView2 pix];
 					pixB = [windowController.mprView3 pix];
