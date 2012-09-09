@@ -21,7 +21,6 @@
 
 /** Encapsulates a pdf in a DICOM file */
 + (DCMObject*) encapsulatedPDF:(NSData *)pdf;
-+ (DCMObject*) newEncapsulatedPDF:(NSData *)pdf;
 
 
 @end

@@ -1252,7 +1252,7 @@ static inline int int_ceildivpow2(int a, int b) {
 {
 	NSMutableData *pixelData = nil;
 	
-	BOOL succeed = NO;
+//	BOOL succeed = NO;
 	
 	if( Use_kdu_IfAvailable && kdu_available())
 	{
@@ -1269,7 +1269,7 @@ static inline int int_ceildivpow2(int a, int b) {
 		if( p)
 		{
 			pixelData = [NSMutableData dataWithBytesNoCopy: p length:decompressedLength freeWhenDone: YES];
-			succeed = YES;
+//			succeed = YES;
 		}
 	}
 	
@@ -3424,10 +3424,8 @@ static inline int int_ceildivpow2(int a, int b) {
 				The 2 frame starts at offset - 16   ( three Item tag and lengths)
 				So will use 0 for first frame, and then  subtract (n-1) * 8
 			*/
-			int startMerge = 0;
 			unsigned  long offset;
 			if ([_values count] > 1  && [(NSData *)[_values objectAtIndex:0] length] > 0) {
-				startMerge = 1;
 				int i;
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];
@@ -3546,11 +3544,7 @@ static inline int int_ceildivpow2(int a, int b) {
 			*/
 			unsigned  long offset;
 				
-			
-			int startMerge = 0;
-
 			if ([_values count] > 1  && [(NSData *)[_values objectAtIndex:0] length] > 0) {
-				startMerge = 1;
 				int i;
 				NSData *offsetData = [_values objectAtIndex:0];
 				unsigned long *offsets = (unsigned long *)[offsetData bytes];

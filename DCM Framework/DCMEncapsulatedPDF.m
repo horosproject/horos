@@ -19,11 +19,6 @@
 
 @implementation  DCMObject (DCMEncapsulatedPDF)
 
-+ (DCMObject*) newEncapsulatedPDF:(NSData *)pdf
-{
-	return [DCMObject encapsulatedPDF: pdf];
-}
-
 + (DCMObject*) encapsulatedPDF:(NSData *)pdf
 {
     if( pdf == nil)
