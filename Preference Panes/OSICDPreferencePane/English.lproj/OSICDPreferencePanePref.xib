@@ -2,7 +2,7 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12A269</string>
+		<string key="IBDocument.SystemVersion">12B19</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
 		<string key="IBDocument.AppKitVersion">1187</string>
 		<string key="IBDocument.HIToolboxVersion">624.00</string>
@@ -153,7 +153,7 @@
 												<object class="NSButtonCell" id="257334181">
 													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">All DICOM files available on the disk, ignoring the DICOMDIR file</string>
+													<string key="NSContents">All DICOM files available on the disk, ignoring the DICOMDIR file (Scan Mode)</string>
 													<reference key="NSSupport" ref="255335428"/>
 													<reference key="NSControlView" ref="468243953"/>
 													<int key="NSButtonFlags">1211912448</int>
@@ -245,7 +245,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="947728721">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{326, 33}, {332, 18}}</string>
+											<string key="NSFrame">{{326, 33}, {347, 18}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="341937739"/>
@@ -253,7 +253,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSButtonCell" key="NSCell" id="734149438">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">If no DICOM files are found, switch to scan mode</string>
+												<string key="NSContents">If no DICOM files are found, switch to Scan Mode</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<reference key="NSControlView" ref="947728721"/>
 												<int key="NSButtonFlags">1211912448</int>
@@ -297,7 +297,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<object class="NSButtonCell" id="264276504">
 													<int key="NSCellFlags">67108864</int>
 													<int key="NSCellFlags2">0</int>
-													<string key="NSContents">Show the disk's content as a separate source</string>
+													<string key="NSContents">Show disc content as a separate source</string>
 													<reference key="NSSupport" ref="255335428"/>
 													<reference key="NSControlView" ref="1015614671"/>
 													<int key="NSButtonFlags">1211912448</int>
@@ -450,7 +450,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSTextField" id="61924080">
 											<reference key="NSNextResponder" ref="284310877"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{14, 54}, {286, 17}}</string>
+											<string key="NSFrame">{{14, 54}, {252, 17}}</string>
 											<reference key="NSSuperview" ref="284310877"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="468243953"/>
@@ -459,7 +459,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<object class="NSTextFieldCell" key="NSCell" id="172638683">
 												<int key="NSCellFlags">68157504</int>
 												<int key="NSCellFlags2">272630784</int>
-												<string key="NSContents">Determine the disc's content by considering:</string>
+												<string key="NSContents">Determine disc content by considering:</string>
 												<reference key="NSSupport" ref="255335428"/>
 												<string key="NSCellIdentifier">_NS:1505</string>
 												<reference key="NSControlView" ref="61924080"/>
@@ -572,6 +572,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<string key="NSFrame">{{236, 12}, {437, 20}}</string>
 											<reference key="NSSuperview" ref="185696618"/>
 											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSPathCell" key="NSCell" id="84108953">
 												<int key="NSCellFlags">337641473</int>
@@ -650,7 +651,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="158522742"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{224.66300000000001, 32}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
