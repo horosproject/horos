@@ -17,6 +17,8 @@
 #import <OsiriXAPI/NSPreferencePane+OsiriX.h>
 #import <OsiriXAPI/AppController.h>
 
+static NSArray *languagesToMoveWhenQuitting = nil;
+
 @interface IsQualityEnabled: NSValueTransformer {}
 @end
 @implementation IsQualityEnabled
@@ -169,25 +171,42 @@
     if( enabled == NO)
         [[languages objectAtIndex: 0] setValue: [NSNumber numberWithBool: YES] forKey: @"active"];
     
+    [languagesToMoveWhenQuitting release];
+    languagesToMoveWhenQuitting = [languages copy];
+}
+
++ (void) applyLanguagesIfNeeded
+{
     NSString *activePath = [[NSBundle mainBundle] resourcePath];
     NSString *inactivePath = [[activePath stringByDeletingLastPathComponent] stringByAppendingPathComponent: @"Resources Disabled"];
     
     if( [[NSFileManager defaultManager] fileExistsAtPath: inactivePath] == NO)
         [[NSFileManager defaultManager] createDirectoryAtPath: inactivePath withIntermediateDirectories: NO attributes: nil error: nil];
     
-    for( NSDictionary *d in languages)
+    for( NSDictionary *d in languagesToMoveWhenQuitting)
     {
         NSString *language = [[d valueForKey: @"language"] stringByAppendingPathExtension: @"lproj"];
         
         if( [[d valueForKey: @"active"] boolValue])
         {
-            [[NSFileManager defaultManager] moveItemAtPath: [inactivePath stringByAppendingPathComponent: language] toPath: [activePath stringByAppendingPathComponent: language] error: nil];
+            if( [[NSFileManager defaultManager] fileExistsAtPath: [inactivePath stringByAppendingPathComponent: language]])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath: [activePath stringByAppendingPathComponent: language] error: nil];
+                [[NSFileManager defaultManager] moveItemAtPath: [inactivePath stringByAppendingPathComponent: language] toPath: [activePath stringByAppendingPathComponent: language] error: nil];
+            }
         }
         else
         {
-            [[NSFileManager defaultManager] moveItemAtPath: [activePath stringByAppendingPathComponent: language] toPath: [inactivePath stringByAppendingPathComponent: language] error: nil];
+            if( [[NSFileManager defaultManager] fileExistsAtPath: [activePath stringByAppendingPathComponent: language]])
+            {
+                [[NSFileManager defaultManager] removeItemAtPath: [inactivePath stringByAppendingPathComponent: language] error: nil];
+                [[NSFileManager defaultManager] moveItemAtPath: [activePath stringByAppendingPathComponent: language] toPath: [inactivePath stringByAppendingPathComponent: language] error: nil];
+            }
         }
     }
+    
+    [languagesToMoveWhenQuitting release];
+    languagesToMoveWhenQuitting = nil;
 }
 
 - (IBAction) endEditCompressionSettings:(id) sender

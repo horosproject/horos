@@ -27,4 +27,5 @@
 - (IBAction) editCompressionSettings:(id) sender;
 - (IBAction) endEditCompressionSettings:(id) sender;
 - (IBAction) resetPreferences: (id) sender;
++ (void) applyLanguagesIfNeeded;
 @end
