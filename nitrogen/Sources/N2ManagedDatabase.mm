@@ -351,16 +351,19 @@
     if (_isDeallocating)
         return;
     _isDeallocating = YES;
-    // ok..
+    
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+    
     if ([self.managedObjectContext hasChanges] && [NSFileManager.defaultManager fileExistsAtPath:[self.sqlFilePath stringByDeletingLastPathComponent]])
         [self save];
-    [NSNotificationCenter.defaultCenter removeObserver:self];
-    if (self.mainDatabase) [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
-//	[self.managedObjectContext reset];
+    
+    if (self.mainDatabase)
+        [NSNotificationCenter.defaultCenter removeObserver:self.mainDatabase name:NSManagedObjectContextDidSaveNotification object:self];
+    
     self.mainDatabase = nil;
-	[_managedObjectContext release];
+	self.managedObjectContext = nil;
 	self.sqlFilePath = nil;
-//	[writeLock release];
+    
 	[super dealloc];
 }
 
