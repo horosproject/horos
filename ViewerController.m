@@ -2212,9 +2212,9 @@ static volatile int numberOfThreadsForRelisce = 0;
 		NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 		if( presetsMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 39");
+			NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-			presetsMenu = [[viewerMenu itemAtIndex: 39]  submenu];
+			presetsMenu = [[viewerMenu itemAtIndex: 38]  submenu];
 			NSLog( @"***** Selected item: %@", [presetsMenu title]);
 		}
 		
@@ -2273,7 +2273,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 		{
 			NSLog( @"***** NSLocalization bug.... tilingMenu == nil -> tilingMenu == itemAtIndex == 46");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Image Tiling", nil));
-			tilingMenu = [[viewerMenu itemAtIndex: 46] submenu];
+			tilingMenu = [[viewerMenu itemAtIndex: 45] submenu];
 			NSLog( @"***** Selected item: %@", [tilingMenu title]);
 		}
 		menu = [tilingMenu copy];

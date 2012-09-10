@@ -1066,9 +1066,9 @@
 			NSMenu *presetsMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 			if( presetsMenu == nil)
 			{
-				NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex == 39");
+				NSLog( @"***** NSLocalization bug.... presetsMenu == nil -> presetsMenu == itemAtIndex");
 				NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-				presetsMenu = [[viewerMenu itemAtIndex: 39]  submenu];
+				presetsMenu = [[viewerMenu itemAtIndex: 38]  submenu];
 				NSLog( @"***** Selected item: %@", [presetsMenu title]);
 			}
 			NSMenu *menu = [presetsMenu copy];

@@ -1521,7 +1521,7 @@ static NSDate *lastWarningDate = nil;
 		{
 			NSLog( @"***** NSLocalization bug.... mainOpacityMenu == nil -> mainOpacityMenu == itemAtIndex == 42");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Opacity", nil));
-			mainOpacityMenu = [[viewerMenu itemAtIndex: 42]  submenu];
+			mainOpacityMenu = [[viewerMenu itemAtIndex: 41]  submenu];
 			NSLog( @"***** Selected item: %@", [mainOpacityMenu title]);
 		}
 	}
@@ -1572,9 +1572,9 @@ static NSDate *lastWarningDate = nil;
 		mainMenuWLWWMenu = [[viewerMenu itemWithTitle:NSLocalizedString(@"Window Width & Level", nil)] submenu];
 		if( mainMenuWLWWMenu == nil)
 		{
-			NSLog( @"***** NSLocalization bug.... mainMenuWLWWMenu == nil -> mainMenuWLWWMenu == itemAtIndex == 39");
+			NSLog( @"***** NSLocalization bug.... mainMenuWLWWMenu == nil -> mainMenuWLWWMenu == itemAtIndex");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Window Width & Level", nil));
-			mainMenuWLWWMenu = [[viewerMenu itemAtIndex: 39]  submenu];
+			mainMenuWLWWMenu = [[viewerMenu itemAtIndex: 38]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuWLWWMenu title]);
 		}
 	}
@@ -1633,7 +1633,7 @@ static NSDate *lastWarningDate = nil;
 		{
 			NSLog( @"***** NSLocalization bug.... mainMenuConvMenu == nil -> mainMenuConvMenu == itemAtIndex == 43");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Convolution Filters", nil));
-			mainMenuConvMenu = [[viewerMenu itemAtIndex: 43]  submenu];
+			mainMenuConvMenu = [[viewerMenu itemAtIndex: 42]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuConvMenu title]);
 		}
 	}
@@ -1686,7 +1686,7 @@ static NSDate *lastWarningDate = nil;
 		{
 			NSLog( @"***** NSLocalization bug.... mainMenuCLUTMenu == nil -> mainMenuCLUTMenu == itemAtIndex == 40");
 			NSLog( @"Not found item: %@", NSLocalizedString(@"Color Look Up Table", nil));
-			mainMenuCLUTMenu = [[viewerMenu itemAtIndex: 40]  submenu];
+			mainMenuCLUTMenu = [[viewerMenu itemAtIndex: 39]  submenu];
 			NSLog( @"***** Selected item: %@", [mainMenuCLUTMenu title]);
 		}
     }
