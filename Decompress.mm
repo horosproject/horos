@@ -256,16 +256,7 @@ int main(int argc, const char *argv[])
 //						if (dataset->findAndGetString(DCM_SOPClassUID, string, OFFalse).good() && string != NULL)
 //							sopClassUID = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
 						
-						if (original_xfer.isEncapsulated())
-						{
-							if( destDirec)
-							{
-								[[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
-								[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-								[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-							}
-						}
-						else
+                        
 						{
                             delete dataset->remove( DcmTagKey( 0x0009, 0x1110)); // "GEIIS" The problematic private group, containing a *always* JPEG compressed PixelData
                             
@@ -291,138 +282,71 @@ int main(int argc, const char *argv[])
 							
 							int quality, compression = compressionForModality( compressionSettings, compressionSettingsLowRes, limit, modality, &quality, resolution);
 							
-							if( useDCMTKForJP2K == NO && compression == compression_JPEG2000)
-							{
-								DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
-								
-								BOOL succeed = NO;
-								
-								// See - (BOOL) needToCompressFile: (NSString*) path in BrowserControllerDCMTKCategory for these exceptions
-								if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: [dcmObject attributeValueWithName:@"SOPClassUID"]] == NO)
-								{
-									@try
-									{
-										DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
-										succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
-									}
-									@catch (NSException *e)
-									{
-										NSLog( @"dcmObject writeToFile failed: %@", e);
-									}
-								}
-								else
-								{
-									succeed = [[NSData dataWithContentsOfFile: curFile] writeToFile: curFileDest atomically: YES];
-								}
-								
-								[dcmObject release];
-								
-								if( succeed)
-								{
-									[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-									if( destDirec == nil)
-										[[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
-								}
-								else
-								{
-									[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-									
-									if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
-									{
-										[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-									}
-									else if( destDirec)
-									{
-										[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-										NSLog( @"failed to compress file: %@, the file is deleted", curFile);
-									}
-									else
-										NSLog( @"failed to compress file: %@", curFile);
-								}
-							}
-							else if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
-							{
-								DcmRepresentationParameter *params = nil;
-								E_TransferSyntax tSyntax;
-								DJ_RPLossless losslessParams(6,0);
-								DJ_RPLossy JP2KParams( quality);
-								DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
-                                
-								if( compression == compression_JPEG)
-								{
-									params = &losslessParams;
-									tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-								}
-                                else if( compression == compression_JPEGLS)
-								{
-									if( quality == DCMLosslessQuality)
-									{
-										params = &JP2KParamsLossLess;
-										tSyntax = EXS_JPEGLSLossless;
-									}
-									else
-									{
-										params = &JP2KParams;
-										tSyntax = EXS_JPEGLSLossy;
-									}
-								}
-								else if( compression == compression_JPEG2000)
-								{
-									if( quality == DCMLosslessQuality)
-									{
-										params = &JP2KParamsLossLess;
-										tSyntax = EXS_JPEG2000LosslessOnly;
-									}
-									else
-									{
-										params = &JP2KParams;
-										tSyntax = EXS_JPEG2000;
-									}
-								}
-								else
-								{
-									params = &JP2KParamsLossLess;
-									tSyntax = EXS_JPEG2000LosslessOnly;
-									
-									NSLog( @" ****** UNKNOW compression Decompress.mm");
-								}
-								
-								// this causes the lossless JPEG version of the dataset to be created
-								DcmXfer oxferSyn( tSyntax);
-								dataset->chooseRepresentation(tSyntax, params);
-								
-								// check if everything went well
-								if (dataset->canWriteXfer(tSyntax))
-								{
-									// force the meta-header UIDs to be re-generated when storing the file 
-									// since the UIDs in the data set may have changed 
-									
-									//only need to do this for lossy
-									//delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-									//delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-									
-									// store in lossless JPEG format
-									fileformat.loadAllDataIntoMemory();
-									
+                            BOOL alreadyCompressed = NO;
+                            
+                            if (original_xfer.isEncapsulated())
+                            {
+                                switch( compression)
+                                {
+                                    case compression_JPEGLS:
+                                        if( original_xfer.getXfer() == EXS_JPEGLSLossless || original_xfer.getXfer() == EXS_JPEGLSLossy)
+                                            alreadyCompressed = YES;
+                                    break;
+                                    
+                                    case compression_JPEG2000:
+                                        if( original_xfer.getXfer() == EXS_JPEG2000 || original_xfer.getXfer() == EXS_JPEG2000LosslessOnly)
+                                            alreadyCompressed = YES;
+                                    break;
+                                    
+                                    case compression_JPEG:
+                                        if( original_xfer.getXfer() == EXS_JPEGProcess14SV1TransferSyntax)
+                                            alreadyCompressed = YES;
+                                    break;
+                                }
+                            }
+                            
+                            if( alreadyCompressed == NO)
+                            {
+                                if( useDCMTKForJP2K == NO && compression == compression_JPEG2000)
+                                {
+                                    DCMObject *dcmObject = [[DCMObject alloc] initWithContentsOfFile: curFile decodingPixelData: NO];
+                                    
+                                    BOOL succeed = NO;
+                                    
+                                    // See - (BOOL) needToCompressFile: (NSString*) path in BrowserControllerDCMTKCategory for these exceptions
+                                    if( [DCMAbstractSyntaxUID isImageStorage: [dcmObject attributeValueWithName:@"SOPClassUID"]] == YES && [[dcmObject attributeValueWithName:@"SOPClassUID"] isEqualToString:[DCMAbstractSyntaxUID pdfStorageClassUID]] == NO && [DCMAbstractSyntaxUID isStructuredReport: [dcmObject attributeValueWithName:@"SOPClassUID"]] == NO)
                                     {
-                                        NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
-                                        
-                                        [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
-                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
-                                        
-                                        cond = fileformat.saveFile( [tempCurFileDest UTF8String], tSyntax);
-                                        status =  (cond.good()) ? YES : NO;
-                                        
-                                        [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                                        @try
+                                        {
+                                            DCMTransferSyntax *tsx = [DCMTransferSyntax JPEG2000LossyTransferSyntax];
+                                            succeed = [dcmObject writeToFile: curFileDest withTransferSyntax: tsx quality: quality AET:@"OsiriX" atomically:YES];
+                                        }
+                                        @catch (NSException *e)
+                                        {
+                                            NSLog( @"dcmObject writeToFile failed: %@", e);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        succeed = [[NSData dataWithContentsOfFile: curFile] writeToFile: curFileDest atomically: YES];
                                     }
                                     
-									if( status == NO)
-									{
-										[[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
-										if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                                    [dcmObject release];
+                                    
+                                    if( succeed)
+                                    {
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                        if( destDirec == nil)
+                                            [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
+                                    }
+                                    else
+                                    {
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                        
+                                        if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
                                         {
-											[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-										}
+                                            [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                                        }
                                         else if( destDirec)
                                         {
                                             [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
@@ -430,24 +354,126 @@ int main(int argc, const char *argv[])
                                         }
                                         else
                                             NSLog( @"failed to compress file: %@", curFile);
-									}
-									else
-									{
-										[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-										if( destDirec == nil)
-											[[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
-									}
-								}
-							}
-							else
-							{
-								if( destDirec)
-								{
-									[[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
-									[[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
-									[[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
-								}
-							}
+                                    }
+                                }
+                                else if( compression == compression_JPEG || compression == compression_JPEG2000 || compression == compression_JPEGLS)
+                                {
+                                    DcmRepresentationParameter *params = nil;
+                                    E_TransferSyntax tSyntax;
+                                    DJ_RPLossless losslessParams(6,0);
+                                    DJ_RPLossy JP2KParams( quality);
+                                    DJ_RPLossy JP2KParamsLossLess( DCMLosslessQuality);
+                                    
+                                    if( compression == compression_JPEG)
+                                    {
+                                        params = &losslessParams;
+                                        tSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+                                    }
+                                    else if( compression == compression_JPEGLS)
+                                    {
+                                        if( quality == DCMLosslessQuality)
+                                        {
+                                            params = &JP2KParamsLossLess;
+                                            tSyntax = EXS_JPEGLSLossless;
+                                        }
+                                        else
+                                        {
+                                            params = &JP2KParams;
+                                            tSyntax = EXS_JPEGLSLossy;
+                                        }
+                                    }
+                                    else if( compression == compression_JPEG2000)
+                                    {
+                                        if( quality == DCMLosslessQuality)
+                                        {
+                                            params = &JP2KParamsLossLess;
+                                            tSyntax = EXS_JPEG2000LosslessOnly;
+                                        }
+                                        else
+                                        {
+                                            params = &JP2KParams;
+                                            tSyntax = EXS_JPEG2000;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        params = &JP2KParamsLossLess;
+                                        tSyntax = EXS_JPEG2000LosslessOnly;
+                                        
+                                        NSLog( @" ****** UNKNOW compression Decompress.mm");
+                                    }
+                                    
+                                    // this causes the lossless JPEG version of the dataset to be created
+                                    DcmXfer oxferSyn( tSyntax);
+                                    dataset->chooseRepresentation(tSyntax, params);
+                                    
+                                    // check if everything went well
+                                    if (dataset->canWriteXfer(tSyntax))
+                                    {
+                                        // force the meta-header UIDs to be re-generated when storing the file 
+                                        // since the UIDs in the data set may have changed 
+                                        
+                                        //only need to do this for lossy
+                                        //delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+                                        //delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                                        
+                                        // store in lossless JPEG format
+                                        fileformat.loadAllDataIntoMemory();
+                                        
+                                        {
+                                            NSString *tempCurFileDest = [[curFileDest stringByDeletingLastPathComponent] stringByAppendingPathComponent: [NSString stringWithFormat: @".%@", [curFileDest lastPathComponent]]];
+                                            
+                                            [[NSFileManager defaultManager] removeItemAtPath: tempCurFileDest error: nil];
+                                            [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                            
+                                            cond = fileformat.saveFile( [tempCurFileDest UTF8String], tSyntax);
+                                            status =  (cond.good()) ? YES : NO;
+                                            
+                                            [[NSFileManager defaultManager] moveItemAtPath: tempCurFileDest toPath: curFileDest error: nil];
+                                        }
+                                        
+                                        if( status == NO)
+                                        {
+                                            [[NSFileManager defaultManager] removeItemAtPath: curFileDest error:nil];
+                                            if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
+                                            {
+                                                [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                                            }
+                                            else if( destDirec)
+                                            {
+                                                [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                                NSLog( @"failed to compress file: %@, the file is deleted", curFile);
+                                            }
+                                            else
+                                                NSLog( @"failed to compress file: %@", curFile);
+                                        }
+                                        else
+                                        {
+                                            [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                            if( destDirec == nil)
+                                                [[NSFileManager defaultManager] moveItemAtPath: curFileDest toPath: curFile error: nil];
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if( destDirec)
+                                    {
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                        [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                                        [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if( destDirec)
+                                {
+                                    [[NSFileManager defaultManager] removeItemAtPath: curFileDest error: nil];
+                                    [[NSFileManager defaultManager] moveItemAtPath: curFile toPath: curFileDest error: nil];
+                                    [[NSFileManager defaultManager] removeItemAtPath: curFile error: nil];
+                                }
+                            }
 						}
 					}
 					else if ([[dict objectForKey: @"DecompressMoveIfFail"] boolValue])
