@@ -1497,6 +1497,9 @@ extern "C"
 
 - (void) computeStudyArrayInstanceUID: (NSNumber*) sender
 {
+    if( [[BrowserController currentBrowser] database] == nil) // During DB rebuild
+        return;
+        
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	NSArray *local_studyArrayID = nil;
@@ -3381,6 +3384,9 @@ extern "C"
 
 - (void) performRetrieve:(NSArray*) array
 {
+    if ( [[BrowserController currentBrowser] database] == nil) // During SB rebuild
+        return;
+    
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
     [NSThread currentThread].name = NSLocalizedString( @"Retrieving images...", nil);

@@ -1942,7 +1942,8 @@ static NSConditionLock *threadLock = nil;
 
 -(NSThread*)initiateRebuildDatabase:(BOOL)complete
 {
-	DicomDatabase* database = [[self.database retain] autorelease];
+    DicomDatabase* database = [[self.database retain] autorelease];
+    
 	[self setDatabase:nil];
 	
 	NSArray* io = [NSMutableArray arrayWithObjects: database, [NSNumber numberWithBool:complete], nil];
@@ -1963,7 +1964,19 @@ static NSConditionLock *threadLock = nil;
 	
 	if ([sender tag])
     {
+        for (NSThread* t in [[ThreadsManager defaultManager] threads])
+            [t cancel];
+        
         [self waitForRunningProcesses];
+        
+        NSTimeInterval t = [NSDate timeIntervalSinceReferenceDate];
+        while ([[[ThreadsManager defaultManager] threads] count] && [NSDate timeIntervalSinceReferenceDate]-t < 10) { // give declared background threads 10 secs to cancel
+            for (NSThread* thread in [[ThreadsManager defaultManager] threads])
+                if (![thread isCancelled])
+                    [thread cancel];
+            [NSThread sleepForTimeInterval:0.05];
+        }
+        
 		switch ([rebuildType selectedTag])
         {
 			case 0:
@@ -1981,19 +1994,6 @@ static NSConditionLock *threadLock = nil;
 {
 	if (![_database rebuildAllowed])
 		[NSException raise:NSGenericException format:@"Current database rebuild not allowed, this shouldn't be executed."];
-	
-	// Wait if there is something in the delete queue
-	[self emptyDeleteQueueNow: self];
-	//
-	
-	// Wait if there is something in the autorouting queue
-//	[autoroutingInProgress lock];
-//	[autoroutingInProgress unlock];
-	
-//	[self emptyAutoroutingQueue:self];
-	
-//	[autoroutingInProgress lock];
-//	[autoroutingInProgress unlock];
 	
 	long totalFiles = 0;
 	NSString	*aPath = [_database dataDirPath];

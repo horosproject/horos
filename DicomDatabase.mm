@@ -1166,6 +1166,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
+    return [self addFilesAtPaths: paths postNotifications:postNotifications dicomOnly:dicomOnly rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX returnArray: YES];
+}
+
+-(NSArray*)addFilesAtPaths:(NSArray*)paths postNotifications:(BOOL)postNotifications dicomOnly:(BOOL)dicomOnly rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
+{
 	NSThread* thread = [NSThread currentThread];
     
     //#define RANDOMFILES
@@ -1176,7 +1181,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     paths = randomArray;
 #endif
 
-	NSMutableArray* retArray = [NSMutableArray array];
+	NSMutableArray* retArray = nil; // This array can be HUGE when rebuild a DB with millions of images
+    
+    if( returnArray)
+        retArray = [NSMutableArray array];
     
 	NSString* errorsDirPath = self.errorsDirPath;
 	NSString* dataDirPath = self.dataDirPath;
@@ -1189,6 +1197,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
 	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex)
     {
+        NSAutoreleasePool* pool2 = [[NSAutoreleasePool alloc] init];
+        
         NSRange chunkRange = [[chunkRanges objectAtIndex:chunkIndex] rangeValue];
         
 		NSMutableArray *completeImagesArray = nil, *modifiedStudiesArray = nil;
@@ -1285,9 +1295,13 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 //        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+        
         NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
-//        NSLog(@"after: %X", self.managedObjectContext);
-        NSArray* addedImagesArray = [self objectsWithIDs:objectIDs];
+        
+        NSArray* addedImagesArray = nil;
+        if( returnArray)
+            addedImagesArray = [self objectsWithIDs:objectIDs];
+        
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1301,7 +1315,10 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			return nil;
 		}
 		
-		[retArray addObjectsFromArray:addedImagesArray];
+        if( returnArray)
+            [retArray addObjectsFromArray: addedImagesArray];
+        
+        [pool2 release];
 	}
     
     [thread exitOperation];
@@ -3223,8 +3240,9 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		// ** Finish the rebuild
         
 		thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@...", @"rebuild database thread status: Adding %@ (%@ = '120 files')"), N2LocalizedSingularPluralCount(filesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
-		[self addFilesAtPaths:filesArray postNotifications:NO];
-		
+        
+        [self addFilesAtPaths: filesArray postNotifications: NO dicomOnly: [[NSUserDefaults standardUserDefaults] boolForKey: @"onlyDICOM"] rereadExistingItems: NO generatedByOsiriX: NO returnArray: NO];
+        
 		NSLog(@"End Rebuild");
 		
 		[filesArray release];

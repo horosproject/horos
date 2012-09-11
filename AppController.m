@@ -2437,9 +2437,8 @@ static NSDate *lastWarningDate = nil;
 	for (NSThread* t in [[ThreadsManager defaultManager] threads])
 		[t cancel];
 	
-	
 	[[BrowserController currentBrowser] browserPrepareForClose];
-
+    
 #ifndef OSIRIX_LIGHT
 	[WebPortal finalizeWebPortalClass];
 #endif
