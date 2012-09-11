@@ -563,7 +563,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
             while (copyFilesThread.isExecuting) {
                 if (thread.isCancelled && !copyFilesThread.isCancelled)
                     [copyFilesThread cancel];
-                [NSThread sleepForTimeInterval:0.01];
+                [NSThread sleepForTimeInterval:0.1];
             }
             
             /*for (NSString* frompath in paths) {
