@@ -195,6 +195,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
                 if( [[NSFileManager defaultManager] moveItemAtPath: [inactivePath stringByAppendingPathComponent: language] toPath: [activePath stringByAppendingPathComponent: language] error: nil] == NO)
                     NSLog( @"*********** applyLanguagesIfNeeded failed: %@", language);
             }
+            else NSLog( @"*********** applyLanguagesIfNeeded fileExistsAtPath: %@", [inactivePath stringByAppendingPathComponent: language]);
         }
         else
         {
@@ -204,6 +205,7 @@ static NSArray *languagesToMoveWhenQuitting = nil;
                 if( [[NSFileManager defaultManager] moveItemAtPath: [activePath stringByAppendingPathComponent: language] toPath: [inactivePath stringByAppendingPathComponent: language] error: nil] == NO)
                     NSLog( @"*********** applyLanguagesIfNeeded failed: %@", language);
             }
+            else NSLog( @"*********** applyLanguagesIfNeeded fileExistsAtPath: %@", [activePath stringByAppendingPathComponent: language]);
         }
     }
     

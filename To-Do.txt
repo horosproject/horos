@@ -1,5 +1,6 @@
 - 3D states
 - DiscPublishing unload
+- Localization MD
 
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib
