@@ -1317,6 +1317,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
         if( returnArray)
             [retArray addObjectsFromArray: addedImagesArray];
+        else
+        {
+            [self.managedObjectContext save: nil];
+            [self.managedObjectContext reset];
+        }
         
         [pool2 release];
 	}
