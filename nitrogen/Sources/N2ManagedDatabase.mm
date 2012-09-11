@@ -48,7 +48,6 @@
 
 -(BOOL)save:(NSError**)error {
     [self lock];
-    [self.persistentStoreCoordinator lock];
     @try {
         return [super save:error];
         for (NSPersistentStore* ps in [[self persistentStoreCoordinator] persistentStores])
@@ -57,7 +56,6 @@
     } @catch (...) {
         @throw;
     } @finally {
-        [self.persistentStoreCoordinator unlock];
         [self unlock];
     }
     
@@ -66,13 +64,11 @@
 
 -(NSManagedObject*)existingObjectWithID:(NSManagedObjectID*)objectID error:(NSError**)error {
     [self lock];
-//    [self.persistentStoreCoordinator lock];
     @try {
         return [super existingObjectWithID:objectID error:error];
     } @catch (...) {
         @throw;
     } @finally {
-//        [self.persistentStoreCoordinator unlock];
         [self unlock];
     }
     
@@ -283,6 +279,9 @@
     if (self.managedObjectContext.persistentStoreCoordinator != moc.persistentStoreCoordinator)
         return;
     
+    if (self.managedObjectContext == moc)
+        return;
+    
     if (![NSThread isMainThread]) {
         if (moc) {
             NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:n.userInfo];
@@ -291,14 +290,12 @@
         }
     } else {
         [self.managedObjectContext lock];
-        [self.managedObjectContext.persistentStoreCoordinator lock];
         @try {
             [self.managedObjectContext mergeChangesFromContextDidSaveNotification:n];
 //            [self.managedObjectContext save:NULL];
         } @catch (NSException* e) {
             N2LogExceptionWithStackTrace(e);
         } @finally {
-            [self.managedObjectContext.persistentStoreCoordinator unlock];
             [self.managedObjectContext unlock];
         }
     }
