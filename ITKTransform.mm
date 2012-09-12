@@ -154,7 +154,7 @@ typedef itk::ResampleImageFilter<ImageType, ImageType> ResampleFilterType;
     }
     
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	
     return fVolumePtr;
 }

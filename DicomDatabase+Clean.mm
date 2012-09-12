@@ -293,7 +293,7 @@
                             N2LogExceptionWithStackTrace(e);
 						}
 //						[wait close];
-//						[wait release];
+//						[wait autorelease];
 						
 						// refresh database
 						[NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:nil];

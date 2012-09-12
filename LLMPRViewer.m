@@ -1389,7 +1389,7 @@ static NSString*	ParameterPanelToolbarItemIdentifier		= @"3D";
 		[self produceResultData:&volumeData pixList:pix];
 
 		[wait close];
-		[wait release];
+		[wait autorelease];
 		
 		
 		if([volumeData length]==0 || [pix count]==0)

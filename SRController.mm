@@ -434,7 +434,7 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 	
 	[www end];
 	[www close];
-	[www release];
+	[www autorelease];
 
 }
 

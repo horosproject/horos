@@ -457,7 +457,7 @@
 		}
 		
 		[progress close];
-		[progress release];
+		[progress autorelease];
 		
 		[dcmSequence release];
 		

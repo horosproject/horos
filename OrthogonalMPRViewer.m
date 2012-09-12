@@ -1623,7 +1623,7 @@ return YES;
 				NSLog( @"***** Exception Creating a DICOM series: %@", e);
 			}
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		
 		if( [producedFiles count])

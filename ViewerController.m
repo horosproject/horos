@@ -2016,7 +2016,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 //	[self checkEverythingLoaded];
 //	[self performSelector:@selector(MPR2DViewer:) withObject:self afterDelay:0.05];
 //	[wait close];
-//	[wait release];
+//	[wait autorelease];
 //}
 
 - (void) contextualDictionaryPath:(NSString *)newContextualDictionaryPath
@@ -11279,7 +11279,7 @@ short				matrix[25];
 			[bc adjustSlider];
 			
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		break;
 		
@@ -12635,7 +12635,7 @@ int i,j,l;
 	}
 
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	
 	if( error)
 	{
@@ -12920,7 +12920,7 @@ int i,j,l;
 		[[pixList[ curMovieIndex] objectAtIndex: 0] freeRestore];
 	
 	[splash close];
-	[splash release];
+	[splash autorelease];
 			
 	NSLog(@"endSetPixel");
 }
@@ -14125,7 +14125,7 @@ int i,j,l;
 		}
 		[filter release];
 		[wait close];
-		[wait release];
+		[wait autorelease];
 	}
 }
 
@@ -16617,7 +16617,7 @@ int i,j,l;
 		[self adjustSlider];
 		
 		[splash close];
-		[splash release];
+		[splash autorelease];
 		
 		// Start the actuall print operation if there is something to print at all.
 		if( [files count])
@@ -17397,7 +17397,7 @@ int i,j,l;
 			[self adjustSlider];
 			
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		
 		NSArray *viewers = [ViewerController getDisplayed2DViewers];
@@ -19911,7 +19911,7 @@ int i,j,l;
             [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
 		
 		[splash close];
-		[splash release];
+		[splash autorelease];
 		
 		[self setWindowTitle: self];
 		

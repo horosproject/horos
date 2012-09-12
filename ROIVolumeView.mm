@@ -846,7 +846,7 @@
 		}
 	}
 	[splash close];
-	[splash release];
+	[splash autorelease];
 
 	return error;
 }

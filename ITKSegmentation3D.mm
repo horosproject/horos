@@ -994,7 +994,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
     }
     
 	[wait close];
-	[wait release];
+	[wait autorelease];
 }
 
 
@@ -1181,7 +1181,7 @@ void ConnectPipelines(ITK_Exporter exporter, VTK_Importer* importer)
 //
 //	[centerline release];
 //	[wait close];
-//	[wait release];
+//	[wait autorelease];
 //	
 //	[srcViewer needsDisplayUpdate];
 //	

@@ -521,7 +521,7 @@
 	}
 	[splash end];
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	
 	if( succeed == NO)
 		NSLog( @"******* test Files FAILED : one of more of these files are corrupted : %@", files);

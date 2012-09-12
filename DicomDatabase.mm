@@ -3402,7 +3402,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	}
 	
 //	[splash close];
-//	[splash release];
+//	[splash autorelease];
 }
 
 -(void)rebuildSqlFile {

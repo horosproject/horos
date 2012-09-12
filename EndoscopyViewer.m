@@ -1343,7 +1343,7 @@ return YES;
 	[waiting showWindow:self];		
 	int err=[assistant createCenterline:centerline FromPointA:pointA ToPointB:pointB withSmoothing:YES];
 	[waiting close];
-	[waiting release];
+	[waiting autorelease];
 	
 	if(!err)
 	{
@@ -1375,7 +1375,7 @@ return YES;
 				break;
 		}
 		[waiting close];
-		[waiting release];
+		[waiting autorelease];
 		if(err==ERROR_CANNOTFINDPATH)
 		{
 			NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -1631,7 +1631,7 @@ return YES;
 		[assistant setThreshold:threshold Asynchronous:NO];
 		[assistant setCenterlineResampleStepLength:centerlineResampleStepLength];
 		[waiting close];
-		[waiting release];
+		[waiting autorelease];
 	}
 	else {
 		NSRunAlertPanel(NSLocalizedString(@"32-bit", nil), NSLocalizedString(@"Path Assistant can not allocate enough memory, try to increase the resample voxel size in the settings.", nil), NSLocalizedString(@"OK", nil), nil, nil);
@@ -1687,7 +1687,7 @@ return YES;
 					break;
 			}
 			[waiting close];
-			[waiting release];
+			[waiting autorelease];
 			if(err==ERROR_CANNOTFINDPATH)
 			{
 				NSRunAlertPanel(NSLocalizedString(@"Can't find path", nil), NSLocalizedString(@"Path Assistant can not find a path from current location.", nil), NSLocalizedString(@"OK", nil), nil, nil);

@@ -3293,7 +3293,7 @@ extern "C"
 					[NSThread sleepForTimeInterval: 0.2];
 				
 					[wait close];
-					[wait release];
+					[wait autorelease];
 				}
 			}
 		}

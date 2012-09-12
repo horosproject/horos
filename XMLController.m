@@ -1121,7 +1121,7 @@ extern int delayedTileWindows;
 				NSLog(@"xml setObject: %@", e);
 			}
 			[wait close];
-			[wait release];
+			[wait autorelease];
 			wait = nil;
 			
             if( [self.window isVisible]) // If DB fields were modified : the database window will close the XML editor

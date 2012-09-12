@@ -1017,7 +1017,7 @@ static NSConditionLock *threadLock = nil;
 		[self outlineViewRefresh];
 		
 		[splash close];
-		[splash release];
+		[splash autorelease];
 	}
 }
 
@@ -1731,7 +1731,7 @@ static NSConditionLock *threadLock = nil;
 		[_database unlock];
 	}
 	[splash close];
-	[splash release];
+	[splash autorelease];
 }
 
 - (void) copyFilesIntoDatabaseIfNeeded: (NSMutableArray*) filesInput options: (NSDictionary*) options
@@ -1898,7 +1898,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 	}
 	else
@@ -3362,7 +3362,7 @@ static NSConditionLock *threadLock = nil;
 			}
 			
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		else
 		{
@@ -5033,7 +5033,7 @@ static NSConditionLock *threadLock = nil;
             }
             @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
             [wait close];
-            [wait release];
+            [wait autorelease];
             wait = nil;
         }
     }
@@ -5190,7 +5190,7 @@ static NSConditionLock *threadLock = nil;
 		}
 		
 		[wait close];
-		[wait release];
+		[wait autorelease];
         
         [self refreshMatrix: self];
         
@@ -6244,7 +6244,7 @@ static NSConditionLock *threadLock = nil;
 					[[[displayedViewers objectAtIndex: 0] window] makeKeyAndOrderFront: self];
 				
 				[waitOpeningWindow close];
-				[waitOpeningWindow release];
+				[waitOpeningWindow autorelease];
 				waitOpeningWindow = nil;
 				
 				windowsStateApplied = YES;
@@ -8783,7 +8783,7 @@ static BOOL withReset = NO;
 			}
 			
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		else
 		{
@@ -10625,7 +10625,7 @@ static BOOL needToRezoom;
 	}
     @finally {
         [wait invalidate];
-        [wait release];
+        [wait autorelease];
         [[NSThread currentThread] exitOperation];
     }
 	
@@ -11262,7 +11262,7 @@ static BOOL needToRezoom;
 		[self openViewerFromImages :toOpenArray movie: movieViewer viewer :viewer keyImagesOnly:NO tryToFlipData: tryToFlipData];
 		
 	[waitOpeningWindow close];
-	[waitOpeningWindow release];
+	[waitOpeningWindow autorelease];
 	waitOpeningWindow = nil;
 }
 
@@ -12458,7 +12458,7 @@ static NSArray*	openSubSeriesArray = nil;
 		[[QueryController currentAutoQueryController] switchAutoRetrieving: self];
 		[NSThread sleepForTimeInterval: 0.5];
 		[wait close];
-		[wait release];
+		[wait autorelease];
 	}
 	else 
 		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
@@ -12640,7 +12640,7 @@ static NSArray*	openSubSeriesArray = nil;
 	waitForRunningProcess = NO;
 	
 	[wait close];
-	[wait release];
+	[wait autorelease];
 	
 	[pool release];
 }
@@ -13465,7 +13465,7 @@ static NSArray*	openSubSeriesArray = nil;
 	}
 	
 	[wait close];
-	[wait release];
+	[wait autorelease];
 	
 	BOOL fileExist = NO;
 	
@@ -14429,7 +14429,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		[managedObjectContext unlock];
 		
 		[splash close];
-		[splash release];
+		[splash autorelease];
 	}
 }
 	
@@ -14601,7 +14601,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		//close progress window	
 		[splash close];
-		[splash release];
+		[splash autorelease];
 	}
 }
 
@@ -15335,7 +15335,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		
 		//close progress window	
 		[splash close];
-		[splash release];
+		[splash autorelease];
 		
 		if( [files2Compress count] > 0 && exportAborted == NO)
 		{
@@ -15574,7 +15574,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 	}
 	
 	[wait close];
-	[wait release];
+	[wait autorelease];
 }
 
 + (void) encryptFileOrFolder: (NSString*) srcFolder inZIPFile: (NSString*) destFile password: (NSString*) password 
@@ -15646,7 +15646,7 @@ static volatile int numberOfThreadsForJPEG = 0;
         }
         
         [wait close];
-        [wait release];
+        [wait autorelease];
     }
 }
 
@@ -15709,7 +15709,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 		}
 		
 		[wait close];
-		[wait release];
+		[wait autorelease];
 		
 		NSMutableDictionary *d = [NSMutableDictionary dictionaryWithObjectsAndKeys: [[sPanel filenames] objectAtIndex:0], @"location", filesToExport, @"filesToExport", dicomFiles2Export, @"dicomFiles2Export", nil];
 		

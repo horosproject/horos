@@ -440,7 +440,7 @@ typedef struct _xyzArray
 		}
 		
 		[splashExport close];
-		[splashExport release];
+		[splashExport autorelease];
 		
 		if( orientationSwitch)
 		{
@@ -665,7 +665,7 @@ typedef struct _xyzArray
 //			[self endRenderImageWithBestQuality];
 			
 			[progress close];
-			[progress release];
+			[progress autorelease];
 			
 			[dcmSequence release];
 		}
@@ -881,7 +881,7 @@ typedef struct _xyzArray
     [NSObject cancelPreviousPerformRequestsWithTarget: [self window]];
     
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	[exportDCM release];
 	
 	if([firstObject isRGB]) free( dataFRGB);

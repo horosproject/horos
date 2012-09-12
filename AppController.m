@@ -2319,7 +2319,7 @@ static NSDate *lastWarningDate = nil;
 							}
 							[wait end];
 							[wait close];
-							[wait release];
+							[wait autorelease];
 							
 							[context unlock];
 						}
@@ -2413,7 +2413,7 @@ static NSDate *lastWarningDate = nil;
 	[[NSRunLoop currentRunLoop] runUntilDate: [NSDate dateWithTimeIntervalSinceNow: 3]];
 	
 	[wait close];
-	[wait release];
+	[wait autorelease];
 	
 	unlink( "/tmp/kill_all_storescu");
 	

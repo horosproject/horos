@@ -2032,7 +2032,7 @@ static float deg2rad = M_PI/180.0;
 			}
 			
 			[progress close];
-			[progress release];
+			[progress autorelease];
 		}
 		else if( dcmMode == 0) // A 3D rotation or batch sequence
 		{
@@ -2247,7 +2247,7 @@ static float deg2rad = M_PI/180.0;
 			[curExportView.vrView endRenderImageWithBestQuality];
 			
 			[progress close];
-			[progress release];
+			[progress autorelease];
 		}
 		
 		mprView1.dontUseAutoLOD = NO;

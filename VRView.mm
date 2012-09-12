@@ -888,7 +888,7 @@ public:
     
 	[www end];
 	[www close];
-	[www release];
+	[www autorelease];
 }
 
 - (void) setBlendingEngine: (long) engineID
@@ -962,7 +962,7 @@ public:
 	
 	[www end];
 	[www close];
-	[www release];
+	[www autorelease];
 }
 
 -(NSImage*) image4DForFrame:(NSNumber*) cur maxFrame:(NSNumber*) max
@@ -1316,7 +1316,7 @@ public:
 			}
 			
 			[progress close];
-			[progress release];
+			[progress autorelease];
 			
 			[exportDCM release];
 			exportDCM = nil;
@@ -1383,7 +1383,7 @@ public:
 			[self endRenderImageWithBestQuality];
 			
 			[progress close];
-			[progress release];
+			[progress autorelease];
 			
 			[exportDCM release];
 			exportDCM = nil;
@@ -1647,7 +1647,7 @@ public:
 		[self display];
 		[www end];
 		[www close];
-		[www release];
+		[www autorelease];
 	}
 	else
 	{
@@ -1666,7 +1666,7 @@ public:
 		[self display];
 		[www end];
 		[www close];
-		[www release];
+		[www autorelease];
 	}
 }
 
@@ -2121,7 +2121,7 @@ public:
 		{
 			[www end];
 			[www close];
-			[www release];
+			[www autorelease];
 			
 			if( isRGB == NO)
 			{
@@ -2167,7 +2167,7 @@ public:
 	[ROIPoints release];
 	[exportDCM release];
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	[currentOpacityArray release];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -4117,7 +4117,7 @@ public:
 				[self setNeedsDisplay:YES];
 				
 				[waiting close];
-				[waiting release];
+				[waiting autorelease];
 				
 				[[controller viewer2D] roiIntDeleteAllROIsWithSameName:@"BoneRemovalAlgorithmROIUniqueName"];
 				
@@ -4918,7 +4918,7 @@ public:
 //			}
 			
 			[waiting close];
-			[waiting release];
+			[waiting autorelease];
 		}
 	}
 	else if((c == NSDeleteFunctionKey || c == NSDeleteCharacter || c == NSBackspaceCharacter || c == NSDeleteCharFunctionKey) && currentTool == t3Dpoint)
@@ -6097,7 +6097,7 @@ public:
 	{
 		[www end];
 		[www close];
-		[www release];
+		[www autorelease];
 	}
 }
 
@@ -7227,7 +7227,7 @@ public:
 	}
 	
 	[waiting close];
-	[waiting release];
+	[waiting autorelease];
 	
 	[self updateScissorStateButtons];
 }

@@ -2548,7 +2548,7 @@ return YES;
 				NSLog( @"***** Exception Creating a PET-CT DICOM series: %@", e);
 			}
 			[splash close];
-			[splash release];
+			[splash autorelease];
 		}
 		
 		if( [producedFiles count])

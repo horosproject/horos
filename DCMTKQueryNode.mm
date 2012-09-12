@@ -1752,7 +1752,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				if( cond != EC_Normal)
 				{
 					[wait end];
-					[wait release];
+					[wait autorelease];
 					wait = nil;
 				}
 				
@@ -1841,7 +1841,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 						[lock release];
 						
 						[wait end];
-						[wait release];
+						[wait autorelease];
 						wait = nil;
 					}
 //					else cond = [self cfind:assoc dataset:dataset];
@@ -1958,7 +1958,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 		
 		[wait end];
-		[wait release];
+		[wait autorelease];
 		wait = nil;
 		
 		//We want to give time for other threads that are maybe using assoc or net variables

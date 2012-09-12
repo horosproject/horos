@@ -314,7 +314,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
     NSLog(@"Dealloc SRView");
 	
 	[splash close];
-	[splash release];
+	[splash autorelease];
 	[exportDCM release];
 	
 	if([firstObject isRGB]) free( dataFRGB);

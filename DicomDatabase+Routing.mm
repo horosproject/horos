@@ -552,7 +552,7 @@
 	 }
 	 
 	 [splash close];
-	 [splash release];*/
+	 [splash autorelease];*/
 #endif	
 	
 }

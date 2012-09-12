@@ -3306,7 +3306,7 @@ NSInteger sort3DSettingsDict(id preset1, id preset2, void *context)
 		}
 		[www end];
 		[www close];
-		[www release];
+		[www autorelease];
 	}
 }
 

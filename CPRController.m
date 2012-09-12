@@ -2794,7 +2794,7 @@ static float deg2rad = M_PI / 180.0;
 				}
 				
 				[progress close];
-				[progress release];
+				[progress autorelease];
                 
                 NSLog( @"Export Rotation: %f",  (float) ([NSDate timeIntervalSinceReferenceDate] - start));
 			}
@@ -2905,7 +2905,7 @@ static float deg2rad = M_PI / 180.0;
                     }
                 }
 				[progress close];
-				[progress release];
+				[progress autorelease];
 			}
 			else if( self.exportSeriesType == CPRTransverseViewsExportSeriesType)
 			{
@@ -2967,7 +2967,7 @@ static float deg2rad = M_PI / 180.0;
 						break;
                 }
 				[progress close];
-				[progress release];
+				[progress autorelease];
 			}
 		}
 		
