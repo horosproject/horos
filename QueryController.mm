@@ -4089,7 +4089,12 @@ extern "C"
     // build table header context menu
     if( [[outlineView autosaveName] length] == 0)
     {
-        NSArray *cols = [[NSUserDefaults standardUserDefaults] arrayForKey: @"QueryControllerTableColumns"];
+        NSArray *cols = nil;
+        
+        if( autoQuery)
+            cols = [[NSUserDefaults standardUserDefaults] arrayForKey: @"NewQueryControllerTableColumnsAutoQR"];
+        else
+            cols = [[NSUserDefaults standardUserDefaults] arrayForKey: @"NewQueryControllerTableColumns"];
         
         NSMenu *tableHeaderContextMenu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
         [[outlineView headerView] setMenu:tableHeaderContextMenu];
@@ -4106,6 +4111,7 @@ extern "C"
                 [item setTarget: self];
                 [item setRepresentedObject: column];
                 [item setState: cols ? NSOffState: NSOnState];
+                
                 if( cols)
                     [outlineView removeTableColumn:column]; // initially want to show all columns
             }
@@ -4115,8 +4121,22 @@ extern "C"
         NSDictionary *colinfo;
         while((colinfo = [enumerator nextObject]))
         {
-            NSMenuItem *item = [tableHeaderContextMenu itemWithTitle:[colinfo objectForKey:@"title"]];
-            if(!item) continue; // missing title
+            NSMenuItem *item = nil;
+            for (NSMenuItem *menuItem in tableHeaderContextMenu.itemArray)
+            {
+                if( [[(NSTableColumn*) menuItem.representedObject identifier] isEqualToString: [colinfo objectForKey: @"identifier"]])
+                {
+                    item = menuItem;
+                    break;
+                }
+            }
+            
+            if(!item)
+            {
+                NSLog( @"QR: item not found: %@", [colinfo objectForKey: @"identifier"]);
+                continue;
+            }
+            
             [item setState:NSOnState];
             column = [item representedObject];
             
@@ -4130,9 +4150,15 @@ extern "C"
                 [column setWidth:[[colinfo objectForKey:@"width"] floatValue]];
         }
         
-        if( [[NSUserDefaults standardUserDefaults] objectForKey: @"QueryControllerTableColumnsSortDescriptor"])
+        NSString *prefsSortKey = nil;
+        if( autoQuery)
+            prefsSortKey = @"QueryControllerTableColumnsSortDescriptorAutoQR";
+        else
+            prefsSortKey = @"QueryControllerTableColumnsSortDescriptor";
+        
+        if( [[NSUserDefaults standardUserDefaults] objectForKey: prefsSortKey])
         {
-            NSDictionary *sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"QueryControllerTableColumnsSortDescriptor"];
+            NSDictionary *sort = [[NSUserDefaults standardUserDefaults] objectForKey: prefsSortKey];
             {
                 if( [outlineView columnWithIdentifier: [sort objectForKey:@"key"]] != -1)
                 {
@@ -4161,15 +4187,23 @@ extern "C"
     while((column = [enumerator nextObject]))
     {
         [cols addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                         [[column headerCell] title], @"title",
+                         [column identifier], @"identifier",
                          [NSNumber numberWithFloat:[column width]], @"width",
                          nil]];
     }
-    [[NSUserDefaults standardUserDefaults] setObject:cols forKey: @"QueryControllerTableColumns"];
     
-    NSDictionary *sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[outlineView sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[outlineView sortDescriptors] objectAtIndex: 0] key], @"key", nil];
-    
-    [[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"QueryControllerTableColumnsSortDescriptor"];
+    if( autoQuery)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:cols forKey: @"NewQueryControllerTableColumnsAutoQR"];
+        NSDictionary *sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[outlineView sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[outlineView sortDescriptors] objectAtIndex: 0] key], @"key", nil];
+        [[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"QueryControllerTableColumnsSortDescriptorAutoQR"];
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:cols forKey: @"NewQueryControllerTableColumns"];
+        NSDictionary *sort = [NSDictionary	dictionaryWithObjectsAndKeys: [NSNumber numberWithBool:[[[outlineView sortDescriptors] objectAtIndex: 0] ascending]], @"order", [[[outlineView sortDescriptors] objectAtIndex: 0] key], @"key", nil];
+        [[NSUserDefaults standardUserDefaults] setObject:sort forKey: @"QueryControllerTableColumnsSortDescriptor"];
+    }
 }
 
 - (void)contextMenuSelected:(NSMenuItem*)sender

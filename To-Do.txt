@@ -1,7 +1,6 @@
 - 3D states
 - DiscPublishing unload
-- Localization MD
-- QR Menus
+- Localization: permissions to move
 
 - Rebuild: move to INCOMING? backup and restore albums
 - Retina: VR (implication for MPR, CPR), SR
