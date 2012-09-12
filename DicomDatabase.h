@@ -113,7 +113,8 @@ extern NSString* const DicomDatabaseLogEntryEntityName;
 -(void)addDefaultAlbums;
 -(NSArray*)albums;
 +(NSPredicate*)predicateForSmartAlbumFilter:(NSString*)string;
-
+-(void) saveAlbumsToPath:(NSString*) path;
+-(void) loadAlbumsFromPath:(NSString*) path;
 -(void)addStudies:(NSArray*)dicomStudies toAlbum:(DicomAlbum*)dicomAlbum;
 
 #pragma mark Add files

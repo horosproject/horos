@@ -1210,6 +1210,9 @@ static NSConditionLock *threadLock = nil;
 
 -(void)_observeDatabaseAddNotification:(NSNotification*)notification
 {
+    if( self.database == nil)
+        return;
+    
 	if (![NSThread isMainThread])
 		[self performSelectorOnMainThread:@selector(_observeDatabaseAddNotification:) withObject:notification waitUntilDone:NO];
 	else
@@ -1222,7 +1225,7 @@ static NSConditionLock *threadLock = nil;
         NSMutableArray *patientStudies = [NSMutableArray array];
         for( DicomStudy *study in [[notification.userInfo valueForKey: OsirixAddToDBNotificationImagesArray] valueForKeyPath: @"series.study"])
         {
-            if( [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+            if( study != (DicomStudy*) [NSNull null] && [patientStudies containsObject: study] == NO && self.comparativePatientUID && [self.comparativePatientUID compare: study.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
                 [patientStudies addObject: study];
         }
         
@@ -8830,151 +8833,22 @@ static BOOL withReset = NO;
 }
 
 - (IBAction) saveAlbums:(id) sender
-{
-	NSMutableArray *albums = [NSMutableArray array];
-	
-	[self.managedObjectContext lock];
-	
-	@try 
-	{
-		NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-		[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-		[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-		NSError *error = nil;
-		NSArray *albumArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
-		
-		if( [albumArray count])
-		{
-			for (DicomAlbum* album in albumArray)
-			{
-				NSMutableDictionary* entry = [NSMutableDictionary dictionaryWithObject:album.name forKey:@"name"];
-                
-                if (album.smartAlbum.boolValue)
-                {
-                    [entry setObject:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
-                    [entry setObject:album.predicateString forKey:@"predicateString"];
-                }
-                else
-                {
-                    NSMutableArray* studies = [NSMutableArray array];
-                    for (DicomStudy* study in album.studies)
-                    {
-                        NSMutableDictionary* entry = [NSMutableDictionary dictionary];
-                        [entry setObject:study.studyInstanceUID forKey:@"studyInstanceUID"];
-                        [entry setObject:study.name forKey:@"patientName"];
-                        [entry setObject:study.patientID forKey:@"patientID"];
-                        [entry setObject:study.patientUID forKey:@"patientUID"];
-                        [entry setObject:study.dateOfBirth forKey:@"dateOfBirth"];
-                        [entry setObject:study.studyName forKey:@"name"];
-                        [entry setObject:study.date forKey:@"date"];
-                        [entry setObject:study.modality forKey:@"modality"];
-                        [entry setObject:study.accessionNumber forKey:@"accessionNumber"];
-                        [studies addObject:entry];
-                    }
-                    
-                    [entry setObject:studies forKey:@"studies"];
-                }
-                
-                [albums addObject:entry];
-			}
-			
-			NSSavePanel *sPanel	= [NSSavePanel savePanel];
-			
-			[sPanel setRequiredFileType:@"albums"];
-			
-			if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
-			{
-				BOOL r = [albums writeToFile:[sPanel filename] atomically:YES];
-                r = 0;
-			}
-		}
-		else NSRunInformationalAlertPanel(NSLocalizedString(@"Save Albums", nil), NSLocalizedString(@"There are no albums to save.", nil), NSLocalizedString(@"OK",nil), nil, nil);
-	}
-	@catch (NSException * e) 
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
-		
-	[self.managedObjectContext unlock];
+{	
+    NSSavePanel *sPanel	= [NSSavePanel savePanel];
+    
+    [sPanel setRequiredFileType:@"albums"];
+    
+    if ([sPanel runModalForDirectory: nil file:NSLocalizedString(@"DatabaseAlbums.albums", nil)] == NSFileHandlingPanelOKButton)
+    {
+        [self.database saveAlbumsToPath: [sPanel filename]];
+    }
 }
 
 - (void) addAlbumsFile: (NSString*) file
 {
-	NSArray* albums = [NSArray arrayWithContentsOfFile:file];
-    if (albums) {
-		[self.managedObjectContext lock];
-		@try 
-		{
-			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-			[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
-			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-			NSError *error = nil;
-			NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
-			
-			for (NSDictionary* dict in albums)
-			{
-                DicomAlbum* a = nil;
-				
-                NSInteger index = [[albumArray valueForKey:@"name"] indexOfObject:[dict valueForKey:@"name"]];
-                if (index == NSNotFound)
-				{
-					a = [self.database newObjectForEntity:self.database.albumEntity];
-					
-					a.name = [dict objectForKey: @"name"];
-					
-					if ([[dict objectForKey: @"smartAlbum"] boolValue])
-                    {
-						a.smartAlbum = [NSNumber numberWithBool:YES];
-                        a.predicateString = [dict valueForKey: @"predicateString"];
-					}
-				}
-                else {
-                    a = [albumArray objectAtIndex:index];
-                }
-                
-                if (!a.smartAlbum.boolValue) {
-                    a.smartAlbum = [NSNumber numberWithBool:NO];
-                    for (NSDictionary* entry in [dict objectForKey:@"studies"]) {
-                        NSString* studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
-                        NSArray* qr = [self.database objectsForEntity:self.database.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@", studyInstanceUID]];
-                        if (qr.count)
-                        {
-                            [[a mutableSetValueForKey:@"studies"] addObjectsFromArray:qr];
-                        } 
-                        else
-                        {
-                            DicomStudy* s = [self.database newObjectForEntity:self.database.studyEntity];
-                            s.studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
-                            s.name = [entry objectForKey:@"patientName"];
-                            s.patientID = [entry objectForKey:@"patientID"];
-                            s.patientUID = [entry objectForKey:@"patientUID"];
-                            s.dateOfBirth = [entry objectForKey:@"dateOfBirth"];
-                            s.studyName = [entry objectForKey:@"name"];
-                            s.date = [entry objectForKey:@"date"];
-                            s.modality = [entry objectForKey:@"modality"];
-                            s.accessionNumber = [entry objectForKey:@"accessionNumber"];
-                            [[a mutableSetValueForKey:@"studies"] addObject:s];
-                            DicomSeries* se = [self.database newObjectForEntity:self.database.seriesEntity];
-                            se.name = @"OsiriX No Autodeletion";
-                            se.id = [NSNumber numberWithInt:5005];
-                            [[s mutableSetValueForKey:@"series"] addObject:se];
-                        }
-                    }
-                }
-			}
-			
-            [self.managedObjectContext save:NULL];
-			[self refreshAlbums];
-		}
-		@catch (NSException * e) 
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-        @finally
-        {
-            [self.managedObjectContext unlock];
-        }
-	}	
+    [self.database loadAlbumsFromPath: file];
+    
+    [self refreshAlbums];
 		
     [self outlineViewRefresh];
 }

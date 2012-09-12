@@ -22,6 +22,7 @@
 #import "N2Debug.h"
 #import "DicomImage.h"
 #import "DicomStudy.h"
+#import "DicomSeries.h"
 #import "DicomFile.h"
 #import "DicomFileDCMTKCategory.h"
 #import "Reports.h"
@@ -852,6 +853,148 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 }
 
 #pragma mark Albums
+
+- (void) loadAlbumsFromPath:(NSString*) path
+{
+    NSArray* albums = [NSArray arrayWithContentsOfFile: path];
+    if (albums)
+    {
+		[self.managedObjectContext lock];
+		@try
+		{
+			NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+			[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+			[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+			NSError *error = nil;
+			NSMutableArray *albumArray = [NSMutableArray arrayWithArray: [self.managedObjectContext executeFetchRequest: dbRequest error: &error]];
+			
+			for (NSDictionary* dict in albums)
+			{
+                DicomAlbum* a = nil;
+				
+                NSInteger index = [[albumArray valueForKey:@"name"] indexOfObject:[dict valueForKey:@"name"]];
+                if (index == NSNotFound)
+				{
+					a = [self newObjectForEntity:self.albumEntity];
+					
+					a.name = [dict objectForKey: @"name"];
+					
+					if ([[dict objectForKey: @"smartAlbum"] boolValue])
+                    {
+						a.smartAlbum = [NSNumber numberWithBool:YES];
+                        a.predicateString = [dict valueForKey: @"predicateString"];
+					}
+				}
+                else {
+                    a = [albumArray objectAtIndex:index];
+                }
+                
+                if (!a.smartAlbum.boolValue) {
+                    a.smartAlbum = [NSNumber numberWithBool:NO];
+                    for (NSDictionary* entry in [dict objectForKey:@"studies"]) {
+                        NSString* studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
+                        NSArray* qr = [self objectsForEntity:self.studyEntity predicate:[NSPredicate predicateWithFormat:@"studyInstanceUID = %@", studyInstanceUID]];
+                        if (qr.count)
+                        {
+                            [[a mutableSetValueForKey:@"studies"] addObjectsFromArray:qr];
+                        }
+                        else
+                        {
+                            DicomStudy* s = [self newObjectForEntity:self.studyEntity];
+                            s.studyInstanceUID = [entry objectForKey:@"studyInstanceUID"];
+                            s.name = [entry objectForKey:@"patientName"];
+                            s.patientID = [entry objectForKey:@"patientID"];
+                            s.patientUID = [entry objectForKey:@"patientUID"];
+                            s.dateOfBirth = [entry objectForKey:@"dateOfBirth"];
+                            s.studyName = [entry objectForKey:@"name"];
+                            s.date = [entry objectForKey:@"date"];
+                            s.modality = [entry objectForKey:@"modality"];
+                            s.accessionNumber = [entry objectForKey:@"accessionNumber"];
+                            [[a mutableSetValueForKey:@"studies"] addObject:s];
+                            DicomSeries* se = [self newObjectForEntity:self.seriesEntity];
+                            se.name = @"OsiriX No Autodeletion";
+                            se.id = [NSNumber numberWithInt:5005];
+                            [[s mutableSetValueForKey:@"series"] addObject:se];
+                        }
+                    }
+                }
+			}
+			
+            [self.managedObjectContext save:NULL];
+		}
+		@catch (NSException * e)
+		{
+            N2LogExceptionWithStackTrace(e);
+		}
+        @finally
+        {
+            [self.managedObjectContext unlock];
+        }
+    }
+}
+
+- (void) saveAlbumsToPath:(NSString*) path
+{
+    [self.managedObjectContext lock];
+    
+    @try
+    {
+        [self.managedObjectContext save: nil];
+        
+        NSMutableArray *albums = [NSMutableArray array];
+        NSFetchRequest *dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+        [dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"Album"]];
+        [dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+        NSError *error = nil;
+        NSArray *albumArray = [self.managedObjectContext executeFetchRequest:dbRequest error:&error];
+        
+        if( [albumArray count])
+        {
+            for (DicomAlbum* album in albumArray)
+            {
+                NSMutableDictionary* entry = [NSMutableDictionary dictionaryWithObject:album.name forKey:@"name"];
+                
+                if (album.smartAlbum.boolValue)
+                {
+                    [entry setObject:[NSNumber numberWithBool:YES] forKey:@"smartAlbum"];
+                    [entry setObject:album.predicateString forKey:@"predicateString"];
+                }
+                else
+                {
+                    NSMutableArray* studies = [NSMutableArray array];
+                    for (DicomStudy* study in album.studies)
+                    {
+                        NSMutableDictionary* entry = [NSMutableDictionary dictionary];
+                        if( study.studyInstanceUID) [entry setObject:study.studyInstanceUID forKey:@"studyInstanceUID"];
+                        if( study.name) [entry setObject:study.name forKey:@"patientName"];
+                        if( study.patientID) [entry setObject:study.patientID forKey:@"patientID"];
+                        if( study.patientUID) [entry setObject:study.patientUID forKey:@"patientUID"];
+                        if( study.dateOfBirth) [entry setObject:study.dateOfBirth forKey:@"dateOfBirth"];
+                        if( study.studyName) [entry setObject:study.studyName forKey:@"name"];
+                        if( study.date) [entry setObject:study.date forKey:@"date"];
+                        if( study.modality) [entry setObject:study.modality forKey:@"modality"];
+                        if( study.accessionNumber) [entry setObject:study.accessionNumber forKey:@"accessionNumber"];
+                        [studies addObject:entry];
+                    }
+                    
+                    [entry setObject:studies forKey:@"studies"];
+                }
+                
+                [albums addObject:entry];
+                
+                [[NSFileManager defaultManager] removeItemAtPath: path error: nil];
+                [albums writeToFile: path atomically: YES];
+            }
+        }
+        else NSLog( @"--- no albums to save");
+    }
+    @catch (NSException * e)
+    {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
+    [self.managedObjectContext unlock];
+}
 
 -(NSArray*)albums {
     NSArray* albums = [self objectsForEntity:self.albumEntity];
@@ -3178,17 +3321,21 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[self rebuild:NO];
 }
 
--(void)rebuild:(BOOL)complete {
+-(void)rebuild:(BOOL)complete
+{
 	NSThread* thread = [NSThread currentThread];
 	
-//	[self waitForRunningProcesses];
-	
 	[NSNotificationCenter.defaultCenter postNotificationName:OsirixDatabaseObjectsMayBecomeUnavailableNotification object:self userInfo:nil];
-	//[[AppController sharedAppController] closeAllViewers: self];
-
+    
 	[_importFilesFromIncomingDirLock lock];
     
+#define SAVEDALBUMS @"/tmp/rebuildDB_savedAlbums"
+    
 	if (complete) {	// Delete the database file
+        
+        //First back-up albums
+        [self saveAlbumsToPath: SAVEDALBUMS];
+        
         thread.status = NSLocalizedString(@"Locking database...", nil);
         NSManagedObjectContext* oldContext = [self.managedObjectContext retain];
         [oldContext lock];
@@ -3293,6 +3440,15 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					[self.managedObjectContext deleteObject: study];
 			}
 		}
+        else
+        {
+            //Restore albums
+            if( [[NSFileManager defaultManager] fileExistsAtPath: SAVEDALBUMS])
+            {
+                [self loadAlbumsFromPath: SAVEDALBUMS];
+                [[NSFileManager defaultManager] removeItemAtPath: SAVEDALBUMS error: nil];
+            }
+        }
 		
 		[self save:NULL];
 		
