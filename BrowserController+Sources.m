@@ -490,8 +490,11 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 		NSArray* a = [[NSUserDefaults standardUserDefaults] objectForKey:@"SERVERS"];
 		NSMutableDictionary* aa = [NSMutableDictionary dictionary];
 		for (NSDictionary* ai in a)
-			[aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
-		// remove old items
+        {
+            if( [[ai objectForKey: @"Send"] boolValue])
+                [aa setObject:ai forKey:[DicomNodeIdentifier locationWithAddress:[ai objectForKey:@"Address"] port:[[ai objectForKey:@"Port"] integerValue] aet:[ai objectForKey:@"AETitle"]]];
+		}
+        // remove old items
 		for (DataNodeIdentifier* dni in [[_browser.sources.content copy] autorelease])
         {
 			if ([dni isKindOfClass:[DicomNodeIdentifier class]] && dni.entered) // is a dicom node and is flagged as "entered"
