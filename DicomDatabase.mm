@@ -1194,7 +1194,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[thread enterOperation];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Scanning %@", nil), N2LocalizedSingularPluralCount(paths.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
 	
-    NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:100000 maxChunks:0];
+    NSArray* chunkRanges = [paths splitArrayIntoChunksOfMinSize:20000 maxChunks:0];
 	for (NSUInteger chunkIndex = 0; chunkIndex < chunkRanges.count; ++chunkIndex)
     {
         NSAutoreleasePool* pool2 = [[NSAutoreleasePool alloc] init];
@@ -1218,7 +1218,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		
 		for (NSUInteger i = chunkRange.location; i < chunkRange.location+chunkRange.length; ++i)
         {
-			thread.progress = 1.0*i/paths.count;
+            if( i%100 == 0)
+                thread.progress = 1.0*i/paths.count;
 			
 			NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 			@try {
@@ -1296,7 +1297,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 //        NSLog(@"before: %X", self.managedObjectContext);
 //      NSArray* addedImagesArray = [self addFilesInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
         
-        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX];
+        NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX returnArray: returnArray];
         
         NSArray* addedImagesArray = nil;
         if( returnArray)
@@ -1321,6 +1322,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         {
             [self.managedObjectContext save: nil];
             [self.managedObjectContext reset];
+            
+            NSLog( @"%d / %d", (int) chunkIndex, (int) chunkRanges.count);
         }
         
         [pool2 release];
@@ -1390,15 +1393,28 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
  */
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX
 {
+    return [self addFilesDescribedInDictionaries: dicomFilesArray postNotifications: postNotifications rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX returnArray: YES];
+}
+
+-(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
+{
 	NSThread* thread = [NSThread currentThread];
     thread.status = [NSString stringWithFormat:NSLocalizedString(@"Adding %@", nil), N2LocalizedSingularPluralCount(dicomFilesArray.count, NSLocalizedString(@"file", nil), NSLocalizedString(@"files", nil))];
     
-	NSMutableArray* addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
-    NSMutableArray* completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
     NSMutableArray* newStudies = [NSMutableArray array];
-
-    NSMutableDictionary* addedImagesPerCreatorUID = [NSMutableDictionary dictionary];
-    NSMutableDictionary* completeAddedImagesPerCreatorUID = [NSMutableDictionary dictionary];
+    
+	NSMutableArray* addedImageObjects = nil;
+    NSMutableArray* completeAddedImageObjects = nil;
+    NSMutableDictionary* addedImagesPerCreatorUID = nil;
+    NSMutableDictionary* completeAddedImagesPerCreatorUID = nil;
+    
+    if( returnArray)
+    {
+        addedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
+        completeAddedImageObjects = [NSMutableArray arrayWithCapacity:[dicomFilesArray count]];
+        addedImagesPerCreatorUID = [NSMutableDictionary dictionary];
+        completeAddedImagesPerCreatorUID = [NSMutableDictionary dictionary];
+    }
     
     BOOL newStudy = NO;
 
@@ -2050,9 +2066,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		{
             NSAutoreleasePool* pool = [NSAutoreleasePool new];
 			@try {
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: addedImageObjects, OsirixAddToDBNotificationImagesArray, addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
-                
-                [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:completeAddedImageObjects, OsirixAddToDBNotificationImagesArray, completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
+                if( returnArray)
+                {
+                    [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys: addedImageObjects, OsirixAddToDBNotificationImagesArray, addedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
+                    
+                    [NSNotificationCenter.defaultCenter postNotificationName:_O2AddToDBAnywayCompleteNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:completeAddedImageObjects, OsirixAddToDBNotificationImagesArray, completeAddedImagesPerCreatorUID, OsirixAddToDBNotificationImagesPerAETDictionary, nil]];
+                }
                 
 				if (postNotifications)
                 {
@@ -2079,7 +2098,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 					growlStringNewStudy = [NSString stringWithFormat:NSLocalizedString(@"%@\r%@", nil), [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.name"], [[addedImageObjects objectAtIndex:0] valueForKeyPath:@"series.study.studyName"]];
 				}
 			}
-            if (self.isLocal)
+            if (self.isLocal && returnArray)
                 [self applyRoutingRules:nil toImages:addedImageObjects];
 		}
 		@catch( NSException *ne)
