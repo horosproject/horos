@@ -1,8 +1,9 @@
 - 3D states
 - DiscPublishing unload
 - Localization: permissions to move
+- Network menu: PACS On-Demand refresh
+- Rebuild: backup and restore albums
 
-- Rebuild: move to INCOMING? backup and restore albums
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib
 - 10.8: Notifications Center
