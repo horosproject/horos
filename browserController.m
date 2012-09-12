@@ -4033,6 +4033,26 @@ static NSConditionLock *threadLock = nil;
     [pool release];
 }
 
+- (IBAction) refreshPACSOnDemandResults:(id) sender
+{
+    self.comparativePatientUID = nil;
+    self.comparativeStudies = nil;
+    
+    @synchronized( smartAlbumDistantArraySync)
+    {
+        [smartAlbumDistantArray release];
+        smartAlbumDistantArray = nil;
+    }
+    
+    self.smartAlbumDistantName = nil;
+    
+    [previousItem release];
+    previousItem = nil;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName: NSTableViewSelectionDidChangeNotification object:albumTable userInfo: nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName: NSOutlineViewSelectionDidChangeNotification object:databaseOutline userInfo: nil];
+}
+
 - (void) refreshComparativeStudies: (NSArray*) newStudies
 {
     NSManagedObject *item = [databaseOutline itemAtRow: [[databaseOutline selectedRowIndexes] firstIndex]];

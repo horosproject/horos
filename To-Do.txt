@@ -1,8 +1,8 @@
 - 3D states
 - DiscPublishing unload
 - Localization: permissions to move
-- Network menu: PACS On-Demand refresh
 - Rebuild: backup and restore albums
+- QuickSynergyServer bug?
 
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib

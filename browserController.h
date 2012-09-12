@@ -307,6 +307,7 @@ extern NSString* O2AlbumDragType;
 - (IBAction) addAlbums:(id) sender;
 - (IBAction) defaultAlbums: (id) sender;
 - (IBAction) clickBanner:(id) sender;
+- (IBAction) refreshPACSOnDemandResults:(id)sender;
 - (IBAction)drawerToggle: (id)sender;
 - (void) openDatabasePath: (NSString*) path __deprecated;
 - (NSArray*) albums;
