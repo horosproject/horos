@@ -191,21 +191,21 @@ static NSArray *languagesToMoveWhenQuitting = nil;
         {
             if( [[NSFileManager defaultManager] fileExistsAtPath: [inactivePath stringByAppendingPathComponent: language]])
             {
+                NSError *error = nil;
                 [[NSFileManager defaultManager] removeItemAtPath: [activePath stringByAppendingPathComponent: language] error: nil];
-                if( [[NSFileManager defaultManager] moveItemAtPath: [inactivePath stringByAppendingPathComponent: language] toPath: [activePath stringByAppendingPathComponent: language] error: nil] == NO)
-                    NSLog( @"*********** applyLanguagesIfNeeded failed: %@", language);
+                if( [[NSFileManager defaultManager] moveItemAtPath: [inactivePath stringByAppendingPathComponent: language] toPath: [activePath stringByAppendingPathComponent: language] error: &error] == NO)
+                    NSLog( @"*********** applyLanguagesIfNeeded failed: %@ %@", language, error);
             }
-            else NSLog( @"*********** applyLanguagesIfNeeded fileExistsAtPath: %@", [inactivePath stringByAppendingPathComponent: language]);
         }
         else
         {
             if( [[NSFileManager defaultManager] fileExistsAtPath: [activePath stringByAppendingPathComponent: language]])
             {
+                NSError *error = nil;
                 [[NSFileManager defaultManager] removeItemAtPath: [inactivePath stringByAppendingPathComponent: language] error: nil];
-                if( [[NSFileManager defaultManager] moveItemAtPath: [activePath stringByAppendingPathComponent: language] toPath: [inactivePath stringByAppendingPathComponent: language] error: nil] == NO)
-                    NSLog( @"*********** applyLanguagesIfNeeded failed: %@", language);
+                if( [[NSFileManager defaultManager] moveItemAtPath: [activePath stringByAppendingPathComponent: language] toPath: [inactivePath stringByAppendingPathComponent: language] error: &error] == NO)
+                    NSLog( @"*********** applyLanguagesIfNeeded failed: %@ %@", language, error);
             }
-            else NSLog( @"*********** applyLanguagesIfNeeded fileExistsAtPath: %@", [activePath stringByAppendingPathComponent: language]);
         }
     }
     

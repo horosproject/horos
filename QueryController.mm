@@ -4100,6 +4100,7 @@ extern "C"
         [[outlineView headerView] setMenu:tableHeaderContextMenu];
         NSArray *tableColumns = [NSArray arrayWithArray:[outlineView tableColumns]]; // clone array so compiles/runs on 10.5
         NSEnumerator *enumerator = [tableColumns objectEnumerator];
+        
         NSTableColumn *column;
         while((column = [enumerator nextObject]))
         {
@@ -4121,33 +4122,36 @@ extern "C"
         NSDictionary *colinfo;
         while((colinfo = [enumerator nextObject]))
         {
+            NSString *identifier = [colinfo objectForKey: @"identifier"];
             NSMenuItem *item = nil;
             for (NSMenuItem *menuItem in tableHeaderContextMenu.itemArray)
             {
-                if( [[(NSTableColumn*) menuItem.representedObject identifier] isEqualToString: [colinfo objectForKey: @"identifier"]])
+                if( [[(NSTableColumn*) menuItem.representedObject identifier] isEqualToString: identifier])
                 {
                     item = menuItem;
                     break;
                 }
             }
             
-            if(!item)
+            if( !item)
             {
-                NSLog( @"QR: item not found: %@", [colinfo objectForKey: @"identifier"]);
-                continue;
+                if( [identifier isEqualToString: @"Button"] || [identifier isEqualToString: @"name"])
+                {
+                    column = [outlineView tableColumnWithIdentifier: identifier];
+                    
+                    [column setWidth: [[colinfo objectForKey:@"width"] floatValue]];
+                }
+                else
+                    NSLog( @"QR: item not found: %@", identifier);
             }
-            
-            [item setState:NSOnState];
-            column = [item representedObject];
-            
-            NSString *identifier = [column identifier];
-            if( [identifier isEqualToString: @"Button"] == NO && [identifier isEqualToString: @"name"] == NO)
+            else
             {
+                [item setState: NSOnState];
+                column = [item representedObject];
+                
                 [column setWidth:[[colinfo objectForKey:@"width"] floatValue]];
                 [outlineView addTableColumn: column];
             }
-            else
-                [column setWidth:[[colinfo objectForKey:@"width"] floatValue]];
         }
         
         NSString *prefsSortKey = nil;
