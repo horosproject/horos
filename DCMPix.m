@@ -70,7 +70,7 @@ BOOL gUseVOILUT = NO;
 BOOL gUseJPEGColorSpace = NO;
 BOOL gUSEPAPYRUSDCMPIX = YES;
 int gSUVAcquisitionTimeField = 0;
-NSDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
+NSMutableDictionary *gCUSTOM_IMAGE_ANNOTATIONS = nil;
 BOOL	runOsiriXInProtectedMode = NO;
 BOOL	quicktimeRunning = NO;
 NSLock	*quicktimeThreadLock = nil;
@@ -1286,9 +1286,15 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		gUseJPEGColorSpace = [[NSUserDefaults standardUserDefaults] boolForKey:@"UseJPEGColorSpace"];
 		gSUVAcquisitionTimeField = [[NSUserDefaults standardUserDefaults] integerForKey:@"SUVAcquisitionTimeField"];
 		
-		[gCUSTOM_IMAGE_ANNOTATIONS release];
-		gCUSTOM_IMAGE_ANNOTATIONS = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"] copy];
-		
+        if( gCUSTOM_IMAGE_ANNOTATIONS == nil)
+            gCUSTOM_IMAGE_ANNOTATIONS = [[NSMutableDictionary alloc] init];
+        
+        @synchronized( gCUSTOM_IMAGE_ANNOTATIONS)
+        {
+            [gCUSTOM_IMAGE_ANNOTATIONS removeAllObjects];
+            [gCUSTOM_IMAGE_ANNOTATIONS addEntriesFromDictionary: [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"CUSTOM_IMAGE_ANNOTATIONS"]];
+		}
+        
 #ifdef OSIRIX_LIGHT
 		gUSEPAPYRUSDCMPIX = YES;
 #endif
