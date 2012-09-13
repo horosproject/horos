@@ -398,6 +398,29 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [self observeValueForKeyPath:[args objectAtIndex:0] ofObject:[args objectAtIndex:1] change:[args objectAtIndex:2] context:[[args objectAtIndex:3] pointerValue]];
 }
 
++ (BOOL)host:(NSHost*)h1 isEqualToHost:(NSHost*)h2 {
+#define MAC_CONCURRENT_ISEQUALTOHOST 10
+    static MPSemaphoreID sid = 0;
+    if (!sid)
+        MPCreateSemaphore(MAC_CONCURRENT_ISEQUALTOHOST, MAC_CONCURRENT_ISEQUALTOHOST, &sid);
+    
+    OSStatus waitOnSemaphoreStatus = MPWaitOnSemaphore(sid, kDurationForever);
+    if (waitOnSemaphoreStatus == noErr)
+        @try {
+            if (h1.address && h2.address && [h1.address isEqualToString:h2.address])
+                return YES;
+            if (h1.name && h2.name && [h1.name isEqualToString:h1.name])
+                return YES;
+            return [h1 isEqualToHost:h2];
+        } @catch (...) {
+            @throw;
+        } @finally {
+            MPSignalSemaphore(sid);
+        }
+    
+    return NO;
+}
+
 -(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
 	if (![NSThread isMainThread])
@@ -463,8 +486,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             [NSThread performBlockInBackground:^{
                 // we're now in a background thread
                 NSString* dadd = [d valueForKey:@"Address"];
-                if ([[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) { // don't list self
-                    return;}
+                if ([[self class] host:[NSHost hostWithAddressOrName:dadd] isEqualToHost:currentHost]) // don't list self
+                    return;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     // we're now back in the main thread
                     DataNodeIdentifier* dni;
@@ -510,7 +533,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
             [NSThread performBlockInBackground:^{
                 // we're now in a background thread
                 NSString* aet = nil;
-                if ([[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
+                if ([[self class] host:[DicomNodeIdentifier location:aak toHost:NULL port:NULL aet:&aet] isEqualToHost:currentHost] && [aet isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:@"AETITLE"]]) // don't list self
                     return;
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     // we're now back in the main thread
