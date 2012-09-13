@@ -1194,7 +1194,8 @@ extern int delayedTileWindows;
 	
 	NSData *resData = [[thePipe fileHandleForReading] readDataToEndOfFile];
 	
-	[theTask waitUntilExit];
+    while( [theTask isRunning])
+        [NSThread sleepForTimeInterval: 0.1];
 	
 	NSString *resString = [[[NSString alloc] initWithData:resData encoding: NSUTF8StringEncoding] autorelease];
 	

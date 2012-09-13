@@ -380,15 +380,18 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidUnmountNotification object:nil];
 	[[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceWillUnmountNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self name:NSWorkspaceDidRenameVolumeNotification object:nil];
-	[_nsbDicom release]; _nsbDicom = nil;
-	[_nsbOsirix release]; _nsbOsirix = nil;
+	
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"DoNotSearchForBonjourServices"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"searchDICOMBonjour"];
-	[_bonjourSources release];
-    [_bonjourServices release];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"SERVERS"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"OSIRIXSERVERS"];
 	[[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forValuesKey:@"localDatabasePaths"];
+    
+    [_nsbDicom release]; _nsbDicom = nil;
+	[_nsbOsirix release]; _nsbOsirix = nil;
+    [_bonjourSources release];
+    [_bonjourServices release];
+    
 //	[[[NSUserDefaults standardUserDefaults] objectForKey:@"localDatabasePaths"] removeObserver:self forValuesKey:@"values"];
 	_browser = nil;
 	[super dealloc];
@@ -802,7 +805,8 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 	[task setStandardError:[NSPipe pipe]];
 	[task setStandardOutput:[task standardError]];
 	[task launch];
-	[task waitUntilExit];
+    while( [task isRunning]) [NSThread sleepForTimeInterval: 0.01];
+    
 	NSData* output = [[[[[task standardError] fileHandleForReading] readDataToEndOfFile] retain] autorelease];
 	[task release];
 	

@@ -554,7 +554,8 @@ extern "C"
 		
 		[theTask setArguments:args];
 		[theTask launch];
-		[theTask waitUntilExit];
+        while( [theTask isRunning])
+            [NSThread sleepForTimeInterval: 0.1];
 		
 		if([[serverParameters objectForKey:@"TLSEnabled"] boolValue])
 		{

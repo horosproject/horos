@@ -956,7 +956,9 @@ SecPolicySearchCreate:
 			[convertTask setArguments:args];
 			[convertTask launch];
 			
-			[convertTask waitUntilExit];
+            while( [convertTask isRunning])
+                [NSThread sleepForTimeInterval: 0.1];
+            
 			[[NSFileManager defaultManager] removeFileAtPath:[path stringByAppendingPathExtension:@"p12"] handler:nil]; // remove the .p12 file
 		}
 		else NSLog(@"SecKeychainItemExport : error : %@", [DDKeychain stringForError:status]);
