@@ -107,7 +107,11 @@
                     // We need to start the thread NOW, to be sure, it happens AFTER the addObject
                     if (![thread isExecuting]&&![thread isFinished])
                         [thread start];
-                    
+                    else
+                    {
+                        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
+                        [_threadsController removeObject:thread];
+                    }
                 }
                 @catch (NSException* e)
                 {
