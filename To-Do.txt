@@ -1,6 +1,5 @@
 - 3D states
 - DiscPublishing unload
-- Localization: permissions to move : tests
 - QuickSynergyServer bug?
 
 - Retina: VR (implication for MPR, CPR), SR
