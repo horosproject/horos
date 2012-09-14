@@ -807,7 +807,14 @@ static NSDate *lastWarningDate = nil;
 +(ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen
 {
     NSArray* screens = [NSScreen screens];
-    NSInteger i = [screens indexOfObject:screen];
+    NSUInteger i = [screens indexOfObject:screen];
+    
+    if( i == NSNotFound)
+        return nil;
+    
+    if( i>= MAXSCREENS)
+        return nil;
+    
     return toolbarPanel[i];
 }
 
