@@ -352,8 +352,10 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 		[self view:context.pane.mainView recursiveBindEnableToObject:self withKeyPath:@"isUnlocked"];
 		
 		NSView* view = context? context.pane.mainView : panesListView;
-		NSString* title = context? context.title : NSLocalizedString(@"OsiriX Preferences", NULL);
 		
+        NSString* title = NSLocalizedString(@"OsiriX Preferences", NULL);
+        if (context)
+            title = [title stringByAppendingFormat:@"%@%@", NSLocalizedString(@": ", @"Semicolon with space prefix and suffix (example: english ': ', french ' : ')"), context.title];
 		[self.window setTitle:title];
 		
 		[context.pane willSelect];
