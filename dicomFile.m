@@ -3420,19 +3420,19 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		NSString *contTime = [[dcmObject attributeValueWithName:@"ContentTime"] timeString];
 		
 		//NSString *date;
-		if (contDate && contTime)
-		{
-			if( [contTime length] >= 6)
-				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
-			else
-				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M"];
-		}
-		else if (acqDate && acqTime)
+		if (acqDate && acqTime)
 		{
 			if( [acqTime length] >= 6)
 				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M%S"];
 			else
 				date = [[NSCalendarDate alloc] initWithString:[acqDate stringByAppendingString:acqTime] calendarFormat:@"%Y%m%d%H%M"];
+		}
+        else if (contDate && contTime)
+		{
+			if( [contTime length] >= 6)
+				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M%S"];
+			else
+				date = [[NSCalendarDate alloc] initWithString:[contDate stringByAppendingString:contTime] calendarFormat:@"%Y%m%d%H%M"];
 		}
 		else if (seriesDate && seriesTime)
 		{

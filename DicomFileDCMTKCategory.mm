@@ -501,10 +501,10 @@ extern NSRecursiveLock *PapyrusLock;
 		
 		//Acquistion Date
         NSString *studyDate = nil;
-		if (dataset->findAndGetString(DCM_ContentDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+		if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
             studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
-		else if (dataset->findAndGetString(DCM_AcquisitionDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
+        else if (dataset->findAndGetString(DCM_ContentDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
             studyDate = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
 		else if (dataset->findAndGetString(DCM_SeriesDate, string, OFFalse).good() && string != NULL && strlen( string) > 0)
@@ -516,10 +516,10 @@ extern NSRecursiveLock *PapyrusLock;
         if( [studyDate length] != 8) studyDate = [studyDate stringByReplacingOccurrencesOfString:@"." withString:@""];
 		
         NSString* studyTime = nil;
-        if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
+        if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
-        else if (dataset->findAndGetString(DCM_AcquisitionTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
+        else if (dataset->findAndGetString(DCM_ContentTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)
             studyTime = [NSString stringWithCString:string encoding: NSASCIIStringEncoding];
         
         else if (dataset->findAndGetString(DCM_SeriesTime, string, OFFalse).good() && string != NULL && strlen( string) > 0 && atof( string) > 0)

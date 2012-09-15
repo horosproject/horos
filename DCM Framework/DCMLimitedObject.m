@@ -134,7 +134,8 @@
                     // however, try to work around Philips bug ...
                     long vl = [dicomData nextUnsignedLong];		// always implicit VR form for items and delimiters
                     *byteOffset+=4;
-                    NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, [tag stringValue], (unsigned int) vl);
+                    if (DCMDEBUG)
+                        NSLog(@"Ignoring bad Item at %d  %@ VL=<0x%x", *byteOffset, [tag stringValue], (unsigned int) vl);
                     // let's just ignore it for now
                     //continue;
                 }
