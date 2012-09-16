@@ -583,61 +583,65 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                     {
                         double bitsPerSecond = width * height * fps * 4;
                         
-                        NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                            AVVideoCodecH264, AVVideoCodecKey, 
-                                            [NSDictionary dictionaryWithObjectsAndKeys:
-                                             [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                             [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                             nil], AVVideoCompressionPropertiesKey,
-                                            [NSNumber numberWithInt: width], AVVideoWidthKey, 
-                                            [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
-                            
-                        // Instanciate the AVAssetWriterInput
-                        AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
-                        // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
-                        AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
-                        // Add the writer input to the writer and begin writing
-                        [writer addInput:writerInput];
-                        [writer startWriting];
-                        
-                        BOOL aborted = NO;
-                        CMTime nextPresentationTimeStamp;
-                        
-                        nextPresentationTimeStamp = kCMTimeZero;
-                        
-                        [writer startSessionAtSourceTime:nextPresentationTimeStamp];
-                        
-                        for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
+                        if( bitsPerSecond > 0)
                         {
-                            NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                            NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                AVVideoCodecH264, AVVideoCodecKey, 
+                                                [NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                 [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                 nil], AVVideoCompressionPropertiesKey,
+                                                [NSNumber numberWithInt: width], AVVideoWidthKey, 
+                                                [NSNumber numberWithInt: height], AVVideoHeightKey, nil];
                             
-                            CVPixelBufferRef buffer = nil;
+                            // Instanciate the AVAssetWriterInput
+                            AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+                            // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
+                            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
+                            // Add the writer input to the writer and begin writing
+                            [writer addInput:writerInput];
+                            [writer startWriting];
                             
+                            BOOL aborted = NO;
+                            CMTime nextPresentationTimeStamp;
+                            
+                            nextPresentationTimeStamp = kCMTimeZero;
+                            
+                            [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+                            
+                            for( NSString *file in [[NSFileManager defaultManager] contentsOfDirectoryAtPath: root error: nil])
                             {
-                            NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
-                            if( im)
-                               buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
-                            [im release];
-                            }
-                            
-                            [pool release];
-                            
-                            if( buffer)
-                            {
-                                CVPixelBufferLockBaseAddress(buffer, 0);
-                                while( ![writerInput isReadyForMoreMediaData])
-                                    [NSThread sleepForTimeInterval: 0.1];
-                                [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
-                                CVPixelBufferUnlockBaseAddress(buffer, 0);
-                                CVPixelBufferRelease(buffer);
-                                buffer = nil;
+                                NSAutoreleasePool *pool = [NSAutoreleasePool new];
                                 
-                                nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                                CVPixelBufferRef buffer = nil;
                                 
-                                CVPixelBufferRelease(buffer);
+                                {
+                                NSImage *im = [[NSImage alloc] initWithContentsOfFile: [root stringByAppendingPathComponent: file]];
+                                if( im)
+                                   buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                                [im release];
+                                }
+                                
+                                [pool release];
+                                
+                                if( buffer)
+                                {
+                                    CVPixelBufferLockBaseAddress(buffer, 0);
+                                    while( ![writerInput isReadyForMoreMediaData])
+                                        [NSThread sleepForTimeInterval: 0.1];
+                                    [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                                    CVPixelBufferUnlockBaseAddress(buffer, 0);
+                                    CVPixelBufferRelease(buffer);
+                                    buffer = nil;
+                                    
+                                    nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                                    
+                                    CVPixelBufferRelease(buffer);
+                                }
                             }
+                            [writerInput markAsFinished];
                         }
-                        [writerInput markAsFinished];
+                        
                         [writer finishWriting];
                     }
                     [[NSFileManager defaultManager] removeItemAtPath: root error: nil];

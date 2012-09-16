@@ -13811,7 +13811,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 + (void)writeMovieToPath:(NSString*)fileName images:(NSArray*)imagesArray framesPerSecond:(NSInteger)fps
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-
+    
 	@try
 	{
         if (fps <= 0)
@@ -13831,56 +13831,59 @@ static volatile int numberOfThreadsForJPEG = 0;
             
             double bitsPerSecond = im.size.width * im.size.height * fps * 4;
             
-            NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                           AVVideoCodecH264, AVVideoCodecKey, 
-                                           [NSDictionary dictionaryWithObjectsAndKeys:
-                                            [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                            [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                            nil], AVVideoCompressionPropertiesKey,
-                                           [NSNumber numberWithInt: im.size.width], AVVideoWidthKey, 
-                                           [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
-            
-            // Instanciate the AVAssetWriterInput
-            AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
-            // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
-            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
-            // Add the writer input to the writer and begin writing
-            [writer addInput:writerInput];
-            [writer startWriting];
-            
-            BOOL aborted = NO;
-            CMTime nextPresentationTimeStamp;
-            
-            nextPresentationTimeStamp = kCMTimeZero;
-            
-            [writer startSessionAtSourceTime:nextPresentationTimeStamp];
-            
-            for( NSImage *im in imagesArray)
+            if( bitsPerSecond > 0)
             {
-                NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                               AVVideoCodecH264, AVVideoCodecKey, 
+                                               [NSDictionary dictionaryWithObjectsAndKeys:
+                                                [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                nil], AVVideoCompressionPropertiesKey,
+                                               [NSNumber numberWithInt: im.size.width], AVVideoWidthKey, 
+                                               [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
                 
-                CVPixelBufferRef buffer = nil;
+                // Instanciate the AVAssetWriterInput
+                AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+                // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
+                AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
+                // Add the writer input to the writer and begin writing
+                [writer addInput:writerInput];
+                [writer startWriting];
                 
-                buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                BOOL aborted = NO;
+                CMTime nextPresentationTimeStamp;
                 
-                [pool release];
+                nextPresentationTimeStamp = kCMTimeZero;
                 
-                if( buffer)
+                [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+                
+                for( NSImage *im in imagesArray)
                 {
-                    CVPixelBufferLockBaseAddress(buffer, 0);
-                    while( ![writerInput isReadyForMoreMediaData])
-                        [NSThread sleepForTimeInterval: 0.1];
-                    [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
-                    CVPixelBufferUnlockBaseAddress(buffer, 0);
-                    CVPixelBufferRelease(buffer);
-                    buffer = nil;
+                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
                     
-                    nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                    CVPixelBufferRef buffer = nil;
                     
-                    CVPixelBufferRelease(buffer);
+                    buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                    
+                    [pool release];
+                    
+                    if( buffer)
+                    {
+                        CVPixelBufferLockBaseAddress(buffer, 0);
+                        while( ![writerInput isReadyForMoreMediaData])
+                            [NSThread sleepForTimeInterval: 0.1];
+                        [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                        CVPixelBufferUnlockBaseAddress(buffer, 0);
+                        CVPixelBufferRelease(buffer);
+                        buffer = nil;
+                        
+                        nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                        
+                        CVPixelBufferRelease(buffer);
+                    }
                 }
+                [writerInput markAsFinished];
             }
-            [writerInput markAsFinished];
             [writer finishWriting];
         }
 	}

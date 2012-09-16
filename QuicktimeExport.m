@@ -17,6 +17,7 @@
 #import "WaitRendering.h"
 #import "BrowserController.h"
 #import "DicomDatabase.h"
+#import "N2Debug.h"
 
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
@@ -117,24 +118,25 @@
 	
     [[NSFileManager defaultManager] createDirectoryAtPath: [[[BrowserController currentBrowser] documentsDirectory] stringByAppendingFormat:@"/TEMP.noindex/"]  withIntermediateDirectories: YES attributes: nil error: nil];
     
-	if( produceFiles)
-	{
-		result = NSFileHandlingPanelOKButton;
-		
-		[[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
-		[[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
-		
-		fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
-	}
-	else
-	{
-		[panel setCanSelectHiddenExtension: YES];
-		[panel setAccessoryView: view];
-		[type removeAllItems];
-		
-		if( [exportTypes count])
-			[type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
-		
+    
+    if( produceFiles)
+    {
+        result = NSFileHandlingPanelOKButton;
+        
+        [[NSFileManager defaultManager] removeFileAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] handler: nil];
+        [[NSFileManager defaultManager] createDirectoryAtPath: [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"IPHOTO"] withIntermediateDirectories: YES attributes: nil error: nil];
+        
+        fileName = [[[[BrowserController currentBrowser] database] tempDirPath] stringByAppendingPathComponent:@"OsiriXMovie.mov"];
+    }
+    else
+    {
+        [panel setCanSelectHiddenExtension: YES];
+        [panel setAccessoryView: view];
+        [type removeAllItems];
+        
+        if( [exportTypes count])
+            [type addItemsWithTitles: [exportTypes valueForKey: @"name"]];
+        
         int index = 0;
         
         for( NSDictionary *d in exportTypes)
@@ -143,136 +145,150 @@
                 index = [exportTypes indexOfObject: d];
         }
         
-		[type selectItemAtIndex: index];
-		[self changeExportType: self];
-		
-		result = [panel runModalForDirectory:nil file:name];
-		
-		fileName = [panel filename];
-	}
-	
-	if( result == NSFileHandlingPanelOKButton)
-    {
-        CMTimeValue timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
-        CMTime frameDuration = CMTimeMake( timeValue, 600);
+        [type selectItemAtIndex: index];
+        [self changeExportType: self];
         
-        NSError *error = nil;
-        BOOL aborted = NO;
+        result = [panel runModalForDirectory:nil file:name];
         
-        AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
-        if (!error)
-        {
-            Wait *wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil)] autorelease];
-            [wait showWindow:self];
-            [wait setCancel:YES];
-            [[wait progress] setMaxValue: numberOfFrames];
-            
-            AVAssetWriterInput *writerInput = nil;
-            AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = nil;
-            CMTime nextPresentationTimeStamp = kCMTimeZero;
-            
-            
-            for( int curSample = 0; curSample < numberOfFrames; curSample++)
-            {
-                NSAutoreleasePool *pool = [NSAutoreleasePool new];
-                
-                CVPixelBufferRef buffer = nil;
-                
-                NSDisableScreenUpdates();
-                NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
-                NSEnableScreenUpdates();
-                
-                if( im)
-                {
-                    if( writerInput == nil)
-                    {
-                        // Define video settings to be passed to the AVAssetWriterInput instance
-                        
-                        NSString *c = [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"];
-                        
-                        NSDictionary *videoSettings = nil;
-                        
-                        if( [c isEqualToString: AVVideoCodecH264])
-                        {
-                            double bitsPerSecond = im.size.width * im.size.height * fps * 4; //Maximum bit rate for best quality
-                            
-                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                             c, AVVideoCodecKey,
-                                             [NSDictionary dictionaryWithObjectsAndKeys:
-                                              [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
-                                              [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
-                                              nil], AVVideoCompressionPropertiesKey,
-                                             [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
-                                             [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
-                        }
-                        else if( [c isEqualToString: AVVideoCodecJPEG])
-                        {
-                            videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
-                                             c, AVVideoCodecKey,
-                                             [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
-                                             [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
-                                             [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
-                        }
-                        
-                        writerInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
-                        
-                        pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil] retain];
-                        
-                        [writer addInput:writerInput];
-                        [writer startWriting];
-                        [writer startSessionAtSourceTime:nextPresentationTimeStamp];
-                    }
-                    
-                    buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
-                }
-                
-                if( buffer)
-                {
-                    CVPixelBufferLockBaseAddress(buffer, 0);
-                    while( ![writerInput isReadyForMoreMediaData])
-                        [NSThread sleepForTimeInterval: 0.1];
-                    [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
-                    CVPixelBufferUnlockBaseAddress(buffer, 0);
-                    CVPixelBufferRelease(buffer);
-                    buffer = nil;
-                    
-                    nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
-                    
-                    CVPixelBufferRelease(buffer);
-                }
-                
-                [wait incrementBy: 1];
-                if( [wait aborted])
-                {
-                    curSample = numberOfFrames;
-                    aborted = YES;
-                }
-                
-                [pool release];
-            }
-            [writerInput markAsFinished];
-            [writer finishWriting];
-            
-            [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
-            
-            [wait close];
-            
-            [writerInput release];
-            [pixelBufferAdaptor release];
-            
-            if( openIt && aborted == NO)
-            {
-                NSWorkspace *ws = [NSWorkspace sharedWorkspace];
-                [ws openFile:fileName];
-            }
-        }
-        
-        [writer release];
-        
-        if( aborted == NO)
-            return fileName;
+        fileName = [panel filename];
     }
-	
+    
+    @try
+    {
+        if( result == NSFileHandlingPanelOKButton)
+        {
+            CMTimeValue timeValue = 600 / [[NSUserDefaults standardUserDefaults] integerForKey:@"quicktimeExportRateValue"];
+            CMTime frameDuration = CMTimeMake( timeValue, 600);
+            
+            NSError *error = nil;
+            BOOL aborted = NO;
+            
+            AVAssetWriter *writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath: fileName] fileType: AVFileTypeQuickTimeMovie error:&error];
+            if (!error)
+            {
+                Wait *wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Movie Export", nil)] autorelease];
+                [wait showWindow:self];
+                [wait setCancel:YES];
+                [[wait progress] setMaxValue: numberOfFrames];
+                
+                AVAssetWriterInput *writerInput = nil;
+                AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = nil;
+                CMTime nextPresentationTimeStamp = kCMTimeZero;
+                
+                for( int curSample = 0; curSample < numberOfFrames; curSample++)
+                {
+                    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+                    
+                    @try
+                    {
+                        CVPixelBufferRef buffer = nil;
+                        
+                        NSDisableScreenUpdates();
+                        NSImage	*im = [object performSelector: selector withObject: [NSNumber numberWithLong: curSample] withObject:[NSNumber numberWithLong: numberOfFrames]];    
+                        NSEnableScreenUpdates();
+                        
+                        if( im)
+                        {
+                            if( writerInput == nil)
+                            {
+                                // Define video settings to be passed to the AVAssetWriterInput instance
+                                
+                                NSString *c = [[NSUserDefaults standardUserDefaults] objectForKey:@"selectedMenuAVFoundationExport"];
+                                
+                                NSDictionary *videoSettings = nil;
+                                
+                                if( [c isEqualToString: AVVideoCodecH264])
+                                {
+                                    double bitsPerSecond = im.size.width * im.size.height * fps * 4; //Maximum bit rate for best quality
+                                    
+                                    if( bitsPerSecond > 0)
+                                        videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                     c, AVVideoCodecKey,
+                                                     [NSDictionary dictionaryWithObjectsAndKeys:
+                                                      [NSNumber numberWithDouble: bitsPerSecond], AVVideoAverageBitRateKey,
+                                                      [NSNumber numberWithInteger: 1], AVVideoMaxKeyFrameIntervalKey,
+                                                      nil], AVVideoCompressionPropertiesKey,
+                                                     [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                                     [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                }
+                                else if( [c isEqualToString: AVVideoCodecJPEG])
+                                {
+                                    videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                                     c, AVVideoCodecKey,
+                                                     [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithFloat: 0.9], AVVideoQualityKey, nil] ,AVVideoCompressionPropertiesKey,
+                                                     [NSNumber numberWithInt: im.size.width], AVVideoWidthKey,
+                                                     [NSNumber numberWithInt: im.size.height], AVVideoHeightKey, nil];
+                                }
+                                
+                                if( videoSettings)
+                                {
+                                    writerInput = [[AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings] retain];
+                                    
+                                    pixelBufferAdaptor = [[AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil] retain];
+                                    
+                                    [writer addInput:writerInput];
+                                    [writer startWriting];
+                                    [writer startSessionAtSourceTime:nextPresentationTimeStamp];
+                                }
+                            }
+                            
+                            buffer = [QuicktimeExport CVPixelBufferFromNSImage: im];
+                        }
+                        
+                        if( buffer)
+                        {
+                            CVPixelBufferLockBaseAddress(buffer, 0);
+                            while( ![writerInput isReadyForMoreMediaData])
+                                [NSThread sleepForTimeInterval: 0.1];
+                            [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
+                            CVPixelBufferUnlockBaseAddress(buffer, 0);
+                            CVPixelBufferRelease(buffer);
+                            buffer = nil;
+                            
+                            nextPresentationTimeStamp = CMTimeAdd(nextPresentationTimeStamp, frameDuration);
+                            
+                            CVPixelBufferRelease(buffer);
+                        }
+                        
+                        [wait incrementBy: 1];
+                        if( [wait aborted])
+                        {
+                            curSample = numberOfFrames;
+                            aborted = YES;
+                        }
+                    }
+                    @catch (NSException *e) {
+                        N2LogExceptionWithStackTrace( e);
+                    }
+                    [pool release];
+                }
+                [writerInput markAsFinished];
+                [writer finishWriting];
+                
+                [object performSelector: selector withObject: [NSNumber numberWithLong: 0] withObject:[NSNumber numberWithLong: numberOfFrames]];
+                
+                [wait close];
+                
+                [writerInput release];
+                [pixelBufferAdaptor release];
+                
+                if( openIt && aborted == NO)
+                {
+                    NSWorkspace *ws = [NSWorkspace sharedWorkspace];
+                    [ws openFile:fileName];
+                }
+            }
+            
+            [writer release];
+            
+            if( aborted == NO)
+                return fileName;
+        }
+    }
+    @catch (NSException *e) {
+        N2LogExceptionWithStackTrace(e);
+    }
+    
 	return nil;
 }
 
