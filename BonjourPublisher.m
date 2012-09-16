@@ -221,9 +221,15 @@ extern const char *GetPrivateIP();
         [netService setDelegate:self];
 		
 		NSMutableDictionary *params = [NSMutableDictionary dictionary];
-		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
-		[params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
-        [params setObject:[AppController UID] forKey: @"UID"]; 
+        
+        if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"])
+            [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
+		
+        if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"])
+            [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+        
+        if( [AppController UID])
+            [params setObject: [AppController UID] forKey: @"UID"];
 		
 		if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
 		{

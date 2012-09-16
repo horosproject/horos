@@ -207,8 +207,8 @@ static BonjourBrowser *currentBrowser = nil;
 {
 	int i = [[BrowserController currentBrowser] currentBonjourService];
 	
-	NSDictionary	*selectedDict = nil;
-	if( i >= 0) 
+	NSDictionary *selectedDict = nil;
+	if( i >= 0 && i < services.count)
 		selectedDict = [[services objectAtIndex: i] retain];
 	
 	[self buildFixedIPList];
