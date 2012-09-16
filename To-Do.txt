@@ -1,4 +1,3 @@
-- 3D states
 - DiscPublishing unload
 
 - Retina: VR (implication for MPR, CPR), SR
