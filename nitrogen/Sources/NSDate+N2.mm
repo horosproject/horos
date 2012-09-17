@@ -18,7 +18,7 @@
 
 +(id)dateWithYYYYMMDD:(NSString*)datestr HHMMss:(NSString*)timestr
 {
-    if ( timestr.length < 8)
+    if (datestr.length < 8)
         return nil;
     
 	NSDateComponents* dc = [NSDateComponents new];
@@ -28,7 +28,7 @@
 	dc.day = [[datestr substringWithRange:NSMakeRange(6,2)] integerValue];
 	
 	dc.hour = dc.minute = dc.second = 0;
-	if (timestr) {
+	if (timestr.length >= 6) {
 		dc.hour = [[timestr substringWithRange:NSMakeRange(0,2)] integerValue];
 		dc.minute = [[timestr substringWithRange:NSMakeRange(2,2)] integerValue];
 		if (timestr.length >= 6) dc.second = [[timestr substringWithRange:NSMakeRange(4,2)] integerValue];
