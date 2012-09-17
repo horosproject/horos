@@ -156,25 +156,6 @@ NSString* asciiString(NSString* str)
 	return [str ASCIIString];
 }
 
-void restartSTORESCP()
-{
-//	// Only on server mode
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
-//	{
-//		@try
-//		{
-//			[[NSFileManager defaultManager] removeItemAtPath: @"/tmp/RESTARTOSIRIXSTORESCP" error: nil];
-//			[[NSString stringWithString:@"RESTART"] writeToFile: @"/tmp/RESTARTOSIRIXSTORESCP" atomically: YES];
-//			
-//			NSLog( @"*********** restartSTORESCP ************");
-//		}
-//		@catch (NSException * e)
-//		{
-//          N2LogExceptionWithStackTrace(e);
-//		}
-//	}
-}
-
 @implementation NSString (BrowserController)
 
 -(NSMutableString*)filenameString
@@ -2975,7 +2956,10 @@ static NSConditionLock *threadLock = nil;
         if( _computingNumberOfStudiesForAlbums)
             [self delayedRefreshAlbums];
         else
-            [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+        {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"] == NO || [self.window isVisible]) // Server Mode: dont refresh albums
+                [NSThread detachNewThreadSelector:@selector(_computeNumberOfStudiesForAlbumsThread) toTarget:self withObject: nil];
+        }
     }
 }
 

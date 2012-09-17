@@ -1808,7 +1808,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				if (dcmPix)
 				{
 					NSImage *image = nil;
-					NSManagedObject *im =  [dcmPix imageObj];
+					NSManagedObject *im =  [self.independentDicomDatabase objectWithID: [dcmPix imageObjectID]];
 					
 					float curWW = windowWidth;
 					float curWL = windowCenter;

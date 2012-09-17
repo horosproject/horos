@@ -425,12 +425,14 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSArray* studiesArray = nil;
 	
-	[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+    NSManagedObjectContext *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentContext];
+    
+	[dicomDBContext lock];
 	
 	@try
 	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext];
 		
 		BOOL allStudies = NO;
 		if( user.studyPredicate.length == 0)
@@ -456,7 +458,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             if( studiesArray == nil)
             {
-                studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+                studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
                 
                 @synchronized( studiesForUserCache)
                 {
@@ -474,16 +476,18 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			if( user.canAccessPatientsOtherStudies.boolValue)
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
-				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext];
 				req.predicate = [NSPredicate predicateWithFormat:@"patientUID IN %@", [studiesArray valueForKey:@"patientUID"]];
 				
 				int previousStudiesArrayCount = studiesArray.count;
 				
-				studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+				studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
 				
 				if( predicate && studiesArray.count != previousStudiesArrayCount)
 					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 				
+                WHY studiesArray.count == 0 ??
+                
 				[req release];
 			}
 		}
@@ -494,7 +498,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			
 			req.predicate = predicate;
 			
-			studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+			studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
 		}
         
         if( [sortValue length])
@@ -524,7 +528,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 	} @catch(NSException* e) {
 		NSLog(@"Error: [WebPortal studiesForUser:predicate:sortBy:] %@", e);
 	} @finally {
-		[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
+		[dicomDBContext unlock];
 	}
 	
 	return studiesArray;
