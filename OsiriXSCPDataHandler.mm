@@ -14,6 +14,7 @@
 
 #define FETCHNUMBER 30
 
+#import "AsyncSocket.h"
 #import "OsiriXSCPDataHandler.h"
 #import "DicomFile.h"
 #import "DicomFileDCMTKCategory.h"
@@ -25,12 +26,18 @@
 #import "DICOMToNSString.h"
 #import "MutableArrayCategory.h"
 #import "N2Debug.h"
+#import "N2Connection.h"
 
 #include "dctk.h"
 
 char currentDestinationMoveAET[ 60] = "";
 
+#define SHAREDCONTEXT
+
+#ifdef SHAREDCONTEXT
 extern NSManagedObjectContext *staticContext;
+#endif
+
 
 @implementation OsiriXSCPDataHandler
 
@@ -144,7 +151,7 @@ extern NSManagedObjectContext *staticContext;
 	return [self predicateWithString: s forField: f any: NO];
 }
 
-- (NSPredicate *)predicateForDataset:( DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate seriesLevelPredicate: (NSPredicate**) SLPredicate
+- (NSPredicate *)predicateForDataset:(DcmDataset *)dataset compressedSOPInstancePredicate: (NSPredicate**) csopPredicate seriesLevelPredicate: (NSPredicate**) SLPredicate
 {
 	NSPredicate *compoundPredicate = nil;
 	NSPredicate *seriesLevelPredicate = nil;
@@ -1339,20 +1346,23 @@ extern NSManagedObjectContext *staticContext;
 
 - (OFCondition)prepareFindForDataSet: (DcmDataset *) dataset
 {
+    NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
+	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
+    
+    #ifdef SHAREDCONTEXT
 	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 	NSError *error = nil;
 	NSEntityDescription *entity;
-	NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
-	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	const char *sType;
+    #endif
+    
+    
+    const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
 	
 	[findTemplate release];
 	findTemplate = [[NSMutableDictionary alloc] init];
-	
-//	dataset->print(COUT);
 	
 	int elemCount = (int)(dataset->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++)
@@ -1364,6 +1374,7 @@ extern NSManagedObjectContext *staticContext;
 		[findTemplate setObject: [NSNumber numberWithBool: YES] forKey: [NSString stringWithFormat: @"%d,%d", key.getElement(), key.getGroup()]];
 	}
 	
+    #ifdef SHAREDCONTEXT
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -1463,7 +1474,18 @@ extern NSManagedObjectContext *staticContext;
 		
 		cond = EC_IllegalParameter;
 	}
-	
+    #else
+    
+    NSDictionary *message = [NSDictionary dictionaryWithObjectsAndKeys: predicate, @"predicate", nil];
+    
+    // To be continued.... http://think-async.com/Asio/Download
+    // We CANNOT use the Core Foundation CFStream....
+    
+    // [NSKeyedArchiver archivedDataWithRootObject: message]
+//    NSData *response = [N2Connection sendSynchronousRequest:  toAddress: @"127.0.0.1"  port: 36912];
+    
+    #endif
+    
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
 	
@@ -1571,18 +1593,24 @@ extern NSManagedObjectContext *staticContext;
 - (OFCondition)prepareMoveForDataSet:( DcmDataset *)dataset
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
 	OFCondition cond = EC_IllegalParameter;
 	@try 
 	{
+        NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
+		NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
+        
+        #ifdef SHAREDCONTEXT
 		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
 		NSError *error = nil;
 		NSEntityDescription *entity;
-		NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
-		NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        #endif
+        
 		const char *sType;
 		dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
-		
+        
+         #ifdef SHAREDCONTEXT
 		if (strcmp(sType, "STUDY") == 0) 
 			entity = [[model entitiesByName] objectForKey:@"Study"];
 		else if (strcmp(sType, "SERIES") == 0) 
@@ -1704,7 +1732,10 @@ extern NSManagedObjectContext *staticContext;
         
 		[context unlock];
 		context = 0L;
-		
+        #else
+        
+        #endif
+        
 		// TO AVOID DEADLOCK
 		// See DcmQueryRetrieveSCP::unlockFile dcmqrsrv.mm
 		BOOL fileExist = YES;

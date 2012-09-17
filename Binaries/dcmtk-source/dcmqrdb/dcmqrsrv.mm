@@ -31,6 +31,7 @@
  *
  */
 
+#import "N2ConnectionListener.h"
 #import "browserController.h"
 #import "ThreadsManager.h"
 #import "DicomDatabase.h"
@@ -54,6 +55,55 @@
 #include <signal.h>
 
 extern int AbortAssociationTimeOut;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//static N2ConnectionListener* listenerForSCPProcess = nil;
+//
+//@interface listenerForSCPProcessClass : N2Connection{
+//    
+//    NSPoint origin;
+//}
+//
+//@end
+//
+//@implementation listenerForSCPProcessClass
+//
+//-(id)initWithAddress:(NSString *)address port:(NSInteger)port is:(NSInputStream *)is os:(NSOutputStream *)os
+//{
+//    if( (self = [super initWithAddress:address port:port is:is os:os]))
+//    {
+//        NSLog( @"SCP Process Connected");
+//    }
+//    
+//    return self;
+//}
+//
+//
+//-(void)handleData:(NSMutableData*)data
+//{
+//    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+//    @try
+//    {
+//        NSDictionary *dict = [NSKeyedUnarchiver unarchiveObjectWithData: data];
+//        
+//        NSLog( @"***** %@", dict);
+//        
+//        NSDictionary *response = [NSDictionary dictionaryWithObjectsAndKeys: @"Hello World", @"message", nil];
+//        
+//        [self writeData: [NSKeyedArchiver archivedDataWithRootObject: response]];
+//    }
+//    @catch (NSException* e)
+//    {
+//        N2LogException( e);
+//    }
+//    @finally
+//    {
+//        [pool release];
+//    }
+//}
+//@end
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1545,6 +1595,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
+//                    if( listenerForSCPProcess == nil)
+//                        listenerForSCPProcess = [[N2ConnectionListener alloc] initWithPort: 36912 connectionClass:[listenerForSCPProcessClass class]];
+                                        
                     NSPersistentStoreCoordinator *dbStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
                     
 					staticContext = [[NSManagedObjectContext alloc] init];
