@@ -2166,8 +2166,13 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (void)setCLUTtoVRView;
 {
+    if( windowWillClose)
+        return;
+    
 	[self setCLUTtoVRView:vrViewLowResolution];
-	if(clutChanged)[[vrView controller] setCurCLUTMenu:NSLocalizedString(@"16-bit CLUT", nil)];
+    
+	if(clutChanged)
+        [[vrView controller] setCurCLUTMenu:NSLocalizedString(@"16-bit CLUT", nil)];
 }
 
 - (void)setCLUTtoVRViewHighRes;

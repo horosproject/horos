@@ -5584,20 +5584,24 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 			else
             {
 				points = [roi splinePoints];
-				NSPoint p1, p2;
-				for( int j=0; j<[points count]-1 && !intersected; j++ )
+                
+                if( points.count)
                 {
-					p1 = [[points objectAtIndex:j] point];
-					p2 = [[points objectAtIndex:j+1] point];
-					intersected = lineIntersectsRect(p1, p2,  rect);
-				}
-				// last segment: between last point and first one
-				if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
-                {
-					p1 = [[points lastObject] point];
-					p2 = [[points objectAtIndex:0] point];
-					intersected = lineIntersectsRect(p1, p2,  rect);
-				}
+                    NSPoint p1, p2;
+                    for( int j=0; j<[points count]-1 && !intersected; j++ )
+                    {
+                        p1 = [[points objectAtIndex:j] point];
+                        p2 = [[points objectAtIndex:j+1] point];
+                        intersected = lineIntersectsRect(p1, p2,  rect);
+                    }
+                    // last segment: between last point and first one
+                    if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+                    {
+                        p1 = [[points lastObject] point];
+                        p2 = [[points objectAtIndex:0] point];
+                        intersected = lineIntersectsRect(p1, p2,  rect);
+                    }
+                }
 			}
 		}
 		else
@@ -5638,27 +5642,30 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				if( !intersected)
                 {
 					points = [roi splinePoints];
-					NSPoint p1, p2;
-					for( int j=0; j<[points count]-1 && !intersected; j++)
+                    if( points.count)
                     {
-						p1 = [[points objectAtIndex:j] point];
-						p2 = [[points objectAtIndex:j+1] point];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: nil];
-					}
-					
-					// last segment: between last point and first one
-					if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
-                    {
-						p1 = [[points lastObject] point];
-						p2 = [[points objectAtIndex:0] point];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: nil];
-						if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: nil];
-					}
+                        NSPoint p1, p2;
+                        for( int j=0; j<[points count]-1 && !intersected; j++)
+                        {
+                            p1 = [[points objectAtIndex:j] point];
+                            p2 = [[points objectAtIndex:j+1] point];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: nil];
+                        }
+                        
+                        // last segment: between last point and first one
+                        if(!intersected && roiType!=tMesure && roiType!=tAngle && roiType!=t2DPoint && roiType!=tOPolygon && roiType!=tArrow)
+                        {
+                            p1 = [[points lastObject] point];
+                            p2 = [[points objectAtIndex:0] point];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[0] B2:polyRect[1] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[1] B2:polyRect[2] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[2] B2:polyRect[3] result: nil];
+                            if( !intersected) intersected = [DCMView intersectionBetweenTwoLinesA1:p1 A2:p2 B1:polyRect[3] B2:polyRect[0] result: nil];
+                        }
+                    }
 				}
 			}
 		}
