@@ -585,7 +585,17 @@ static NSRecursiveLock *dbModifyLock = nil;
 {
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"archiveReportsAndAnnotationsAsDICOMSR"] == NO)
 		return;
-		
+    
+    static int avoidReentry = 0;
+    
+    if( avoidReentry)
+    {
+        NSLog( @"****** archiveReportAsDICOMSR avoidReentry");
+        return;
+    }
+    
+    avoidReentry++;
+    
 	#ifndef OSIRIX_LIGHT
 	if( [self.hasDICOM boolValue] == YES)
 	{
@@ -658,6 +668,8 @@ static NSRecursiveLock *dbModifyLock = nil;
 				
 				[r writeToFileAtPath: dstPath];
 				
+                [self.managedObjectContext save: nil];
+                
 				[BrowserController addFiles: [NSArray arrayWithObject: dstPath]
 								  toContext: [self managedObjectContext]
 								 toDatabase: isMainDB? [BrowserController currentBrowser] : NULL
@@ -678,6 +690,9 @@ static NSRecursiveLock *dbModifyLock = nil;
             [self.managedObjectContext unlock];
         }
 	}
+    
+    avoidReentry--;
+    
 	#endif
 }
 

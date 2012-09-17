@@ -2197,9 +2197,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
     labelFontListGL = 0;
     
-//	if( iChatFontListGL) glDeleteLists(iChatFontListGL, 150);
-//	iChatFontListGL = 0;
-    
 	if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
     loupeTextureID = 0;
     
@@ -2227,7 +2224,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[fontColor release]; fontColor = nil;
 	[fontGL release]; fontGL = nil;
 	[labelFont release]; labelFont = nil;
-//	[iChatFontGL release]; iChatFontGL = nil;
 	[yearOld release]; yearOld = nil;
 	
 	[cursor release]; cursor = nil;
@@ -2239,18 +2235,12 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[stringTextureCache release];
     stringTextureCache = 0L;
     
-//	[iChatStringTextureCache release];
-//	iChatStringTextureCache = nil;
-    
 	[_mouseDownTimer invalidate];
 	[_mouseDownTimer release];
 	_mouseDownTimer = nil;
     
 	[destinationImage release];
 	destinationImage = nil;
-    
-//	[_alternateContext release];
-//	_alternateContext = nil;
     
 	if(repulsorColorTimer)
 	{
@@ -2265,14 +2255,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
     blendingResampledBaseAddr = nil;
     
-//	[self clearGLContext];
-
-//	if(iChatCursorTextureBuffer) free(iChatCursorTextureBuffer);
-//    iChatCursorTextureBuffer = nil;
-    
-//	if(iChatCursorTextureName) glDeleteTextures(1, &iChatCursorTextureName);
-//	iChatCursorTextureName = 0;
-    
 	[showDescriptionInLargeText release];
 	showDescriptionInLargeText = nil;
     
@@ -2283,8 +2265,6 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	blendingView = nil;
     
 	[self deleteLens];
-	
-//	[LoupeController release];
 	
 	[loupeImage release];
     loupeImage = nil;
