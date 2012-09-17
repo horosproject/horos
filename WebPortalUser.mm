@@ -273,7 +273,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
 
 -(BOOL)validateStudyPredicate:(NSString**)value error:(NSError**)error
 {
-    [WebPortal.defaultWebPortal.dicomDatabase lock];
+    DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+    
+    [dicomDBContext lock];
     
 	@try {
 		NSFetchRequest* request = [[[NSFetchRequest alloc] init] autorelease];
@@ -281,7 +283,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		request.predicate = [DicomDatabase predicateForSmartAlbumFilter:*value];
 		
 		NSError* e = NULL;
-		[WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:request error:&e];
+		[dicomDBContext.managedObjectContext executeFetchRequest:request error:&e];
 		if (e) {
 			if (error) *error = [NSError osirixErrorWithCode:-31 localizedDescriptionFormat:NSLocalizedString(@"Syntax error in study predicate filter: %@", NULL), e.localizedDescription? e.localizedDescription : NSLocalizedString(@"Unknown Error", NULL)];
 			return NO;
@@ -292,7 +294,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 		return NO;
 	}
     @finally {
-        [WebPortal.defaultWebPortal.dicomDatabase unlock];
+        [dicomDBContext unlock];
     }
 	
 	return YES;
@@ -318,7 +320,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
         {
             if( [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
             {
-                specificArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
+                DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+                
+                specificArray = [NSMutableArray arrayWithArray: [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]]];
             }
         }
         
@@ -329,26 +333,32 @@ static NSMutableDictionary *studiesForUserCache = nil;
             @synchronized( studiesForUserCache)
             {
                 if( [studiesForUserCache objectForKey: @"all DB studies"] && [[[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
-                    studiesArray = [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"];
+                {
+                    DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+                    
+                    studiesArray = [dicomDBContext objectsWithIDs:  [[studiesForUserCache objectForKey: @"all DB studies"] objectForKey: @"array"]];
+                }
             }
             
             if( studiesArray == nil)
             {
-                [WebPortal.defaultWebPortal.dicomDatabase lock];
+                DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+                
+                [dicomDBContext lock];
                 
                 // Find all studies
                 NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-                req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+                req.entity = [NSEntityDescription entityForName: @"Study" inManagedObjectContext:dicomDBContext.managedObjectContext];
                 req.predicate = [NSPredicate predicateWithValue: YES];
-                studiesArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+                studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
                 
                 @synchronized( studiesForUserCache)
                 {
                     if( studiesArray)
-                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: @"all DB studies"];
                 }
                 
-                [WebPortal.defaultWebPortal.dicomDatabase unlock];
+                [dicomDBContext unlock];
             }
             
             specificArray = [NSMutableArray array];
@@ -380,7 +390,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: specificArray, @"array", [NSDate date], @"date", nil] forKey: userID];
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [specificArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
             }
         }
 	}
@@ -425,7 +435,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSArray* studiesArray = nil;
 	
-//    NSManagedObjectContext *dicomDBContext = WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext;
     DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     
 	[dicomDBContext lock];
@@ -615,7 +624,9 @@ static NSMutableDictionary *studiesForUserCache = nil;
     {
         if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
         {
-            studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
+            DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+            
+            studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
             
             if ([sortValue length] && [sortValue isEqualToString: @"date"] == NO)
                 studiesArray = [studiesArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: sortValue ascending: YES selector: @selector( caseInsensitiveCompare:)] autorelease]]];
@@ -624,25 +635,25 @@ static NSMutableDictionary *studiesForUserCache = nil;
         }
     }
     
-    studiesArray = nil;
-    
     if( studiesArray == nil)
     {
-        [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext lock];
+        DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
+        
+        [dicomDBContext.managedObjectContext lock];
         
         @try
         {
             NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-            req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext];
+            req.entity = [NSEntityDescription entityForName:@"Album" inManagedObjectContext:dicomDBContext.managedObjectContext];
             req.predicate = [NSPredicate predicateWithFormat:@"name == %@", albumName];
-            albumArray = [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext executeFetchRequest:req error:NULL];
+            albumArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
         }
         @catch(NSException *e)
         {
             NSLog(@"******** studiesForAlbum exception: %@", e.description);
         }
         
-        [WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext unlock];
+        [dicomDBContext.managedObjectContext unlock];
         
         NSManagedObject *album = [albumArray lastObject];
         
@@ -689,7 +700,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         @synchronized( studiesForUserCache)
         {
             if( studiesArray)
-                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: userID];
+                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
         }
     }
         
