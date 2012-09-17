@@ -425,7 +425,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSArray* studiesArray = nil;
 	
-    NSManagedObjectContext *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentContext];
+    NSManagedObjectContext *dicomDBContext = WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext; //[WebPortal.defaultWebPortal.dicomDatabase independentContext];
     
 	[dicomDBContext lock];
 	
@@ -486,8 +486,6 @@ static NSMutableDictionary *studiesForUserCache = nil;
 				if( predicate && studiesArray.count != previousStudiesArrayCount)
 					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
 				
-                WHY studiesArray.count == 0 ??
-                
 				[req release];
 			}
 		}
