@@ -425,14 +425,15 @@ static NSMutableDictionary *studiesForUserCache = nil;
 {
 	NSArray* studiesArray = nil;
 	
-    NSManagedObjectContext *dicomDBContext = WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext; //[WebPortal.defaultWebPortal.dicomDatabase independentContext];
+//    NSManagedObjectContext *dicomDBContext = WebPortal.defaultWebPortal.dicomDatabase.managedObjectContext;
+    DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
     
 	[dicomDBContext lock];
 	
 	@try
 	{
 		NSFetchRequest* req = [[[NSFetchRequest alloc] init] autorelease];
-		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext];
+		req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext.managedObjectContext];
 		
 		BOOL allStudies = NO;
 		if( user.studyPredicate.length == 0)
@@ -453,17 +454,17 @@ static NSMutableDictionary *studiesForUserCache = nil;
             @synchronized( studiesForUserCache)
             {
                 if( user && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60)
-                    studiesArray = [[studiesForUserCache objectForKey: userID] objectForKey: @"array"];
+                    studiesArray = [dicomDBContext objectsWithIDs: [[studiesForUserCache objectForKey: userID] objectForKey: @"array"]];
             }
             
             if( studiesArray == nil)
             {
-                studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
+                studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
                 
                 @synchronized( studiesForUserCache)
                 {
                     if( studiesArray)
-                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: studiesArray, @"array", [NSDate date], @"date", nil] forKey: userID];
+                        [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
                 }
             }
             
@@ -476,12 +477,12 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			if( user.canAccessPatientsOtherStudies.boolValue)
 			{
 				NSFetchRequest* req = [[NSFetchRequest alloc] init];
-				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext];
+				req.entity = [NSEntityDescription entityForName:@"Study" inManagedObjectContext: dicomDBContext.managedObjectContext];
 				req.predicate = [NSPredicate predicateWithFormat:@"patientUID IN %@", [studiesArray valueForKey:@"patientUID"]];
 				
 				int previousStudiesArrayCount = studiesArray.count;
 				
-				studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
+				studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
 				
 				if( predicate && studiesArray.count != previousStudiesArrayCount)
 					studiesArray = [studiesArray filteredArrayUsingPredicate: predicate];
@@ -496,7 +497,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
 			
 			req.predicate = predicate;
 			
-			studiesArray = [dicomDBContext executeFetchRequest:req error:NULL];
+			studiesArray = [dicomDBContext.managedObjectContext executeFetchRequest:req error:NULL];
 		}
         
         if( [sortValue length])
