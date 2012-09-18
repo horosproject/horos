@@ -31,7 +31,6 @@
  *
  */
 
-#import "N2ConnectionListener.h"
 #import "browserController.h"
 #import "ThreadsManager.h"
 #import "DicomDatabase.h"
@@ -238,7 +237,7 @@ static NSString *globalSync = @"globalSync";
     NSString *str = scp->getErrorMessage();
     
     if( str)
-        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: YES];
+        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
     
     [pool release];
 }
@@ -672,10 +671,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
             DimseCondition::dump(cond);
             
             if( cond == DIMSE_NODATAAVAILABLE)
-            {
-                NSLog( @"----- options_.dimse_timeout_ : %d", options_.dimse_timeout_);
-                NSLog( @"----- options_.blockMode_ : %d", options_.blockMode_);
-            }
+                NSLog( @"----- DIMSE_NODATAAVAILABLE no data available : %d (block mode: %d)", options_.dimse_timeout_, options_.blockMode_);
             
             AbortAssociationTimeOut = 2;
             /* some kind of error so abort the association */
@@ -1628,15 +1624,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             {
                 @try
 				{
-					@try
-					{
-                        [NSThread detachNewThreadSelector: @selector( handleAssociation:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]];
-						assoc = nil;
-					}
-					@catch( NSException *e)
-					{
-                        N2LogExceptionWithStackTrace(e);
-					}
+                    [NSThread detachNewThreadSelector: @selector( handleAssociation:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]];
+                    
+                    assoc = nil;
 				}
 				@catch( NSException *e)
 				{
@@ -1648,9 +1638,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
 				{
-//                    if( listenerForSCPProcess == nil)
-//                        listenerForSCPProcess = [[N2ConnectionListener alloc] initWithPort: 36912 connectionClass:[listenerForSCPProcessClass class]];
-                                        
                     NSPersistentStoreCoordinator *dbStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
                     
 					staticContext = [[NSManagedObjectContext alloc] init];
