@@ -226,6 +226,8 @@ extern int AbortAssociationTimeOut;
 
 + (void) handleAssociation: (NSDictionary*) d
 {
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
     T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
     DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
     
@@ -234,7 +236,9 @@ extern int AbortAssociationTimeOut;
     NSString *str = scp->getErrorMessage();
     
     if( str)
-        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: YES];
+    
+    [pool release];
 }
 @end
 
@@ -1741,19 +1745,22 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 	
 	if( go_cleanup)
 	{
-		cond = ASC_dropAssociation(assoc);
-		if (cond.bad())
-		{
-			//DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
-			DimseCondition::dump(cond);
-		}
-		
-		cond = ASC_destroyAssociation(&assoc);
-		if (cond.bad())
-		{
-			//DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
-			DimseCondition::dump(cond);
-		}
+        if( assoc)
+        {
+            cond = ASC_dropAssociation(assoc);
+            if (cond.bad())
+            {
+                //DcmQueryRetrieveOptions::errmsg("Cannot Drop Association:");
+                DimseCondition::dump(cond);
+            }
+            
+            cond = ASC_destroyAssociation(&assoc);
+            if (cond.bad())
+            {
+                //DcmQueryRetrieveOptions::errmsg("Cannot Destroy Association:");
+                DimseCondition::dump(cond);
+            }
+        }
 	}
 	
     return cond;
