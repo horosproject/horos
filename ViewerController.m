@@ -3632,7 +3632,10 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 -(NSString*) modality
 {
-	return [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.modality"];
+    if( [imageView curImage] < fileList[ curMovieIndex].count)
+        return [[fileList[ curMovieIndex] objectAtIndex:[imageView curImage]] valueForKeyPath:@"series.modality"];
+    else
+        return nil;
 }
 
 + (int) numberOf2DViewer
@@ -7562,12 +7565,22 @@ return YES;
 	int movieIndex = [[dict objectForKey: @"movieIndex"] intValue];
     int maxMovieIndex = [[dict objectForKey: @"maxMovieIndex"] intValue];
 	
+    BOOL isLocal = [[[BrowserController currentBrowser] database] isLocal];
+    NSManagedObjectContext* db = nil;
+    
 	for( int i = from; i < to; i++)
 	{
 		if( mainLoadingThread.isCancelled == NO)
 		{
-			[[BrowserController currentBrowser] getLocalDCMPath: [f objectAtIndex: i] : 5];
-			[[p objectAtIndex: i] CheckLoad];
+            if( !isLocal)
+            {
+                if( db == nil)
+                    db = [[[BrowserController currentBrowser] database] independentContext];
+                
+                NSManagedObject *image = [db objectRegisteredForID: [[f objectAtIndex: i] objectID]];
+                [[BrowserController currentBrowser] getLocalDCMPath: image : 5];
+			}
+            [[p objectAtIndex: i] CheckLoad];
 		}
 		
 		if( from == 0)
