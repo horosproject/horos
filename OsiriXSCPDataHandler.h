@@ -42,12 +42,15 @@ typedef struct
 * Interface between server and database 
 */
 
+@class DicomDatabase;
+
 @interface OsiriXSCPDataHandler : NSObject
 {
 	NSArray *findArray;
 	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
 	NSString *callingAET;
+    
 	NSManagedObjectContext *context;
 	
 	int numberMoving;

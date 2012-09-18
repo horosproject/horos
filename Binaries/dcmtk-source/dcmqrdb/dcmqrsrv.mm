@@ -56,6 +56,8 @@
 
 extern int AbortAssociationTimeOut;
 
+static NSString *globalSync = @"globalSync";
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //static N2ConnectionListener* listenerForSCPProcess = nil;
@@ -475,9 +477,14 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
     while (cond.good())
     {
         /* Create a database handle for this association */
-		
-        DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
-		
+        
+        DcmQueryRetrieveDatabaseHandle *dbHandle = nil;
+        
+        @synchronized( globalSync)
+        {
+            dbHandle = factory_.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
+		}
+        
         if (cond.bad())
         {
           DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
@@ -502,17 +509,20 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         {
             int timeout;
             
-            if( firstLoop)
+            @synchronized( globalSync)
             {
-                timeout = dcmConnectionTimeout.get();
+                if( firstLoop)
+                {
+                    timeout = dcmConnectionTimeout.get();
+                    
+                    if( timeout <= 0)
+                        timeout = 5;
+                }
+                else
+                    timeout = options_.dimse_timeout_;
                 
-                if( timeout <= 0)
-                    timeout = 5;
+                cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, timeout, &presID, &msg, NULL);
             }
-            else
-                timeout = options_.dimse_timeout_;
-            
-            cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, timeout, &presID, &msg, NULL);
             
             firstLoop = OFFalse;
             
@@ -527,7 +537,8 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                         writeStateProcess( "C-ECHO TLS SCP...");
                     else
                         writeStateProcess( "C-ECHO SCP...");
-					unlockFile();
+                    if( forkedProcess)
+                        unlockFile();
                     cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
                     break;
                 case DIMSE_C_STORE_RQ:
@@ -535,7 +546,8 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                         writeStateProcess( "C-STORE TLS SCP...");
                     else
                         writeStateProcess( "C-STORE SCP...");
-					unlockFile();
+					if( forkedProcess)
+                        unlockFile();
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
                 case DIMSE_C_FIND_RQ:
@@ -565,38 +577,50 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 					{
 						cond = DIMSE_BADCOMMANDTYPE;
 						DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
-                        unlockFile();
+                        
+                        if( forkedProcess)
+                            unlockFile();
 					}
 					break;
                 case DIMSE_C_CANCEL_RQ:
                     //* This is a late cancel request, just ignore it 
                     if (options_.verbose_)
                         printf("dispatch: late C-CANCEL-RQ, ignoring\n");
-                    unlockFile();
+                    
+                    if( forkedProcess)
+                        unlockFile();
                     break;
 				
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
                     DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
-                    unlockFile();
+                        
+                    if( forkedProcess)
+                        unlockFile();
                     /* the condition will be returned, the caller will abort the association. */
                 }
             }
             else if ((cond == DUL_PEERREQUESTEDRELEASE)||(cond == DUL_PEERABORTEDASSOCIATION))
             {
-                unlockFile();
+                if( forkedProcess)
+                    unlockFile();
                 // association gone
             }
             else
             {
-                unlockFile();
+                if( forkedProcess)
+                    unlockFile();
                 // the condition will be returned, the caller will abort the assosiation.
             }
         }
 
-        // release DB handle
-        delete dbHandle;
+        @synchronized( globalSync)
+        {
+            // release DB handle
+            delete dbHandle;
+            dbHandle = nil;
+        }
     }
 
     // Association done
@@ -623,64 +647,54 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 	
- /* clean up on association termination */
-    if (cond == DUL_PEERREQUESTEDRELEASE)
-	{
-        if (options_.verbose_)
-            printf("Association Release\n");
-		
-		if( assoc)
-		{
-			cond = ASC_acknowledgeRelease(assoc);
-			ASC_dropSCPAssociation(assoc);
-		}
-	}
-	else if (cond == DUL_PEERABORTEDASSOCIATION)
-	{
-        if (options_.verbose_)
-            printf("Association Aborted\n");
-    }
-	else
-	{
-        DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
-        DimseCondition::dump(cond);
-		
-		if( cond == DIMSE_NODATAAVAILABLE)
-		{
-			NSLog( @"----- options_.dimse_timeout_ : %d", options_.dimse_timeout_);
-			NSLog( @"----- options_.blockMode_ : %d", options_.blockMode_);
-			
-//			char dir[ 1024];
-//			sprintf( dir, "%s", "/tmp/RESTARTOSIRIXSTORESCP");
-//			unlink( dir);
-//			
-//			FILE * pFile = fopen (dir,"w+");
-//			if( pFile)
-//			{
-//				fprintf( pFile, "restart");
-//				fclose (pFile);
-//			}
-//			
-//			NSLog( @"******* RESTARTOSIRIXSTORESCP");
-		}
-		
-        AbortAssociationTimeOut = 2;
-		/* some kind of error so abort the association */
-        cond = ASC_abortAssociation(assoc);
-        AbortAssociationTimeOut = -1;
-    }
+    @synchronized( globalSync)
+    {
+        /* clean up on association termination */
+        if (cond == DUL_PEERREQUESTEDRELEASE)
+        {
+            if (options_.verbose_)
+                printf("Association Release\n");
+            
+            if( assoc)
+            {
+                cond = ASC_acknowledgeRelease(assoc);
+                ASC_dropSCPAssociation(assoc);
+            }
+        }
+        else if (cond == DUL_PEERABORTEDASSOCIATION)
+        {
+            if (options_.verbose_)
+                printf("Association Aborted\n");
+        }
+        else
+        {
+            DcmQueryRetrieveOptions::errmsg("DIMSE Failure (aborting association):\n");
+            DimseCondition::dump(cond);
+            
+            if( cond == DIMSE_NODATAAVAILABLE)
+            {
+                NSLog( @"----- options_.dimse_timeout_ : %d", options_.dimse_timeout_);
+                NSLog( @"----- options_.blockMode_ : %d", options_.blockMode_);
+            }
+            
+            AbortAssociationTimeOut = 2;
+            /* some kind of error so abort the association */
+            cond = ASC_abortAssociation(assoc);
+            AbortAssociationTimeOut = -1;
+        }
 
-    cond = ASC_dropAssociation(assoc);
-    if (cond.bad()) {
-        fprintf(stderr, "Cannot Drop Association:\n");
-        DimseCondition::dump(cond);
+        cond = ASC_dropAssociation(assoc);
+        if (cond.bad()) {
+            fprintf(stderr, "Cannot Drop Association:\n");
+            DimseCondition::dump(cond);
+        }
+        cond = ASC_destroyAssociation(&assoc);
+        if (cond.bad()) {
+            fprintf(stderr, "Cannot Destroy Association:\n");
+            DimseCondition::dump(cond);
+        }
     }
-    cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad()) {
-        fprintf(stderr, "Cannot Destroy Association:\n");
-        DimseCondition::dump(cond);
-    }
-
+    
     return cond;
 }
 
@@ -1728,8 +1742,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                         N2LogExceptionWithStackTrace(e);
 					}
                     
-					[staticContext release];
-					staticContext = nil;
+                    [staticContext release];
+                    staticContext = nil;
 				}
 			}
             

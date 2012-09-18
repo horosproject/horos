@@ -1391,10 +1391,10 @@ extern BOOL forkedProcess;
 					
 		error = nil;
 		
-		[context lock];
-		
 		[findArray release];
-		findArray = [NSArray array];
+        findArray = nil;
+        
+        NSArray *tempFindArray = [NSArray array];
         
 		@try
 		{
@@ -1419,9 +1419,9 @@ extern BOOL forkedProcess;
                 while( [newObjects count]);
                 
 				for( id series in allSeries)
-					findArray = [findArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
+					tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: [[series valueForKey: @"images"] allObjects]];
 				
-				findArray = [findArray filteredArrayUsingPredicate: predicate];
+				tempFindArray = [tempFindArray filteredArrayUsingPredicate: predicate];
 			}
 			else
             {
@@ -1431,7 +1431,7 @@ extern BOOL forkedProcess;
                 do
                 {
                     newObjects = [context executeFetchRequest: request error: &error];
-                    findArray = [findArray arrayByAddingObjectsFromArray: newObjects];
+                    tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: newObjects];
                     
                     [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
                 }
@@ -1439,23 +1439,21 @@ extern BOOL forkedProcess;
 			}
             
 			if( strcmp(sType, "IMAGE") == 0 && compressedSOPInstancePredicate)
-				findArray = [findArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
+				tempFindArray = [tempFindArray filteredArrayUsingPredicate: compressedSOPInstancePredicate];
 			
 			if( strcmp(sType, "IMAGE") == 0)
-				findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
+				tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"instanceNumber" ascending: YES] autorelease]]];
 			
 			if( strcmp(sType, "SERIES") == 0)
-			  findArray = [findArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
+			  tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
 			
-			[findArray retain];
+			findArray = [[NSArray alloc] initWithArray: tempFindArray];
 		}
 		@catch (NSException * e)
 		{
 			NSLog( @"prepareFindForDataSet exception");
 			NSLog( @"%@", [e description]);
 		}
-		
-		[context unlock];
 		
 		if (error)
 		{
@@ -1476,12 +1474,6 @@ extern BOOL forkedProcess;
     
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
-	
-//	for( int i = 0 ; i < 60; i++)
-//	{
-//		printf( "tic\r");
-//		usleep( 1000000);
-//	}
 	
 	return cond;
 	 
@@ -1610,8 +1602,6 @@ extern BOOL forkedProcess;
 		
 		error = nil;
 		
-		[context lock];
-		
 		NSArray *array = [NSArray array];
 		
 		@try
@@ -1714,25 +1704,25 @@ extern BOOL forkedProcess;
 			NSLog( @"%@", [predicate description]);
 		}
         
-		[context unlock];
-        
-		// TO AVOID DEADLOCK
-		// See DcmQueryRetrieveSCP::unlockFile dcmqrsrv.mm
-		BOOL fileExist = YES;
-		char dir[ 1024];
-		sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
-		
-		int inc = 0;
-		do
-		{
-			int err = unlink( dir);
-			if( err  == 0 || errno == ENOENT) fileExist = NO;
-			
-			usleep( 1000);
-			inc++;
+        if( forkedProcess)
+        {
+            // TO AVOID DEADLOCK
+            // See DcmQueryRetrieveSCP::unlockFile dcmqrsrv.mm
+            BOOL fileExist = YES;
+            char dir[ 1024];
+            sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
+            
+            int inc = 0;
+            do
+            {
+                int err = unlink( dir);
+                if( err  == 0 || errno == ENOENT) fileExist = NO;
+                
+                usleep( 1000);
+                inc++;
+            }
+            while( fileExist == YES && inc < 100000);
 		}
-		while( fileExist == YES && inc < 100000);
-		
 	}
 	@catch (NSException * e) 
 	{
@@ -1758,8 +1748,6 @@ extern BOOL forkedProcess;
 {
 	id item;
 	
-	[context lock];
-	
 	@try
 	{
 		if (item = [findEnumerator nextObject])
@@ -1780,8 +1768,6 @@ extern BOOL forkedProcess;
 		}
 		else
 		{
-			[context unlock];
-			
 			*isComplete = YES;
 		}
 	}
@@ -1790,8 +1776,6 @@ extern BOOL forkedProcess;
 	{
 		NSLog( @"******* nextFindObject exception : %@", e);
 	}
-	
-	[context unlock];
 	
 	return EC_Normal;
 }
