@@ -1713,6 +1713,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 								}
 							}
 						}
+                        
+                        if (study) {
+                            // is this actually an empty study? if so, treat it as a newObject
+                            NSSet* series = [study series];
+                            if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"])
+                                newObject = YES;
+							study.dateAdded = today;
+                        }
 						
 						if (study == nil)
 						{
