@@ -99,19 +99,24 @@
         {
             if (![thread isMainThread]/* && ![thread isExecuting]*/)
             {
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
-                [_threadsController addObject:thread];
+                BOOL isExe = [thread isExecuting], isDone = [thread isFinished];
                 
                 @try
                 {
-                    // We need to start the thread NOW, to be sure, it happens AFTER the addObject
-                    if (![thread isExecuting]&&![thread isFinished])
+
+                    if (!isDone) {
+                        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(threadWillExit:) name:NSThreadWillExitNotification object:thread];
+                        [_threadsController addObject:thread];
+                    }
+                    if (!isExe && !isDone) { // not executing, not done executing... execute now
                         [thread start];
-                    else
+                    }
+                    
+                    /*if (isDone) // already done?? well,
                     {
                         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
                         [_threadsController removeObject:thread];
-                    }
+                    }*/
                 }
                 @catch (NSException* e)
                 {
