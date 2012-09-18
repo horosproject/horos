@@ -114,7 +114,7 @@ OFCondition storeSCP(
     DcmQueryRetrieveDatabaseHandle& dbHandle,
     OFBool correctUIDPadding);
 
-private:
+
 
   void lockFile(void);
   void unlockFile(void);
@@ -190,6 +190,8 @@ private:
 
   /// SCP configuration options
   const DcmQueryRetrieveOptions& options_;
+    
+private:
 };
 
 #endif

@@ -223,6 +223,19 @@ extern int AbortAssociationTimeOut;
     
 	[pool release];
 }
+
++ (void) handleAssociation: (NSDictionary*) d
+{
+    T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
+    DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
+    
+    OFCondition cond = scp->handleAssociation(assoc, YES);
+    
+    NSString *str = scp->getErrorMessage();
+    
+    if( str)
+        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+}
 @end
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,7 +252,7 @@ extern "C"
 }
 
 NSManagedObjectContext *staticContext = nil;
-
+BOOL forkedProcess = NO;
 
 static char *last(char *p, int c)
 {
@@ -1560,37 +1573,59 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					ASC_dumpParameters(assoc->params, COUT);
 			}
 			
-			if (singleProcess)
-			{
-				@try
+//			if (singleProcess)
+//			{
+//				@try
+//				{
+//					staticContext = [[NSManagedObjectContext alloc] init];
+//                    staticContext.undoManager = nil;
+//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
+//					@try
+//					{
+//						/* don't spawn a sub-process to handle the association */
+//						cond = handleAssociation(assoc, options_.correctUIDPadding_);
+//						assoc = nil;
+//					}
+//					@catch( NSException *e)
+//					{
+//                        N2LogExceptionWithStackTrace(e);
+//					}
+//					[staticContext release];
+//					staticContext = nil;
+//				}
+//				@catch( NSException *e)
+//				{
+//                    N2LogExceptionWithStackTrace(e);
+//				}
+//				
+//				NSString *str = getErrorMessage();
+//				
+//				if( str)
+//					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+//			}
+//            // TEST FOR MULTI-THREAD
+//            else
+                
+            if (singleProcess) // But multi-threaded
+            {
+                @try
 				{
-					staticContext = [[NSManagedObjectContext alloc] init];
-                    staticContext.undoManager = nil;
-                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
 					@try
 					{
-						/* don't spawn a sub-process to handle the association */
-						cond = handleAssociation(assoc, options_.correctUIDPadding_);
+                        [NSThread detachNewThreadSelector: @selector( handleAssociation:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]];
 						assoc = nil;
 					}
 					@catch( NSException *e)
 					{
                         N2LogExceptionWithStackTrace(e);
 					}
-					[staticContext release];
-					staticContext = nil;
 				}
 				@catch( NSException *e)
 				{
                     N2LogExceptionWithStackTrace(e);
 				}
-				
-				NSString *str = getErrorMessage();
-				
-				if( str)
-					[[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
-			}
-	#ifdef HAVE_FORK
+            }
+#ifdef HAVE_FORK
 			else
 			{
 				if( cond != ASC_SHUTDOWNAPPLICATION)
@@ -1641,6 +1676,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 						}
 						else
 						{
+                            forkedProcess = YES;
+                            
 							lockFile();
 							
 							// We are not interested to see crash report for the child process.
@@ -1691,6 +1728,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 					staticContext = nil;
 				}
 			}
+            
+            #endif
 		}
 		@catch (NSException * e)
 		{
@@ -1698,7 +1737,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 		}
 		
 		[p release];
-#endif
     }
 	
 	if( go_cleanup)

@@ -27,16 +27,14 @@
 #import "MutableArrayCategory.h"
 #import "N2Debug.h"
 #import "N2Connection.h"
+#import "DicomDatabase.h"
 
 #include "dctk.h"
 
 char currentDestinationMoveAET[ 60] = "";
 
-#define SHAREDCONTEXT
-
-#ifdef SHAREDCONTEXT
 extern NSManagedObjectContext *staticContext;
-#endif
+extern BOOL forkedProcess;
 
 
 @implementation OsiriXSCPDataHandler
@@ -45,8 +43,9 @@ extern NSManagedObjectContext *staticContext;
 
 - (void)dealloc
 {
-	context = 0L;
-	
+	[context release];
+	context = nil;
+    
 	for( int i = 0 ; i < moveArraySize; i++) free( moveArray[ i]);
 	free( moveArray);
 	moveArray = nil;
@@ -71,6 +70,11 @@ extern NSManagedObjectContext *staticContext;
 {
 	if (self = [super init])
 	{
+        if( forkedProcess)
+            context = [staticContext retain];
+        else
+            context = [[[DicomDatabase defaultDatabase] independentContext] retain];
+        
 	}
 	return self;
 }
@@ -1349,14 +1353,11 @@ extern NSManagedObjectContext *staticContext;
     NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
 	NSPredicate *predicate = [self predicateForDataset: dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
     
-    #ifdef SHAREDCONTEXT
-	NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
+	NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
 	NSError *error = nil;
 	NSEntityDescription *entity;
 	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    #endif
-    
-    
+        
     const char *sType;
 	dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
 	OFCondition cond;
@@ -1374,7 +1375,6 @@ extern NSManagedObjectContext *staticContext;
 		[findTemplate setObject: [NSNumber numberWithBool: YES] forKey: [NSString stringWithFormat: @"%d,%d", key.getElement(), key.getGroup()]];
 	}
 	
-    #ifdef SHAREDCONTEXT
 	if (strcmp(sType, "STUDY") == 0) 
 		entity = [[model entitiesByName] objectForKey:@"Study"];
 	else if (strcmp(sType, "SERIES") == 0) 
@@ -1391,7 +1391,6 @@ extern NSManagedObjectContext *staticContext;
 					
 		error = nil;
 		
-		context = staticContext;
 		[context lock];
 		
 		[findArray release];
@@ -1474,17 +1473,6 @@ extern NSManagedObjectContext *staticContext;
 		
 		cond = EC_IllegalParameter;
 	}
-    #else
-    
-    NSDictionary *message = [NSDictionary dictionaryWithObjectsAndKeys: predicate, @"predicate", nil];
-    
-    // To be continued.... http://think-async.com/Asio/Download
-    // We CANNOT use the Core Foundation CFStream....
-    
-    // [NSKeyedArchiver archivedDataWithRootObject: message]
-//    NSData *response = [N2Connection sendSynchronousRequest:  toAddress: @"127.0.0.1"  port: 36912];
-    
-    #endif
     
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
@@ -1600,17 +1588,14 @@ extern NSManagedObjectContext *staticContext;
         NSPredicate *compressedSOPInstancePredicate = nil, *seriesLevelPredicate = nil;
 		NSPredicate *predicate = [self predicateForDataset:dataset compressedSOPInstancePredicate: &compressedSOPInstancePredicate seriesLevelPredicate: &seriesLevelPredicate];
         
-        #ifdef SHAREDCONTEXT
-		NSManagedObjectModel *model = staticContext.persistentStoreCoordinator.managedObjectModel;
+		NSManagedObjectModel *model = context.persistentStoreCoordinator.managedObjectModel;
 		NSError *error = nil;
 		NSEntityDescription *entity;
 		NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        #endif
         
 		const char *sType;
 		dataset->findAndGetString (DCM_QueryRetrieveLevel, sType, OFFalse);
         
-         #ifdef SHAREDCONTEXT
 		if (strcmp(sType, "STUDY") == 0) 
 			entity = [[model entitiesByName] objectForKey:@"Study"];
 		else if (strcmp(sType, "SERIES") == 0) 
@@ -1625,7 +1610,6 @@ extern NSManagedObjectContext *staticContext;
 		
 		error = nil;
 		
-		context = staticContext;
 		[context lock];
 		
 		NSArray *array = [NSArray array];
@@ -1731,10 +1715,6 @@ extern NSManagedObjectContext *staticContext;
 		}
         
 		[context unlock];
-		context = 0L;
-        #else
-        
-        #endif
         
 		// TO AVOID DEADLOCK
 		// See DcmQueryRetrieveSCP::unlockFile dcmqrsrv.mm
@@ -1801,7 +1781,6 @@ extern NSManagedObjectContext *staticContext;
 		else
 		{
 			[context unlock];
-			context = nil;
 			
 			*isComplete = YES;
 		}
