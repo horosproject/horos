@@ -90,7 +90,8 @@ static NSMatrix *gDateMatrix = nil;
 	{
         @try
         {
-            if( [[savedServer objectForKey:@"AETitle"] isEqualToString: [[servers objectAtIndex:i] objectForKey:@"AETitle"]] && 
+            if( [[savedServer objectForKey:@"AETitle"] isEqualToString: [[servers objectAtIndex:i] objectForKey:@"AETitle"]] &&
+               [[savedServer objectForKey:@"name"] isEqualToString: [[servers objectAtIndex:i] objectForKey:@"Description"]] &&
                [[savedServer objectForKey:@"AddressAndPort"] isEqualToString: [NSString stringWithFormat:@"%@:%@", [[servers objectAtIndex:i] valueForKey:@"Address"], [[servers objectAtIndex:i] valueForKey:@"Port"]]])
             {
                 return [servers objectAtIndex:i];
