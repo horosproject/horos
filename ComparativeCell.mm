@@ -22,6 +22,7 @@
 @synthesize rightTextFirstLine = _rightTextFirstLine;
 @synthesize rightTextSecondLine = _rightTextSecondLine;
 @synthesize leftTextSecondLine = _leftTextSecondLine;
+@synthesize leftTextFirstLine = _leftTextFirstLine;
 @synthesize textColor = _textColor;
 
 -(id)init
@@ -46,6 +47,7 @@
     self.rightTextFirstLine = nil;
     self.rightTextSecondLine = nil;
     self.leftTextSecondLine = nil;
+    self.leftTextFirstLine = nil;
     [super dealloc];
 }
 
@@ -56,6 +58,7 @@
     copy->_rightTextFirstLine = [self.rightTextFirstLine copyWithZone:zone];
     copy->_rightTextSecondLine = [self.rightTextSecondLine copyWithZone:zone];
     copy->_leftTextSecondLine = [self.leftTextSecondLine copyWithZone:zone];
+    copy->_leftTextFirstLine = [self.leftTextFirstLine copyWithZone:zone];
     copy->_textColor = [self.textColor copyWithZone:zone];
     
     return copy;
@@ -101,16 +104,24 @@
         frame.size.width -= w + spacer;
     }
     
-    if (self.title)
+    if (true)
     {
         NSMutableDictionary* attributes = [[[self.attributedTitle attributesAtIndex:0 effectiveRange:NULL] mutableCopy] autorelease];
+        
+        NSString* text = self.leftTextFirstLine;
+        if (!text.length) {
+            NSColor* color = [attributes valueForKey:NSForegroundColorAttributeName];
+            text = @"Unnamed";
+            [attributes setObject:[color blendedColorWithFraction:0.4 ofColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1]] forKey:NSForegroundColorAttributeName];
+        }
+        
         NSMutableParagraphStyle* leftAlignmentParagraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         [leftAlignmentParagraphStyle setAlignment:NSLeftTextAlignment];
         [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
         [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
         frame.origin.y += 2;
-        [self.title drawInRect:frame withAttributes:attributes];
+        [text drawInRect:frame withAttributes:attributes];
         frame.origin.y -= 2;
     }
     

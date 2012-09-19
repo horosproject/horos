@@ -9452,7 +9452,8 @@ static BOOL needToRezoom;
             else txtFont = [NSFont fontWithName: DISTANTSTUDYFONT size:11];		
 		
             [cell setFont:txtFont];
-            cell.title = [study studyName];
+            cell.title = @"DUMMY"; // avoid NIL values here
+            cell.leftTextFirstLine = [study studyName];
             cell.rightTextFirstLine = [study modality];
             cell.leftTextSecondLine = [[NSUserDefaults dateFormatter] stringFromDate: [study date]];
             cell.rightTextSecondLine = N2LocalizedSingularPluralCount( (int) fabs( [[study numberOfImages] intValue]), NSLocalizedString(@"image", nil), NSLocalizedString(@"images", nil));
@@ -9460,6 +9461,7 @@ static BOOL needToRezoom;
         else
         {
             cell.title = @"";
+            cell.leftTextFirstLine = @"";
             cell.rightTextFirstLine = @"";
             cell.leftTextSecondLine = @"";
             cell.rightTextSecondLine =@"";
@@ -9822,7 +9824,7 @@ static BOOL needToRezoom;
         WaitRendering *w = [[[WaitRendering alloc] init: NSLocalizedString(@"Retrieving...", nil)] autorelease];
         [w showWindow:self];
         
-        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector( comparativeRetrieve:) object: study] autorelease];
+        NSThread *t = [[[NSThread alloc] initWithTarget:self selector:@selector(comparativeRetrieve:) object: study] autorelease];
         t.name = NSLocalizedString( @"Retrieving images...", nil);
         t.status = N2LocalizedSingularPluralCount( 1, NSLocalizedString(@"study", nil), NSLocalizedString(@"studies", nil));
         t.supportsCancel = YES;

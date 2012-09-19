@@ -1814,7 +1814,7 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 						NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys: lock, @"lock", [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: dataset], @"dataset", nil];
 						
 						globalCondition = EC_Normal;
-						[NSThread detachNewThreadSelector: @selector( cFindThread:) toTarget: self withObject: dict];
+						[NSThread detachNewThreadSelector: @selector(cFindThread:) toTarget: self withObject: dict];
 						[NSThread sleepForTimeInterval: 0.1];
 						
 						while( [wait aborted] == NO && _abortAssociation == NO && [NSThread currentThread].isCancelled == NO && [[NSFileManager defaultManager] fileExistsAtPath: @"/tmp/kill_all_storescu"] == NO)
@@ -2440,4 +2440,5 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 {
     return [NSString stringWithFormat: @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality];
 }
+
 @end
