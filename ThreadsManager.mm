@@ -112,11 +112,11 @@
                         [thread start];
                     }
                     
-                    /*if (isDone) // already done?? well,
+                    if ([thread isFinished]) // already done?? wtf..
                     {
                         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSThreadWillExitNotification object:thread];
                         [_threadsController removeObject:thread];
-                    }*/
+                    }
                 }
                 @catch (NSException* e)
                 {
