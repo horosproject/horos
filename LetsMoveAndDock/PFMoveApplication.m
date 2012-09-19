@@ -15,14 +15,14 @@
 
 
 // Strings
-#define kStrMoveApplicationCouldNotMove (@"Could not move OsiriX to Applications folder.")
-#define kStrMoveApplicationQuestionTitle  (@"Move OsiriX to Applications folder?")
-#define kStrMoveApplicationQuestionTitleHome (@"Move OsiriX to Applications folder in your Home folder?")
-#define kStrMoveApplicationQuestionMessage (@"OsiriX is currently not in the Applications folder. It is recommended to run OsiriX from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)")
-#define kStrMoveApplicationButtonMove (@"Move OsiriX to Applications Folder")
-#define kStrMoveApplicationButtonDoNotMove (@"Do Not Move")
-#define kStrMoveApplicationQuestionInfoWillRequirePasswd (@"Note that this will require an administrator password.")
-#define kStrMoveApplicationQuestionInfoInDownloadsFolder (@"This will keep your Downloads folder uncluttered.")
+#define kStrMoveApplicationCouldNotMove (NSLocalizedString( @"Could not move OsiriX to Applications folder.", nil))
+#define kStrMoveApplicationQuestionTitle  (NSLocalizedString( @"Move OsiriX to Applications folder?", nil))
+#define kStrMoveApplicationQuestionTitleHome (NSLocalizedString( @"Move OsiriX to Applications folder in your Home folder?", nil))
+#define kStrMoveApplicationQuestionMessage (NSLocalizedString( @"OsiriX is currently not in the Applications folder. It is recommended to run OsiriX from the Applications folder. I can move it now, add an icon to the dock and restart, if you agree? (recommended)", nil))
+#define kStrMoveApplicationButtonMove (NSLocalizedString( @"Move OsiriX to Applications Folder", nil))
+#define kStrMoveApplicationButtonDoNotMove (NSLocalizedString( @"Do Not Move", nil))
+#define kStrMoveApplicationQuestionInfoWillRequirePasswd (NSLocalizedString( @"Note that this will require an administrator password.", nil))
+#define kStrMoveApplicationQuestionInfoInDownloadsFolder (NSLocalizedString( @"This will keep your Downloads folder uncluttered.", nil))
 
 // Needs to be defined for compiling under 10.4 SDK
 #ifndef NSAppKitVersionNumber10_4
