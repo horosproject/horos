@@ -229,15 +229,16 @@ static NSString *globalSync = @"globalSync";
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
-    DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
-    
-    OFCondition cond = scp->handleAssociation(assoc, YES);
-    
-    NSString *str = scp->getErrorMessage();
-    
-    if( str)
-        [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: str waitUntilDone: NO];
+    @try
+    {
+        T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
+        DcmQueryRetrieveSCP *scp = (DcmQueryRetrieveSCP*) [[d valueForKey: @"DcmQueryRetrieveSCP"] pointerValue];
+        
+        OFCondition cond = scp->handleAssociation(assoc, YES);
+    }
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
     
     [pool release];
 }
@@ -355,7 +356,10 @@ DcmQueryRetrieveSCP::~DcmQueryRetrieveSCP()
 
 void DcmQueryRetrieveSCP::lockFile(void)
 {
-	char dir[ 1024];
+    if( options_.singleProcess_)
+        return;
+	
+    char dir[ 1024];
 	
 	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
 	unlink( dir);
@@ -366,6 +370,9 @@ void DcmQueryRetrieveSCP::lockFile(void)
 
 void DcmQueryRetrieveSCP::unlockFile(void)
 {
+    if( options_.singleProcess_)
+        return;
+    
 	BOOL fileExist = YES;
 	char dir[ 1024];
 	sprintf( dir, "%s-%d", "/tmp/lock_process", getpid());
@@ -384,34 +391,49 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 
 void DcmQueryRetrieveSCP::writeStateProcess( const char *str)
 {
-	char dir[ 1024];
-	sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
-	
-	FILE * pFile = fopen (dir,"r");
-	if( pFile == nil)
-	{
-		pFile = fopen (dir,"w+");
-		if( pFile)
-		{
-			fprintf( pFile, "%s", str);
-			fclose (pFile);
-		}
-	}
-	else fclose (pFile);
+    if( options_.singleProcess_)
+    {
+        [NSThread currentThread].status = [NSString stringWithUTF8String: str];
+    }
+    else
+    {
+        char dir[ 1024];
+        sprintf( dir, "%s-%d", "/tmp/process_state", getpid());
+        
+        FILE * pFile = fopen (dir,"r");
+        if( pFile == nil)
+        {
+            pFile = fopen (dir,"w+");
+            if( pFile)
+            {
+                fprintf( pFile, "%s", str);
+                fclose (pFile);
+            }
+        }
+        else fclose (pFile);
+    }
 }
 
 void DcmQueryRetrieveSCP::writeErrorMessage( const char *str)
 {
-	char dir[ 1024];
-	sprintf( dir, "%s", "/tmp/error_message");
-	unlink( dir);
-	
-	FILE * pFile = fopen (dir,"w+");
-	if( pFile)
-	{
-		fprintf( pFile, "%s", str);
-		fclose (pFile);
-	}
+    if( options_.singleProcess_)
+    {
+        if( str)
+            [[AppController sharedAppController] performSelectorOnMainThread: @selector( displayListenerError:) withObject: [NSString stringWithUTF8String: str] waitUntilDone: NO];
+    }
+    else
+    {
+        char dir[ 1024];
+        sprintf( dir, "%s", "/tmp/error_message");
+        unlink( dir);
+        
+        FILE * pFile = fopen (dir,"w+");
+        if( pFile)
+        {
+            fprintf( pFile, "%s", str);
+            fclose (pFile);
+        }
+    }
 }
 
 NSString* DcmQueryRetrieveSCP::getErrorMessage()	// see emptyDeleteQueue: for reading this error message
@@ -538,6 +560,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                         writeStateProcess( "C-ECHO SCP...");
                     if( forkedProcess)
                         unlockFile();
+                        
                     cond = echoSCP(assoc, &msg.msg.CEchoRQ, presID);
                     break;
                 case DIMSE_C_STORE_RQ:
@@ -1591,9 +1614,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 //			{
 //				@try
 //				{
-//					staticContext = [[NSManagedObjectContext alloc] init];
-//                    staticContext.undoManager = nil;
-//                    staticContext.persistentStoreCoordinator = [[[DicomDatabase defaultDatabase] managedObjectContext] persistentStoreCoordinator];
 //					@try
 //					{
 //						/* don't spawn a sub-process to handle the association */
@@ -1604,8 +1624,6 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
 //					{
 //                        N2LogExceptionWithStackTrace(e);
 //					}
-//					[staticContext release];
-//					staticContext = nil;
 //				}
 //				@catch( NSException *e)
 //				{
@@ -1624,7 +1642,11 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             {
                 @try
 				{
-                    [NSThread detachNewThreadSelector: @selector( handleAssociation:) toTarget: [ContextCleaner class] withObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]];
+                    NSThread *t = [[[NSThread alloc] initWithTarget: [ContextCleaner class] selector:@selector( handleAssociation:) object: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]] autorelease];
+                    t.name = NSLocalizedString( @"DICOM Services...", nil);
+                    if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
+                        t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
                     
                     assoc = nil;
 				}
