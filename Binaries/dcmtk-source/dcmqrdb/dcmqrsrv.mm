@@ -389,11 +389,11 @@ void DcmQueryRetrieveSCP::unlockFile(void)
 	while( fileExist == YES && inc < 100000);
 }
 
-void DcmQueryRetrieveSCP::writeStateProcess( const char *str)
+void DcmQueryRetrieveSCP::writeStateProcess( const char *str, T_ASC_Association *assoc)
 {
     if( options_.singleProcess_)
     {
-        [NSThread currentThread].status = [NSString stringWithUTF8String: str];
+        [NSThread currentThread].status = [NSString stringWithFormat: NSLocalizedString( @"%s %s", nil), assoc->params->DULparams.callingPresentationAddress, str];
     }
     else
     {
@@ -501,7 +501,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         
         DcmQueryRetrieveDatabaseHandle *dbHandle = nil;
         
-        @synchronized( globalSync)
+//        @synchronized( globalSync)
         {
             dbHandle = factory_.createDBHandle( assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle, cond);
 		}
@@ -530,7 +530,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         {
             int timeout;
             
-            @synchronized( globalSync)
+//            @synchronized( globalSync)
             {
                 if( firstLoop)
                 {
@@ -555,9 +555,9 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
 				{
                 case DIMSE_C_ECHO_RQ:
 					if( secureConnection_)
-                        writeStateProcess( "C-ECHO TLS SCP...");
+                        writeStateProcess( "C-ECHO TLS SCP...", assoc);
                     else
-                        writeStateProcess( "C-ECHO SCP...");
+                        writeStateProcess( "C-ECHO SCP...", assoc);
                     if( forkedProcess)
                         unlockFile();
                         
@@ -565,33 +565,33 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                     break;
                 case DIMSE_C_STORE_RQ:
                     if( secureConnection_)
-                        writeStateProcess( "C-STORE TLS SCP...");
+                        writeStateProcess( "C-STORE TLS SCP...", assoc);
                     else
-                        writeStateProcess( "C-STORE SCP...");
+                        writeStateProcess( "C-STORE SCP...", assoc);
 					if( forkedProcess)
                         unlockFile();
                     cond = storeSCP(assoc, &msg.msg.CStoreRQ, presID, *dbHandle, correctUIDPadding);
                     break;
                 case DIMSE_C_FIND_RQ:
                     if( secureConnection_)
-                        writeStateProcess( "C-FIND TLS SCP...");
+                        writeStateProcess( "C-FIND TLS SCP...", assoc);
                     else
-                        writeStateProcess( "C-FIND SCP...");
+                        writeStateProcess( "C-FIND SCP...", assoc);
                     cond = findSCP(assoc, &msg.msg.CFindRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_MOVE_RQ:
                     if( secureConnection_)
-                        writeStateProcess( "C-MOVE TLS SCP...");
+                        writeStateProcess( "C-MOVE TLS SCP...", assoc);
                     else
-                        writeStateProcess( "C-MOVE SCP...");
+                        writeStateProcess( "C-MOVE SCP...", assoc);
 					//* unlockFile(); is done in DCMTKDataHandlerCategory.mm
                     cond = moveSCP(assoc, &msg.msg.CMoveRQ, presID, *dbHandle);
                     break;
                 case DIMSE_C_GET_RQ:
                     if( secureConnection_)
-                        writeStateProcess( "C-GET TLS SCP...");
+                        writeStateProcess( "C-GET TLS SCP...", assoc);
                     else
-                        writeStateProcess( "C-GET SCP...");
+                        writeStateProcess( "C-GET SCP...", assoc);
 					if( activateCGETSCP_)
                         //* unlockFile(); is done in DCMTKDataHandlerCategory.mm
 						cond = getSCP(assoc, &msg.msg.CGetRQ, presID, *dbHandle);
@@ -636,8 +636,8 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 // the condition will be returned, the caller will abort the assosiation.
             }
         }
-
-        @synchronized( globalSync)
+        
+//        @synchronized( globalSync)
         {
             // release DB handle
             delete dbHandle;
@@ -669,7 +669,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 	
-    @synchronized( globalSync)
+//    @synchronized( globalSync)
     {
         /* clean up on association termination */
         if (cond == DUL_PEERREQUESTEDRELEASE)

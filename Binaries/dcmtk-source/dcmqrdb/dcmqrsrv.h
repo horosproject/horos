@@ -120,7 +120,7 @@ OFCondition storeSCP(
   void unlockFile(void);
   void waitUnlockFile(void);
   void writeErrorMessage( const char *str);
-  void writeStateProcess( const char *str);
+  void writeStateProcess( const char *str, T_ASC_Association *assoc);
   NSString* getErrorMessage();
   
   /** perform association negotiation for an incoming A-ASSOCIATE request based
