@@ -1294,7 +1294,7 @@ static NSDate *lastWarningDate = nil;
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"LISTENERCHECKINTERVAL"] intValue] != [defaults integerForKey: @"LISTENERCHECKINTERVAL"])
 		restartListener = YES;
-	if ([[previousDefaults valueForKey: @"SINGLEPROCESS"] intValue] != [defaults integerForKey: @"SINGLEPROCESS"])
+	if ([[previousDefaults valueForKey: @"SingleProcessMultiThreadedListener"] intValue] != [defaults integerForKey: @"SingleProcessMultiThreadedListener"])
 		restartListener = YES;
 	if ([[previousDefaults valueForKey: @"activateCGETSCP"] intValue] != [defaults integerForKey: @"activateCGETSCP"])
 		restartListener = YES;
@@ -3118,8 +3118,8 @@ static BOOL initialized = NO;
         NSLog( @"********");
 	}
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"])
-		NSLog( @"----- %@", NSLocalizedString( @"DICOM Listener is in Single Process / Multi-Threads mode.", nil));
+	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"] == NO)
+		NSLog( @"----- %@", NSLocalizedString( @"DICOM Listener is multi-processes mode.", nil));
 	
 	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"hideListenerError"])
 		[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"checkForUpdatesPlugins"];

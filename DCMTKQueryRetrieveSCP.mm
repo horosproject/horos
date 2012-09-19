@@ -199,7 +199,7 @@ void errmsg(const char* msg, ...)
 	options.verbose_= 0;
 	
 	//single process
-	options.singleProcess_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"SINGLEPROCESS"];
+	options.singleProcess_ = [[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"];
 	
 	//debug
 //	options.debug_ = OFTrue;
