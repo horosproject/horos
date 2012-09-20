@@ -25,6 +25,12 @@
 		
 		[self setMainView: [mainWindow contentView]];
 		[self mainViewDidLoad];
+        
+        if( [[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"].length <= 1)
+            [[NSUserDefaults standardUserDefaults] setObject:@"/~Documents/FolderToBurn" forKey:@"SupplementaryBurnPath"];
+        
+        if( [[NSFileManager defaultManager] fileExistsAtPath: [[[NSUserDefaults standardUserDefaults] stringForKey: @"SupplementaryBurnPath"] stringByExpandingTildeInPath]] == NO)
+            [[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"BurnSupplementaryFolder"];
 	}
 	
 	return self;

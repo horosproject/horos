@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12B19</string>
-		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
-		<string key="IBDocument.AppKitVersion">1187</string>
-		<string key="IBDocument.HIToolboxVersion">624.00</string>
+		<string key="IBDocument.SystemVersion">12C54</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2840</string>
+		<string key="IBDocument.AppKitVersion">1187.34</string>
+		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">2549</string>
+			<string key="NS.object.0">2840</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSBox</string>
@@ -578,8 +578,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 												<int key="NSCellFlags">337641473</int>
 												<int key="NSCellFlags2">131072</int>
 												<object class="NSURL" key="NSContents">
-													<nil key="NS.base"/>
-													<string key="NS.relative">file://localhost/Library/</string>
+													<object class="NSURL" key="NS.base">
+														<nil key="NS.base"/>
+														<string key="NS.relative">file://localhost/</string>
+													</object>
+													<string key="NS.relative">~Documents/FolderToBurn</string>
 												</object>
 												<reference key="NSSupport" ref="500324374"/>
 												<reference key="NSControlView" ref="742342778"/>
@@ -587,27 +590,40 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 													<object class="NSPathComponentCell">
 														<int key="NSCellFlags">67108928</int>
 														<int key="NSCellFlags2">1024</int>
-														<string key="NSContents">Root</string>
+														<string key="NSContents">Macintosh HD</string>
 														<reference key="NSSupport" ref="500324374"/>
 														<reference key="NSControlView" ref="742342778"/>
 														<reference key="NSBackgroundColor" ref="248395835"/>
 														<reference key="NSTextColor" ref="66030050"/>
 														<object class="NSURL" key="NSURL">
 															<nil key="NS.base"/>
-															<string key="NS.relative">file://localhost//</string>
+															<string key="NS.relative">file://localhost/</string>
 														</object>
 													</object>
 													<object class="NSPathComponentCell">
 														<int key="NSCellFlags">67108928</int>
 														<int key="NSCellFlags2">1024</int>
-														<string key="NSContents">Library</string>
+														<string key="NSContents">~Documents</string>
 														<reference key="NSSupport" ref="500324374"/>
 														<reference key="NSControlView" ref="742342778"/>
 														<reference key="NSBackgroundColor" ref="248395835"/>
 														<reference key="NSTextColor" ref="66030050"/>
 														<object class="NSURL" key="NSURL">
 															<nil key="NS.base"/>
-															<string key="NS.relative">file://localhost/Library</string>
+															<string key="NS.relative">file://localhost/~Documents</string>
+														</object>
+													</object>
+													<object class="NSPathComponentCell">
+														<int key="NSCellFlags">67108928</int>
+														<int key="NSCellFlags2">1024</int>
+														<string key="NSContents">FolderToBurn</string>
+														<reference key="NSSupport" ref="500324374"/>
+														<reference key="NSControlView" ref="742342778"/>
+														<reference key="NSBackgroundColor" ref="248395835"/>
+														<reference key="NSTextColor" ref="66030050"/>
+														<object class="NSURL" key="NSURL">
+															<nil key="NS.base"/>
+															<string key="NS.relative">file://localhost/~Documents/FolderToBurn</string>
 														</object>
 													</object>
 												</array>
@@ -717,26 +733,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</object>
 					<int key="connectionID">174</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.SupplementaryBurnPath</string>
-						<reference key="source" ref="500457483"/>
-						<reference key="destination" ref="154481161"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="500457483"/>
-							<reference key="NSDestination" ref="154481161"/>
-							<string key="NSLabel">enabled: values.SupplementaryBurnPath</string>
-							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.SupplementaryBurnPath</string>
-							<object class="NSDictionary" key="NSOptions">
-								<string key="NS.key.0">NSValueTransformerName</string>
-								<string key="NS.object.0">NSIsNotNil</string>
-							</object>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">190</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">

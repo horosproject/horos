@@ -698,7 +698,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject:@"1" forKey:@"StoreThumbnailsInDB"];
 	[defaultValues setObject:@"1" forKey:@"DisplayDICOMOverlays"];
 	[defaultValues setObject:@"0" forKey:@"ALLOWDICOMEDITING"];
-	
+	[defaultValues setObject:@"/~Documents/FolderToBurn" forKey:@"SupplementaryBurnPath"];
+    
 	NSMutableArray *presets = [NSMutableArray array];
 	NSDictionary	*shading;
 	
