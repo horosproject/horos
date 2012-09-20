@@ -2359,15 +2359,18 @@ static volatile int numberOfThreadsForRelisce = 0;
 	
 	NSString *loading = @"         ";
 	
-	if( loadingThread.isExecuting)
-	{
-		if( [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] != 1)
-		{
-			loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.];
-			[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:nil repeats:NO];
-		}
+    @synchronized( loadingThread)
+    {
+        if( loadingThread.isExecuting)
+        {
+            if( [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] != 1)
+            {
+                loading = [NSString stringWithFormat:NSLocalizedString(@" - %2.f%%", nil), [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] * 100.];
+                [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(setWindowTitle:)  userInfo:nil repeats:NO];
+            }
+        }
 	}
-	
+    
 	if( [fileList[ curMovieIndex] count])
 	{
 		NSManagedObject	*curImage = [fileList[ curMovieIndex] objectAtIndex:0];
@@ -2691,9 +2694,12 @@ static volatile int numberOfThreadsForRelisce = 0;
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
     [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
     
-    [loadingThread cancel];
-    [loadingThread release];
-    loadingThread = nil;
+    @synchronized( loadingThread)
+    {
+        [loadingThread cancel];
+        [loadingThread release];
+        loadingThread = nil;
+    }
     
 	[[self window] setAcceptsMouseMovedEvents: NO];
 	
@@ -6207,8 +6213,11 @@ return YES;
 	
 	if( c == NO)
 	{
-		if( loadingThread.isExecuting) return NO;
-	}
+        @synchronized( loadingThread)
+        {
+            if( loadingThread.isExecuting) return NO;
+        }
+    }
 	
 	[self checkEverythingLoaded];
 	
@@ -6707,10 +6716,13 @@ return YES;
 {
 	int x,i,z;
 	
-    [loadingThread cancel];
-    [loadingThread release];
-    loadingThread = nil;
-	
+    @synchronized( loadingThread)
+    {
+        [loadingThread cancel];
+        [loadingThread release];
+        loadingThread = nil;
+	}
+    
 	if( resampleRatio != 1)
 		resampleRatio = 1;
 	
@@ -6773,9 +6785,12 @@ return YES;
 	
 	[self finalizeSeriesViewing];
 	
-    [loadingThread cancel];
-    [loadingThread release];
-    loadingThread = nil;
+    @synchronized( loadingThread)
+    {
+        [loadingThread cancel];
+        [loadingThread release];
+        loadingThread = nil;
+    }
     
 	[undoQueue release];
     undoQueue = nil;
@@ -7438,9 +7453,12 @@ return YES;
     
 	originalOrientation = -1;
 	
-    [loadingThread cancel];
-    [loadingThread release];
-    loadingThread = nil;
+    @synchronized( loadingThread)
+    {
+        [loadingThread cancel];
+        [loadingThread release];
+        loadingThread = nil;
+    }
     
     NSMutableDictionary *d = [NSMutableDictionary dictionary];
    
@@ -7459,8 +7477,12 @@ return YES;
     [d setObject: fileListArray forKey: @"fileListArray"];
     [d setObject: self forKey: @"viewerController"];
     
-    loadingThread = [[NSThread alloc] initWithTarget: [ViewerController class] selector: @selector(loadImageData:) object: d];
-	[loadingThread start];
+    NSThread *tempThread = [[NSThread alloc] initWithTarget: [ViewerController class] selector: @selector(loadImageData:) object: d];
+    @synchronized( tempThread)
+    {
+        loadingThread = tempThread;
+        [loadingThread start];
+    }
     
 	[self setWindowTitle:self];
 }
@@ -7570,7 +7592,14 @@ return YES;
     
 	for( int i = from; i < to; i++)
 	{
-		if( mainLoadingThread.isCancelled == NO)
+        BOOL isCancelled;
+        
+        @synchronized( mainLoadingThread)
+        {
+            isCancelled = mainLoadingThread.isCancelled;
+        }
+        
+		if( isCancelled == NO)
 		{
             if( !isLocal)
             {
@@ -7589,7 +7618,10 @@ return YES;
 			if( loadingPercentage >= 1)
                 loadingPercentage = 0.99;
             
-            [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
+            @synchronized( mainLoadingThread)
+            {
+                [mainLoadingThread.threadDictionary setObject: [NSNumber numberWithFloat: loadingPercentage] forKey: @"loadingPercentage"];
+            }
 		}
 	}
 	
@@ -7601,9 +7633,12 @@ return YES;
 
 - (void) finishLoadImageData: (NSDictionary*) dict
 {
-    [loadingThread cancel];
-    [loadingThread release];
-    loadingThread = nil;
+    @synchronized( loadingThread)
+    {
+        [loadingThread cancel];
+        [loadingThread release];
+        loadingThread = nil;
+    }
     
     if( [[dict objectForKey: @"pixListArray"] objectAtIndex: 0] != pixList[ 0])
         return;
@@ -15777,15 +15812,17 @@ int i,j,l;
 
 - (void) performMovieAnimation:(id) sender
 {
-    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
-    short           val;
+    @synchronized( loadingThread)
+    {
+        if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
+            return;
+	}
     
-	if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
-        return;
-	
+    NSTimeInterval  thisTime = [NSDate timeIntervalSinceReferenceDate];
+    
     if( thisTime - lastMovieTime > 1.0 / [movieRateSlider floatValue])
     {
-        val = curMovieIndex;
+        short val = curMovieIndex;
         val ++;
         
 		if( val < 0) val = 0;
@@ -15849,9 +15886,12 @@ int i,j,l;
     if( windowWillClose)
         return;
     
-	if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
-        return;
-	
+    @synchronized( loadingThread)
+    {
+        if( loadingThread.isExecuting && [[loadingThread.threadDictionary objectForKey: @"loadingPercentage"] floatValue] < 0.5)
+            return;
+	}
+    
 	if( [pixList[ curMovieIndex] count] <= 1) return;
 
 	if( thisTime - lastTimeFrame > 1.0)
@@ -19906,23 +19946,36 @@ int i,j,l;
 
 - (BOOL) isEverythingLoaded
 {
-	if( loadingThread.isExecuting == YES) return NO;
-	else if( loadingThread.isExecuting == NO) return YES;
-	else return NO;
+    @synchronized( loadingThread)
+    {
+        if( loadingThread.isExecuting == YES) return NO;
+        else if( loadingThread.isExecuting == NO) return YES;
+        else return NO;
+    }
 }
 
 -(void) checkEverythingLoaded
 {
-	if( loadingThread.isExecuting == YES)
+    BOOL isExecuting;
+    
+    @synchronized( loadingThread)
+    {
+        isExecuting = loadingThread.isExecuting;
+	}
+    
+    if( isExecuting)
 	{
 		checkEverythingLoaded = YES;
 		
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-		while( loadingThread.isExecuting)
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
-		
+        @synchronized( loadingThread)
+        {
+            while( loadingThread.isExecuting)
+                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+		}
+        
 		[splash close];
 		[splash autorelease];
 		

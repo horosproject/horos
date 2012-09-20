@@ -2331,25 +2331,21 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						extension = @"dcm";
 					
 					dstPath = [self uniquePathForNewDataFileWithExtension:extension];
-
+                    
+                    //We want an atomic copy: use a temp path for copy, then rename
+                    
+                    NSString *tempDstPath = [dstPath stringByAppendingPathExtension:@"temp"];
+                    
 //#define USECORESERVICESFORCOPY 1
 //
 //#ifdef USECORESERVICESFORCOPY
                     char *targetPath = nil;
                     OptionBits options = kFSFileOperationSkipSourcePermissionErrors + kFSFileOperationSkipPreflight;
-                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[dstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[dstPath lastPathComponent], &targetPath, options);
-
+                    OSStatus err = FSPathCopyObjectSync([srcPath fileSystemRepresentation], [[tempDstPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[tempDstPath lastPathComponent], &targetPath, options);
+                    [[NSFileManager defaultManager] moveItemAtPath: tempDstPath toPath: dstPath error: nil];
+                    
                     if( err != 0)
-                    {
                         NSLog( @"***** copyItemAtPath %@ failed : %d", srcPath, (int) err);
-                    }
-//#else
-//                    NSError* err = nil;
-//                    if( [[NSFileManager defaultManager] copyItemAtPath: srcPath toPath: dstPath error:&err] == NO)
-//                    {
-//                        NSLog( @"***** copyItemAtPath %@ failed : %@", srcPath, err);
-//                    }
-//#endif
                     else
                     {
 						if( [extension isEqualToString: @"dcm"] == NO)
