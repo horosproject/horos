@@ -501,8 +501,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
             else
                 if ([requestedPath isEqual:@"/testdbalive"])
                 {
-                    [self.portal.dicomDatabase.managedObjectContext lock];
-                    [self.portal.dicomDatabase objectsForEntity:self.portal.dicomDatabase.studyEntity predicate:[NSPredicate predicateWithFormat:@"name == %@", @"test"]];
+                    [self.portal.dicomDatabase.managedObjectContext lock]; // Can we obtain a lock on the main db?
                     [self.portal.dicomDatabase.managedObjectContext unlock];
                     
 //                    NSLog( @"WebPortal: test DB alive: lock/unlock for DICOM DB managedObjectContext : succeeded");
