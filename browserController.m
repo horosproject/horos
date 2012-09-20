@@ -6802,6 +6802,12 @@ static NSConditionLock *threadLock = nil;
     
 	[[NSUserDefaults standardUserDefaults] setBool: NO forKey: @"onlyDisplayImagesOfSamePatient"];
 	
+    if( delayedTileWindows)
+    {
+        delayedTileWindows = NO;
+        [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+    }
+    
 	if(  applyToAllViewers)
 	{
 		// If multiple viewer are opened, apply it to the entire list

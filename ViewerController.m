@@ -3331,6 +3331,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 	if( recursiveCloseWindowsProtected) return;
 	recursiveCloseWindowsProtected = YES;
 	
+    if( delayedTileWindows)
+    {
+        delayedTileWindows = NO;
+        [NSObject cancelPreviousPerformRequestsWithTarget:[AppController sharedAppController] selector:@selector(tileWindows:) object:nil];
+    }
+    
 	NSArray *v = [ViewerController getDisplayed2DViewers];
 	
 	if( [v count])
