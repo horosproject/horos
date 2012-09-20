@@ -37,7 +37,7 @@
 
 @implementation OSILocationsPreferencePanePref
 
-@synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl;
+@synthesize WADOPort, WADOhttps, WADOTransferSyntax, WADOUrl, WADOUsername, WADOPassword;
 
 @synthesize TLSEnabled, TLSAuthenticated, TLSUseDHParameterFileURL;
 @synthesize TLSDHParameterFileURL;
@@ -359,6 +359,8 @@
 	NSLog(@"dealloc OSILocationsPreferencePanePref");
 	
 	[WADOUrl release];
+	[WADOUsername release];
+	[WADOPassword release];
 	[stringEncoding release];
 	
 	[TLSDHParameterFileURL release];
@@ -425,7 +427,11 @@
 	
 	NSMutableDictionary *aServer = [[dicomNodes arrangedObjects] objectAtIndex: [[dicomNodes tableView] selectedRow]];
 	
-	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, [aServer valueForKey: @"Address"], WADOPort, WADOUrl];
+    NSString* lpbit = @"";
+    if ([WADOUsername length] && [WADOPassword length])
+        lpbit = [NSString stringWithFormat:@"%@:%@@", WADOUsername, WADOPassword];
+
+	NSString *baseURL = [NSString stringWithFormat: @"%@://%@%@:%d/%@?requestType=WADO", protocol, lpbit, [aServer valueForKey: @"Address"], WADOPort, WADOUrl];
 	
 	NSURL *url = [NSURL URLWithString: [baseURL stringByAppendingFormat:@"&studyUID=%@&seriesUID=%@&objectUID=%@&contentType=application/dicom%@", @"1", @"1", @"1", @"&useOrig=true"]];
 	
@@ -455,6 +461,8 @@
 	
 	self.WADOPort = [[aServer valueForKey: @"WADOPort"] intValue];
 	self.WADOUrl = [aServer valueForKey: @"WADOUrl"];
+	self.WADOPassword = [aServer valueForKey: @"WADOPassword"];
+	self.WADOUsername = [aServer valueForKey: @"WADOUsername"];
 	self.WADOTransferSyntax = [[aServer valueForKey: @"WADOTransferSyntax"] intValue];
 	self.WADOhttps = [[aServer valueForKey: @"WADOhttps"] intValue];
 	
@@ -477,6 +485,8 @@
 		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
 		[aServer setObject: [NSNumber numberWithInt: WADOhttps] forKey: @"WADOhttps"];
 		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
+		[aServer setObject: WADOUsername forKey: @"WADOUsername"];
+		[aServer setObject: WADOPassword forKey: @"WADOPassword"];
 		
 		// disable TLS
 		[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];

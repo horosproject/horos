@@ -863,7 +863,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) WADORetrieve: (DCMTKStudyQueryNode*) study // requestService: WFIND?
 {
-	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
+	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
 		NSLog( @"------ WADO download : starting... %@ %@", [study name], [study patientID]);
 	else
 		NSLog( @"------ WADO download : starting... %@ %@", [self name], [self patientID]);
@@ -875,7 +875,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	if( [wadoSubUrl hasPrefix: @"/"])
 		wadoSubUrl = [wadoSubUrl substringFromIndex: 1];
 	
-	NSString *baseURL = [NSString stringWithFormat: @"%@://%@:%d/%@?requestType=WADO", protocol, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], wadoSubUrl];
+    NSString* lpbit = @"";
+    if ([[_extraParameters valueForKey:@"WADOUsername"] length] && [[_extraParameters valueForKey:@"WADOPassword"] length])
+        lpbit = [NSString stringWithFormat:@"%@:%@@", [_extraParameters valueForKey:@"WADOUsername"], [_extraParameters valueForKey:@"WADOPassword"]];
+    
+	NSString *baseURL = [NSString stringWithFormat: @"%@://%@%@:%d/%@?requestType=WADO", protocol, lpbit, _hostname, [[_extraParameters valueForKey: @"WADOPort"] intValue], wadoSubUrl];
 	
 	@try
 	{
@@ -899,9 +903,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		NSManagedObjectContext *context = [[DicomDatabase activeLocalDatabase] independentContext];
 		
 		NSPredicate *predicate = [NSPredicate predicateWithValue: NO];
-		if( [self isMemberOfClass: [DCMTKSeriesQueryNode class]])
+		if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
 			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [study uid]];
-		if( [self isMemberOfClass: [DCMTKStudyQueryNode class]])
+		if( [self isKindOfClass: [DCMTKStudyQueryNode class]])
 			predicate = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", [self uid]];
 			
 		[request setEntity: [[context.persistentStoreCoordinator.managedObjectModel entitiesByName] objectForKey: @"Study"]];
@@ -918,7 +922,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
 	
-	if( [self isMemberOfClass:[DCMTKStudyQueryNode class]])
+	if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
 	{
 		// We are at STUDY level, and we want to go direclty to IMAGE level
 		
@@ -960,7 +964,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		[self purgeChildren];
 	}
 	
-	if( [self isMemberOfClass:[DCMTKSeriesQueryNode class]])
+	if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
 	{
         NSArray *childrenArray = nil;
         @synchronized( self)
