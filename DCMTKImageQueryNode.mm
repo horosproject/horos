@@ -105,8 +105,6 @@
 			_time = [[DCMCalendarDate dicomTime:dateString] retain];
 			[dateString release];
 		}
-
-
 	}
 	return self;
 }
