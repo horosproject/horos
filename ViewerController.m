@@ -19956,8 +19956,9 @@ int i,j,l;
     {
         if( loadingThread.isExecuting == YES) return NO;
         else if( loadingThread.isExecuting == NO) return YES;
-        else return NO;
     }
+    
+    return NO;
 }
 
 -(void) checkEverythingLoaded

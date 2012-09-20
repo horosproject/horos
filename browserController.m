@@ -4334,8 +4334,10 @@ static NSConditionLock *threadLock = nil;
                             NSInteger row, column;
                             if( cell.state == NSOnState && [oMatrix getRow: &row column: &column ofCell: cell])
                             {
-                                [selectedCellsIDs addObject: [cell representedObject]]; // For NSMainThread situation
-                                [selectedRowColumns addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInteger: row], @"row", [NSNumber numberWithInteger: column], @"column", nil]]; //For background thread situation
+                                if (cell.representedObject) {
+                                    [selectedCellsIDs addObject: [cell representedObject]]; // For NSMainThread situation
+                                    [selectedRowColumns addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInteger: row], @"row", [NSNumber numberWithInteger: column], @"column", nil]]; //For background thread situation
+                                }
                             }
                         }
                     }
