@@ -3505,6 +3505,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSearchField: (NSDictionary*) dict
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     int curSearchType = [[dict objectForKey: @"searchType"] intValue];
@@ -3639,6 +3642,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForTimeIntervalFromTo: (NSDictionary*) dict
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     NSDate* from = [dict objectForKey: @"from"];
