@@ -1683,6 +1683,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 						
 						NSInteger index = [studiesArrayStudyInstanceUID indexOfObject:[curDict objectForKey: @"studyID"]];
 						
+                        newObject = NO;
+                        
 						if (index != NSNotFound)
 						{
 							if ([[curDict objectForKey: @"fileType"] hasPrefix:@"DICOM"] == NO) // We do this double check only for DICOM files.
@@ -1691,10 +1693,21 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							}
 							else
 							{
-								if (![[studiesArray objectAtIndex: index] valueForKey: @"patientUID"])
-                                    [[studiesArray objectAtIndex: index] setPatientUID:[curDict objectForKey: @"patientUID"]];
-                                if ([[curDict objectForKey: @"patientUID"] compare: [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-									study = [studiesArray objectAtIndex: index];
+								DicomStudy* tstudy = [studiesArray objectAtIndex:index];
+                                
+                                // is this actually an empty study? if so, treat it as a newObject
+                                NSSet* series = [tstudy series];
+                                if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"]) {
+                                    newObject = YES;
+                                    study.dateAdded = today;
+                                    tstudy.patientUID = [curDict objectForKey: @"patientUID"];
+                                }
+                                
+                                if (!tstudy.patientUID)
+                                    tstudy.patientUID = [curDict objectForKey: @"patientUID"];
+                                
+                                if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
+									study = tstudy;
 								else
 								{
 									NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
@@ -1706,22 +1719,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 										
 										if ([uid isEqualToString: curUID])
 										{
-											if ([[curDict objectForKey: @"patientUID"] compare: [[studiesArray objectAtIndex: i] valueForKey: @"patientUID"] options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-												study = [studiesArray objectAtIndex: i];
+											if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
+												study = [studiesArray objectAtIndex:i];
 										}
 									}
 								}
 							}
 						}
                         
-                        if (study) {
-                            // is this actually an empty study? if so, treat it as a newObject
-                            NSSet* series = [study series];
-                            if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"])
-                                newObject = YES;
-							study.dateAdded = today;
-                        }
-						
 						if (study == nil)
 						{
 							// Fields
@@ -1737,10 +1742,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 							[studiesArrayStudyInstanceUID addObject: [curDict objectForKey: @"studyID"]];
 							
 							curSerieID = nil;
-						}
-						else
-						{
-							newObject = NO;
 						}
 						
 						if (newObject || inParseExistingObject)
