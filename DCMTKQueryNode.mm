@@ -1949,12 +1949,13 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		{
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
-			if( showErrorMessage == YES && _abortAssociation == NO)
-				[DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
-			else
-				[[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
+            if (_abortAssociation == NO)
+                if( showErrorMessage == YES)
+                    [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Query Failed (1)", nil), response, NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
+                else
+                    [[AppController sharedAppController] growlTitle: NSLocalizedString(@"Query Failed (1)", nil) description: response name: @"autoquery"];
 			
-            NSLog( @"---- DCMTKQueryNode failed: %@", e);
+            NSLog(@"---- DCMTKQueryNode failed: %@", e);
             
 			succeed = NO;
             
