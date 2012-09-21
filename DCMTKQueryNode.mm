@@ -31,6 +31,7 @@
 #import "WADODownload.h"
 #import "N2Debug.h"
 #import "DicomDatabase.h"
+#import "NSThread+N2.h"
 
 #include <libkern/OSAtomic.h>
 
@@ -139,14 +140,14 @@ progressCallback(
 	MyCallbackInfo *callbackInfo = (MyCallbackInfo *)callbackData;
 	DCMTKQueryNode *node = callbackInfo -> node;
 	[node addChild:responseIdentifiers];
-   
 }
 
 static void
 moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
 {
-	return;
+	[[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
+    return;
 }
 
 
@@ -154,6 +155,7 @@ static void
 getCallback(void *callbackData, T_DIMSE_C_GetRQ *request,
     int responseCount, T_DIMSE_C_GetRSP *response)
 {
+	[[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
 	return;
 }
 
