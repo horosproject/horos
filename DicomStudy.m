@@ -724,7 +724,15 @@ static NSRecursiveLock *dbModifyLock = nil;
         
         NSString *m = nil;
         
-        NSArray *seriesModalities = [[[[self valueForKey:@"series"] allObjects] sortedArrayUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
+        // skip the "OsiriX No Autodeletion" series
+        NSMutableArray* series = [[[[self valueForKey:@"series"] allObjects] mutableCopy] autorelease];
+        for (DicomSeries* serie in series)
+            if (serie.id.intValue == 5005 && [serie.name isEqualToString:@"OsiriX No Autodeletion"]) {
+                [series removeObject:serie];
+                break;
+            }
+        
+        NSArray *seriesModalities = [[series sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
         
         NSMutableArray *r = [NSMutableArray array];
         
