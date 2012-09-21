@@ -1700,7 +1700,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                                 if (series.count == 1 && [[series.anyObject id] intValue] == 5005 && [[series.anyObject name] isEqualToString:@"OsiriX No Autodeletion"]) {
                                     newObject = YES;
                                     tstudy.dateAdded = today;
-                                    tstudy.modality = nil;
                                     tstudy.patientUID = [curDict objectForKey: @"patientUID"];
                                 }
                                 
