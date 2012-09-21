@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12B19</string>
+		<string key="IBDocument.SystemVersion">12C54</string>
 		<string key="IBDocument.InterfaceBuilderVersion">2549</string>
-		<string key="IBDocument.AppKitVersion">1187</string>
-		<string key="IBDocument.HIToolboxVersion">624.00</string>
+		<string key="IBDocument.AppKitVersion">1187.34</string>
+		<string key="IBDocument.HIToolboxVersion">625.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">2549</string>
@@ -996,7 +996,6 @@ OAA</bytes>
 							<string key="NSFrame">{{106, 20}, {374, 68}}</string>
 							<reference key="NSSuperview" ref="235520153"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSAntiCompressionPriority">{250, 750}</string>
 							<bool key="NSEnabled">YES</bool>
@@ -1520,10 +1519,10 @@ OAA</bytes>
 										<object class="NSTableView" id="271892887">
 											<reference key="NSNextResponder" ref="893615243"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrameSize">{582, 151}</string>
+											<string key="NSFrameSize">{582, 150}</string>
 											<reference key="NSSuperview" ref="893615243"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="260778054"/>
+											<reference key="NSNextKeyView" ref="435994100"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 											<bool key="NSControlAllowsExpansionToolTips">YES</bool>
@@ -1675,7 +1674,7 @@ OAA</bytes>
 											<int key="NSTableViewGroupRowStyle">1</int>
 										</object>
 									</array>
-									<string key="NSFrame">{{1, 17}, {558, 151}}</string>
+									<string key="NSFrame">{{1, 17}, {558, 150}}</string>
 									<reference key="NSSuperview" ref="87240668"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="271892887"/>
@@ -1699,7 +1698,7 @@ OAA</bytes>
 								<object class="NSScroller" id="945275861">
 									<reference key="NSNextResponder" ref="87240668"/>
 									<int key="NSvFlags">256</int>
-									<string key="NSFrame">{{1, 154}, {558, 14}}</string>
+									<string key="NSFrame">{{1, 153}, {558, 14}}</string>
 									<reference key="NSSuperview" ref="87240668"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="942462317"/>
@@ -1725,10 +1724,10 @@ OAA</bytes>
 									<int key="NScvFlags">4</int>
 								</object>
 							</array>
-							<string key="NSFrame">{{20, 32}, {560, 169}}</string>
+							<string key="NSFrame">{{20, 32}, {560, 168}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="435994100"/>
+							<reference key="NSNextKeyView" ref="893615243"/>
 							<int key="NSsFlags">133810</int>
 							<reference key="NSVScroller" ref="260778054"/>
 							<reference key="NSHScroller" ref="945275861"/>
@@ -1745,7 +1744,6 @@ OAA</bytes>
 							<string key="NSFrame">{{19, 20}, {294, 11}}</string>
 							<reference key="NSSuperview" ref="827468134"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="438741893">
 								<int key="NSCellFlags">67108864</int>
