@@ -12,7 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
-#define FETCHNUMBER 30
+#define FETCHNUMBER 100
 
 #import "AsyncSocket.h"
 #import "OsiriXSCPDataHandler.h"
@@ -1415,6 +1415,9 @@ extern BOOL forkedProcess;
                     allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
                     
                     [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                    
+                    if( [NSThread currentThread].isCancelled)
+                        break;
                 }
                 while( [newObjects count]);
                 
@@ -1434,6 +1437,9 @@ extern BOOL forkedProcess;
                     tempFindArray = [tempFindArray arrayByAddingObjectsFromArray: newObjects];
                     
                     [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                    
+                    if( [NSThread currentThread].isCancelled)
+                        break;
                 }
                 while( [newObjects count]);
 			}
@@ -1624,6 +1630,9 @@ extern BOOL forkedProcess;
                     allSeries = [allSeries arrayByAddingObjectsFromArray: newObjects];
                     
                     [seriesRequest setFetchOffset: [seriesRequest fetchOffset] + FETCHNUMBER];
+                    
+                    if( [NSThread currentThread].isCancelled)
+                        break;
                 }
                 while( [newObjects count]);
 				
@@ -1643,6 +1652,9 @@ extern BOOL forkedProcess;
                     array = [array arrayByAddingObjectsFromArray: newObjects];
                     
                     [request setFetchOffset: [request fetchOffset] + FETCHNUMBER];
+                    
+                    if( [NSThread currentThread].isCancelled)
+                        break;
                 }
                 while( [newObjects count]);
 			}
