@@ -1423,7 +1423,7 @@ extern BOOL forkedProcess;
                         break;
                     
                     if( total)
-                        [[NSThread currentThread] setProgress: tempFindArray.count / total];
+                        [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
                 }
                 while( [newObjects count]);
                 
@@ -1450,7 +1450,7 @@ extern BOOL forkedProcess;
                         break;
                     
                     if( total)
-                        [[NSThread currentThread] setProgress: tempFindArray.count / total];
+                        [[NSThread currentThread] setProgress: (float) tempFindArray.count / (float) total];
                 }
                 while( [newObjects count]);
 			}
@@ -1649,7 +1649,7 @@ extern BOOL forkedProcess;
                         break;
                     
                     if( total)
-                        [[NSThread currentThread] setProgress: allSeries.count / total];
+                        [[NSThread currentThread] setProgress: (float) allSeries.count / (float) total];
                 }
                 while( [newObjects count]);
 				
@@ -1676,7 +1676,7 @@ extern BOOL forkedProcess;
                         break;
                     
                     if( total)
-                        [[NSThread currentThread] setProgress: array.count / total];
+                        [[NSThread currentThread] setProgress: (float) array.count / (float) total];
                 }
                 while( [newObjects count]);
 			}
@@ -1806,7 +1806,7 @@ extern BOOL forkedProcess;
 		}
         
         if( findArray.count)
-            [[NSThread currentThread] setProgress: findEnumeratorIndex++ / findArray.count];
+            [[NSThread currentThread] setProgress: (float) (findEnumeratorIndex++) / (float) findArray.count];
 	}
 	
 	@catch (NSException * e)
