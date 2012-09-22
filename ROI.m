@@ -2590,6 +2590,11 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	
 	switch( type)
 	{
+        case tPlain:
+            if( [self plainArea] == 0)
+                return NO;
+            break;
+            
 		case tOval:
 			if( rect.size.width < 0)
 			{

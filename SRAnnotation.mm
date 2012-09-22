@@ -458,20 +458,20 @@
 		
 	NSArray *preExistingROIs = [NSUnarchiver unarchiveObjectWithData: _dataEncapsulated];
 	
-	for( ROI *aROI in someROIs)
-	{
-		NSData *newROIData = [aROI data];
-		
-		BOOL newROI = YES;
-		for( ROI *roi in preExistingROIs)
-		{
-			if ([newROIData isEqualToData: [roi data]])
-			{
-				newROI = NO;
-				break;
-			}
-		}
-	}
+//	for( ROI *aROI in someROIs)
+//	{
+//		NSData *newROIData = [aROI data];
+//		
+//		BOOL newROI = YES;
+//		for( ROI *roi in preExistingROIs)
+//		{
+//			if ([newROIData isEqualToData: [roi data]])
+//			{
+//				newROI = NO;
+//				break;
+//			}
+//		}
+//	}
 	
 	NSArray *newROIs = [preExistingROIs arrayByAddingObjectsFromArray: someROIs];
 	

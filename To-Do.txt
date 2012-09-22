@@ -1,6 +1,4 @@
 - DiscPublishing unload
-- Transparency for brush ROI
-- Empty brush ROI (erase)
 
 - Retina: VR (implication for MPR, CPR), SR
 - 10.7: Core Layout for xib

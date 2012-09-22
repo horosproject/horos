@@ -295,6 +295,9 @@ static void getCallback(
 {
   DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
+    
+    if( forkedProcess == NO)
+        [[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
 }
 
 
@@ -309,6 +312,9 @@ static void moveCallback(
 {
   DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
   context->callbackHandler(cancelled, request, requestIdentifiers, responseCount, response, stDetail, responseIdentifiers);
+  
+    if( forkedProcess == NO)
+        [[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
 }
 
 
