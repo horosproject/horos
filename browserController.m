@@ -3856,174 +3856,180 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForComparativeStudies: (id) studySelectedID
 {
-    DicomDatabase *idatabase = [self.database independentDatabase];
-    
-    DicomStudy *studySelected = nil;
-    
-    if( [studySelectedID isKindOfClass: [NSManagedObjectID class]])
-        studySelected = [idatabase objectWithID: studySelectedID];
-    else
-        studySelected = studySelectedID; //DCMTKStudyQueryNode
-    
-    if( studySelected.patientUID.length == 0)
-        return;
-    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
-    [NSThread currentThread].name = @"Search For Comparative Studies";
-    
-    if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
+    @try
     {
-        NSLog( @"Search history: %@", studySelected.patientUID);
-        NSMutableArray *mergedStudies = nil;
+        DicomDatabase *idatabase = [self.database independentDatabase];
+        DicomStudy *studySelected = nil;
         
-        lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];
+        if( [studySelectedID isKindOfClass: [NSManagedObjectID class]])
+            studySelected = [idatabase objectWithID: studySelectedID];
+        else
+            studySelected = studySelectedID; //DCMTKStudyQueryNode
         
-        @try
+        if( studySelected.patientUID.length == 0)
+            return;
+        
+        [NSThread currentThread].name = @"Search For Comparative Studies";
+        
+        if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
         {
-            // Local studies
-            NSArray *localStudies = nil;
-            [idatabase lock];
+            NSLog( @"Search history: %@", studySelected.patientUID);
+            NSMutableArray *mergedStudies = nil;
+            
+            lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];
+            
             @try
             {
-                localStudies = [idatabase objectsForEntity: idatabase.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", studySelected.patientUID]];
+                // Local studies
+                NSArray *localStudies = nil;
+                [idatabase lock];
+                @try
+                {
+                    localStudies = [idatabase objectsForEntity: idatabase.studyEntity predicate: [NSPredicate predicateWithFormat: @"(patientUID BEGINSWITH[cd] %@)", studySelected.patientUID]];
+                }
+                @catch (NSException* e)
+                {
+                    NSLog( @"*** Comparative Studies exception: %@", e);
+                }
+                [idatabase unlock];
+                
+                mergedStudies = [NSMutableArray arrayWithArray: localStudies];
+                [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
+                
+                if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                    [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
             }
             @catch (NSException* e)
             {
-                NSLog( @"*** Comparative Studies exception: %@", e);
-            }
-            [idatabase unlock];
-            
-            mergedStudies = [NSMutableArray arrayWithArray: localStudies];
-            [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
-            
-            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO]; // Already display the local studies, we will display the merged studies later
-        }
-        @catch (NSException* e)
-        {
-            N2LogExceptionWithStackTrace(e);
-        }
-        
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
-        {
-            if( !searchForComparativeStudiesLock)
-                searchForComparativeStudiesLock = [NSRecursiveLock new];
-            
-            @synchronized( smartAlbumDistantArraySync)
-            {
-                if( comparativeStudySearchArray == nil)
-                    comparativeStudySearchArray = [[NSMutableArray alloc] init];
-                
-                for( NSThread *t in comparativeStudySearchArray)
-                    [t setIsCancelled: YES];
-                
-                [comparativeStudySearchArray addObject: [NSThread currentThread]];
+                N2LogExceptionWithStackTrace(e);
             }
             
-            [searchForComparativeStudiesLock lock];
-            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue... Keep only the displayed patientUID
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"])
             {
-                id lastObjectInQueue = nil;
+                if( !searchForComparativeStudiesLock)
+                    searchForComparativeStudiesLock = [NSRecursiveLock new];
                 
                 @synchronized( smartAlbumDistantArraySync)
                 {
-                    lastObjectInQueue = [comparativeStudySearchArray lastObject];
+                    if( comparativeStudySearchArray == nil)
+                        comparativeStudySearchArray = [[NSMutableArray alloc] init];
+                    
+                    for( NSThread *t in comparativeStudySearchArray)
+                        [t setIsCancelled: YES];
+                    
+                    [comparativeStudySearchArray addObject: [NSThread currentThread]];
                 }
                 
-                if( [NSThread currentThread] == lastObjectInQueue)
+                [searchForComparativeStudiesLock lock];
+                if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame && [[NSThread currentThread] isCancelled] == NO) // There was maybe other locks in the queue... Keep only the displayed patientUID
                 {
-                    [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search History: %@", nil), studySelected.name];
-                    [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
+                    id lastObjectInQueue = nil;
                     
-                    @try
+                    @synchronized( smartAlbumDistantArraySync)
                     {
-                        NSArray *distantStudies = nil;
+                        lastObjectInQueue = [comparativeStudySearchArray lastObject];
+                    }
+                    
+                    if( [NSThread currentThread] == lastObjectInQueue)
+                    {
+                        [NSThread currentThread].name = [NSString stringWithFormat: NSLocalizedString( @"Search History: %@", nil), studySelected.name];
+                        [[ThreadsManager defaultManager] addThreadAndStart: [NSThread currentThread]];
                         
-                        BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
-                        BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"];
-                        BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
-                        
-                        // Servers
-                        NSMutableArray* servers = [NSMutableArray array];
-                        NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
-                        NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
-                        NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
-                        for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
+                        @try
                         {
-                            if( [[si valueForKey: @"server"] valueForKey: @"Description"])
-                                [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+                            NSArray *distantStudies = nil;
                             
-                            if( [[si valueForKey: @"server"] valueForKey: @"Address"])
-                                [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
-                        }
-                        
-                        for (NSDictionary* si in sources)
-                        {
-                            if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
-                                [servers addObject: si];
-                        }
-                        
-                        if( servers.count)
-                        {
-                            // Distant studies
-                            #ifndef OSIRIX_LIGHT
-                            distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
+                            BOOL usePatientID = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"];
+                            BOOL usePatientBirthDate = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"];
+                            BOOL usePatientName = [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"];
                             
-                            // Merge local and distant studies
-                            
-                            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
+                            // Servers
+                            NSMutableArray* servers = [NSMutableArray array];
+                            NSArray* sources = [DCMNetServiceDelegate DICOMServersList];
+                            NSMutableArray* comparativeNodesDescription = [NSMutableArray array];
+                            NSMutableArray* comparativeNodesAddress = [NSMutableArray array];
+                            for( NSDictionary *si in [[NSUserDefaults standardUserDefaults] arrayForKey: @"comparativeSearchDICOMNodes"])
                             {
-                                if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
+                                if( [[si valueForKey: @"server"] valueForKey: @"Description"])
+                                    [comparativeNodesDescription addObject: [[si valueForKey: @"server"] valueForKey: @"Description"]];
+                                
+                                if( [[si valueForKey: @"server"] valueForKey: @"Address"])
+                                    [comparativeNodesAddress addObject: [[si valueForKey: @"server"] valueForKey: @"Address"]];
+                            }
+                            
+                            for (NSDictionary* si in sources)
+                            {
+                                if( [comparativeNodesDescription containsObject: [si objectForKey:@"Description"]] && [comparativeNodesAddress containsObject: [si objectForKey:@"Address"]])
+                                    [servers addObject: si];
+                            }
+                            
+                            if( servers.count)
+                            {
+                                // Distant studies
+                                #ifndef OSIRIX_LIGHT
+                                distantStudies = [QueryController queryStudiesForPatient: studySelected usePatientID: usePatientID usePatientName: usePatientName usePatientBirthDate: usePatientBirthDate servers: servers showErrors: NO];
+                                
+                                // Merge local and distant studies
+                                
+                                for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                                 {
-                                    [mergedStudies addObject: distantStudy];
-                                }
-                                else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
-                                {
-                                    BOOL inTheRetrieveQueue = NO;
-                                    
-                                    //Is this study in the retrieve queue? Display the local study
-                                    @synchronized( comparativeRetrieveQueue)
+                                    if( [[mergedStudies valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]] == NO)
                                     {
-                                        inTheRetrieveQueue = [[comparativeRetrieveQueue valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]];
+                                        [mergedStudies addObject: distantStudy];
                                     }
-                                    
-                                    if( inTheRetrieveQueue == NO)
+                                    else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
                                     {
-                                        NSUInteger index = [[mergedStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                        BOOL inTheRetrieveQueue = NO;
                                         
-                                        if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                        //Is this study in the retrieve queue? Display the local study
+                                        @synchronized( comparativeRetrieveQueue)
                                         {
-                                            [mergedStudies replaceObjectAtIndex: index withObject: distantStudy];
+                                            inTheRetrieveQueue = [[comparativeRetrieveQueue valueForKey: @"studyInstanceUID"] containsObject: [distantStudy studyInstanceUID]];
+                                        }
+                                        
+                                        if( inTheRetrieveQueue == NO)
+                                        {
+                                            NSUInteger index = [[mergedStudies valueForKey: @"studyInstanceUID"] indexOfObject: [distantStudy studyInstanceUID]];
+                                            
+                                            if( index != NSNotFound && [[[mergedStudies objectAtIndex: index] rawNoFiles] intValue] < [[distantStudy noFiles] intValue])
+                                            {
+                                                [mergedStudies replaceObjectAtIndex: index withObject: distantStudy];
+                                            }
                                         }
                                     }
                                 }
+                                #endif
                             }
-                            #endif
+                            
+                            [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
+                            
+                            if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
+                                [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
                         }
-                        
-                        [mergedStudies sortUsingDescriptors: [NSArray arrayWithObject: [NSSortDescriptor sortDescriptorWithKey:@"date" ascending: NO]]];
-                        
-                        if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame)
-                            [self performSelectorOnMainThread: @selector( refreshComparativeStudies:) withObject: mergedStudies waitUntilDone: NO];
-                    }
-                    @catch (NSException* e)
-                    {
-                        N2LogExceptionWithStackTrace(e);
+                        @catch (NSException* e)
+                        {
+                            N2LogExceptionWithStackTrace(e);
+                        }
                     }
                 }
+                
+                @synchronized( smartAlbumDistantArraySync)
+                {
+                    [comparativeStudySearchArray removeObject: [NSThread currentThread]];
+                }
+                
+                [searchForComparativeStudiesLock unlock];
             }
-            
-            @synchronized( smartAlbumDistantArraySync)
-            {
-                [comparativeStudySearchArray removeObject: [NSThread currentThread]];
-            }
-            
-            [searchForComparativeStudiesLock unlock];
         }
     }
-    
-    [pool release];
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
+    @finally {
+        [pool release];
+    }
 }
 
 - (IBAction) refreshPACSOnDemandResults:(id) sender
