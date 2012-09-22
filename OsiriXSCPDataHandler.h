@@ -49,6 +49,7 @@ typedef struct
 	NSArray *findArray;
 	NSString *specificCharacterSet;
 	NSEnumerator *findEnumerator;
+    int findEnumeratorIndex;
 	NSString *callingAET;
     
 	NSManagedObjectContext *context;

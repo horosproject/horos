@@ -28,6 +28,7 @@
 #import "N2Debug.h"
 #import "N2Connection.h"
 #import "DicomDatabase.h"
+#import "NSThread+N2.h"
 
 #include "dctk.h"
 
@@ -1408,6 +1409,8 @@ extern BOOL forkedProcess;
                 NSArray *newObjects = nil;
                 NSArray *allSeries = [NSArray array];
                 
+                int total = [context countForFetchRequest: seriesRequest error: &error];
+                
                 [seriesRequest setFetchLimit: FETCHNUMBER];
                 do
                 {
@@ -1418,6 +1421,9 @@ extern BOOL forkedProcess;
                     
                     if( [NSThread currentThread].isCancelled)
                         break;
+                    
+                    if( total)
+                        [[NSThread currentThread] setProgress: tempFindArray.count / total];
                 }
                 while( [newObjects count]);
                 
@@ -1429,7 +1435,9 @@ extern BOOL forkedProcess;
 			else
             {
                 NSArray *newObjects = nil;
-               
+                
+                int total = [context countForFetchRequest: request error: &error];
+                
                 [request setFetchLimit: FETCHNUMBER];
                 do
                 {
@@ -1440,6 +1448,9 @@ extern BOOL forkedProcess;
                     
                     if( [NSThread currentThread].isCancelled)
                         break;
+                    
+                    if( total)
+                        [[NSThread currentThread] setProgress: tempFindArray.count / total];
                 }
                 while( [newObjects count]);
 			}
@@ -1480,6 +1491,7 @@ extern BOOL forkedProcess;
     
 	[findEnumerator release];
 	findEnumerator = [[findArray objectEnumerator] retain];
+    findEnumeratorIndex = 0;
 	
 	return cond;
 	 
@@ -1623,6 +1635,8 @@ extern BOOL forkedProcess;
                 NSArray *newObjects = nil;
                 NSArray *allSeries = [NSArray array];
                 
+                int total = [context countForFetchRequest: seriesRequest error: &error];
+                
                 [seriesRequest setFetchLimit: FETCHNUMBER];
                 do
                 {
@@ -1633,6 +1647,9 @@ extern BOOL forkedProcess;
                     
                     if( [NSThread currentThread].isCancelled)
                         break;
+                    
+                    if( total)
+                        [[NSThread currentThread] setProgress: allSeries.count / total];
                 }
                 while( [newObjects count]);
 				
@@ -1645,6 +1662,8 @@ extern BOOL forkedProcess;
             {
                 NSArray *newObjects = nil;
                 
+                int total = [context countForFetchRequest: request error: &error];
+                
                 [request setFetchLimit: FETCHNUMBER];
                 do
                 {
@@ -1655,6 +1674,9 @@ extern BOOL forkedProcess;
                     
                     if( [NSThread currentThread].isCancelled)
                         break;
+                    
+                    if( total)
+                        [[NSThread currentThread] setProgress: array.count / total];
                 }
                 while( [newObjects count]);
 			}
@@ -1782,6 +1804,9 @@ extern BOOL forkedProcess;
 		{
 			*isComplete = YES;
 		}
+        
+        if( findArray.count)
+            [[NSThread currentThread] setProgress: findEnumeratorIndex++ / findArray.count];
 	}
 	
 	@catch (NSException * e)
