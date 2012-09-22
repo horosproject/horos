@@ -15,6 +15,7 @@
 #import "WADODownload.h"
 #import "BrowserController.h"
 #import "DicomDatabase.h"
+#import "NSThread+N2.h"
 #include <libkern/OSAtomic.h>
 
 @interface NSURLRequest (DummyInterface)
@@ -128,6 +129,9 @@
             
             // To remove the '.'
             [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
+            
+            if( WADOTotal)
+                [[NSThread currentThread] setProgress: 1.0 - (float) WADOThreads / (float) WADOTotal];
         }
         
 		[d setLength: 0]; // Free the memory immediately
@@ -165,7 +169,7 @@
 		
 		NSLog( @"------ WADO parameters: timeout:%2.2f [secs] / WADOMaximumConcurrentDownloads:%d [URLRequests]", timeout, WADOMaximumConcurrentDownloads);
 		
-		WADOThreads = [urlToDownload count];
+		WADOTotal = WADOThreads = [urlToDownload count];
 		
 		NSMutableArray *connectionsArray = [NSMutableArray array];
 		

@@ -317,7 +317,6 @@ static void moveCallback(
         [[NSThread currentThread] setProgress:1.0/(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations+response->NumberOfRemainingSubOperations)*(response->NumberOfCompletedSubOperations+response->NumberOfFailedSubOperations+response->NumberOfWarningSubOperations)];
 }
 
-
 static void storeCallback(
     /* in */
     void *callbackData,
