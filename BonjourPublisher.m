@@ -342,8 +342,6 @@ extern const char *GetPrivateIP();
 
 	[incomingConnection retain];
 	
-	[[interfaceOsiriX managedObjectContext] lock];
-	
 	if( dbPublished)
 	{
 		@try
@@ -359,47 +357,59 @@ extern const char *GetPrivateIP();
 				
 				if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DATAB" length: 6]])
 				{
-					[interfaceOsiriX saveDatabase: nil];
-					
-					// we send the database SQL file
-					NSString *databasePath = [interfaceOsiriX localDatabasePath];
-					
-					#if __LP64__
-						representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
-						[incomingConnection writeData:representationToSend];
-					#else
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-						long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-					
-						fileSize /= 1024;	// Kb
-						fileSize /= 1024;	// Mb
-						
-						#define DATA_READ_SIZE 200L
-						
-						if( fileSize > DATA_READ_SIZE)
-						{
-							NSFileHandle *dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
-							NSLog( @"split DB file reading");
-							int length = 0;
-							do
-							{
-								NSAutoreleasePool *arp = [[NSAutoreleasePool alloc] init];
-								
-								NSData *chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
-								[incomingConnection writeData: chunk];
-								length = [chunk length];
-								
-								[arp release];
-							}
-							while( length > 0);
-						}
-						else
-						{
-							representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
-							[incomingConnection writeData:representationToSend];
-						}
-					#endif
-					
+                    [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] lock];
+                    
+                    @try
+                    {
+                        [interfaceOsiriX saveDatabase: nil];
+                        
+                        // we send the database SQL file
+                        NSString *databasePath = [interfaceOsiriX localDatabasePath];
+                        
+                        #if __LP64__
+                            representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+                            [incomingConnection writeData:representationToSend];
+                        #else
+                            NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+                            long long fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+                        
+                            fileSize /= 1024;	// Kb
+                            fileSize /= 1024;	// Mb
+                            
+                            #define DATA_READ_SIZE 200L
+                            
+                            if( fileSize > DATA_READ_SIZE)
+                            {
+                                NSFileHandle *dbFileHandle = [NSFileHandle fileHandleForReadingAtPath: databasePath];
+                                NSLog( @"split DB file reading");
+                                int length = 0;
+                                do
+                                {
+                                    NSAutoreleasePool *arp = [[NSAutoreleasePool alloc] init];
+                                    
+                                    NSData *chunk = [dbFileHandle readDataOfLength: DATA_READ_SIZE * 1024L*1024L];
+                                    [incomingConnection writeData: chunk];
+                                    length = [chunk length];
+                                    
+                                    [arp release];
+                                }
+                                while( length > 0);
+                            }
+                            else
+                            {
+                                representationToSend = [NSMutableData dataWithContentsOfMappedFile: databasePath];
+                                [incomingConnection writeData:representationToSend];
+                            }
+                        #endif
+                    }
+                    @catch (NSException *e) {
+                        N2LogException( e);
+                    }
+                    @finally {
+                        [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] unlock];
+                    }
+                    
+                    
 					struct sockaddr serverAddress;
 					socklen_t namelen = sizeof(serverAddress);
 					
@@ -414,13 +424,27 @@ extern const char *GetPrivateIP();
 				{
 					if ([[data subdataWithRange: NSMakeRange(0,6)] isEqualToData: [NSData dataWithBytes:"DBSIZ" length: 6]])
 					{
-						[interfaceOsiriX saveDatabase: nil];
-						NSString *databasePath = [interfaceOsiriX localDatabasePath];
-						
-						NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
-						
-						int size, fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
-						
+						[[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] lock];
+                        
+                        int size, fileSize;
+                        
+                        @try
+                        {
+                            [interfaceOsiriX saveDatabase: nil];
+                            
+                            NSString *databasePath = [interfaceOsiriX localDatabasePath];
+                            
+                            NSDictionary *fattrs = [[NSFileManager defaultManager] fileAttributesAtPath: databasePath traverseLink: YES];
+                            
+                            fileSize = [[fattrs objectForKey:NSFileSize] longLongValue];
+						}
+                        @catch (NSException *e) {
+                            N2LogException( e);
+                        }
+                        @finally {
+                            [[[interfaceOsiriX managedObjectContext] persistentStoreCoordinator] unlock];
+                        }
+                        
 						representationToSend = [NSMutableData data];
 						
 						NSLog( @"DB fileSize = %d", fileSize);
@@ -1017,8 +1041,6 @@ extern const char *GetPrivateIP();
 			NSLog( @"Exception in ConnectionReceived - Communication Interrupted : %@", ne);
 		}
 	}
-	
-	[[interfaceOsiriX managedObjectContext] unlock];
 	
 	[incomingConnection closeFile];
 	[incomingConnection release];
