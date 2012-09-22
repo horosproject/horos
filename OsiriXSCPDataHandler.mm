@@ -1807,6 +1807,9 @@ extern BOOL forkedProcess;
         
         if( findArray.count)
             [[NSThread currentThread] setProgress: (float) (findEnumeratorIndex++) / (float) findArray.count];
+        
+        if( [NSThread currentThread].isCancelled)
+            *isComplete = YES;
 	}
 	
 	@catch (NSException * e)
@@ -1821,10 +1824,11 @@ extern BOOL forkedProcess;
 {
 	OFCondition ret = EC_Normal;
 	
+    if( [NSThread currentThread].isCancelled)
+        return EC_IllegalParameter;
+    
 	if( moveArrayEnumerator >= moveArraySize)
-	{
 		return EC_IllegalParameter;
-	}
 	
 	if( moveArray[ moveArrayEnumerator])
 		strcpy(imageFileName, moveArray[ moveArrayEnumerator]);

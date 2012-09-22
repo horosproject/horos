@@ -1652,6 +1652,8 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
                     t.name = NSLocalizedString( @"DICOM Services...", nil);
                     if( assoc && assoc->params && assoc->params->DULparams.callingPresentationAddress)
                         t.status = [NSString stringWithFormat: NSLocalizedString( @"%s", nil), assoc->params->DULparams.callingPresentationAddress];
+                    
+                    t.supportsCancel = YES;
                     [[ThreadsManager defaultManager] addThreadAndStart: t];
                     
                     assoc = nil;
