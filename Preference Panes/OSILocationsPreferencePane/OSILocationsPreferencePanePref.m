@@ -484,9 +484,12 @@
 		[aServer setObject: [NSNumber numberWithInt: WADOPort] forKey: @"WADOPort"];
 		[aServer setObject: [NSNumber numberWithInt: WADOTransferSyntax] forKey: @"WADOTransferSyntax"];
 		[aServer setObject: [NSNumber numberWithInt: WADOhttps] forKey: @"WADOhttps"];
-		[aServer setObject: WADOUrl forKey: @"WADOUrl"];
-		[aServer setObject: WADOUsername forKey: @"WADOUsername"];
-		[aServer setObject: WADOPassword forKey: @"WADOPassword"];
+        if( WADOUrl)
+            [aServer setObject: WADOUrl forKey: @"WADOUrl"];
+        if( WADOUsername)
+            [aServer setObject: WADOUsername forKey: @"WADOUsername"];
+        if( WADOPassword)
+            [aServer setObject: WADOPassword forKey: @"WADOPassword"];
 		
 		// disable TLS
 		[aServer setObject:[NSNumber numberWithBool:NO] forKey:@"TLSEnabled"];

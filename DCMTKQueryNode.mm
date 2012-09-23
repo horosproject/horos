@@ -946,6 +946,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         
         @try
         {
+            childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES], nil]]; // name = InstanceNumber
+            
             for( DCMTKImageQueryNode *image in childrenArray)
             {
                 if( [image uid])
@@ -982,6 +984,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         
         @try
         {
+            childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"name" ascending: YES], nil]]; // name = InstanceNumber
+            
             for( DCMTKQueryNode *image in childrenArray)
             {
                 if( [image uid])
