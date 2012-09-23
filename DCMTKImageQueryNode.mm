@@ -140,5 +140,9 @@
     return @"Image";
 }
 
+- (NSString*) description
+{
+    return [NSString stringWithFormat: @"DCMTKImageQueryNode: %@ %@ %@", _name, _date, _uid];
+}
 
 @end
