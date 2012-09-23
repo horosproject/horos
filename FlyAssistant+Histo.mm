@@ -167,16 +167,18 @@
         return;
     
     // body copy
-    for (unsigned int i = 0; i < limit; ++i)
+    for (int i = 0; i < limit; ++i)
     {
         original[ i + window ] = inputHisto[ i ];
     }
     
     // border copy
-    for (unsigned int i = 0; i < window; ++i)
+    for (int i = 0; i < window; ++i)
     {
         original[ i ] = inputHisto[ 0 ];
-        original[ size - i ] = inputHisto[ limit - i ];
+        
+        if( size - i >= 0 && limit - i >= 0)
+            original[ size - i ] = inputHisto[ limit - i ];
     }
     
     // smooth histogram = convolution with basic 1-D kernel 1 2 4 8 ... 8 4 2 1 / sum

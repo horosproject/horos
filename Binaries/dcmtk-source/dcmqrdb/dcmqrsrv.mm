@@ -229,6 +229,8 @@ static NSString *globalSync = @"globalSync";
 {
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
+    [NSThread currentThread].name = @"DICOM SCP: handle association";
+    
     @try
     {
         T_ASC_Association * assoc = (T_ASC_Association*) [[d valueForKey: @"assoc"] pointerValue];
