@@ -4341,12 +4341,13 @@ static NSConditionLock *threadLock = nil;
                     
                     if( previousItem == item)
                     {
-                        for( NSCell *cell in oMatrix.cells)
+                        for( NSButtonCell *cell in oMatrix.cells)
                         {
                             NSInteger row, column;
-                            if( cell.state == NSOnState && [oMatrix getRow: &row column: &column ofCell: cell])
+                            if( cell.state == NSOnState && cell.isTransparent == NO && [oMatrix getRow: &row column: &column ofCell: cell])
                             {
-                                if (cell.representedObject) {
+                                if (cell.representedObject)
+                                {
                                     [selectedCellsIDs addObject: [cell representedObject]]; // For NSMainThread situation
                                     [selectedRowColumns addObject: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithInteger: row], @"row", [NSNumber numberWithInteger: column], @"column", nil]]; //For background thread situation
                                 }
