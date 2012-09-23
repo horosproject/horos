@@ -281,17 +281,37 @@ static NSMatrix *gDateMatrix = nil;
             {
                 // Is it a 'known' album : pre-fill it
                 
-                if( [album.name isEqualToString: NSLocalizedString( @"Just Added", nil)])
+                if( [album.name isEqualToString: NSLocalizedString( @"Just Acquired (last hour)", nil)])
                     [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"101", @"date", [NSArray array], @"modality", nil]];
+                
                 else if( [album.name isEqualToString: NSLocalizedString( @"Today MR", nil)])
                     [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"MR"], @"modality", nil]];
                 else if( [album.name isEqualToString: NSLocalizedString( @"Today CT", nil)])
                     [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"CT"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Today US", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"US"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Today MG", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"MG"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Today CR", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"CR"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Today XA", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"1", @"date", [NSArray arrayWithObject:@"XA"], @"modality", nil]];
+                
                 else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday MR", nil)])
                     [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"MR"], @"modality", nil]];
                 else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday CT", nil)])
                     [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"CT"], @"modality", nil]];
-                else [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", album.name, @"name", @"0", @"date", [NSArray array], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday US", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"US"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday MG", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"MG"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday CR", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"CR"], @"modality", nil]];
+                else if( [album.name isEqualToString: NSLocalizedString( @"Yesterday XA", nil)])
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: YES], @"activated", album.name, @"name", @"2", @"date", [NSArray arrayWithObject:@"XA"], @"modality", nil]];
+                
+                else
+                    [self.smartAlbumsArray addObject: [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool: NO], @"activated", album.name, @"name", @"0", @"date", [NSArray array], @"modality", nil]];
             }
         }
         

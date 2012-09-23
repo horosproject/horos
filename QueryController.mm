@@ -4378,6 +4378,20 @@ extern "C"
 	return array;
 }
 
+-(void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
+{
+	if (object == [NSUserDefaultsController sharedUserDefaultsController])
+    {
+        if ([keyPath isEqualToString: @"values.KeepQRWindowOnTop"])
+        {
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepQRWindowOnTop"])
+                [[self window] setLevel: NSFloatingWindowLevel];
+            else
+                [[self window] setLevel: NSNormalWindowLevel];
+        }
+	}
+}
+
 - (id) initAutoQuery: (BOOL) autoQR
 {
     if( self = [super initWithWindowNibName:@"Query"])
@@ -4425,6 +4439,11 @@ extern "C"
 
 			if( [[AppController sharedAppController] isStoreSCPRunning] == NO)
 				NSRunCriticalAlertPanel(NSLocalizedString( @"DICOM Query & Retrieve",nil), NSLocalizedString( @"Retrieve cannot work if the DICOM Listener is not activated. See Preferences - Listener.",nil),NSLocalizedString( @"OK",nil), nil, nil);
+            
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"KeepQRWindowOnTop"])
+                [[self window] setLevel: NSFloatingWindowLevel];
+            
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:@"KeepQRWindowOnTop" options:NSKeyValueObservingOptionInitial context:NULL];
 		}
 		else
 		{
@@ -4494,6 +4513,7 @@ extern "C"
 	
 	avoidQueryControllerDeallocReentry = YES;
 
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver: self];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:OsirixAddToDBNotification object:nil];
 
 	NSLog( @"dealloc QueryController");

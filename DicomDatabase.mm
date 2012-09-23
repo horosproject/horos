@@ -1061,23 +1061,42 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 -(void)addDefaultAlbums {
 	NSDictionary* albumDescriptors = [NSDictionary dictionaryWithObjectsAndKeys:
-									  @"(dateAdded >= $NSDATE_LASTHOUR)", NSLocalizedString( @"Just Added", nil),
+                                      
+									  @"(dateAdded >= $NSDATE_LASTHOUR)", NSLocalizedString( @"Just Added (last hour)", nil),
+                                      @"(date >= $NSDATE_LASTHOUR)", NSLocalizedString( @"Just Acquired (last hour)", nil),
+                                      
 									  @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today MR", nil),
 									  @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today CT", nil),
+                                      @"(modality CONTAINS[cd] 'US') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today US", nil),
+                                      @"(modality CONTAINS[cd] 'MG') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today MG", nil),
+                                      @"(modality CONTAINS[cd] 'CR') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today CR", nil),
+                                      @"(modality CONTAINS[cd] 'XA') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today XA", nil),
+                                      
 									  @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday MR", nil),
 									  @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday CT", nil),
+                                      @"(modality CONTAINS[cd] 'US') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday US", nil),
+									  @"(modality CONTAINS[cd] 'MG') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday MG", nil),
+                                      @"(modality CONTAINS[cd] 'CR') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday CR", nil),
+									  @"(modality CONTAINS[cd] 'XA') AND (date >= $NSDATE_YESTERDAY AND date <= $NSDATE_TODAY)", NSLocalizedString( @"Yesterday XA", nil),
+                                      
 									  [NSNull null], NSLocalizedString( @"Interesting Cases", nil),
+                                      
 									  @"(comment != '' AND comment != NIL)", NSLocalizedString( @"Cases with comments", nil),
+                                      
 									  NULL];
 	
 	NSArray* albums = [self albums];
 	
-	for (NSString* localizedName in albumDescriptors) {
-		if ([[albums valueForKey:@"name"] indexOfObject:localizedName] == NSNotFound) {
+	for (NSString* localizedName in albumDescriptors)
+    {
+		if ([[albums valueForKey:@"name"] indexOfObject:localizedName] == NSNotFound)
+        {
 			DicomAlbum* album = [self newObjectForEntity:self.albumEntity];
 			album.name = localizedName;
 			NSString* predicate = [albumDescriptors objectForKey:localizedName];
-			if ([predicate isKindOfClass:[NSString class]]) {
+            
+			if ([predicate isKindOfClass:[NSString class]])
+            {
 				album.predicateString = predicate;
 				album.smartAlbum = [NSNumber numberWithBool:YES];
 			}
