@@ -8624,6 +8624,7 @@
 		71512E9B15234F6B00B87012 /* DiscMountedAskTheUserDialogController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DiscMountedAskTheUserDialogController.h; sourceTree = "<group>"; };
 		71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscMountedAskTheUserDialogController.m; sourceTree = "<group>"; };
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
+		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = "weasis-ext-config.properties"; path = "Binaries/weasis-ext-config.properties"; sourceTree = "<group>"; };
 		71CE3C18157F489C00AC0112 /* List.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = List.pdf; path = Binaries/Icons/List.pdf; sourceTree = SOURCE_ROOT; };
 		7E0339E607415C4F0025DDB4 /* BurnerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BurnerWindowController.h; sourceTree = "<group>"; };
 		7E0339E707415C4F0025DDB4 /* BurnerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BurnerWindowController.m; sourceTree = "<group>"; };
@@ -14551,6 +14552,7 @@
 				ABE0D69A0CDB1B9E00F0494B /* iChatTheatreHelp */,
 				ABE0D6920CDB1A4400F0494B /* iChatHelper.xib */,
 				59FB652912312D8900EBA136 /* weasis */,
+				7183153D1610651E0098576F /* weasis-ext-config.properties */,
 				CECDBE690C95467B006B11A5 /* AnnotationsDefault.plist */,
 				CE897DD30C21D951005C669E /* texture.tif */,
 				844003990E8CF99500A00EBD /* dciodvfy */,
@@ -26098,6 +26100,7 @@
 			buildPhases = (
 				AB28B42A05B7921E00A9906C /* Headers */,
 				AB28B42B05B7921E00A9906C /* Resources */,
+				7183153F161065BE0098576F /* Replace Weasis ext-config.properties */,
 				59BDEE70117CB3A6007F1F2C /* Zip OsiriX Launcher into Resources */,
 				AB28B42C05B7921E00A9906C /* Sources */,
 				AB28B42D05B7921E00A9906C /* Frameworks */,
@@ -27143,6 +27146,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#set -x\n\nheaderspath=\"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Headers\"\nrm -Rf \"$headerspath\"\nmkdir -p \"$headerspath\"\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A/Frameworks/Nitrogen.framework\"\n\nif [ \"$DEBUGGING_SYMBOLS\" == \"YES\" ] ; then\n\trm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/Nitrogen.framework/Versions/A/Nitrogen.framework.dSYM\"\nfi\n\nrm -Rf \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH\"\nln -sf \"OsiriXAPI.framework\" \"OsiriX Headers.framework\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n\ncd \"$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/OsiriXAPI.framework/Versions/A\"\nln -sf \"OsiriXAPI\" \"OsiriX Headers\"\n";
+		};
+		7183153F161065BE0098576F /* Replace Weasis ext-config.properties */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Replace Weasis ext-config.properties";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -fp \"${PROJECT_DIR}/Binaries/weasis-ext-config.properties\" \"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/weasis/weasis/conf/ext-config.properties\"";
 		};
 		847B929C15480BC400271A61 /* Create Resources Disabled folder */ = {
 			isa = PBXShellScriptBuildPhase;
