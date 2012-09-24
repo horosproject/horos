@@ -1951,7 +1951,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	for (DicomSeries* serie in requestedSeries) {
 		if (![studies containsObject:serie.study])
 			[studies addObject:serie.study];
-		if (![patientIds containsObject:serie.study.patientID])
+		if (serie.study.patientID && ![patientIds containsObject:serie.study.patientID])
 			[patientIds addObject:serie.study.patientID];
 		if (![series containsObject:serie])
 			[series addObject:serie];

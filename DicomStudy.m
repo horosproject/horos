@@ -244,6 +244,23 @@ static NSRecursiveLock *dbModifyLock = nil;
     t = [t stringByReplacingOccurrencesOfString: @"D" withString: [v objectAtIndex: 13]];
     t = [t stringByReplacingOccurrencesOfString: @"B" withString: [v objectAtIndex: 14]];
     t = [t stringByReplacingOccurrencesOfString: @"C" withString: [v objectAtIndex: 15]];
+    
+    t = [t stringByReplacingOccurrencesOfString: @"a" withString: [v objectAtIndex: 0]];
+    t = [t stringByReplacingOccurrencesOfString: @"e" withString: [v objectAtIndex: 1]];
+    t = [t stringByReplacingOccurrencesOfString: @"i" withString: [v objectAtIndex: 2]];
+    t = [t stringByReplacingOccurrencesOfString: @"o" withString: [v objectAtIndex: 3]];
+    t = [t stringByReplacingOccurrencesOfString: @"u" withString: [v objectAtIndex: 4]];
+    t = [t stringByReplacingOccurrencesOfString: @"y" withString: [v objectAtIndex: 5]];
+    t = [t stringByReplacingOccurrencesOfString: @"r" withString: [v objectAtIndex: 6]];
+    t = [t stringByReplacingOccurrencesOfString: @"f" withString: [v objectAtIndex: 7]];
+    t = [t stringByReplacingOccurrencesOfString: @"n" withString: [v objectAtIndex: 8]];
+    t = [t stringByReplacingOccurrencesOfString: @"m" withString: [v objectAtIndex: 9]];
+    t = [t stringByReplacingOccurrencesOfString: @"p" withString: [v objectAtIndex: 10]];
+    t = [t stringByReplacingOccurrencesOfString: @"l" withString: [v objectAtIndex: 11]];
+    t = [t stringByReplacingOccurrencesOfString: @"s" withString: [v objectAtIndex: 12]];
+    t = [t stringByReplacingOccurrencesOfString: @"d" withString: [v objectAtIndex: 13]];
+    t = [t stringByReplacingOccurrencesOfString: @"b" withString: [v objectAtIndex: 14]];
+    t = [t stringByReplacingOccurrencesOfString: @"c" withString: [v objectAtIndex: 15]];
     return t;
 }
 
@@ -286,7 +303,7 @@ static NSRecursiveLock *dbModifyLock = nil;
 
     return [self primitiveValueForKey: @"name"];
     
-    //    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
+//    return [DicomStudy scrambleString: [self primitiveValueForKey: @"name"]];
 }
 
 - (BOOL) isDistant

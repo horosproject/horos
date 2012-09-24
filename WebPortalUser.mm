@@ -318,7 +318,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         @synchronized( studiesForUserCache)
         {
-            if( [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
+            if( userID && [studiesForUserCache objectForKey: userID] && [[[studiesForUserCache objectForKey: userID] objectForKey: @"date"] timeIntervalSinceNow] > -60*60) // one hour
             {
                 DicomDatabase *dicomDBContext = [WebPortal.defaultWebPortal.dicomDatabase independentDatabase];
                 
@@ -390,7 +390,8 @@ static NSMutableDictionary *studiesForUserCache = nil;
             
             @synchronized( studiesForUserCache)
             {
-                [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [specificArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
+                if( userID)
+                    [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [specificArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
             }
         }
 	}
@@ -472,7 +473,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
                 
                 @synchronized( studiesForUserCache)
                 {
-                    if( studiesArray)
+                    if( user && studiesArray)
                         [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
                 }
             }
@@ -699,7 +700,7 @@ static NSMutableDictionary *studiesForUserCache = nil;
         
         @synchronized( studiesForUserCache)
         {
-            if( studiesArray)
+            if( user && studiesArray)
                 [studiesForUserCache setObject: [NSDictionary dictionaryWithObjectsAndKeys: [studiesArray valueForKey: @"objectID"], @"array", [NSDate date], @"date", nil] forKey: userID];
         }
     }
