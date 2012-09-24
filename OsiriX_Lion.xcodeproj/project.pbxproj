@@ -30520,7 +30520,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -30541,7 +30541,6 @@
 					AYDicomPrint,
 				);
 				OTHER_CFLAGS = "-fvisibility=default";
-				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx10.7;
 			};
 			name = Development;
