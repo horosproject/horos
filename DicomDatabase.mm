@@ -606,7 +606,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 	BOOL b = NO;
 	
     [self.managedObjectContext lock];
-    [self.managedObjectContext.persistentStoreCoordinator lock];
 	@try {
         NSError* error = nil;
         if (!err) err = &error;
@@ -622,7 +621,6 @@ static DicomDatabase* activeLocalDatabase = nil;
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-		[self.managedObjectContext.persistentStoreCoordinator unlock];
 		[self.managedObjectContext unlock];
 	}
 	
