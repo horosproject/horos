@@ -1464,7 +1464,7 @@ extern BOOL forkedProcess;
 			if( strcmp(sType, "SERIES") == 0)
 			  tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
 			
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && findArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
+            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && tempFindArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
             {
                 tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
             }
