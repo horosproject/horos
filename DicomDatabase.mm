@@ -1727,8 +1727,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 									study = tstudy;
 								else
 								{
-									NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
-									
+                                    // Are there multiple studies with same studyInstanceUID ???
 									NSString *curUID = [curDict objectForKey: @"studyID"];
 									for( int i = 0 ; i < [studiesArrayStudyInstanceUID count]; i++)
 									{
@@ -1737,12 +1736,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 										if ([uid isEqualToString: curUID])
 										{
 											if ([[curDict objectForKey: @"patientUID"] compare:[[studiesArray objectAtIndex: i] patientUID] options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-                                                {
                                                     study = [studiesArray objectAtIndex:i];
-                                                    NSLog( @"-*-*-*-*-* found a matching study");
-                                                }
 										}
 									}
+                                    
+                                    if( study == nil)
+                                        NSLog( @"-*-*-*-*-* same studyUID (%@), but not same patientUID (%@ versus %@)", [curDict objectForKey: @"studyID"], [curDict objectForKey: @"patientUID"], [[studiesArray objectAtIndex: index] valueForKey: @"patientUID"]);
 								}
 							}
 						}
