@@ -19980,10 +19980,20 @@ int i,j,l;
 		WaitRendering *splash = [[WaitRendering alloc] init:NSLocalizedString(@"Data loading...", nil)];
 		[splash showWindow:self];
 		
-        @synchronized( loadingThread)
         {
-            while( loadingThread.isExecuting)
-                [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.05]];
+            BOOL isExecuting;
+            
+            do
+            {
+                [NSThread sleepForTimeInterval: 0.1];
+                
+                @synchronized( loadingThread)
+                {
+                    isExecuting = loadingThread.isExecuting;
+                }
+                
+            }
+            while( isExecuting);
 		}
         
 		[splash close];
