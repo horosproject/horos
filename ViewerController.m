@@ -3702,7 +3702,10 @@ static volatile int numberOfThreadsForRelisce = 0;
     NSMutableArray *viewerSeries = [NSMutableArray array];
     
     for( int i = 0 ; i < maxMovieIndex; i++)
-        [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+    {
+        if( [[fileList[ i] objectAtIndex:0] valueForKey:@"series"])
+            [viewerSeries addObject: [[fileList[ i] objectAtIndex:0] valueForKey:@"series"]];
+    }
     
 	ThumbnailCell *c = [sender selectedCell];
 
