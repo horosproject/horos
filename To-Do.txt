@@ -7,6 +7,7 @@
 - Multiple HDs for DB
 - Storage Commitment Service
 - Support for DICOM Worklist SCU for (pre)fetching (OSIRIX-112)
+- HL7 Listener with DICOM PDF conversion for reports
 - DICOM ECG (Ginkgo CADx) (OSIRIX-113)
 - WebPortal: LDAP/OpenDAP support
 - WebPortal: Groups of users (for sharing)
