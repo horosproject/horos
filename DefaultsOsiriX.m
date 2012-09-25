@@ -882,6 +882,8 @@ static NSHost *currentHost = nil;
 	[defaultValues setObject: @"1" forKey: @"USEPAPYRUSDCMPIX4"];
 	[defaultValues setObject: @"2" forKey: @"TOOLKITPARSER4"];	// 0:DCM Framework 1:Papyrus 2:DCMTK
 	[defaultValues setObject: @"1" forKey: @"PREFERPAPYRUSFORCD"];
+    [defaultValues setObject: @"20" forKey: @"maximumNumberOfConcurrentDICOMAssociations"];
+    [defaultValues setObject: @"1000" forKey: @"maximumNumberOfCFindObjects"];
 	[defaultValues setObject: @"1" forKey: @"SingleProcessMultiThreadedListener"];
 	[defaultValues setObject: @"0" forKey: @"AUTHENTICATION"];
 	[defaultValues setObject: @"1" forKey: @"CheckOsiriXUpdates4"];

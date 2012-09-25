@@ -56,6 +56,7 @@
 extern int AbortAssociationTimeOut;
 
 static NSString *globalSync = @"globalSync";
+static int numberOfActiveAssociations = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -227,6 +228,8 @@ static NSString *globalSync = @"globalSync";
 
 + (void) handleAssociation: (NSDictionary*) d
 {
+    numberOfActiveAssociations++;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     @try
@@ -241,6 +244,8 @@ static NSString *globalSync = @"globalSync";
     }
     
     [pool release];
+    
+    numberOfActiveAssociations--;
 }
 @end
 
@@ -1647,6 +1652,9 @@ OFCondition DcmQueryRetrieveSCP::waitForAssociation(T_ASC_Network * theNet)
             {
                 if (singleProcess) // But multi-threaded
                 {
+                    while( numberOfActiveAssociations > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfConcurrentDICOMAssociations"])
+                        [NSThread sleepForTimeInterval: 0.1];
+                        
                     @try
                     {
                         NSThread *t = [[[NSThread alloc] initWithTarget: [ContextCleaner class] selector:@selector( handleAssociation:) object: [NSDictionary dictionaryWithObjectsAndKeys: [NSValue valueWithPointer: assoc], @"assoc", [NSValue valueWithPointer: this], @"DcmQueryRetrieveSCP", nil]] autorelease];
