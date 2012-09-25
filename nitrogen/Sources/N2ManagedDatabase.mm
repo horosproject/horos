@@ -245,7 +245,7 @@
                     // Save the models for forward compatibility with old OsiriX versions that don't know the current model
                     NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
                     [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
-                    [[NSFileManager defaultManager] copyPath: modelsPath toPath: localModelsPath handler: nil];
+                    [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:NULL];
                 }
                 
                 if (isNewFile) {

@@ -17,11 +17,11 @@
 #import "N2Connection.h"
 #import "N2Debug.h"
 #import "NSThread+N2.h"
+#import "NSException+N2.h"
 #import "NSHost+N2.h"
 #include <math.h>
 #include <algorithm>
 #include <iostream>
-#import "NSError+OsiriX.h"
 
 @interface N2Connection ()
 
@@ -151,7 +151,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
                 if( [NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval > TIMEOUT)
                 {
                     N2LogStackTrace( @"N2Connection timeout.");
-                    c.error = [NSError osirixErrorWithCode:-31 localizedDescription:NSLocalizedString( @"N2Connection timeout.", NULL)];
+                    c.error = [NSError errorWithDomain:N2ErrorDomain code:-31 userInfo:[NSDictionary dictionaryWithObjectsAndKeys: NSLocalizedString(@"N2Connection timeout.", NULL), NSLocalizedDescriptionKey, NULL]];
                     break;
                 }
             }

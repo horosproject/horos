@@ -16,6 +16,9 @@
 #include <execinfo.h>
 
 
+NSString* const N2ErrorDomain = @"N2";
+
+
 @implementation NSException (N2)
 
 -(NSString*)stackTrace {
