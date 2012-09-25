@@ -1736,8 +1736,11 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 										
 										if ([uid isEqualToString: curUID])
 										{
-											if ([[curDict objectForKey: @"patientUID"] compare:tstudy.patientUID options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
-												study = [studiesArray objectAtIndex:i];
+											if ([[curDict objectForKey: @"patientUID"] compare:[[studiesArray objectAtIndex: i] patientUID] options:NSCaseInsensitiveSearch|NSDiacriticInsensitiveSearch|NSWidthInsensitiveSearch] == NSOrderedSame)
+                                                {
+                                                    study = [studiesArray objectAtIndex:i];
+                                                    NSLog( @"-*-*-*-*-* found a matching study");
+                                                }
 										}
 									}
 								}
