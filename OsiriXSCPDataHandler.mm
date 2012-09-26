@@ -1464,9 +1464,12 @@ extern BOOL forkedProcess;
 			if( strcmp(sType, "SERIES") == 0)
 			  tempFindArray = [tempFindArray sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending: YES] autorelease]]];
 			
-            if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && tempFindArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
+            if (strcmp(sType, "STUDY") == 0 || strcmp(sType, "SERIES") == 0) // Only at series or study level
             {
-                tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
+                if( [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"] > 0 && tempFindArray.count > [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])
+                {
+                    tempFindArray = [tempFindArray subarrayWithRange: NSMakeRange( 0, [[NSUserDefaults standardUserDefaults] integerForKey: @"maximumNumberOfCFindObjects"])];
+                }
             }
             
 			findArray = [[NSArray alloc] initWithArray: tempFindArray];
