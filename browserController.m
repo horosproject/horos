@@ -6101,21 +6101,6 @@ static NSConditionLock *threadLock = nil;
 	}
 	else	// STUDY - Hanging Protocols - Windows State
 	{
-		// files with XML descriptor, do nothing
-		
-		[_database lock];
-		
-		NSSet *imagesSet = [item valueForKeyPath: @"series.images.fileType"];
-		NSArray *imagesArray = [[[imagesSet allObjects] objectAtIndex:0] allObjects];
-		
-		[_database unlock];
-		
-		if([imagesArray count] == 1)
-		{
-			if([[imagesArray objectAtIndex:0] isEqualToString:@"XMLDESCRIPTOR"])
-				return;
-		}
-		
 		BOOL windowsStateApplied = NO;
 		
 		if( [item valueForKey:@"windowsState"] && [[NSUserDefaults standardUserDefaults] boolForKey:@"automaticWorkspaceLoad"])
