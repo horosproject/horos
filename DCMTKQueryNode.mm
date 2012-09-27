@@ -346,6 +346,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 @implementation DCMTKQueryNode
 
+@synthesize dontCatchExceptions = _dontCatchExceptions;
+
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  
 			calledAET:(NSString *)theirAET  
@@ -738,7 +740,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             if (dataset != NULL) delete dataset;
         }
-        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+        @catch (NSException* e) {
+            if (_dontCatchExceptions)
+                @throw e;
+            N2LogExceptionWithStackTrace(e);
+        }
 	}
 }
 
@@ -849,6 +855,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	}
 //	@catch (NSException * e) 
 //	{
+//      if (_dontCatchExceptions)
+//          @throw e;
 //      N2LogExceptionWithStackTrace(e);
 //	}
 //	
@@ -890,6 +898,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	}
 	@catch (NSException *e)
 	{
+        if (_dontCatchExceptions)
+            @throw e;
 		N2LogExceptionWithStackTrace(e);
 	}
 	
@@ -919,6 +929,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 			[localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
 	}
 	@catch (NSException * e) {
+        if (_dontCatchExceptions)
+            @throw e;
 		N2LogExceptionWithStackTrace(e);
     }
 	
@@ -961,7 +973,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 else NSLog( @"****** no image uid !");
             }
         }
-        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+        @catch (NSException* e) {
+            if (_dontCatchExceptions)
+                @throw e;
+            N2LogExceptionWithStackTrace(e);
+        }
         
 		[self purgeChildren];
 	}
@@ -995,7 +1011,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 else NSLog( @"****** no image uid !");
             }
         }
-        @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
+        @catch (NSException* e) {
+            if (_dontCatchExceptions)
+                @throw e;
+            N2LogExceptionWithStackTrace(e);
+        }
         
 		[self purgeChildren];
 	}
@@ -1046,9 +1066,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //                for( DicomSeries *s in [localStudy valueForKey: @"series"])
 //                    [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
 //            }
-//            @catch (NSException * e) {
-//                N2LogExceptionWithStackTrace(e);
-//            }
+        //            @catch (NSException* e) {
+//        if (_dontCatchExceptions)
+//            @throw e;
+//        N2LogExceptionWithStackTrace(e);
+//    }
 //        }
 //        
 //        if( localObjectUIDs.count) // We have already local images !
@@ -1097,8 +1119,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //                        else NSLog( @"****** no image uid !");
 //                    }
 //                }
-//                @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
-//                
+        //                @catch (NSException* e) {
+//        if (_dontCatchExceptions)
+//            @throw e;
+//        N2LogExceptionWithStackTrace(e);
+//    }
+//
 //                [self purgeChildren];
 //            }
 //            
@@ -1136,8 +1162,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //                        else NSLog( @"****** no image uid !");
 //                    }
 //                }
-//                @catch (NSException * e) { NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e); }
-//                
+        //                @catch (NSException* e) {
+//        if (_dontCatchExceptions)
+//            @throw e;
+//        N2LogExceptionWithStackTrace(e);
+//    }
+//
 //                [self purgeChildren];
 //            }
 //            
@@ -1476,8 +1506,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             if( cond == EC_Normal && _abortAssociation == NO)
                 [dict setObject: [NSValue valueWithPointer: assoc] forKey: @"assoc"];
         }
-        @catch (NSException * e)
-        {
+        @catch (NSException* e) {
+            if (_dontCatchExceptions)
+                @throw e;
             N2LogExceptionWithStackTrace(e);
         }
     }
@@ -1519,10 +1550,11 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 		OFCondition cond = [self cfind:assoc dataset:dataset];
 		globalCondition = cond;
 	}
-	@catch (NSException * e)
-	{
-		N2LogExceptionWithStackTrace(e);
-	}
+    @catch (NSException* e) {
+        if (_dontCatchExceptions)
+            @throw e;
+        N2LogExceptionWithStackTrace(e);
+    }
 	
 	[lock unlock];
 	[lock release];
@@ -2129,6 +2161,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 		@catch (NSException *e)
 		{
+            @throw e;
+            
 			NSString *response = [NSString stringWithFormat: @"%@  /  %@:%d\r\r%@\r%@", _calledAET, _hostname, _port, [e name], [e description]];
 			
             if (_abortAssociation == NO)
@@ -2212,13 +2246,16 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 	#endif
 	}
-	@catch (NSException * e) 
+	@catch (NSException* e)
 	{
+        if (_dontCatchExceptions)
+            @throw e;
 		N2LogExceptionWithStackTrace(e);
 	}
-
-	[pool release];
-	
+    @finally {
+        [pool release];
+	}
+    
 	return succeed;
 }
 
@@ -2504,8 +2541,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		
 		[[MoveManager sharedManager] removeMove:self];
 	}
-	@catch (NSException * e)
+	@catch (NSException* e)
 	{
+        if (_dontCatchExceptions)
+            @throw e;
 		N2LogExceptionWithStackTrace(e);
 	}
 	

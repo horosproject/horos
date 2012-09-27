@@ -37,9 +37,11 @@
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
-	BOOL showErrorMessage, firstWadoErrorDisplayed;
+	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions;
 	OFCondition globalCondition;
 }
+
+@property BOOL dontCatchExceptions;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  
@@ -58,7 +60,7 @@
 			transferSyntax:(int)transferSyntax
 			compression: (float)compression
 			extraParameters:(NSDictionary *)extraParameters;
-			
+
 - (NSString *)uid;
 - (BOOL) isDistant;
 - (NSString *)theDescription;
