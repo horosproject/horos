@@ -2426,7 +2426,13 @@ static NSConditionLock *threadLock = nil;
 	{
 		int rowIndex = [_sourcesTableView selectedRow];
 		
-		NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+        NSDictionary *dict = nil;
+        @try {
+            NSDictionary *dict = [[bonjourBrowser services] objectAtIndex: rowIndex-1];
+        }
+        @catch (NSException *e) {
+            N2LogException( e);
+        }
 		
 		if( [[dict valueForKey:@"type"] isEqualToString:@"bonjour"]) description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [[dict valueForKey:@"service"] name]];
 		else description = [description stringByAppendingFormat:NSLocalizedString(@"Bonjour Database: %@ / ", nil), [dict valueForKey:@"Description"]];
