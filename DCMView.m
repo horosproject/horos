@@ -2187,90 +2187,101 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	[stringID release];
 	stringID = nil;
 	
-	[[self openGLContext] makeCurrentContext];
-	
-	CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
-	
-    if( fontListGL) glDeleteLists (fontListGL, 150);
-    fontListGL = 0;
-    
-	if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
-    labelFontListGL = 0;
-    
-	if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
-    loupeTextureID = 0;
-    
-	if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
-	loupeMaskTextureID = 0;
-    
-	if( pTextureName)
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    @try
+    {
+        [[self openGLContext] makeCurrentContext];
+        
+        CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+        
+        if( fontListGL) glDeleteLists (fontListGL, 150);
+        fontListGL = 0;
+        
+        if( labelFontListGL) glDeleteLists(labelFontListGL, 150);
+        labelFontListGL = 0;
+        
+        if( loupeTextureID) glDeleteTextures( 1, &loupeTextureID);
+        loupeTextureID = 0;
+        
+        if( loupeMaskTextureID) glDeleteTextures( 1, &loupeMaskTextureID);
+        loupeMaskTextureID = 0;
+        
+        if( pTextureName)
+        {
+            glDeleteTextures (textureX * textureY, pTextureName);
+            free( (Ptr) pTextureName);
+            pTextureName = nil;
+        }
+        if( blendingTextureName)
+        {
+            glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
+            free( (Ptr) blendingTextureName);
+            blendingTextureName = nil;
+        }
+        
+        if( colorBuf) free( colorBuf);
+        colorBuf = nil;
+        
+        if( blendingColorBuf) free( blendingColorBuf);
+        blendingColorBuf = nil;
+        
+        [fontColor release]; fontColor = nil;
+        [fontGL release]; fontGL = nil;
+        [labelFont release]; labelFont = nil;
+        [yearOld release]; yearOld = nil;
+        
+        [cursor release]; cursor = nil;
+        
+        @synchronized( globalStringTextureCache)
+        {
+            [globalStringTextureCache removeObject: stringTextureCache];
+        }
+        [stringTextureCache release];
+        stringTextureCache = 0L;
+        
+        [_mouseDownTimer invalidate];
+        [_mouseDownTimer release];
+        _mouseDownTimer = nil;
+        
+        [destinationImage release];
+        destinationImage = nil;
+        
+        if(repulsorColorTimer)
+        {
+            [repulsorColorTimer invalidate];
+            [repulsorColorTimer release];
+            repulsorColorTimer = nil;
+        }
+        
+        if( resampledBaseAddr) free( resampledBaseAddr);
+        resampledBaseAddr = nil;
+        
+        if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
+        blendingResampledBaseAddr = nil;
+        
+        [showDescriptionInLargeText release];
+        showDescriptionInLargeText = nil;
+        
+        [warningNotice release];
+        warningNotice = nil;
+        
+        [blendingView release];
+        blendingView = nil;
+        
+        [self deleteLens];
+        
+        [loupeImage release];
+        loupeImage = nil;
+        
+        [loupeMaskImage release];
+        loupeMaskImage = nil;
+    }
+    @catch (NSException * e)
 	{
-		glDeleteTextures (textureX * textureY, pTextureName);
-		free( (Ptr) pTextureName);
-		pTextureName = nil;
+		N2LogExceptionWithStackTrace(e);
 	}
-	if( blendingTextureName)
-	{
-		glDeleteTextures ( blendingTextureX * blendingTextureY, blendingTextureName);
-		free( (Ptr) blendingTextureName);
-		blendingTextureName = nil;
-	}
-	if( colorBuf) free( colorBuf);
-    colorBuf = nil;
     
-	if( blendingColorBuf) free( blendingColorBuf);
-	blendingColorBuf = nil;
-    
-	[fontColor release]; fontColor = nil;
-	[fontGL release]; fontGL = nil;
-	[labelFont release]; labelFont = nil;
-	[yearOld release]; yearOld = nil;
-	
-	[cursor release]; cursor = nil;
-	
-	@synchronized( globalStringTextureCache)
-	{
-		[globalStringTextureCache removeObject: stringTextureCache];
-	}
-	[stringTextureCache release];
-    stringTextureCache = 0L;
-    
-	[_mouseDownTimer invalidate];
-	[_mouseDownTimer release];
-	_mouseDownTimer = nil;
-    
-	[destinationImage release];
-	destinationImage = nil;
-    
-	if(repulsorColorTimer)
-	{
-		[repulsorColorTimer invalidate];
-		[repulsorColorTimer release];
-		repulsorColorTimer = nil;
-	}
-	
-	if( resampledBaseAddr) free( resampledBaseAddr);
-    resampledBaseAddr = nil;
-    
-	if( blendingResampledBaseAddr) free( blendingResampledBaseAddr);
-    blendingResampledBaseAddr = nil;
-    
-	[showDescriptionInLargeText release];
-	showDescriptionInLargeText = nil;
-    
-    [warningNotice release];
-    warningNotice = nil;
-    
-	[blendingView release];
-	blendingView = nil;
-    
-	[self deleteLens];
-	
-	[loupeImage release];
-    loupeImage = nil;
-    
-	[loupeMaskImage release];
-	loupeMaskImage = nil;
+    [pool release];
     
     [super dealloc];
 }
@@ -8014,7 +8025,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
             warningNotice = [[GLString alloc] initWithAttributedString: text withBoxColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:0.4f] withBorderColor: [NSColor colorWithDeviceRed:1.0f green:0.f blue: 0.f alpha:1.0f]];
         }
         
-        if( annotations > annotNone)
+        if( annotations > annotNone && warningNotice)
         {
             glColor4f( 1.0, 1.0, 1.0, 1.0);
             
