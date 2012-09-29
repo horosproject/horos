@@ -3961,12 +3961,15 @@ static BOOL initialized = NO;
         if (c1 > c2) return NSOrderedDescending;
         return NSOrderedSame;
     }];
-    
-    // only use the database screen last
-    NSScreen* dbscreen = [dbWindow screen];
-    if ([screens containsObject:dbscreen]) {
-        [screens removeObject:dbscreen];
-        [screens addObject:dbscreen];
+
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"UseDBScreenAtLast"])
+    {
+        // only use the database screen last
+        NSScreen* dbscreen = [dbWindow screen];
+        if ([screens containsObject:dbscreen]) {
+            [screens removeObject:dbscreen];
+            [screens addObject:dbscreen];
+        }
     }
     
     return screens;
