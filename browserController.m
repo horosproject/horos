@@ -12800,7 +12800,7 @@ static NSArray*	openSubSeriesArray = nil;
 			[menuItem action] == @selector( burnDICOM:) || 
 			[menuItem action] == @selector( anonymizeDICOM:) || 
 			[menuItem action] == @selector( viewXML:) || 
-			[menuItem action] == @selector( applyRoutingRule:) || 
+			[menuItem action] == @selector( applyRoutingRule:) ||
             [menuItem action] == @selector( regenerateAutoComments:) ||
             [menuItem action] == @selector( unifyStudies:) ||
             [menuItem action] == @selector( viewerSubSeriesDICOM:) ||
@@ -12808,6 +12808,28 @@ static NSArray*	openSubSeriesArray = nil;
 			)
 		return NO;
 	}
+    
+    if ([_database isLocal] == NO)
+    {
+        if( [menuItem action] == @selector( deleteAlbum:) ||
+            [menuItem action] == @selector( addAlbum:) ||
+           [menuItem action] == @selector( addSmartAlbum:) ||
+           [menuItem action] == @selector( addAlbums:) ||
+           [menuItem action] == @selector( defaultAlbums:))
+            return NO;
+        
+        if( [menuItem action] == @selector( selectFilesAndFoldersToAdd:) ||
+           [menuItem action] == @selector( addURLToDatabase:) ||
+           [menuItem action] == @selector( importRawData:))
+            return NO;
+        
+        if( [menuItem action] == @selector( anonymizeDICOM:))
+            return NO;
+        
+        if( [menuItem action] == @selector( compressSelectedFiles:) ||
+           [menuItem action] == @selector( decompressSelectedFiles:))
+            return NO;
+    }
     
     if( [menuItem action] == @selector( convertReportToPDF:) || [menuItem action] == @selector( convertReportToDICOMSR:))
     {

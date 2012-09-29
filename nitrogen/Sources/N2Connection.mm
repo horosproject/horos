@@ -145,7 +145,7 @@ NSString* N2ConnectionStatusDidChangeNotification = @"N2ConnectionStatusDidChang
             {
                 lastTimeInterval = [NSDate timeIntervalSinceReferenceDate] + 1;
                 
-                if( c.lastEventTimeInterval > 0)
+                if( (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval) > 1)
                     NSLog( @"****** N2Connection stalled: %d", (int) ([NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval));
                 
                 if( [NSDate timeIntervalSinceReferenceDate] - c.lastEventTimeInterval > TIMEOUT)
