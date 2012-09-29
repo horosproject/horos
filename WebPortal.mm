@@ -143,7 +143,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 	// last because this starts the listener
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 
-	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NULL context:self.defaultWebPortal];
+	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsIntervalDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
 	[NSUserDefaultsController.sharedUserDefaultsController addObserver:self forValuesKey:OsirixWebPortalNotificationsEnabledDefaultsKey options:NSKeyValueObservingOptionInitial context:self.defaultWebPortal];
     
     if (NSUserDefaults.webPortalEnabled)
@@ -268,7 +268,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
     temporaryUsersTimer = [[NSTimer scheduledTimerWithTimeInterval: 60 target:self selector:@selector( deleteTemporaryUsers:) userInfo:NULL repeats:YES] retain];
 	
 	preferredLocalizations = [[[NSBundle mainBundle] preferredLocalizations] copy];
-	
+    
 	return self;
 }
 
@@ -711,7 +711,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
 			notificationsTimer = nil;
 		}
         else if( self.notificationsInterval > 0)
-			notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
+			notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval*60 target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 	}
 }
 
@@ -727,7 +727,7 @@ static NSString* DefaultWebPortalDatabasePath = nil;
             notificationsTimer = nil;
             
             if( self.notificationsInterval > 0)
-                notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
+                notificationsTimer = [[NSTimer scheduledTimerWithTimeInterval:self.notificationsInterval*60 target:self selector:@selector(notificationsTimerCallback:) userInfo:NULL repeats:YES] retain];
 		}
 	}
 }

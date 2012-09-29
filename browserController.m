@@ -14653,7 +14653,7 @@ static volatile int numberOfThreadsForJPEG = 0;
 				
 				@try
 				{
-					// Add them to select users AND send a notification email
+					// Add them to selected users AND send a notification email
 					if( [destinationUsers count] > 0)
 					{
 						for( NSManagedObject *user in destinationUsers)

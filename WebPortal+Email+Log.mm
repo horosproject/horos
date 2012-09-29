@@ -124,7 +124,7 @@
 {
 	if ([NSThread isMainThread] == NO)
 	{
-		NSLog( @"********* applescript needs to be in the main thread");
+		NSLog( @"********* emailNotifications: applescript needs to be in the main thread");
 		return;
 	}
 	
@@ -142,60 +142,56 @@
 		return;
 	}
 	
-//	if ([self.dicomDatabase tryLock])
-	{
-		[database.managedObjectContext lock];
-		
-		// CHECK dateAdded
-		
-		if (self.notificationsEnabled)
-		{
-			@try
-			{
-				// Find all studies AFTER the lastCheckDate
-				NSArray *studies = [dicomDatabase.independentDatabase objectsForEntity:@"Study"];
-				
-				if ([studies count] > 0)
-				{
-					NSArray *users = [database objectsForEntity:database.userEntity];
-					
-					for (WebPortalUser* user in users)
-					{
-						if ([[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
-						{
-							NSArray *filteredStudies = studies;
-							
-							@try
-							{
-								filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
-                                
-                                if( user.studyPredicate.length)
-                                    filteredStudies = [user arrayByAddingSpecificStudiesToArray: filteredStudies];
-								
-								filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
-								filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
-							}
-							@catch (NSException * e)
-							{
-								NSLog( @"******* studyPredicate exception : %@ %@", e, user);
-							}
-							
-							if ([filteredStudies count] > 0)
-							{
-								[self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] customText: nil];
-							}
-						}
-					}
-				}
-			}
-			@catch (NSException *e)
-			{
-				NSLog( @"***** emailNotifications exception: %@", e);
-			}
-		}
-		[database.managedObjectContext unlock];
-//		[dicomDatabase.managedObjectContext unlock];
-	}
+    [database.managedObjectContext lock];
+    
+    // CHECK dateAdded
+    
+    if (self.notificationsEnabled)
+    {
+        @try
+        {
+            // Find all studies AFTER the lastCheckDate
+            NSArray *studies = [dicomDatabase.independentDatabase objectsForEntity:@"Study"];
+            
+            if ([studies count] > 0)
+            {
+                NSArray *users = [database objectsForEntity:database.userEntity];
+                
+                for (WebPortalUser* user in users)
+                {
+                    if ([[user valueForKey: @"emailNotification"] boolValue] == YES && [(NSString*) [user valueForKey: @"email"] length] > 2)
+                    {
+                        NSArray *filteredStudies = studies;
+                        
+                        @try
+                        {
+                            filteredStudies = [studies filteredArrayUsingPredicate: [DicomDatabase predicateForSmartAlbumFilter: [user valueForKey: @"studyPredicate"]]];
+                            
+                            if( user.studyPredicate.length)
+                                filteredStudies = [user arrayByAddingSpecificStudiesToArray: filteredStudies];
+                            
+                            filteredStudies = [filteredStudies filteredArrayUsingPredicate: [NSPredicate predicateWithFormat: @"dateAdded > CAST(%lf, \"NSDate\")", [lastCheckDate timeIntervalSinceReferenceDate]]]; 
+                            filteredStudies = [filteredStudies sortedArrayUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"date" ascending:NO] autorelease]]];
+                        }
+                        @catch (NSException * e)
+                        {
+                            NSLog( @"******* studyPredicate exception : %@ %@", e, user);
+                        }
+                        
+                        if ([filteredStudies count] > 0)
+                        {
+                            [self sendNotificationsEmailsTo: [NSArray arrayWithObject: user] aboutStudies:[dicomDatabase objectsWithIDs:filteredStudies] predicate: [NSString stringWithFormat: @"browse=newAddedStudies&browseParameter=%lf", [lastCheckDate timeIntervalSinceReferenceDate]] customText: nil];
+                        }
+                    }
+                }
+            }
+        }
+        @catch (NSException *e)
+        {
+            NSLog( @"***** emailNotifications exception: %@", e);
+        }
+    }
+    [database.managedObjectContext unlock];
 	
 	[[NSUserDefaults standardUserDefaults] setValue: newCheckString forKey: @"lastNotificationsDate"];
 }
