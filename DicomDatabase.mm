@@ -572,14 +572,19 @@ static DicomDatabase* activeLocalDatabase = nil;
 -(NSManagedObjectContext*)contextAtPath:(NSString*)sqlFilePath {
 	// custom migration
 	
-    BOOL rebuildSaidYes = NO;
+    BOOL rebuildPatientUIDs = NO;
+    BOOL independentContext = YES;
     
-    if (!self.managedObjectContext) { // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes
+    if (!self.managedObjectContext)
+        independentContext = NO;
+    
+    if( independentContext == NO) // avoid doing this for independent contexts: we know it's already ok, and this leads to very bad crashes
+    { 
         NSString* modelVersion = [NSString stringWithContentsOfFile:self.modelVersionFilePath encoding:NSUTF8StringEncoding error:nil];
         if (!modelVersion) modelVersion = [NSUserDefaults.standardUserDefaults stringForKey:@"DATABASEVERSION"];
         
         if (modelVersion.length && ![modelVersion isEqualToString:CurrentDatabaseVersion]) {
-            rebuildSaidYes = [self upgradeSqlFileFromModelVersion:modelVersion];
+            rebuildPatientUIDs = [self upgradeSqlFileFromModelVersion:modelVersion];
             [CurrentDatabaseVersion writeToFile:self.modelVersionFilePath atomically:YES encoding:NSUTF8StringEncoding error:NULL];
         }
     }
@@ -589,15 +594,36 @@ static DicomDatabase* activeLocalDatabase = nil;
 	NSManagedObjectContext* context = [super contextAtPath:sqlFilePath];
 	[context setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
 	[context setUndoManager: nil];
-     
-    if (rebuildSaidYes)
+    
+    if( independentContext == NO)
+    {
+        // Meta Data
+        if( context.persistentStoreCoordinator.persistentStores.count == 1)
+        {
+            NSDictionary *metaData = [context.persistentStoreCoordinator metadataForPersistentStore: [context.persistentStoreCoordinator.persistentStores lastObject]];
+            
+#define PATIENTUIDVERSION @"2.0"
+            
+            if( [metaData objectForKey: @"patientUIDVersion"] == nil || [[metaData objectForKey: @"patientUIDVersion"] isEqualToString: PATIENTUIDVERSION] == NO)
+            {
+                rebuildPatientUIDs = YES; //recompute patient UIDs
+                NSMutableDictionary *newMetaData = [NSMutableDictionary dictionaryWithDictionary: metaData];
+                [newMetaData setObject: PATIENTUIDVERSION forKey: @"patientUIDVersion"];
+                [context.persistentStoreCoordinator setMetadata: newMetaData forPersistentStore: [context.persistentStoreCoordinator.persistentStores lastObject]];
+            }
+        }
+        else
+            N2LogStackTrace( @"********* persistentStoreCoordinator.persistentStores.count != 1, %d", context.persistentStoreCoordinator.persistentStores.count);
+    }
+    
+    if (rebuildPatientUIDs)
         [DicomDatabase recomputePatientUIDsInContext:context]; // if upgradeSqlFileFromModelVersion returns NO, the database was rebuilt so no need to recompute IDs
     
 	return context;
 }
 
 -(BOOL)save:(NSError**)err {
-	// TODO: BrowserController did this...
+	// TODO: BrowserController did this... one day I'll explain why...
 //	if ([[AppController sharedAppController] isSessionInactive]) {
 //		NSLog(@"---- Session is not active : db will not be saved");
 //		return;
@@ -3312,7 +3338,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 
 
-+(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context { // TODO: this is SLOW -> show advancement
++(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context {
+    NSLog( @"-------------- Recompute Patient UIDs -- START");
 	NSLog(@"In %s", __PRETTY_FUNCTION__);
 	
 	// Find all studies
@@ -3334,11 +3361,14 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 				N2LogExceptionWithStackTrace(e);
 			}
 		}
+        [context save: nil];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
 		[context unlock];
 	}
+    
+    NSLog( @"-------------- Recompute Patient UIDs -- END");
 }
 
 -(void)rebuild {

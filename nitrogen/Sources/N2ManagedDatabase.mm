@@ -246,6 +246,7 @@
                     NSString *modelsPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent: [[self class] modelName]];
                     [[NSFileManager defaultManager] removeItemAtPath: localModelsPath error: nil];
                     [[NSFileManager defaultManager] copyItemAtPath:modelsPath toPath:localModelsPath error:NULL];
+
                 }
                 
                 if (isNewFile) {
