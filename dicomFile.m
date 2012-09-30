@@ -182,13 +182,15 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	
 	NSMutableString	*mutable = [NSMutableString stringWithString: str];
 	
+    [mutable replaceOccurrencesOfString:@"," withString:@" " options:0 range:mutable.range];
 	[mutable replaceOccurrencesOfString:@"^" withString:@" " options:0 range:mutable.range]; 
 	[mutable replaceOccurrencesOfString:@"/" withString:@"-" options:0 range:mutable.range]; 
 	[mutable replaceOccurrencesOfString:@"\r" withString:@"" options:0 range:mutable.range]; 
 	[mutable replaceOccurrencesOfString:@"\n" withString:@"" options:0 range:mutable.range]; 
 	[mutable replaceOccurrencesOfString:@"\"" withString:@"'" options:0 range:mutable.range];
-	
-	
+    [mutable replaceOccurrencesOfString:@"   " withString:@" " options:0 range:mutable.range]; //tripple space -> single space
+	[mutable replaceOccurrencesOfString:@"  " withString:@" " options:0 range:mutable.range]; //double space -> single space
+    
 	int i = [mutable length];
 	while( --i > 0)
 	{

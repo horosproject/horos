@@ -848,31 +848,11 @@ static NSDate *lastWarningDate = nil;
 	checkForPreferencesUpdate = b;
 }
 
-+ (int) numberOfSubOsiriXProcesses
-{
-	const int kPIDArrayLength = 100;
-    
-    pid_t MyArray [kPIDArrayLength];
-    unsigned int NumberOfMatches;
-    int Counter, Error;
-	int number = 0;
-	
-    Error = GetAllPIDsForProcessName( [[[NSProcessInfo processInfo] processName] UTF8String], MyArray, kPIDArrayLength, &NumberOfMatches, NULL);
-	
-	if (Error == 0)
-    {
-        for (Counter = 0 ; Counter < NumberOfMatches ; Counter++)
-        {
-			if( MyArray[ Counter] != getpid())
-				number++;
-        } 
-    }
-	
-	return number;
-}
-
 + (void) cleanOsiriXSubProcesses
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"])
+        return;
+    
 	const int kPIDArrayLength = 100;
     
     pid_t MyArray [kPIDArrayLength];

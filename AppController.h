@@ -157,7 +157,6 @@ extern AppController* OsiriX;
 + (void) resetToolbars;
 + (ToolbarPanelController*)toolbarForScreen:(NSScreen*)screen;
 + (NSString*)printStackTrace:(NSException*)e __deprecated; // use -[NSException printStackTrace] form NSException+N2
-+ (int) numberOfSubOsiriXProcesses;
 + (BOOL) isKDUEngineAvailable;
 
 #pragma mark-
