@@ -30,11 +30,18 @@
 	
 	[NSBundle loadNibNamed:@"QuicktimeExport" owner:self];
 	
-	object = o;
+	object = [o retain];
 	selector = s;
 	numberOfFrames = f;
 	
 	return self;
+}
+
+- (void) dealloc
+{
+    [object release];
+    
+    [super dealloc];
 }
 
 - (NSArray *) availableComponents
