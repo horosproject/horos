@@ -1074,7 +1074,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             }
         }
         
-        if( localObjectUIDs.count) // We have already local images !
+        if( localObjectUIDs.count && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
         {
             NSMutableDictionary *seriesUIDsToRetrieve = [NSMutableDictionary dictionary];
             
@@ -1115,6 +1115,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             }
                         }
                         else NSLog( @"****** no image uid !");
+                        
+                        if( [[NSThread currentThread] isCancelled]) break;
                     }
                 }
                 @catch (NSException* e)
@@ -1157,6 +1159,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             }
                         }
                         else NSLog( @"****** no image uid !");
+                        
+                        if( [[NSThread currentThread] isCancelled]) break;
                     }
                 }
                 @catch (NSException* e)
@@ -1169,7 +1173,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 [self purgeChildren];
             }
             
-            if( [seriesUIDsToRetrieve count])
+            if( [seriesUIDsToRetrieve count] && [[NSThread currentThread] isCancelled] == NO)
             {
                 DcmDataset dataset;
                 
@@ -1214,6 +1218,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                             }
                         }
                     }
+                    
+                    if( [[NSThread currentThread] isCancelled]) break;
                 }
             }
             else
@@ -1223,7 +1229,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             }
         }
         
-        if( localObjectUIDs.count == 0)// STUDY / SERIES LEVEL retrieve
+        if( localObjectUIDs.count == 0 && [[NSThread currentThread] isCancelled] == NO)// STUDY / SERIES LEVEL retrieve
         {
             DcmDataset *dataset = [self moveDataset];
             
