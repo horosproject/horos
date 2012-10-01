@@ -133,7 +133,7 @@
 											<object class="NSButtonCell" key="NSCell" id="143934923">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Series Thumbnails View : auto hiding</string>
+												<string key="NSContents">Series List View : auto hiding</string>
 												<reference key="NSSupport" ref="835218876"/>
 												<reference key="NSControlView" ref="229787279"/>
 												<int key="NSButtonFlags">1211912448</int>
@@ -178,7 +178,6 @@
 											<string key="NSFrame">{{517, 13}, {172, 22}}</string>
 											<reference key="NSSuperview" ref="953481074"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="439848008">
 												<int key="NSCellFlags">-1804599231</int>
@@ -701,7 +700,7 @@
 											<object class="NSButtonCell" key="NSCell" id="722256242">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">0</int>
-												<string key="NSContents">Sync Preview List of all 2D Viewers</string>
+												<string key="NSContents">Sync Series List of all 2D Viewers</string>
 												<reference key="NSSupport" ref="835218876"/>
 												<reference key="NSControlView" ref="346350020"/>
 												<int key="NSButtonFlags">1211912448</int>
