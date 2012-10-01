@@ -2780,12 +2780,6 @@ extern "C"
 	if( [[BrowserController currentBrowser] database] != [DicomDatabase activeLocalDatabase])
 		goto returnFromThread;
 	
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"dontAuthorizeAutoRetrieve"])
-	{
-		[instance setObject: [NSNumber numberWithBool: NO] forKey: @"autoRetrieving"];
-		goto returnFromThread;
-	}
-	
 	if( numberOfRunningRetrieve > 5)
 	{
 		NSLog( @"**** numberOfRunningRetrieve > 5... wait for next autoretrieve.");
