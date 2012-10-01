@@ -6782,6 +6782,7 @@ return YES;
 	
     [previewMatrixScrollView setPostsBoundsChangedNotifications: NO];
     [[[splitView subviews] objectAtIndex: 0] setPostsFrameChangedNotifications: NO];
+    [splitView setDelegate: nil];
     
     NSArray *windows = [NSApp windows];
     
