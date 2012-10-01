@@ -29,7 +29,7 @@
 #define CIRCLERESOLUTION 200
 #define ROIVERSION 11
 
-static		float					deg2rad = M_PI / 180.0f; 
+static		float					deg2rad = M_PI / 180.0f;
 static		float					fontHeight = 0;
 static		NSString				*defaultName;
 static		int						gUID = 0;
@@ -1429,7 +1429,6 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 			textureWidth			=128;
 			textureHeight			=128;
 			textureBuffer			=NULL;
-	//		tempTextureBuffer		=NULL;
 			textureFirstPoint		=0;
 			
 			thickness = ROIRegionThickness;	//[[NSUserDefaults standardUserDefaults] floatForKey: @"ROIRegionThickness"];
@@ -3891,6 +3890,16 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) drawROI :(float) scaleValue :(float) offsetx :(float) offsety :(float) spacingX :(float) spacingY;
 {
 	[self drawROIWithScaleValue:scaleValue offsetX:offsetx offsetY:offsety pixelSpacingX:spacingX pixelSpacingY:spacingY highlightIfSelected:YES thickness:thickness prepareTextualData: YES];
+}
+
+- (void) setTexture: (unsigned char*) t width: (int) w height:(int) h
+{
+    if( textureBuffer)
+        free( textureBuffer);
+    
+    textureBuffer = t;
+    textureWidth = w;
+    textureHeight = h;
 }
 
 - (void) drawROIWithScaleValue:(float)scaleValue offsetX:(float)offsetx offsetY:(float)offsety pixelSpacingX:(float)spacingX pixelSpacingY:(float)spacingY highlightIfSelected:(BOOL)highlightIfSelected thickness:(float)thick prepareTextualData:(BOOL) prepareTextualData;

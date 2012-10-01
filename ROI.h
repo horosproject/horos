@@ -418,4 +418,5 @@ enum
 -(NSMutableArray*) splinePoints:(float) scale correspondingSegmentArray: (NSMutableArray**) correspondingSegmentArray;
 -(NSMutableArray*) splineZPositions;
 
+- (void) setTexture: (unsigned char*) t width: (int) w height:(int) h;
 @end
