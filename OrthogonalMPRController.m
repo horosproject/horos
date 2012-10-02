@@ -934,7 +934,7 @@
                 {
                     if( [plainDict objectForKey: [aROI name]] == nil)
                     {
-                        unsigned char* t = malloc( imageWidth * imageHeight * sizeof(unsigned char));
+                        unsigned char* t = calloc( imageWidth * imageHeight, sizeof(unsigned char));
                         
                         if( t)
                         {
@@ -943,7 +943,7 @@
                             newROI.name = [aROI name];
                             
                             [newROI setTexture: t width: imageWidth height: imageHeight];
-                            [plainDict setObject: newROI forKey: aROI];
+                            [plainDict setObject: newROI forKey: [aROI name]];
                         }
                         else
                             NSLog( @"***** not enough memory : pointsROIAtX - OrthogonalMPRController");
@@ -955,10 +955,16 @@
                     {
                         unsigned char* destPtr = [p textureBuffer];
                         unsigned char* srcPtr = [aROI textureBuffer];
+                        int sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
                         
-                        for( int c = 0 ; c < aROI.textureHeight; c++)
+                        destPtr += sliceIndex * imageWidth + aROI.textureUpLeftCornerY;
+                        srcPtr += (x - aROI.textureUpLeftCornerX);
+                        
+                        int c = aROI.textureHeight;
+                        int w = aROI.textureWidth;
+                        while( c-- > 0)
                         {
-                            *(destPtr + (c + aROI.textureUpLeftCornerY) + x * imageWidth) = *(srcPtr + (x - aROI.textureUpLeftCornerX) + c * aROI.textureWidth);
+                            *(destPtr + c) = *(srcPtr + c * w);
                         }
                     }
                 }
@@ -980,9 +986,13 @@
 
 - (NSMutableArray*) pointsROIAtY: (long) y
 {
+    NSMutableDictionary *plainDict = [NSMutableDictionary dictionary];
 	NSMutableArray *rois = [originalView dcmRoiList];
 	NSMutableArray *roisAtY = [NSMutableArray array];
 
+    int imageWidth = [[[xReslicedView pixList] lastObject] pwidth];
+    int imageHeight = [[[xReslicedView pixList] lastObject] pheight];
+    
 	int i, j;
 	for(i=0; i<[rois count]; i++)
 	{
@@ -1007,9 +1017,59 @@
 					[roisAtY addObject:new2DPointROI];
 				}
 			}
+            
+            if( [aROI type] == tPlain)
+            {
+                if( y >= aROI.textureUpLeftCornerY && y <= aROI.textureDownRightCornerY)
+                {
+                    if( [plainDict objectForKey: [aROI name]] == nil)
+                    {
+                        unsigned char* t = calloc( imageWidth * imageHeight, sizeof(unsigned char));
+                        
+                        if( t)
+                        {
+                            ROI *newROI = [[[ROI alloc] initWithType: tPlain :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
+                            
+                            newROI.name = [aROI name];
+                            
+                            [newROI setTexture: t width: imageWidth height: imageHeight];
+                            [plainDict setObject: newROI forKey: [aROI name]];
+                        }
+                        else
+                            NSLog( @"***** not enough memory : pointsROIAtX - OrthogonalMPRController");
+                    }
+                    
+                    ROI *p = [plainDict objectForKey: [aROI name]];
+                    
+                    if( p)
+                    {
+                        unsigned char* destPtr = [p textureBuffer];
+                        unsigned char* srcPtr = [aROI textureBuffer];
+                        int sliceIndex = (sign>0)? [[originalView dcmPixList] count]-1 -i : i; // i is slice number
+                        
+                        destPtr += sliceIndex*imageWidth + aROI.textureUpLeftCornerX;
+                        srcPtr += (y - aROI.textureUpLeftCornerY)*aROI.textureWidth;
+                        
+                        int c = aROI.textureWidth;
+                        while( c-- > 0)
+                        {
+                            *(destPtr + c) = *(srcPtr + c);
+                        }
+                    }
+                }
+            }
 		}
 	}
-	
+    
+	for( NSString *key in plainDict)
+    {
+        ROI *r = [plainDict objectForKey: key];
+        
+        [r reduceTextureIfPossible];
+        
+        [roisAtY addObject: r];
+    }
+    
 	return roisAtY;
 }
 

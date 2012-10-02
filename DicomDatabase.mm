@@ -44,6 +44,7 @@
 #import "N2Stuff.h"
 #import "ThreadModalForWindowController.h"
 #import "NSNotificationCenter+N2.h"
+#import "Wait.h"
 
 NSString* const CurrentDatabaseVersion = @"2.5";
 
@@ -3350,7 +3351,19 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 	[context lock];
 	@try {
 		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:nil];
-		for (DicomStudy* study in studiesArray) {
+        
+        Wait *wait = nil;
+        if( [NSThread isMainThread] && studiesArray.count > 200)
+            wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Recomputing Patient UIDs...", nil)] autorelease];
+        
+        [wait showWindow:self];
+        
+        [[wait progress] setMaxValue: studiesArray.count];
+        
+		for (DicomStudy* study in studiesArray)
+        {
+            [wait incrementBy:1];
+            
 			@try {
 				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
 				DicomFile* dcm = [[DicomFile alloc] init:o.completePath];
@@ -3362,6 +3375,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 			}
 		}
         [context save: nil];
+        
+        [wait close];
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
