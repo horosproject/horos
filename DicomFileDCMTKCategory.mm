@@ -1026,7 +1026,7 @@ extern NSRecursiveLock *PapyrusLock;
 			serieID = newSerieID;
 		}
 		
-		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [serie rangeOfString:@"localizer" options:NSCaseInsensitiveSearch].location != NSNotFound || [serie rangeOfString:@"scout" options:NSCaseInsensitiveSearch].location != NSNotFound))
+		if( [self noLocalizer] && ([self containsString: @"LOCALIZER" inArray: imageTypeArray] || [self containsString: @"REF" inArray: imageTypeArray] || [self containsLocalizerInString: serie]))
 		{
 			NSString	*n;
 			

@@ -941,6 +941,9 @@
                             ROI *newROI = [[[ROI alloc] initWithType: tPlain :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
                             
                             newROI.name = [aROI name];
+                            newROI.thickness = aROI.thickness;
+                            newROI.rgbcolor = aROI.rgbcolor;
+                            newROI.opacity = aROI.opacity;
                             
                             [newROI setTexture: t width: imageWidth height: imageHeight];
                             [plainDict setObject: newROI forKey: [aROI name]];
@@ -1031,6 +1034,9 @@
                             ROI *newROI = [[[ROI alloc] initWithType: tPlain :[yReslicedView pixelSpacingX] :[yReslicedView pixelSpacingY] :NSMakePoint( [yReslicedView origin].x, [yReslicedView origin].y)] autorelease];
                             
                             newROI.name = [aROI name];
+                            newROI.thickness = aROI.thickness;
+                            newROI.rgbcolor = aROI.rgbcolor;
+                            newROI.opacity = aROI.opacity;
                             
                             [newROI setTexture: t width: imageWidth height: imageHeight];
                             [plainDict setObject: newROI forKey: [aROI name]];
