@@ -4020,6 +4020,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
     NSString *patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
     
+    patientName = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
+    
 	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
 	
 	return [[DicomFile NSreplaceBadCharacter: string] uppercaseString];
