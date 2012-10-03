@@ -4020,7 +4020,10 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 {
     NSString *patientName = [[src valueForKey:@"patientName"] stringByReplacingOccurrencesOfString: @"-" withString: @" "];
     
-    patientName = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
+    NSString *firstRepresentation = [[patientName componentsSeparatedByString: @"="] objectAtIndex: 0];
+    
+    if( firstRepresentation.length)
+        patientName = firstRepresentation;
     
 	NSString *string = [NSString stringWithFormat:@"%@-%@-%@", patientName, [src valueForKey:@"patientID"], [[NSCalendarDate dateWithTimeIntervalSinceReferenceDate: [[src valueForKey:@"patientBirthDate"] timeIntervalSinceReferenceDate]] descriptionWithCalendarFormat:@"%Y%m%d"]];
 	

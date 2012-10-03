@@ -56,7 +56,9 @@
     dataset-> insertEmptyElement(DCM_InstitutionName, OFTrue);
     dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
     dataset-> insertEmptyElement(DCM_PerformingPhysiciansName, OFTrue);
-    dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
+    
+//    dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
+//    dataset-> insertEmptyElement(DCM_InterpretationStatusID, OFTrue);
     
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
         dataset-> insertEmptyElement(DCM_ModalitiesInStudy, OFTrue);

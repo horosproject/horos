@@ -103,6 +103,9 @@
 		if (dataset ->findAndGetString(DCM_StudyComments, string).good() && string != nil)		
 			_comments = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
 		
+        if (dataset ->findAndGetString(DCM_InterpretationStatusID, string).good() && string != nil)
+			_interpretationStatusID = [[DicomFile stringWithBytes: (char*) string encodings: encoding replaceBadCharacters: NO] retain];
+        
 		if (dataset ->findAndGetString(DCM_ReferringPhysiciansName, string).good() && string != nil)		
 			_referringPhysician = [[DicomFile stringWithBytes: (char*) string encodings: encoding] retain];
 		
@@ -184,7 +187,8 @@
 	dataset-> insertEmptyElement(DCM_SeriesNumber, OFTrue);
 	dataset-> insertEmptyElement(DCM_NumberOfSeriesRelatedInstances, OFTrue);
 	dataset-> insertEmptyElement(DCM_Modality, OFTrue);
-	dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
+    dataset-> insertEmptyElement(DCM_StudyComments, OFTrue);
+    dataset-> insertEmptyElement(DCM_InterpretationStatusID, OFTrue);
 	dataset-> insertEmptyElement(DCM_ReferringPhysiciansName, OFTrue);
     dataset-> insertEmptyElement(DCM_PerformingPhysiciansName, OFTrue);
 	dataset-> insertEmptyElement(DCM_InstitutionName, OFTrue);
@@ -261,6 +265,16 @@
 - (NSString*) comment // Match DicomStudy
 {
     return _comments;
+}
+
+- (NSString*) interpretationStatusID
+{
+    return _interpretationStatusID;
+}
+
+- (NSNumber*) stateText
+{
+    return [NSNumber numberWithInt: [_interpretationStatusID intValue]];
 }
 
 - (NSString*) reportURL // Match DicomStudy

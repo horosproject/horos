@@ -403,24 +403,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 							compression: (float)compression
 							extraParameters:(NSDictionary *)extraParameters])
 	{
-		_children = nil;
-		_uid = nil;
-		_theDescription = nil;
-		_name = nil;
-		_patientID = nil;
-		_accessionNumber = nil;
-		_referringPhysician = nil;
-        _performingPhysician = nil;
-		_institutionName = nil;
-		_comments = nil;
-		_date = nil;
-		_birthdate = nil;
-		_time  = nil;
-		_modality = nil;
-		_numberImages = nil;
-		_specificCharacterSet = nil;
 		showErrorMessage = YES;
-		_verbose = NO;
 	}
 	return self;
 }
@@ -442,6 +425,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     [_performingPhysician release];
 	[_institutionName release];
 	[_comments release];
+    [_interpretationStatusID release];
 	[_date release];
 	[_birthdate release];
 	[_time release];
@@ -502,6 +486,9 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 }
 - (NSString *)comments{
 	return _comments;
+}
+- (NSString*) interpretationStatusID{
+    return _interpretationStatusID;
 }
 - (NSString *)patientID{
 	return _patientID;

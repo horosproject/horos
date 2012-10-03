@@ -265,6 +265,12 @@ extern BOOL forkedProcess;
 					if (dcelem->getString(sd).good() && sd != NULL)
 						predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"studyName"];
 				}
+                else if (key ==  DCM_InterpretationStatusID)
+				{
+					char *sd;
+					if (dcelem->getString(sd).good() && sd != NULL)
+						predicate = [self predicateWithString: [NSString stringWithCString:sd  DICOMEncoding:specificCharacterSet] forField: @"stateText"];
+				}
 				else if (key ==  DCM_ImageComments || key ==  DCM_StudyComments)
 				{
 					char *sd;
@@ -857,7 +863,10 @@ extern BOOL forkedProcess;
 				{
 					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
 				}
-				
+				else if (key ==  DCM_InterpretationStatusID)
+				{
+					dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [fetchedObject valueForKey:@"stateText"] image: image]);
+				}
 				else if( key == DCM_StudyComments && [fetchedObject valueForKey:@"comment"])
 				{
 					dataset->putAndInsertString( DCM_StudyComments, [self encodeString: [fetchedObject valueForKey:@"comment"] image: image]);
@@ -1037,6 +1046,11 @@ extern BOOL forkedProcess;
 				else if( key == DCM_ImageComments && [fetchedObject valueForKeyPath:@"comment"])
 				{
 					dataset->putAndInsertString( DCM_ImageComments, [self encodeString: [fetchedObject valueForKeyPath:@"comment"] image: image]);
+				}
+                
+                else if( key == DCM_InterpretationStatusID && [fetchedObject valueForKeyPath:@"study.stateText"])
+				{
+					dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [fetchedObject valueForKeyPath:@"study.stateText"] image: image]);
 				}
 				
 				else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"study.comment"])
@@ -1250,6 +1264,11 @@ extern BOOL forkedProcess;
 				else if( key == DCM_StudyDescription && [fetchedObject valueForKeyPath:@"series.study.studyName"])
 				{
 					dataset->putAndInsertString( DCM_StudyDescription, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.studyName"] image: image]);
+				}
+                
+                else if( key == DCM_InterpretationStatusID && [fetchedObject valueForKeyPath:@"series.study.stateText"])
+				{
+					dataset->putAndInsertString( DCM_InterpretationStatusID, [self encodeString: [fetchedObject valueForKeyPath:@"series.study.stateText"] image: image]);
 				}
 				
 				else if( key == DCM_StudyComments && [fetchedObject valueForKeyPath:@"series.study.comment"])

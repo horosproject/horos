@@ -29,6 +29,7 @@
     NSString *_performingPhysician;
 	NSString *_institutionName;
 	NSString *_comments;
+    NSString *_interpretationStatusID;
 	NSString *_accessionNumber;
 	DCMCalendarDate *_date;
 	DCMCalendarDate *_birthdate;
