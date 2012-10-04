@@ -67,6 +67,7 @@ static QueryController *currentAutoQueryController = nil;
 static NSMutableArray *studyArrayInstanceUID = [[NSMutableArray alloc] init], *studyArrayID = [[NSMutableArray alloc] init];
 static NSString *kComputeStudyArrayInstanceUIDLock = @"computeStudyArrayInstanceUID";
 static BOOL afterDelayRefresh = NO;
+static NSMutableDictionary *previousAutoRetrieve = [[NSMutableDictionary alloc] init];
 
 static int inc = 0;
 
@@ -247,28 +248,66 @@ extern "C"
 
 + (void) retrieveStudies:(NSArray*) studies showErrors: (BOOL) showErrors
 {
+    [QueryController retrieveStudies: studies showErrors: showErrors checkForPreviousAutoRetrieve: NO];
+}
+
++ (void) retrieveStudies:(NSArray*) studies showErrors: (BOOL) showErrors checkForPreviousAutoRetrieve: (BOOL) checkForPreviousAutoRetrieve
+{
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     
     for( DCMTKQueryNode	*object in studies)
     {
-        @try
+        BOOL proceedToDownload = YES;
+        
+        if( checkForPreviousAutoRetrieve)
         {
-            [object setShowErrorMessage: showErrors];
-            
-            [dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
-            [dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
-            [dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
-            [dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
-            [dictionary setObject: [[object extraParameters] valueForKey: @"retrieveMode"] forKey: @"retrieveMode"];
-             
-            FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
-            if( pFile)
-                fclose (pFile);
-            else
-                [object move: dictionary retrieveMode: [[[object extraParameters] valueForKey: @"retrieveMode"] intValue]];
+            @synchronized( previousAutoRetrieve)
+            {
+                NSString *stringID = [QueryController stringIDForStudy: object];
+                
+                NSNumber *previousNumberOfFiles = [previousAutoRetrieve objectForKey: stringID];
+                int totalFiles = [[object valueForKey:@"numberImages"] intValue];
+                
+                // We only want to re-retrieve the study if they are new files compared to last time... we are maybe currently in the middle of a retrieve...
+                
+                if( [previousNumberOfFiles intValue] != totalFiles)
+                {
+                    [previousAutoRetrieve setValue: [NSNumber numberWithInt: totalFiles] forKey: stringID];
+                }
+                else
+                    proceedToDownload = NO;
+            }
         }
-        @catch( NSException *e) {
-            N2LogExceptionWithStackTrace( e);
+        
+        if( proceedToDownload)
+        {
+            @try
+            {
+                [object setShowErrorMessage: showErrors];
+                
+                [dictionary setObject: [object valueForKey:@"calledAET"] forKey:@"calledAET"];
+                [dictionary setObject: [object valueForKey:@"hostname"] forKey:@"hostname"];
+                [dictionary setObject: [object valueForKey:@"port"] forKey:@"port"];
+                [dictionary setObject: [object valueForKey:@"transferSyntax"] forKey:@"transferSyntax"];
+                [dictionary setObject: [[object extraParameters] valueForKey: @"retrieveMode"] forKey: @"retrieveMode"];
+                 
+                FILE * pFile = fopen ("/tmp/kill_all_storescu", "r");
+                if( pFile)
+                    fclose (pFile);
+                else
+                    [object move: dictionary retrieveMode: [[[object extraParameters] valueForKey: @"retrieveMode"] intValue]];
+            }
+            @catch( NSException *e) {
+                N2LogExceptionWithStackTrace( e);
+            }
+            
+            if( checkForPreviousAutoRetrieve)
+            {
+                @synchronized( previousAutoRetrieve)
+                {
+                    [previousAutoRetrieve removeObjectForKey: [QueryController stringIDForStudy: object]];
+                }
+            }
         }
     }
 }
@@ -2725,7 +2764,7 @@ extern "C"
 	[pool release];
 }
 
-- (NSString*) stringIDForStudy:(id) item
++ (NSString*) stringIDForStudy:(id) item
 {
 	return [NSString stringWithFormat:@"%@-%@-%@-%@-%@-%@", [item valueForKey:@"name"], [item valueForKey:@"patientID"], [item valueForKey:@"accessionNumber"], [item valueForKey:@"date"], [item valueForKey:@"time"], [item valueForKey:@"uid"]];
 }
@@ -2749,7 +2788,7 @@ extern "C"
 	
 	if( localFiles < totalFiles)
 	{
-		NSString *stringID = [self stringIDForStudy: item];
+		NSString *stringID = [QueryController stringIDForStudy: item];
 		
 		@synchronized( previousAutoRetrieve)
 		{
@@ -3219,7 +3258,7 @@ extern "C"
 					
 					if( localNumber < [[item valueForKey:@"numberImages"] intValue] || [[item valueForKey:@"numberImages"] intValue] == 0)
 					{
-						NSString *stringID = [self stringIDForStudy: item];
+						NSString *stringID = [QueryController stringIDForStudy: item];
 			
 						@synchronized( previousAutoRetrieve)
 						{
@@ -3241,7 +3280,7 @@ extern "C"
 			}
 			else
 			{
-				NSString *stringID = [self stringIDForStudy: item];
+				NSString *stringID = [QueryController stringIDForStudy: item];
 				
 				@synchronized( previousAutoRetrieve)
 				{
@@ -3546,7 +3585,7 @@ extern "C"
 			
 			@synchronized( previousAutoRetrieve)
 			{
-				[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+				[previousAutoRetrieve removeObjectForKey: [QueryController stringIDForStudy: object]];
 			}
 			
 			[NSThread currentThread].progress = (float) ++i / (float) [moveArray count];
@@ -3565,7 +3604,7 @@ extern "C"
 			{
 				@try
 				{
-					[previousAutoRetrieve removeObjectForKey: [self stringIDForStudy: object]];
+					[previousAutoRetrieve removeObjectForKey: [QueryController stringIDForStudy: object]];
 				}
 				@catch (NSException * e)
 				{
@@ -4404,7 +4443,6 @@ extern "C"
 		pressedKeys = [[NSMutableString stringWithString:@""] retain];
 		queryFilters = [[NSMutableArray array] retain];
 		resultArray = [[NSMutableArray array] retain];
-		previousAutoRetrieve = [[NSMutableDictionary dictionary] retain];
 		autoQueryLock = [[NSRecursiveLock alloc] init];
 		
 		if( autoQuery == NO)
@@ -4523,7 +4561,6 @@ extern "C"
 	[fromDate setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
 	[queryManager release];
 	[queryFilters release];
-	[previousAutoRetrieve release];
 	[sourcesArray release];
 	[resultArray release];
 	[QueryTimer invalidate];
