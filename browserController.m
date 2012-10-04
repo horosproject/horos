@@ -2875,12 +2875,24 @@ static NSConditionLock *threadLock = nil;
                             
                             if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || cache == nil)
                             {
+                                NSMutableArray *studyToAutoretrive = [NSMutableArray array];
+                                
                                 // Merge local and distant studies
                                 for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
                                 {
                                     if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
+                                    {
                                         count++;
+                                        
+                                        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+                                        {
+                                            if( [[d valueForKey: @"autoretrieve"] boolValue] && [ialbum.name isEqualToString: [d valueForKey: @"name"]])
+                                                [studyToAutoretrive addObject: distantStudy];
+                                        }
+                                    }
                                 }
+                                
+                                [QueryController retrieveStudies: studyToAutoretrive showErrors: NO checkForPreviousAutoRetrieve: YES];
                                 
                                 @synchronized(_albumNoOfStudiesCache)
                                 {
