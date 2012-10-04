@@ -253,6 +253,8 @@ extern NSString* O2AlbumDragType;
     NSDate *distantTimeIntervalStart, *distantTimeIntervalEnd;
     NSString *distantSearchString;
     int distantSearchType;
+    
+    BOOL autoretrievingPACSOnDemandSmartAlbum;
 }
 
 @property(retain,nonatomic) DicomDatabase* database;

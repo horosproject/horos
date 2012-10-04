@@ -255,8 +255,14 @@ extern "C"
 {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     
+    int i = 0;
     for( DCMTKQueryNode	*object in studies)
     {
+        [NSThread currentThread].progress = (float) i++ / (float) studies.count;
+        [NSThread currentThread].status = [NSString stringWithFormat: @"%@ - %@", object.name, object.theDescription];
+        if( [NSThread currentThread].isCancelled)
+            break;
+        
         BOOL proceedToDownload = YES;
         
         if( checkForPreviousAutoRetrieve)

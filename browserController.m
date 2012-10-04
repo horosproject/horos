@@ -2419,7 +2419,7 @@ static NSConditionLock *threadLock = nil;
 		index = [selectedRowIndexes indexGreaterThanIndex:index];
 	}
 	
-//	if( displayEmptyDatabase) // TODO: shu
+//	if( displayEmptyDatabase)
 //		predicate = [NSPredicate predicateWithValue:NO];
 	
 	if (![_database isLocal] && [_sourcesTableView selectedRow] > 0)
@@ -2534,7 +2534,7 @@ static NSConditionLock *threadLock = nil;
         {
             BOOL useDistantArray = NO;
             
-            if( smartAlbumDistantArray && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
+            if( smartAlbumDistantArray && smartAlbumName && [self.smartAlbumDistantName isEqualToString: smartAlbumName])
                 useDistantArray = YES;
             else if( timeIntervalStart != nil || timeIntervalEnd != nil || self.filterPredicate) // No smart album selected, but time interval or search field
             {
@@ -2560,12 +2560,30 @@ static NSConditionLock *threadLock = nil;
                 
                 // Merge local and distant studies
                 #ifndef OSIRIX_LIGHT
+                
+                // Autoretrieve?
+                NSMutableArray *studyToAutoretrieve = [NSMutableArray array];
+                BOOL autoretrieve = NO;
+                
+                if( autoretrievingPACSOnDemandSmartAlbum == NO)
+                {
+                    for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+                    {
+                        if( [[d valueForKey: @"autoretrieve"] boolValue] && [smartAlbumName isEqualToString: [d valueForKey: @"name"]])
+                            autoretrieve = YES;
+                    }
+                }
+                
                 NSMutableArray *localStudyInstanceUIDs = [outlineViewArray valueForKey: @"studyInstanceUID"];
                 for( DCMTKStudyQueryNode *distantStudy in filteredAlbumDistantStudies)
                 {
                     if( [localStudyInstanceUIDs containsObject: [distantStudy studyInstanceUID]] == NO)
+                    {
                         [distantStudies addObject: distantStudy];
-                    
+                            
+                        if( autoretrieve)
+                            [studyToAutoretrieve addObject: distantStudy];
+                    }
                     else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"preferStudyWithMoreImages"])
                     {
                         BOOL inTheRetrieveQueue = NO;
@@ -2587,6 +2605,9 @@ static NSConditionLock *threadLock = nil;
                                 [mutableCopy replaceObjectAtIndex: index withObject: distantStudy];
                                 
                                 outlineViewArray = mutableCopy;
+                                
+                                if( autoretrieve)
+                                    [studyToAutoretrieve addObject: distantStudy];
                             }
                         }
                     }
@@ -2595,8 +2616,17 @@ static NSConditionLock *threadLock = nil;
                 @synchronized (_albumNoOfStudiesCache)
                 {
                     if( smartAlbumName)
-                        [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: distantStudies.count] forKey: smartAlbumName];
+                        [_distantAlbumNoOfStudiesCache setObject: distantStudies forKey: smartAlbumName];
                 }
+                
+                if( autoretrievingPACSOnDemandSmartAlbum == NO && studyToAutoretrieve.count)
+                {
+                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
+                    t.name = NSLocalizedString( @"Auto-Retrieving Album...", nil);
+                    t.supportsCancel = YES;
+                    [[ThreadsManager defaultManager] addThreadAndStart: t];
+                }
+                
                 #endif
                 
                 if( [distantStudies count])
@@ -2793,6 +2823,19 @@ static NSConditionLock *threadLock = nil;
 		[(RemoteDicomDatabase*)_database initiateUpdate];
 }
 
+- (void) autoretrievePACSOnDemandSmartAlbum:(NSArray*) studies
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    autoretrievingPACSOnDemandSmartAlbum = YES;
+    {
+        #ifndef OSIRIX_LIGHT
+            [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
+        #endif
+    }
+    autoretrievingPACSOnDemandSmartAlbum = NO;
+    [pool release];
+}
+
 - (void)_computeNumberOfStudiesForAlbumsThread
 {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -2867,46 +2910,57 @@ static NSConditionLock *threadLock = nil;
                         
                         if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"])
                         {
-                            id cache = nil;
+                            NSMutableArray *studyToAutoretrieve = [NSMutableArray array];
+                            BOOL autoretrieve = NO;
+                            
+                            if( autoretrievingPACSOnDemandSmartAlbum == NO)
+                            {
+                                for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
+                                {
+                                    if( [[d valueForKey: @"autoretrieve"] boolValue] && [ialbum.name isEqualToString: [d valueForKey: @"name"]])
+                                        autoretrieve = YES;
+                                }
+                            }
+                                
+                            // Merge local and distant studies
+                            NSArray *distantStudies = nil;
                             @synchronized(_albumNoOfStudiesCache)
                             {
-                                cache = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
+                                distantStudies = [_distantAlbumNoOfStudiesCache objectForKey: ialbum.name];
                             }
                             
-                            if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || cache == nil)
+                            if( [NSDate timeIntervalSinceReferenceDate] - lastComputeAlbumsForDistantStudies > 120 || distantStudies == nil)
                             {
-                                NSMutableArray *studyToAutoretrive = [NSMutableArray array];
+                                distantStudies = [self distantStudiesForSmartAlbum: ialbum.name];
                                 
-                                // Merge local and distant studies
-                                for( DCMTKStudyQueryNode *distantStudy in [self distantStudiesForSmartAlbum: ialbum.name])
+                                if( distantStudies)
                                 {
-                                    if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
+                                    @synchronized(_albumNoOfStudiesCache)
                                     {
-                                        count++;
-                                        
-                                        for( NSDictionary *d in [[NSUserDefaults standardUserDefaults] objectForKey: @"smartAlbumStudiesDICOMNodes"])
-                                        {
-                                            if( [[d valueForKey: @"autoretrieve"] boolValue] && [ialbum.name isEqualToString: [d valueForKey: @"name"]])
-                                                [studyToAutoretrive addObject: distantStudy];
-                                        }
+                                        [_distantAlbumNoOfStudiesCache setObject: distantStudies forKey: ialbum.name];
                                     }
-                                }
-                                
-                                [QueryController retrieveStudies: studyToAutoretrive showErrors: NO checkForPreviousAutoRetrieve: YES];
-                                
-                                @synchronized(_albumNoOfStudiesCache)
-                                {
-                                    [_distantAlbumNoOfStudiesCache setObject: [NSNumber numberWithInt: count] forKey: ialbum.name];
                                 }
                                 
                                 lastComputeAlbumsForDistantStudies = [NSDate timeIntervalSinceReferenceDate];
                             }
-                            else
+                            
+                            for( DCMTKStudyQueryNode *distantStudy in distantStudies)
                             {
-                                @synchronized(_albumNoOfStudiesCache)
+                                if( [localStudies containsObject: [distantStudy studyInstanceUID]] == NO)
                                 {
-                                    count = [[_distantAlbumNoOfStudiesCache objectForKey: ialbum.name] intValue];
+                                    count++;
+                                    
+                                    if( autoretrieve)
+                                        [studyToAutoretrieve addObject: distantStudy];
                                 }
+                            }
+                            
+                            if( autoretrievingPACSOnDemandSmartAlbum == NO && studyToAutoretrieve.count)
+                            {
+                                NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
+                                t.name = NSLocalizedString( @"Auto-Retrieving Album...", nil);
+                                t.supportsCancel = YES;
+                                [[ThreadsManager defaultManager] addThreadAndStart: t];
                             }
                         }
                         
@@ -9818,7 +9872,7 @@ static BOOL needToRezoom;
     }
     
     #ifndef OSIRIX_LIGHT
-    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO];
+    [QueryController retrieveStudies: [NSArray arrayWithObject: study] showErrors: NO checkForPreviousAutoRetrieve: YES];
     #endif
     
     [NSThread sleepForTimeInterval: 0.2];
