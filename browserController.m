@@ -9350,7 +9350,7 @@ static BOOL needToRezoom;
                         _cachedAlbumsContext = nil;
                     }
                     
-					[_database save:NULL]; // TODO: why?
+					[_database save:NULL];
 					
 					[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 					
@@ -9415,7 +9415,7 @@ static BOOL needToRezoom;
 //							cachedAlbumsManagedObjectContext = nil;
 //						}
 						
-						[_database save:NULL]; // TODO: why?
+						[_database save:NULL];
 						
 						[albumTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [self.albumArray indexOfObject:album]] byExtendingSelection: NO];
 						
@@ -10591,6 +10591,8 @@ static BOOL needToRezoom;
 	
 	if( movieController) createdViewer = movieController;
 	
+    [self.database save]; //To save 'dateOpened' field, and allow independentContext to see it
+    
 	return createdViewer;
 }
 

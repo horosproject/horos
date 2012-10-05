@@ -113,7 +113,7 @@
 	[searchTypePopup setHidden:NO];
 	//Study date selected. Need to adjust searchType parameters and add Date formtter.
 	[searchTypePopup removeAllItems];
-	if ([sender indexOfSelectedItem] == 3 || [sender indexOfSelectedItem] == 11) {  //dates
+	if ([sender indexOfSelectedItem] == 3 || [sender indexOfSelectedItem] == 11 || [sender indexOfSelectedItem] == 12) {  //dates
 		[searchTypePopup addItemsWithTitles:[NSArray arrayWithObjects:NSLocalizedString(@"is Today", nil), NSLocalizedString(@"is Yesterday", nil),
 		  NSLocalizedString(@"is before", nil), NSLocalizedString(@"is after", nil),NSLocalizedString(@"is within", nil), NSLocalizedString(@"is exactly", nil), nil]];
 	}
@@ -139,7 +139,7 @@
 	[datePicker setHidden:YES];
 
 	// need date range Popup
-	if ( ([filterKeyPopup indexOfSelectedItem] == 3 || [filterKeyPopup indexOfSelectedItem] == 11) && [searchTypePopup indexOfSelectedItem] == 4) {
+	if ( ([filterKeyPopup indexOfSelectedItem] == 3 || [filterKeyPopup indexOfSelectedItem] == 11 || [filterKeyPopup indexOfSelectedItem] == 12) && [searchTypePopup indexOfSelectedItem] == 4) {
 		[dateRangePopup setHidden:NO];
 		[valueField setHidden:YES];
 		[searchTypePopup setNextKeyView:dateRangePopup];
@@ -155,7 +155,7 @@
 		[valueField setHidden:YES];
 	}
 	//add date formatter
-	else if (([filterKeyPopup indexOfSelectedItem] == 3 || [filterKeyPopup indexOfSelectedItem] == 11)) {
+	else if (([filterKeyPopup indexOfSelectedItem] == 3 || [filterKeyPopup indexOfSelectedItem] == 11 || [filterKeyPopup indexOfSelectedItem] == 12)) {
 		if (([searchTypePopup indexOfSelectedItem] == 2) || ([searchTypePopup indexOfSelectedItem] == 3) || ([searchTypePopup indexOfSelectedItem] == 5)) {
 			[dateRangePopup setHidden:YES];
 			[valueField setHidden:YES];

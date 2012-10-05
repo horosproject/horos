@@ -1089,6 +1089,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                                       
 									  @"(dateAdded >= $NSDATE_LASTHOUR)", NSLocalizedString( @"Just Added (last hour)", nil),
                                       @"(date >= $NSDATE_LASTHOUR)", NSLocalizedString( @"Just Acquired (last hour)", nil),
+                                      @"(dateOpened >= $NSDATE_LAST6HOURS)", NSLocalizedString( @"Just Opened", nil),
                                       
 									  @"(modality CONTAINS[cd] 'MR') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today MR", nil),
 									  @"(modality CONTAINS[cd] 'CT') AND (date >= $NSDATE_TODAY)", NSLocalizedString( @"Today CT", nil),

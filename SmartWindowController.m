@@ -284,7 +284,7 @@
 			predicateString = [NSString stringWithFormat:@"stateText == \"%@\"", value];
 		}		
 		// Dates		
-		else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)] == YES || [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
+		else if ([key isEqualToString:NSLocalizedString(@"Study Date", nil)] == YES || [key isEqualToString:NSLocalizedString(@"Date Added", nil)] || [key isEqualToString:NSLocalizedString(@"Date Opened", nil)])
 		{
 			NSDate *date = nil;
 			NSString *field = nil;
@@ -300,6 +300,9 @@
 			if( [key isEqualToString:NSLocalizedString(@"Date Added", nil)])
                 field = @"dateAdded";
 			
+            if( [key isEqualToString:NSLocalizedString(@"Date Opened", nil)])
+                field = @"dateOpened";
+            
 			switch ([[view searchTypePopup] indexOfSelectedItem] + 4)
 			{
 				case searchToday:
