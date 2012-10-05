@@ -730,7 +730,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         @catch (NSException* e) {
             if (_dontCatchExceptions)
                 @throw e;
-            N2LogExceptionWithStackTrace(e);
+            if (![NSThread.currentThread isCancelled])
+                N2LogExceptionWithStackTrace(e);
         }
 	}
 }
@@ -844,9 +845,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 //	{
 //      if (_dontCatchExceptions)
 //          @throw e;
-//      N2LogExceptionWithStackTrace(e);
+//      if (![NSThread.currentThread isCancelled])
+//          N2LogExceptionWithStackTrace(e);
 //	}
-//	
+//
 //	[pool release];
 //	
 //	[dict release];
@@ -887,7 +889,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	{
         if (_dontCatchExceptions)
             @throw e;
-		N2LogExceptionWithStackTrace(e);
+		if (![NSThread.currentThread isCancelled])
+            N2LogExceptionWithStackTrace(e);
 	}
 	
 	int quality = 100;
@@ -918,7 +921,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 	@catch (NSException * e) {
         if (_dontCatchExceptions)
             @throw e;
-		N2LogExceptionWithStackTrace(e);
+		if (![NSThread.currentThread isCancelled])
+            N2LogExceptionWithStackTrace(e);
     }
 	
 	NSMutableArray *urlToDownload = [NSMutableArray array];
@@ -963,7 +967,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         @catch (NSException* e) {
             if (_dontCatchExceptions)
                 @throw e;
-            N2LogExceptionWithStackTrace(e);
+            if (![NSThread.currentThread isCancelled])
+                N2LogExceptionWithStackTrace(e);
         }
         
 		[self purgeChildren];
@@ -1001,7 +1006,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         @catch (NSException* e) {
             if (_dontCatchExceptions)
                 @throw e;
-            N2LogExceptionWithStackTrace(e);
+            if (![NSThread.currentThread isCancelled])
+                N2LogExceptionWithStackTrace(e);
         }
         
 		[self purgeChildren];
@@ -1057,7 +1063,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             {
                 if (_dontCatchExceptions)
                     @throw e;
-                N2LogExceptionWithStackTrace(e);
+                if (![NSThread.currentThread isCancelled])
+                    N2LogExceptionWithStackTrace(e);
             }
         }
         
@@ -1110,8 +1117,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 {
                     if (_dontCatchExceptions)
                         @throw e;
-                    
-                    N2LogExceptionWithStackTrace(e);
+                    if (![NSThread.currentThread isCancelled])
+                        N2LogExceptionWithStackTrace(e);
                 }
 
                 [self purgeChildren];
@@ -1154,7 +1161,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                 {
                     if (_dontCatchExceptions)
                         @throw e;
-                    N2LogExceptionWithStackTrace(e);
+                    if (![NSThread.currentThread isCancelled])
+                        N2LogExceptionWithStackTrace(e);
                 }
                 
                 [self purgeChildren];
@@ -1499,7 +1507,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         @catch (NSException* e) {
             if (_dontCatchExceptions)
                 @throw e;
-            N2LogExceptionWithStackTrace(e);
+            if (![NSThread.currentThread isCancelled])
+                N2LogExceptionWithStackTrace(e);
         }
     }
     
@@ -1543,7 +1552,8 @@ subOpCallback(void * /*subOpCallbackData*/ ,
     @catch (NSException* e) {
         if (_dontCatchExceptions)
             @throw e;
-        N2LogExceptionWithStackTrace(e);
+		if (![NSThread.currentThread isCancelled])
+            N2LogExceptionWithStackTrace(e);
     }
 	
 	[lock unlock];
@@ -1749,7 +1759,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			cond = ASC_initializeNetwork(NET_REQUESTOR, 0, _acse_timeout, &net);
 			if (cond.bad())
 			{
-				DimseCondition::dump(cond);
+                if (_verbose)
+                    DimseCondition::dump(cond);
                 [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_initializeNetwork - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
@@ -1844,7 +1855,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				cond = ASC_setTransportLayer(net, tLayer, 0);
 				if (cond.bad())
 				{
-					DimseCondition::dump(cond);
+                    if (_verbose)
+                        DimseCondition::dump(cond);
 					[[NSException exceptionWithName:@"DICOM Network Failure (TLS query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayer - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 				}
 			}
@@ -1856,7 +1868,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			cond = ASC_createAssociationParameters(&params, _maxReceivePDULength);
 	//		DimseCondition::dump(cond);
 			if (cond.bad()) {
-				DimseCondition::dump(cond);
+                if (_verbose)
+                    DimseCondition::dump(cond);
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_createAssociationParameters - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
@@ -1869,7 +1882,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			/* available the user is able to request an encrypted,secure connection. */
 			cond = ASC_setTransportLayerType(params, _secureConnection);
 			if (cond.bad()) {
-				DimseCondition::dump(cond);
+                if (_verbose)
+                    DimseCondition::dump(cond);
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"ASC_setTransportLayerType - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 			
@@ -1892,7 +1906,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			
 			if (cond.bad())
 			{
-				DimseCondition::dump(cond);
+                if (_verbose)
+                    DimseCondition::dump(cond);
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"addPresentationContext - %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 			}
 
@@ -1972,17 +1987,22 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			{
 				if (cond == DUL_ASSOCIATIONREJECTED)
 				{
-					T_ASC_RejectParameters rej;
-					ASC_getRejectParameters(params, &rej);
-					errmsg("Association Rejected:");
-					ASC_printRejectParameters(stderr, &rej);
+                    if (_verbose) {
+                        T_ASC_RejectParameters rej;
+                        ASC_getRejectParameters(params, &rej);
+                        errmsg("Association Rejected:");
+                        ASC_printRejectParameters(stderr, &rej);
+                        
+                    }
 					[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Rejected : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 
 				}
 				else
 				{
-					errmsg("Association Request Failed:");
-					DimseCondition::dump(cond);
+                    if (_verbose) {
+                        errmsg("Association Request Failed:");
+                        DimseCondition::dump(cond);
+                    }
 					[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Request Failed : %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 				}
 			}
@@ -2084,8 +2104,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					
 					if (cond.bad())
 					{
-						errmsg("Association Abort Failed:");
-						DimseCondition::dump(cond);
+                        if (_verbose) {
+                            errmsg("Association Abort Failed:");
+                            DimseCondition::dump(cond);
+                        }
                         [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Abort Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 					}
 				}
@@ -2097,9 +2119,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 					cond = ASC_releaseAssociation(assoc);
 					if (cond.bad())
 					{
-						errmsg("Association Release Failed:");
-						DimseCondition::dump(cond);
-                        
+                        if (_verbose) {
+                            errmsg("Association Release Failed:");
+                            DimseCondition::dump(cond);
+                        }
                         [[NSException exceptionWithName:@"DICOM Network Failure (query)" reason:[NSString stringWithFormat: @"Association Release Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()] userInfo:nil] raise];
 					}
 				}
@@ -2118,8 +2141,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				
 				if (cond.bad())
 				{
-					errmsg("Association Abort Failed:");
-					DimseCondition::dump(cond);
+                    if (_verbose) {
+                        errmsg("Association Abort Failed:");
+                        DimseCondition::dump(cond);
+                    }
 				}
 				[[NSException exceptionWithName:@"DICOM Network Failure (query)" reason: reason userInfo:nil] raise];
 			}
@@ -2129,11 +2154,12 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 			}
 			else
 			{
-				errmsg("SCU Failed:");
-				DimseCondition::dump(cond);
-				if (_verbose)
+				if (_verbose) {
+                    errmsg("SCU Failed:");
+                    DimseCondition::dump(cond);
 					printf("Aborting Association\n");
-				
+				}
+                
                 NSString *reason = [NSString stringWithFormat: @"SCU Failed %04x:%04x %s", cond.module(), cond.code(), cond.text()];
                 
 				AbortAssociationTimeOut = 2;
@@ -2142,8 +2168,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 				
 				if (cond.bad())
 				{
-					errmsg("Association Abort Failed:");
-					DimseCondition::dump(cond);
+                    if (_verbose) {
+                        errmsg("Association Abort Failed:");
+                        DimseCondition::dump(cond);
+                    }
 				}
 				
 				[[NSException exceptionWithName: @"DICOM Network Failure (query)" reason: reason userInfo:nil] raise];
@@ -2240,7 +2268,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 	{
         if (_dontCatchExceptions)
             @throw e;
-		N2LogExceptionWithStackTrace(e);
+		if (![NSThread.currentThread isCancelled])
+            N2LogExceptionWithStackTrace(e);
 	}
     @finally {
         [pool release];
@@ -2348,16 +2377,20 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
     }
 	else
 	{
-		errmsg("Find Failed\n Condition:\n");
-		//dataset->print(COUT);
-        DimseCondition::dump(cond);
-		NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]);
+        if (_verbose) {
+            errmsg("Find Failed\n Condition:\n");
+            //dataset->print(COUT);
+            DimseCondition::dump(cond);
+            NSLog(@"Dimse Status: %@", [NSString stringWithCString: DU_cfindStatusString(rsp.DimseStatus)]);
+        }
     }
 
     /* dump status detail information if there is some */
     if (statusDetail != NULL) {
-        printf("  Status Detail:\n");
-        statusDetail->print(COUT);
+        if (_verbose) {
+            printf("  Status Detail:\n");
+            statusDetail->print(COUT);
+        }
         delete statusDetail;
     }
 
@@ -2515,10 +2548,12 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 		}
 		else
 		{
-            if( showErrorMessage)
+            if (showErrorMessage)
                 [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Move Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone: NO];
-			errmsg("Move Failed:");
-			DimseCondition::dump(cond);
+            if (_verbose) {
+                errmsg("Move Failed:");
+                DimseCondition::dump(cond);
+            }
 		}
 		
 		if (statusDetail != NULL) {
@@ -2535,7 +2570,8 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 	{
         if (_dontCatchExceptions)
             @throw e;
-		N2LogExceptionWithStackTrace(e);
+		if (![NSThread.currentThread isCancelled])
+            N2LogExceptionWithStackTrace(e);
 	}
 	
     return cond;
@@ -2623,8 +2659,10 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 	{
         if( showErrorMessage)
             [DCMTKQueryNode performSelectorOnMainThread:@selector(errorMessage:) withObject:[NSArray arrayWithObjects: NSLocalizedString(@"Get Failed", nil), [NSString stringWithCString: cond.text()], NSLocalizedString(@"Continue", nil), nil] waitUntilDone:NO];
-        errmsg("Get Failed:");
-        DimseCondition::dump(cond);
+        if (_verbose) {
+            errmsg("Get Failed:");
+            DimseCondition::dump(cond);
+        }
     }
 	
     if (statusDetail != NULL)
