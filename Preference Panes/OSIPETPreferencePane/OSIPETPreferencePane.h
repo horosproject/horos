@@ -16,8 +16,6 @@
 
 @interface OSIPETPreferencePane : NSPreferencePane 
 {
-	IBOutlet NSButton						*convertPETtoSUVCheck;
-											
 	IBOutlet NSPopUpButton					*CLUTBlendingMenu, *DefaultCLUTMenu, *OpacityTableMenu;
 	
 	IBOutlet NSMatrix						*CLUTMode, *WindowingModeMatrix;
@@ -27,7 +25,6 @@
 
 - (void) mainViewDidLoad;
 - (IBAction) setPETCLUTfor3DMIP: (id) sender;
-- (IBAction) setConvertPETtoSUVautomatically: (id) sender;
 - (IBAction) setWindowingMode: (id) sender;
 - (IBAction) setMinimumValue: (id) sender;
 @end

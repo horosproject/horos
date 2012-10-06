@@ -104,8 +104,6 @@
 	[minimumValueText setIntValue: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETMinimumValue"]];
 	[WindowingModeMatrix selectCellWithTag: [[NSUserDefaults standardUserDefaults] integerForKey:@"PETWindowingMode"]];
 	
-	[convertPETtoSUVCheck setState: [defaults boolForKey: @"ConvertPETtoSUVautomatically"]];
-	
 	if( [[[NSUserDefaults standardUserDefaults] stringForKey:@"PET Clut Mode"] isEqualToString:@"B/W Inverse"])
 		[CLUTMode selectCellWithTag: 0];
 	else
@@ -129,8 +127,4 @@
 		[[NSUserDefaults standardUserDefaults] setObject:@"Classic Mode" forKey: @"PET Clut Mode"];
 }
 
-- (IBAction) setConvertPETtoSUVautomatically: (id) sender
-{
-	[[NSUserDefaults standardUserDefaults] setBool:[sender state] forKey: @"ConvertPETtoSUVautomatically"];
-}
 @end
