@@ -9953,11 +9953,14 @@ static BOOL needToRezoom;
             if( [albumArray count] > albumTable.selectedRow)
                 self.selectedAlbumName = [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"];
             
-            // Clear search field
-            [self setSearchString: nil];
-            
-            // Clear the time interval
-            [self setTimeIntervalType: 0];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
+            {
+                // Clear search field
+                [self setSearchString: nil];
+                
+                // Clear the time interval
+                [self setTimeIntervalType: 0];
+            }
             
             [self refreshAlbums];
             
