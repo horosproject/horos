@@ -287,10 +287,10 @@ static int hotKeyToolCrossTable[] =
 	TextHotKeyAction,			//tText				13
 	ArrowHotKeyAction,			//tArrow			14
 	PencilHotKeyAction,			//tPencil			15
-	ThreeDPointHotKeyAction,	//t3Dpoint			16
+	-1,                         //t3Dpoint			16
 	scissors3DHotKeyAction,		//t3DCut			17
 	Camera3DotKeyAction,		//tCamera3D			18
-	-1,							//t2DPoint			19
+	ThreeDPointHotKeyAction,    //t2DPoint			19
 	PlainToolHotKeyAction,		//tPlain			20
 	BoneRemovalHotKeyAction,	//tBonesRemoval		21
 	-1,							//tWLBlended		22

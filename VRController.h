@@ -200,6 +200,7 @@
 - (void) remove3DPointROI: (ROI*) removedROI;
 - (void) remove3DPoint: (NSNotification*) note;
 - (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm;
+- (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm :(RGBColor) rgb;
 - (void) remove2DPoint: (float) x : (float) y : (float) z;
 - (NSMutableArray*) roi2DPointsArray;
 - (NSMutableArray*) sliceNumber2DPointsArray;

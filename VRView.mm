@@ -7972,7 +7972,13 @@ public:
 	{
 		[self add3DPoint: pos[0] : pos[1] : pos[2]];
 		
-		[controller add2DPoint: pix[0] : pix[1] : pix[ 2] :pos];
+        RGBColor rgb;
+        
+        rgb.red = point3DDefaultColorRed * 65535.;
+        rgb.green = point3DDefaultColorGreen * 65535.;
+        rgb.blue = point3DDefaultColorBlue * 65535.;
+        
+		[controller add2DPoint: pix[0] : pix[1] : pix[ 2] :pos :rgb];
 	}
 }
 
@@ -8522,7 +8528,12 @@ public:
 				case BoneRemovalHotKeyAction:
 					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
-						[windowController setCurrentTool: [ViewerController getToolEquivalentToHotKey: key]];
+                        int tool = [ViewerController getToolEquivalentToHotKey: key];
+                        
+                        if( tool == t2DPoint)
+                            tool = t3Dpoint;
+                        
+						[windowController setCurrentTool: tool];
 					}
 				break;
 				

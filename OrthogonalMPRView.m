@@ -923,7 +923,12 @@ extern int ANNOTATIONS;
 				case OrthoMPRCrossHotKeyAction:
 					if( [ViewerController getToolEquivalentToHotKey: key] >= 0)
 					{
-						[windowController setCurrentTool: [ViewerController getToolEquivalentToHotKey: key]];
+                        int tool = [ViewerController getToolEquivalentToHotKey: key];
+                        
+                        if( tool == t2DPoint)
+                            tool = t3Dpoint;
+                        
+						[windowController setCurrentTool: tool];
 					}
 				break;
 

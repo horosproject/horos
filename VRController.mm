@@ -641,7 +641,7 @@ static NSString*	CLUTEditorsViewToolbarItemIdentifier = @"CLUTEditors";
 					z = location[ 2 ];
 
 					// add the 3D Point to the SR view
-					[[self view] add3DPoint:  x : y : z];
+					[[self view] add3DPoint:  x : y : z : curROI.thickness :curROI.rgbcolor.red :curROI.rgbcolor.green :curROI.rgbcolor.blue];
 					// add the 2D Point to our list
 					[roi2DPointsArray addObject:curROI];
 					[sliceNumber2DPointsArray addObject:[NSNumber numberWithLong:i]];
@@ -2245,6 +2245,17 @@ return YES;
 // 3D points
 - (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm
 {
+    RGBColor rgb;
+    
+    rgb.red = -1;
+    rgb.green = -1;
+    rgb.blue = -1;
+    
+    [self add2DPoint:x :y :z :mm :rgb];
+}
+
+- (void) add2DPoint: (float) x : (float) y : (float) z :(float*) mm :(RGBColor) rgb
+{
 	if (viewer2D)
 	{
 		DCMPix *firstDCMPix = [[viewer2D pixList] objectAtIndex: 0];
@@ -2256,6 +2267,10 @@ return YES;
 		{
 			// Create the new 2D Point ROI
 			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]];
+            
+            if( rgb.red != -1 && rgb.green != -1 && rgb.blue != -1)
+                new2DPointROI.rgbcolor = rgb;
+            
 			NSRect irect;
 			irect.origin.x = x;
 			irect.origin.y = y;
@@ -2271,9 +2286,6 @@ return YES;
 			[x2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 0]]];
 			[y2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 1]]];
 			[z2DPointsArray addObject:[NSNumber numberWithFloat:mm[ 2]]];
-			
-//			NSLog( @"%f %f %f", x, y, z);
-//			NSLog( @"%f %f %f", [[x2DPointsArray lastObject] floatValue], [[y2DPointsArray lastObject] floatValue], [[z2DPointsArray lastObject] floatValue]);
 			
 			// notify the change
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROIChangeNotification object: new2DPointROI userInfo: nil];
@@ -2383,7 +2395,7 @@ return YES;
 					z = location[ 2];
 					
 					// add the 3D Point to the view
-					[[self view] add3DPoint: x : y : z];
+					[[self view] add3DPoint:  x : y : z : r.thickness :r.rgbcolor.red :r.rgbcolor.green :r.rgbcolor.blue];
 					[[self view] setNeedsDisplay:YES];
 					
 					// add the 2D Point to our list
@@ -2425,7 +2437,7 @@ return YES;
 		z = location[ 2];
 		
 		// add the 3D Point to the view
-		[[self view] add3DPoint: x : y : z];
+		[[self view] add3DPoint:  x : y : z : addedROI.thickness :addedROI.rgbcolor.red :addedROI.rgbcolor.green :addedROI.rgbcolor.blue];
 		[[self view] setNeedsDisplay:YES];
 		
 		// add the 2D Point to our list

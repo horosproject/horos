@@ -366,24 +366,34 @@ static id aedesc_to_id(AEDesc *desc)
 		
 		if( firstChar.location != NSNotFound)
 		{
-			NSRange secondChar = [aString rangeOfString: @"&#xBB;"];
+			NSRange secondChar = [aString rangeOfString: @"&#xBB;" options: 0 range: NSMakeRange( firstChar.location+firstChar.length, aString.length - (firstChar.location+firstChar.length)) locale: nil];
 			if( secondChar.location == NSNotFound)
 				secondChar = [aString rangeOfString: @"»"];
 			
 			if( secondChar.location != NSNotFound)
 			{
-				NSString	*dicomField = [aString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
+				NSString *dicomField = [aString substringWithRange: NSMakeRange( firstChar.location+firstChar.length, secondChar.location - (firstChar.location+firstChar.length))];
 				
-				NSRange sChar;
-				do
-				{
-					sChar = [dicomField rangeOfString: @"<"];
-					if( sChar.location != NSNotFound)
-						dicomField = [dicomField substringWithRange: NSMakeRange( 0, sChar.location)];
+                if( dicomField.length) // delete the <blabla> strings
+                {
+                    dicomField = [dicomField stringByReplacingOccurrencesOfString:@" " withString:@""];
+                    
+                    NSRange sChar;
+                    do
+                    {
+                        sChar = [dicomField rangeOfString: @"<"];
+                        if( sChar.location != NSNotFound)
+                        {
+                            NSRange sChar2 = [dicomField rangeOfString: @">"];
+                            
+                            if( sChar2.location != NSNotFound)
+                                dicomField = [dicomField stringByReplacingCharactersInRange:NSMakeRange( sChar.location, sChar2.location + sChar2.length - sChar.location) withString:@""];
+                        }
+                    }
+                    while( sChar.location != NSNotFound);
 				}
-				while( sChar.location != NSNotFound);
-				
-				NSLog( @"%@", dicomField);
+                
+				NSLog( @"Report: DICOM_Field: %@", dicomField);
 				
 				DCMObject *dcmObject = [DCMObject objectWithContentsOfFile: [imagePathsArray objectAtIndex: 0] decodingPixelData:NO];
 				if (dcmObject)
