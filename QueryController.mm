@@ -840,7 +840,7 @@ extern "C"
                 [[autoQRInstances objectAtIndex: currentAutoQR] setObject: [[resultArray copy] autorelease] forKey: @"resultArray"];
             else
                 [[autoQRInstances objectAtIndex: currentAutoQR] removeObjectForKey: @"resultArray"];
-            }
+        }
         
         if( index < 0)
             index = autoQRInstances.count -1;
@@ -1016,19 +1016,19 @@ extern "C"
 				[src setValue: [NSNumber numberWithBool: NO] forKey: @"activated"];
 			}
 			
-			if( [r count] == 1)
-			{
-				for( id src in sourcesArray)
-				{
-					if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
-					{
-						[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
-						[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
-					}
-				}
-			}
-			else
-			{
+//			if( [r count] == 1)
+//			{
+//				for( id src in sourcesArray)
+//				{
+//					if( [[src valueForKey: @"AddressAndPort"] isEqualToString: [r lastObject]])
+//					{
+//						[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
+//						[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
+//					}
+//				}
+//			}
+//			else
+//			{
 				BOOL first = YES;
 				
 				for( id v in r)
@@ -1048,7 +1048,7 @@ extern "C"
 						}
 					}
 				}
-			}
+//			}
 			
 			[self didChangeValueForKey:@"sourcesArray"];
 		}
