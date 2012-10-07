@@ -3342,7 +3342,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context {
     NSLog( @"-------------- Recompute Patient UIDs -- START");
-	NSLog(@"In %s", __PRETTY_FUNCTION__);
 	
 	// Find all studies
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
@@ -3361,20 +3360,39 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         [[wait progress] setMaxValue: studiesArray.count];
         
+        int i = 0;
+        
 		for (DicomStudy* study in studiesArray)
         {
+            NSAutoreleasePool *pool = [NSAutoreleasePool new];
+            
             [wait incrementBy:1];
             
 			@try {
-				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
-				DicomFile* dcm = [[DicomFile alloc] init:o.completePath];
-				if (dcm && [dcm elementForKey:@"patientUID"])
-					study.patientUID = [dcm elementForKey:@"patientUID"];
-				[dcm release];
+                
+                NSString *uid = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: [study primitiveValueForKey:@"name"], @"patientName", study.patientID, @"patientID", study.dateOfBirth, @"patientBirthDate", nil]];
+                
+                if( uid)
+                    study.patientUID = uid;
+                
+//				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
+//				DicomFile* dcm = [[DicomFile alloc] init:o.completePath];
+//				if (dcm && [dcm elementForKey:@"patientUID"])
+//					study.patientUID = [dcm elementForKey:@"patientUID"];
+//				[dcm release];
+                
 			} @catch (NSException* e) {
 				N2LogExceptionWithStackTrace(e);
 			}
+            
+            [pool release];
+            
+            i++;
+            
+            if( i % 1000 == 0)
+                [context save: nil];
 		}
+        
         [context save: nil];
         
         [wait close];
