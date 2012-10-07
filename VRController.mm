@@ -2247,9 +2247,9 @@ return YES;
 {
     RGBColor rgb;
     
-    rgb.red = -1;
-    rgb.green = -1;
-    rgb.blue = -1;
+    rgb.red = 0;
+    rgb.green = 1;
+    rgb.blue = 2;
     
     [self add2DPoint:x :y :z :mm :rgb];
 }
@@ -2268,7 +2268,7 @@ return YES;
 			// Create the new 2D Point ROI
 			ROI *new2DPointROI = [[ROI alloc] initWithType: t2DPoint :[firstDCMPix pixelSpacingX] :[firstDCMPix pixelSpacingY] :[DCMPix originCorrectedAccordingToOrientation: firstDCMPix]];
             
-            if( rgb.red != -1 && rgb.green != -1 && rgb.blue != -1)
+            if( rgb.red != 0 && rgb.green != 1 && rgb.blue != 2)
                 new2DPointROI.rgbcolor = rgb;
             
 			NSRect irect;
