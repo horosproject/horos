@@ -130,6 +130,9 @@
             // To remove the '.'
             [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
             
+            if( WADOThreads == WADOTotal)
+                [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+            
             if( WADOTotal)
                 [[NSThread currentThread] setProgress: 1.0 - (float) WADOThreads / (float) WADOTotal];
         }
@@ -234,6 +237,8 @@
 			
 			if( aborted == NO && [[WADODownloadDictionary allKeys] count] > 0)
 				NSLog( @"**** [[WADODownloadDictionary allKeys] count] > 0");
+            
+            [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 		}
 		
 		if( aborted)

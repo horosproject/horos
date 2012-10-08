@@ -243,6 +243,8 @@ static int numberOfActiveAssociations = 0;
         N2LogException( e);
     }
     
+    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+    
     [pool release];
     
     numberOfActiveAssociations--;
@@ -676,6 +678,8 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
 	
+    index = 0;
+    
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 	
@@ -953,6 +957,13 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 		char dir[ 1024];
 		sprintf( dir, "%s/%s", [[BrowserController currentBrowser] cfixedIncomingNoIndexDirectory], last( imageFileName, '/'));
 		rename( imageFileName, dir);
+        
+        if( forkedProcess == NO && index == 0)
+        {
+            [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+        }
+        
+        index++;
 	}
 	
     return cond;

@@ -182,7 +182,7 @@ OFCondition storeSCP(
   OFBool dbDebug_;
   OFBool activateCGETSCP_;
 
-	
+
   OFBool secureConnection_;
 	
   /// factory object used to create database handles
@@ -192,6 +192,8 @@ OFCondition storeSCP(
   const DcmQueryRetrieveOptions& options_;
     
 private:
+    
+    int index;
 };
 
 #endif

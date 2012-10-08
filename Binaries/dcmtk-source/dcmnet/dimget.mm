@@ -23,6 +23,7 @@
 ** Include Files
 */
 
+#import "DicomDatabase.h"
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
@@ -86,7 +87,7 @@ selectReadable(T_ASC_Association *assoc,
     return 0;
 }
 
-
+extern BOOL forkedProcess;
 extern OFCondition mainStoreSCP(T_ASC_Association * assoc, T_DIMSE_C_StoreRQ * request, T_ASC_PresentationContextID presId, DcmQueryRetrieveDatabaseHandle *dbHandle);
 
 OFCondition
@@ -134,6 +135,8 @@ DIMSE_getUser(
 	DcmQueryRetrieveOsiriXDatabaseHandleFactory factory;
 	DcmQueryRetrieveDatabaseHandle *dbHandle = factory.createDBHandle( assoc->params->DULparams.calledAPTitle, assoc->params->DULparams.calledAPTitle, cond);
 	
+    int index = 0;
+    
     while (cond == EC_Normal && status == STATUS_Pending) {
 
 		if( [NSThread currentThread].isCancelled)
@@ -225,6 +228,11 @@ DIMSE_getUser(
 			
 			case DIMSE_C_STORE_RQ:
 				 cond = mainStoreSCP(assoc, &rsp.msg.CStoreRQ, presID, dbHandle);
+                
+                if( forkedProcess == NO && index == 0)
+                    [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                
+                index++;
 			break;
 			
 			default:
@@ -246,6 +254,9 @@ DIMSE_getUser(
         }
     }
 	
+    if( forkedProcess == NO)
+        [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+    
 	delete dbHandle;
 	
     return cond;
