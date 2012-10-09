@@ -5614,7 +5614,7 @@ static NSConditionLock *threadLock = nil;
 			if ([item isFault])
 				return nil;
 			
-            return [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", @"patient name, number of series: for example, helmut la moumoute (4 series)"), name, [[item valueForKey:@"imageSeries"] count]];
+            return name; // [NSString stringWithFormat: NSLocalizedString( @"%@ (%d series)", nil), name, [[item valueForKey:@"imageSeries"] count]];
 		}
 	}
 	
@@ -5627,7 +5627,11 @@ static NSConditionLock *threadLock = nil;
 		if( [[tableColumn identifier] isEqualToString:@"patientID"])			return @"";
 		if( [[tableColumn identifier] isEqualToString:@"yearOld"])				return @"";
 		if( [[tableColumn identifier] isEqualToString:@"accessionNumber"])		return @"";
+        if( [[tableColumn identifier] isEqualToString:@"noSeries"])             return @"";
 	}
+    
+    if( [[tableColumn identifier] isEqualToString:@"noSeries"])
+        return [NSString stringWithFormat: @"%d", [[item valueForKey:@"imageSeries"] count]];
     
     id value = nil;
     BOOL accessed = NO;
