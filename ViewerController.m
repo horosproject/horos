@@ -4066,13 +4066,22 @@ static volatile int numberOfThreadsForRelisce = 0;
     if( windowWillClose)
         return;
     
-    CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
-    dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
-    
-    NSRect splitFrame = [sender frame];
-    
-    [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
-    [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+    if( sender)
+    {
+        CGFloat dividerPosition = [self matrixIsVisible]? previewMatrix.cellSize.width : 0;
+        dividerPosition = [self splitView:sender constrainSplitPosition:dividerPosition ofSubviewAt:0];
+        
+        NSRect splitFrame = [sender frame];
+        
+        if( isnan(splitFrame.size.height) || splitFrame.size.height < 0 || isnan(splitFrame.size.width) || splitFrame.size.width < 0)
+        {
+            NSLog( @"******* splitView:(NSSplitView*)sender resizeSubviewsWithOldSize:(NSSize)oldSize - %f", splitFrame.size.height);
+            return;
+        }
+        
+        [[[sender subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
+        [[[sender subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+sender.dividerThickness, 0, splitFrame.size.width-dividerPosition-sender.dividerThickness, splitFrame.size.height)];
+    }
 }
 
 -(void) observeScrollerStyleDidChangeNotification:(NSNotification*)n

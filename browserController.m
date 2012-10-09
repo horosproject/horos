@@ -8503,8 +8503,8 @@ static BOOL withReset = NO;
 			
 			if( [[self window] screen] == s)
 			{
-				NSLog( @"%@", NSStringFromRect( [[self window] frame]));
-				NSLog( @"%@", NSStringFromRect( visibleScreenRect[ i]));
+				NSLog( @"[[self window] frame]: %@", NSStringFromRect( [[self window] frame]));
+				NSLog( @"visibleScreenRect[ i]: %@", NSStringFromRect( visibleScreenRect[ i]));
 				
 				dbScreenChanged = YES;
 			}
