@@ -3050,6 +3050,9 @@ static BOOL initialized = NO;
 		
 	if( [dcmtkQRSCPTLS running])
 		return YES;
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"NinjaSTORESCP"]) // some undefined external entity is linked to OsiriX for DICOM communications...
+        return YES;
 		
 	return NO;
 }

@@ -151,7 +151,7 @@ void errmsg(const char* msg, ...)
 
 + (BOOL) storeSCP
 {
-	if( scp || scptls)
+	if( scp || scptls || [[NSUserDefaults standardUserDefaults] boolForKey:@"NinjaSTORESCP"]) // some undefined external entity is running a DIOCM listener...
 		return YES;
 	else
 		return NO;
