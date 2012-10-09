@@ -1292,6 +1292,11 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return [self noFiles];
 }
 
+- (NSNumber *) noSeries
+{
+    return [NSNumber numberWithInt: self.imageSeries.count];
+}
+
 - (NSNumber *) noFiles
 {
 	int n = [[self primitiveValueForKey:@"numberOfImages"] intValue];
