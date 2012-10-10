@@ -400,8 +400,6 @@
 
 - (void)addChild:(DcmDataset *)dataset
 {
-//	dataset->print( COUT);
-
 	if( dataset == nil)
 		return;
     
@@ -422,8 +420,13 @@
 	if (dataset->findAndGetString(DCM_QueryRetrieveLevel, queryLevel).good()){}
 	
 	if( queryLevel == nil)
+    {
+        NSLog( @"**** queryLevel == nil");
+        
+        dataset->print( COUT);
+        
 		return;
-	
+	}
     
     @synchronized( _children)
     {

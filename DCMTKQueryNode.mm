@@ -1024,94 +1024,44 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode
 {
-    if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
-	{
-		[self WADORetrieve: [dict valueForKey: @"study"]];
-	}
-    else // DICOM retrieve
+    NSMutableArray *childrenCopy = [[[self children] mutableCopy] autorelease];
+    
+    @try
     {
-        NSMutableArray *localObjectUIDs = [NSMutableArray array];
-        
-        NSString *studyInstanceUID = nil;
-        
-        if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
+        if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
         {
-            id study = [dict valueForKey: @"study"];
-            studyInstanceUID = [study uid];
+            [self WADORetrieve: [dict valueForKey: @"study"]];
         }
-        
-        if( [self isKindOfClass: [DCMTKStudyQueryNode class]])
-            studyInstanceUID = [self uid];
-        
-        // Local Study with images? -> try a C-Move/C-Get at IMAGE level to download only required images
-        
-        if( studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+        else // DICOM retrieve
         {
-            @try
-            {
-                NSError *error = nil;
-                NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
-                
-                [request setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyInstanceUID]];
-                
-                DicomStudy *localStudy = [[[[DicomDatabase activeLocalDatabase] independentContext] executeFetchRequest: request error: &error] lastObject];
-                
-                for( DicomSeries *s in [localStudy valueForKey: @"series"])
-                    [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
-            }
-            @catch (NSException* e)
-            {
-                if (_dontCatchExceptions)
-                    @throw e;
-                if (![NSThread.currentThread isCancelled])
-                    N2LogExceptionWithStackTrace(e);
-            }
-        }
-        
-        if( localObjectUIDs.count && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
-        {
-            NSMutableDictionary *seriesUIDsToRetrieve = [NSMutableDictionary dictionary];
+            NSMutableArray *localObjectUIDs = [NSMutableArray array];
             
-            if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
+            NSString *studyInstanceUID = nil;
+            
+            if( [self isKindOfClass: [DCMTKSeriesQueryNode class]])
             {
-                // We are at STUDY level, and we want to go direclty to IMAGE level
-                
-                DcmDataset *dataset = new DcmDataset();
-                
-                dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
-                dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
-                dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
-                dataset-> putAndInsertString(DCM_StudyInstanceUID, [studyInstanceUID UTF8String], OFTrue);
-                dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
-                
-                [self queryWithValues: nil dataset: dataset];
-                
-                NSArray *childrenArray = nil;
-                @synchronized( self)
-                {
-                    childrenArray = [[[self children] copy] autorelease];
-                }
-                
+                id study = [dict valueForKey: @"study"];
+                studyInstanceUID = [study uid];
+            }
+            
+            if( [self isKindOfClass: [DCMTKStudyQueryNode class]])
+                studyInstanceUID = [self uid];
+            
+            // Local Study with images? -> try a C-Move/C-Get at IMAGE level to download only required images
+            
+            if( studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+            {
                 @try
                 {
-                    childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
-
-                    for( DCMTKImageQueryNode *image in childrenArray)
-                    {
-                        if( [image uid])
-                        {
-                            if( [localObjectUIDs containsString: [image uid]] == NO && [image seriesInstanceUID])
-                            {
-                                if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
-                                    [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
-                                
-                                [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
-                            }
-                        }
-                        else NSLog( @"****** no image uid !");
-                        
-                        if( [[NSThread currentThread] isCancelled]) break;
-                    }
+                    NSError *error = nil;
+                    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: @"Study"];
+                    
+                    [request setPredicate: [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyInstanceUID]];
+                    
+                    DicomStudy *localStudy = [[[[DicomDatabase activeLocalDatabase] independentContext] executeFetchRequest: request error: &error] lastObject];
+                    
+                    for( DicomSeries *s in [localStudy valueForKey: @"series"])
+                        [localObjectUIDs addObjectsFromArray: [[[s images] valueForKey: @"sopInstanceUID"] allObjects]];
                 }
                 @catch (NSException* e)
                 {
@@ -1120,147 +1070,213 @@ subOpCallback(void * /*subOpCallbackData*/ ,
                     if (![NSThread.currentThread isCancelled])
                         N2LogExceptionWithStackTrace(e);
                 }
-
-                [self purgeChildren];
             }
             
-            if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
+            if( localObjectUIDs.count && [[NSThread currentThread] isCancelled] == NO) // We have already local images !
             {
-                NSArray *childrenArray = nil;
-                @synchronized( self)
+                NSMutableDictionary *seriesUIDsToRetrieve = [NSMutableDictionary dictionary];
+                
+                if( [self isKindOfClass:[DCMTKStudyQueryNode class]])
                 {
-                    childrenArray = [self children];
+                    // We are at STUDY level, and we want to go direclty to IMAGE level
                     
-                    // search the images
-                    if( childrenArray == nil)
-                        [self queryWithValues: nil];
+                    DcmDataset *dataset = new DcmDataset();
                     
-                    childrenArray = [[[self children] copy] autorelease];
+                    dataset-> insertEmptyElement(DCM_StudyInstanceUID, OFTrue);
+                    dataset-> insertEmptyElement(DCM_SeriesInstanceUID, OFTrue);
+                    dataset-> insertEmptyElement(DCM_SOPInstanceUID, OFTrue);
+                    dataset-> putAndInsertString(DCM_StudyInstanceUID, [studyInstanceUID UTF8String], OFTrue);
+                    dataset-> putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE", OFTrue);
+                    
+                    [self queryWithValues: nil dataset: dataset];
+                    
+                    NSArray *childrenArray = nil;
+                    @synchronized( self)
+                    {
+                        childrenArray = [[[self children] copy] autorelease];
+                    }
+                    
+                    @try
+                    {
+                        childrenArray = [childrenArray sortedArrayUsingDescriptors: [NSArray arrayWithObjects: [NSSortDescriptor sortDescriptorWithKey: @"seriesInstanceUID" ascending: YES], nil]];
+
+                        for( DCMTKImageQueryNode *image in childrenArray)
+                        {
+                            if( [image uid])
+                            {
+                                if( [localObjectUIDs containsString: [image uid]] == NO && [image seriesInstanceUID])
+                                {
+                                    if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
+                                        [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
+                                    
+                                    [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
+                                }
+                            }
+                            else NSLog( @"****** no image uid !");
+                            
+                            if( [[NSThread currentThread] isCancelled]) break;
+                        }
+                    }
+                    @catch (NSException* e)
+                    {
+                        if (_dontCatchExceptions)
+                            @throw e;
+                        if (![NSThread.currentThread isCancelled])
+                            N2LogExceptionWithStackTrace(e);
+                    }
+
+                    [self purgeChildren];
                 }
                 
-                @try
+                if( [self isKindOfClass:[DCMTKSeriesQueryNode class]])
                 {
-                    for( DCMTKImageQueryNode *image in childrenArray)
+                    NSArray *childrenArray = nil;
+                    @synchronized( self)
                     {
-                        if( [image uid])
+                        childrenArray = [self children];
+                        
+                        // search the images
+                        if( childrenArray == nil)
+                            [self queryWithValues: nil];
+                        
+                        childrenArray = [[[self children] copy] autorelease];
+                    }
+                    
+                    @try
+                    {
+                        for( DCMTKImageQueryNode *image in childrenArray)
                         {
-                            if( [localObjectUIDs containsString: [image uid]] == NO)
+                            if( [image uid])
                             {
-                                if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
-                                    [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
-                                
-                                [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
+                                if( [localObjectUIDs containsString: [image uid]] == NO)
+                                {
+                                    if( [seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] == nil)
+                                        [seriesUIDsToRetrieve setObject: [NSMutableArray array] forKey: [image seriesInstanceUID]];
+                                    
+                                    [[seriesUIDsToRetrieve objectForKey: [image seriesInstanceUID]] addObject: [image uid]];
+                                }
+                            }
+                            else NSLog( @"****** no image uid !");
+                            
+                            if( [[NSThread currentThread] isCancelled]) break;
+                        }
+                    }
+                    @catch (NSException* e)
+                    {
+                        if (_dontCatchExceptions)
+                            @throw e;
+                        if (![NSThread.currentThread isCancelled])
+                            N2LogExceptionWithStackTrace(e);
+                    }
+                    
+                    [self purgeChildren];
+                }
+                
+                [self setChildren: childrenCopy];
+                
+                if( [seriesUIDsToRetrieve count] && [[NSThread currentThread] isCancelled] == NO)
+                {
+                    DcmDataset dataset;
+                    
+                    for( NSString *seriesInstanceUID in seriesUIDsToRetrieve) //To avoid incompatible PACS, retrieve each series independently
+                    {
+                        dataset.putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
+                        dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, [[[seriesUIDsToRetrieve objectForKey: seriesInstanceUID] componentsJoinedByString:@"\\"] UTF8String]);
+                        dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, [seriesInstanceUID UTF8String]);
+                        dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, [studyInstanceUID UTF8String]);
+                        
+                        if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
+                        {
+                            if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+                                [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
+                            
+                            else
+                            {
+                                if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset: &dataset destination: [dict objectForKey:@"moveDestination"]])
+                                {
+                                }
+                                else
+                                {
+                                    NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
+                                    localObjectUIDs = nil;
+                                }
                             }
                         }
-                        else NSLog( @"****** no image uid !");
+                        else
+                        {
+                            if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
+                                [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
+                            
+                            else
+                            {
+                                if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset: &dataset destination: [dict objectForKey: @"moveDestination"]])
+                                {
+                                }
+                                else
+                                {
+                                    NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
+                                    localObjectUIDs = nil;
+                                }
+                            }
+                        }
                         
                         if( [[NSThread currentThread] isCancelled]) break;
                     }
                 }
-                @catch (NSException* e)
-                {
-                    if (_dontCatchExceptions)
-                        @throw e;
-                    if (![NSThread.currentThread isCancelled])
-                        N2LogExceptionWithStackTrace(e);
-                }
-                
-                [self purgeChildren];
-            }
-            
-            if( [seriesUIDsToRetrieve count] && [[NSThread currentThread] isCancelled] == NO)
-            {
-                DcmDataset dataset;
-                
-                for( NSString *seriesInstanceUID in seriesUIDsToRetrieve) //To avoid incompatible PACS, retrieve each series independently
-                {
-                    dataset.putAndInsertString(DCM_QueryRetrieveLevel, "IMAGE");
-                    dataset.putAndInsertOFStringArray(DCM_SOPInstanceUID, [[[seriesUIDsToRetrieve objectForKey: seriesInstanceUID] componentsJoinedByString:@"\\"] UTF8String]);
-                    dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, [seriesInstanceUID UTF8String]);
-                    dataset.putAndInsertOFStringArray(DCM_StudyInstanceUID, [studyInstanceUID UTF8String]);
-                    
-                    if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
-                    {
-                        if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
-                            [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
-                        
-                        else
-                        {
-                            if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset: &dataset destination: [dict objectForKey:@"moveDestination"]])
-                            {
-                            }
-                            else
-                            {
-                                NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
-                                localObjectUIDs = nil;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
-                            [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
-                        
-                        else
-                        {
-                            if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset: &dataset destination: [dict objectForKey: @"moveDestination"]])
-                            {
-                            }
-                            else
-                            {
-                                NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
-                                localObjectUIDs = nil;
-                            }
-                        }
-                    }
-                    
-                    if( [[NSThread currentThread] isCancelled]) break;
-                }
-            }
-            else
-            {
-                NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
-                localObjectUIDs = nil;
-            }
-        }
-        
-        if( localObjectUIDs.count == 0 && [[NSThread currentThread] isCancelled] == NO)// STUDY / SERIES LEVEL retrieve
-        {
-            DcmDataset *dataset = [self moveDataset];
-            
-            if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
-            {
-                if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
-                    [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
-                
                 else
                 {
-                    
-                    if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
-                    {
-                    }
-                    else
-                        NSLog( @"UID_GETStudyRootQueryRetrieveInformationModel failed : %s", __PRETTY_FUNCTION__);
-                }
-            }
-            else
-            {
-                if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
-                    [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
-                
-                else
-                {
-                    if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey: @"moveDestination"]])
-                    {
-                    }
-                    else
-                        NSLog( @"UID_MOVEStudyRootQueryRetrieveInformationModel failed : %s", __PRETTY_FUNCTION__);
+                    NSLog( @"***** IMAGE Level retrieve failed... try STUDY/SERIES Level retrieve");
+                    localObjectUIDs = nil;
                 }
             }
             
-            if (dataset != NULL)
-                delete dataset;
+            if( localObjectUIDs.count == 0 && [[NSThread currentThread] isCancelled] == NO)// STUDY / SERIES LEVEL retrieve
+            {
+                [self setChildren: childrenCopy];
+                
+                DcmDataset *dataset = [self moveDataset];
+                
+                if( [[dict valueForKey: @"retrieveMode"] intValue] == CGETRetrieveMode && retrieveMode == CGETRetrieveMode)
+                {
+                    if( [DCMTKQueryRetrieveSCP storeSCP] == NO)
+                        [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
+                    
+                    else
+                    {
+                        
+                        if ([self setupNetworkWithSyntax: UID_GETStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey:@"moveDestination"]])
+                        {
+                        }
+                        else
+                            NSLog( @"UID_GETStudyRootQueryRetrieveInformationModel failed : %s", __PRETTY_FUNCTION__);
+                    }
+                }
+                else
+                {
+                    if( [DCMTKQueryRetrieveSCP storeSCP] == NO && [dict objectForKey: @"moveDestination"] == nil)
+                        [[NSException exceptionWithName: @"DICOM Network Failure" reason: NSLocalizedString( @"DICOM Listener is not activated", nil) userInfo:nil] raise];
+                    
+                    else
+                    {
+                        if ([self setupNetworkWithSyntax:UID_MOVEStudyRootQueryRetrieveInformationModel dataset:dataset destination: [dict objectForKey: @"moveDestination"]])
+                        {
+                        }
+                        else
+                            NSLog( @"UID_MOVEStudyRootQueryRetrieveInformationModel failed : %s", __PRETTY_FUNCTION__);
+                    }
+                }
+                
+                if (dataset != NULL)
+                    delete dataset;
+            }
         }
+            
+    }
+    @catch (NSException *exception) {
+        [exception raise];
+    }
+    @finally {
+        [self setChildren: childrenCopy];
     }
 }
 
