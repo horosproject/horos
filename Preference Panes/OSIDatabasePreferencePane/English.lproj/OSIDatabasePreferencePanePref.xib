@@ -759,7 +759,7 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 											<string key="NSFrame">{{9, 33}, {826, 20}}</string>
 											<reference key="NSSuperview" ref="284143828"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="88616766"/>
+											<reference key="NSNextKeyView" ref="824108647"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="590026116">
 												<int key="NSCellFlags">67108864</int>
@@ -777,7 +777,7 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 											</object>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 										</object>
-										<object class="NSButton" id="88616766">
+										<object class="NSButton" id="824108647">
 											<reference key="NSNextResponder" ref="284143828"/>
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{9, 11}, {826, 20}}</string>
@@ -785,12 +785,12 @@ ZSBDb21wdXRlciwgSW5jLiwgMjAwNQAAAAA</bytes>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="366375475"/>
 											<bool key="NSEnabled">YES</bool>
-											<object class="NSButtonCell" key="NSCell" id="184522143">
+											<object class="NSButtonCell" key="NSCell" id="548858143">
 												<int key="NSCellFlags">67108864</int>
 												<int key="NSCellFlags2">0</int>
 												<string key="NSContents">Clear Search field (in the toolbar), when changing current album</string>
 												<reference key="NSSupport" ref="679354208"/>
-												<reference key="NSControlView" ref="88616766"/>
+												<reference key="NSControlView" ref="824108647"/>
 												<int key="NSButtonFlags">1211912448</int>
 												<int key="NSButtonFlags2">2</int>
 												<reference key="NSAlternateImage" ref="270514410"/>
@@ -4080,10 +4080,10 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.clearSearchAndTimeIntervalWhenSelectingAlbum</string>
-						<reference key="source" ref="88616766"/>
+						<reference key="source" ref="824108647"/>
 						<reference key="destination" ref="563769253"/>
 						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="88616766"/>
+							<reference key="NSSource" ref="824108647"/>
 							<reference key="NSDestination" ref="563769253"/>
 							<string key="NSLabel">value: values.clearSearchAndTimeIntervalWhenSelectingAlbum</string>
 							<string key="NSBinding">value</string>
@@ -4172,7 +4172,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<reference ref="691738439"/>
 							<reference ref="980122367"/>
 							<reference ref="814211254"/>
-							<reference ref="88616766"/>
+							<reference ref="824108647"/>
 						</array>
 						<reference key="parent" ref="704182798"/>
 					</object>
@@ -5465,16 +5465,16 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">951</int>
-						<reference key="object" ref="88616766"/>
+						<reference key="object" ref="824108647"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="184522143"/>
+							<reference ref="548858143"/>
 						</array>
 						<reference key="parent" ref="896358334"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">952</int>
-						<reference key="object" ref="184522143"/>
-						<reference key="parent" ref="88616766"/>
+						<reference key="object" ref="548858143"/>
+						<reference key="parent" ref="824108647"/>
 					</object>
 				</array>
 			</object>

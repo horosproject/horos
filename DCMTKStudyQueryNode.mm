@@ -388,40 +388,8 @@
 
 - (NSString*) modality // Match DicomStudy
 {
-    NSMutableArray *r = [NSMutableArray array];
-    
-    BOOL SC = NO, SR = NO, PR = NO;
-    
-    for( NSString *mod in [_modality componentsSeparatedByString: @"\\"])
-    {
-        if( [mod isEqualToString:@"SR"])
-            SR = YES;
-        else if( [mod isEqualToString:@"SC"])
-            SC = YES;
-        else if( [mod isEqualToString:@"PR"])
-            PR = YES;
-        else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsObject: mod] == NO)
-            [r addObject: @"RT"];
-        else if( [mod isEqualToString:@"KO"])
-        {
-        }
-        else if([r containsObject: mod] == NO)
-            [r addObject: mod];
-    }
-    
-    if( [r count] == 0)
-    {
-        if( SC) [r addObject: @"SC"];
-        else
-        {
-            if( SR) [r addObject: @"SR"];
-            if( PR) [r addObject: @"PR"];
-        }
-    }
-    
-    return [r componentsJoinedByString:@"\\"];
+    return [DicomStudy displayedModalitiesForSeries: [_modality componentsSeparatedByString: @"\\"]];
 }
-
 
 - (id)valueForUndefinedKey:(NSString *)key
 {

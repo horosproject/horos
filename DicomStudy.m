@@ -729,6 +729,47 @@ static NSRecursiveLock *dbModifyLock = nil;
 	return [DicomStudy soundex: [self primitiveValueForKey: @"name"]];
 }
 
++ (NSString*) displayedModalitiesForSeries: (NSArray*) seriesModalities
+{
+    NSMutableArray *r = [NSMutableArray array];
+    
+    BOOL SC = NO, SR = NO, PR = NO, OT = NO;
+    
+    for( NSString *mod in seriesModalities)
+    {
+        if( [mod isEqualToString:@"SR"])
+            SR = YES;
+        else if( [mod isEqualToString:@"SC"])
+            SC = YES;
+        else if( [mod isEqualToString:@"PR"])
+            PR = YES;
+        else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
+            [r addObject: @"RT"];
+        else if( [mod isEqualToString:@"OT"])
+            OT = YES;
+        else if( [mod isEqualToString:@"KO"])
+        {
+        }
+        else if([r containsString: mod] == NO)
+            [r addObject: mod];
+    }
+    
+    if( [r count] == 0)
+    {
+        if( SC) [r addObject: @"SC"];
+        else if( OT) [r addObject: @"OT"];
+        else
+        {
+            if( SR) [r addObject: @"SR"];
+            if( PR) [r addObject: @"PR"];
+        }
+    }
+    
+    NSString *m = [r componentsJoinedByString:@"\\"];
+    
+    return m;
+}
+
 - (NSString*) modalities
 {
     [self.managedObjectContext lock];
@@ -736,10 +777,6 @@ static NSRecursiveLock *dbModifyLock = nil;
     {
         if (cachedModalites && _numberOfImagesWhenCachedModalities == self.numberOfImages.integerValue)
             return cachedModalites;
-        
-        [cachedModalites release]; cachedModalites = nil;
-        
-        NSString *m = nil;
         
         // skip the "OsiriX No Autodeletion" series
         NSMutableArray* series = [[[[self valueForKey:@"series"] allObjects] mutableCopy] autorelease];
@@ -749,41 +786,9 @@ static NSRecursiveLock *dbModifyLock = nil;
                 break;
             }
         
-        NSArray *seriesModalities = [[series sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"];
+        NSString *m = [DicomStudy displayedModalitiesForSeries: [[series sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"date" ascending: YES]]] valueForKey:@"modality"]];
         
-        NSMutableArray *r = [NSMutableArray array];
-        
-        BOOL SC = NO, SR = NO, PR = NO;
-        
-        for( NSString *mod in seriesModalities)
-        {
-            if( [mod isEqualToString:@"SR"])
-                SR = YES;
-            else if( [mod isEqualToString:@"SC"])
-                SC = YES;
-            else if( [mod isEqualToString:@"PR"])
-                PR = YES;
-            else if( [mod isEqualToString:@"RTSTRUCT"] == YES && [r containsString: mod] == NO)
-                [r addObject: @"RT"];
-            else if( [mod isEqualToString:@"KO"])
-            {
-            }
-            else if([r containsString: mod] == NO)
-                [r addObject: mod];
-        }
-        
-        if( [r count] == 0)
-        {
-            if( SC) [r addObject: @"SC"];
-            else
-            {
-                if( SR) [r addObject: @"SR"];
-                if( PR) [r addObject: @"PR"];
-            }
-        }
-        
-        m = [r componentsJoinedByString:@"\\"];
-
+        [cachedModalites release];
         cachedModalites = [m retain];
         _numberOfImagesWhenCachedModalities = self.numberOfImages.integerValue;
         

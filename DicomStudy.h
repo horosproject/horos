@@ -69,6 +69,7 @@
 - (NSSet *) images;
 - (NSNumber *) rawNoFiles;
 - (NSString*) modalities;
++ (NSString*) displayedModalitiesForSeries: (NSArray*) seriesModalities;
 - (NSArray *) imageSeries;
 - (NSArray *) keyObjectSeries;
 - (NSArray *) keyObjects;
