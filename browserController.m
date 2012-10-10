@@ -5668,7 +5668,7 @@ static NSConditionLock *threadLock = nil;
     
     if( [[tableColumn identifier] isEqualToString:@"noSeries"])
     {
-        if( [[tableColumn identifier] isEqualToString:@"imageSeries"])
+        if( [item valueForKey:@"imageSeries"])
             return [NSString stringWithFormat: @"%d", [[item valueForKey:@"imageSeries"] count]];
         else
             return @"";
@@ -10003,7 +10003,7 @@ static BOOL needToRezoom;
             if( [albumArray count] > albumTable.selectedRow)
                 self.selectedAlbumName = [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"];
             
-//            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
             {
                 // Clear search field
                 [self setSearchString: nil];
@@ -10011,6 +10011,8 @@ static BOOL needToRezoom;
                 // Clear the time interval
                 [self setTimeIntervalType: 0];
             }
+            else
+                [self setSearchString: self.searchString];
             
             [self refreshAlbums];
             
