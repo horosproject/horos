@@ -1487,10 +1487,6 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         
         NSArray* objectIDs = [self addFilesDescribedInDictionaries:dicomFilesArray postNotifications:postNotifications rereadExistingItems:rereadExistingItems generatedByOsiriX:generatedByOsiriX returnArray: returnArray];
         
-        NSArray* addedImagesArray = nil;
-        if( returnArray)
-            addedImagesArray = [self objectsWithIDs:objectIDs];
-        
 		[thread exitOperation];
 		
 		[DicomFile setFilesAreFromCDMedia: NO];
@@ -1505,7 +1501,7 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
 		}
 		
         if( returnArray)
-            [retArray addObjectsFromArray: addedImagesArray];
+            [retArray addObjectsFromArray: objectIDs];
         else
         {
             [self.managedObjectContext save: nil];
@@ -2471,54 +2467,32 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
                 
                 if ([objects count])
                 {
-                    [self lock];
-                    
-                    @try {
+                    @try
+                    {
                         BrowserController* bc = [BrowserController currentBrowser];
                         DicomDatabase* mdatabase = self.isMainDatabase? self : self.mainDatabase;
                         
-                        [mdatabase lock];
-                        @try {
-                            NSArray* mobjects = [mdatabase objectsWithIDs:objects];
+                        @try
+                        {
+                            if (bc.database == mdatabase && [[dict objectForKey:@"addToAlbum"] boolValue])
+                                [bc performSelectorOnMainThread:@selector(addImagesToSelectedAlbum:) withObject: objects waitUntilDone:NO];
                             
-                            if (studySelected == NO) {
+                            if (studySelected == NO)
+                            {
                                 studySelected = YES;
                                 if ([[dict objectForKey:@"selectStudy"] boolValue])
-                                    [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject:[[mobjects objectAtIndex:0] valueForKeyPath:@"series.study.objectID"] waitUntilDone:NO];
-                            }
-                            
-                            if (bc.database == mdatabase && bc.albumTable.selectedRow > 0 && [[dict objectForKey:@"addToAlbum"] boolValue])
-                            {
-                                DicomAlbum* album = [bc.albumArray objectAtIndex:bc.albumTable.selectedRow];
-                                
-                                if (album.smartAlbum.boolValue == NO)
-                                {
-                                    NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
-                                    
-                                    for (NSManagedObject* mobject in mobjects)
-                                    {
-                                        DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
-                                        
-                                        if( s)
-                                        {
-                                            [studies addObject:s];
-                                            [s archiveAnnotationsAsDICOMSR];
-                                        }
-                                    }
-                                }
+                                    [bc performSelectorOnMainThread:@selector(selectStudyWithObjectID:) withObject: [objects objectAtIndex:0] waitUntilDone:NO];
                             }
                         }
                         @catch (NSException *e) {
                             N2LogExceptionWithStackTrace(e);
                         }
                         @finally {
-                            [mdatabase unlock];
                         }
                         
                     } @catch (NSException* e) {
                         N2LogExceptionWithStackTrace(e);
                     } @finally {
-                        [self unlock];
                     }
                 }
                 

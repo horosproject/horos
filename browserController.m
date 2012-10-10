@@ -1577,9 +1577,45 @@ static NSConditionLock *threadLock = nil;
 	return [self saveDatabase:path context:self.managedObjectContext];
 }
 
+- (void) addImagesToSelectedAlbum:(NSArray*) objectIDs
+{
+    if( albumTable.selectedRow > 0)
+    {
+        DicomAlbum* album = [self.albumArray objectAtIndex: albumTable.selectedRow];
+        
+        if (album.smartAlbum.boolValue == NO)
+        {
+            NSMutableSet *studies = [album mutableSetValueForKey: @"studies"];
+            
+            for (DicomImage* mobject in [self.database objectsWithIDs: objectIDs])
+            {
+                DicomStudy* s = [mobject valueForKeyPath:@"series.study"];
+                
+                if( s && [studies containsObject: s] == NO)
+                {
+                    [studies addObject:s];
+                    //[s archiveAnnotationsAsDICOMSR]; // Why this?
+                }
+            }
+        }
+    }
+}
+
 -(void)selectStudyWithObjectID:(NSManagedObjectID*)oid {
-    DicomStudy* s = [self.database objectWithID:oid];
-    if (s) [self selectThisStudy:s];
+    NSManagedObject* s = [self.database objectWithID:oid];
+    DicomStudy *study = nil;
+    
+    if( [s isKindOfClass: [DicomStudy class]])
+        study = (DicomStudy*) s;
+    
+    if( [s isKindOfClass: [DicomSeries class]])
+        study = [s valueForKey: @"study"];
+    
+    if( [s isKindOfClass: [DicomImage class]])
+        study = [s valueForKeyPath: @"series.study"];
+    
+    if( study)
+        [self selectThisStudy: study];
 }
 
 - (BOOL) selectThisStudy: (NSManagedObject*)study
@@ -9967,7 +10003,7 @@ static BOOL needToRezoom;
             if( [albumArray count] > albumTable.selectedRow)
                 self.selectedAlbumName = [[albumArray objectAtIndex: albumTable.selectedRow] valueForKey: @"name"];
             
-            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
+//            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"clearSearchAndTimeIntervalWhenSelectingAlbum"])
             {
                 // Clear search field
                 [self setSearchString: nil];
