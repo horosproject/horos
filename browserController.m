@@ -18111,6 +18111,15 @@ static volatile int numberOfThreadsForJPEG = 0;
         _searchString = [searchString retain];
     }
     
+    @synchronized( smartAlbumDistantArraySync)
+    {
+        [smartAlbumDistantArray release];
+        smartAlbumDistantArray = nil;
+    }
+    
+    self.distantSearchString = nil;
+    self.distantSearchType = searchType;
+    
     [self setFilterPredicate:[self createFilterPredicate] description:[self createFilterDescription]];
     [self outlineViewRefresh];
     [databaseOutline scrollRowToVisible: [databaseOutline selectedRow]];
