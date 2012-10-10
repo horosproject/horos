@@ -4209,6 +4209,8 @@ static volatile int numberOfThreadsForRelisce = 0;
 			{
 				[previewMatrix renewRows: i+[studiesArray count] columns: 1];
 				[previewMatrix sizeToCells];
+                
+//                NSLog( @"renewRows: %d", i+[studiesArray count]);
 			}
 			
 			for( id curStudy in studiesArray)
