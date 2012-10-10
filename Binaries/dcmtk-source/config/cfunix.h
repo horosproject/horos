@@ -555,7 +555,7 @@ typedef unsigned short ushort;
 #define HAVE_STD_NAMESPACE 1
 
 /* Define if the compiler supports std::nothrow */
-#define HAVE_STD__NOTHROW 
+//#define HAVE_STD__NOTHROW
 
 /* Define to 1 if you have the `strchr' function. */
 #define HAVE_STRCHR 1
