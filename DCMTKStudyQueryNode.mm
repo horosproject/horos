@@ -297,6 +297,16 @@
     return _numberImages;
 }
 
+- (NSNumber*) noSeries
+{
+    return nil;
+}
+
+- (NSArray*) imageSeries
+{
+    return nil;
+}
+
 - (NSNumber*) noFiles
 {
     return _numberImages;

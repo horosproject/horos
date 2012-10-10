@@ -5631,7 +5631,12 @@ static NSConditionLock *threadLock = nil;
 	}
     
     if( [[tableColumn identifier] isEqualToString:@"noSeries"])
-        return [NSString stringWithFormat: @"%d", [[item valueForKey:@"imageSeries"] count]];
+    {
+        if( [[tableColumn identifier] isEqualToString:@"imageSeries"])
+            return [NSString stringWithFormat: @"%d", [[item valueForKey:@"imageSeries"] count]];
+        else
+            return @"";
+    }
     
     id value = nil;
     BOOL accessed = NO;
@@ -9771,8 +9776,13 @@ static BOOL needToRezoom;
     }
 }
 
--(void)loadSortDescriptors:(DicomAlbum*)album {
-    if (_database && album) {
+-(void)loadSortDescriptors:(DicomAlbum*)album
+{
+    if ([[[NSApplication sharedApplication] currentEvent] modifierFlags] & NSCommandKeyMask)
+        return;
+    
+    if (_database && album)
+    {
         // load the sortDescriptor
         
         NSString* key = nil;
