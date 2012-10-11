@@ -57,7 +57,7 @@ const static void *namesKey = &namesKey;
             }
         }
         
-        NSLog( @"---- catch notifications: %@ - %@", [notificationObserver class], bundleIdentifier);
+//        NSLog( @"---- catch notifications: %@ - %@", [notificationObserver class], bundleIdentifier);
     }
     else
         [self my_addObserver:notificationObserver selector:notificationSelector name:notificationName object:notificationSender];
