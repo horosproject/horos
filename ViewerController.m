@@ -3998,6 +3998,12 @@ static volatile int numberOfThreadsForRelisce = 0;
 
 - (BOOL)splitView: (NSSplitView *)sender canCollapseSubview: (NSView *)subview
 {
+    if( sender == splitView)
+    {
+        if( subview == [[sender subviews] objectAtIndex:1]) // Main view
+            return NO;
+    }
+    
     return YES;
 }
 
@@ -4144,6 +4150,7 @@ static volatile int numberOfThreadsForRelisce = 0;
 	{
 		[previewMatrix renewRows: 0 columns: 0];
 		[previewMatrix sizeToCells];
+        matrixPreviewBuilt = NO;
 		return;
 	}
 
