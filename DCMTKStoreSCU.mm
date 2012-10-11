@@ -12,6 +12,7 @@
      PURPOSE.
 =========================================================================*/
 
+#import "LogManager.h"
 #import "AppController.h"
 #import "DCMTKStoreSCU.h"
 #import "browserController.h"
@@ -1054,7 +1055,8 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 	[_filesToSend release];
 	[_patientName release];
 	[_studyDescription release];
-	
+	[_logEntry release];
+    
 	// TLS
 	[_cipherSuites release];
 	
@@ -1624,6 +1626,9 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				[userInfo setObject:[NSNumber numberWithInt:YES] forKey:@"Sent"];
 				[userInfo setObject:@"Complete" forKey:@"Message"];
 			}
+            
+            if ([[NSThread currentThread] isCancelled])
+                [userInfo setObject:@"Cancelled" forKey:@"Message"];
 			
 			[self updateLogEntry: userInfo];
 			
@@ -1637,7 +1642,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 				[NSThread currentThread].progress = [[userInfo objectForKey: @"NumberSent"] floatValue] / [[userInfo objectForKey: @"SendTotal"] floatValue];
 			}
             
-            if ([[NSThread currentThread] isCancelled]) // alessandro
+            if ([[NSThread currentThread] isCancelled])
                 break;
 		}
 		
@@ -1858,37 +1863,36 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 {
 	if( [[BrowserController currentBrowser] isNetworkLogsActive] == NO) return;
 	
-    DicomDatabase* database = [_extraParameters objectForKey:@"DicomDatabase"];
-    if (!database) return;
-	
-    [database lock];
 	@try
 	{
 		if (!_logEntry)
 		{
-			_logEntry = [database newObjectForEntity:database.logEntryEntity];
-			[_logEntry setValue:[NSDate date] forKey:@"startTime"];
-			[_logEntry setValue:@"Send" forKey:@"type"];
-			[_logEntry setValue:_calledAET forKey:@"destinationName"];
-			[_logEntry setValue:_callingAET forKey:@"originName"];
+			_logEntry = [[NSMutableDictionary dictionary] retain];
+            
+            [_logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logUID"];
+			[_logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logStartTime"];
+			[_logEntry setValue:@"Send" forKey:@"logType"];
+			[_logEntry setValue:_calledAET forKey:@"logCalledAET"];
+			[_logEntry setValue:_callingAET forKey:@"logCallingAET"];
 			
 			if (_patientName)
-				[_logEntry setValue:_patientName forKey:@"patientName"];
+				[_logEntry setValue:_patientName forKey: @"logPatientName"];
 			
 			if (_studyDescription)
-				[_logEntry setValue:_studyDescription forKey:@"studyName"];
+				[_logEntry setValue:_studyDescription forKey:@"logStudyDescription"];
 		}
 		
-		[_logEntry setValue:[NSNumber numberWithInt:_numberOfFiles] forKey:@"numberImages"];
-		[_logEntry setValue:[NSNumber numberWithInt:_numberSent] forKey:@"numberSent"];
-		[_logEntry setValue:[NSNumber numberWithInt:_numberErrors] forKey:@"numberError"];
-		[_logEntry setValue:[NSDate date] forKey:@"endTime"];
-		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"message"];
+		[_logEntry setValue:[NSString stringWithFormat: @"%d",_numberOfFiles] forKey:@"logNumberTotal"];
+		[_logEntry setValue:[NSString stringWithFormat: @"%d",_numberSent] forKey:@"logNumberReceived"];
+		[_logEntry setValue:[NSString stringWithFormat: @"%d", _numberErrors] forKey:@"logNumberError"];
+		[_logEntry setValue:[NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logEndTime"];
+		[_logEntry setValue:[userInfo valueForKey:@"Message"] forKey:@"logMessage"];
+        
+        [[LogManager currentLogManager] addLogLine: _logEntry];
 	}
 	@catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
-        [database unlock];
     }
 }
 

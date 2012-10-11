@@ -17,6 +17,9 @@
 #import "DicomDatabase.h"
 #import "NSThread+N2.h"
 #include <libkern/OSAtomic.h>
+#import "dicomFile.h"
+#import "LogManager.h"
+#import "N2Debug.h"
 
 @interface NSURLRequest (DummyInterface)
 + (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
@@ -63,7 +66,7 @@
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		
-		NSMutableData *d = [WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", (long) connection]];
+		NSMutableData *d = [[WADODownloadDictionary objectForKey: [NSString stringWithFormat:@"%ld", (long) connection]] objectForKey: @"data"];
 		[d appendData: data];
 		
 		[pool release];
@@ -87,6 +90,10 @@
 		}
 		
 		OSAtomicDecrement32Barrier( &WADOThreads);
+        
+        int error = [[logEntry valueForKey: @"logNumberError"] intValue];
+        error++;
+        [logEntry setValue:[NSString stringWithFormat: @"%d", error] forKey:@"logNumberError"];
 	}
 }
 
@@ -114,7 +121,8 @@
 		NSString *path = [[DicomDatabase defaultDatabase] incomingDirPath];
         
 		NSString *key = [NSString stringWithFormat:@"%ld", (long) connection];
-		NSMutableData *d = [WADODownloadDictionary objectForKey: key];
+        
+		NSMutableData *d = [[WADODownloadDictionary objectForKey: key] objectForKey: @"data"];
 		
 		NSString *extension = @"dcm";
 		
@@ -126,15 +134,57 @@
             NSString *filename = [[NSString stringWithFormat:@".WADO-%d-%ld", WADOThreads, (long) self] stringByAppendingPathExtension: extension];
         
             [d writeToFile: [path stringByAppendingPathComponent: filename] atomically: YES];
-            
-            // To remove the '.'
-            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
-            
-            if( WADOThreads == WADOTotal)
+                        
+            if( WADOThreads == WADOTotal) // The first file !
+            {
                 [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
+                
+                @try
+                {
+                    if (!logEntry && [DicomFile isDICOMFile: [path stringByAppendingPathComponent: filename]])
+                    {
+                        DicomFile *dcmFile = [[DicomFile alloc] init: [path stringByAppendingPathComponent: filename]];
+                        
+                        @try
+                        {
+                            logEntry = [[NSMutableDictionary dictionary] retain];
+                            
+                            [logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logUID"];
+                            [logEntry setValue: [NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logStartTime"];
+                            [logEntry setValue: @"Receive" forKey:@"logType"];
+                            [logEntry setValue: [[[WADODownloadDictionary objectForKey: key] objectForKey: @"url"] host] forKey:@"logCallingAET"];
+                            
+                            if ([dcmFile elementForKey: @"patientName"])
+                                [logEntry setValue: [dcmFile elementForKey: @"patientName"] forKey: @"logPatientName"];
+                            
+                            if ([dcmFile elementForKey: @"studyDescription"])
+                                [logEntry setValue:[dcmFile elementForKey: @"studyDescription"] forKey:@"logStudyDescription"];
+                            
+                            [logEntry setValue:[NSString stringWithFormat: @"%d",WADOTotal] forKey:@"logNumberTotal"];
+                        }
+                        @catch (NSException *e) {
+                            N2LogException( e);
+                        }
+                        [dcmFile release];
+                    }
+                }
+                @catch (NSException *exception) {
+                    N2LogException( exception);
+                }
+            }
+            
+            [logEntry setValue:[NSString stringWithFormat: @"%d", 1 + WADOTotal - WADOThreads] forKey:@"logNumberReceived"];
+            
+            [logEntry setValue:[NSString stringWithFormat: @"%lf", [[NSDate date] timeIntervalSince1970]] forKey:@"logEndTime"];
+            [logEntry setValue:@"In Progress" forKey:@"logMessage"];
+            
+            [[LogManager currentLogManager] addLogLine: logEntry];
             
             if( WADOTotal)
                 [[NSThread currentThread] setProgress: 1.0 - (float) WADOThreads / (float) WADOTotal];
+            
+            // To remove the '.'
+            [[NSFileManager defaultManager] moveItemAtPath: [path stringByAppendingPathComponent: filename] toPath: [path stringByAppendingPathComponent: [filename substringFromIndex: 1]] error: nil];
         }
         
 		[d setLength: 0]; // Free the memory immediately
@@ -164,8 +214,8 @@
 		WADODownloadDictionary = [NSMutableDictionary dictionary];
 		
 		int WADOMaximumConcurrentDownloads = [[NSUserDefaults standardUserDefaults] integerForKey: @"WADOMaximumConcurrentDownloads"];
-		if( WADOMaximumConcurrentDownloads < 10)
-			WADOMaximumConcurrentDownloads = 10;
+		if( WADOMaximumConcurrentDownloads < 1)
+			WADOMaximumConcurrentDownloads = 1;
 		
 		float timeout = [[NSUserDefaults standardUserDefaults] floatForKey: @"WADOTimeout"];
 		if( timeout < 240) timeout = 240;
@@ -207,7 +257,7 @@
 			
             if( downloadConnection)
             {
-                [WADODownloadDictionary setObject: [NSMutableData data] forKey: [NSString stringWithFormat:@"%ld", (long) downloadConnection]];
+                [WADODownloadDictionary setObject: [NSDictionary dictionaryWithObjectsAndKeys: url, @"url", [NSMutableData data], @"data", nil] forKey: [NSString stringWithFormat:@"%ld", (long) downloadConnection]];
                 [downloadConnection start];
                 [connectionsArray addObject: downloadConnection];
 			}
@@ -241,6 +291,11 @@
             [[DicomDatabase activeLocalDatabase] initiateImportFilesFromIncomingDirUnlessAlreadyImporting];
 		}
 		
+        if( aborted) [logEntry setValue:@"Cancelled" forKey:@"logMessage"];
+        else [logEntry setValue:@"Complete" forKey:@"logMessage"];
+        
+        [[LogManager currentLogManager] addLogLine: logEntry];
+        
 		if( aborted)
 		{
 			for( NSURLConnection *connection in connectionsArray)

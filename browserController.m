@@ -4979,7 +4979,6 @@ static NSConditionLock *threadLock = nil;
                 N2LogExceptionWithStackTrace(e/*, @"context deleteObject: series"*/);
 			}
 		}
-		
 		@try
 		{	
 			[database save:nil];

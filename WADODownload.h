@@ -20,7 +20,7 @@
 {
 	volatile int32_t WADOThreads __attribute__ ((aligned (4)));
     int WADOTotal;
-	NSMutableDictionary *WADODownloadDictionary;
+	NSMutableDictionary *WADODownloadDictionary, *logEntry;
 	BOOL showErrorMessage, firstWadoErrorDisplayed, _abortAssociation;
 }
 

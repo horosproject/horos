@@ -1580,6 +1580,8 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
     return [self addFilesDescribedInDictionaries: dicomFilesArray postNotifications: postNotifications rereadExistingItems: rereadExistingItems generatedByOsiriX: generatedByOsiriX returnArray: YES];
 }
 
+static BOOL protectionAgainstReentry = NO;
+
 -(NSArray*)addFilesDescribedInDictionaries:(NSArray*)dicomFilesArray postNotifications:(BOOL)postNotifications rereadExistingItems:(BOOL)rereadExistingItems generatedByOsiriX:(BOOL)generatedByOsiriX returnArray: (BOOL) returnArray
 {
 	NSThread* thread = [NSThread currentThread];
@@ -2236,9 +2238,12 @@ NSString* const DicomDatabaseLogEntryEntityName = @"LogEntry";
         thread.status = NSLocalizedString(@"Synchronizing database...", nil);
         thread.progress = -1;
         
-  //      NSLog(@"saving...");
-        [self.managedObjectContext save:NULL];
-//        NSLog(@"saved.");
+        if( protectionAgainstReentry == NO)
+        {
+            protectionAgainstReentry = YES;
+            [self.managedObjectContext save:NULL];
+            protectionAgainstReentry = NO;
+        }
     }
     @catch (NSException* e)
     {

@@ -36,7 +36,9 @@ static LogManager *currentLogManager = nil;
 	if (self = [super init])
 	{
 		_currentLogs = [[NSMutableDictionary alloc] init];
-		_timer = [[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
+        
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SingleProcessMultiThreadedListener"] == NO)
+            _timer = [[NSTimer scheduledTimerWithTimeInterval: 5 target:self selector:@selector(checkLogs:) userInfo:nil repeats:YES] retain];
 	}
 	return self;
 }
@@ -79,18 +81,70 @@ static LogManager *currentLogManager = nil;
 	return path;
 }
 
-- (void) checkLogs:(NSTimer *)timer
+- (void) addLogLine: (NSDictionary*) dict
 {
-	if( [[BrowserController currentBrowser] isNetworkLogsActive])
+    if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
 	{
-		NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] managedObjectContext];
+		NSManagedObjectContext *context = [[[BrowserController currentBrowser] database] independentContext];
         
 		if( context == nil)
 			return;
 		
-		if( [[[BrowserController currentBrowser] database] isLocal] == NO)
-            return;
-		
+        if( [[dict valueForKey: @"logMessage"] isEqualToString:@"In Progress"] || [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+        {
+            NSString *uid = [dict valueForKey: @"logUID"];
+            
+            NSManagedObject *logEntry = nil;
+            
+            if( [_currentLogs objectForKey:uid])
+                logEntry = [context objectWithID: [_currentLogs objectForKey:uid]];
+            
+            if (logEntry == nil)
+            {
+                logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
+                
+                [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[dict valueForKey: @"logStartTime"] intValue]]  forKey:@"startTime"];
+                [logEntry setValue:[dict valueForKey: @"logType"] forKey:@"type"];
+                [logEntry setValue:[dict valueForKey: @"logCallingAET"] forKey:@"originName"];
+                [logEntry setValue:[dict valueForKey: @"logCalledAET"] forKey:@"destinationName"];
+                [logEntry setValue:[dict valueForKey: @"logPatientName"] forKey:@"patientName"];
+                [logEntry setValue:[dict valueForKey: @"logStudyDescription"] forKey:@"studyName"];
+                
+                [context save: nil]; // To have a valid objectID
+                
+                [_currentLogs setObject: logEntry.objectID forKey:uid];
+            }
+            
+            if( logEntry != nil && [logEntry isDeleted] == NO)
+            {
+                [logEntry setValue:[dict valueForKey: @"logMessage"] forKey:@"message"];
+                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberTotal"] intValue]] forKey:@"numberImages"];
+                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberReceived"] intValue]] forKey:@"numberSent"];
+                [logEntry setValue:[NSNumber numberWithInt: [[dict valueForKey: @"logNumberError"] intValue]] forKey:@"numberError"];
+                
+                NSTimeInterval logEndTime = [[dict valueForKey: @"logEndTime"] doubleValue];
+                
+                if( [[dict valueForKey: @"logMessage"] isEqualToString:@"Complete"])
+                {
+                    if( logEndTime == 0)
+                        logEndTime = [[NSDate date] timeIntervalSince1970];
+                    
+                    [_currentLogs removeObjectForKey: uid];
+                }
+                
+                if( logEndTime != 0)
+                    [logEntry setValue:[NSDate dateWithTimeIntervalSince1970: logEndTime] forKey:@"endTime"];
+            }
+            
+            [context save: nil];
+        }
+    }
+}
+
+- (void) checkLogs:(NSTimer *)timer
+{
+    if( [[BrowserController currentBrowser] isNetworkLogsActive] && [[[BrowserController currentBrowser] database] isLocal])
+    {
 		char logPatientName[ 1024];
 		char logStudyDescription[ 1024];
 		char logCallingAET[ 1024];
@@ -115,119 +169,88 @@ static LogManager *currentLogManager = nil;
 		logType[ 0] = 0;
 		logEncoding[ 0] = 0;
 		
-		[context retain];
-		if( [context tryLock])
-		{
-			NSString *logFolder = [self logFolder];
-			NSFileManager *manager = [NSFileManager defaultManager];
-			NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath: logFolder];
-			NSString *path;
-			
-			@try {
-			while (path = [enumerator nextObject])
-			{
-				if ([[path pathExtension] isEqualToString: @"log"])
-				{
-					NSString *file = [logFolder stringByAppendingPathComponent:path];
-					NSString *newfile = [file stringByAppendingString:@"reading"];
-					
-					FILE * pFile;
-					pFile = fopen ( [file UTF8String], "r");
-					if( pFile)
-					{
-						fclose (pFile);
-						pFile = nil;
-						
-						rename( [file UTF8String], [newfile UTF8String]);
-						remove( [file UTF8String]);
-						
-						pFile = fopen ( [newfile UTF8String], "r");
-						if( pFile)
-						{
-							char data[ 4096];
-							
-							fread( data, 4096, 1 ,pFile);
-							
-							char *curData = data;
-							
-							if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
-							if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
-							if(curData) strcpy( logCallingAET, strsep( &curData, "\r"));
-							if(curData) strcpy( logStartTime, strsep( &curData, "\r"));
-							if(curData) strcpy( logMessage, strsep( &curData, "\r"));
-							if(curData) strcpy( logUID, strsep( &curData, "\r"));
-							if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
-							if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
-							if(curData) strcpy( logType, strsep( &curData, "\r"));
-							if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
-							if(curData) strcpy( logNumberTotal, strsep( &curData, "\r"));
-							
-							fclose (pFile);
-							remove( [newfile UTF8String]);
-							
-							// Encoding
-							NSStringEncoding encoding[ 10];
-							for( int i = 0; i < 10; i++) encoding[ i] = 0;
-							encoding[ 0] = NSISOLatin1StringEncoding;
-							
-							NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
-							
-							if( [c count] < 10)
-							{
-								for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
-							}
-							
-							if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"In Progress"] || [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
-							{				
-								NSString *uid = [NSString stringWithUTF8String: logUID];
-								id logEntry = [_currentLogs objectForKey:uid];
-								if (logEntry == nil)
-								{
-									logEntry = [NSEntityDescription insertNewObjectForEntityForName:@"LogEntry" inManagedObjectContext:context];
-									
-									[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logStartTime] intValue]]  forKey:@"startTime"];
-									[logEntry setValue:[NSString stringWithUTF8String: logType] forKey:@"type"];
-									[logEntry setValue:[NSString stringWithUTF8String: logCallingAET] forKey:@"originName"];
-									[logEntry setValue:[DicomFile stringWithBytes: (char*) logPatientName encodings: encoding] forKey:@"patientName"];
-									[logEntry setValue:[DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding] forKey:@"studyName"];
-									
-									[_currentLogs setObject:logEntry forKey:uid];
-								}
-								
-								if( logEntry != nil && [logEntry isDeleted] == NO)
-								{
-									[logEntry setValue:[NSString stringWithUTF8String: logMessage] forKey:@"message"];
-									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberTotal] intValue]] forKey:@"numberImages"];
-									[logEntry setValue:[NSNumber numberWithInt: [[NSString stringWithUTF8String: logNumberReceived] intValue]] forKey:@"numberSent"];
-									
-									if( [[NSString stringWithUTF8String: logMessage] isEqualToString:@"Complete"])
-									{
-										if( [[NSString stringWithUTF8String: logEndTime] intValue] == 0)
-											strcpy( logEndTime, [[NSString stringWithFormat:@"%d", (int) time (NULL)] UTF8String]);
-											
-										[_currentLogs removeObjectForKey: uid];
-									}
-									
-									if( [[NSString stringWithUTF8String: logEndTime] intValue] != 0)
-										[logEntry setValue:[NSDate dateWithTimeIntervalSince1970: [[NSString stringWithUTF8String: logEndTime] intValue]] forKey:@"endTime"];
-								}
-							}
-							else NSLog(@"***** Unknown log message type");
-						}
-						else NSLog(@"***** Unable to load a log message: %@", newfile);
-					}
-					else NSLog(@"----- log file not readable, will try later");
-				}
-			}
-
-			} @catch( NSException *localException) {
-				NSLog(@"Exception while checking logs: %@", [localException description]);
-			}
-			
-			[context unlock];
-		}
-		
-		[context release];
+        NSString *logFolder = [self logFolder];
+        NSFileManager *manager = [NSFileManager defaultManager];
+        NSDirectoryEnumerator *enumerator = [manager enumeratorAtPath: logFolder];
+        NSString *path;
+        
+        @try
+        {
+            while (path = [enumerator nextObject])
+            {
+                if ([[path pathExtension] isEqualToString: @"log"])
+                {
+                    NSString *file = [logFolder stringByAppendingPathComponent:path];
+                    NSString *newfile = [file stringByAppendingString:@"reading"];
+                    
+                    FILE * pFile;
+                    pFile = fopen ( [file UTF8String], "r");
+                    if( pFile)
+                    {
+                        fclose (pFile);
+                        pFile = nil;
+                        
+                        rename( [file UTF8String], [newfile UTF8String]);
+                        remove( [file UTF8String]);
+                        
+                        pFile = fopen ( [newfile UTF8String], "r");
+                        if( pFile)
+                        {
+                            char data[ 4096];
+                            
+                            fread( data, 4096, 1 ,pFile);
+                            
+                            char *curData = data;
+                            
+                            if(curData) strcpy( logPatientName, strsep( &curData, "\r"));
+                            if(curData) strcpy( logStudyDescription, strsep( &curData, "\r"));
+                            if(curData) strcpy( logCallingAET, strsep( &curData, "\r"));
+                            if(curData) strcpy( logStartTime, strsep( &curData, "\r"));
+                            if(curData) strcpy( logMessage, strsep( &curData, "\r"));
+                            if(curData) strcpy( logUID, strsep( &curData, "\r"));
+                            if(curData) strcpy( logNumberReceived, strsep( &curData, "\r"));
+                            if(curData) strcpy( logEndTime, strsep( &curData, "\r"));
+                            if(curData) strcpy( logType, strsep( &curData, "\r"));
+                            if(curData) strcpy( logEncoding, strsep( &curData, "\r"));
+                            if(curData) strcpy( logNumberTotal, strsep( &curData, "\r"));
+                            
+                            fclose (pFile);
+                            remove( [newfile UTF8String]);
+                            
+                            // Encoding
+                            NSStringEncoding encoding[ 10];
+                            for( int i = 0; i < 10; i++) encoding[ i] = 0;
+                            encoding[ 0] = NSISOLatin1StringEncoding;
+                            
+                            NSArray	*c = [[NSString stringWithCString: logEncoding] componentsSeparatedByString:@"\\"];
+                            
+                            if( [c count] < 10)
+                            {
+                                for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+                            }
+                            
+                            [self addLogLine: [NSDictionary dictionaryWithObjectsAndKeys:   [NSString stringWithUTF8String: logMessage], @"logMessage",
+                                                                                            [NSString stringWithUTF8String: logType], @"logType",
+                                                                                            [NSString stringWithUTF8String: logCallingAET], @"logCallingAET",
+                                                                                            [NSString stringWithUTF8String: logUID], @"logUID",
+                                                                                            [NSString stringWithUTF8String: logStartTime], @"logStartTime",
+                                                                                            [DicomFile stringWithBytes: (char*) logPatientName encodings: encoding], @"logPatientName",
+                                                                                            [DicomFile stringWithBytes: (char*) logStudyDescription encodings: encoding], @"logStudyDescription",
+                                                                                            [NSString stringWithUTF8String: logNumberTotal], @"logNumberTotal",
+                                                                                            [NSString stringWithUTF8String: logNumberReceived], @"logNumberReceived",
+                                                                                            [NSString stringWithUTF8String: logEndTime], @"logEndTime",
+                                                                                            nil]];
+                        }
+                        else NSLog(@"***** Unable to load a log message: %@", newfile);
+                    }
+                    else NSLog(@"----- log file not readable, will try later");
+                }
+            }
+        }
+        @catch( NSException *localException)
+        {
+            NSLog(@"Exception while checking logs: %@", [localException description]);
+        }
 	}
 }
 @end

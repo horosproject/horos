@@ -16,6 +16,7 @@
 #import "browserController.h"
 #import "DICOMToNSString.h"
 #import "LogManager.h"
+#import "dicomFile.h"
 
 #undef verify
 
@@ -76,6 +77,7 @@ END_EXTERN_C
 #include "dcpixel.h"
 #include "dcrlerp.h"
 
+extern BOOL forkedProcess;
 
 const OFConditionConst DcmQROsiriXDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
 const OFCondition DcmQROsiriXDatabaseError(DcmQROsiriXDatabaseErrorC);
@@ -399,20 +401,49 @@ OFCondition DcmQueryRetrieveOsiriXDatabaseHandle::updateLogEntry(DcmDataset *dat
 	handle->logNumberReceived = ++(handle->imageCount);
 	handle->logEndTime = 0L;
 	
-	FILE * pFile;
-	char dir[ 1024], newdir[1024];
-	sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
-	pFile = fopen (dir,"w+");
-	if( pFile)
-	{
-		fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
-		fclose (pFile);
-		strcpy( newdir, dir);
-		strcat( newdir, ".log");
-		unlink( newdir);
-		rename( dir, newdir);
+    if( forkedProcess)
+    {
+        FILE * pFile;
+        char dir[ 1024], newdir[1024];
+        sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
+        pFile = fopen (dir,"w+");
+        if( pFile)
+        {
+            fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
+            fclose (pFile);
+            strcpy( newdir, dir);
+            strcat( newdir, ".log");
+            unlink( newdir);
+            rename( dir, newdir);
+        }
+    }
+    else
+    {
+        // Encoding
+        NSStringEncoding encoding[ 10];
+        for( int i = 0; i < 10; i++) encoding[ i] = 0;
+        encoding[ 0] = NSISOLatin1StringEncoding;
+        
+        NSArray	*c = [[NSString stringWithCString: handle->logSpecificCharacterSet] componentsSeparatedByString:@"\\"];
+        
+        if( [c count] < 10)
+        {
+            for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+        }
+        
+        [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: handle->logMessage], @"logMessage",
+                           [NSString stringWithUTF8String: "Receive"], @"logType",
+                           [NSString stringWithUTF8String: handle->logCallingAET], @"logCallingAET",
+                           [NSString stringWithUTF8String: handle->logUID], @"logUID",
+                           [NSString stringWithFormat: @"%ld", handle->logStartTime], @"logStartTime",
+                           [DicomFile stringWithBytes: handle->logPatientName encodings: encoding], @"logPatientName",
+                           [DicomFile stringWithBytes: handle->logStudyDescription encodings: encoding], @"logStudyDescription",
+                           [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberTotal",
+                           [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberReceived",
+                           [NSString stringWithFormat: @"%ld", handle->logEndTime], @"logEndTime",
+                           nil]];
 	}
-	
+    
 	return EC_Normal;
 }
 
@@ -1171,19 +1202,48 @@ DcmQueryRetrieveOsiriXDatabaseHandle::~DcmQueryRetrieveOsiriXDatabaseHandle()
 			strcpy( handle->logMessage, "Complete");
 			handle->logEndTime = time (NULL);
 			
-			FILE * pFile;
-			char dir[ 1024], newdir[1024];
-			sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
-			pFile = fopen (dir,"w+");
-			if( pFile)
-			{
-				fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
-				fclose (pFile);
-				strcpy( newdir, dir);
-				strcat( newdir, ".log");
-				unlink( newdir);
-				rename( dir, newdir);
-			}
+            if( forkedProcess)
+            {
+                FILE * pFile;
+                char dir[ 1024], newdir[1024];
+                sprintf( dir, "%s/%s%s", [[BrowserController currentBrowser] cfixedTempNoIndexDirectory], "store_log_", handle->logUID);
+                pFile = fopen (dir,"w+");
+                if( pFile)
+                {
+                    fprintf (pFile, "%s\r%s\r%s\r%ld\r%s\r%s\r%ld\r%ld\r%s\r%s\r\%ld\r", handle->logPatientName, handle->logStudyDescription, handle->logCallingAET, handle->logStartTime, handle->logMessage, handle->logUID, handle->logNumberReceived, handle->logEndTime, "Receive", handle->logSpecificCharacterSet, handle->logNumberReceived);
+                    fclose (pFile);
+                    strcpy( newdir, dir);
+                    strcat( newdir, ".log");
+                    unlink( newdir);
+                    rename( dir, newdir);
+                }
+            }
+           else
+           {
+               // Encoding
+               NSStringEncoding encoding[ 10];
+               for( int i = 0; i < 10; i++) encoding[ i] = 0;
+               encoding[ 0] = NSISOLatin1StringEncoding;
+               
+               NSArray	*c = [[NSString stringWithCString: handle->logSpecificCharacterSet] componentsSeparatedByString:@"\\"];
+               
+               if( [c count] < 10)
+               {
+                   for( int i = 0; i < [c count]; i++) encoding[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+               }
+               
+               [[LogManager currentLogManager] addLogLine: [NSDictionary dictionaryWithObjectsAndKeys: [NSString stringWithUTF8String: handle->logMessage], @"logMessage",
+                                                            [NSString stringWithUTF8String: "Receive"], @"logType",
+                                                            [NSString stringWithUTF8String: handle->logCallingAET], @"logCallingAET",
+                                                            [NSString stringWithUTF8String: handle->logUID], @"logUID",
+                                                            [NSString stringWithFormat: @"%ld", handle->logStartTime], @"logStartTime",
+                                                            [DicomFile stringWithBytes: handle->logPatientName encodings: encoding], @"logPatientName",
+                                                            [DicomFile stringWithBytes: handle->logStudyDescription encodings: encoding], @"logStudyDescription",
+                                                            [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberTotal",
+                                                            [NSString stringWithFormat: @"%ld", handle->logNumberReceived], @"logNumberReceived",
+                                                            [NSString stringWithFormat: @"%ld", handle->logEndTime], @"logEndTime",
+                                                            nil]];
+           }
 		}
 
 		/* Free lists */

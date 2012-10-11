@@ -25,5 +25,6 @@
 - (void) checkLogs:(NSTimer *)timer;
 - (NSString *) logFolder;
 - (void) resetLogs;
+- (void) addLogLine: (NSDictionary*) dict;
 
 @end

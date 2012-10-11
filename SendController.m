@@ -322,7 +322,7 @@ static volatile int sendControllerObjects = 0;
 	
     NSMutableArray *arraysOfFiles = [NSMutableArray array];
     NSMutableArray *arrayOfPatientNames = [NSMutableArray array];
-    DicomDatabase *database = nil;
+//    DicomDatabase *database = nil;
     
 	@try
 	{
@@ -334,10 +334,10 @@ static volatile int sendControllerObjects = 0;
 		
         if( objectsToSend.count)
         {
-            if( database == nil)
-                database = [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]];
-            else if( database != [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]])
-                NSLog( @"*********** database != [DicomDatabase databaseForContext:[[a lastObject] managedObjectContext]");
+//            if( database == nil)
+//                database = [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]];
+//            else if( database != [DicomDatabase databaseForContext:[[objectsToSend lastObject] managedObjectContext]])
+//                NSLog( @"*********** database != [DicomDatabase databaseForContext:[[a lastObject] managedObjectContext]");
             
             NSString *previousPatientUID = nil;
             NSMutableArray *samePatientArray = [NSMutableArray array];
@@ -372,7 +372,7 @@ static volatile int sendControllerObjects = 0;
     
     if( arraysOfFiles.count)
     {
-        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: arraysOfFiles, @"arraysOfFiles", arrayOfPatientNames, @"arrayOfPatientNames", database, @"database", nil];
+        NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: arraysOfFiles, @"arraysOfFiles", arrayOfPatientNames, @"arrayOfPatientNames", nil];
         
         NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( sendDICOMFilesOffis:) object: dict] autorelease];
         t.name = NSLocalizedString( @"Sending...", nil);
@@ -392,7 +392,7 @@ static volatile int sendControllerObjects = 0;
 	NSRunCriticalAlertPanel(NSLocalizedString(@"DICOM Send Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
 }
 
-- (void) executeSend:(NSArray*) files patientName: (NSString*) patientName context: (DicomDatabase*) database
+- (void) executeSend:(NSArray*) files patientName: (NSString*) patientName
 {
 	if( [NSThread currentThread].isCancelled)
 		return;
@@ -406,7 +406,7 @@ static volatile int sendControllerObjects = 0;
 	NSString *destPort = [[self server] objectForKey:@"Port"];
 	
     NSMutableDictionary* xp = [NSMutableDictionary dictionaryWithDictionary:[self server]];
-    [xp setObject:database forKey:@"DicomDatabase"];
+//    [xp setObject:database forKey:@"DicomDatabase"];
     
 	storeSCU = [[DCMTKStoreSCU alloc] initWithCallingAET:[NSUserDefaults defaultAETitle] 
 			calledAET:calledAET 
@@ -415,7 +415,7 @@ static volatile int sendControllerObjects = 0;
 			filesToSend:files
 			transferSyntax: [[NSUserDefaults standardUserDefaults] integerForKey:@"syntaxListOffis"]
 			compression: 1.0
-			extraParameters:xp];
+			extraParameters:[self server]];
 	
 	@try
 	{
@@ -437,13 +437,13 @@ static volatile int sendControllerObjects = 0;
     
     NSArray *arraysOfFiles = [dict objectForKey: @"arraysOfFiles"];
     NSArray *arrayOfPatientNames = [dict objectForKey: @"arrayOfPatientNames"];
-    DicomDatabase *database = [dict objectForKey: @"database"];
+//    DicomDatabase *database = [dict objectForKey: @"database"];
     
 	@try
 	{
         for( int i = 0;i < arraysOfFiles.count;i++)
         {
-            [self executeSend: [arraysOfFiles objectAtIndex: i] patientName: [arrayOfPatientNames objectAtIndex: i] context: database];
+            [self executeSend: [arraysOfFiles objectAtIndex: i] patientName: [arrayOfPatientNames objectAtIndex: i]];
         }
 	}
 	@catch (NSException *e)
