@@ -206,37 +206,54 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 	return [DicomFile stringWithBytes: str encodings: encoding replaceBadCharacters: YES];
 }
 
-+ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
++ (BOOL) checkForEscapeCharacter: (char *) strValue size:(size_t) strLength
+{
+    BOOL result = NO;
+    // iterate over the string of characters
+    for (size_t pos = 0; pos < strLength; ++pos)
+    {
+        // and search for the first ESC character
+        if (*strValue++ == '\033')
+        {
+            // then return with "true"
+            result = YES;
+            break;
+        }
+    }
+    return result;
+}
+
++ (NSString *) originalStringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
 {
 	if( str == nil) return nil;
-
+    
 	char c;
 	int	i, from, len = strlen( str), index;
 	NSMutableString	*result = [NSMutableString string];
 	BOOL separators = NO;
-//	BOOL twoCharsEncoding = NO;
+    //	BOOL twoCharsEncoding = NO;
 	
 	for( i = 0, from = 0, index = 0; i < len; i++)
 	{
 		c = str[ i];
 		
-//		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
-//			twoCharsEncoding = YES;
-//		else
-//			twoCharsEncoding = NO;
+        //		if( encoding[ index] == NSISO2022JPStringEncoding || encoding[ index] == -2147483647)
+        //			twoCharsEncoding = YES;
+        //		else
+        //			twoCharsEncoding = NO;
 		
 		BOOL separatorFound = NO;
 		
-//		if( twoCharsEncoding)
-//		{
-//			if( c == 0x1b && str[ i+1] == '(')
-//				separatorFound = YES;
-//		}
-//		else
-//		{
-			if( c == 0x1b)
-				separatorFound = YES;
-//		}
+        //		if( twoCharsEncoding)
+        //		{
+        //			if( c == 0x1b && str[ i+1] == '(')
+        //				separatorFound = YES;
+        //		}
+        //		else
+        //		{
+        if( c == 0x1b)
+            separatorFound = YES;
+        //		}
 		
 		if( separatorFound || i == len-1)
 		{
@@ -246,17 +263,22 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 			if( i == len-1)
 				i = len;
 			
-			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding: encoding[ index]];
-			
-			if( s)
-			{
-				[result appendString: s];
-				
-				if( encoding[ index] == -2147481280)	// Korean support
-					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:result.range];
-				
-				[s release];
-			}
+            if( i-from)
+            {
+                NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding: encoding[ index]];
+                
+                NSLog( @"%@ %d", s, encoding[ index]);
+                
+                if( s)
+                {
+                    [result appendString: s];
+                    
+                    if( encoding[ index] == -2147481280)	// Korean support
+                        [result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:result.range];
+                    
+                    [s release];
+                }
+            }
 			
 			from = i;
 			if( index < 9)
@@ -268,18 +290,436 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 		}
 	}
 	
-	if( separators)
-	{
-		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range:result.range];
-		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range:result.range];
-		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range:result.range];
-	}
+//	if( separators)
+//	{
+//		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range:result.range];
+//		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range:result.range];
+//		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range:result.range];
+//	}
 	
 	if( replace)
 		return [DicomFile NSreplaceBadCharacter: result];
 	else
 		return result;
 }
+
++ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
+{
+	if( str == nil) return nil;
+    
+	int	fromLength = strlen( str);
+	NSMutableString	*result = [NSMutableString string];
+    BOOL checkPNDelimiters = YES;
+    NSStringEncoding previousEncoding, currentEncoding = encoding[ 0];
+	int pos = 0;
+    char *firstChar = str;
+    char *currentChar = str;
+    BOOL isFirstGroup = NO; // if delimiters contains '=' -> patient name
+    int escLength = 0;
+    
+	while(pos < fromLength)
+	{
+        
+		char c0 = *currentChar++;
+        BOOL isEscape = (c0 == '\033');
+        BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+       
+        if (isEscape || isDelimiter)
+        {
+            int convertLength = currentChar - firstChar - 1;
+			
+            if( convertLength - (escLength+1) > 0)
+            {
+                NSString *s = nil;
+                
+                s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+                
+//                NSLog( @"%@", s);
+                
+                if( s)
+                    [result appendString: s];
+            }
+            
+            // check whether this was the first component group of a PN value
+            if (isDelimiter && (c0 == '='))
+                isFirstGroup = NO;
+        }
+        
+        if (isEscape)
+        {
+            // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
+            if (isFirstGroup)
+            {
+                NSLog( @"DcmSpecificCharacterSet: Escape sequences shall not be used in the first component group of a Person Name (PN), using them anyway)");
+            }
+            
+            // we need at least two more characters to determine the new character set
+            escLength = 2;
+            if (pos + escLength < fromLength)
+            {
+                NSString *key = nil;
+                char c1 = *currentChar++;
+                char c2 = *currentChar++;
+                char c3 = '\0';
+                if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
+                    key = @"ISO 2022 IR 6";
+                else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
+                    key = @"ISO 2022 IR 100";
+                else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
+                    key = @"ISO 2022 IR 101";
+                else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
+                    key = @"ISO 2022 IR 109";
+                else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
+                    key = @"ISO 2022 IR 110";
+                else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
+                    key = @"ISO 2022 IR 144";
+                else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
+                    key = @"ISO 2022 IR 127";
+                else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
+                    key = @"ISO 2022 IR 126";
+                else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
+                    key = @"ISO 2022 IR 138";
+                else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
+                    key = @"ISO 2022 IR 148";
+                else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese
+                    key = @"ISO 2022 IR 13";
+                else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese - is this really correct?
+                    key = @"ISO 2022 IR 13";
+                else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
+                    key = @"ISO 2022 IR 166";
+                else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte)
+                    key = @"ISO 2022 IR 87";
+                else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte)
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x44)
+                            key = @"ISO 2022 IR 159";
+                    }
+                }
+                else if ((c1 == 0x24) && (c2 == 0x29)) // Korean (multi-byte)
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x43)
+                            key = @"ISO 2022 IR 149";
+                    }
+                }
+        
+                if( key == nil)
+                {
+                    NSLog( @"*** key == nil");
+                }
+                else
+                {
+                    currentEncoding = [NSString encodingForDICOMCharacterSet: key];
+                    
+                    BOOL found = NO;
+                    for( int x = 0; x < 10; x++)
+                    {
+                        if( currentEncoding == encoding[ x])
+                            found = YES;
+                    }
+                    
+                    if( found == NO)
+                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
+                    
+                    checkPNDelimiters = ([key isEqualToString: @"ISO 2022 IR 87"] == NO) && ([key isEqualToString: @"ISO 2022 IR 159"] == NO);
+                    
+                    if( checkPNDelimiters)
+                        firstChar = currentChar;
+                    else
+                        firstChar = currentChar - (escLength+1);
+                    
+                }
+                
+                pos += escLength;
+                
+                if( checkPNDelimiters)
+                    escLength = 0;
+            }
+            
+            if(pos >= fromLength)
+                NSLog( @"incomplete sequence");
+        }
+        else if (isDelimiter)
+        {
+            [result appendFormat: @"%c", c0];
+            
+            if (currentEncoding != encoding[ 0])
+            {
+                currentEncoding = encoding[ 0];
+                checkPNDelimiters = YES;
+            }
+            firstChar = currentChar;
+        }
+        ++pos;
+	}
+	
+    // convert any remaining characters from the input string
+    {
+        int convertLength = currentChar - firstChar;
+        if (convertLength > 0)
+        {
+            int convertLength = currentChar - firstChar - 1;
+            
+            if( firstChar + convertLength < str + fromLength && ( convertLength - (escLength+1) > 0))
+            {
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+            
+                if( s)
+                    [result appendString: s];
+            }
+        }
+	}
+    
+	if( replace)
+		return [DicomFile NSreplaceBadCharacter: result];
+	else
+		return result;
+}
+
+//OFCondition DcmSpecificCharacterSet::convertString(const char *fromString,
+//                                                   const size_t fromLength,
+//                                                   OFString &toString,
+//                                                   const OFString &delimiters)
+//{
+//    OFCondition status = EC_Normal;
+//    // check whether there are any code extensions at all
+//    if ((ConversionDescriptors.size() == 0) || !checkForEscapeCharacter(fromString, fromLength))
+//    {
+//        DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+//                      << convertToLengthLimitedOctalString(fromString, fromLength) << "'");
+//        // no code extensions according to ISO 2022 used - this is the simple case
+//        status = EncodingConverter.convertString(fromString, fromLength, toString, OFTrue /*clearMode*/);
+//    } else {
+//        if (delimiters.empty())
+//        {
+//            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+//                          << convertToLengthLimitedOctalString(fromString, fromLength)
+//                          << "' (with code extensions)");
+//        } else {
+//            DCMDATA_DEBUG("DcmSpecificCharacterSet: Converting '"
+//                          << convertToLengthLimitedOctalString(fromString, fromLength)
+//                          << "' (with code extensions and delimiters '" << delimiters << "')");
+//        }
+//        // code extensions according to ISO 2022 used, so we need to check for
+//        // particular escape sequences in order to switch between character sets
+//        toString.clear();
+//        size_t pos = 0;
+//        // check whether '=' is a delimiter, as it is used in PN values
+//        OFBool isFirstGroup = (delimiters.find('=') != OFString_npos);
+//        // by default, we expect that '^' and '=' (i.e. their ASCII codes) are valid PN delimiters
+//        // (this implies that the default character set is not "ISO 2022 IR 87" or "ISO 2022 IR 159")
+//        OFBool checkPNDelimiters = OFTrue;
+//        const char *firstChar = fromString;
+//        const char *currentChar = fromString;
+//        // initially, use the default descriptor
+//        OFCharacterEncoding::T_Descriptor descriptor = EncodingConverter.ConversionDescriptor;
+//        DCMDATA_TRACE("  Starting with the default character set");
+//        // iterate over all characters of the string (as long as there is no error)
+//        while ((pos < fromLength) && status.good())
+//        {
+//            const char c0 = *currentChar++;
+//            // check for characters ESC, LF, FF, CR or any other specified delimiter
+//            // (the PN delimiters '^' and '=' require the default character set or ASCII)
+//            const OFBool isEscape = (c0 == '\033');
+//            const OFBool isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') ||
+//            ((delimiters.find(c0) != OFString_npos) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+//            if (isEscape || isDelimiter)
+//            {
+//                // convert the sub-string (before the delimiter) with the current character set
+//                const size_t convertLength = currentChar - firstChar - 1;
+//                if (convertLength > 0)
+//                {
+//                    // output some debug information
+//                    DCMDATA_TRACE("    Converting sub-string '"
+//                                  << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+//                    status = EncodingConverter.convertString(descriptor, firstChar, convertLength, toString, OFFalse /*clearMode*/);
+//                    if (status.bad())
+//                        DCMDATA_TRACE("    -> ERROR: " << status.text());
+//                }
+//                // check whether this was the first component group of a PN value
+//                if (isDelimiter && (c0 == '='))
+//                    isFirstGroup = OFFalse;
+//            }
+//            // the ESC character is used to explicitly switch between character sets
+//            if (isEscape)
+//            {
+//                // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
+//                if (isFirstGroup)
+//                {
+//                    DCMDATA_WARN("DcmSpecificCharacterSet: Escape sequences shall not be used "
+//                                 << "in the first component group of a Person Name (PN), using them anyway");
+//                }
+//                // we need at least two more characters to determine the new character set
+//                size_t escLength = 2;
+//                if (pos + escLength < fromLength)
+//                {
+//                    OFString key;
+//                    const char c1 = *currentChar++;
+//                    const char c2 = *currentChar++;
+//                    char c3 = '\0';
+//                    if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
+//                        key = "ISO 2022 IR 6";
+//                    else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
+//                        key = "ISO 2022 IR 100";
+//                    else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
+//                        key = "ISO 2022 IR 101";
+//                    else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
+//                        key = "ISO 2022 IR 109";
+//                    else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
+//                        key = "ISO 2022 IR 110";
+//                    else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
+//                        key = "ISO 2022 IR 144";
+//                    else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
+//                        key = "ISO 2022 IR 127";
+//                    else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
+//                        key = "ISO 2022 IR 126";
+//                    else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
+//                        key = "ISO 2022 IR 138";
+//                    else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
+//                        key = "ISO 2022 IR 148";
+//                    else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese
+//                        key = "ISO 2022 IR 13";
+//                    else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese - is this really correct?
+//                        key = "ISO 2022 IR 13";
+//                    else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
+//                        key = "ISO 2022 IR 166";
+//                    else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte)
+//                        key = "ISO 2022 IR 87";
+//                    else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte)
+//                    {
+//                        escLength = 3;
+//                        // do we still have another character in the string?
+//                        if (pos + escLength < fromLength)
+//                        {
+//                            c3 = *currentChar++;
+//                            if (c3 == 0x44)
+//                                key = "ISO 2022 IR 159";
+//                        }
+//                    }
+//                    else if ((c1 == 0x24) && (c2 == 0x29)) // Korean (multi-byte)
+//                    {
+//                        escLength = 3;
+//                        // do we still have another character in the string?
+//                        if (pos + escLength < fromLength)
+//                        {
+//                            c3 = *currentChar++;
+//                            if (c3 == 0x43)
+//                                key = "ISO 2022 IR 149";
+//                        }
+//                    }
+//                    // check whether a valid escape sequence has been found
+//                    if (key.empty())
+//                    {
+//                        OFOStringStream stream;
+//                        stream << "Cannot convert character set: Illegal escape sequence 'ESC "
+//                        << STD_NAMESPACE dec << STD_NAMESPACE setfill('0')
+//                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 >> 4) << "/"
+//                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c1 & 0x0f) << " "
+//                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 >> 4) << "/"
+//                        << STD_NAMESPACE setw(2) << OFstatic_cast(int, c2 & 0x0f);
+//                        if (escLength == 3)
+//                        {
+//                            stream << " " << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 >> 4) << "/"
+//                            << STD_NAMESPACE setw(2) << OFstatic_cast(int, c3 & 0x0f);
+//                        }
+//                        stream  << "' found" << OFStringStream_ends;
+//                        OFSTRINGSTREAM_GETOFSTRING(stream, message)
+//                        status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+//                    }
+//                    if (status.good())
+//                    {
+//                        DCMDATA_TRACE("  Switching to character set '" << key << "'");
+//                        T_DescriptorMap::const_iterator iter = ConversionDescriptors.find(key);
+//                        // check whether the descriptor was found in the map, i.e. properly declared in (0008,0005)
+//                        if (iter != ConversionDescriptors.end())
+//                        {
+//                            descriptor = iter->second;
+//                            // special case: these Japanese character sets replace the ASCII part (G0 code area),
+//                            // so according to DICOM PS 3.5 Section 6.2.1 an explicit switch to the default is required
+//                            checkPNDelimiters = (key != "ISO 2022 IR 87") && (key != "ISO 2022 IR 159");
+//                        } else {
+//                            OFOStringStream stream;
+//                            stream << "Cannot convert character set: Escape sequence refers to character set '" << key << "' that "
+//                            "was not declared in SpecificCharacterSet (0008,0005)" << OFStringStream_ends;
+//                            OFSTRINGSTREAM_GETOFSTRING(stream, message)
+//                            status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+//                        }
+//                    }
+//                    pos += escLength;
+//                }
+//                // check whether the escape sequence was complete
+//                if (status.good() && (pos >= fromLength))
+//                {
+//                    OFOStringStream stream;
+//                    stream << "Cannot convert character set: Incomplete escape sequence (" << (escLength + 1)
+//                    << " bytes expected) at the end of the string to be converted" << OFStringStream_ends;
+//                    OFSTRINGSTREAM_GETOFSTRING(stream, message)
+//                    status = makeOFCondition(OFM_dcmdata, EC_CODE_CannotConvertCharacterSet, OF_error, message.c_str());
+//                }
+//                // do not copy the escape sequence to the output
+//                firstChar = currentChar;
+//            }
+//            // the LF, FF, CR character or other delimiters (depending on the VR) also cause a switch
+//            else if (isDelimiter)
+//            {
+//                // output some debug information
+//                DCMDATA_TRACE("    Appending delimiter '"
+//                              << convertToLengthLimitedOctalString(currentChar - 1 /* identical to c0 */, 1)
+//                              << "' to the output");
+//                // don't forget to append the delimiter
+//                toString += c0;
+//                // use the default descriptor again (see DICOM PS 3.5)
+//                if (descriptor != EncodingConverter.ConversionDescriptor)
+//                {
+//                    DCMDATA_TRACE("  Switching back to the default character set (because a delimiter was found)");
+//                    descriptor = EncodingConverter.ConversionDescriptor;
+//                    checkPNDelimiters = OFTrue;
+//                }
+//                // start new sub-string after delimiter
+//                firstChar = currentChar;
+//            }
+//            ++pos;
+//        }
+//        if (status.good())
+//        {
+//            // convert any remaining characters from the input string
+//            const size_t convertLength = currentChar - firstChar;
+//            if (convertLength > 0)
+//            {
+//                // output some debug information
+//                DCMDATA_TRACE("    Converting remaining sub-string '"
+//                              << convertToLengthLimitedOctalString(firstChar, convertLength) << "'");
+//                status = EncodingConverter.convertString(descriptor, firstChar, convertLength, toString, OFFalse /*clearMode*/);
+//                if (status.bad())
+//                    DCMDATA_TRACE("    -> ERROR: " << status.text());
+//            }
+//        }
+//    }
+//    if (status.good())
+//    {
+//        // finally, output some debug information
+//        if (DestinationEncoding == "UTF-8")
+//        {
+//            // output code points only in case of UTF-8 output
+//            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+//                          << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "' ("
+//                          << countCharactersInUTF8String(toString) << " code points)");
+//        } else {
+//            DCMDATA_TRACE("Converted result in " << DestinationEncoding << " is '"
+//                          << convertToLengthLimitedOctalString(toString.c_str(), toString.length()) << "'");
+//        }
+//    }
+//    return status;
+//}
 
 + (char *) replaceBadCharacter:(char *) str encoding: (NSStringEncoding) encoding
 {
