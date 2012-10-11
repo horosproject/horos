@@ -4505,12 +4505,20 @@ static NSConditionLock *threadLock = nil;
                     [matrixLoadIconsThread start];
                     
                     if( previousItem == item)
+                    {
+                        for( NSCell *cell in [oMatrix cells])
+                        {
+                            [cell setState: NSOffState];
+                            [cell setHighlighted: NO];
+                        }
+                        
                         for( NSDictionary *d in selectedRowColumns)
                         {
                             NSCell *cell = [oMatrix cellAtRow: [[d objectForKey: @"row"] intValue] column: [[d objectForKey: @"column"] intValue]];
                             [cell setState: NSOnState];
                             [cell setHighlighted: YES];
                         }
+                    }
 				}
                 else
                 {
@@ -4523,6 +4531,11 @@ static NSConditionLock *threadLock = nil;
                             {
                                 [cell setHighlighted: YES];
                                 [cell setState: NSOnState];
+                            }
+                            else
+                            {
+                                [cell setHighlighted: NO];
+                                [cell setState: NSOffState];
                             }
                         }
                     }

@@ -1397,7 +1397,7 @@ extern "C"
     [self autoQueryTimerFunction: QueryTimer]; 
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(id)item
+- (id)outlineView:(NSOutlineView *)outlineView child:(NSInteger)index ofItem:(DCMTKQueryNode *) item
 {
 	@try
 	{
@@ -1410,7 +1410,15 @@ extern "C"
 		}
 		else
 		{
-			return [[(DCMTKQueryNode *)item children] objectAtIndex:index];
+            NSArray *children = [item children];
+            
+            if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+            {
+                [item purgeChildren];
+                children = [item children];
+            }
+            
+			return [children objectAtIndex: index];
 		}
 	}
 	@catch (NSException * e)
@@ -1466,13 +1474,18 @@ extern "C"
 	return NO;
 }
 
-- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item
+- (NSInteger)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(DCMTKQueryNode *) item
 {
 	@try
 	{
 		if( item)
 		{
-			if (![(DCMTKQueryNode *)item children])
+            NSArray *children = [item children];
+            
+            if( children.count > 0 && [[children lastObject] isKindOfClass: [DCMTKStudyQueryNode class]] == NO && [[children lastObject] isKindOfClass: [DCMTKSeriesQueryNode class]] == NO)
+                [item purgeChildren];
+            
+			if (![item children])
 			{
 				@synchronized( self)
 				{
@@ -1485,13 +1498,13 @@ extern "C"
 						[progressIndicator stopAnimation:nil];
 						performingCFind = NO;
                         
-                        if( [(DCMTKQueryNode *)item children] == nil) // It failed... put an empty children...
+                        if( [item children] == nil) // It failed... put an empty children...
                             [item setChildren: [NSMutableArray array]];
 					}
 				}
 			}
 		}
-		return  (item == nil) ? [resultArray count] : [[(DCMTKQueryNode *) item children] count];
+		return  (item == nil) ? [resultArray count] : [[item children] count];
 	}
 	@catch (NSException * e)
 	{
