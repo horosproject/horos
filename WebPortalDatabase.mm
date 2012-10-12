@@ -54,7 +54,12 @@ NSString* const WebPortalDatabaseStudyEntityName = @"Study";
 }
 
 -(WebPortalUser*)newUser {
-	return [NSEntityDescription insertNewObjectForEntityForName:WebPortalDatabaseUserEntityName inManagedObjectContext:self.managedObjectContext];
+    
+    id newUser = [NSEntityDescription insertNewObjectForEntityForName:WebPortalDatabaseUserEntityName inManagedObjectContext:self.managedObjectContext];
+    
+    [newUser setValue: [NSDate dateWithTimeIntervalSinceReferenceDate: [NSDate timeIntervalSinceReferenceDate] + [[NSUserDefaults standardUserDefaults] integerForKey: @"temporaryUserDuration"] * 60L*60L*24L] forKey: @"deletionDate"];
+    
+	return newUser;
 }
 
 @end
