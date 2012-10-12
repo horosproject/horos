@@ -2657,7 +2657,7 @@ static NSConditionLock *threadLock = nil;
                 
                 if( autoretrievingPACSOnDemandSmartAlbum == NO && studyToAutoretrieve.count)
                 {
-                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector( autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
+                    NSThread* t = [[[NSThread alloc] initWithTarget:self selector:@selector(autoretrievePACSOnDemandSmartAlbum:) object: studyToAutoretrieve] autorelease];
                     t.name = NSLocalizedString( @"Auto-Retrieving Album...", nil);
                     t.supportsCancel = YES;
                     [[ThreadsManager defaultManager] addThreadAndStart: t];
@@ -2865,7 +2865,8 @@ static NSConditionLock *threadLock = nil;
     autoretrievingPACSOnDemandSmartAlbum = YES;
     {
         #ifndef OSIRIX_LIGHT
-            [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
+        [studies setValue:[NSNumber numberWithBool:YES] forKey:@"isAutoRetrieve"];
+        [QueryController retrieveStudies: studies showErrors: NO checkForPreviousAutoRetrieve: YES];
         #endif
     }
     autoretrievingPACSOnDemandSmartAlbum = NO;

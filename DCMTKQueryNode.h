@@ -38,11 +38,12 @@
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
-	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions;
+	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions, _isAutoRetrieve;
 	OFCondition globalCondition;
 }
 
 @property BOOL dontCatchExceptions;
+@property BOOL isAutoRetrieve;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  
@@ -106,4 +107,7 @@
 
 - (void) move:(NSDictionary*) dict retrieveMode: (int) retrieveMode;
 - (void) move:(NSDictionary*) dict;
+
++ (dispatch_semaphore_t)semaphoreForServerHostAndPort:(NSString*)key;
+
 @end

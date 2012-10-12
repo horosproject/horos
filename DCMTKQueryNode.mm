@@ -32,6 +32,7 @@
 #import "N2Debug.h"
 #import "DicomDatabase.h"
 #import "NSThread+N2.h"
+#import "N2MutableUInteger.h"
 
 #include <libkern/OSAtomic.h>
 
@@ -347,9 +348,10 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 @implementation DCMTKQueryNode
 
 @synthesize dontCatchExceptions = _dontCatchExceptions;
+@synthesize isAutoRetrieve = _isAutoRetrieve;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
-			callingAET:(NSString *)myAET  
+			callingAET:(NSString *)myAET
 			calledAET:(NSString *)theirAET  
 			hostname:(NSString *)hostname 
 			port:(int)port 
@@ -1026,6 +1028,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 {
     NSMutableArray *childrenCopy = [[[self children] mutableCopy] autorelease];
     
+    dispatch_semaphore_t mpsid = nil;
+    if (_isAutoRetrieve) {
+        mpsid = [[self class] semaphoreForServerHostAndPort:[NSString stringWithFormat:@"%@:%d", self._hostname, self._port]];
+        dispatch_semaphore_wait(mpsid, DISPATCH_TIME_FOREVER);
+    }
+    
     @try
     {
         if( [[dict valueForKey: @"retrieveMode"] intValue] == WADORetrieveMode && retrieveMode == WADORetrieveMode)
@@ -1321,10 +1329,12 @@ subOpCallback(void * /*subOpCallbackData*/ ,
         }
             
     }
-    @catch (NSException *exception) {
-        [exception raise];
+    @catch (...) {
+        @throw;
     }
     @finally {
+        if (mpsid)
+            dispatch_semaphore_signal(mpsid);
         [self setChildren: childrenCopy];
     }
 }
@@ -2759,5 +2769,61 @@ static NSMutableArray *releaseNetworkVariablesDictionaries = nil;
 {
     return [NSString stringWithFormat: @"QueryNode: %@ %@ %@", _name, _accessionNumber, _modality];
 }
+
+#pragma mark Max simultaneous auto-retrieve requests
+
+static NSMutableDictionary* semaphores = [[NSMutableDictionary alloc] init];
+static const MPSemaphoreCount virtualLimit = 1000; // this value must higher that the maximum possible number of allowed simultaneous retrieves... the GUI limit is currently 9
+
++ (dispatch_semaphore_t)semaphoreForServerHostAndPort:(NSString*)key { // this method can lock the thread (that happens when the user has diminished the limit and requests are already past the limit)
+    dispatch_semaphore_t mpsid = nil;
+    
+    @synchronized (semaphores) {
+        long mpsc = [NSUserDefaults.standardUserDefaults integerForKey:@"MaxConcurrentPODRetrieves"];
+        NSArray* a = [semaphores objectForKey:key];
+        if (a) {
+            mpsid = (dispatch_semaphore_t)[[a objectAtIndex:0] pointerValue];
+            N2MutableUInteger* mui = [a objectAtIndex:1];
+            while (mui.unsignedIntegerValue > mpsc) {
+                dispatch_semaphore_wait(mpsid, DISPATCH_TIME_FOREVER); // this may cause this method to take a long time to return
+                [mui decrement];
+            }
+            while (mui.unsignedIntegerValue < mpsc) {
+                dispatch_semaphore_signal(mpsid);
+                [mui increment];
+            }
+        } else {
+            mpsid = dispatch_semaphore_create(mpsc);
+            [semaphores setObject:[NSArray arrayWithObjects: [NSValue valueWithPointer:mpsid], [N2MutableUInteger mutableUIntegerWithUInteger:mpsc], nil] forKey:key];
+        }
+    }
+    
+    return mpsid;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @end
