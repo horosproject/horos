@@ -319,7 +319,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
     
 	while(pos < fromLength)
 	{
-        
 		char c0 = *currentChar++;
         BOOL isEscape = (c0 == '\033');
         BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
@@ -333,8 +332,6 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 NSString *s = nil;
                 
                 s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
-                
-//                NSLog( @"%@", s);
                 
                 if( s)
                     [result appendString: s];
@@ -413,9 +410,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                 }
         
                 if( key == nil)
-                {
                     NSLog( @"*** key == nil");
-                }
                 else
                 {
                     currentEncoding = [NSString encodingForDICOMCharacterSet: key];
@@ -467,9 +462,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         int convertLength = currentChar - firstChar;
         if (convertLength > 0)
         {
-            int convertLength = currentChar - firstChar - 1;
+            int convertLength = currentChar - firstChar;
             
-            if( firstChar + convertLength < str + fromLength && ( convertLength - (escLength+1) > 0))
+            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) > 0))
             {
                 NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
             
