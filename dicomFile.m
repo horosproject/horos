@@ -305,14 +305,14 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
 
 // Based on dcmtk 3.6 convertString function
 
-+ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encoding replaceBadCharacters: (BOOL) replace
++ (NSString *) stringWithBytes:(char *) str encodings: (NSStringEncoding*) encodings replaceBadCharacters: (BOOL) replace
 {
 	if( str == nil) return nil;
     
 	int	fromLength = strlen( str);
 	NSMutableString	*result = [NSMutableString string];
     BOOL checkPNDelimiters = YES;
-    NSStringEncoding previousEncoding, currentEncoding = encoding[ 0];
+    NSStringEncoding currentEncoding = encodings[ 0];
 	int pos = 0;
     char *firstChar = str;
     char *currentChar = str;
@@ -420,7 +420,7 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                     BOOL found = NO;
                     for( int x = 0; x < 10; x++)
                     {
-                        if( currentEncoding == encoding[ x])
+                        if( currentEncoding == encodings[ x])
                             found = YES;
                     }
                     
@@ -449,9 +449,9 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
         {
             [result appendFormat: @"%c", c0];
             
-            if (currentEncoding != encoding[ 0])
+            if (currentEncoding != encodings[ 0])
             {
-                currentEncoding = encoding[ 0];
+                currentEncoding = encodings[ 0];
                 checkPNDelimiters = YES;
             }
             firstChar = currentChar;

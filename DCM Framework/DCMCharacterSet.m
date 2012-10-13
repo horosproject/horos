@@ -57,56 +57,180 @@ char* DCMreplaceInvalidCharacter( char* str ) {
 	return mutable;
 }
 
+// Based on dcmtk 3.6 convertString function
+
 + (NSString *) stringWithBytes:(char *) str length:(unsigned) length encodings: (NSStringEncoding*) encodings
 {
 	if( str == nil) return nil;
-	
-	char c;
-	int i, x, from, index;
-	BOOL separators = NO;
-	NSMutableString *result = [NSMutableString string];
-	
-	for( i = 0, from = 0, index = 0; i < length; i++)
+    
+	int	fromLength = strlen( str);
+	NSMutableString	*result = [NSMutableString string];
+    BOOL checkPNDelimiters = YES;
+    NSStringEncoding currentEncoding = encodings[ 0];
+	int pos = 0;
+    char *firstChar = str;
+    char *currentChar = str;
+    BOOL isFirstGroup = NO; // if delimiters contains '=' -> patient name
+    int escLength = 0;
+    
+	while(pos < fromLength)
 	{
-		c = str[ i];
-		
-		if( c == 0x1b || i == length-1)
-		{
-			if( c == 0x1b)
-				separators = YES;
-				
-			if( i == length-1) i = length;
+		char c0 = *currentChar++;
+        BOOL isEscape = (c0 == '\033');
+        BOOL isDelimiter = (c0 == '\012') || (c0 == '\014') || (c0 == '\015') || (((c0 == '^') || (c0 == '=')) && (((c0 != '^') && (c0 != '=')) || checkPNDelimiters));
+        
+        if (isEscape || isDelimiter)
+        {
+            int convertLength = currentChar - firstChar - 1;
 			
-			NSString *s = [[NSString alloc] initWithBytes: str+from length:i-from encoding:encodings[ index]];
-			
-			if( s)
-			{
-				[result appendString: s];
-				
-				if( encodings[ index] == -2147481280)	// Korean support
-					[result replaceOccurrencesOfString:@"$)C" withString:@"" options:0 range:NSMakeRange(0, [result length])];
-				
-				[s release];
-			}
-			
-			from = i;
-			if( index < 9)
-			{
-				index++;
-				if( encodings[ index] == 0)
-					index--;
-			}
-		}
+            if( convertLength - (escLength+1) > 0)
+            {
+                NSString *s = nil;
+                
+                s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+                
+                if( s)
+                    [result appendString: s];
+            }
+            
+            // check whether this was the first component group of a PN value
+            if (isDelimiter && (c0 == '='))
+                isFirstGroup = NO;
+        }
+        
+        if (isEscape)
+        {
+            // report a warning as this is a violation of DICOM PS 3.5 Section 6.2.1
+            if (isFirstGroup)
+            {
+                NSLog( @"DcmSpecificCharacterSet: Escape sequences shall not be used in the first component group of a Person Name (PN), using them anyway)");
+            }
+            
+            // we need at least two more characters to determine the new character set
+            escLength = 2;
+            if (pos + escLength < fromLength)
+            {
+                NSString *key = nil;
+                char c1 = *currentChar++;
+                char c2 = *currentChar++;
+                char c3 = '\0';
+                if ((c1 == 0x28) && (c2 == 0x42))       // ASCII
+                    key = @"ISO 2022 IR 6";
+                else if ((c1 == 0x2d) && (c2 == 0x41))  // Latin alphabet No. 1
+                    key = @"ISO 2022 IR 100";
+                else if ((c1 == 0x2d) && (c2 == 0x42))  // Latin alphabet No. 2
+                    key = @"ISO 2022 IR 101";
+                else if ((c1 == 0x2d) && (c2 == 0x43))  // Latin alphabet No. 3
+                    key = @"ISO 2022 IR 109";
+                else if ((c1 == 0x2d) && (c2 == 0x44))  // Latin alphabet No. 4
+                    key = @"ISO 2022 IR 110";
+                else if ((c1 == 0x2d) && (c2 == 0x4c))  // Cyrillic
+                    key = @"ISO 2022 IR 144";
+                else if ((c1 == 0x2d) && (c2 == 0x47))  // Arabic
+                    key = @"ISO 2022 IR 127";
+                else if ((c1 == 0x2d) && (c2 == 0x46))  // Greek
+                    key = @"ISO 2022 IR 126";
+                else if ((c1 == 0x2d) && (c2 == 0x48))  // Hebrew
+                    key = @"ISO 2022 IR 138";
+                else if ((c1 == 0x2d) && (c2 == 0x4d))  // Latin alphabet No. 5
+                    key = @"ISO 2022 IR 148";
+                else if ((c1 == 0x29) && (c2 == 0x49))  // Japanese
+                    key = @"ISO 2022 IR 13";
+                else if ((c1 == 0x28) && (c2 == 0x4a))  // Japanese - is this really correct?
+                    key = @"ISO 2022 IR 13";
+                else if ((c1 == 0x2d) && (c2 == 0x54))  // Thai
+                    key = @"ISO 2022 IR 166";
+                else if ((c1 == 0x24) && (c2 == 0x42))  // Japanese (multi-byte)
+                    key = @"ISO 2022 IR 87";
+                else if ((c1 == 0x24) && (c2 == 0x28))  // Japanese (multi-byte)
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x44)
+                            key = @"ISO 2022 IR 159";
+                    }
+                }
+                else if ((c1 == 0x24) && (c2 == 0x29)) // Korean (multi-byte)
+                {
+                    escLength = 3;
+                    // do we still have another character in the string?
+                    if (pos + escLength < fromLength)
+                    {
+                        c3 = *currentChar++;
+                        if (c3 == 0x43)
+                            key = @"ISO 2022 IR 149";
+                    }
+                }
+                
+                if( key == nil)
+                    NSLog( @"*** key == nil");
+                else
+                {
+                    currentEncoding = [DCMCharacterSet encodingForDICOMCharacterSet: key];
+                    
+                    BOOL found = NO;
+                    for( int x = 0; x < 10; x++)
+                    {
+                        if( currentEncoding == encodings[ x])
+                            found = YES;
+                    }
+                    
+                    if( found == NO)
+                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
+                    
+                    checkPNDelimiters = ([key isEqualToString: @"ISO 2022 IR 87"] == NO) && ([key isEqualToString: @"ISO 2022 IR 159"] == NO);
+                    
+                    if( checkPNDelimiters)
+                        firstChar = currentChar;
+                    else
+                        firstChar = currentChar - (escLength+1);
+                    
+                }
+                
+                pos += escLength;
+                
+                if( checkPNDelimiters)
+                    escLength = 0;
+            }
+            
+            if(pos >= fromLength)
+                NSLog( @"incomplete sequence");
+        }
+        else if (isDelimiter)
+        {
+            [result appendFormat: @"%c", c0];
+            
+            if (currentEncoding != encodings[ 0])
+            {
+                currentEncoding = encodings[ 0];
+                checkPNDelimiters = YES;
+            }
+            firstChar = currentChar;
+        }
+        ++pos;
 	}
 	
-	if( separators)
-	{
-		[result replaceOccurrencesOfString: @"\x1b" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
-		[result replaceOccurrencesOfString: @"(B=)" withString: @"=" options: 0 range: NSMakeRange(0, [result length])];
-		[result replaceOccurrencesOfString: @"(B" withString: @"" options: 0 range: NSMakeRange(0, [result length])];
+    // convert any remaining characters from the input string
+    {
+        int convertLength = currentChar - firstChar;
+        if (convertLength > 0)
+        {
+            int convertLength = currentChar - firstChar;
+            
+            if( firstChar + convertLength <= str + fromLength && ( convertLength - (escLength+1) > 0))
+            {
+                NSString *s = [[[NSString alloc] initWithBytes: firstChar length:convertLength encoding: currentEncoding] autorelease];
+                
+                if( s)
+                    [result appendString: s];
+            }
+        }
 	}
-	
-	return [DCMCharacterSet NSreplaceBadCharacter: result];
+    
+    return result;
 }
 
 + (NSStringEncoding)encodingForDICOMCharacterSet:(NSString *)characterSet
