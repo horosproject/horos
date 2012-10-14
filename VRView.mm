@@ -95,6 +95,7 @@ extern "C"
 #define BONEOPACITY 1.1
 
 extern int dontRenderVolumeRenderingOsiriX;	// See OsiriXFixedPointVolumeRayCastMapper.cxx
+extern unsigned int minimumStep;
 
 static NSRecursiveLock *drawLock = nil;
 static unsigned short *linearOpacity = nil;
@@ -2089,6 +2090,8 @@ public:
 	
 //	if(iChatRunning) [drawLock lock];
 	
+    minimumStep = 0;
+    
 	@try
 	{
 		WaitRendering	*www = 0;
@@ -5853,7 +5856,7 @@ public:
 		blendingWw = [blendingFirstObject ww];
 		
 		blendingReader = vtkImageImport::New();
-		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 0, [blendingPixList count]-1);
+		blendingReader->SetWholeExtent(0, [blendingFirstObject pwidth]-1, 0, [blendingFirstObject pheight]-1, 1, [blendingPixList count]-2);
 		blendingReader->SetDataExtentToWholeExtent();
 		
 		if( isBlendingRGB)
@@ -6264,7 +6267,7 @@ public:
 		if( isRGB)
 		{
 			reader->SetImportVoidPointer(data);
-			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 1, [pixList count]-2);	//AVOID VTK BUG
 			reader->SetDataExtentToWholeExtent();
 			reader->SetDataScalarTypeToUnsignedChar();
 			reader->SetNumberOfScalarComponents( 4);
@@ -6273,7 +6276,7 @@ public:
 		else 
 		{
 			reader->SetImportVoidPointer(data8);
-			reader->SetWholeExtent(0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 0, [pixList count]-1);	//AVOID VTK BUG
+			reader->SetWholeExtent( 0, [firstObject pwidth]-1, 0, [firstObject pheight]-1, 1, [pixList count]-2);	//AVOID VTK BUG
 			reader->SetDataExtentToWholeExtent();
 		//	reader->SetDataScalarTypeToFloat();
 			reader->SetDataScalarTypeToUnsignedShort();
@@ -6726,6 +6729,8 @@ public:
 	
     if( engine != fullDepthEngineCopy)
         self.engine = fullDepthEngineCopy; // Restore !
+    
+    minimumStep = 0;
     
 	[self setNeedsDisplay: YES];
 }

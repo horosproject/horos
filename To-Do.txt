@@ -17,7 +17,6 @@
 - MagnifyWithEvent, rotateWithEvent for SR, VR, MPR (10.6)
 - CoreData DB plugin (http://www.cimgf.com/2009/05/03/core-data-and-plug-ins/)
 - Tomographie rotational angio (OSIRIX-115)
-- QR : Local Comments, Local Status AND Distant Comments, Distant Status
 - 3D ROI -> 2D Viewer
 - DICOM Network: DICOM Authentication
 - ROI Manager (series level)

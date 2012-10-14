@@ -1292,8 +1292,13 @@ int spline( NSPoint *Pt, int tot, NSPoint **newPt, long **correspondingSegmentPt
 	self = [super init];
     if (self)
 	{
+        if( tWidth < 0 || tHeight < 0)
+            return nil;
+        
 		textureBuffer=(unsigned char*)malloc(tWidth*tHeight*sizeof(unsigned char));
-		if( textureBuffer == nil) return nil;
+        
+		if( textureBuffer == nil)
+            return nil;
 		
 		// basic init from other rois ...
 		uniqueID = [[NSNumber numberWithInt: gUID++] retain];

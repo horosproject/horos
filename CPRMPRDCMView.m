@@ -31,6 +31,7 @@
 
 
 static float deg2rad = M_PI / 180.0; 
+extern unsigned int minimumStep;
 
 #define CROSS(dest,v1,v2) \
 dest[0]=v1[1]*v2[2]-v1[2]*v2[1]; \
@@ -351,6 +352,8 @@ static CGFloat CPRMPRDCMViewCurveMouseTrackingDistance = 20.0;
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
 	
+    minimumStep = 1;
+    
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		// AutoLOD

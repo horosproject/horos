@@ -50,6 +50,7 @@ BOOL arePlanesParallel( float *Pn1, float *Pn2)
 
 static	int splitPosition[ 2];
 static	BOOL frameZoomed = NO;
+extern unsigned int minimumStep;
 
 @interface MPRDCMView ()
 - (void)drawOSIROIs;
@@ -339,6 +340,8 @@ static	BOOL frameZoomed = NO;
 	
 	Camera *currentCamera = [vrView cameraWithThumbnail: NO];
 	
+    minimumStep = 1;
+    
 	if( [self hasCameraChanged: currentCamera] == YES)
 	{
 		// AutoLOD
