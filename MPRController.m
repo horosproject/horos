@@ -329,7 +329,7 @@ static float deg2rad = M_PI/180.0;
 	
 	// Default Init
 	[self setClippingRangeMode: 1]; // MIP
-	self.clippingRangeThickness = 1;
+	self.clippingRangeThickness = 0.5;
 	
 	[[self window] makeFirstResponder: mprView1];
 	[mprView1.vrView resetImage: self];
@@ -1674,6 +1674,9 @@ static float deg2rad = M_PI/180.0;
 {
 	float previousThickness = clippingRangeThickness;
 	
+    if( f <= 0)
+        f = 0.5;
+    
 	clippingRangeThickness = f;
 	
 	if( clippingRangeThickness <= 3)
