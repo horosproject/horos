@@ -150,13 +150,14 @@ CG_INLINE bool N3AffineTransformIsAffine(N3AffineTransform t) {return (t.m14 == 
 CG_INLINE bool N3AffineTransformEqualToTransform(N3AffineTransform a, N3AffineTransform b) {return CATransform3DEqualToTransform(a, b);}
 CG_INLINE N3AffineTransform N3AffineTransformMakeTranslation(CGFloat tx, CGFloat ty, CGFloat tz) {return CATransform3DMakeTranslation(tx, ty, tz);}
 CG_INLINE N3AffineTransform N3AffineTransformMakeTranslationWithVector(N3Vector vector) {return CATransform3DMakeTranslation(vector.x, vector.y, vector.z);}
-CG_INLINE N3AffineTransform N3AffineTransformMakeScale (CGFloat sx, CGFloat sy, CGFloat sz) {return CATransform3DMakeScale(sx, sy, sz);}
-CG_INLINE N3AffineTransform N3AffineTransformMakeRotation (CGFloat angle, CGFloat x, CGFloat y, CGFloat z) {return CATransform3DMakeRotation(angle, x, y, z);}
-CG_INLINE N3AffineTransform N3AffineTransformMakeRotationAroundVector (CGFloat angle, N3Vector vector) {return CATransform3DMakeRotation(angle, vector.x, vector.y, vector.z);}
-CG_INLINE N3AffineTransform N3AffineTransformTranslate (N3AffineTransform t, CGFloat tx, CGFloat ty, CGFloat tz) {return CATransform3DTranslate(t, tx, tz, tz);}
-CG_INLINE N3AffineTransform N3AffineTransformScale (N3AffineTransform t, CGFloat sx, CGFloat sy, CGFloat sz) {return CATransform3DScale(t, sx, sy, sz);}
-CG_INLINE N3AffineTransform N3AffineTransformRotate (N3AffineTransform t, CGFloat angle, CGFloat x, CGFloat y, CGFloat z) {return CATransform3DRotate(t, angle, x, y, z);}
-CG_INLINE N3AffineTransform N3AffineTransformRotateAroundVector (N3AffineTransform t, CGFloat angle, N3Vector vector) {return CATransform3DRotate(t, angle, vector.x, vector.y, vector.z);}
+CG_INLINE N3AffineTransform N3AffineTransformMakeScale(CGFloat sx, CGFloat sy, CGFloat sz) {return CATransform3DMakeScale(sx, sy, sz);}
+CG_INLINE N3AffineTransform N3AffineTransformMakeRotation(CGFloat angle, CGFloat x, CGFloat y, CGFloat z) {return CATransform3DMakeRotation(angle, x, y, z);}
+CG_INLINE N3AffineTransform N3AffineTransformMakeRotationAroundVector(CGFloat angle, N3Vector vector) {return CATransform3DMakeRotation(angle, vector.x, vector.y, vector.z);}
+CG_INLINE N3AffineTransform N3AffineTransformTranslate(N3AffineTransform t, CGFloat tx, CGFloat ty, CGFloat tz) {return CATransform3DTranslate(t, tx, ty, tz);}
+CG_INLINE N3AffineTransform N3AffineTransformTranslateWithVector(N3AffineTransform t, N3Vector vector) {return CATransform3DTranslate(t, vector.x, vector.y, vector.z);}
+CG_INLINE N3AffineTransform N3AffineTransformScale(N3AffineTransform t, CGFloat sx, CGFloat sy, CGFloat sz) {return CATransform3DScale(t, sx, sy, sz);}
+CG_INLINE N3AffineTransform N3AffineTransformRotate(N3AffineTransform t, CGFloat angle, CGFloat x, CGFloat y, CGFloat z) {return CATransform3DRotate(t, angle, x, y, z);}
+CG_INLINE N3AffineTransform N3AffineTransformRotateAroundVector(N3AffineTransform t, CGFloat angle, N3Vector vector) {return CATransform3DRotate(t, angle, vector.x, vector.y, vector.z);}
 
 CFDictionaryRef N3VectorCreateDictionaryRepresentation(N3Vector vector);
 CFDictionaryRef N3LineCreateDictionaryRepresentation(N3Line line);

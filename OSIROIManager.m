@@ -70,6 +70,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	if ( (self = [super init]) ) {
 		_volumeWindow = [volumeWindow retain]; // it is ok to retain the volumeWindow even if this is the ROIManager that is owned by an OSIVolumeWindow because it will be released when the window closes 
 		_OSIROIs = [[NSMutableArray alloc] init];
+		_addedOSIROIs = [[NSMutableArray alloc] init];
         _watchedROIs = [[NSMutableSet alloc] init];
 		_coalesceROIs = coalesceROIs;
         _allROIsLoaded = [_volumeWindow isDataLoaded];
@@ -99,6 +100,8 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	_volumeWindow = nil;
 	[_OSIROIs release];
 	_OSIROIs = nil;
+	[_addedOSIROIs release];
+	_addedOSIROIs = nil;
     [_watchedROIs release];
     _watchedROIs = nil;
 	
@@ -107,7 +110,9 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 - (NSArray *)ROIs
 {
-	return _OSIROIs;
+    NSMutableArray *rois = [NSMutableArray arrayWithArray:_addedOSIROIs];
+    [rois addObjectsFromArray:_OSIROIs];
+	return rois;
 }
 
 - (OSIROI *)firstROIWithName:(NSString *)name // convenience method to get the first ROI with
@@ -129,6 +134,11 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	OSIROI *roi;
 	
 	rois = [NSMutableArray array];
+	for (roi in _addedOSIROIs) {
+		if ([[roi name] isEqualToString:name]) {
+			[rois addObject:roi];
+		}
+	}
 	for (roi in _OSIROIs) {
 		if ([[roi name] isEqualToString:name]) {
 			[rois addObject:roi];
@@ -144,6 +154,11 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	
 	roiNames = [NSMutableSet set];
 	
+	for (roi in _addedOSIROIs) {
+		if ([roiNames containsObject:[roi name]] == NO) {
+			[roiNames addObject:[roi name]];
+		}
+	}
 	for (roi in _OSIROIs) {
 		if ([roiNames containsObject:[roi name]] == NO) {
 			[roiNames addObject:[roi name]];
@@ -187,7 +202,6 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	if ([self _isROIManaged:[notification object]]) {
 		[self _rebuildOSIROIs];
 	}
-//	[self _sendDidModifyROI:];
 }
 
 - (void)_removeROINotification:(NSNotification *)notification
@@ -284,23 +298,13 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 - (BOOL)_isROIManaged:(ROI *)roi
 {
     return [_watchedROIs containsObject:roi];
-//	OSIROI *osiROI;
-//	
-//    
-//    
-//	for (osiROI in [self ROIs]) {
-//		if ([[osiROI osiriXROIs] containsObject:roi]) {
-//			return YES;
-//		}
-//	}
-//	return NO;
 }
 
 - (void)_rebuildOSIROIs
 {
     NSArray *watchedROIs;
     
-	// because the OsiriX ROI post notifications at super weird times (like within dealloc!?!?!) 
+	// because the OsiriX ROI posts notifications at super weird times (like within dealloc!?!?!) 
 	// we need to make surewe don't renter our ROI rebuilding call while rebuilding the ROIs;
 
 	if (_rebuildingROIs) {
@@ -438,27 +442,22 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 	return coalescedROIs;
 }
 
-//- (void)_sendDidAddROI:(OSIROI *)roi
-//{
-//	if ([_delegate respondsToSelector:@selector(ROIManager:didAddROI:)]) {
-//		[_delegate ROIManager:self didAddROI:roi];
-//	}
-//}
-//
-//- (void)_sendDidRemoveROI:(OSIROI *)roi
-//{
-//	if ([_delegate respondsToSelector:@selector(ROIManager:didRemoveROI:)]) {
-//		[_delegate ROIManager:self didRemoveROI:roi];
-//	}
-//}
+- (void)addROI:(OSIROI *)roi
+{
+    [self willChangeValueForKey:@"ROIs"];
+    [_addedOSIROIs addObject:roi];
+	[self didChangeValueForKey:@"ROIs"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
+}
 
-//- (void)_sendDidModifyROI:(OSIROI *)roi
-//{
-//	if ([_delegate respondsToSelector:@selector(ROIManager:didModifyROI:)]) {
-//		[_delegate ROIManager:self didModifyROI:roi];
-//	}
-//}
+- (void)removeROI:(OSIROI *)roi
+{
+    [self willChangeValueForKey:@"ROIs"];
+    [_addedOSIROIs removeObject:roi];
+	[self didChangeValueForKey:@"ROIs"];
+	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
 
+}
 
 
 @end

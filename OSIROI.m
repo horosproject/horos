@@ -38,6 +38,31 @@
 	return nil;
 }
 
+- (NSColor *)color
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    NSColor *color = nil;
+    
+    for (ROI *roi in osiriXROIs) {
+        if (color == nil) {
+            color = [roi NSColor];
+        } else if ([color isEqual:[roi NSColor]] == NO) {
+            return nil;
+        }
+    }
+    
+    return color;
+}
+
+- (void)setColor:(NSColor *)color
+{
+    NSSet *osiriXROIs = [self osiriXROIs];
+    
+    for (ROI *roi in osiriXROIs) {
+        [roi setNSColor:color];
+    }
+}
+
 - (NSArray *)convexHull
 {
 	assert(0);
@@ -133,6 +158,11 @@
         [_homeFloatVolumeData release];
         _homeFloatVolumeData = [homeFloatVolumeData retain];
     }
+}
+
+- (N3BezierPath *)bezierPath
+{
+    return nil;
 }
 
 - (void)drawSlab:(OSISlab)slab inCGLContext:(CGLContextObj)glContext pixelFormat:(CGLPixelFormatObj)pixelFormat dicomToPixTransform:(N3AffineTransform)dicomToPixTransform;

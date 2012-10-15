@@ -56,6 +56,7 @@ extern NSString* const OSIROIManagerROIsDidUpdateNotification;
     
 	BOOL _rebuildingROIs;
 	
+    NSMutableArray *_addedOSIROIs;
 	NSMutableArray *_OSIROIs;
     NSMutableSet *_watchedROIs; // the osirix ROIs that are backing the OSIROIs that are being managed. These are the ROIs that need to be watched, and the OSIROIs need to be updated when these change
 }
@@ -145,6 +146,19 @@ extern NSString* const OSIROIManagerROIsDidUpdateNotification;
  */
 - (BOOL)allROIsLoaded;
 
+/** Add an OSIROI to the manager. This is useful to have the ROIManager handle drawing of the ROI.
+ 
+ @see ROIs
+ @see removeOSIROI:
+ */
+- (void)addROI:(OSIROI *)roi;
+
+/** Remove an OSIROI that was added. This is useful to have the ROIManager handle drawing of the ROI.
+ 
+ @see ROIs
+ @see insertOSIROI:
+ */
+- (void)removeROI:(OSIROI *)roi;
 
 // not done
 //- (id)init; // look at all ROIS

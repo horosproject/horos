@@ -114,6 +114,12 @@
 		4F8A1A8C1302C72300A022D9 /* N3Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F8A1A841302C72300A022D9 /* N3Geometry.m */; };
 		4FC5E3F6138AB91E00CB635F /* CPRStretchedOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FC5E3F4138AB91E00CB635F /* CPRStretchedOperation.h */; };
 		4FC5E3F7138AB91E00CB635F /* CPRStretchedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC5E3F5138AB91E00CB635F /* CPRStretchedOperation.m */; };
+		4FCBBD7D162C685A00C9CBE3 /* OSIMaskROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FCBBD77162C685900C9CBE3 /* OSIMaskROI.h */; };
+		4FCBBD7E162C685A00C9CBE3 /* OSIMaskROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCBBD78162C685900C9CBE3 /* OSIMaskROI.m */; };
+		4FCBBD7F162C685A00C9CBE3 /* OSIPathExtrusionROI.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FCBBD79162C685900C9CBE3 /* OSIPathExtrusionROI.h */; };
+		4FCBBD80162C685A00C9CBE3 /* OSIPathExtrusionROI.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCBBD7A162C685A00C9CBE3 /* OSIPathExtrusionROI.m */; };
+		4FCBBD81162C685A00C9CBE3 /* OSIROIMaskRunStack.h in Headers */ = {isa = PBXBuildFile; fileRef = 4FCBBD7B162C685A00C9CBE3 /* OSIROIMaskRunStack.h */; };
+		4FCBBD82162C685A00C9CBE3 /* OSIROIMaskRunStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCBBD7C162C685A00C9CBE3 /* OSIROIMaskRunStack.m */; };
 		5909DF94130C3D1900788195 /* NSException+N2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 592D333612F2C71A00C7C002 /* NSException+N2.mm */; };
 		590A3DCD12A92920004581C2 /* WebPortalDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 590A3DCB12A92920004581C2 /* WebPortalDatabase.h */; };
 		590A3DCE12A92920004581C2 /* WebPortalDatabase.mm in Sources */ = {isa = PBXBuildFile; fileRef = 590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */; };
@@ -8419,6 +8425,12 @@
 		4F8A1A841302C72300A022D9 /* N3Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = N3Geometry.m; path = nitrogen/Sources/N3Geometry.m; sourceTree = "<group>"; };
 		4FC5E3F4138AB91E00CB635F /* CPRStretchedOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRStretchedOperation.h; sourceTree = "<group>"; };
 		4FC5E3F5138AB91E00CB635F /* CPRStretchedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRStretchedOperation.m; sourceTree = "<group>"; };
+		4FCBBD77162C685900C9CBE3 /* OSIMaskROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIMaskROI.h; sourceTree = "<group>"; };
+		4FCBBD78162C685900C9CBE3 /* OSIMaskROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIMaskROI.m; sourceTree = "<group>"; };
+		4FCBBD79162C685900C9CBE3 /* OSIPathExtrusionROI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIPathExtrusionROI.h; sourceTree = "<group>"; };
+		4FCBBD7A162C685A00C9CBE3 /* OSIPathExtrusionROI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIPathExtrusionROI.m; sourceTree = "<group>"; };
+		4FCBBD7B162C685A00C9CBE3 /* OSIROIMaskRunStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSIROIMaskRunStack.h; sourceTree = "<group>"; };
+		4FCBBD7C162C685A00C9CBE3 /* OSIROIMaskRunStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSIROIMaskRunStack.m; sourceTree = "<group>"; };
 		590A3DCB12A92920004581C2 /* WebPortalDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalDatabase.h; sourceTree = "<group>"; };
 		590A3DCC12A92920004581C2 /* WebPortalDatabase.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WebPortalDatabase.mm; sourceTree = "<group>"; };
 		590BB21E12A002FA009E9758 /* WebPortalStudy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebPortalStudy.h; sourceTree = "<group>"; };
@@ -14716,6 +14728,10 @@
 				4F832D3013FA5F8C00511070 /* OSIPlanarPathROI.m */,
 				4F1FCE19143092DC008683F9 /* OSIPlanarBrushROI.h */,
 				4F1FCE1A143092DC008683F9 /* OSIPlanarBrushROI.m */,
+				4FCBBD79162C685900C9CBE3 /* OSIPathExtrusionROI.h */,
+				4FCBBD7A162C685A00C9CBE3 /* OSIPathExtrusionROI.m */,
+				4FCBBD77162C685900C9CBE3 /* OSIMaskROI.h */,
+				4FCBBD78162C685900C9CBE3 /* OSIMaskROI.m */,
 				4F832D3113FA5F8C00511070 /* OSIROI.h */,
 				4F832D3213FA5F8C00511070 /* OSIROI.m */,
 				4F832D3313FA5F8C00511070 /* OSIROI+Private.h */,
@@ -14725,6 +14741,8 @@
 				4F832D3713FA5F8C00511070 /* OSIROIManager.m */,
 				4F832D3813FA5F8C00511070 /* OSIROIMask.h */,
 				4F832D3913FA5F8C00511070 /* OSIROIMask.m */,
+				4FCBBD7B162C685A00C9CBE3 /* OSIROIMaskRunStack.h */,
+				4FCBBD7C162C685A00C9CBE3 /* OSIROIMaskRunStack.m */,
 				4F832D3A13FA5F8C00511070 /* OSIStudy.h */,
 				4F832D3B13FA5F8C00511070 /* OSIStudy.m */,
 				4F832D3C13FA5F8C00511070 /* OSIVolumeWindow.h */,
@@ -25404,6 +25422,9 @@
 				71AA5A351611F1EB006A6A5F /* SBJsonBase.h in Headers */,
 				71AA5A371611F1EB006A6A5F /* SBJsonParser.h in Headers */,
 				71AA5A391611F1EB006A6A5F /* SBJsonWriter.h in Headers */,
+				4FCBBD7D162C685A00C9CBE3 /* OSIMaskROI.h in Headers */,
+				4FCBBD7F162C685A00C9CBE3 /* OSIPathExtrusionROI.h in Headers */,
+				4FCBBD81162C685A00C9CBE3 /* OSIROIMaskRunStack.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28441,6 +28462,9 @@
 				71AA5A361611F1EB006A6A5F /* SBJsonBase.m in Sources */,
 				71AA5A381611F1EB006A6A5F /* SBJsonParser.m in Sources */,
 				71AA5A3A1611F1EB006A6A5F /* SBJsonWriter.m in Sources */,
+				4FCBBD7E162C685A00C9CBE3 /* OSIMaskROI.m in Sources */,
+				4FCBBD80162C685A00C9CBE3 /* OSIPathExtrusionROI.m in Sources */,
+				4FCBBD82162C685A00C9CBE3 /* OSIROIMaskRunStack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

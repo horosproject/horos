@@ -280,6 +280,11 @@
 //	}
 }
 
+- (N3BezierPath *)bezierPath
+{
+    return _bezierPath;
+}
+
 - (NSSet *)osiriXROIs
 {
 	return [NSSet setWithObject:_osiriXROI];

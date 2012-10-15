@@ -48,6 +48,9 @@
     _sourceROIs = nil;
     [_coalescedROIMaskVolumeData release];
     _coalescedROIMaskVolumeData = nil;
+    [_cachedMaskRunsData release];
+    _cachedMaskRunsData = nil;
+    
     [super dealloc];
 }
 
@@ -98,7 +101,7 @@
         sliceRequest.pixelsHigh = floatVolume.pixelsHigh;
         sliceRequest.slabSampleDistance = floatVolume.pixelSpacingZ;
         sliceRequest.slabWidth = floatVolume.pixelSpacingZ * floatVolume.pixelsDeep;
-        sliceRequest.sliceToDicomTransform = N3AffineTransformInvert(N3AffineTransformTranslate(floatVolume.volumeTransform, 0, 0, (float)floatVolume.pixelsDeep/2.0));
+        sliceRequest.sliceToDicomTransform = N3AffineTransformInvert(N3AffineTransformConcat(floatVolume.volumeTransform, N3AffineTransformMakeTranslation(0, 0, (float)floatVolume.pixelsDeep/2.0)));
         
         resampledVolume = [CPRGenerator synchronousRequestVolume:sliceRequest volumeData:coalescedROIMaskVolume];
         

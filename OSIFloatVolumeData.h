@@ -13,7 +13,7 @@
  =========================================================================*/
 
 #import <Cocoa/Cocoa.h>
-#import <CPRVolumeData.h>
+#import "CPRVolumeData.h"
 
 @class OSIROIMask;
 

@@ -202,8 +202,8 @@ v   =  t0 + (z)*(t1-t0);
         int xinc, yinc, zinc;
         
         xinc = 1;
-        yinc = inlineBuffer->pixelsWide;
-        zinc = inlineBuffer->pixelsWideTimesPixelsHigh;
+        yinc = (int)inlineBuffer->pixelsWide;
+        zinc = (int)inlineBuffer->pixelsWideTimesPixelsHigh;
         
         // Compute the increments to get to the other 7 voxel vertices from A
         Binc = xinc;

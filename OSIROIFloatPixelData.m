@@ -37,89 +37,131 @@
 	_ROIMask = nil;
 	[_volumeData release];
 	_volumeData = nil;
+	[_floatData release];
+	_floatData = nil;
 	[super dealloc];
 }
 
 - (float)meanIntensity
 {
-	float* buffer;
 	NSUInteger floatCount;
 	float mean;
 	
+    if (floatCount == 0) {
+        return NAN;
+    }
+    
 	floatCount = [self floatCount];
-	buffer = malloc(floatCount * sizeof(float));
-	floatCount = [self getFloatData:buffer floatCount:floatCount];
-	vDSP_meanv(buffer, 1, &mean, floatCount);
-	free(buffer);
+	vDSP_meanv((float *)[[self floatData] bytes], 1, &mean, floatCount);
 	return mean;
 }
 
 - (float)maxIntensity
 {
-	float* buffer;
 	NSUInteger floatCount;
 	float mean;
 	
+    if (floatCount == 0) {
+        return NAN;
+    }
+    
 	floatCount = [self floatCount];
-	buffer = malloc(floatCount * sizeof(float));
-	floatCount = [self getFloatData:buffer floatCount:floatCount];
-	vDSP_maxv(buffer, 1, &mean, floatCount);
-	free(buffer);
+	vDSP_maxv((float *)[[self floatData] bytes], 1, &mean, floatCount);
 	return mean;	
 }
 
 - (float)minIntensity
 {
-	float* buffer;
 	NSUInteger floatCount;
 	float mean;
 	
+    if (floatCount == 0) {
+        return NAN;
+    }
+    
 	floatCount = [self floatCount];
-	buffer = malloc(floatCount * sizeof(float));
-	floatCount = [self getFloatData:buffer floatCount:floatCount];
-	vDSP_minv(buffer, 1, &mean, floatCount);
-	free(buffer);
+	vDSP_minv((float *)[[self floatData] bytes], 1, &mean, floatCount);
 	return mean;	
+}
+
+- (float)intensityStandardDeviation
+{
+    float negativeMean = -[self meanIntensity];
+    float unscaledStdDev;
+    NSUInteger floatCount = [self floatCount];
+    
+    if (floatCount == 0) {
+        return NAN;
+    }
+    
+    float *scrap1 = malloc(floatCount * sizeof(float));
+    float *scrap2 = malloc(floatCount * sizeof(float));
+    
+    vDSP_vsadd((float *)[[self floatData] bytes], 1, &negativeMean, scrap1, 1, floatCount);
+    vDSP_vsq(scrap1, 1, scrap2, 1, floatCount);
+    vDSP_sve(scrap2, 1, &unscaledStdDev, floatCount);
+    
+    free(scrap1);
+    free(scrap2);
+    
+    return sqrtf(unscaledStdDev / (float)floatCount);
 }
 
 - (NSUInteger)floatCount
 {
-	NSUInteger floatCount;
-	NSValue *runValue;
-	OSIROIMaskRun maskRun;
-	
-	floatCount = 0;
-	for (runValue in [_ROIMask maskRuns]) {
-		maskRun = [runValue OSIROIMaskRunValue];
-		floatCount += maskRun.widthRange.length;
-	}
-	
-	return floatCount;
+    NSUInteger floatCount;
+    @synchronized(self) {
+        if (_floatData) {
+            return [_floatData length] / sizeof(float);
+        }
+
+        NSValue *runValue;
+        OSIROIMaskRun maskRun;
+        
+        floatCount = 0;
+        for (runValue in [_ROIMask maskRuns]) {
+            maskRun = [runValue OSIROIMaskRunValue];
+            floatCount += maskRun.widthRange.length;
+        }
+    }
+    return floatCount;
 }
 
 - (NSUInteger)getFloatData:(float *)buffer floatCount:(NSUInteger)count
 {
-	NSUInteger bytesCopied;
-	NSValue *runValue;
-	OSIROIMaskRun maskRun;
-	float *floatBuffer;
-//	NSRange volumeRange;
-	
-	bytesCopied = 0;
-	floatBuffer = buffer;
-	memset(buffer, 0, sizeof(float));
-	
-	for (runValue in [_ROIMask maskRuns]) {
-		maskRun = [runValue OSIROIMaskRunValue];
-		if (count >= bytesCopied + maskRun.widthRange.length) {
-//			volumeRange = [self volumeRangeForROIMaskRun:maskRun];
-            [_volumeData getFloatRun:floatBuffer atPixelCoordinateX:maskRun.widthRange.location y:maskRun.heightIndex z:maskRun.depthIndex length:maskRun.widthRange.length]; 
-//			[_volumeData getFloatData:floatBuffer range:volumeRange];
-			bytesCopied += maskRun.widthRange.length;
-			floatBuffer += maskRun.widthRange.length;
-		}
-	}
-	return bytesCopied;
+    NSUInteger bytesCopied;
+    @synchronized(self) {
+        bytesCopied = MIN(count, [[self floatData] length] / sizeof(float));
+        [[self floatData] getBytes:buffer length:[[self floatData] length]];
+    }
+    return bytesCopied;
+}
+
+- (NSData *)floatData
+{
+    @synchronized(self) {
+        if (_floatData) {
+            return _floatData;
+        }
+        
+        NSValue *runValue;
+        OSIROIMaskRun maskRun;
+        float *buffer;
+        float *floatBuffer;
+
+        floatBuffer = malloc([self floatCount] * sizeof(float));
+        buffer = floatBuffer;
+        memset(floatBuffer, 0, [self floatCount] * sizeof(float));
+        
+        for (runValue in [_ROIMask maskRuns]) {
+            maskRun = [runValue OSIROIMaskRunValue];
+            [_volumeData getFloatRun:floatBuffer atPixelCoordinateX:maskRun.widthRange.location y:maskRun.heightIndex z:maskRun.depthIndex length:maskRun.widthRange.length];
+            floatBuffer += maskRun.widthRange.length;
+        }
+        
+        _floatData = [[NSData alloc] initWithBytesNoCopy:buffer length:[self floatCount] * sizeof(float) freeWhenDone:YES];
+    }
+    return _floatData;
 }
 
 //- (NSRange)volumeRangeForROIMaskRun:(OSIROIMaskRun)maskRun

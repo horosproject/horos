@@ -53,7 +53,7 @@ extern NSString* const OSIVolumeWindowDidCloseNotification;
 /// @name Managing the Volume Window
 ///-----------------------------------
 
-/** Returns YES if the `ViewerController` paired with this Volume Window is still open and it's data is currently loaded.
+/** Returns YES if the `ViewerController` paired with this Volume Window is still open.
  
  @see viewerController
  */

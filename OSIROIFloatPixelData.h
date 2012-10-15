@@ -27,6 +27,7 @@
 @class OSIStudy;
 
 @interface OSIROIFloatPixelData : NSObject {
+    NSData *_floatData;
 	OSIROIMask *_ROIMask;
 	OSIFloatVolumeData *_volumeData;
 }
@@ -80,9 +81,17 @@
  */
 - (float)minIntensity;
 
+/** Returns the standard deviation of the intensity of the pixels under the mask.
+ 
+ @return The standard deviation of the intensity of the pixels under the mask
+ */
+- (float)intensityStandardDeviation;
+
+
 ///-----------------------------------
 /// @name Accessing Pixel Data
 ///-----------------------------------
+
 
 /** Returns the number of pixels under the mask.
  
@@ -100,6 +109,13 @@
  @param count The number of floats to copy.
  */
 - (NSUInteger)getFloatData:(float *)buffer floatCount:(NSUInteger)count;
+
+/** Returns a NSData containing the values of the reciever's data
+  
+ @return a NSData containing the values of the reciever's data.
+ 
+ */
+- (NSData *)floatData;
 
 //    /** Returns the range within the receiver's floatVolumeData of the given Mask Run.
 //     

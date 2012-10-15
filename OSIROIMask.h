@@ -48,10 +48,26 @@ CF_EXTERN_C_BEGIN
  
  */
 BOOL OSIROIMaskIndexInRun(OSIROIMaskIndex maskIndex, OSIROIMaskRun maskRun);
-/** Returns an array of all the OSIROIMaskIndex structs in the `maskRun` 
+/** Returns an array of all the OSIROIMaskIndex structs in the `maskRun`.
  
  */
 NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun); // should this be a function, or a class method on OSIROIMask?
+
+/** Returns NSOrderedAscending if `maskRun2` is larger than `maskRun1`.
+ 
+ */
+NSComparisonResult OSIROIMaskCompareRunValues(NSValue *maskRun1, NSValue *maskRun2, void *context);
+
+/** Returns a value larger than 0 if `maskRun2` is larger than `maskRun1`.
+ 
+ */
+NSComparisonResult OSIROIMaskCompareRun(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2);
+
+/** Returns YES if the two mask runs overlap, NO otherwise.
+ 
+ */
+BOOL OSIROIMaskRunsOverlap(OSIROIMaskRun maskRun1, OSIROIMaskRun maskRun2);
+
 
 CF_EXTERN_C_END
 
@@ -102,6 +118,7 @@ CF_EXTERN_C_END
 
 
 @interface OSIROIMask : NSObject {
+@private
     NSData *_maskRunsData;
 	NSArray *_maskRuns;
 }
@@ -122,7 +139,7 @@ CF_EXTERN_C_END
 // create the thing, maybe we should really be working with C arrays.... or at least give the option
 /** Initializes and returns a newly created ROI Mask.
  
- Creates a ROI Mask based on the given individual runs.
+ Creates a ROI Mask based on the given individual runs. The mask runs must be sorted.
  
  @return The initialized ROI Mask object or `nil` if there was a problem initializing the object.
  @param maskRuns An array of OSIROIMaskRun structs in NSValues.
@@ -137,6 +154,32 @@ CF_EXTERN_C_END
  
  */
 - (OSIROIMask *)ROIMaskByTranslatingByX:(NSInteger)x Y:(NSInteger)y Z:(NSInteger)z;
+
+/** Returns a mask that represents the intersection of the receiver and the given mask .
+ 
+ */
+- (OSIROIMask *)ROIMaskByIntersectingWithMask:(OSIROIMask *)otherMask;
+
+/** Returns a mask that represents the union of the receiver and the given mask .
+ 
+ */
+- (OSIROIMask *)ROIMaskByUnioningWithMask:(OSIROIMask *)otherMask;
+
+/** Returns a mask formed by subtracting otherMask from the receiver.
+ 
+ */
+- (OSIROIMask *)ROIMaskBySubtractingMask:(OSIROIMask *)otherMask;
+
+/** Evaluates a given predicate against each pixel in the mask and returns a new mask containing the pixels for which the predicate returns true.
+ 
+ The evaluated object used for the predicate responds to:
+    -(float)intensity The value of the pixel
+ -(NSUInteger)ROIMaskIndexX;
+ -(NSUInteger)ROIMaskIndexY;
+ -(NSUInteger)ROIMaskIndexZ;
+ 
+ */
+- (OSIROIMask *)filteredROIMaskUsingPredicate:(NSPredicate *)predicate floatVolumeData:(OSIFloatVolumeData *)floatVolumeData;
 
 /** Returns the mask as a set ofOSIROIMaskRun structs in NSValues.
  
@@ -163,6 +206,13 @@ CF_EXTERN_C_END
  @param index OSIROIMaskIndex struct to test.
  */
 - (BOOL)indexInMask:(OSIROIMaskIndex)index;
+
+/** Returns an array of points that represent the outside bounds of the mask.
+ 
+ @return An array of N3Vectors stored at NSValues that represent the outside bounds of the mask.
+ */
+- (NSArray *)convexHull; // N3Vectors stored in NSValue objects. The mask is inside of these points
+
 
 @end
 

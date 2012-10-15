@@ -19974,10 +19974,12 @@ int i,j,l;
 
 - (BOOL) isEverythingLoaded
 {
-    @synchronized( loadingThread)
-    {
-        if( loadingThread.isExecuting == YES) return NO;
-        else if( loadingThread.isExecuting == NO) return YES;
+    if (loadingThread) {
+        @synchronized( loadingThread)
+        {
+            if( loadingThread.isExecuting == YES) return NO;
+            else if( loadingThread.isExecuting == NO) return YES;
+        }
     }
     
     return NO;

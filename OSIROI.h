@@ -25,6 +25,7 @@
 @class OSIROIMask;
 @class OSIFloatVolumeData;
 @class OSIROIFloatPixelData;
+@class N3BezierPath;
 
 // this is an abstract class
 // how do you identify an ROI? Does an ROI have an ID and that is how you know what an ROI is, or is the ROI the actual object...
@@ -34,7 +35,7 @@
  
  OSIROI is an abstract ROI class. It is the super class of all OsiriX SDK plugin ROI types and provides basic support for accessing pixel data and properties common to all ROIs.
  
- Subclasses must implement convexHull, name, label, and ROIMaskForFloatVolumeData:.
+ Subclasses must implement convexHull, name, and ROIMaskForFloatVolumeData:.
  
  @warning *Important:* For now the Plugin SDK classes only works with intensity data and does not work with RGB data.
 
@@ -56,10 +57,25 @@
 
 
 /** Returns the name of the receiver.
-  
+ 
  @return The name of the receiver
  */
 - (NSString *)name;
+
+/** Returns the color of the receiver.
+ 
+ This value is equal to nil if the ROI should not be drawn, or if This OSI ROI is backed by multiple osirix ROIs with different colors.
+ 
+ @return The color of the receiver
+ */
+- (NSColor *)color;
+
+/** Set the color of the receiver.
+ 
+ Set this value to nil if the ROI should not be drawn.
+ 
+ */
+- (void)setColor:(NSColor *)color;
 
 /** Returns a reasonable label to print for the receiver.
  
@@ -209,6 +225,14 @@
  @return An array of N3Vectors stored at NSValues that represent the outside bounds of the ROI.
  */
 - (NSArray *)convexHull; // N3Vectors stored in NSValue objects. The ROI promises to live inside of these points
+
+/** If it makes sense for this ROI, returns a bezierPath that represents this ROI.
+  
+ Concrete subclasses can implement this method if it makes sense.
+ 
+ @return A N3BezierPath representation of this ROI in DICOM space. Or nil if it does not make sense to represent this ROI as a bezier path.
+ */
+- (N3BezierPath *)bezierPath;
 
 ///-----------------------------------
 /// @name Drawing
