@@ -319,7 +319,7 @@ static NSString *templateDicomFile = nil;
     Wait *splash = nil;
     if( [NSThread isMainThread])
     {
-        Wait *splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
+        splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
         [splash showWindow: self];
         [[splash progress] setMaxValue: [files count]];
         [splash setCancel: YES];
@@ -349,6 +349,8 @@ static NSString *templateDicomFile = nil;
 				[producedFiles addObject: tempFilePath];
 				
 				[splash incrementBy: 1];
+                
+                if( [splash aborted]) break;
 			}
 			@catch (NSException * e)
 			{
@@ -469,7 +471,7 @@ static NSString *templateDicomFile = nil;
 			
 			NSString* k = [filenameTranslation keyForObject:tempFilePath];
 			
-			if (k) [filenameTranslation setObject:filePath forKey:filenameTranslation];
+			if (k) [filenameTranslation setObject:filePath forKey: k];
 			else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
 		}
 		@catch (NSException * e)
