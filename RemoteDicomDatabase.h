@@ -25,7 +25,7 @@
 	NSRecursiveLock* _updateLock;
 	NSTimer* _updateTimer;
 	NSTimeInterval _timestamp;
-    MPSemaphoreID _connectionsSemaphoreId;
+    dispatch_semaphore_t _connectionsSemaphoreId;
     NSString *password;
 }
 

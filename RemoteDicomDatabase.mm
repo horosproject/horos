@@ -105,7 +105,7 @@
 	_baseBaseDirPath = [path retain];
 	_updateLock = [[NSRecursiveLock alloc] init];
 #define MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS 5
-    MPCreateSemaphore(MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS, MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS, &_connectionsSemaphoreId);
+    _connectionsSemaphoreId = dispatch_semaphore_create(MAX_SIMULTANEOUS_NONURGENT_CONNECTIONS);
 
 	self.host = host;
 	self.address = host.address;
@@ -133,7 +133,7 @@
 	[temp unlock];
 	[temp release];
 	
-    MPDeleteSemaphore(_connectionsSemaphoreId);
+    dispatch_release(_connectionsSemaphoreId);
     
     self.password = nil;
 	self.address = nil;
@@ -240,7 +240,7 @@
     if (urgent)
         waitOnSemaphoreStatus = -1; // to avoid MPSignalSemaphore
     else if (_connectionsSemaphoreId)
-        waitOnSemaphoreStatus = MPWaitOnSemaphore(_connectionsSemaphoreId, kDurationForever); // this limits the number of simultaneous connections to this remote database
+        waitOnSemaphoreStatus = dispatch_semaphore_wait(_connectionsSemaphoreId, DISPATCH_TIME_FOREVER); // this limits the number of simultaneous connections to this remote database
     @try {
         NSInteger retries;
         for (retries = 0; retries < 5; ++retries)
@@ -253,7 +253,7 @@
     } @catch (NSException* e) {
     } @finally {
         if (_connectionsSemaphoreId && waitOnSemaphoreStatus == noErr)
-            MPSignalSemaphore(_connectionsSemaphoreId);
+            dispatch_semaphore_signal(_connectionsSemaphoreId);
     }
     
     return nil;
