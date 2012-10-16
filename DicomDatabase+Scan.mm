@@ -541,7 +541,15 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 [ThreadsManager.defaultManager removeThread:thread];
                 [ThreadsManager.defaultManager addThreadAndStart:cft];
                 
-                NSMutableArray* paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+                NSMutableArray* paths = nil;
+                
+                @try {
+                    paths = [[[dicomImages valueForKey:@"completePath"] mutableCopy] autorelease];
+                }
+                @catch (NSException *e) {
+                    N2LogException( e);
+                }
+                
                 [paths removeDuplicatedStrings];
                 
                 int progress = 0;
@@ -608,9 +616,16 @@ static NSString* _dcmElementKey(DcmElement* element) {
         if (!thread.isCancelled) {
             thread.status = NSLocalizedString(@"Generating series thumbnails...", nil);
             NSMutableArray* dicomSeries	= [NSMutableArray array];
-            for (DicomImage* di in dicomImages)
-                if (![dicomSeries containsObject:di.series])
-                    [dicomSeries addObject:di.series];
+            
+            @try {
+                for (DicomImage* di in dicomImages)
+                    if (![dicomSeries containsObject:di.series])
+                        [dicomSeries addObject:di.series];
+            }
+            @catch (NSException *e) {
+                N2LogException( e);
+            }
+            
             for (NSInteger i = 0; i < dicomSeries.count; ++i)
                 @try {
                     thread.progress = 1.0*i/dicomSeries.count;
