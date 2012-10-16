@@ -133,7 +133,8 @@
 	[temp unlock];
 	[temp release];
 	
-    dispatch_release(_connectionsSemaphoreId);
+    if (_connectionsSemaphoreId)
+        dispatch_release(_connectionsSemaphoreId);
     
     self.password = nil;
 	self.address = nil;

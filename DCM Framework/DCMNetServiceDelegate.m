@@ -150,10 +150,9 @@ static NSMutableArray *cachedServersArray = nil;
 
 + (void) syncDICOMNodes
 {
-    @synchronized( self)
-    {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-        
+    @autoreleasepool {
+    @synchronized (self) {
+    @try {
         NSURL *url = [NSURL URLWithString: [[NSUserDefaults standardUserDefaults] valueForKey:@"syncDICOMNodesURL"]];
         
         if( url)
@@ -163,8 +162,10 @@ static NSMutableArray *cachedServersArray = nil;
             if( r)
                 [[NSUserDefaults standardUserDefaults] setObject: r forKey:@"SERVERS"];
         }
-        
-        [pool release];
+    } @catch (NSException* e) {
+        NSLog(@"syncDICOMNodes exception: %@", e);
+    }
+    }
     }
 }
 
