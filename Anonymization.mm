@@ -320,8 +320,8 @@ static NSString *templateDicomFile = nil;
     if( [NSThread isMainThread])
     {
         splash = [[[Wait alloc] initWithString: NSLocalizedString( @"Processing...", nil)] autorelease];
+        [[splash progress] setMaxValue: [files count] * 2];
         [splash showWindow: self];
-        [[splash progress] setMaxValue: [files count]];
         [splash setCancel: YES];
 	}
     
@@ -349,8 +349,6 @@ static NSString *templateDicomFile = nil;
 				[producedFiles addObject: tempFilePath];
 				
 				[splash incrementBy: 1];
-                
-                if( [splash aborted]) break;
 			}
 			@catch (NSException * e)
 			{
@@ -426,63 +424,65 @@ static NSString *templateDicomFile = nil;
 	if( [producedFiles count] != [dicomImages count])
 	{
 		NSLog( @"***** anonymizeFiles [producedFiles count] != [dicomImages count]");
-		
-		[splash close];
-		
-		return nil;
+        
+        filenameTranslation = nil;
 	}
-	
-	NSMutableArray* dicomSeries = [NSMutableArray array];
-	for (int i = 0; i < [dicomImages count]; i++)
-	{
-		DicomImage *image = [dicomImages objectAtIndex: i];
-		
-		@try
-		{		
-			if (![dicomSeries containsObject:image.series])
-				[dicomSeries addObject:image.series];
-			
-			NSString* tempFilePath = [producedFiles objectAtIndex: i];
-			NSString* ext = [tempFilePath pathExtension];
-			NSString* fileDirPath = nil;
-			
-			if( [image.series.study.patientID length] > 0)
-				fileDirPath = [dirPath stringByAppendingPathComponent: [NSString stringWithFormat: NSLocalizedString( @"Anonymized - %@", nil), [Anonymization cleanStringForFile:image.series.study.patientID]]];
-			else
-				fileDirPath = [dirPath stringByAppendingPathComponent: NSLocalizedString( @"Anonymized", nil)];
-			
-			fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: image.series.study.studyName]];
-			
-			fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: [NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]]];
-			
-			[[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
-			
-			NSString* filePath;
-			NSInteger i = 0;
-			do
-			{
-				++i;
-				NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", i] : @"";
-				NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", dicomSeries.count, image.instanceNumber, is, ext];
-				filePath = [fileDirPath stringByAppendingPathComponent:fileName];
-			} while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
-			
-			[[NSFileManager defaultManager] moveItemAtPath:tempFilePath toPath:filePath error:NULL];
-			
-			NSString* k = [filenameTranslation keyForObject:tempFilePath];
-			
-			if (k) [filenameTranslation setObject:filePath forKey: k];
-			else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
+	else
+    {
+        NSMutableArray* dicomSeries = [NSMutableArray array];
+        for (int i = 0; i < [dicomImages count]; i++)
+        {
+            DicomImage *image = [dicomImages objectAtIndex: i];
+            
+            @try
+            {		
+                if (![dicomSeries containsObject:image.series])
+                    [dicomSeries addObject:image.series];
+                
+                NSString* tempFilePath = [producedFiles objectAtIndex: i];
+                NSString* ext = [tempFilePath pathExtension];
+                NSString* fileDirPath = nil;
+                
+                if( [image.series.study.patientID length] > 0)
+                    fileDirPath = [dirPath stringByAppendingPathComponent: [NSString stringWithFormat: NSLocalizedString( @"Anonymized - %@", nil), [Anonymization cleanStringForFile:image.series.study.patientID]]];
+                else
+                    fileDirPath = [dirPath stringByAppendingPathComponent: NSLocalizedString( @"Anonymized", nil)];
+                
+                fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: image.series.study.studyName]];
+                
+                fileDirPath = [fileDirPath stringByAppendingPathComponent: [Anonymization cleanStringForFile: [NSString stringWithFormat:@"%@ - %@", image.series.name, image.series.id]]];
+                
+                [[NSFileManager defaultManager] confirmDirectoryAtPath:fileDirPath];
+                
+                NSString* filePath;
+                NSInteger i = 0;
+                do
+                {
+                    ++i;
+                    NSString* is = i ? [NSString stringWithFormat:@"-%4.4d", i] : @"";
+                    NSString* fileName = [NSString stringWithFormat:@"IM-%4.4d-%4.4d%@.%@", dicomSeries.count, [image.instanceNumber intValue], is, ext];
+                    filePath = [fileDirPath stringByAppendingPathComponent:fileName];
+                } while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
+                
+                [[NSFileManager defaultManager] moveItemAtPath:tempFilePath toPath:filePath error:NULL];
+                
+                NSString* k = [filenameTranslation keyForObject:tempFilePath];
+                
+                if (k) [filenameTranslation setObject:filePath forKey: k];
+                else NSLog(@"Warning: anonymization file naming error: unknown original for %@ which should have changed to %@", tempFilePath, filePath);
+            }
+            @catch (NSException * e)
+            {
+                N2LogExceptionWithStackTrace(e);
+            }
+            
+            [splash incrementBy: 1];
+        }
+        
+        if( tempDirPath)
+            [[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
 	}
-	
-	if( tempDirPath)
-		[[NSFileManager defaultManager] removeItemAtPath:tempDirPath error:NULL];
-	
+    
 	[splash close];
 	
 	return [[filenameTranslation copy] autorelease];
