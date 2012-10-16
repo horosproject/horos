@@ -80,6 +80,8 @@
 
 - (NSRect)drawTitle:(NSAttributedString*)title withFrame:(NSRect)frame inView:(NSView *)controlView
 {
+    frame.size.width -= 1;
+    
     NSRect initialFrame = frame;
     static const CGFloat spacer = 2;
 
@@ -96,9 +98,9 @@
         [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
         [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
 
-        frame.origin.y += 2;
+        frame.origin.y += 1;
         [self.rightTextFirstLine drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= 2;
+        frame.origin.y -= 1;
         
         CGFloat w = [self.rightTextFirstLine sizeWithAttributes:attributes].width;
         frame.size.width -= w + spacer;
@@ -120,9 +122,9 @@
         [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
         [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
-        frame.origin.y += 2;
+        frame.origin.y += 1;
         [text drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= 2;
+        frame.origin.y -= 1;
     }
     
     // Second Line
@@ -135,9 +137,9 @@
         [rightAlignmentParagraphStyle setAlignment:NSRightTextAlignment];
         [attributes setObject:rightAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
-        initialFrame.origin.y += 2 + 17;
+        initialFrame.origin.y += 14;
         [self.rightTextSecondLine drawInRect:initialFrame withAttributes:attributes];
-        initialFrame.origin.y -= 2 + 17;
+        initialFrame.origin.y -= 14;
         
         CGFloat w = [self.rightTextSecondLine sizeWithAttributes:attributes].width;
         frame.size.width -= w + spacer;
@@ -151,9 +153,9 @@
         [leftAlignmentParagraphStyle setLineBreakMode: NSLineBreakByTruncatingTail];
         [attributes setObject:leftAlignmentParagraphStyle forKey:NSParagraphStyleAttributeName];
         
-        frame.origin.y += 2 + 17;
+        frame.origin.y += 14;
         [self.leftTextSecondLine drawInRect:frame withAttributes:attributes];
-        frame.origin.y -= 2 + 17;
+        frame.origin.y -= 14;
     }
     
     return initialFrame;

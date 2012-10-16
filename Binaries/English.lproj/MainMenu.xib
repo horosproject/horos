@@ -4041,7 +4041,6 @@
 											<string key="NSFrame">{{420, 2}, {40, 20}}</string>
 											<reference key="NSSuperview" ref="267655156"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="637871640">
 												<int key="NSCellFlags">-2080374784</int>
@@ -4736,7 +4735,7 @@
 																		<object class="NSOutlineView" id="300364488">
 																			<reference key="NSNextResponder" ref="613998968"/>
 																			<int key="NSvFlags">8448</int>
-																			<string key="NSFrameSize">{2587, 233}</string>
+																			<string key="NSFrameSize">{2587, 234}</string>
 																			<reference key="NSSuperview" ref="613998968"/>
 																			<reference key="NSWindow"/>
 																			<reference key="NSNextKeyView" ref="435897027"/>
@@ -5571,7 +5570,7 @@
 																			<int key="NSTableViewGroupRowStyle">1</int>
 																		</object>
 																	</array>
-																	<string key="NSFrame">{{1, 17}, {429, 233}}</string>
+																	<string key="NSFrame">{{0, 17}, {431, 234}}</string>
 																	<reference key="NSSuperview" ref="832526649"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="300364488"/>
@@ -5582,7 +5581,7 @@
 																<object class="NSScroller" id="8580273">
 																	<reference key="NSNextResponder" ref="832526649"/>
 																	<int key="NSvFlags">256</int>
-																	<string key="NSFrame">{{414, 17}, {16, 233}}</string>
+																	<string key="NSFrame">{{415, 17}, {16, 234}}</string>
 																	<reference key="NSSuperview" ref="832526649"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="586538605"/>
@@ -5594,7 +5593,7 @@
 																<object class="NSScroller" id="435897027">
 																	<reference key="NSNextResponder" ref="832526649"/>
 																	<int key="NSvFlags">256</int>
-																	<string key="NSFrame">{{1, 234}, {429, 16}}</string>
+																	<string key="NSFrame">{{0, 235}, {431, 16}}</string>
 																	<reference key="NSSuperview" ref="832526649"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="8580273"/>
@@ -5603,7 +5602,7 @@
 																	<int key="NSsFlags">1</int>
 																	<reference key="NSTarget" ref="832526649"/>
 																	<string key="NSAction">_doScroller:</string>
-																	<double key="NSPercent">0.16582914572864321</double>
+																	<double key="NSPercent">0.1666022419791264</double>
 																</object>
 																<object class="NSClipView" id="903567248">
 																	<reference key="NSNextResponder" ref="832526649"/>
@@ -5611,7 +5610,7 @@
 																	<array class="NSMutableArray" key="NSSubviews">
 																		<reference ref="658526862"/>
 																	</array>
-																	<string key="NSFrame">{{1, 0}, {429, 17}}</string>
+																	<string key="NSFrameSize">{431, 17}</string>
 																	<reference key="NSSuperview" ref="832526649"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="658526862"/>
@@ -5624,7 +5623,7 @@
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="903567248"/>
-															<int key="NSsFlags">133298</int>
+															<int key="NSsFlags">133296</int>
 															<reference key="NSVScroller" ref="8580273"/>
 															<reference key="NSHScroller" ref="435897027"/>
 															<reference key="NSContentView" ref="613998968"/>
@@ -5645,7 +5644,7 @@
 																		<object class="NSTableView" id="647419437">
 																			<reference key="NSNextResponder" ref="979877879"/>
 																			<int key="NSvFlags">4352</int>
-																			<string key="NSFrameSize">{426, 233}</string>
+																			<string key="NSFrameSize">{428, 234}</string>
 																			<reference key="NSSuperview" ref="979877879"/>
 																			<reference key="NSWindow"/>
 																			<reference key="NSNextKeyView" ref="766578884"/>
@@ -5655,7 +5654,7 @@
 																			<object class="NSTableHeaderView" key="NSHeaderView" id="864147815">
 																				<reference key="NSNextResponder" ref="863446317"/>
 																				<int key="NSvFlags">256</int>
-																				<string key="NSFrameSize">{426, 17}</string>
+																				<string key="NSFrameSize">{428, 17}</string>
 																				<reference key="NSSuperview" ref="863446317"/>
 																				<reference key="NSWindow"/>
 																				<reference key="NSNextKeyView" ref="979877879"/>
@@ -5669,7 +5668,7 @@
 																			<array class="NSMutableArray" key="NSTableColumns">
 																				<object class="NSTableColumn" id="150383741">
 																					<string key="NSIdentifier">Cell</string>
-																					<double key="NSWidth">423</double>
+																					<double key="NSWidth">425</double>
 																					<double key="NSMinWidth">48</double>
 																					<double key="NSMaxWidth">1000</double>
 																					<object class="NSTableHeaderCell" key="NSHeaderCell">
@@ -5706,7 +5705,7 @@
 																				<reference key="NSColor" ref="412297653"/>
 																			</object>
 																			<reference key="NSGridColor" ref="1037829291"/>
-																			<double key="NSRowHeight">35</double>
+																			<double key="NSRowHeight">29</double>
 																			<int key="NSTvFlags">1119879168</int>
 																			<reference key="NSDelegate"/>
 																			<reference key="NSDataSource"/>
@@ -5719,7 +5718,7 @@
 																			<int key="NSTableViewGroupRowStyle">1</int>
 																		</object>
 																	</array>
-																	<string key="NSFrame">{{1, 17}, {426, 233}}</string>
+																	<string key="NSFrame">{{0, 17}, {428, 234}}</string>
 																	<reference key="NSSuperview" ref="586538605"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="647419437"/>
@@ -5759,7 +5758,7 @@
 																	<array class="NSMutableArray" key="NSSubviews">
 																		<reference ref="864147815"/>
 																	</array>
-																	<string key="NSFrame">{{1, 0}, {426, 17}}</string>
+																	<string key="NSFrameSize">{428, 17}</string>
 																	<reference key="NSSuperview" ref="586538605"/>
 																	<reference key="NSWindow"/>
 																	<reference key="NSNextKeyView" ref="864147815"/>
@@ -5772,12 +5771,12 @@
 															<reference key="NSSuperview" ref="584808016"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="1026708511"/>
-															<int key="NSsFlags">133650</int>
+															<int key="NSsFlags">133648</int>
 															<reference key="NSVScroller" ref="1026708511"/>
 															<reference key="NSHScroller" ref="926541949"/>
 															<reference key="NSContentView" ref="979877879"/>
 															<reference key="NSHeaderClipView" ref="863446317"/>
-															<bytes key="NSScrollAmts">QSAAAEEgAABCFAAAQhQAAA</bytes>
+															<bytes key="NSScrollAmts">QSAAAEEgAABB+AAAQfgAAA</bytes>
 															<double key="NSMinMagnification">0.25</double>
 															<double key="NSMaxMagnification">4</double>
 															<double key="NSMagnification">1</double>
@@ -6278,7 +6277,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="534658191"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{600, 622}</string>
 				<string key="NSMaxSize">{9000, 9022}</string>
 				<string key="NSFrameAutosaveName">DICOMDatabase</string>
@@ -6419,7 +6418,7 @@
 					<string key="NSFrameSize">{640, 99}</string>
 					<reference key="NSNextKeyView" ref="767583924"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 42}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -7398,7 +7397,7 @@
 				<string key="NSName"/>
 			</object>
 			<object class="NSCustomView" id="59724381">
-				<reference key="NSNextResponder"/>
+				<nil key="NSNextResponder"/>
 				<int key="NSvFlags">256</int>
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="NSPopUpButton" id="401767246">
@@ -7406,8 +7405,6 @@
 						<int key="NSvFlags">256</int>
 						<string key="NSFrame">{{0, 2}, {129, 22}}</string>
 						<reference key="NSSuperview" ref="59724381"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSPopUpButtonCell" key="NSCell" id="959013829">
 							<int key="NSCellFlags">-2076180416</int>
@@ -7575,8 +7572,6 @@
 					</object>
 				</array>
 				<string key="NSFrameSize">{130, 26}</string>
-				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="401767246"/>
 				<object class="NSMutableString" key="NSClassName">
 					<characters key="NS.bytes">NSView</characters>
@@ -7687,7 +7682,7 @@
 					<string key="NSFrameSize">{418, 107}</string>
 					<reference key="NSNextKeyView" ref="340407387"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -7924,7 +7919,7 @@
 					<string key="NSFrameSize">{591, 303}</string>
 					<reference key="NSNextKeyView" ref="627443640"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8051,7 +8046,7 @@
 					<string key="NSFrameSize">{348, 124}</string>
 					<reference key="NSNextKeyView" ref="568133982"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -8995,7 +8990,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{537, 273}</string>
 					<reference key="NSNextKeyView" ref="168355090"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -9595,7 +9590,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{727, 353}</string>
 					<reference key="NSNextKeyView" ref="752048640"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9651,7 +9646,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{296, 113}</string>
 					<reference key="NSNextKeyView" ref="1022668451"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -9796,7 +9791,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{508, 149}</string>
 					<reference key="NSNextKeyView" ref="498067642"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -9937,7 +9932,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{554, 127}</string>
 					<reference key="NSNextKeyView" ref="880642626"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -10430,7 +10425,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 462}</string>
 					<reference key="NSNextKeyView" ref="389538596"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -10851,7 +10846,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<string key="NSFrameSize">{813, 372}</string>
 					<reference key="NSNextKeyView" ref="845472366"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{813, 394}</string>
 				<string key="NSMaxSize">{813, 1022}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -10959,7 +10954,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{213, 107}</string>
 				<object class="NSView" key="NSWindowView" id="537599739">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSButton" id="791859241">
@@ -10967,8 +10962,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{377, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<int key="NSTag">1</int>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="359623448">
@@ -10993,7 +10986,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">289</int>
 							<string key="NSFrame">{{280, 12}, {97, 32}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="791859241"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="275015780">
@@ -11017,7 +11009,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">266</int>
 							<string key="NSFrame">{{57, 271}, {414, 42}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="333171161"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="286319823">
@@ -11036,7 +11027,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 95}, {281, 14}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="777738673"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="675116339">
@@ -11055,7 +11045,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{300, 95}, {171, 14}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="590253556"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="684569267">
@@ -11074,7 +11063,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 108}, {281, 14}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="56413426"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="543589078">
@@ -11093,7 +11081,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{300, 108}, {171, 14}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="270296586"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="496427319">
@@ -11165,7 +11152,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSvFlags">258</int>
 											<string key="NSFrame">{{17, 30}, {416, 116}}</string>
 											<reference key="NSSuperview" ref="225353068"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="289553775"/>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -11230,7 +11216,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSvFlags">258</int>
 											<string key="NSFrame">{{34, 68}, {402, 42}}</string>
 											<reference key="NSSuperview" ref="225353068"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="744205699"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="110600192">
@@ -11249,7 +11234,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 											<int key="NSvFlags">258</int>
 											<string key="NSFrame">{{34, 9}, {402, 42}}</string>
 											<reference key="NSSuperview" ref="225353068"/>
-											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="357814417"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="648198932">
@@ -11266,13 +11250,11 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 									</array>
 									<string key="NSFrame">{{2, 2}, {450, 135}}</string>
 									<reference key="NSSuperview" ref="333171161"/>
-									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="959457743"/>
 								</object>
 							</array>
 							<string key="NSFrame">{{17, 126}, {454, 139}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="225353068"/>
 							<string key="NSOffsets">{0, 0}</string>
 							<object class="NSTextFieldCell" key="NSTitleCell">
@@ -11305,7 +11287,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							</set>
 							<string key="NSFrame">{{20, 281}, {32, 32}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="973420321"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="773897473">
@@ -11328,7 +11309,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<int key="NSvFlags">-2147483382</int>
 							<string key="NSFrame">{{17, 48}, {454, 39}}</string>
 							<reference key="NSSuperview" ref="537599739"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="902454501"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSTextFieldCell" key="NSCell" id="717667252">
@@ -11348,11 +11328,9 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 					</array>
 					<string key="NSFrameSize">{488, 333}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="905111944"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
 				<string key="NSMinSize">{213, 129}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
@@ -23211,72 +23189,51 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<string key="addAlbum:">id</string>
 						<string key="addAlbums:">id</string>
 						<string key="addSmartAlbum:">id</string>
-						<string key="addStudiesToUser:">id</string>
 						<string key="albumTableDoublePressed:">id</string>
 						<string key="anonymizeDICOM:">id</string>
 						<string key="bonjourServiceClicked:">id</string>
-						<string key="bonjourServiceClickedProceed:">id</string>
 						<string key="buildAllThumbnails:">id</string>
 						<string key="checkMemory:">id</string>
 						<string key="clickBanner:">id</string>
-						<string key="comparativeToggle:">id</string>
 						<string key="compressSelectedFiles:">id</string>
 						<string key="convertReportToDICOMSR:">id</string>
 						<string key="convertReportToPDF:">id</string>
-						<string key="copy:">id</string>
 						<string key="copyToDBFolder:">id</string>
 						<string key="createDatabaseFolder:">id</string>
 						<string key="customize:">id</string>
-						<string key="customizeViewerToolBar:">id</string>
 						<string key="databaseDoublePressed:">id</string>
-						<string key="databasePressed:">id</string>
 						<string key="decompressSelectedFiles:">id</string>
 						<string key="defaultAlbums:">id</string>
 						<string key="delItem:">id</string>
 						<string key="deleteAlbum:">id</string>
 						<string key="deleteReport:">id</string>
-						<string key="displayImagesOfSeries:">id</string>
 						<string key="drawerToggle:">id</string>
 						<string key="endReBuildDatabase:">id</string>
 						<string key="generateReport:">id</string>
 						<string key="importRawData:">id</string>
-						<string key="lockStudies:">id</string>
 						<string key="matrixDoublePressed:">id</string>
 						<string key="matrixPressed:">id</string>
-						<string key="mergeSeries:">id</string>
 						<string key="mergeStudies:">id</string>
 						<string key="openDatabase:">id</string>
 						<string key="paste:">id</string>
 						<string key="pasteImageForSourceFile:">NSString</string>
 						<string key="querySelectedStudy:">id</string>
-						<string key="rebuildSQLFile:">id</string>
 						<string key="rebuildThumbnails:">id</string>
 						<string key="refreshPACSOnDemandResults:">id</string>
 						<string key="regenerateAutoComments:">id</string>
 						<string key="reparseIn3D:">id</string>
 						<string key="reparseIn4D:">id</string>
-						<string key="resetWindowsState:">id</string>
-						<string key="revealInFinder:">id</string>
 						<string key="saveAlbums:">id</string>
 						<string key="saveDBListAs:">id</string>
 						<string key="search:">id</string>
-						<string key="searchField:">id</string>
-						<string key="searchForCurrentPatient:">id</string>
 						<string key="selectAll3DSeries:">id</string>
 						<string key="selectAll4DSeries:">id</string>
 						<string key="selectFilesAndFoldersToAdd:">id</string>
-						<string key="selectSubSeriesAndOpen:">id</string>
-						<string key="sendEmailNotification:">id</string>
-						<string key="sendMail:">id</string>
 						<string key="setSearchType:">id</string>
 						<string key="showLogWindow:">id</string>
 						<string key="showhide:">id</string>
 						<string key="smartAlbumHelpButton:">id</string>
 						<string key="switchSoundex:">id</string>
-						<string key="unifyStudies:">id</string>
-						<string key="unlockStudies:">id</string>
-						<string key="viewXML:">id</string>
-						<string key="viewerKeyImagesAndROIsImages:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="ReBuildDatabaseSheet:">
@@ -23295,10 +23252,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">addSmartAlbum:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="addStudiesToUser:">
-							<string key="name">addStudiesToUser:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="albumTableDoublePressed:">
 							<string key="name">albumTableDoublePressed:</string>
 							<string key="candidateClassName">id</string>
@@ -23309,10 +23262,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="bonjourServiceClicked:">
 							<string key="name">bonjourServiceClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="bonjourServiceClickedProceed:">
-							<string key="name">bonjourServiceClickedProceed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="buildAllThumbnails:">
@@ -23327,10 +23276,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">clickBanner:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="comparativeToggle:">
-							<string key="name">comparativeToggle:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="compressSelectedFiles:">
 							<string key="name">compressSelectedFiles:</string>
 							<string key="candidateClassName">id</string>
@@ -23341,10 +23286,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="convertReportToPDF:">
 							<string key="name">convertReportToPDF:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="copy:">
-							<string key="name">copy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="copyToDBFolder:">
@@ -23359,16 +23300,8 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">customize:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="customizeViewerToolBar:">
-							<string key="name">customizeViewerToolBar:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="databaseDoublePressed:">
 							<string key="name">databaseDoublePressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="databasePressed:">
-							<string key="name">databasePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="decompressSelectedFiles:">
@@ -23391,10 +23324,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">deleteReport:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="displayImagesOfSeries:">
-							<string key="name">displayImagesOfSeries:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="drawerToggle:">
 							<string key="name">drawerToggle:</string>
 							<string key="candidateClassName">id</string>
@@ -23411,20 +23340,12 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">importRawData:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="lockStudies:">
-							<string key="name">lockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="matrixDoublePressed:">
 							<string key="name">matrixDoublePressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="matrixPressed:">
 							<string key="name">matrixPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="mergeSeries:">
-							<string key="name">mergeSeries:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="mergeStudies:">
@@ -23447,10 +23368,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">querySelectedStudy:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="rebuildSQLFile:">
-							<string key="name">rebuildSQLFile:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="rebuildThumbnails:">
 							<string key="name">rebuildThumbnails:</string>
 							<string key="candidateClassName">id</string>
@@ -23471,14 +23388,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">reparseIn4D:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="resetWindowsState:">
-							<string key="name">resetWindowsState:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="revealInFinder:">
-							<string key="name">revealInFinder:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="saveAlbums:">
 							<string key="name">saveAlbums:</string>
 							<string key="candidateClassName">id</string>
@@ -23491,14 +23400,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 							<string key="name">search:</string>
 							<string key="candidateClassName">id</string>
 						</object>
-						<object class="IBActionInfo" key="searchField:">
-							<string key="name">searchField:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="searchForCurrentPatient:">
-							<string key="name">searchForCurrentPatient:</string>
-							<string key="candidateClassName">id</string>
-						</object>
 						<object class="IBActionInfo" key="selectAll3DSeries:">
 							<string key="name">selectAll3DSeries:</string>
 							<string key="candidateClassName">id</string>
@@ -23509,18 +23410,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="selectFilesAndFoldersToAdd:">
 							<string key="name">selectFilesAndFoldersToAdd:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="selectSubSeriesAndOpen:">
-							<string key="name">selectSubSeriesAndOpen:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendEmailNotification:">
-							<string key="name">sendEmailNotification:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="sendMail:">
-							<string key="name">sendMail:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="setSearchType:">
@@ -23541,22 +23430,6 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						</object>
 						<object class="IBActionInfo" key="switchSoundex:">
 							<string key="name">switchSoundex:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unifyStudies:">
-							<string key="name">unifyStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="unlockStudies:">
-							<string key="name">unlockStudies:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewXML:">
-							<string key="name">viewXML:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="viewerKeyImagesAndROIsImages:">
-							<string key="name">viewerKeyImagesAndROIsImages:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 					</dictionary>
