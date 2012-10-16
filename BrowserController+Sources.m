@@ -403,22 +403,22 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
 
 + (BOOL)host:(NSHost*)h1 isEqualToHost:(NSHost*)h2 {
 #define MAC_CONCURRENT_ISEQUALTOHOST 10
-    static MPSemaphoreID sid = 0;
+    static dispatch_semaphore_t sid = 0;
     if (!sid)
-        MPCreateSemaphore(MAC_CONCURRENT_ISEQUALTOHOST, MAC_CONCURRENT_ISEQUALTOHOST, &sid);
+        sid = dispatch_semaphore_create(MAC_CONCURRENT_ISEQUALTOHOST);
     
-    OSStatus waitOnSemaphoreStatus = MPWaitOnSemaphore(sid, kDurationForever);
-    if (waitOnSemaphoreStatus == noErr)
+    if (dispatch_semaphore_wait(sid, DISPATCH_TIME_FOREVER) == 0)
         @try {
             if (h1.address && h2.address && [h1.address isEqualToString:h2.address])
                 return YES;
-            if (h1.name && h2.name && [h1.name isEqualToString:h1.name])
+            if (h1.name && h2.name && [h1.name isEqualToString:h2.name])
                 return YES;
             return [h1 isEqualToHost:h2];
         } @catch (...) {
             @throw;
         } @finally {
-            MPSignalSemaphore(sid);
+            NSLog(@"");
+            dispatch_semaphore_signal(sid);
         }
     
     return NO;
