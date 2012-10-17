@@ -38,12 +38,13 @@
 	NSNumber *_numberImages;
 	NSString *_specificCharacterSet;
 	NSManagedObject *_logEntry;
-	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions, _isAutoRetrieve;
+	BOOL showErrorMessage, firstWadoErrorDisplayed, _dontCatchExceptions, _isAutoRetrieve, _noSmartMode;
 	OFCondition globalCondition;
 }
 
 @property BOOL dontCatchExceptions;
 @property BOOL isAutoRetrieve;
+@property BOOL noSmartMode;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET  

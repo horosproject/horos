@@ -349,6 +349,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
 
 @synthesize dontCatchExceptions = _dontCatchExceptions;
 @synthesize isAutoRetrieve = _isAutoRetrieve;
+@synthesize noSmartMode = _noSmartMode;
 
 + (id)queryNodeWithDataset:(DcmDataset *)dataset
 			callingAET:(NSString *)myAET
@@ -1057,7 +1058,7 @@ subOpCallback(void * /*subOpCallbackData*/ ,
             
             // Local Study with images? -> try a C-Move/C-Get at IMAGE level to download only required images
             
-            if( studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
+            if(!_noSmartMode && studyInstanceUID.length > 0 && [[NSUserDefaults standardUserDefaults] boolForKey: @"TryIMAGELevelDICOMRetrieveIfLocalImages"])
             {
                 @try
                 {

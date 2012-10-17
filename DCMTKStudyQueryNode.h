@@ -17,7 +17,7 @@
 
 /** \brief Study level DCMTKQueryNode */
 @interface DCMTKStudyQueryNode : DCMTKQueryNode {
-
+    BOOL _sortChildren;
 }
 
 - (NSString*) studyInstanceUID;// Match DicomStudy

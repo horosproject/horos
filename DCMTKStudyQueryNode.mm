@@ -398,6 +398,17 @@
     return nil;
 }
 
+- (NSMutableArray*)children // instead of sorting after every addChild, we sort when the array is requested
+{
+    if (_sortChildren)
+        @synchronized( _children) {
+            _sortChildren = NO;
+            [_children sortUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"time" ascending:YES]]];
+        }
+
+    return [super children];
+}
+
 - (void)addChild:(DcmDataset *)dataset
 {
 	if( dataset == nil)
@@ -481,7 +492,7 @@
         }
         else NSLog( @"******** unknown queryLevel *****");
         
-        [_children sortUsingDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey: @"time" ascending: YES] autorelease]]];
+        _sortChildren = YES; // instead of sorting after every addChild, we sort when the array is requested, so for N elements we only have 1 sort instead of N
     }
 }
 
