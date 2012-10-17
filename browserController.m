@@ -492,25 +492,25 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase:)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray // __deprecated
 {
-	return [_database addFilesAtPaths:newFilesArray];
+	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray]];
 }
 
 #pragma deprecated (addFilesToDatabase::)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM // __deprecated
 {
-	return [_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
+	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles // __deprecated
 {
-	return [_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO];
+	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject // __deprecated
 {
-	return [_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
 #pragma deprecated (checkForExistingReport:dbFolder:)
@@ -530,7 +530,7 @@ static NSConditionLock *threadLock = nil;
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
 	if (!db) N2LogError(@"couldn't identify database");
-	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
 #pragma deprecated
@@ -541,7 +541,7 @@ static NSConditionLock *threadLock = nil;
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
 	if (!db) N2LogError(@"couldn't identify database");
-	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX];
+	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
 #pragma deprecated
@@ -552,7 +552,7 @@ static NSConditionLock *threadLock = nil;
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
 	if (!db) N2LogError(@"couldn't identify database");
-	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX];
+	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject generatedByOsiriX:generatedByOsiriX]];
 }
 
 #pragma deprecated
@@ -562,7 +562,7 @@ static NSConditionLock *threadLock = nil;
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db && (context || dbFolder)) db = [[[DicomDatabase alloc] initWithPath:dbFolder context:context] autorelease];
 	if (!db) N2LogError(@"couldn't identify database");
-	return [db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:notifyAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
 #pragma deprecated
@@ -571,12 +571,12 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
-	return [db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+	return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
 #pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
-    return [_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO];
+    return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
 #pragma deprecated
@@ -585,7 +585,7 @@ static NSConditionLock *threadLock = nil;
 	DicomDatabase* db = [DicomDatabase databaseForContext:context];
 	if (!db && dbFolder) db = [DicomDatabase databaseAtPath:dbFolder];
 	if (!db) db = _database;
-    return [db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject];
+    return [db objectsWithIDs:[db addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
 #pragma mark-

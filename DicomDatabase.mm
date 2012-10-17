@@ -2772,7 +2772,7 @@ static BOOL protectionAgainstReentry = NO;
 			
 			NSArray* addedFiles = nil;
             if( thread.isCancelled == NO)
-                addedFiles = [self addFilesAtPaths:filesArray]; // don't use the values in the returned array without having locked the database!
+                addedFiles = [self addFilesAtPaths:filesArray]; // these are IDs!
             
             addedFilesCount = addedFiles.count;
 			
