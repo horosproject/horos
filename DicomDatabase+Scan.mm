@@ -297,7 +297,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	NSString* cutpath = [path stringByDeletingPathExtension];
 	
 	for (NSString* ipath in allpaths)
-		if ([[ipath stringByDeletingPathExtension] isEqualToString:cutpath])
+		if ([[ipath stringByDeletingPathExtension] compare:cutpath options:NSCaseInsensitiveSearch] == NSOrderedSame)
 			return ipath;
 	
 	return nil;
@@ -523,7 +523,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
                 }
             }
             
-            dicomImages = [self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO];
+            dicomImages = [self objectsWithIDs:[self addFilesAtPaths:dicomFilePaths postNotifications:NO dicomOnly:NO rereadExistingItems:NO generatedByOsiriX:NO]];
         }
         
         if (!dicomImages.count)
