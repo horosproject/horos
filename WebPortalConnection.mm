@@ -650,7 +650,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 				
 			if ([studyInstanceUID isEqualToString: previousStudyInstanceUID] == NO || [patientUID compare: previousPatientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] != NSOrderedSame)
 			{
-				NSArray *objects = [BrowserController addFiles: filesAccumulator
+                [BrowserController addFiles: filesAccumulator
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 
@@ -756,7 +756,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 		}
 	}
 	
-	NSArray *objects = [BrowserController addFiles: filesAccumulator
+    [BrowserController addFiles: filesAccumulator
 												 toContext: [[BrowserController currentBrowser] managedObjectContext]
 												toDatabase: [BrowserController currentBrowser]
 												 onlyDICOM: YES 

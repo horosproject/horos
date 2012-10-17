@@ -19982,7 +19982,7 @@ int i,j,l;
         }
     }
     
-    return NO;
+    return YES;
 }
 
 -(void) checkEverythingLoaded
