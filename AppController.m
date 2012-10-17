@@ -2583,13 +2583,14 @@ static BOOL initialized = NO;
 		if ( self == [AppController class] && initialized == NO)
 		{
 //			#if __LP64__
-//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2009 month:12 day:20 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated"])
+//			if( [[NSDate date] timeIntervalSinceDate: [NSCalendarDate dateWithYear:2012 month:11 day:10 hour:1 minute:1 second:1 timeZone:nil]] > 0 || [[NSUserDefaults standardUserDefaults] boolForKey:@"Outdated2"])
 //			{
 //				NSRunCriticalAlertPanel(NSLocalizedString(@"Outdated Version", nil), NSLocalizedString(@"Please update your application. Available on the web site.", nil), NSLocalizedString(@"OK", nil), nil, nil);
-//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated"];
+//				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"Outdated2"];
 //				[[NSUserDefaults standardUserDefaults] synchronize];
 //				exit( 0);
 //			}
+//            NSRunCriticalAlertPanel(NSLocalizedString(@"Training Version", nil), NSLocalizedString(@"Training version for rcs2.pl.", nil), NSLocalizedString(@"OK", nil), nil, nil);
 //			#endif
 						
 			if( [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundlePackageType"] isEqualToString: @"APPL"])
