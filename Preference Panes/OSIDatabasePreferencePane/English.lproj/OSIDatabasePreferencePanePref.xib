@@ -1457,10 +1457,10 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 										<object class="NSTextField" id="637146268">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{360, 73}, {80, 14}}</string>
+											<string key="NSFrame">{{360, 75}, {80, 14}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="660417743"/>
+											<reference key="NSNextKeyView" ref="103535991"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="745072082">
 												<int key="NSCellFlags">67108864</int>
@@ -1476,7 +1476,7 @@ SW5jLiwgMjAwNQAAAAA</bytes>
 										<object class="NSMatrix" id="5926483">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{445, 93}, {146, 38}}</string>
+											<string key="NSFrame">{{445, 94}, {146, 38}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="222858287"/>
@@ -1599,15 +1599,15 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="660417743">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{13, 31}, {735, 18}}</string>
+											<string key="NSFrame">{{13, 26}, {735, 18}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="103535991"/>
+											<reference key="NSNextKeyView" ref="437738291"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="942334366">
 												<int key="NSCellFlags">-2080374784</int>
 												<int key="NSCellFlags2">131072</int>
-												<string key="NSContents">If image files are linked to the database, also delete the original file</string>
+												<string key="NSContents">If image files are linked files (not stored in the Database folder), also delete the original file</string>
 												<reference key="NSSupport" ref="26"/>
 												<reference key="NSControlView" ref="660417743"/>
 												<int key="NSButtonFlags">1211912448</int>
@@ -1623,7 +1623,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 										<object class="NSButton" id="437738291">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">256</int>
-											<string key="NSFrame">{{13, 11}, {735, 18}}</string>
+											<string key="NSFrame">{{13, 8}, {735, 18}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="489575660"/>
@@ -1671,10 +1671,10 @@ bSwgaXQgd2lsbCBOT1QgYmUgZGVsZXRlZC4</string>
 										<object class="NSMatrix" id="103535991">
 											<reference key="NSNextResponder" ref="792082900"/>
 											<int key="NSvFlags">268</int>
-											<string key="NSFrame">{{445, 40}, {310, 48}}</string>
+											<string key="NSFrame">{{445, 45}, {310, 48}}</string>
 											<reference key="NSSuperview" ref="792082900"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="437738291"/>
+											<reference key="NSNextKeyView" ref="660417743"/>
 											<string key="NSReuseIdentifierKey">_NS:266</string>
 											<bool key="NSEnabled">YES</bool>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -3267,7 +3267,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="167176631"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1600, 978}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
