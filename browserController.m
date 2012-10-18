@@ -492,36 +492,28 @@ static NSConditionLock *threadLock = nil;
 #pragma deprecated (addFilesToDatabase:)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray // __deprecated
 {
-#ifndef NDEBUG
-    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"We should be on MAIN thread for accessing objects from _database object");
-#endif
+    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray]];
 }
 
 #pragma deprecated (addFilesToDatabase::)
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray :(BOOL)onlyDICOM // __deprecated
 {
-#ifndef NDEBUG
-    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"We should be on MAIN thread for accessing objects from _database object");
-#endif
+    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles // __deprecated
 {
-#ifndef NDEBUG
-    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"We should be on MAIN thread for accessing objects from _database object");
-#endif
+    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
 #pragma deprecated (addFilesToDatabase:onlyDICOM:produceAddedFiles:parseExistingObject:)
 -(NSArray*) addFilesToDatabase:(NSArray*) newFilesArray onlyDICOM:(BOOL) onlyDICOM  produceAddedFiles:(BOOL) produceAddedFiles parseExistingObject:(BOOL) parseExistingObject // __deprecated
 {
-#ifndef NDEBUG
-    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"We should be on MAIN thread for accessing objects from _database object");
-#endif
+    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
 	return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:parseExistingObject]];
 }
 
@@ -588,9 +580,8 @@ static NSConditionLock *threadLock = nil;
 
 #pragma deprecated
 -(NSArray*)addFilesToDatabase:(NSArray*)newFilesArray onlyDICOM:(BOOL)onlyDICOM safeRebuild:(BOOL)safeRebuild produceAddedFiles:(BOOL)produceAddedFiles { // __deprecated // notice: the "safeRebuild" seemed to be already ignored before the DicomDatabase transition
-#ifndef NDEBUG
-    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"We should be on MAIN thread for accessing objects from _database object");
-#endif
+
+    if( [NSThread isMainThread] == NO) N2LogStackTrace( @"********* We should be on MAIN thread for accessing objects from _database object");
     return [_database objectsWithIDs:[_database addFilesAtPaths:newFilesArray postNotifications:produceAddedFiles dicomOnly:onlyDICOM rereadExistingItems:NO]];
 }
 
