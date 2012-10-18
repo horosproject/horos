@@ -444,6 +444,10 @@
 		71512EA11523552A00B87012 /* DiscMountedAskTheUserDialogController.m in Sources */ = {isa = PBXBuildFile; fileRef = 71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */; };
 		7154B80F14ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
 		7154B81014ED5402000EF7E4 /* N2Stuff.h in Headers */ = {isa = PBXBuildFile; fileRef = 7154B80E14ED5402000EF7E4 /* N2Stuff.h */; };
+		7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
+		7188E85716301A61006105BE /* KBPopUpToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 7188E85416301A61006105BE /* KBPopUpToolbarItem.h */; };
+		7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
+		7188E85916301A61006105BE /* KBPopUpToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7188E85516301A61006105BE /* KBPopUpToolbarItem.m */; };
 		71AA5A2E1611F1EB006A6A5F /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A211611F1EB006A6A5F /* JSON.h */; };
 		71AA5A2F1611F1EB006A6A5F /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A221611F1EB006A6A5F /* NSObject+SBJSON.h */; };
 		71AA5A301611F1EB006A6A5F /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A231611F1EB006A6A5F /* NSObject+SBJSON.m */; };
@@ -8637,6 +8641,8 @@
 		71512E9C15234F6B00B87012 /* DiscMountedAskTheUserDialogController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscMountedAskTheUserDialogController.m; sourceTree = "<group>"; };
 		7154B80E14ED5402000EF7E4 /* N2Stuff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = N2Stuff.h; path = nitrogen/Sources/N2Stuff.h; sourceTree = "<group>"; };
 		7183153D1610651E0098576F /* weasis-ext-config.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = "weasis-ext-config.properties"; path = "Binaries/weasis-ext-config.properties"; sourceTree = "<group>"; };
+		7188E85416301A61006105BE /* KBPopUpToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KBPopUpToolbarItem.h; path = nitrogen/Sources/KBPopUpToolbarItem.h; sourceTree = "<group>"; };
+		7188E85516301A61006105BE /* KBPopUpToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KBPopUpToolbarItem.m; path = nitrogen/Sources/KBPopUpToolbarItem.m; sourceTree = "<group>"; };
 		71AA5A211611F1EB006A6A5F /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		71AA5A221611F1EB006A6A5F /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		71AA5A231611F1EB006A6A5F /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -15526,6 +15532,8 @@
 		AB10FB1C1129338A009EB238 /* 3rd Party */ = {
 			isa = PBXGroup;
 			children = (
+				7188E85416301A61006105BE /* KBPopUpToolbarItem.h */,
+				7188E85516301A61006105BE /* KBPopUpToolbarItem.m */,
 				AB10FB1D1129338A009EB238 /* ISO8601DateFormatter.h */,
 				AB10FB1E1129338A009EB238 /* ISO8601DateFormatter.m */,
 				71AA5A201611F1EB006A6A5F /* JSON */,
@@ -25425,6 +25433,7 @@
 				4FCBBD7D162C685A00C9CBE3 /* OSIMaskROI.h in Headers */,
 				4FCBBD7F162C685A00C9CBE3 /* OSIPathExtrusionROI.h in Headers */,
 				4FCBBD81162C685A00C9CBE3 /* OSIROIMaskRunStack.h in Headers */,
+				7188E85616301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -26052,6 +26061,7 @@
 				84D7BBE4154A941A007B5A86 /* NSNotificationCenter+N2.h in Headers */,
 				840C2D5F1588CE4600C4FE09 /* CustomIntervalPanel.h in Headers */,
 				CEC0BFA115A597DB0012D879 /* ComparativeCell.h in Headers */,
+				7188E85716301A61006105BE /* KBPopUpToolbarItem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28465,6 +28475,7 @@
 				4FCBBD7E162C685A00C9CBE3 /* OSIMaskROI.m in Sources */,
 				4FCBBD80162C685A00C9CBE3 /* OSIPathExtrusionROI.m in Sources */,
 				4FCBBD82162C685A00C9CBE3 /* OSIROIMaskRunStack.m in Sources */,
+				7188E85816301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -29712,6 +29723,7 @@
 				849B44BE1552B2D800194728 /* OsiriXNotificationCenter.m in Sources */,
 				840C2D611588CE4600C4FE09 /* CustomIntervalPanel.m in Sources */,
 				CEC0BFA315A597DB0012D879 /* ComparativeCell.mm in Sources */,
+				7188E85916301A61006105BE /* KBPopUpToolbarItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
