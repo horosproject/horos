@@ -7544,7 +7544,7 @@ public:
 - (void)changeColor:(id)sender
 {
 	if( [backgroundColor isActive])
-		[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace]];
+		[self changeColorWith: [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 }
 
 - (NSColor*)backgroundColor;
@@ -8117,7 +8117,7 @@ public:
 	if([point3DPropagateToAll state])
 	{
 		[self setAll3DPointsRadius: [sender floatValue]];
-		[self setAll3DPointsColor: [point3DColorWell color]];
+		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 	}
 	else
 	{
@@ -8131,7 +8131,7 @@ public:
 	if([sender state]==NSOnState)
 	{
 		[self setAll3DPointsRadius: [point3DRadiusSlider floatValue]];
-		[self setAll3DPointsColor: [point3DColorWell color]];
+		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 		[self setNeedsDisplay:YES];
 	}
 }
@@ -8197,11 +8197,13 @@ public:
 
 - (IBAction) save3DPointsDefaultProperties: (id) sender
 {
+    NSColor *color = [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+    
 	//color
-	point3DDefaultColorRed = [[point3DColorWell color] redComponent];
-	point3DDefaultColorGreen = [[point3DColorWell color] greenComponent];
-	point3DDefaultColorBlue = [[point3DColorWell color] blueComponent];
-	point3DDefaultColorAlpha = [[point3DColorWell color] alphaComponent];
+	point3DDefaultColorRed = [color redComponent];
+	point3DDefaultColorGreen = [color greenComponent];
+	point3DDefaultColorBlue = [color blueComponent];
+	point3DDefaultColorAlpha = [color alphaComponent];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorRed forKey:@"points3DcolorRed"];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorGreen forKey:@"points3DcolorGreen"];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorBlue forKey:@"points3DcolorBlue"];

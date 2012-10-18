@@ -2701,7 +2701,7 @@ typedef struct _xyzArray
 {	
 	if( [backgroundColor isActive])
 	{
-		NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+		NSColor *color=  [[(NSColorPanel*)sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		[self setNeedsDisplay:YES];
 	}
@@ -3011,7 +3011,7 @@ typedef struct _xyzArray
 	if([point3DPropagateToAll state])
 	{
 		[self setAll3DPointsRadius: [sender floatValue]];
-		[self setAll3DPointsColor: [point3DColorWell color]];
+		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 	}
 	else
 	{
@@ -3025,7 +3025,7 @@ typedef struct _xyzArray
 	if([sender state]==NSOnState)
 	{
 		[self setAll3DPointsRadius: [point3DRadiusSlider floatValue]];
-		[self setAll3DPointsColor: [point3DColorWell color]];
+		[self setAll3DPointsColor: [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace]];
 		[self IBSetSelected3DPointAnnotation: point3DDisplayPositionButton];
 		[self IBSetSelected3DPointAnnotationColor: point3DTextColorWell];
 		[self IBSetSelected3DPointAnnotationSize: point3DTextSizeSlider];
@@ -3094,11 +3094,13 @@ typedef struct _xyzArray
 
 - (IBAction) save3DPointsDefaultProperties: (id) sender
 {
+    NSColor *color = [[point3DColorWell color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+    
 	//color
-	point3DDefaultColorRed = [[point3DColorWell color] redComponent];
-	point3DDefaultColorGreen = [[point3DColorWell color] greenComponent];
-	point3DDefaultColorBlue = [[point3DColorWell color] blueComponent];
-	point3DDefaultColorAlpha = [[point3DColorWell color] alphaComponent];
+	point3DDefaultColorRed = [color redComponent];
+	point3DDefaultColorGreen = [color greenComponent];
+	point3DDefaultColorBlue = [color blueComponent];
+	point3DDefaultColorAlpha = [color alphaComponent];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorRed forKey:@"points3DcolorRed"];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorGreen forKey:@"points3DcolorGreen"];
 	[[NSUserDefaults standardUserDefaults] setFloat:point3DDefaultColorBlue forKey:@"points3DcolorBlue"];

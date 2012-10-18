@@ -320,7 +320,7 @@
 	
 	CGFloat r, g, b;
 	
-	[[sender color] getRed:&r green:&g blue:&b alpha:nil];
+	[[[sender color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace] getRed:&r green:&g blue:&b alpha:nil];
 	
 	RGBColor c;
 	

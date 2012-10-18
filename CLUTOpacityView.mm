@@ -441,7 +441,7 @@
 		line = [transform transformBezierPath:line];
 		
 		// GRADIENT FILL
-		NSGradient *gradient = [[NSGradient alloc] initWithColors:[pointColors objectAtIndex:i] atLocations:locations colorSpace:[NSColorSpace deviceRGBColorSpace]];
+		NSGradient *gradient = [[NSGradient alloc] initWithColors:[pointColors objectAtIndex:i] atLocations:locations colorSpace:[NSColorSpace genericRGBColorSpace]];
 		[gradient drawInBezierPath:line angle:0];
 		[gradient release];
 		
@@ -803,7 +803,7 @@
 				NSPoint pt = [[aCurve objectAtIndex:j] pointValue];
 				if((int) pt.x==(int) selectedPoint.x && (float) pt.y==(float) selectedPoint.y)
 				{
-					[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forPointAtIndex:j inCurveAtIndex:i];
+					[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace] forPointAtIndex:j inCurveAtIndex:i];
 					[self updateView];
 					return;
 				}
@@ -811,7 +811,7 @@
 			NSPoint controlPoint = [self controlPointForCurveAtIndex:i];
 			if((int) controlPoint.x==(int) selectedPoint.x && (float) controlPoint.y==(float) selectedPoint.y)
 			{
-				[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSDeviceRGBColorSpace] forCurveAtIndex:i];
+				[self setColor:[[(NSColorPanel*)[notification object] color] colorUsingColorSpaceName: NSCalibratedRGBColorSpace] forCurveAtIndex:i];
 				[self updateView];
 				return;
 			}
@@ -821,8 +821,8 @@
 
 - (void)setColor:(NSColor*)color forPointAtIndex:(int)pointIndex inCurveAtIndex:(int)curveIndex;
 {
-	NSColor *currentColor = [[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"];
-	NSColor *newColor = [color colorUsingColorSpaceName:@"NSDeviceRGBColorSpace"];
+	NSColor *currentColor = [[[pointColors objectAtIndex:curveIndex] objectAtIndex:pointIndex] colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+	NSColor *newColor = [color colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 			
 	if([currentColor redComponent]!=[newColor redComponent] || [currentColor greenComponent]!=[newColor greenComponent] || [currentColor blueComponent]!=[newColor blueComponent])
 	{
@@ -2105,7 +2105,7 @@ zoomFixedPoint = [sender floatValue] / [sender maxValue] * drawingRect.size.widt
 
 - (NSDictionary*)convertColorToDict:(NSColor*)color;
 {
-	NSColor *safeColor = [color colorUsingColorSpaceName:NSCalibratedRGBColorSpace];
+	NSColor *safeColor = [color colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	[dict setObject:[NSNumber numberWithFloat:[safeColor redComponent]] forKey:@"red"];
 	[dict setObject:[NSNumber numberWithFloat:[safeColor greenComponent]] forKey:@"green"];

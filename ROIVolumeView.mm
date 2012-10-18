@@ -887,7 +887,7 @@
 		
 		roiVolumeActor->GetProperty()->SetOpacity( opacity);
 		
-		NSColor* rgbCol = [col colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+		NSColor* rgbCol = [col colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		
 		if( usecol) roiVolumeActor->GetProperty()->SetColor( [rgbCol redComponent], [rgbCol greenComponent], [rgbCol blueComponent]);
 		else roiVolumeActor->GetProperty()->SetColor( 1, 1, 1);

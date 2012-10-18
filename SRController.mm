@@ -398,15 +398,18 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 - (void)renderSurfaces{
 	WaitRendering *www = [[WaitRendering alloc] init: NSLocalizedString( @"Preparing 3D Iso Surface...", nil)];
 	[www start];
-
+    
+    NSColor *color = [_firstColor colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+    NSColor *sColor = [_secondColor colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
+    
 	// FIRST SURFACE
 	if( _useFirstSurface)
 			[view changeActor   :(long) 0
 								:_resolution
 								:_firstTransparency
-								:[_firstColor redComponent]
-								:[_firstColor greenComponent]
-								:[_firstColor blueComponent]		
+								:[color redComponent]
+								:[color greenComponent]
+								:[color blueComponent]		
 								:_firstSurface
 								:_shouldDecimate
 								:_decimate
@@ -420,9 +423,9 @@ static NSString*	BackgroundColorViewToolbarItemIdentifier		= @"BackgroundColorVi
 			[view changeActor   :(long) 1
 								:_resolution
 								:_secondTransparency
-								:[_secondColor redComponent]
-								:[_secondColor greenComponent]
-								:[_secondColor blueComponent]
+								:[sColor redComponent]
+								:[sColor greenComponent]
+								:[sColor blueComponent]
 								:_secondSurface
 								:_shouldDecimate
 								:_decimate

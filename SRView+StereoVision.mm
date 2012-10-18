@@ -1216,7 +1216,7 @@ static void  updateRight(vtkObject*, unsigned long eid, void* clientdata, void *
 {	
 	if( [backgroundColor isActive])
 	{
-		NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+		NSColor *color=  [[(NSColorPanel*)sender color]  colorUsingColorSpaceName: NSCalibratedRGBColorSpace];
 		aRenderer->SetBackground([color redComponent],[color greenComponent],[ color blueComponent]);
 		
 		//Added SilvanWidmer 20-08-09
