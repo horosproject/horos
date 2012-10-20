@@ -13672,33 +13672,33 @@ static NSArray*	openSubSeriesArray = nil;
 	return NO;
 }
 	
-- (void)listenerAnonymizeFiles: (NSArray*)files
-{
-	#ifndef OSIRIX_LIGHT
-	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", [DCMAttributeTag tagWithName:@"PatientID"], @"00000",nil];
-	NSMutableArray		*tags = [NSMutableArray array];
-	
-	[tags addObject:array];
-	
-	for( NSString *file in files)
-	{
-		NSString *destPath = [file stringByAppendingString:@"temp"];
-		
-		@try
-		{
-			[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
-		}
-		@catch (NSException * e)
-		{
-            N2LogExceptionWithStackTrace(e);
-		}
-		
-		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
-		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
-	}
-#endif
-}
-	
+//- (void)listenerAnonymizeFiles: (NSArray*)files
+//{
+//	#ifndef OSIRIX_LIGHT
+//	NSArray				*array = [NSArray arrayWithObjects: [DCMAttributeTag tagWithName:@"PatientsName"], @"**anonymized**", [DCMAttributeTag tagWithName:@"PatientID"], @"00000",nil];
+//	NSMutableArray		*tags = [NSMutableArray array];
+//	
+//	[tags addObject:array];
+//	
+//	for( NSString *file in files)
+//	{
+//		NSString *destPath = [file stringByAppendingString:@"temp"];
+//		
+//		@try
+//		{
+//			[DCMObject anonymizeContentsOfFile: file  tags:tags  writingToFile:destPath];
+//		}
+//		@catch (NSException * e)
+//		{
+//            N2LogExceptionWithStackTrace(e);
+//		}
+//		
+//		[[NSFileManager defaultManager] removeFileAtPath: file handler: nil];
+//		[[NSFileManager defaultManager] movePath:destPath toPath: file handler: nil];
+//	}
+//#endif
+//}
+
 #pragma deprecated (pathResolved:)
 - (NSString*) pathResolved:(NSString*) inPath
 {
@@ -14008,6 +14008,10 @@ static volatile int numberOfThreadsForJPEG = 0;
                 
                 // Instanciate the AVAssetWriterInput
                 AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+                
+                if( writerInput == nil)
+                    N2LogStackTrace( @"**** writerInput == nil : %@", videoSettings);
+                
                 // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
                 AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
                 // Add the writer input to the writer and begin writing
@@ -14034,7 +14038,7 @@ static volatile int numberOfThreadsForJPEG = 0;
                     if( buffer)
                     {
                         CVPixelBufferLockBaseAddress(buffer, 0);
-                        while( ![writerInput isReadyForMoreMediaData])
+                        while( writerInput && [writerInput isReadyForMoreMediaData] == NO)
                             [NSThread sleepForTimeInterval: 0.1];
                         [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
                         CVPixelBufferUnlockBaseAddress(buffer, 0);

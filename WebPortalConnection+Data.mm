@@ -596,6 +596,10 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                             
                             // Instanciate the AVAssetWriterInput
                             AVAssetWriterInput *writerInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:videoSettings];
+                            
+                            if( writerInput == nil)
+                                N2LogStackTrace( @"**** writerInput == nil : %@", videoSettings);
+                            
                             // Instanciate the AVAssetWriterInputPixelBufferAdaptor to be connected to the writer input
                             AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput sourcePixelBufferAttributes:nil];
                             // Add the writer input to the writer and begin writing
@@ -627,7 +631,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
                                 if( buffer)
                                 {
                                     CVPixelBufferLockBaseAddress(buffer, 0);
-                                    while( ![writerInput isReadyForMoreMediaData])
+                                    while( writerInput && [writerInput isReadyForMoreMediaData] == NO)
                                         [NSThread sleepForTimeInterval: 0.1];
                                     [pixelBufferAdaptor appendPixelBuffer:buffer withPresentationTime:nextPresentationTimeStamp];
                                     CVPixelBufferUnlockBaseAddress(buffer, 0);

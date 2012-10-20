@@ -3324,7 +3324,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							else memcpy( fImage, im, width*height*sizeof(float));
 						}
 					}
-					else NSLog( @"*** Not enough memory - malloc failed");
+					else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 					break;
 					
 					case 8:		// RGBA -> argb
@@ -3345,7 +3345,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 							}
 						}
 					}
-					else NSLog( @"*** Not enough memory - malloc failed");
+					else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 					
 					isRGB = YES;
 					break;
@@ -3758,7 +3758,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 		
 		if( dstf.data)
 			vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
-		else NSLog( @"*** Not enough memory - malloc failed");
+		else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 		
 		free(oImage);
 		oImage = nil;
@@ -4081,7 +4081,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 						break;
 				}
 			}
-			else NSLog( @"*** Not enough memory - malloc failed");
+			else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 		}
 		else
 		{
@@ -4096,7 +4096,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 			
 			if( fImage)
 				memcpy( fImage, oImage, width*height*4);
-			else NSLog( @"*** Not enough memory - malloc failed");
+			else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 		}
 		
 		free(oImage);
@@ -6310,7 +6310,7 @@ END_CREATE_ROIS:
 						}
 					}
 					else
-						NSLog( @"*** Not enough memory - malloc failed");
+						N2LogStackTrace( @"*** Not enough memory - malloc failed");
 						
 					free(oImage);
 					oImage = nil;
@@ -6365,7 +6365,7 @@ END_CREATE_ROIS:
 							vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
 						}
 					}
-					else NSLog( @"*** Not enough memory - malloc failed");
+					else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 					
 					free(oImage);
 					oImage = nil;
@@ -8927,7 +8927,7 @@ END_CREATE_ROIS:
 									}
 								}
 								else
-									NSLog( @"*** Not enough memory - malloc failed");
+									N2LogStackTrace( @"*** Not enough memory - malloc failed");
 									
 								free(oImage);
 								oImage = nil;
@@ -8973,7 +8973,7 @@ END_CREATE_ROIS:
 											vDSP_vsmul( fImage, 1, &neg, fImage, 1, height * width);
 										}
 									}
-									else NSLog( @"*** Not enough memory - malloc failed");
+									else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 									
 									free(oImage);
 								}
@@ -9588,7 +9588,7 @@ END_CREATE_ROIS:
 									for( i = 0; i < height;i++)
 										memcpy( fImage + i * width, [fileData bytes]+ frameNo * (height * width)*sizeof(float) + i*width*sizeof(float), width * sizeof(float));
 								}
-								else NSLog( @"*** Not enough memory - malloc failed");
+								else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 								
 								free(oImage);
 								oImage = nil;
@@ -9617,7 +9617,7 @@ END_CREATE_ROIS:
 										
 									}
 								}
-								else NSLog( @"*** Not enough memory - malloc failed");
+								else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 								
 								free(oImage);
 								oImage = nil;
@@ -9687,7 +9687,7 @@ END_CREATE_ROIS:
 							{
 								vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
 							}
-							else NSLog( @"*** Not enough memory - malloc failed");
+							else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 							
 							free(oImage);
 							oImage = nil;
@@ -10010,7 +10010,7 @@ END_CREATE_ROIS:
 												memcpy( fImage + i * width, [fileData bytes]+ frameNo * (height * width)*sizeof(float) + i*width*sizeof(float), width*sizeof(float));
 											}
 										}
-										else NSLog( @"*** Not enough memory - malloc failed");
+										else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 										
 										free(oImage);
 										oImage = nil;
@@ -10052,7 +10052,7 @@ END_CREATE_ROIS:
 									
 									if( dstf.data)
 										vImageConvert_16SToF( &src16, &dstf, 0, 1, 0);
-									else NSLog( @"*** Not enough memory - malloc failed");
+									else N2LogStackTrace( @"*** Not enough memory - malloc failed");
 									
 									free(oImage);
 									oImage = nil;
