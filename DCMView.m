@@ -8016,7 +8016,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
         if( warningNotice == nil && [self class] == [DCMView class] && fullText)
         {
             NSMutableDictionary *stanStringAttrib = [NSMutableDictionary dictionary];
-            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 18] forKey: NSFontAttributeName];
+            [stanStringAttrib setObject: [NSFont fontWithName:@"Helvetica" size: 17] forKey: NSFontAttributeName];
             if( whiteBackground)
                 [stanStringAttrib setObject: [NSColor colorWithDeviceRed:0.2f green:0.2 blue:0.2 alpha: 1.0] forKey: NSForegroundColorAttributeName];
             else
