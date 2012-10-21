@@ -496,7 +496,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([requestedPath isEqualToString:@"/admin/user"])
 				[self processAdminUserHtml];
             else
-            if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin)
+            if ([requestedPath isEqualToString:@"/quitOsiriX"] && user.isAdmin.boolValue)
                 exit(0);
             else
                 if ([requestedPath isEqual:@"/testdbalive"])

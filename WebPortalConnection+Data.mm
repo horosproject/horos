@@ -1171,7 +1171,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 #pragma mark Administration HTML
 
 -(void)processAdminIndexHtml {
-	if (!user.isAdmin) {
+	if (!user.isAdmin.boolValue) {
 		response.statusCode = 401;
 		[self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
 		return;
@@ -1187,7 +1187,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 }
 
 -(void)processAdminUserHtml {
-	if (!user.isAdmin) {
+	if (!user.isAdmin.boolValue) {
 		response.statusCode = 401;
 		[self.portal updateLogEntryForStudy:NULL withMessage:@"Attempt to access admin area without being an admin" forUser:user.name ip:asyncSocket.connectedHost];
 		return;
