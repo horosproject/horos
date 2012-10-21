@@ -161,7 +161,7 @@
 	
 	int x, y;
 	
-	if( [settings valueForKey: @"backgroundColor"])
+	if( [[settings valueForKey: @"backgroundColor"] boolValue])
 	{
 		[[NSColor colorWithDeviceRed: [[settings valueForKey: @"backgroundColorR"] floatValue] green: [[settings valueForKey: @"backgroundColorG"] floatValue] blue: [[settings valueForKey: @"backgroundColorB"] floatValue] alpha: 1.0] set];
 		NSRectFill( NSMakeRect(0, 0, frameSize.width, frameSize.height - headerHeight));
