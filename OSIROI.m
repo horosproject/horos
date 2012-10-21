@@ -93,16 +93,16 @@
 
 - (NSArray *)metricNames
 {
-	return [NSArray arrayWithObjects:@"meanIntensity", @"maxIntensity", @"minIntensity", nil];
+	return [NSArray arrayWithObjects:@"intensityMean", @"intensityMax", @"intensityMin", nil];
 }
 
 - (NSString *)labelForMetric:(NSString *)metric
 {
-	if ([metric isEqualToString:@"meanIntensity"]) {
+	if ([metric isEqualToString:@"intensityMean"]) {
 		return @"Mean Intensity"; // localize me!
-	} else if ([metric isEqualToString:@"maxIntensity"]) {
+	} else if ([metric isEqualToString:@"intensityMax"]) {
 		return @"Maximum Intensity"; // localize me!
-	} else if ([metric isEqualToString:@"minIntensity"]) {
+	} else if ([metric isEqualToString:@"intensityMin"]) {
 		return @"Minimum Intensity"; // localize me!
 	}
 	return nil;
@@ -110,11 +110,11 @@
 
 - (NSString *)unitForMetric:(NSString *)metric // make me smarter!
 {
-	if ([metric isEqualToString:@"meanIntensity"]) {
+	if ([metric isEqualToString:@"intensityMean"]) {
 		return @"";
-	} else if ([metric isEqualToString:@"maxIntensity"]) {
+	} else if ([metric isEqualToString:@"intensityMax"]) {
 		return @""; 
-	} else if ([metric isEqualToString:@"minIntensity"]) {
+	} else if ([metric isEqualToString:@"intensityMin"]) {
 		return @"";
 	}
 	return nil;
@@ -122,12 +122,12 @@
 
 - (id)valueForMetric:(NSString *)metric
 {
-	if ([metric isEqualToString:@"meanIntensity"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] meanIntensity]];
-	} else if ([metric isEqualToString:@"maxIntensity"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] maxIntensity]];
-	} else if ([metric isEqualToString:@"minIntensity"]) {
-		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] minIntensity]];
+	if ([metric isEqualToString:@"intensityMean"]) {
+		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMean]];
+	} else if ([metric isEqualToString:@"intensityMax"]) {
+		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMax]];
+	} else if ([metric isEqualToString:@"intensityMin"]) {
+		return [NSNumber numberWithDouble:[[self ROIFloatPixelData] intensityMin]];
 	}
 	return nil;
 }	

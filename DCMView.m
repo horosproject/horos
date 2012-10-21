@@ -45,6 +45,8 @@
 #import "Notifications.h"
 #import "PluginManager.h"
 #import "N2Debug.h"
+#import "OSIEnvironment.h"
+#import "OSIEnvironment+Private.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -8672,6 +8674,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 						[r release];
 					}
 					
+                    // let the pluginSDK draw anything it needs to draw, we use a notification for now, but that is nasty style, we really should be calling a method
+#ifndef OSIRIX_LIGHT
+                    [[OSIEnvironment sharedEnvironment] drawDCMView:self];
+#endif
+                    
 					if ( !suppress_labels)
 					{
 						NSArray	*sortedROIs = [curRoiList sortedArrayUsingDescriptors: [NSArray arrayWithObject: roiSorting]];

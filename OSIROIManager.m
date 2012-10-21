@@ -13,6 +13,7 @@
  =========================================================================*/
 
 #import "OSIROIManager.h"
+#import "OSIROIManager+Private.h"
 #import "OSIVolumeWindow.h"
 #import "ViewerController.h"
 #import "OSIROI.h"
@@ -79,7 +80,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_ROIChangeNotification:) name:OsirixROIChangeNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_removeROINotification:) name:OsirixRemoveROINotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_addROINotification:) name:OsirixAddROINotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_drawObjectsNotification:) name:OsirixDrawObjectsNotification object:nil];
+//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_drawObjectsNotification:) name:OsirixDrawObjectsNotification object:nil];
 		[_volumeWindow addObserver:self forKeyPath:@"OSIROIs" options:NSKeyValueObservingOptionInitial context:self];
 		[_volumeWindow addObserver:self forKeyPath:@"dataLoaded" options:NSKeyValueObservingOptionInitial context:self];
 	}
@@ -462,7 +463,62 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
 
 @end
 
+@implementation OSIROIManager (Private)
 
+- (void)drawInDCMView:(DCMView *)dcmView
+{
+    OSIROI *roi;
+    CGLPixelFormatObj pixelFormatObj;
+    N3AffineTransform pixToDicomTransform;
+    N3AffineTransform dicomToPixTransform;
+    double pixToSubdrawRectOpenGLTransform[16];
+	N3Plane plane;
+    OSISlab slab;
+    //    float thickness;
+    //    float location;
+    CGLContextObj cgl_ctx;
+    
+    cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+	
+	if ([self.delegate isKindOfClass:[OSIVolumeWindow class]] == NO) { // only draw ROIs for the ROIs in an ROI manager that is owned by the VolumeWindow
+		return;
+	}
+    
+    N3AffineTransformGetOpenGLMatrixd([dcmView pixToSubDrawRectTransform], pixToSubdrawRectOpenGLTransform);
+    pixelFormatObj = (CGLPixelFormatObj)[[dcmView pixelFormat] CGLPixelFormatObj];
+	pixToDicomTransform = [[dcmView curDCM] pixToDicomTransform];
+	if (N3AffineTransformDeterminant(pixToDicomTransform) != 0.0) {
+		dicomToPixTransform = N3AffineTransformInvert(pixToDicomTransform);
+		plane = N3PlaneApplyTransform(N3PlaneZZero, pixToDicomTransform);
+	} else {
+		dicomToPixTransform = N3AffineTransformIdentity;
+		plane = N3PlaneZZero;
+	}
+    
+    //    [dcmView getThickSlabThickness:&thickness location:&location];
+    //    slab.thickness = thickness;
+    slab.thickness = 0;
+    slab.plane = plane;
+    //    slab.plane.point = N3VectorAdd(slab.plane.point, N3VectorScalarMultiply(N3VectorNormalize(slab.plane.normal), thickness/2.0));
+	
+    for (roi in [self ROIs]) {
+        if ([[roi osiriXROIs] count] == 0) { //if this OSIROI is backed by old style ROI, don't draw it
+            if ([roi respondsToSelector:@selector(drawSlab:inCGLContext:pixelFormat:dicomToPixTransform:)]) {
+                glMatrixMode(GL_MODELVIEW);
+                glPushMatrix();
+                glMultMatrixd(pixToSubdrawRectOpenGLTransform);
+                
+                [roi drawSlab:slab inCGLContext:cgl_ctx pixelFormat:pixelFormatObj dicomToPixTransform:dicomToPixTransform];
+                
+                glMatrixMode(GL_MODELVIEW);
+                glPopMatrix();
+            }
+        }
+    }
+    
+}
+
+@end
 
 
 

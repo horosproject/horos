@@ -27,6 +27,7 @@
 @class OSIStudy;
 
 @interface OSIROIFloatPixelData : NSObject {
+    NSMutableDictionary *_valueCache;
     NSData *_floatData;
 	OSIROIMask *_ROIMask;
 	OSIFloatVolumeData *_volumeData;
@@ -67,25 +68,44 @@
  
  @return The mean intensity of the pixels under the mask
  */
-- (float)meanIntensity;
+- (float)intensityMean;
 
 /** Returns the maximum intensity of the pixels under the mask.
  
  @return The maximum intensity of the pixels under the mask
  */
-- (float)maxIntensity;
+- (float)intensityMax;
 
 /** Returns the minumim intensity of the pixels under the mask.
  
  @return The minumim intensity of the pixels under the mask
  */
-- (float)minIntensity;
+- (float)intensityMin;
+
+/** Returns the median intensity of the pixels under the mask.
+ 
+ @return The media intensity of the pixels under the mask
+ */
+- (float)intensityMedian;
+
+/** Returns the interquartile range of the intensity of the pixels under the mask.
+ 
+ @return The interquartile range of the intensity of the pixels under the mask
+ */
+- (float)intensityInterQuartileRange;
 
 /** Returns the standard deviation of the intensity of the pixels under the mask.
  
  @return The standard deviation of the intensity of the pixels under the mask
  */
 - (float)intensityStandardDeviation;
+
+/** Returns by reference the quartiles of the intensity of the pixels under the mask. 
+ 
+ Pass NULL 
+ 
+ */
+- (void)getIntensityMinimum:(float *)minimum firstQuartile:(float *)firstQuartile secondQuartile:(float *)secondQuartile thirdQuartile:(float *)thirdQuartile maximum:(float *)maximum;
 
 
 ///-----------------------------------

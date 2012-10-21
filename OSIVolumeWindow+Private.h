@@ -16,11 +16,13 @@
 #import "OSIVolumeWindow.h"
 
 @class ViewerController;
+@class DCMView;
 
 @interface OSIVolumeWindow (Private)
 
 - (id)initWithViewerController:(ViewerController *)viewerController;
 - (void)viewerControllerDidClose;
+- (void)drawInDCMView:(DCMView *)dcmView;
 
 @end
 

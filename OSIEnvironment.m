@@ -17,6 +17,7 @@
 #import "OSIVolumeWindow.h"
 #import "OSIVolumeWindow+Private.h"
 #import "ViewerController.h"
+#import "DCMView.h"
 
 NSString* const OSIEnvironmentOpenVolumeWindowsDidUpdateNotification = @"OSIEnvironmentOpenVolumeWindowsDidUpdateNotification";
 
@@ -153,6 +154,15 @@ static OSIEnvironment *sharedEnvironment = nil;
 	[_volumeWindows removeObjectForKey:[NSValue valueWithPointer:viewerController]];
 	[self didChangeValueForKey:@"openVolumeWindows"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIEnvironmentOpenVolumeWindowsDidUpdateNotification object:nil];
+}
+
+- (void)drawDCMView:(DCMView *)dcmView
+{
+    ViewerController *viewerController =  (ViewerController *)[dcmView windowController];
+    if (([viewerController isKindOfClass:[ViewerController class]]) ) {
+        OSIVolumeWindow *volumeWindow = [self volumeWindowForViewerController:viewerController];
+        [volumeWindow drawInDCMView:dcmView];
+    }
 }
 
 @end

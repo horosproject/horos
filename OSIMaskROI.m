@@ -63,10 +63,20 @@
         return;
     }
     
+    NSColor *deviceColor = [self.color colorUsingColorSpaceName:NSDeviceRGBColorSpace];
+    
     double dicomToPixGLTransform[16];
 	    
     N3AffineTransformGetOpenGLMatrixd(dicomToPixTransform, dicomToPixGLTransform);
-	    
+	
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixd(dicomToPixGLTransform);
@@ -79,31 +89,45 @@
     OSIROIMaskRun maskRun;
     NSValue *maskRunValue;
     N3AffineTransform inverseVolumeTransform;
-    N3Vector lineStart;
-    N3Vector lineEnd;
+    N3Vector quad1;
+    N3Vector quad2;
+    N3Vector quad3;
+    N3Vector quad4;
     
     inverseVolumeTransform = N3AffineTransformInvert([[self homeFloatVolumeData] volumeTransform]);
     mask = [self ROIMaskForFloatVolumeData:[self homeFloatVolumeData]];
     maskRuns = [mask maskRuns];
     
-    glColor4f((float)[self.color redComponent], (float)[self.color greenComponent], (float)[self.color blueComponent], (float)[self.color alphaComponent]);
+    glColor4f((float)[deviceColor redComponent], (float)[deviceColor greenComponent], (float)[deviceColor blueComponent], (float)[deviceColor alphaComponent]);
 //    glColor4f(1, 0, 1, .5);
-    glBegin(GL_LINES);
     for (maskRunValue in maskRuns) {
+
         maskRun = [maskRunValue OSIROIMaskRunValue];
         
-        lineStart = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 0.5, maskRun.depthIndex);
-        lineEnd = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 0.5, maskRun.depthIndex);
+        quad1 = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex, maskRun.depthIndex);
+        quad2 = N3VectorMake(maskRun.widthRange.location, maskRun.heightIndex + 1.0, maskRun.depthIndex);
+        quad3 = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex, maskRun.depthIndex);
+        quad4 = N3VectorMake(NSMaxRange(maskRun.widthRange), maskRun.heightIndex + 1.0, maskRun.depthIndex);
         
-        lineStart = N3VectorApplyTransform(lineStart, inverseVolumeTransform);
-        lineEnd = N3VectorApplyTransform(lineEnd, inverseVolumeTransform);
+        quad1 = N3VectorApplyTransform(quad1, inverseVolumeTransform);
+        quad2 = N3VectorApplyTransform(quad2, inverseVolumeTransform);
+        quad3 = N3VectorApplyTransform(quad3, inverseVolumeTransform);
+        quad4 = N3VectorApplyTransform(quad4, inverseVolumeTransform);
         
-        glVertex3d(lineStart.x, lineStart.y, lineStart.z);
-        glVertex3d(lineEnd.x, lineEnd.y, lineEnd.z);
+        glBegin(GL_TRIANGLE_STRIP);
+        glVertex3d(quad1.x, quad1.y, quad1.z);
+        glVertex3d(quad2.x, quad2.y, quad2.z);
+        glVertex3d(quad3.x, quad3.y, quad3.z);
+        glVertex3d(quad4.x, quad4.y, quad4.z);
+        glEnd();
     }
-    glEnd();
     
     glPopMatrix();
+    
+    glDisable(GL_LINE_SMOOTH);
+    glDisable(GL_POLYGON_SMOOTH);
+    glDisable(GL_POINT_SMOOTH);
+    glDisable(GL_BLEND);
 
 }
 //{

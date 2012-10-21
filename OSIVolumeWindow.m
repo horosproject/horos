@@ -15,6 +15,7 @@
 #import "OSIVolumeWindow.h"
 #import "OSIVolumeWindow+Private.h"
 #import "OSIROIManager.h"
+#import "OSIROIManager+Private.h"
 #import "pluginSDKAdditions.h"
 #import "Notifications.h"
 #import "OSIFloatVolumeData.h"
@@ -258,8 +259,6 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 {
 	if ( (self = [super init]) ) {
 		_viewerController = [viewerController retain];
-		_ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:self];
-		_ROIManager.delegate = self;
         _OSIROIs = [[NSMutableArray alloc] init];
         _generatedFloatVolumeDatas = [[NSMutableDictionary alloc] init];
         _generatedFloatVolumeDataToInvalidate = [[NSMutableDictionary alloc] init];
@@ -271,6 +270,8 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerWillFreeVolumeDataNotification:) name:OsirixViewerControllerWillFreeVolumeDataNotification object:_viewerController];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_viewerControllerDidAllocateVolumeDataNotification:) name:OsirixViewerControllerDidAllocateVolumeDataNotification object:_viewerController];
 
+        _ROIManager = [[OSIROIManager alloc] initWithVolumeWindow:self];
+		_ROIManager.delegate = self;
     }
 	return self;
 }
@@ -282,6 +283,11 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 	_viewerController = nil;
 	[self didChangeValueForKey:@"open"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIVolumeWindowDidCloseNotification object:self];
+}
+
+- (void)drawInDCMView:(DCMView *)dcmView
+{
+    [_ROIManager drawInDCMView:dcmView];
 }
 
 @end
