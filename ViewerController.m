@@ -16468,12 +16468,19 @@ int i,j,l;
 		if( [[printSettings cellWithTag: 1] state]) [settings setObject: @"YES" forKey: @"studyInfo"];
         
 		//--------------------------Background color---------------------------------
+        
+        [settings setObject: @"YES" forKey: @"backgroundColor"];
 		if( [[printSettings cellWithTag: 3] state])
         {
-            [settings setObject: @"YES" forKey: @"backgroundColor"];
             [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorR"];
             [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorG"];
             [settings setObject: [NSNumber numberWithFloat: 1] forKey: @"backgroundColorB"];
+        }
+        else
+        {
+            [settings setObject: [NSNumber numberWithFloat: 0] forKey: @"backgroundColorR"];
+            [settings setObject: [NSNumber numberWithFloat: 0] forKey: @"backgroundColorG"];
+            [settings setObject: [NSNumber numberWithFloat: 0] forKey: @"backgroundColorB"];
         }
         
 		//--------------------------Format ---------------------------------
@@ -16576,11 +16583,13 @@ int i,j,l;
 		BOOL copyFULL32BITPIPELINE = FULL32BITPIPELINE;
 		BOOL whiteBackground = imageView.whiteBackground;
         
-        if( [[settings objectForKey: @"backgroundColor"] boolValue])
+        if( [[settings objectForKey: @"backgroundColor"] boolValue] &&
+           [[settings objectForKey: @"backgroundColorR"] floatValue] == 1 &&
+           [[settings objectForKey: @"backgroundColorG"] floatValue] == 1 &&
+           [[settings objectForKey: @"backgroundColorB"] floatValue] == 1)
             imageView.whiteBackground = YES;
         
-		int i;
-		for( i = from; i < to; i += interval)
+		for( int i = from; i < to; i += interval)
 		{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			
