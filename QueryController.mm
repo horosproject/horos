@@ -457,6 +457,12 @@ extern "C"
         return 0;
     }
     
+    if( usePatientName && usePatientBirthDate == NO && usePatientID == NO)
+    {
+        NSLog( @"****** QR: cannot query history on patient's name only, patient birthdate or patient ID required !");
+        return 0;
+    }
+    
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     
     if( usePatientBirthDate)
@@ -464,7 +470,7 @@ extern "C"
     
     if( usePatientID)
         [filters setObject: study.patientID forKey: PatientID];
-
+    
     NSMutableArray *studies = [QueryController queryStudiesForFilters: filters servers: serversList showErrors: showErrors];
     
     if( usePatientName)

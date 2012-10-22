@@ -175,6 +175,10 @@ static NSMatrix *gDateMatrix = nil;
             {
                 NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"One criteria has to be selected for Patient matching.", nil), NSLocalizedString( @"OK", nil), nil, nil);
             }
+            else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"] == YES)
+            {
+                NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"Patient matching based only on Patient's name is not possible. Select also Patient ID or Date Of Birth.", nil), NSLocalizedString( @"OK", nil), nil, nil);
+            }
             else if( [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientIDForComparativeSearch"] == NO && [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientBirthDateForComparativeSearch"] != [[NSUserDefaults standardUserDefaults] boolForKey: @"usePatientNameForComparativeSearch"])
             {
                 NSRunAlertPanel( NSLocalizedString( @"Comparative Studies", nil), NSLocalizedString( @"Patient matching based only on Patient's name or BirthDate is weak, and can results in incorrect results. You should select at least two criteria, or PatientID.", nil), NSLocalizedString( @"OK", nil), nil, nil);
