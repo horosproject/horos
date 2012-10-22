@@ -138,7 +138,7 @@
 @end
 
 
-@implementation ReporterKBPopUpToolbarItem
+@implementation KBPopUpToolbarItem
 
 - (id)initWithItemIdentifier:(NSString *)ident
 {
