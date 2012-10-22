@@ -17,7 +17,7 @@
 
 @interface NSBitmapImageRep (N2)
 
--(void)setColor:(NSColor*)color;
+-(void)setColor:(NSColor*)color __deprecated; // buggy in Retina...
 -(NSImage*)image;
 -(NSBitmapImageRep*)repUsingColorSpaceName:(NSString*)colorSpaceName;
 

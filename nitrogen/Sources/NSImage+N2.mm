@@ -97,14 +97,12 @@
 }
 
 - (void)flipImageHorizontally {
-	// dimensions
-	NSSize size = [self size];
 	// bitmap init
 	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData:[self TIFFRepresentation]];
 	// flip
 	vImage_Buffer src, dest;
-	src.height = dest.height = size.height;
-	src.width = dest.width = size.width;
+	src.height = dest.height = bitmap.pixelsHigh;
+	src.width = dest.width = bitmap.pixelsWide;
 	src.rowBytes = dest.rowBytes = [bitmap bytesPerRow];
 	src.data = dest.data = [bitmap bitmapData];
 	vImageHorizontalReflect_ARGB8888(&src, &dest, 0L);

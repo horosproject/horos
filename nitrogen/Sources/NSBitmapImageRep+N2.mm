@@ -19,12 +19,52 @@
 
 @implementation NSBitmapImageRep (N2)
 
--(void)setColor:(NSColor*)color {
-	for (int y = [self pixelsHigh]-1; y >= 0; --y)
-		for (int x = [self pixelsWide]-1; x >= 0; --x) {
-			CGFloat saturation, brightness, alpha;
-			[[[self colorAtX:x y:y] colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getHue:NULL saturation:&saturation brightness:&brightness alpha:&alpha];
-			[self setColor:[NSColor colorWithDeviceHue:[color hueComponent] saturation:[color saturationComponent] brightness:std::max((CGFloat).75, brightness) alpha:alpha] atX:x y:y];
+-(size_t)_spp {
+	size_t spp = [self hasAlpha]? 1 : 0;
+	
+    NSString* colorSpaceName = [self colorSpaceName];
+	if ([colorSpaceName isEqualToString:NSCalibratedWhiteColorSpace] ||
+        [colorSpaceName isEqualToString:NSCalibratedBlackColorSpace] ||
+        [colorSpaceName isEqualToString:NSDeviceWhiteColorSpace] ||
+        [colorSpaceName isEqualToString:NSDeviceBlackColorSpace])
+		spp += 1;
+	else if ([colorSpaceName isEqualToString:NSCalibratedRGBColorSpace] ||
+             [colorSpaceName isEqualToString:NSDeviceRGBColorSpace])
+		spp += 3;
+	else if ([colorSpaceName isEqualToString:NSDeviceCMYKColorSpace])
+		spp += 4;
+	else
+		[NSException raise:NSInvalidArgumentException format:@"invalid color space"];
+    
+    return spp;
+}
+
+-(void)setColor:(NSColor*)color { // _deprecated
+    NSColorSpace* colorSpace = [self colorSpace];
+    size_t spp = [self samplesPerPixel];
+    NSUInteger samples[spp];
+    CGFloat fsamples[spp];
+	for (int y = self.pixelsHigh-1; y >= 0; --y)
+		for (int x = self.pixelsWide-1; x >= 0; --x) {
+			[self getPixel:samples atX:x y:y];
+            for (int i = 0; i < spp; ++i)
+                fsamples[i] = samples[i]*1.0/255;
+            
+            NSColor* xycolor = [NSColor colorWithColorSpace:colorSpace components:fsamples count:spp];
+            
+            CGFloat brightness, alpha;
+            [[xycolor colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getHue:NULL saturation:NULL brightness:&brightness alpha:&alpha];
+            NSColor* fixedColor = [NSColor colorWithDeviceHue:[color hueComponent] saturation:[color saturationComponent] brightness:std::max((CGFloat).75, brightness) alpha:alpha];
+            
+            xycolor = [fixedColor colorUsingColorSpace:colorSpace];
+            [color getComponents:fsamples];
+            if (self.hasAlpha)
+                fsamples[spp-1] = alpha;
+            
+            for (int i = 0; i < spp; ++i)
+                samples[i] = floor(fsamples[i]*255);
+            
+            [self setPixel:samples atX:x y:y];
 		}
 }
 
@@ -38,20 +78,7 @@
 	if ([[self colorSpaceName] isEqualToString:colorSpaceName])
 		return self;
 	
-	NSInteger spp = [self hasAlpha]? 1 : 0;
-	
-	if ([colorSpaceName isEqualToString:NSCalibratedWhiteColorSpace]
-	||	[colorSpaceName isEqualToString:NSCalibratedBlackColorSpace]
-	||	[colorSpaceName isEqualToString:NSDeviceWhiteColorSpace]
-	||	[colorSpaceName isEqualToString:NSDeviceBlackColorSpace])
-		spp += 1;
-	else if ([colorSpaceName isEqualToString:NSCalibratedRGBColorSpace]
-	||	[colorSpaceName isEqualToString:NSDeviceRGBColorSpace])
-		spp += 3;
-	else if ([colorSpaceName isEqualToString:NSDeviceCMYKColorSpace])
-		spp += 4;
-	else
-		[NSException raise:NSInvalidArgumentException format:@"invalid color space"];
+	NSInteger spp = [self _spp];
 	
 	NSBitmapImageRep* rep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:[self pixelsWide] pixelsHigh:[self pixelsHigh] bitsPerSample:8 samplesPerPixel:spp hasAlpha:[self hasAlpha] isPlanar:NO colorSpaceName:colorSpaceName bytesPerRow:0 bitsPerPixel:0];
 	for (int y = [self pixelsHigh]-1; y >= 0; --y)

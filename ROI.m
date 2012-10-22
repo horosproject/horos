@@ -3948,7 +3948,10 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 				if(layerImage)
 				{
 					NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-					NSSize imageSize = [layerImage size];
+                    
+                    NSBitmapImageRep* layerImageRep = [[layerImage representations] objectAtIndex:0];
+                    
+					NSSize imageSize = NSMakeSize(layerImageRep.pixelsWide, layerImageRep.pixelsHigh); // [layerImage size];
 					float imageWidth = imageSize.width;
 					float imageHeight = imageSize.height;
 																	
@@ -6345,12 +6348,13 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 - (void) setLayerImage:(NSImage*)image;
 {
 	if(layerImage) [layerImage release];
-	layerImage = image;
-	[layerImage retain];
+	layerImage = [image retain];
 	
 	isLayerOpacityConstant = YES;
 	canColorizeLayer = NO;
 	
+//    NSBitmapImageRep* rep = [[image representations] objectAtIndex:0];
+//	NSSize imageSize = NSMakeSize(rep.pixelsWide, rep.pixelsHigh); // [layerImage size];
 	NSSize imageSize = [layerImage size];
 	float imageWidth = imageSize.width;
 	float imageHeight = imageSize.height;
@@ -6385,8 +6389,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 
 - (GLuint) loadLayerImageTexture;
 {
-	NSBitmapImageRep *bitmap;
-	bitmap = [[NSBitmapImageRep alloc] initWithData: [layerImage TIFFRepresentation]];
+	NSBitmapImageRep* bitmap = [[NSBitmapImageRep alloc] initWithData: [layerImage TIFFRepresentation]];
+    size_t height = [bitmap pixelsHigh], width = [bitmap pixelsWide];
+    NSSize osize = [layerImage size];
 
 	int bytesPerRow = [bitmap bytesPerRow];
 	int spp = [bitmap samplesPerPixel];
@@ -6399,8 +6404,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		bytesPerRow *= 4;
 
 		unsigned char *ptr, *tmpImage;
-		int	loop = (int) [layerImage size].height * bytesPerRow/4;
-		tmpImage = malloc (bytesPerRow * [layerImage size].height);
+		int	loop = (int) height * bytesPerRow/4;
+		tmpImage = malloc (bytesPerRow * height);
 		ptr   = tmpImage;
 		
 		unsigned char   *bufPtr;
@@ -6421,8 +6426,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 		bytesPerRow *= 4;
 
 		unsigned char *ptr, *tmpImage;
-		int	loop = (int) [layerImage size].height * bytesPerRow/4;
-		tmpImage = malloc (bytesPerRow * [layerImage size].height);
+		int	loop = (int) height * bytesPerRow/4;
+		tmpImage = malloc (bytesPerRow * height);
 		ptr   = tmpImage;
 		
 		unsigned char   *bufPtr;
@@ -6439,14 +6444,14 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
 	else
 	{
-		textureBuffer = malloc(  bytesPerRow * [layerImage size].height);
-		memcpy( textureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * [layerImage size].height);
+		textureBuffer = malloc(  bytesPerRow * height);
+		memcpy( textureBuffer, [bitmap bitmapData], [bitmap bytesPerRow] * height);
 	}
 	
 	if(!isLayerOpacityConstant)// && opacity<1.0)
 	{
 		unsigned char*	rgbaPtr = (unsigned char*) textureBuffer;
-		long			ss = bytesPerRow/4 * [layerImage size].height;
+		long			ss = bytesPerRow/4 * height;
 		
 		while( ss-->0)
 		{
@@ -6465,7 +6470,7 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	else
 	{
 		unsigned char*	rgbaPtr = (unsigned char*) textureBuffer;
-		long			ss = bytesPerRow/4 * [layerImage size].height;
+		long			ss = bytesPerRow/4 * height;
 		
 		while( ss-->0)
 		{
@@ -6487,8 +6492,8 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	{
 		vImage_Buffer src, dest;
 		
-		dest.height = [layerImage size].height;
-		dest.width = [layerImage size].width;
+		dest.height = height;
+		dest.width = width;
 		dest.rowBytes = bytesPerRow;
 		dest.data = textureBuffer;
 		
@@ -6540,9 +6545,9 @@ void gl_round_box(int mode, float minx, float miny, float maxx, float maxy, floa
 	}
     
 	#if __BIG_ENDIAN__
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV, textureBuffer);
 	#else
-	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, [layerImage size].width, [layerImage size].height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_EXT, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_INT_8_8_8_8, textureBuffer);
 	#endif
 
 	[ctxArray addObject: currentContext];
