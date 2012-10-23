@@ -8746,14 +8746,17 @@ static BOOL withReset = NO;
         NSRect splitFrame = [_bottomSplit frame];
         [[[_bottomSplit subviews] objectAtIndex:0] setFrame:NSMakeRect(0, 0, dividerPosition, splitFrame.size.height)];
         [[[_bottomSplit subviews] objectAtIndex:1] setFrame:NSMakeRect(dividerPosition+_bottomSplit.dividerThickness, 0, splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness, splitFrame.size.height)];
+        
+        [animationSlider setFrameSize:NSMakeSize(splitFrame.size.width-dividerPosition-_bottomSplit.dividerThickness-animationCheck.frame.size.width-10, animationSlider.frame.size.height)]; // for some weird reason, we need this..
     }
-    
-    static BOOL noReentry = 1;
-    if( noReentry)
-    {
-        noReentry = 0;
-        [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
-        noReentry = 1;
+    else {
+        static BOOL noReentry = 1;
+        if( noReentry)
+        {
+            noReentry = 0;
+            [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
+            noReentry = 1;
+        }
     }
 }
 
