@@ -33,6 +33,8 @@
 #import "DCMUSRegion.h"   // US Regions
 #endif
 
+#import "DCMWaveform.h"
+
 #import <DCMView.h>
 
 #import "ThickSlabController.h"
@@ -1193,6 +1195,14 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 }
 @end
 
+
+@interface DCMPix ()
+
+@property(readwrite,retain) DCMWaveform* waveform;
+
+@end
+
+
 @implementation DCMPix
 
 @synthesize countstackMean, stackDirection, full32bitPipeline, needToCompute8bitRepresentation, subtractedfImage, modalityString;
@@ -1201,6 +1211,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 @synthesize isRGB, pwidth = width, pheight = height, checking;
 @synthesize pixelRatio, transferFunction, subPixOffset, isOriginDefined;
 @synthesize imageType;
+@synthesize waveform;
 
 @synthesize DCMPixShutterRectWidth = shutterRect_w;
 @synthesize DCMPixShutterRectHeight = shutterRect_h;
@@ -12427,6 +12438,8 @@ END_CREATE_ROIS:
 	[SOPClassUID release];
 	[frameofReferenceUID release];
     [imageType release];
+    
+    self.waveform = nil;
 	
 	if( fExternalOwnedImage == nil)
 	{

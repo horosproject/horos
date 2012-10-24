@@ -37,6 +37,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @class Point3D;
 @class DicomImage;
 @class DicomSeries;
+@class DCMWaveform;
 
 /** \brief Represents an image for display */
 
@@ -84,6 +85,9 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 
 //  US Regions
     NSMutableArray      *usRegions;
+    
+//  Waveform data
+    DCMWaveform*    waveform;
     
 //  image type
     NSString*           imageType;
@@ -320,6 +324,9 @@ Note setter is different to not break existing usage. :-( */
 @property BOOL displaySUVValue;
 
 @property BOOL isLUT12Bit;
+
+// Waveform
+@property(readonly,retain) DCMWaveform* waveform;
 
 // US Regions
 @property(readonly) NSMutableArray *usRegions;

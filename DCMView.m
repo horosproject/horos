@@ -8245,6 +8245,66 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	return c;
 //}
 
+- (void)drawWaveform {
+    CGLContextObj cgl_ctx = [[NSOpenGLContext currentContext] CGLContextObj];
+
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity ();
+    NSSize size = drawingFrameRect.size;
+	glScalef (2.0f /(xFlipped ? -(size.width) : size.width), -2.0f / (yFlipped ? -(size.height) : size.height), 1.0f); // scale to port per pixel scale
+//	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // no rotation for waveform
+	glTranslatef(origin.x , -origin.y, 0.0f);
+	if (curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f); // this is done for
+    glScalef(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f);
+    // the scene is now in sync with the standard OsiriX DICOM viewer: the drawn pix would be in the rectangle at (-1,-1) with size (2,2)... since this is a waveform, we assume the dcmpix is square
+    float m = MIN(size.height, size.width);
+    glScalef(size.width/m, size.height/m, 1); // use the whole window, not just the part covered by the undrawn DCMPix... // TODO: check that this can be used if we use regions...
+    glTranslatef(-1, -1, 0);
+    glScalef(2, 2, 1);
+    // (0,0,1,1) now covers the whole view, (0,0) is the top left
+    
+    // ooook.... what is the current viewable range? so we can avoid drawing useless data...
+    GLint viewport[4];
+    GLdouble mvmatrix[16], projmatrix[16];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glGetDoublev(GL_MODELVIEW_MATRIX, mvmatrix);
+    glGetDoublev(GL_PROJECTION_MATRIX, projmatrix);
+    /*  note viewport[3] is height of window in pixels  */
+    GLdouble p0[3], p1[3];  /*  returned world x, y, z coords  */
+    gluUnProject(viewport[0], viewport[1], 0, mvmatrix, projmatrix, viewport, &p0[0], &p0[1], &p0[2]);
+    gluUnProject(viewport[0]+viewport[2], viewport[1]+viewport[3], 0, mvmatrix, projmatrix, viewport, &p1[0], &p1[1], &p1[2]);
+    // NSLog(@"X Range: %f -> %f = %f", p0[0], p1[0], p1[0]-p0[0]);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    glEnable(GL_LINE_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBegin(GL_LINES);
+    
+    // this is the test pattern.... a centered spiral...
+    glVertex2f(0.5,0.5);
+    glVertex2f(0.5,1);
+    glVertex2f(0.5,1);
+    glVertex2f(1,1);
+    glVertex2f(1,1);
+    glVertex2f(1,0);
+    glVertex2f(1,0);
+    glVertex2f(0,0);
+    glVertex2f(0,0);
+    glVertex2f(0,1);
+    
+    
+    
+    glEnd();
+}
+
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
 {
 	NSRect savedDrawingFrameRect;
@@ -8330,7 +8390,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glDisable( GL_BLEND);
 			}
 			
-			[self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+            [self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
+                [self drawWaveform];
 			
 			BOOL noBlending = NO;
 			
