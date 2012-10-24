@@ -214,19 +214,18 @@ function shareDestinationChange(select) {
 	
 						%[IF:Info.proposeWeasis%
 						<td class="narrow middle">
-								<a href="/weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
+								<a href="/%X:Study.name%-weasis.jnlp?xid=%Series.XID%"><img src="images/weasis.png"/></a>
 						</td>
 						%]IF:Info.proposeWeasis%
 					</tr>
 				%]FOREACH:Series:Series%
 	
+				%[IF:Series.count>1%
 				%[IF:Info.proposeDicomSend||Info.proposeWeasis%
 				<tr>
 					<td colspan="3">
-					%[IF:Series.count>1%
 						<button type="button" name="CheckAll" onclick="checkAll(this.form)">Check All</button>
 						<button type="button" name="UncheckAll" onclick="uncheckAll(this.form)">Uncheck All</button>
-					%]IF:Series.count>1%
 					</td>
 					%[IF:Info.proposeZipDownload%
 					<td>
@@ -246,6 +245,7 @@ function shareDestinationChange(select) {
 					%]IF:Info.proposeWeasis%
 				</tr>
 				%]IF:Info.proposeDicomSend||Info.proposeWeasis%
+				%]IF:Series.count>1%
 			</table>
 		</div>
 	

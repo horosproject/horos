@@ -484,7 +484,7 @@ NSString* const SessionDicomCStorePortKey = @"DicomCStorePort"; // NSNumber (int
 			if ([requestedPath isEqual:@"/seriesList.json"])
 				[self processSeriesListJson];
 			else
-			if ([requestedPath isEqual:@"/weasis.jnlp"])
+			if ([requestedPath hasSuffix:@"weasis.jnlp"])
 				[self processWeasisJnlp];
 			else
 			if ([requestedPath isEqual:@"/weasis.xml"])

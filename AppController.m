@@ -1182,6 +1182,9 @@ static NSDate *lastWarningDate = nil;
 	if( [c length] > 16)
 		c = [c substringToIndex: 16];
 	
+    if( c.length == 0)
+        c = @"OSIRIX";
+    
 	[[NSUserDefaults standardUserDefaults] setObject: c forKey:@"AETITLE"];
 }
 

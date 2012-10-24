@@ -125,126 +125,137 @@ extern const char *GetPrivateIP();
 
 - (void) toggleSharing:(BOOL) activated
 {
-    uint16_t chosenPort = 0;
-    if( !listeningSocket)
-	{
-        // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with
-        //that to listen for incoming connections.
-		
-		if( fdForListening)
-			close( fdForListening);
-		fdForListening = 0;
-	
-        struct sockaddr_in serverAddress;
-        socklen_t namelen = sizeof(serverAddress);
-		
-        // In order to use NSFileHandle's acceptConnectionInBackgroundAndNotify method, we need to create a
-        // file descriptor that is itself a socket, bind that socket, and then set it up for listening. At this
-        // point, it's ready to be handed off to acceptConnectionInBackgroundAndNotify.
-        if((fdForListening = socket(AF_INET, SOCK_STREAM, 0)) > 0)
-		{
-//			int sock_buf_size = 10000;
-//	
-//			setsockopt( fdForListening, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-//			setsockopt( fdForListening, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-
-            memset(&serverAddress, 0, sizeof(serverAddress));
-            serverAddress.sin_family = AF_INET;
-            serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-            serverAddress.sin_port = htons(8780); //make it endian independent
-			
-            // Allow the kernel to choose a random port number by passing in 0 for the port.
-            if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
-			{
-				NSLog(@"bind failed... select another port than 8780");
-				
-				serverAddress.sin_port = htons(0);
-				if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
-				{
-					close (fdForListening);
-					fdForListening = 0;
-					return;
-				}
-            }
-			
-            // Find out what port number was chosen.
-            if (getsockname(fdForListening, (struct sockaddr *)&serverAddress, &namelen) < 0)
-			{
-                close(fdForListening);
-				fdForListening = 0;
-                return;
-            }
-			
-            chosenPort = ntohs(serverAddress.sin_port);
-			
-			if( chosenPort != 8780)
-			{
-				NSString *exampleAlertSuppress = @"Bonjour Port";
-				NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-				if ([defaults boolForKey:exampleAlertSuppress])
-				{
-				}
-				else
-				{
-					NSAlert* alert = [[NSAlert new] autorelease];
-					[alert setMessageText: NSLocalizedString(@"Bonjour Port", nil)];
-					[alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", nil)];
-					[alert setShowsSuppressionButton:YES];
-					[alert runModal];
-					if ([[alert suppressionButton] state] == NSOnState)
-					{
-						[defaults setBool:YES forKey:exampleAlertSuppress];
-					}
-				}
-			}
-			
-			NSLog(@"Chosen port for DB sharing: %d", chosenPort);
-			
-			OsiriXDBCurrentPort = chosenPort;
-
-			// Once we're here, we know bind must have returned, so we can start the listen
-			if(listen(fdForListening, 1) == 0)
-			{
-				listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc: NO];
-				
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
-				[listeningSocket acceptConnectionInBackgroundAndNotify];
-			}
-		}
-    }
-
-    if (!netService)
-	{
-        // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
-        // to be registered in the default registration domain, which will currently always be "local"
-        netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController BonjourSharingName] port:chosenPort];
-        [netService setDelegate:self];
-		
-		NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    @try
+    {
+        uint16_t chosenPort = 0;
+        if( !listeningSocket)
+        {
+            // Here, create the socket from traditional BSD socket calls, and then set up an NSFileHandle with
+            //that to listen for incoming connections.
+            
+            if( fdForListening)
+                close( fdForListening);
+            fdForListening = 0;
         
-        if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"])
-            [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
-		
-        if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"])
-            [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
-        
-        if( [AppController UID])
-            [params setObject: [AppController UID] forKey: @"UID"];
-		
-		if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
-		{
-			NSLog( @"ERROR - NSNetService setTXTRecordData FAILED");
-		}
-    }
+            struct sockaddr_in serverAddress;
+            socklen_t namelen = sizeof(serverAddress);
+            
+            // In order to use NSFileHandle's acceptConnectionInBackgroundAndNotify method, we need to create a
+            // file descriptor that is itself a socket, bind that socket, and then set it up for listening. At this
+            // point, it's ready to be handed off to acceptConnectionInBackgroundAndNotify.
+            if((fdForListening = socket(AF_INET, SOCK_STREAM, 0)) > 0)
+            {
+    //			int sock_buf_size = 10000;
+    //	
+    //			setsockopt( fdForListening, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+    //			setsockopt( fdForListening, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
 
-    if (netService && listeningSocket)
-	{
-        if( activated)
-            [netService publish];
-		else
-            [netService stop];
+                memset(&serverAddress, 0, sizeof(serverAddress));
+                serverAddress.sin_family = AF_INET;
+                serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+                serverAddress.sin_port = htons(8780); //make it endian independent
+                
+                // Allow the kernel to choose a random port number by passing in 0 for the port.
+                if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
+                {
+                    NSLog(@"bind failed... select another port than 8780");
+                    
+                    serverAddress.sin_port = htons(0);
+                    if (bind(fdForListening, (struct sockaddr *)&serverAddress, namelen) < 0)
+                    {
+                        close (fdForListening);
+                        fdForListening = 0;
+                        return;
+                    }
+                }
+                
+                // Find out what port number was chosen.
+                if (getsockname(fdForListening, (struct sockaddr *)&serverAddress, &namelen) < 0)
+                {
+                    close(fdForListening);
+                    fdForListening = 0;
+                    return;
+                }
+                
+                chosenPort = ntohs(serverAddress.sin_port);
+                
+                if( chosenPort != 8780)
+                {
+                    NSString *exampleAlertSuppress = @"Bonjour Port";
+                    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+                    if ([defaults boolForKey:exampleAlertSuppress])
+                    {
+                    }
+                    else
+                    {
+                        NSAlert* alert = [[NSAlert new] autorelease];
+                        [alert setMessageText: NSLocalizedString(@"Bonjour Port", nil)];
+                        [alert setInformativeText : NSLocalizedString(@"Cannot use port 8780 for Bonjour sharing. It is already used, another port will be selected.", nil)];
+                        [alert setShowsSuppressionButton:YES];
+                        [alert runModal];
+                        if ([[alert suppressionButton] state] == NSOnState)
+                        {
+                            [defaults setBool:YES forKey:exampleAlertSuppress];
+                        }
+                    }
+                }
+                
+                NSLog(@"Chosen port for DB sharing: %d", chosenPort);
+                
+                OsiriXDBCurrentPort = chosenPort;
+
+                // Once we're here, we know bind must have returned, so we can start the listen
+                if(listen(fdForListening, 1) == 0)
+                {
+                    listeningSocket = [[NSFileHandle alloc] initWithFileDescriptor:fdForListening closeOnDealloc: NO];
+                    
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(connectionReceived:) name:NSFileHandleConnectionAcceptedNotification object:listeningSocket];
+                    [listeningSocket acceptConnectionInBackgroundAndNotify];
+                }
+            }
+        }
+
+        if (!netService)
+        {
+            // lazily instantiate the NSNetService object that will advertise on our behalf.  Passing in "" for the domain causes the service
+            // to be registered in the default registration domain, which will currently always be "local"
+            netService = [[NSNetService alloc] initWithDomain:@"" type:@"_osirixdb._tcp." name:[NSUserDefaultsController BonjourSharingName] port:chosenPort];
+            [netService setDelegate:self];
+            
+            NSMutableDictionary *params = [NSMutableDictionary dictionary];
+            
+            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"].length == 0)
+                [[NSUserDefaults standardUserDefaults] setObject: @"OSIRIX" forKey: @"AETITLE"];
+            
+            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"].length == 0)
+                [[NSUserDefaults standardUserDefaults] setObject: @"11112" forKey: @"AEPORT"];
+            
+            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"])
+                [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AETITLE"] forKey: @"AETitle"];
+            
+            if( [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"])
+                [params setObject: [[NSUserDefaults standardUserDefaults] stringForKey: @"AEPORT"]  forKey: @"port"];
+            
+            if( [AppController UID])
+                [params setObject: [AppController UID] forKey: @"UID"];
+            
+            if( [netService setTXTRecordData: [NSNetService dataFromTXTRecordDictionary: params]] == NO)
+            {
+                NSLog( @"ERROR - NSNetService setTXTRecordData FAILED");
+            }
+        }
+
+        if (netService && listeningSocket)
+        {
+            if( activated)
+                [netService publish];
+            else
+                [netService stop];
+        }
     }
-	
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
 	dbPublished = activated;
 }
 

@@ -12249,297 +12249,303 @@ static NSArray*	openSubSeriesArray = nil;
 
 -(void) awakeFromNib
 {
-//	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-// 
-//	dispatch_apply(count, queue,
-//	^(size_t i)
-//	{
-//		printf("%u\n",i);
-//	});
-    
-//    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
-    
-    [self saveLoadAlbumsSortDescriptors];
-    
-	WaitRendering *wait = [[AppController sharedAppController] splashScreen];
-	
-#ifdef __LP64__
-    [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
-    [bannerSplit setPosition: 0 ofDividerAtIndex: 0];
-#endif
-    
-//	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
-//	[waitCompressionWindow setCancel:YES];
-		
-	
-    [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
-    
-	[wait showWindow:self];
-	
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:databaseOutline];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:databaseOutline];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:reportTemplatesListPopUpButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
-    [self observeScrollerStyleDidChangeNotification:nil];
-    
-	@try
-	{
-        [self.window safelySetUsesLightBottomGradient:YES];
+    @try
+    {
+    //	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    // 
+    //	dispatch_apply(count, queue,
+    //	^(size_t i)
+    //	{
+    //		printf("%u\n",i);
+    //	});
         
-      //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixFrameDidChange:) name:NSViewFrameDidChangeNotification object:oMatrix];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:thumbnailsScrollView];
-        [self previewMatrixScrollViewFrameDidChange:nil];
+    //    NSLog( @"%@", [[NSFontManager sharedFontManager] availableFonts]);
         
-		NSTableColumn		*tableColumn = nil;
-		NSPopUpButtonCell	*buttonCell = nil;
-		
-		// thumbnails : no background color
-		[thumbnailsScrollView setDrawsBackground:NO];
-		[[thumbnailsScrollView contentView] setDrawsBackground:NO];
-		
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NSWindow Frame DBWindow"] == nil) // No position for the window -> fullscreen
-			[[self window] zoom: self];
-		
-		[self.window setFrameAutosaveName:@"DBWindow"];
-		
-		[self awakeSources];
-		[oMatrix setDelegate:self];
-		[oMatrix setSelectionByRect: NO];
-		[oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
-		[oMatrix setFocusRingType: NSFocusRingTypeExterior];
-		[oMatrix renewRows:0 columns: 0];
-		//[oMatrix sizeToCells];
-		
-		[imageView setTheMatrix:oMatrix];
-		
-		// Bug for segmentedControls...
-		//NSRect f = [segmentedAlbumButton frame];
-		//f.size.height = 25;
-		//[segmentedAlbumButton setFrame: f];
-		
-		[databaseOutline setAction:@selector(databasePressed:)];
-		[databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
-		[databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
-		[databaseOutline setAllowsMultipleSelection:YES];
-		[databaseOutline setAutosaveName: nil];
-		[databaseOutline setAutosaveTableColumns: NO];
-		[databaseOutline setAllowsTypeSelect: NO];
-		
-		[self setupToolbar];
-		
-		[toolbar setVisible:YES];
-//		[self showDatabase: self];
-		
-		// NSMenu for DatabaseOutline
-        NSMenu* menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
-        [menu setDelegate:self];
-		[databaseOutline setMenu:menu];
-		
-		[self addHelpMenu];
-		
-		ImageAndTextCell *cell = [[[ImageAndTextCell alloc] init] autorelease];
-		[cell setEditable:YES];
-		[[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
-		[albumTable setDelegate:self];
-		[albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
-		[albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
-		
-//		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-//		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-//		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-//		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
-		
-		statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), NSLocalizedString(@"validated", nil), nil] retain];
-		
-		
-		ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
-		[[databaseOutline tableColumnWithIdentifier:@"name"] setDataCell:cellName];
-		
-		ImageAndTextCell *cellReport = [[[ImageAndTextCell alloc] init] autorelease];
-		[[databaseOutline tableColumnWithIdentifier:@"reportURL"] setDataCell:cellReport];
-		
-		// Set International dates for columns
-		[self setDBDate];
-		
-		tableColumn = [databaseOutline tableColumnWithIdentifier: @"stateText"];
-		buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
-		[buttonCell setEditable: YES];
-		[buttonCell setBordered: NO];
-		[buttonCell addItemsWithTitles: statesArray];
-		[tableColumn setDataCell:buttonCell];
-		
-		[databaseOutline setInitialState];
-		
-		
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"])
-			[databaseOutline restoreColumnState: [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"]];
-		
-		if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"])
-		{
-			NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
-			{
-				if( [databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]])
-				{
-					NSSortDescriptor *prototype = [[databaseOutline tableColumnWithIdentifier: [sort objectForKey:@"key"]] sortDescriptorPrototype];
-					
-					[databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector: [prototype selector]] autorelease]]];
-				}
-				else
-					[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
-			}
-		}
-		else
-			[databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
-		
-        [self loadSortDescriptors:nil];
+        [self saveLoadAlbumsSortDescriptors];
         
-		[databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
-		[databaseOutline scrollRowToVisible: 0];
-		[self buildColumnsMenu];
-		
-		[animationCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"AutoPlayAnimation"]];
-		
-		activeSends = [[NSMutableDictionary dictionary] retain];
-		sendLog = [[NSMutableArray array] retain];
-		activeReceives = [[NSMutableDictionary dictionary] retain];
-		receiveLog = [[NSMutableArray array] retain];
-		
-		//	sendQueue = [[NSMutableArray alloc] init];
-		//	queueLock = [[NSConditionLock alloc] initWithCondition: QueueEmpty];
-		//	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
-		
-		// bonjour
-		bonjourPublisher = [[BonjourPublisher alloc] initWithBrowserController:self];
-		bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self bonjourPublisher:bonjourPublisher];
-		[self displayBonjourServices];
-		
-		[[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
-		
-        [splitDrawer restoreDefault: @"SplitDrawer"];
-        [splitAlbums restoreDefault: @"SplitAlbums"];
-        [splitViewHorz restoreDefault: @"SplitHorz2"];
-        [splitComparative restoreDefault: @"SplitComparative"];
-        [splitViewVert restoreDefault: @"SplitVert2"];
+        WaitRendering *wait = [[AppController sharedAppController] splashScreen];
         
-        {
-        NSView* right = [[splitComparative subviews] objectAtIndex:1];
-        BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
-            [self comparativeToggle: self];
-        }
-        {
-        NSView* left = [[splitDrawer subviews] objectAtIndex:0];
-        BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
-        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitDrawerHidden"] != hidden)
-            [self drawerToggle: self];
-        }
-        
-		// database : gray background
-		//	[databaseOutline setUsesAlternatingRowBackgroundColors:NO];
-		//	[databaseOutline setBackgroundColor:[NSColor lightGrayColor]];
-		//	[databaseOutline setGridColor:[NSColor darkGrayColor]];
-		//	[databaseOutline setGridStyleMask:NSTableViewSolidHorizontalGridLineMask];
-		
-        [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
-        
-        [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[ComparativeCell alloc] init] autorelease]];
-        [comparativeTable setDoubleAction: @selector( doubleClickComparativeStudy:)];
-        
-		[self initContextualMenus];
-        
-		// opens a port for interapplication communication	
-		[[NSConnection defaultConnection] registerName:@"OsiriX"];
-		[[NSConnection defaultConnection] setRootObject:self];
-		//start timer for monitoring incoming logs on main thread
-		[LogManager currentLogManager];
-		
-		// SCAN FOR AN IPOD!
-		//[self loadDICOMFromiPod]; now we do this in AppController+Mount
-	}
-	
-	@catch( NSException *ne)
-	{
-		N2LogExceptionWithStackTrace(ne);
-		[@"" writeToFile:_database.loadingFilePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
-		
-		NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
-		
-		NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
-		
-		exit( 0);
-	}
-	
-	[wait close];
-	
-	[self testAutorouting];
-	
-	[self setDBWindowTitle];
-	
-	loadingIsOver = YES;
-	
-	[self outlineViewRefresh];
-	
-	[self awakeActivity];
-	[self.window makeKeyAndOrderFront: self];
-    
-	[self refreshMatrix: self];
-	
-	#ifndef OSIRIX_LIGHT
-	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] != nil)
-	{
-		[[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"autoquery"];
-		NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
-		
-		WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];
-		[wait showWindow:self]; 
-		[[QueryController alloc] initAutoQuery: YES];
-		[[QueryController currentAutoQueryController] switchAutoRetrieving: self];
-		[NSThread sleepForTimeInterval: 0.5];
-		[wait close];
-		[wait autorelease];
-	}
-	else 
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
-	#endif
-	
-//	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
-//		[self ReadDicomCDRom: nil];
-	
     #ifdef __LP64__
-    #else
-    [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
+        [banner setImage: [[[NSImage alloc] initWithSize: NSZeroSize] autorelease]];
+        [bannerSplit setPosition: 0 ofDividerAtIndex: 0];
     #endif
-    
-    
-    [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
+        
+    //	waitCompressionWindow  = [[Wait alloc] initWithString: NSLocalizedString( @"File Conversion", nil) :NO];
+    //	[waitCompressionWindow setCancel:YES];
+            
+        
+        [oMatrix setIntercellSpacing:NSMakeSize(-1, -1)];
+        
+        [wait showWindow:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionDidChangeNotification object:databaseOutline];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateReportToolbarIcon:) name:NSOutlineViewSelectionIsChangingNotification object:databaseOutline];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reportToolbarItemWillPopUp:) name:NSPopUpButtonWillPopUpNotification object:reportTemplatesListPopUpButton];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(observeScrollerStyleDidChangeNotification:) name:@"NSPreferredScrollerStyleDidChangeNotification" object:nil];
+        [self observeScrollerStyleDidChangeNotification:nil];
+        
+        @try
+        {
+            [self.window safelySetUsesLightBottomGradient:YES];
+            
+          //  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixFrameDidChange:) name:NSViewFrameDidChangeNotification object:oMatrix];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(previewMatrixScrollViewFrameDidChange:) name:NSViewFrameDidChangeNotification object:thumbnailsScrollView];
+            [self previewMatrixScrollViewFrameDidChange:nil];
+            
+            NSTableColumn		*tableColumn = nil;
+            NSPopUpButtonCell	*buttonCell = nil;
+            
+            // thumbnails : no background color
+            [thumbnailsScrollView setDrawsBackground:NO];
+            [[thumbnailsScrollView contentView] setDrawsBackground:NO];
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"NSWindow Frame DBWindow"] == nil) // No position for the window -> fullscreen
+                [[self window] zoom: self];
+            
+            [self.window setFrameAutosaveName:@"DBWindow"];
+            
+            [self awakeSources];
+            [oMatrix setDelegate:self];
+            [oMatrix setSelectionByRect: NO];
+            [oMatrix setDoubleAction:@selector(matrixDoublePressed:)];
+            [oMatrix setFocusRingType: NSFocusRingTypeExterior];
+            [oMatrix renewRows:0 columns: 0];
+            //[oMatrix sizeToCells];
+            
+            [imageView setTheMatrix:oMatrix];
+            
+            // Bug for segmentedControls...
+            //NSRect f = [segmentedAlbumButton frame];
+            //f.size.height = 25;
+            //[segmentedAlbumButton setFrame: f];
+            
+            [databaseOutline setAction:@selector(databasePressed:)];
+            [databaseOutline setDoubleAction:@selector(databaseDoublePressed:)];
+            [databaseOutline registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+            [databaseOutline setAllowsMultipleSelection:YES];
+            [databaseOutline setAutosaveName: nil];
+            [databaseOutline setAutosaveTableColumns: NO];
+            [databaseOutline setAllowsTypeSelect: NO];
+            
+            [self setupToolbar];
+            
+            [toolbar setVisible:YES];
+    //		[self showDatabase: self];
+            
+            // NSMenu for DatabaseOutline
+            NSMenu* menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+            [menu setDelegate:self];
+            [databaseOutline setMenu:menu];
+            
+            [self addHelpMenu];
+            
+            ImageAndTextCell *cell = [[[ImageAndTextCell alloc] init] autorelease];
+            [cell setEditable:YES];
+            [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell:cell];
+            [albumTable setDelegate:self];
+            [albumTable registerForDraggedTypes:[NSArray arrayWithObject:O2AlbumDragType]];
+            [albumTable setDoubleAction:@selector(albumTableDoublePressed:)];
+            
+    //		[customStart setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+    //		[customStart2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+    //		[customEnd setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+    //		[customEnd2 setDateValue: [NSCalendarDate dateWithYear:[[NSCalendarDate date] yearOfCommonEra] month:[[NSCalendarDate date] monthOfYear] day:[[NSCalendarDate date] dayOfMonth] hour:0 minute:0 second:0 timeZone: nil]];
+            
+            statesArray = [[NSArray arrayWithObjects:NSLocalizedString(@"empty", nil), NSLocalizedString(@"unread", nil), NSLocalizedString(@"reviewed", nil), NSLocalizedString(@"dictated", nil), NSLocalizedString(@"validated", nil), nil] retain];
+            
+            
+            ImageAndTextCell *cellName = [[[ImageAndTextCell alloc] init] autorelease];
+            [[databaseOutline tableColumnWithIdentifier:@"name"] setDataCell:cellName];
+            
+            ImageAndTextCell *cellReport = [[[ImageAndTextCell alloc] init] autorelease];
+            [[databaseOutline tableColumnWithIdentifier:@"reportURL"] setDataCell:cellReport];
+            
+            // Set International dates for columns
+            [self setDBDate];
+            
+            tableColumn = [databaseOutline tableColumnWithIdentifier: @"stateText"];
+            buttonCell = [[[NSPopUpButtonCell alloc] initTextCell: @"" pullsDown:NO] autorelease];
+            [buttonCell setEditable: YES];
+            [buttonCell setBordered: NO];
+            [buttonCell addItemsWithTitles: statesArray];
+            [tableColumn setDataCell:buttonCell];
+            
+            [databaseOutline setInitialState];
+            
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"])
+                [databaseOutline restoreColumnState: [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseColumns2"]];
+            
+            if( [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"])
+            {
+                NSDictionary	*sort = [[NSUserDefaults standardUserDefaults] objectForKey: @"databaseSortDescriptor"];
+                {
+                    if( [databaseOutline isColumnWithIdentifierVisible: [sort objectForKey:@"key"]])
+                    {
+                        NSSortDescriptor *prototype = [[databaseOutline tableColumnWithIdentifier: [sort objectForKey:@"key"]] sortDescriptorPrototype];
+                        
+                        [databaseOutline setSortDescriptors: [NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:[sort objectForKey:@"key"] ascending:[[sort objectForKey:@"order"] boolValue]  selector: [prototype selector]] autorelease]]];
+                    }
+                    else
+                        [databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+                }
+            }
+            else
+                [databaseOutline setSortDescriptors:[NSArray arrayWithObject: [[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+            
+            [self loadSortDescriptors:nil];
+            
+            [databaseOutline selectRowIndexes: [NSIndexSet indexSetWithIndex: 0] byExtendingSelection:NO];
+            [databaseOutline scrollRowToVisible: 0];
+            [self buildColumnsMenu];
+            
+            [animationCheck setState: [[NSUserDefaults standardUserDefaults] boolForKey: @"AutoPlayAnimation"]];
+            
+            activeSends = [[NSMutableDictionary dictionary] retain];
+            sendLog = [[NSMutableArray array] retain];
+            activeReceives = [[NSMutableDictionary dictionary] retain];
+            receiveLog = [[NSMutableArray array] retain];
+            
+            //	sendQueue = [[NSMutableArray alloc] init];
+            //	queueLock = [[NSConditionLock alloc] initWithCondition: QueueEmpty];
+            //	[NSThread detachNewThreadSelector:@selector(runSendQueue:) toTarget:self withObject:nil];
+            
+            // bonjour
+            bonjourPublisher = [[BonjourPublisher alloc] initWithBrowserController:self];
+            bonjourBrowser = [[BonjourBrowser alloc] initWithBrowserController:self bonjourPublisher:bonjourPublisher];
+            [self displayBonjourServices];
+            
+            [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forValuesKey:OsirixBonjourSharingActiveFlagDefaultsKey options:NSKeyValueObservingOptionInitial context:bonjourPublisher];
+            
+            [splitDrawer restoreDefault: @"SplitDrawer"];
+            [splitAlbums restoreDefault: @"SplitAlbums"];
+            [splitViewHorz restoreDefault: @"SplitHorz2"];
+            [splitComparative restoreDefault: @"SplitComparative"];
+            [splitViewVert restoreDefault: @"SplitVert2"];
+            
+            {
+            NSView* right = [[splitComparative subviews] objectAtIndex:1];
+            BOOL hidden = [right isHidden] || [splitComparative isSubviewCollapsed:[[splitComparative subviews] objectAtIndex:1]];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitComparativeHidden"] != hidden)
+                [self comparativeToggle: self];
+            }
+            {
+            NSView* left = [[splitDrawer subviews] objectAtIndex:0];
+            BOOL hidden = [left isHidden] || [splitDrawer isSubviewCollapsed:[[splitDrawer subviews] objectAtIndex:0]];
+            if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SplitDrawerHidden"] != hidden)
+                [self drawerToggle: self];
+            }
+            
+            // database : gray background
+            //	[databaseOutline setUsesAlternatingRowBackgroundColors:NO];
+            //	[databaseOutline setBackgroundColor:[NSColor lightGrayColor]];
+            //	[databaseOutline setGridColor:[NSColor darkGrayColor]];
+            //	[databaseOutline setGridStyleMask:NSTableViewSolidHorizontalGridLineMask];
+            
+            [[albumTable tableColumnWithIdentifier:@"Source"] setDataCell: [[[PrettyCell alloc] init] autorelease]];
+            
+            [[comparativeTable tableColumnWithIdentifier:@"Cell"] setDataCell: [[[ComparativeCell alloc] init] autorelease]];
+            [comparativeTable setDoubleAction: @selector( doubleClickComparativeStudy:)];
+            
+            [self initContextualMenus];
+            
+            // opens a port for interapplication communication	
+            [[NSConnection defaultConnection] registerName:@"OsiriX"];
+            [[NSConnection defaultConnection] setRootObject:self];
+            //start timer for monitoring incoming logs on main thread
+            [LogManager currentLogManager];
+            
+            // SCAN FOR AN IPOD!
+            //[self loadDICOMFromiPod]; now we do this in AppController+Mount
+        }
+        
+        @catch( NSException *ne)
+        {
+            N2LogExceptionWithStackTrace(ne);
+            [@"" writeToFile:_database.loadingFilePath atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+            
+            NSString *message = [NSString stringWithFormat: NSLocalizedString(@"A problem occured during start-up of OsiriX:\r\r%@\r\r%@",nil), [ne description], [AppController printStackTrace: ne]];
+            
+            NSRunCriticalAlertPanel(NSLocalizedString(@"Error",nil), message, NSLocalizedString( @"OK",nil), nil, nil);
+            
+            exit( 0);
+        }
+        
+        [wait close];
+        
+        [self testAutorouting];
+        
+        [self setDBWindowTitle];
+        
+        loadingIsOver = YES;
+        
+        [self outlineViewRefresh];
+        
+        [self awakeActivity];
+        [self.window makeKeyAndOrderFront: self];
+        
+        [self refreshMatrix: self];
+        
+        #ifndef OSIRIX_LIGHT
+        if( [[NSUserDefaults standardUserDefaults] boolForKey: @"restartAutoQueryAndRetrieve"] == YES && [[NSUserDefaults standardUserDefaults] objectForKey: @"savedAutoDICOMQuerySettingsArray"] != nil)
+        {
+            [[AppController sharedAppController] growlTitle: NSLocalizedString( @"Auto-Query", nil) description: NSLocalizedString( @"DICOM Auto-Query is restarting...", nil)  name:@"autoquery"];
+            NSLog( @"-------- automatically restart DICOM AUTO-QUERY --------");
+            
+            WaitRendering *wait = [[WaitRendering alloc] init: NSLocalizedString(@"Restarting Auto Query/Retrieve...", nil)];
+            [wait showWindow:self]; 
+            [[QueryController alloc] initAutoQuery: YES];
+            [[QueryController currentAutoQueryController] switchAutoRetrieving: self];
+            [NSThread sleepForTimeInterval: 0.5];
+            [wait close];
+            [wait autorelease];
+        }
+        else 
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"autoRetrieving"];
+        #endif
+        
+    //	if( [[NSUserDefaults standardUserDefaults] boolForKey: @"MOUNT"])
+    //		[self ReadDicomCDRom: nil];
+        
+        #ifdef __LP64__
+        #else
+        [NSThread detachNewThreadSelector: @selector( checkForBanner:) toTarget: self withObject: nil];
+        #endif
+        
+        
+        [bannerSplit setPosition: bannerSplit.frame.size.height - (banner.image.size.height+3) ofDividerAtIndex: 0];
 
-	#ifdef __LP64__
-	NSRect f = [subSeriesWindow frame];
-	
-	f.size.height -= [warningBox frame].size.height;
-	[subSeriesWindow setFrame: f display: NO];
-	#endif
-	
-    [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
+        #ifdef __LP64__
+        NSRect f = [subSeriesWindow frame];
+        
+        f.size.height -= [warningBox frame].size.height;
+        [subSeriesWindow setFrame: f display: NO];
+        #endif
+        
+        [[self window] setAnimationBehavior: NSWindowAnimationBehaviorNone];
 
-//	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
-//	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
-//	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
-//	
-//	NSError *error = nil;
-//	NSArray *logArray = [self.managedObjectContext executeFetchRequest:dbRequest error: &error];
-//	
-//	if( error)
-//		NSLog( @"%@", error);
-//	NSLog( @"%@", logArray);
-//	
-//	for( id log in logArray)
-//	{
-//		NSLog( @"%@", [log valueForKey: @"type"]);
-//	}
-//	
-//	for( id log in logArray) [self.managedObjectContext deleteObject: log];
+    //	NSFetchRequest	*dbRequest = [[[NSFetchRequest alloc] init] autorelease];
+    //	[dbRequest setEntity: [[self.managedObjectModel entitiesByName] objectForKey:@"LogEntry"]];
+    //	[dbRequest setPredicate: [NSPredicate predicateWithValue:YES]];
+    //	
+    //	NSError *error = nil;
+    //	NSArray *logArray = [self.managedObjectContext executeFetchRequest:dbRequest error: &error];
+    //	
+    //	if( error)
+    //		NSLog( @"%@", error);
+    //	NSLog( @"%@", logArray);
+    //	
+    //	for( id log in logArray)
+    //	{
+    //		NSLog( @"%@", [log valueForKey: @"type"]);
+    //	}
+    //	
+    //	for( id log in logArray) [self.managedObjectContext deleteObject: log];
+    }
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
 }
 
 - (IBAction) clickBanner:(id) sender
