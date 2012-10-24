@@ -1931,15 +1931,12 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
     
 	// extend arrays
 	
-	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
 	NSMutableArray* studies = [NSMutableArray arrayWithCapacity:8];
 	NSMutableArray* series = [NSMutableArray arrayWithCapacity:64];
 	
 	for (DicomStudy* study in requestedStudies) {
 		if (![studies containsObject:study])
 			[studies addObject:study];
-		if (![patientIds containsObject:study.patientID])
-			[patientIds addObject:study.patientID];
 		for (DicomSeries* serie in study.series)
 			if (![series containsObject:serie])
 				[series addObject:serie];
@@ -1948,8 +1945,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	for (DicomSeries* serie in requestedSeries) {
 		if (![studies containsObject:serie.study])
 			[studies addObject:serie.study];
-		if (serie.study.patientID && ![patientIds containsObject:serie.study.patientID])
-			[patientIds addObject:serie.study.patientID];
 		if (![series containsObject:serie])
 			[series addObject:serie];
 	}
@@ -2028,7 +2023,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         }
     }
     
-	
 	// produce XML
 	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
 	NSXMLDocument* doc = [[NSXMLDocument alloc] initWithXMLString:baseXML options:NSXMLDocumentIncludeContentTypeDeclaration|NSXMLDocumentTidyXML error:NULL];
@@ -2050,41 +2044,47 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
         {
             DicomFile *dcmFile = [[[[studies allValues] lastObject] allValues] lastObject];
             
-            NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue: [dcmFile elementForKey: @"studyID"]]];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue: [dcmFile elementForKey: @"studyDescription"]]];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue: [dcmFile elementForKey: @"studyDate"]]];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue: [dcmFile elementForKey: @"studyDate"]]];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue: [dcmFile elementForKey: @"accessionNumber"]]];
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue: [dcmFile elementForKey: @"studyID"]]]; // ?
-            [studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue: [dcmFile elementForKey: @"referringPhysiciansName"]]];
-            [patientNode addChild:studyNode];
-            
-            for (NSDictionary* serie in [studies allValues])
+            @try
             {
-                dcmFile = [[serie allValues] lastObject];
+                NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue: [dcmFile elementForKey: @"studyID"]]];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue: [dcmFile elementForKey: @"studyDescription"]]];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue: [dcmFile elementForKey: @"studyDate"]]];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue: [dcmFile elementForKey: @"studyDate"]]];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue: [dcmFile elementForKey: @"accessionNumber"]]];
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue: [dcmFile elementForKey: @"studyID"]]]; // ?
+                [studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue: [dcmFile elementForKey: @"referringPhysiciansName"]]];
+                [patientNode addChild:studyNode];
                 
-                NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
-                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue: [dcmFile elementForKey: @"seriesDICOMUID"]]];
-                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue: [dcmFile elementForKey: @"seriesDescription"]]];
-                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesNumber" stringValue: [[dcmFile elementForKey: @"seriesNumber"] stringValue]]];
-                [serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue: [dcmFile elementForKey: @"modality"]]];
-                [studyNode addChild:serieNode];
-                
-                for( DicomFile* dcmFile in [serie allValues])
+                for (NSDictionary* serie in [studies allValues])
                 {
-                    NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
-                    [instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue: [dcmFile elementForKey: @"SOPUID"]]];
-                    [instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[[dcmFile elementForKey: @"imageID"] stringValue]]];
-                    [serieNode addChild:instanceNode];
+                    dcmFile = [[serie allValues] lastObject];
+                    
+                    NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
+                    [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue: [dcmFile elementForKey: @"seriesDICOMUID"]]];
+                    [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue: [dcmFile elementForKey: @"seriesDescription"]]];
+                    [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesNumber" stringValue: [[dcmFile elementForKey: @"seriesNumber"] stringValue]]];
+                    [serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue: [dcmFile elementForKey: @"modality"]]];
+                    [studyNode addChild:serieNode];
+                    
+                    for( DicomFile* dcmFile in [serie allValues])
+                    {
+                        NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
+                        [instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue: [dcmFile elementForKey: @"SOPUID"]]];
+                        [instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[[dcmFile elementForKey: @"imageID"] stringValue]]];
+                        [serieNode addChild:instanceNode];
+                    }
+                }
+                
+                if (!patientDataSet)
+                {
+                    [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue: [dcmFile elementForKey: @"patientName"]]];
+                    [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue: [dcmFile elementForKey: @"patientBirthDate"]]];
+                    [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue: [dcmFile elementForKey: @"patientSex"]]];
                 }
             }
-            
-            if (!patientDataSet)
-            {
-                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue: [dcmFile elementForKey: @"patientName"]]];
-                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue: [dcmFile elementForKey: @"patientBirthDate"]]];
-                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue: [dcmFile elementForKey: @"patientSex"]]];
+            @catch (NSException *exception) {
+                N2LogException( exception);
             }
         }
 	}
