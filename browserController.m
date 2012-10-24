@@ -13483,7 +13483,14 @@ static NSArray*	openSubSeriesArray = nil;
 
 + (NSString*)_findFirstDicomdirOnCDMedia: (NSString*)startDirectory // __deprecated
 {
-	return [DicomDatabase _findDicomdirIn:[startDirectory stringsByAppendingPaths:[[[NSFileManager defaultManager] enumeratorAtPath:startDirectory filesOnly:YES] allObjects]]];
+    @try {
+        return [DicomDatabase _findDicomdirIn:[startDirectory stringsByAppendingPaths:[[[NSFileManager defaultManager] enumeratorAtPath:startDirectory filesOnly:YES] allObjects]]];
+    }
+    @catch (NSException *e) {
+        N2LogException( e);
+    }
+    
+    return nil;
 }
 
 + (BOOL) unzipFile: (NSString*) file withPassword: (NSString*) pass destination: (NSString*) destination
