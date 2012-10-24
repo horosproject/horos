@@ -49,6 +49,7 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 #import "QuicktimeExport.h"
+#import "dicomFile.h"
 
 #import "BrowserController.h" // TODO: remove when badness solved
 #import "BrowserControllerDCMTKCategory.h" // TODO: remove when badness solved
@@ -1641,7 +1642,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 			NSPredicate* predicate1 = nil;
             if (studyUID)
 				predicate1 = [NSPredicate predicateWithFormat: @"studyInstanceUID == %@", studyUID];
-			
+            
 			NSArray* studies = [self.independentDicomDatabase objectsForEntity:self.independentDicomDatabase.studyEntity predicate:predicate1];
 			
 			if ([studies count] == 0)
@@ -1655,7 +1656,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             for( DicomStudy *s in studies)
                 allSeries = [allSeries arrayByAddingObjectsFromArray: [[s valueForKey: @"series"] allObjects]];
 			
-			if (seriesUID)
+			if (seriesUID && studyUID == nil) // If a studyUID is specified, take all seriesUID (OsiriX can merge multiple seriesUID: combine CR, for example...)
 				allSeries = [allSeries filteredArrayUsingPredicate: [NSPredicate predicateWithFormat:@"seriesDICOMUID == %@", seriesUID]];
 			
 			NSArray *allImages = [NSArray array];
@@ -1682,14 +1683,6 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 				if (frameNumber < [images count])
 					images = [NSArray arrayWithObject: [images objectAtIndex: frameNumber]];
 			}
-//            else if ([images count] == 0)
-//            {
-//                for( DicomImage *image in allImages)
-//                {
-//                    if( [[image sopInstanceUID] isEqualToString: objectUID])
-//                        NSLog( @" *** FOUND");
-//                }
-//            }
 			
 			if ([images count])
 			{
@@ -1935,7 +1928,7 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 		if ([oxid isKindOfClass:[DicomSeries class]])
 			[requestedSeries addObject:oxid];
 	}
-	
+    
 	// extend arrays
 	
 	NSMutableArray* patientIds = [NSMutableArray arrayWithCapacity:2];
@@ -1987,6 +1980,54 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
             }
         }
 	}
+    
+    
+    // We need the TRUE DICOM informations: re-parse the DICOM objects... if preferences such as Combine CR, split MG, ... are activated
+    
+    NSMutableArray *imageObjects = [NSMutableArray array];
+    
+    for( DicomSeries *serie in series)
+        [imageObjects addObjectsFromArray: serie.images.allObjects];
+    
+    NSMutableArray *imagePaths = [NSMutableArray arrayWithArray: [imageObjects valueForKey:@"completePath"]];
+    
+    [imagePaths removeDuplicatedStrings];
+    
+    NSMutableDictionary* patientDictionary = [NSMutableDictionary dictionary];
+    
+    NSMutableArray* dcmFiles = [NSMutableArray array];
+    
+    for( NSString *path in imagePaths)
+    {
+        DicomFile *dcmFile = [[[DicomFile alloc] init: path DICOMOnly: YES] autorelease];
+        
+        if( dcmFile)
+        {
+            [dcmFiles addObject: dcmFile];
+            
+            NSMutableDictionary *patient = nil;
+            NSMutableDictionary *study = nil;
+            NSMutableDictionary *series = nil;
+            
+            if( [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]] == nil)
+               [patientDictionary setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"patientID"]];
+            
+            patient = [patientDictionary objectForKey: [dcmFile elementForKey: @"patientID"]];
+            
+            if( [patient objectForKey: [dcmFile elementForKey: @"studyID"]] == nil)
+                [patient setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"studyID"]];
+            
+            study = [patient objectForKey: [dcmFile elementForKey: @"studyID"]];
+            
+            if( [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]] == nil)
+                [study setObject: [NSMutableDictionary dictionary] forKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
+            
+            series = [study objectForKey: [dcmFile elementForKey: @"seriesDICOMUID"]];
+            
+            [series setObject: dcmFile forKey: [dcmFile elementForKey: @"SOPUID"]];
+        }
+    }
+    
 	
 	// produce XML
 	NSString* baseXML = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?><wado_query xmlns=\"http://www.weasis.org/xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" wadoURL=\"%@/wado\"></wado_query>", self.portalURL];
@@ -1998,55 +2039,54 @@ const NSString* const GenerateMovieDicomImagesParamKey = @"dicomImageArray";
 	NSDateFormatter* timeFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	timeFormatter.dateFormat = @"HHmmss";	
 	
-	for (NSString* patientId in patientIds) {
+	for (NSString* patientId in [patientDictionary allKeys])
+    {
 		NSXMLElement* patientNode = [NSXMLNode elementWithName:@"Patient"];
 		[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientID" stringValue:patientId]];
 		BOOL patientDataSet = NO;
 		[doc.rootElement addChild:patientNode];
 		
-		for (DicomStudy* study in studies)
-			if ([study.patientID isEqual:patientId]) {
-				NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue:study.studyInstanceUID]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue:study.studyName]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue:[dateFormatter stringFromDate:study.date]]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue:[timeFormatter stringFromDate:study.date]]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue:study.accessionNumber]];
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue:study.id]]; // ?
-				[studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue:study.referringPhysician]];
-				[patientNode addChild:studyNode];
-				
-				for (DicomSeries* serie in series)
-					if (serie.study == study)
-                    {
-						NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
-						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue:serie.seriesDICOMUID]];
-						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue:serie.seriesDescription]];
-						[serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesNumber" stringValue:[serie.id stringValue]]]; // ?
-						[serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue:serie.modality]];
-						[studyNode addChild:serieNode];
-						
-                        //Only unique InstanceUID : multi-frames support
-                        NSMutableArray *images = [NSMutableArray arrayWithArray: [serie.images allObjects]];
-                        NSMutableArray *paths = [NSMutableArray arrayWithArray: [images valueForKey: @"path"]];
-                        
-                        [paths removeDuplicatedStringsInSyncWithThisArray: images];
-                        
-						for( DicomImage* image in images)
-                        {
-							NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
-							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue:image.sopInstanceUID]];
-							[instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[image.instanceNumber stringValue]]];
-							[serieNode addChild:instanceNode];
-						}
-					}
-				
-				if (!patientDataSet) {
-					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue:study.name]];
-					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue:[dateFormatter stringFromDate:study.dateOfBirth]]];
-					[patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue:study.patientSex]];
-				}
-			}
+		for (NSDictionary *studies in [[patientDictionary valueForKey: patientId] allValues])
+        {
+            DicomFile *dcmFile = [[[[studies allValues] lastObject] allValues] lastObject];
+            
+            NSXMLElement* studyNode = [NSXMLNode elementWithName:@"Study"];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyInstanceUID" stringValue: [dcmFile elementForKey: @"studyID"]]];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDescription" stringValue: [dcmFile elementForKey: @"studyDescription"]]];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyDate" stringValue: [dcmFile elementForKey: @"studyDate"]]];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyTime" stringValue: [dcmFile elementForKey: @"studyDate"]]];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"AccessionNumber" stringValue: [dcmFile elementForKey: @"accessionNumber"]]];
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"StudyID" stringValue: [dcmFile elementForKey: @"studyID"]]]; // ?
+            [studyNode addAttribute:[NSXMLNode attributeWithName:@"ReferringPhysicianName" stringValue: [dcmFile elementForKey: @"referringPhysiciansName"]]];
+            [patientNode addChild:studyNode];
+            
+            for (NSDictionary* serie in [studies allValues])
+            {
+                dcmFile = [[serie allValues] lastObject];
+                
+                NSXMLElement* serieNode = [NSXMLNode elementWithName:@"Series"];
+                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesInstanceUID" stringValue: [dcmFile elementForKey: @"seriesDICOMUID"]]];
+                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesDescription" stringValue: [dcmFile elementForKey: @"seriesDescription"]]];
+                [serieNode addAttribute:[NSXMLNode attributeWithName:@"SeriesNumber" stringValue: [[dcmFile elementForKey: @"seriesNumber"] stringValue]]];
+                [serieNode addAttribute:[NSXMLNode attributeWithName:@"Modality" stringValue: [dcmFile elementForKey: @"modality"]]];
+                [studyNode addChild:serieNode];
+                
+                for( DicomFile* dcmFile in [serie allValues])
+                {
+                    NSXMLElement* instanceNode = [NSXMLNode elementWithName:@"Instance"];
+                    [instanceNode addAttribute:[NSXMLNode attributeWithName:@"SOPInstanceUID" stringValue: [dcmFile elementForKey: @"SOPUID"]]];
+                    [instanceNode addAttribute:[NSXMLNode attributeWithName:@"InstanceNumber" stringValue:[[dcmFile elementForKey: @"imageID"] stringValue]]];
+                    [serieNode addChild:instanceNode];
+                }
+            }
+            
+            if (!patientDataSet)
+            {
+                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientName" stringValue: [dcmFile elementForKey: @"patientName"]]];
+                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientBirthDate" stringValue: [dcmFile elementForKey: @"patientBirthDate"]]];
+                [patientNode addAttribute:[NSXMLNode attributeWithName:@"PatientSex" stringValue: [dcmFile elementForKey: @"patientSex"]]];
+            }
+        }
 	}
 	
 	[response setDataWithString:[[doc autorelease] XMLString]];
