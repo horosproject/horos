@@ -2175,6 +2175,7 @@ extern "C"
             int fromField;
             int toField;
             
+            atLeastOneSource = YES;
             
             if( instance)
             {
@@ -2458,13 +2459,13 @@ extern "C"
             
             [QueryController getDateAndTimeQueryFilterWithTag: [[instance objectForKey: @"dateFilterMatrix"] intValue] fromDate: fromDate.dateValue toDate: toDate.dateValue date: &dateQueryFilter time: &timeQueryFilter];
             
-            if ([dateQueryFilter object])
+            if ([dateQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_study_date"])
             {
                 [queryManager addFilter:[dateQueryFilter filteredValue] forDescription:@"StudyDate"];
                 queryItem = YES;
             }
             
-            if ([timeQueryFilter object])
+            if ([timeQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_study_date"])
             {
                 [queryManager addFilter:[timeQueryFilter filteredValue] forDescription:@"StudyTime"];
                 queryItem = YES;
@@ -2472,7 +2473,7 @@ extern "C"
             
             modalityQueryFilter = [self getModalityQueryFilter: [instance objectForKey: @"modalityStrings"]];
             
-            if ([modalityQueryFilter object])
+            if ([modalityQueryFilter object] && [[NSUserDefaults standardUserDefaults] boolForKey: @"allow_qr_modality"])
             {
                 if( [[NSUserDefaults standardUserDefaults] boolForKey: @"SupportQRModalitiesinStudy"])
                     [queryManager addFilter:[modalityQueryFilter filteredValue] forDescription:@"ModalitiesinStudy"];
@@ -2576,7 +2577,7 @@ extern "C"
 //					NSRunCriticalAlertPanel( NSLocalizedString(@"Query Error", nil), response, NSLocalizedString(@"Continue", nil), nil, nil) ;
 //				}
         
-            atLeastOneSource = YES;
+            
         }
 		
 		if( [tempResultArray count])

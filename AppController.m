@@ -2724,9 +2724,6 @@ static BOOL initialized = NO;
 				if( [[NSUserDefaults standardUserDefaults] objectForKey: @"copyHideListenerError"])
 					[[NSUserDefaults standardUserDefaults] setBool: [[NSUserDefaults standardUserDefaults] boolForKey: @"copyHideListenerError"] forKey: @"hideListenerError"];
 				
-				pluginManager = [[PluginManager alloc] init];
-				
-				
 				#ifdef MACAPPSTORE
 				[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"MACAPPSTORE"]; // Also modify in DefaultsOsiriX.m
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"AUTHENTICATION"];
@@ -2742,7 +2739,6 @@ static BOOL initialized = NO;
 				[[NSUserDefaults standardUserDefaults] setBool:NO forKey: @"LP64bit"];
 				#endif
                 
-                
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_name"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_id"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_accession_number"];
@@ -2756,6 +2752,8 @@ static BOOL initialized = NO;
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_blank_query"];
                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:@"allow_qr_custom_dicom_field"];
 				
+                pluginManager = [[PluginManager alloc] init];
+                
 				//Add Endoscopy LUT, WL/WW, shading to existing prefs
 				// Shading Preset
 				NSMutableArray *shadingArray = [[[[NSUserDefaults standardUserDefaults] objectForKey:@"shadingsPresets"] mutableCopy] autorelease];
