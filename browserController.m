@@ -3981,9 +3981,6 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForComparativeStudies: (id) studySelectedID
 {
-    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
-        return;
-    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     @try
