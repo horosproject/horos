@@ -452,6 +452,7 @@
 		71A28B781637F0D200489F2A /* DCMWaveform.h in Headers */ = {isa = PBXBuildFile; fileRef = 71A28B751637F0D200489F2A /* DCMWaveform.h */; };
 		71A28B791637F0D200489F2A /* DCMWaveform.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A28B761637F0D200489F2A /* DCMWaveform.m */; };
 		71A28B7A1637F0D200489F2A /* DCMWaveform.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A28B761637F0D200489F2A /* DCMWaveform.m */; };
+		71A28B8416383B2900489F2A /* DCMWaveform.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A28B761637F0D200489F2A /* DCMWaveform.m */; };
 		71AA5A2E1611F1EB006A6A5F /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A211611F1EB006A6A5F /* JSON.h */; };
 		71AA5A2F1611F1EB006A6A5F /* NSObject+SBJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 71AA5A221611F1EB006A6A5F /* NSObject+SBJSON.h */; };
 		71AA5A301611F1EB006A6A5F /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 71AA5A231611F1EB006A6A5F /* NSObject+SBJSON.m */; };
@@ -28871,6 +28872,7 @@
 				AB451867149F47F0006674BF /* djdecode.cc in Sources */,
 				AB451868149F47F0006674BF /* djencode.cc in Sources */,
 				AB451869149F47F0006674BF /* djrparam.cc in Sources */,
+				71A28B8416383B2900489F2A /* DCMWaveform.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -181,6 +181,7 @@ NSString* asciiString(NSString* str)
 -(NSArray*)albumsInDatabase;
 -(void)initContextualMenus;
 -(void)observeScrollerStyleDidChangeNotification:(NSNotification*)n;
+-(void)removeAlbumObject:(DicomAlbum*)album;
 
 -(void)saveLoadAlbumsSortDescriptors;
 
@@ -9244,58 +9245,25 @@ static BOOL withReset = NO;
 {
     if( albumTable.selectedRow > 0)
     {
-        if( NSRunInformationalAlertPanel(	NSLocalizedString(@"Delete an album", nil),
-                                         NSLocalizedString(@"Are you sure you want to delete this album?", nil),
-                                         NSLocalizedString(@"OK",nil),
-                                         NSLocalizedString(@"Cancel",nil),
-                                         nil) == NSAlertDefaultReturn)
-        {
-            NSManagedObjectContext	*context = self.managedObjectContext;
-            
-            [context lock];
-            
-            @try 
-            {
-                if( albumTable.selectedRow > 0)	// We cannot delete the first item !
-                {
-                    [context deleteObject: [self.albumArray  objectAtIndex: albumTable.selectedRow]];
-                    @synchronized (self)
-                    {
-                        _cachedAlbumsContext = nil;
-                    }
-                    @synchronized(_albumNoOfStudiesCache)
-                    {
-                        [_albumNoOfStudiesCache removeAllObjects];
-                        [_distantAlbumNoOfStudiesCache removeAllObjects];
-                        [albumTable reloadData];
-                    }
-                }
-                
-                [_database save];
-                
-                [self refreshAlbums];
-            }
-            @catch (NSException * e) 
-            {
-                NSLog( @"***** exception in %s: %@", __PRETTY_FUNCTION__, e);
-                [AppController printStackTrace: e];
-            }
-            
-            [context unlock];
-            
-            [self outlineViewRefresh];
-        }
+        DicomAlbum* album = [self.albumArray objectAtIndex:albumTable.selectedRow];
+        
+        [self removeAlbumObject:album];
     }
 }
 
--(void)removeAlbum:(id)sender
+-(void)removeAlbum:(id)sender // contextual menu action
 {
     NSInteger row = [albumTable clickedRow];
     if (!row) return;
     
     DicomAlbum* album = [self.albumArray objectAtIndex:row];
     
-    if (NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Album", nil),
+    [self removeAlbumObject:album];
+}
+
+-(void)removeAlbumObject:(DicomAlbum*)album {
+    if ((album.smartAlbum.boolValue == NO && album.studies.count == 0) ||
+        NSRunInformationalAlertPanel(NSLocalizedString(@"Delete Album", nil),
                                                      [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to delete the album named %@?", nil), album.name],
                                                      NSLocalizedString(@"OK",nil),
                                                      NSLocalizedString(@"Cancel",nil),
@@ -9305,6 +9273,16 @@ static BOOL withReset = NO;
         @try
         {
             [self.database.managedObjectContext deleteObject:album];
+            
+            @synchronized (self) {
+                _cachedAlbumsContext = nil;
+            }
+            @synchronized(_albumNoOfStudiesCache) {
+                [_albumNoOfStudiesCache removeAllObjects];
+                [_distantAlbumNoOfStudiesCache removeAllObjects];
+                [albumTable reloadData];
+            }
+            
             [self.database save:NULL];
             [self refreshAlbums];
             [self outlineViewRefresh];
