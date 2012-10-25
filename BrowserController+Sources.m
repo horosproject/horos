@@ -1188,7 +1188,7 @@ static void* const SearchDicomNodesContext = @"SearchDicomNodesContext";
     [_unmountButton autorelease];
     _unmountButton = nil;
     
-    [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL];
+//    [[NSFileManager defaultManager] removeItemAtPath:self.location error:NULL]; We cannot do it, because there was maybe threads attached to this sql file. The entire folder will be deleted when quitting or restarting OsiriX
     self.devicePath = nil;
 	[super dealloc];
 }
