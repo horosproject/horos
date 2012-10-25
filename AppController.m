@@ -2622,12 +2622,19 @@ static BOOL initialized = NO;
 				}
                 
                 // if we are loading a database that isn't on the root volume, then we must wait for it to load - if it doesn't become available after a few minutes, then we'll just let osirix switch to the db at ~/Documents as it would do anyway
-                NSString* dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
-                if ([dataBasePath hasPrefix:@"/Volumes/"]) {
+                NSString* dataBasePath = nil;
+                @try {
+                    dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+                }
+                @catch (NSException *e) {
+                    N2LogException( e);
+                }
+                
+                if ([dataBasePath hasPrefix:@"/Volumes/"] || dataBasePath == nil) {
                     NSString* volumePath = [[[dataBasePath componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
                     if (![[NSFileManager defaultManager] fileExistsAtPath:volumePath]) {
                         NSPanel* dialog = [NSPanel alertWithTitle:@"OsiriX Data"
-                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off. OsiriX will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil), dataBasePath]
+                                                          message:[NSString stringWithFormat:NSLocalizedString(@"OsiriX is configured to use the database located at %@. This volume is currently not available, most likely because it hasn't yet been mounted by the system, or because it is not plugged in or is turned off, or because you don't have write permissions for this location. OsiriX will wait for a few minutes, then give up and switch to a database in the current user's home directory.", nil), [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]]
                                                     defaultButton:@"Quit"
                                                   alternateButton:@"Continue"
                                                              icon:nil];
@@ -2650,6 +2657,14 @@ static BOOL initialized = NO;
                         
                         [NSApp endModalSession:session];
                         [dialog orderOut:self];
+                        
+                        @try {
+                            dataBasePath = documentsDirectoryFor([[NSUserDefaults standardUserDefaults] integerForKey:@"DATABASELOCATION"], [[NSUserDefaults standardUserDefaults] stringForKey: @"DATABASELOCATIONURL"]);
+                        }
+                        @catch (NSException *e) {
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DATABASELOCATION"];
+                            [[NSUserDefaults standardUserDefaults] setInteger: 0 forKey: @"DEFAULT_DATABASELOCATION"];
+                        }
                     }
                 }
 				

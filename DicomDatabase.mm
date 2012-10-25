@@ -120,9 +120,16 @@ NSString* const OsirixDataDirName = @"OsiriX Data";
 	if (!path)
 		N2LogError(@"nil path");
 	else {
-        NSString* volPath = [[[path componentsSeparatedByString:@"/"] subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
-		if ([path hasPrefix:@"/Volumes/"] && ![NSFileManager.defaultManager fileExistsAtPath:volPath])
-            return nil; // not mounted
+        NSArray *pathSeparated = [path componentsSeparatedByString:@"/"];
+        
+        if( pathSeparated.count >= 3)
+        {
+            NSString* volPath = [[pathSeparated subarrayWithRange:NSMakeRange(0,3)] componentsJoinedByString:@"/"];
+		
+            if ([path hasPrefix:@"/Volumes/"] && ![NSFileManager.defaultManager fileExistsAtPath:volPath])
+                return nil; // not mounted
+        }
+        
         [NSFileManager.defaultManager confirmDirectoryAtPath:path];
 	}
 	
