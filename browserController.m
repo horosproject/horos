@@ -3624,6 +3624,9 @@ static NSConditionLock *threadLock = nil;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return;
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     int curSearchType = [[dict objectForKey: @"searchType"] intValue];
@@ -3761,6 +3764,9 @@ static NSConditionLock *threadLock = nil;
     if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForSmartAlbumStudiesOnDICOMNodes"] == NO)
         return;
     
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     NSDate* from = [dict objectForKey: @"from"];
@@ -3892,6 +3898,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForSmartAlbumDistantStudies: (NSString*) albumName
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return;
+    
     if( albumName.length == 0)
         return;
     
@@ -3972,6 +3981,9 @@ static NSConditionLock *threadLock = nil;
 
 - (void) searchForComparativeStudies: (id) studySelectedID
 {
+    if( [[NSUserDefaults standardUserDefaults] boolForKey: @"searchForComparativeStudiesOnDICOMNodes"] == NO)
+        return;
+    
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
     
     @try
