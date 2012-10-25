@@ -522,7 +522,7 @@ int main(int argc, const char *argv[])
 				{
 					[dcmPix CheckLoad];
 					
-					*(long*)0 = 0xDEADBEEF; // Dead Beef ? WTF ??? Will it unlock the matrix....
+					//*(long*)0 = 0xDEADBEEF; // Dead Beef ? WTF ??? Will it unlock the matrix....
 					
 					[dcmPix release];
 				}
