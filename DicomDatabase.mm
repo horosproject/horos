@@ -2342,7 +2342,7 @@ static BOOL protectionAgainstReentry = NO;
     NSOperationQueue* queue = [[[NSOperationQueue alloc] init] autorelease];
     [queue setMaxConcurrentOperationCount:1];
     
-	BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue];
+	BOOL first = YES, onlyDICOM = [[dict objectForKey: @"onlyDICOM"] boolValue], copyFiles = [[dict objectForKey: @"copyFiles"] boolValue];
     __block BOOL studySelected = NO;
 	NSArray *filesInput = [[dict objectForKey: @"filesInput"] sortedArrayUsingSelector:@selector(compare:)]; // sorting the array should make the data access faster on optical media
 	
@@ -2369,7 +2369,7 @@ static BOOL protectionAgainstReentry = NO;
 
                 NSString *srcPath = [filesInput objectAtIndex: i], *dstPath = nil;
 				
-				if( [[dict objectForKey: @"copyFiles"] boolValue])
+				if( copyFiles)
 				{
 					NSString *extension = [srcPath pathExtension];
 					
@@ -2459,12 +2459,13 @@ static BOOL protectionAgainstReentry = NO;
                 
                 NSArray *objects = nil;
                 
-                if( succeed){
+                if( succeed)
+                {
                     thread.status = NSLocalizedString(@"Indexing the files...", nil);
                     objects = [self addFilesAtPaths:copiedFiles postNotifications:YES dicomOnly:onlyDICOM rereadExistingItems:NO];
 //                    total += [copiedFiles count];
                 }
-                else
+                else if( copyFiles)
                 {
                     for( NSString * f in copiedFiles)
                         [[NSFileManager defaultManager]removeItemAtPath: f error: nil];
@@ -2524,7 +2525,7 @@ static BOOL protectionAgainstReentry = NO;
     
 	//	[autoroutingInProgress unlock];
 	
-	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && [[dict objectForKey: @"copyFiles"] boolValue] == YES)
+	if( [[dict objectForKey: @"ejectCDDVD"] boolValue] == YES && copyFiles == YES)
 	{
 		if( [[NSUserDefaults standardUserDefaults] boolForKey: @"EJECTCDDVD"])
 			[[NSWorkspace sharedWorkspace] unmountAndEjectDeviceAtPath: [filesInput objectAtIndex:0]];
