@@ -33,15 +33,23 @@ static MoveManager *sharedManager = nil;
 
 
 - (void)addMove:(id)move{
-	[_set addObject:move];
+    @synchronized (self) {
+        [_set addObject:move];
+    }
 }
 
 - (void)removeMove:(id)move{
-	[_set removeObject:move];
+    @synchronized (self) {
+        [_set removeObject:move];
+    }
 }
 
 - (BOOL)containsMove:(id)move{
-	return [_set containsObject:move];
+    @synchronized (self) {
+        return [_set containsObject:move];
+    }
+    
+    return NO; // this is never executed
 }
 
 
