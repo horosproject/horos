@@ -424,8 +424,8 @@ char* replaceBadCharacter (char* str, NSStringEncoding encoding)
                             found = YES;
                     }
                     
-                    if( found == NO)
-                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
+//                    if( found == NO)
+//                        NSLog( @"*** encoding not found in declared SpecificCharacterSet (0008,0005)");
                     
                     checkPNDelimiters = ([key isEqualToString: @"ISO 2022 IR 87"] == NO) && ([key isEqualToString: @"ISO 2022 IR 159"] == NO);
                     

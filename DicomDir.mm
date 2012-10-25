@@ -43,7 +43,7 @@
     if (!result.good())
         [NSException raise:NSGenericException format:@"Couldn't create new DICOMDIR file: %s", result.text()];
         
-    ddir.setFilesetDescriptor(NULL, DEFAULT_DESCRIPTOR_CHARSET);
+    ddir.setFilesetDescriptor(NULL, DEFAULT_DESCRIPTOR_CHARSET); // UTF-8 ?
     
     for (OFListIterator(OFString) iter = fileNames.begin(); iter != fileNames.end(); ++iter) {
         result = ddir.addDicomFile((*iter).c_str(), path.fileSystemRepresentation);
