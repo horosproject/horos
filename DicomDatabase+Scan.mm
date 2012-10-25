@@ -28,6 +28,7 @@
 #import "DiscMountedAskTheUserDialogController.h"
 #import "DCMAbstractSyntaxUID.h"
 #import "N2Stuff.h"
+#import "DICOMToNSString.h"
 
 @interface _DicomDatabaseScanDcmElement : NSObject {
 	DcmElement* _element;
@@ -37,6 +38,7 @@
 -(id)initWithElement:(DcmElement*)element;
 -(DcmElement*)element;
 -(NSString*)stringValue;
+-(NSString*)stringValueWithEncodings: (NSStringEncoding*) encodings;
 -(NSInteger)integerValue;
 -(NSNumber*)integerNumberValue;
 -(NSString*)name;
@@ -211,29 +213,46 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:temp forKey:@"SOPUID"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
 		
+        [item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] forKey:@"specificCharacterSet"];
+        
+        NSStringEncoding encodings[ 10];
+        NSArray	*c = [[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0005)] stringValue] componentsSeparatedByString:@"\\"];
+        
+        if( [c count] >= 10) NSLog( @"Encoding number >= 10 ???");
+        
+        if( [c count] < 10)
+        {
+            for( int i = 0; i < [c count]; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c objectAtIndex: i]];
+            for( int i = [c count]; i < 10; i++) encodings[ i] = [NSString encodingForDICOMCharacterSet: [c lastObject]];
+        }
+        
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000D)] stringValue] forKey:@"studyID"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0010)] stringValue] forKey:@"studyNumber"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1030)] stringValue] forKey:@"studyDescription"];
+        
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1030)] stringValueWithEncodings: encodings] forKey:@"studyDescription"];
+        
 		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"]; // ???
 		[item conditionallySetObject:[item objectForKey:@"patientID"] forKey:@"patientUID"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValue] forKey:@"patientName"];
+        
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
 
 		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0030)] stringValue] HHMMss:nil] forKey:@"patientBirthDate"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0040)] stringValue] forKey:@"patientSex"];
+        
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0050)] stringValue] forKey:@"accessionNumber"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
 		
 		[item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesID"]; // SeriesInstanceUID
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValue] forKey:@"seriesDescription"];
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0011)] integerNumberValue] forKey:@"seriesNumber"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x0013)] integerNumberValue] forKey:@"imageID"];
 		
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValue] forKey:@"institutionName"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValue] forKey:@"referringPhysiciansName"];
-		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValue] forKey:@"performingPhysiciansName"];
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0080)] stringValueWithEncodings: encodings] forKey:@"institutionName"];
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0090)] stringValueWithEncodings: encodings] forKey:@"referringPhysiciansName"];
+		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x1050)] stringValueWithEncodings: encodings] forKey:@"performingPhysiciansName"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0008)] integerNumberValue] forKey:@"numberOfFrames"];
 		tempi = [[elements objectForKeyRemove:_dcmElementKey(0x0028,0x0010)] integerValue];
 		[item conditionallySetObject:[NSNumber numberWithInteger:tempi? tempi : OsirixDicomImageSizeUnknown] forKey:@"height"];
@@ -711,7 +730,16 @@ static NSString* _dcmElementKey(DcmElement* element) {
 -(NSString*)stringValue {
 	OFString ofstr;
 	if (_element->getOFStringArray(ofstr).good())
-		return [NSString stringWithCString:ofstr.c_str() encoding:NSUTF8StringEncoding];
+		return [NSString stringWithCString:ofstr.c_str() encoding:NSISOLatin1StringEncoding];
+	return nil;
+}
+
+-(NSString*)stringValueWithEncodings: (NSStringEncoding*) encodings{
+	OFString ofstr;
+	if (_element->getOFStringArray(ofstr).good())
+    {
+        return [DicomFile stringWithBytes: (char*) ofstr.c_str() encodings: encodings replaceBadCharacters: NO];
+    }
 	return nil;
 }
 

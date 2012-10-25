@@ -1144,7 +1144,7 @@
     }
     @catch( NSException * e)
     {
-        NSLog(@"Exception while creating DICOMDIR: %@", e);
+        N2LogException( e);
     }
 }
 
