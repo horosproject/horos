@@ -19,6 +19,7 @@
 #import "pluginSDKAdditions.h"
 #import "Notifications.h"
 #import "OSIFloatVolumeData.h"
+#import "DCMView.h"
 
 NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseNotification";
 
@@ -289,5 +290,14 @@ NSString* const OSIVolumeWindowDidCloseNotification = @"OSIVolumeWindowDidCloseN
 {
     [_ROIManager drawInDCMView:dcmView];
 }
+
+- (void)setNeedsDisplay
+{
+    [[_viewerController imageView] setNeedsDisplay:YES];
+    for (DCMView *dcmView in [_viewerController imageViews]) {
+        [dcmView setNeedsDisplay:YES];
+    }
+}
+
 
 @end

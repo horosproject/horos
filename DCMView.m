@@ -1509,6 +1509,16 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		
 		[curRoiList addObjectsFromArray: roiArray];
 		
+        for( long i = 0 ; i < [roiArray count] ; i++) {
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[roiArray objectAtIndex: i], @"ROI",
+                                                [NSNumber numberWithInt:curImage],	@"sliceNumber",
+                                                //xx, @"x", yy, @"y", zz, @"z",
+                                                nil];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName: OsirixAddROINotification object: self userInfo:userInfo];
+        }
+
+        
 		for( long i = 0 ; i < [roiArray count] ; i++)
 			[[NSNotificationCenter defaultCenter] postNotificationName: OsirixROISelectedNotification object: [roiArray objectAtIndex: i] userInfo: nil];
 

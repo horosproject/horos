@@ -23,6 +23,7 @@
 #import "DCMView.h"
 #import "CPRMPRDCMView.h"
 #import "ViewerController.h"
+#import "OSIVolumeWindow+Private.h"
 
 
 NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidUpdateNotification"; 
@@ -449,6 +450,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
     [_addedOSIROIs addObject:roi];
 	[self didChangeValueForKey:@"ROIs"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
+    [_volumeWindow setNeedsDisplay];
 }
 
 - (void)removeROI:(OSIROI *)roi
@@ -457,7 +459,7 @@ NSString* const OSIROIManagerROIsDidUpdateNotification = @"OSIROIManagerROIsDidU
     [_addedOSIROIs removeObject:roi];
 	[self didChangeValueForKey:@"ROIs"];
 	[[NSNotificationCenter defaultCenter] postNotificationName:OSIROIManagerROIsDidUpdateNotification object:self];
-
+    [_volumeWindow setNeedsDisplay];
 }
 
 

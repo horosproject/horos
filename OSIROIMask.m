@@ -173,7 +173,6 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
 {
 	if ( (self = [super init]) ) {
 		_maskRuns = [[maskRuns sortedArrayUsingFunction:OSIROIMaskCompareRunValues context:NULL] copy];
-        
         [self checkdebug];
 	}
 	return self;
@@ -250,7 +249,7 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
         } else {
             // run the 4 cases
             if (NSLocationInRange([templateRunStack currentMaskRun].widthRange.location, subtractRunArray[subtractIndex].widthRange)) {
-                if (NSLocationInRange(NSMaxRange([templateRunStack currentMaskRun].widthRange), subtractRunArray[subtractIndex].widthRange)) {
+                if (NSLocationInRange(NSMaxRange([templateRunStack currentMaskRun].widthRange) - 1, subtractRunArray[subtractIndex].widthRange)) {
                     // 1.
                     [templateRunStack popMaskRun];
                 } else {
@@ -261,15 +260,17 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
                     newMaskRun.widthRange.length -= length;
                     [templateRunStack popMaskRun];
                     [templateRunStack pushMaskRun:newMaskRun];
+                    assert(newMaskRun.widthRange.length > 0);
                 }
             } else {
-                if (NSLocationInRange(NSMaxRange([templateRunStack currentMaskRun].widthRange), subtractRunArray[subtractIndex].widthRange)) {
+                if (NSLocationInRange(NSMaxRange([templateRunStack currentMaskRun].widthRange) - 1, subtractRunArray[subtractIndex].widthRange)) {
                     // 4.
                     newMaskRun = [templateRunStack currentMaskRun];
                     length = NSIntersectionRange([templateRunStack currentMaskRun].widthRange, subtractRunArray[subtractIndex].widthRange).length;
                     newMaskRun.widthRange.length -= length;
                     [templateRunStack popMaskRun];
                     [templateRunStack pushMaskRun:newMaskRun];
+                    assert(newMaskRun.widthRange.length > 0);
                 } else {
                     // 3.
                     OSIROIMaskRun originalMaskRun = [templateRunStack currentMaskRun];
@@ -280,11 +281,14 @@ NSArray *OSIROIMaskIndexesInRun(OSIROIMaskRun maskRun)
                     newMaskRun.widthRange.location += length;
                     newMaskRun.widthRange.length -= length;
                     [templateRunStack pushMaskRun:newMaskRun];
+                    assert(newMaskRun.widthRange.length > 0);
+
                     
                     newMaskRun = originalMaskRun;
                     length = NSMaxRange(originalMaskRun.widthRange) - subtractRunArray[subtractIndex].widthRange.location;
                     newMaskRun.widthRange.length -= length;
                     [templateRunStack pushMaskRun:newMaskRun];
+                    assert(newMaskRun.widthRange.length > 0);
                 }
             }
         }
