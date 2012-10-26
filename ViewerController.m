@@ -19983,13 +19983,19 @@ int i,j,l;
 
 - (BOOL) isEverythingLoaded
 {
-    if (loadingThread) {
+    if (loadingThread)
+    {
         @synchronized( loadingThread)
         {
-            if( loadingThread.isExecuting == YES) return NO;
-            else if( loadingThread.isExecuting == NO) return YES;
+            if( loadingThread.isExecuting == YES)
+                return NO;
+            else if( loadingThread.isExecuting == NO)
+                return YES;
         }
     }
+    
+    if( [[pixList[0] objectAtIndex: pixList[0].count/2] isLoaded] == NO) // The loadingThread was maybe not yet created...
+        return NO;
     
     return YES;
 }
