@@ -16777,15 +16777,24 @@ int i,j,l;
 	if( p)
 	{
 		[printLayout selectItemWithTitle: [p valueForKey: @"layout"]];
+        
 		if( [p valueForKey: @"comments"]) [[printSettings cellWithTag: 2] setState: NSOnState];
 		else [[printSettings cellWithTag: 2] setState: NSOffState];
-		if( [p valueForKey: @"backgroundColor"]) [[printSettings cellWithTag: 3] setState: NSOnState];
-		else [[printSettings cellWithTag: 3] setState: NSOffState];
+		
 		if( [p valueForKey: @"patientInfo"]) [[printSettings cellWithTag: 0] setState: NSOnState];
 		else [[printSettings cellWithTag: 0] setState: NSOffState];
+        
 		if( [p valueForKey: @"studyInfo"]) [[printSettings cellWithTag: 1] setState: NSOnState];
 		else [[printSettings cellWithTag: 1] setState: NSOffState];
 		
+        if( imageView.whiteBackground || ([[p valueForKey: @"backgroundColor"] boolValue] &&
+           [[p valueForKey: @"backgroundColorR"] floatValue] == 1 &&
+           [[p valueForKey: @"backgroundColorG"] floatValue] == 1 &&
+           [[p valueForKey: @"backgroundColorB"] floatValue] == 1))
+            [[printSettings cellWithTag: 3] setState: NSOnState];
+        else
+            [[printSettings cellWithTag: 3] setState: NSOffState];
+        
 		[printFormat selectCellWithTag: [[p valueForKey: @"format"] intValue]];
 		[printInterval setIntValue: [[p valueForKey: @"interval"] intValue]];
 		
