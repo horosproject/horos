@@ -165,92 +165,83 @@ static BOOL newRouteMode = NO;
 
 - (IBAction) editRoute:(id) sender
 {
-	if([self isUnlocked])
-	{
-		newRouteMode = NO;
-		
-		if( [serversArray count] == 0)
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.", nil),NSLocalizedString( @"OK", nil), nil, nil);
-		}
-		else
-		{
-			NSDictionary *selectedRoute = [routesArray objectAtIndex: [routesTable selectedRow]];
-			
-			if( selectedRoute)
-			{
-				int i;
-				[serverPopup removeAllItems];
-				for( i = 0; i < [serversArray count]; i++)
-				{
-					NSString *name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
-					
-					while( [serverPopup itemWithTitle: name] != nil)
-						name = [name stringByAppendingString: @" "];
-						
-					[serverPopup addItemWithTitle: name];
-				}
-				
-				[newName setStringValue: [selectedRoute valueForKey: @"name"]];
-				[newDescription setStringValue: [selectedRoute valueForKey: @"description"]];
-				[newFilter setStringValue: [selectedRoute valueForKey: @"filter"]];
-				[previousPopup selectItemWithTag: [[selectedRoute valueForKey: @"previousStudies"] intValue]];
-				[previousModality setState: [[selectedRoute valueForKey: @"previousModality"] boolValue]];
-				[previousDescription setState: [[selectedRoute valueForKey: @"previousDescription"] boolValue]];
-				[cfindTest setState: [[selectedRoute valueForKey: @"cfindTest"] boolValue]];
-				[failurePopup selectItemWithTag: [[selectedRoute valueForKey: @"failureRetry"] intValue]];
-				
-				self.filterType = [[selectedRoute valueForKey: @"filterType"] intValue];
-				
-                int count = 0;
-				for( i = 0; i < [serversArray count]; i++)
-				{
-					if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]])
-                    {
-						[serverPopup selectItemAtIndex: i];
-                        count++;
-                    }
-				}
+    newRouteMode = NO;
+    
+    if( [serversArray count] == 0)
+    {
+        NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),NSLocalizedString( @"No destination servers exist. Create at least one destination in the Locations preferences.", nil),NSLocalizedString( @"OK", nil), nil, nil);
+    }
+    else
+    {
+        NSDictionary *selectedRoute = [routesArray objectAtIndex: [routesTable selectedRow]];
+        
+        if( selectedRoute)
+        {
+            int i;
+            [serverPopup removeAllItems];
+            for( i = 0; i < [serversArray count]; i++)
+            {
+                NSString *name = [NSString stringWithFormat:@"%@ - %@", [[serversArray objectAtIndex: i] objectForKey:@"AETitle"], [[serversArray objectAtIndex: i] objectForKey:@"Description"]];
                 
-                if( count > 1)
+                while( [serverPopup itemWithTitle: name] != nil)
+                    name = [name stringByAppendingString: @" "];
+                    
+                [serverPopup addItemWithTitle: name];
+            }
+            
+            [newName setStringValue: [selectedRoute valueForKey: @"name"]];
+            [newDescription setStringValue: [selectedRoute valueForKey: @"description"]];
+            [newFilter setStringValue: [selectedRoute valueForKey: @"filter"]];
+            [previousPopup selectItemWithTag: [[selectedRoute valueForKey: @"previousStudies"] intValue]];
+            [previousModality setState: [[selectedRoute valueForKey: @"previousModality"] boolValue]];
+            [previousDescription setState: [[selectedRoute valueForKey: @"previousDescription"] boolValue]];
+            [cfindTest setState: [[selectedRoute valueForKey: @"cfindTest"] boolValue]];
+            [failurePopup selectItemWithTag: [[selectedRoute valueForKey: @"failureRetry"] intValue]];
+            
+            self.filterType = [[selectedRoute valueForKey: @"filterType"] intValue];
+            
+            int count = 0;
+            for( i = 0; i < [serversArray count]; i++)
+            {
+                if ([[[serversArray objectAtIndex: i] objectForKey:@"Description"] isEqualToString: [selectedRoute valueForKey: @"server"]])
                 {
-                    NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil), [NSString stringWithFormat:NSLocalizedString( @"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil), [selectedRoute valueForKey: @"server"]],NSLocalizedString( @"OK", nil), nil, nil);
+                    [serverPopup selectItemAtIndex: i];
+                    count++;
                 }
-				
-				[self selectServer: serverPopup];
-				
-				[NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-			}
-		}
-	}
+            }
+            
+            if( count > 1)
+            {
+                NSRunCriticalAlertPanel(NSLocalizedString(@"Multiples Servers", nil), [NSString stringWithFormat:NSLocalizedString( @"Warning, multiples destination servers have the same name: %@. Each destination should have a unique name.", nil), [selectedRoute valueForKey: @"server"]],NSLocalizedString( @"OK", nil), nil, nil);
+            }
+            
+            [self selectServer: serverPopup];
+            
+            [NSApp beginSheet: newRoute modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        }
+    }
 }
 
 - (IBAction) newRoute:(id) sender
 {
-	if ([self isUnlocked])
-	{
-		[routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", nil]];
-		
-		[routesTable reloadData];
-		
-		[routesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [routesArray count]-1] byExtendingSelection: NO];
-		
-		[self editRoute: self];
-		
-		newRouteMode = YES;
-	}
+    [routesArray addObject: [NSDictionary dictionaryWithObjectsAndKeys: @"new route", @"name", @"", @"description", @"(series.study.modality contains[c] \"CT\")", @"filter", [[serversArray objectAtIndex: 0] objectForKey:@"Description"], @"server", @"20", @"failureRetry", @"0", @"filterType", nil]];
+    
+    [routesTable reloadData];
+    
+    [routesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [routesArray count]-1] byExtendingSelection: NO];
+    
+    [self editRoute: self];
+    
+    newRouteMode = YES;
 }
 
 - (void) deleteSelectedRow:(id)sender
 {
-	if ([self isUnlocked])
-	{
-		if( [sender tag] == 0)
-		{
-			[routesArray removeObjectAtIndex:[routesTable selectedRow]];
-			[routesTable reloadData];
-		}
-	}
+    if( [sender tag] == 0)
+    {
+        [routesArray removeObjectAtIndex:[routesTable selectedRow]];
+        [routesTable reloadData];
+    }
 }
 
 
@@ -290,15 +281,12 @@ static BOOL newRouteMode = NO;
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	if ([self isUnlocked])
-	{
-		if( [[aTableColumn identifier] isEqualToString:@"activated"])
-			[[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
-	}
+    if( [[aTableColumn identifier] isEqualToString:@"activated"])
+        [[routesArray objectAtIndex:rowIndex] setValue:anObject forKey: [aTableColumn identifier]];
 }
 
 - (BOOL)tableView:(NSTableView *)aTableView shouldEditTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	return [self isUnlocked];
+	return YES;
 }
 @end
