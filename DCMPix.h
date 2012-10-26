@@ -213,6 +213,11 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 	int					savedHeightInDB, savedWidthInDB;
 	
 	id					retainedCacheGroup;
+    
+// Ophtalmic fundus images
+    
+    NSString            *referencedSOPInstanceUID;
+    float               referenceCoordinates[ 4];
 }
 
 @property long frameNo;

@@ -773,6 +773,14 @@ papFunctionalGroupPrivateCreator,
 papEndGroup20
 };
 
+/*	Group22		*/
+
+enum {
+pap = 1,
+papReferenceCoordinatesGr,
+papEndGroup22
+};
+
 /*	Group28		*/
 
 enum {

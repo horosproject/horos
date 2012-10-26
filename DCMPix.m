@@ -8015,7 +8015,13 @@ END_CREATE_ROIS:
 											}
 										}
 									break;
-										
+                                    
+                                    case 0x0022:
+//                                        papOphthalmicFrameLocationSequence
+//                                        papReferenceCoordinates
+//                                        papReferencedSOPInstanceUID
+                                    break;
+                                        
 									case 0x0028:
 										val3 = Papy3GetElement (gr, papPixelMatrixSequence, &nbVal, &elemType);
 										if (val3 != NULL && nbVal >= 1)
