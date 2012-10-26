@@ -383,30 +383,28 @@ static NSMatrix *gDateMatrix = nil;
 	[smartAlbumsEditWindow orderOut:sender];
 	[NSApp endSheet: smartAlbumsEditWindow returnCode:[sender tag]];
 }
+
 - (IBAction) editSmartAlbumFilter:(id) sender
 {
-//	if([self isUnlocked])
-	{
-		if( [smartAlbumsArray count] == 0)
-		{
-			NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),NSLocalizedString( @"No smart album exists.", nil),NSLocalizedString( @"OK", nil), nil, nil);
-		}
-		else
-		{
-			NSDictionary *selectedAlbum = [smartAlbumsArray objectAtIndex: [smartAlbumsTable selectedRow]];
-			
-			if( selectedAlbum)
-			{
-                self.smartAlbumModality = [selectedAlbum objectForKey: @"modality"];
-                self.smartAlbumDate = [[selectedAlbum objectForKey: @"date"] intValue];
-                
-                NSUInteger index = [[albumDBArray valueForKey: @"name"] indexOfObject: [selectedAlbum objectForKey: @"name"]];
-                self.smartAlbumFilter = [[albumDBArray objectAtIndex: index] valueForKey: @"predicateString"];
-                
-				[NSApp beginSheet: smartAlbumsEditWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-			}
-		}
-	}
+    if( [smartAlbumsArray count] == 0)
+    {
+        NSRunCriticalAlertPanel(NSLocalizedString(@"New Route", nil),NSLocalizedString( @"No smart album exists.", nil),NSLocalizedString( @"OK", nil), nil, nil);
+    }
+    else
+    {
+        NSDictionary *selectedAlbum = [smartAlbumsArray objectAtIndex: [smartAlbumsTable selectedRow]];
+        
+        if( selectedAlbum)
+        {
+            self.smartAlbumModality = [selectedAlbum objectForKey: @"modality"];
+            self.smartAlbumDate = [[selectedAlbum objectForKey: @"date"] intValue];
+            
+            NSUInteger index = [[albumDBArray valueForKey: @"name"] indexOfObject: [selectedAlbum objectForKey: @"name"]];
+            self.smartAlbumFilter = [[albumDBArray objectAtIndex: index] valueForKey: @"predicateString"];
+            
+            [NSApp beginSheet: smartAlbumsEditWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        }
+    }
 }
 
 @end

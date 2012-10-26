@@ -21,7 +21,7 @@
 @implementation NSPreferencePane (OsiriX)
 
 -(BOOL)isUnlocked {
-	return [[(PreferencesWindowController*)[[[self mainView] window] windowController] authView] authorizationState] == SFAuthorizationViewUnlockedState;
+	return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || [[(PreferencesWindowController*)[[[self mainView] window] windowController] authView] authorizationState] == SFAuthorizationViewUnlockedState;
 }
 
 -(NSNumber*)editable {
