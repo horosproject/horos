@@ -3597,7 +3597,7 @@ static NSConditionLock *threadLock = nil;
                 break;
                 
             case 5:			// Modality
-                [d setObject: curSearchString forKey: @"modality"];
+                [d setObject: [NSArray arrayWithObject: curSearchString] forKey: @"modality"];
                 break;
                 
             case 6:			// Accession Number 
