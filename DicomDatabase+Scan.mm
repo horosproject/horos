@@ -739,7 +739,7 @@ static NSString* _dcmElementKey(DcmElement* element) {
 	OFString ofstr;
 	if (_element->getOFStringArray(ofstr).good())
     {
-        return [DicomFile stringWithBytes: (char*) ofstr.c_str() encodings: encodings replaceBadCharacters: NO];
+        return [DicomFile stringWithBytes: (char*) ofstr.c_str() encodings: encodings replaceBadCharacters: YES];
     }
 	return nil;
 }
