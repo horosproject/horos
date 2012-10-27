@@ -173,6 +173,7 @@ NSComparisonResult  compareViewTags(id firstView, id secondView, void * context)
 	[layoutController setLayoutView:layoutView];
 	[layoutController setPrefPane:self];
 	[layoutController awakeFromNib];
+    
 	[self enableControls:[self isUnlocked]];
 }
 

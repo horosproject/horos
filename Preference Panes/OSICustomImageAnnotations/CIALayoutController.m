@@ -14,7 +14,7 @@
 
 #import "CIALayoutController.h"
 #import "CIADICOMField.h"
-
+#import "NSPreferencePane+OsiriX.h"
 #import "OSICustomImageAnnotations.h"
 
 @implementation CIALayoutController
@@ -1361,8 +1361,8 @@
 	}
 	else
 	{
-		[layoutView setEnabled:YES];
-		[[prefPane orientationWidgetButton] setEnabled:YES];
+		[layoutView setEnabled: [prefPane isUnlocked]];
+		[[prefPane orientationWidgetButton] setEnabled:[prefPane isUnlocked]];
 	}
 	
 	[layoutView setNeedsDisplay:YES];

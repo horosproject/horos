@@ -160,18 +160,14 @@
 
 }
 
-- (void) deleteSelectedRow:(id)sender{
-
-	if([self isUnlocked])
-	{
-		NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
-		[hangingProtocolArray removeObjectAtIndex:[hangingProtocolTableView selectedRow]];
-		[hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
-		[hangingProtocolTableView reloadData];
-		[[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
-	}
+- (void) deleteSelectedRow:(id)sender
+{
+    NSMutableArray *hangingProtocolArray = [[[hangingProtocols objectForKey:modalityForHangingProtocols] mutableCopy] autorelease];
+    [hangingProtocolArray removeObjectAtIndex:[hangingProtocolTableView selectedRow]];
+    [hangingProtocols setObject: hangingProtocolArray forKey: modalityForHangingProtocols];
+    [hangingProtocolTableView reloadData];
+    [[NSUserDefaults standardUserDefaults] setObject:hangingProtocols forKey:@"HANGINGPROTOCOLS"];
 }
-
 
 -(void) willUnselect
 {
@@ -179,8 +175,4 @@
 	
 	[[NSUserDefaults standardUserDefaults] setObject:[bodyRegionController content] forKey:@"bodyRegions"];
 }
-
-
-
-
 @end

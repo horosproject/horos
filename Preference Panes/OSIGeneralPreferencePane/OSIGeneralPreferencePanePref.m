@@ -233,25 +233,22 @@ static NSArray *languagesToMoveWhenQuitting = nil;
 
 - (IBAction) editCompressionSettings:(id) sender
 {
-	if ([self isUnlocked])
-	{
-        if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] count] < 14)
-        {
-            NSLog( @"*** reset compression settings");
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettings"];
-        }
-        
-        if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] count] < 14)
-        {
-            NSLog( @"*** reset compression settings");
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettingsLowRes"];
-        }
-        
-		compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
-		compressionSettingsLowResCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] copy];
-		
-		[NSApp beginSheet: compressionSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-	}
+    if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] count] < 14)
+    {
+        NSLog( @"*** reset compression settings");
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettings"];
+    }
+    
+    if( [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] count] < 14)
+    {
+        NSLog( @"*** reset compression settings");
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey: @"CompressionSettingsLowRes"];
+    }
+    
+    compressionSettingsCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettings"] copy];
+    compressionSettingsLowResCopy = [[[NSUserDefaults standardUserDefaults] arrayForKey: @"CompressionSettingsLowRes"] copy];
+    
+    [NSApp beginSheet: compressionSettingsWindow modalForWindow: [[self mainView] window] modalDelegate:self didEndSelector:nil contextInfo:nil];
 }
 
 @end

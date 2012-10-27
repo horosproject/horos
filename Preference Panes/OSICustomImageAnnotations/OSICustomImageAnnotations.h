@@ -21,6 +21,7 @@
 #import "CIAAnnotation.h"
 #import "RWTokenField.h"
 
+@class CIALayoutController;
 
 @interface OSICustomImageAnnotations : NSPreferencePane {
 	
