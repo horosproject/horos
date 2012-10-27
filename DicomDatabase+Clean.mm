@@ -386,7 +386,7 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 	{
 		NSAlert* alert = [[NSAlert new] autorelease];
         [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
-        [alert setInformativeText: NSLocalizedString( @"Free space limit soon reached for your hard disk storing the database. Some studies will deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
+        [alert setInformativeText: NSLocalizedString( @"Free space limit soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
         [alert setShowsSuppressionButton:YES ];
         [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
         [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
