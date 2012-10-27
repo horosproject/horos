@@ -3328,8 +3328,7 @@ static BOOL protectionAgainstReentry = NO;
 
 
 +(void)recomputePatientUIDsInContext:(NSManagedObjectContext*)context {
-    NSLog( @"-------------- Recompute Patient UIDs -- START");
-	
+    
 	// Find all studies
 	NSFetchRequest* dbRequest = [[[NSFetchRequest alloc] init] autorelease];
 	[dbRequest setEntity:[NSEntityDescription entityForName:@"Study" inManagedObjectContext:context]];
@@ -3339,57 +3338,62 @@ static BOOL protectionAgainstReentry = NO;
 	@try {
 		NSArray* studiesArray = [context executeFetchRequest:dbRequest error:nil];
         
-        Wait *wait = nil;
-        if( [NSThread isMainThread] && studiesArray.count > 200)
-            wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Recomputing Patient UIDs...", nil)] autorelease];
-        
-        [wait showWindow:self];
-        
-        [[wait progress] setMaxValue: studiesArray.count];
-        
-        int i = 0;
-        
-		for (DicomStudy* study in studiesArray)
+        if( studiesArray.count)
         {
-            NSAutoreleasePool *pool = [NSAutoreleasePool new];
+            NSLog( @"-------------- Recompute Patient UIDs -- START");
             
-            [wait incrementBy:1];
+            Wait *wait = nil;
+            if( [NSThread isMainThread] && studiesArray.count > 200)
+                wait = [[[Wait alloc] initWithString: NSLocalizedString( @"Recomputing Patient UIDs...", nil)] autorelease];
             
-			@try {
+            [wait showWindow:self];
+            
+            [[wait progress] setMaxValue: studiesArray.count];
+            
+            int i = 0;
+            
+            for (DicomStudy* study in studiesArray)
+            {
+                NSAutoreleasePool *pool = [NSAutoreleasePool new];
                 
-                NSString *uid = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: [study primitiveValueForKey:@"name"], @"patientName", study.patientID, @"patientID", study.dateOfBirth, @"patientBirthDate", nil]];
+                [wait incrementBy:1];
                 
-                if( uid)
-                    study.patientUID = uid;
+                @try {
+                    
+                    NSString *uid = [DicomFile patientUID: [NSDictionary dictionaryWithObjectsAndKeys: [study primitiveValueForKey:@"name"], @"patientName", study.patientID, @"patientID", study.dateOfBirth, @"patientBirthDate", nil]];
+                    
+                    if( uid)
+                        study.patientUID = uid;
+                    
+    //				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
+    //				DicomFile* dcm = [[DicomFile alloc] init:o.completePath];
+    //				if (dcm && [dcm elementForKey:@"patientUID"])
+    //					study.patientUID = [dcm elementForKey:@"patientUID"];
+    //				[dcm release];
+                    
+                } @catch (NSException* e) {
+                    N2LogExceptionWithStackTrace(e);
+                }
                 
-//				DicomImage* o = [[[[study valueForKey:@"series"] anyObject] valueForKey:@"images"] anyObject];
-//				DicomFile* dcm = [[DicomFile alloc] init:o.completePath];
-//				if (dcm && [dcm elementForKey:@"patientUID"])
-//					study.patientUID = [dcm elementForKey:@"patientUID"];
-//				[dcm release];
+                [pool release];
                 
-			} @catch (NSException* e) {
-				N2LogExceptionWithStackTrace(e);
-			}
+                i++;
+                
+                if( i % 1000 == 0)
+                    [context save: nil];
+            }
             
-            [pool release];
+            [context save: nil];
             
-            i++;
+            [wait close];
             
-            if( i % 1000 == 0)
-                [context save: nil];
-		}
-        
-        [context save: nil];
-        
-        [wait close];
+            NSLog( @"-------------- Recompute Patient UIDs -- END");
+        }
 	} @catch (NSException* e) {
 		N2LogExceptionWithStackTrace(e);
 	} @finally {
 		[context unlock];
 	}
-    
-    NSLog( @"-------------- Recompute Patient UIDs -- END");
 }
 
 -(void)rebuild {
