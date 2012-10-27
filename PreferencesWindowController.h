@@ -47,7 +47,7 @@
 
 -(void)reopenDatabase;
 -(void)setCurrentContextWithResourceName: (NSString*) name;
-
+-(void)setCurrentContext:(PreferencesWindowContext*)context;
 @end
 
 
