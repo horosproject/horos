@@ -234,7 +234,6 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[NSDate dateWithYYYYMMDD:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0020)] stringValue] HHMMss:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0030)] stringValue]] forKey:@"studyDate"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0060)] stringValue] forKey:@"modality"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0020)] stringValue] forKey:@"patientID"]; // ???
-		[item conditionallySetObject:[item objectForKey:@"patientID"] forKey:@"patientUID"];
         
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0010,0x0010)] stringValueWithEncodings: encodings] forKey:@"patientName"];
 
@@ -244,6 +243,8 @@ static NSString* _dcmElementKey(DcmElement* element) {
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x0050)] stringValue] forKey:@"accessionNumber"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0004,0x1511)] stringValue] forKey:@"referencedSOPInstanceUID"];
 		
+        [item conditionallySetObject:[DicomFile patientUID: item] forKey:@"patientUID"];
+        
 		[item conditionallySetObject:[NSNumber numberWithInteger:1] forKey:@"numberOfSeries"];
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0020,0x000E)] stringValue] forKey:@"seriesID"]; // SeriesInstanceUID
 		[item conditionallySetObject:[[elements objectForKeyRemove:_dcmElementKey(0x0008,0x103E)] stringValueWithEncodings: encodings] forKey:@"seriesDescription"];
