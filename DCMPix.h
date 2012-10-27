@@ -225,7 +225,7 @@ extern XYZ ArbitraryRotate(XYZ p,double theta,XYZ r);
 @property (readonly) NSRecursiveLock *checking;
 @property (nonatomic) float minValueOfSeries, maxValueOfSeries, factorPET2SUV;
 
-@property(retain) NSString* imageType, *modalityString;
+@property(retain) NSString* imageType, *modalityString, *referencedSOPInstanceUID;
 
 // Dimensions in pixels
 @property (nonatomic) long pwidth, pheight;

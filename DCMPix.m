@@ -1238,6 +1238,8 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 
 @synthesize isLUT12Bit;
 
+@synthesize referencedSOPInstanceUID;
+
 - (DicomImage*) imageObj
 {
 #ifdef OSIRIX_VIEWER
@@ -5536,6 +5538,26 @@ END_CREATE_ROIS:
 	}
 }
 
+- (void) dcmFrameworkLoadOphthalmic: (DCMObject*) dcmObject
+{
+	if( [dcmObject attributeValueWithName:@"ReferencedSOPInstanceUID"])
+        self.referencedSOPInstanceUID = [dcmObject attributeValueWithName:@"ReferencedSOPInstanceUID"];
+    
+	if( [dcmObject attributeValueWithName:@"ReferenceCoordinates"])
+    {
+        NSArray *coor = [dcmObject attributeValueWithName:@"ReferenceCoordinates"];
+        
+        if ( coor.count >= 4)
+        {
+            referenceCoordinates[ 0] = [[coor objectAtIndex: 0] floatValue];
+            referenceCoordinates[ 1] = [[coor objectAtIndex: 1] floatValue];
+            
+            referenceCoordinates[ 2] = [[coor objectAtIndex: 2] floatValue];
+            referenceCoordinates[ 3] = [[coor objectAtIndex: 3] floatValue];
+        }
+    }
+}
+
 #ifndef OSIRIX_LIGHT
 - (BOOL)loadDICOMDCMFramework
 {
@@ -5616,7 +5638,7 @@ END_CREATE_ROIS:
 	}
 	
 	self.SOPClassUID = [dcmObject attributeValueWithName:@"SOPClassUID"];
-	
+	self.referencedSOPInstanceUID = [dcmObject attributeValueWithName:@"ReferencedSOPInstanceUID"];
 	//-----------------------common----------------------------------------------------------	
 	
     self.imageType = [[dcmObject attributeArrayWithName:@"ImageType"] componentsJoinedByString:@"\\"];
@@ -5839,6 +5861,12 @@ END_CREATE_ROIS:
 					{
 						if ((object = [[seq sequence] objectAtIndex:0]))
 							[self dcmFrameworkLoad0x0028:object];
+					}
+                    
+                    if ((seq = (DCMSequenceAttribute*)[sequenceItem attributeWithName:@"OphthalmicFrameLocationSequence"]) && [seq isKindOfClass:[DCMSequenceAttribute class]])
+					{
+						if ((object = [[seq sequence] objectAtIndex:0]))
+							[self dcmFrameworkLoadOphthalmic: object];
 					}
 				}
 			}
@@ -7717,6 +7745,9 @@ END_CREATE_ROIS:
 					acquisitionDate = [preferredDate copy];
 				}
 				
+                val = Papy3GetElement (theGroupP, papReferencedSOPInstanceUID8Gr, &nbVal, &elemType);
+				if ( val && val->a && validAPointer( elemType)) self.referencedSOPInstanceUID = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
+                
 				val = Papy3GetElement (theGroupP, papModalityGr, &nbVal, &elemType);
 				if ( val && val->a && validAPointer( elemType)) self.modalityString = [NSString stringWithCString:val->a encoding: NSASCIIStringEncoding];
 				
@@ -12446,6 +12477,7 @@ END_CREATE_ROIS:
     [imageType release];
     
     self.waveform = nil;
+    self.referencedSOPInstanceUID = nil;
 	
 	if( fExternalOwnedImage == nil)
 	{
