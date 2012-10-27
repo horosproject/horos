@@ -320,6 +320,17 @@ static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 	return ![[NSUserDefaults standardUserDefaults] boolForKey:@"AUTHENTICATION"] || ([authView authorizationState] == SFAuthorizationViewUnlockedState);
 }
 
+-(void)setCurrentContextWithResourceName: (NSString*) name
+{
+    NSInteger panesCount = [panesListView itemsCount];
+	
+    for( NSInteger index = 0; index < panesCount; index++)
+    {
+        if( [[[panesListView contextForItemAtIndex: index] resourceName] isEqualToString: name])
+            [self setCurrentContext:[panesListView contextForItemAtIndex:index]];
+    }
+}
+
 -(void)setCurrentContext:(PreferencesWindowContext*)context {
 	if (context == currentContext)
 		return;

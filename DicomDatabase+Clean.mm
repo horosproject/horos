@@ -22,6 +22,7 @@
 #import "BrowserController.h"
 #import "Notifications.h"
 #import "NSThread+N2.h"
+#import "PreferencesWindowController.h"
 
 #define MAXSTUDYDELETE 100
 
@@ -128,7 +129,8 @@
 				[self unlock];
 			}
 		
-		if ([defaults boolForKey:@"AUTOCLEANINGDATE"] && ([defaults boolForKey:@"AUTOCLEANINGDATEPRODUCED"] || [defaults boolForKey:@"AUTOCLEANINGDATEOPENED"])) {
+		if ([defaults boolForKey:@"AUTOCLEANINGDATE"] && ([defaults boolForKey:@"AUTOCLEANINGDATEPRODUCED"] || [defaults boolForKey:@"AUTOCLEANINGDATEOPENED"]))
+        {
 			if ([self tryLock])
 				@try {
 					NSError				*error = nil;
@@ -376,6 +378,41 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 	}
 }
 
+static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
+
+- (void) _cleanForFreeSpaceLimitSoonReachedWarning
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"] == NO)
+	{
+		NSAlert* alert = [[NSAlert new] autorelease];
+        [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
+        [alert setInformativeText: NSLocalizedString( @"Free space limit soon reached for your hard disk storing the database. Some studies will deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
+        [alert setShowsSuppressionButton:YES ];
+        [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
+        [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
+        
+        if( [alert runModal] == NSAlertSecondButtonReturn)
+        {
+            PreferencesWindowController* prefsController = NULL;
+            
+            for (NSWindow* window in [NSApp windows])
+                if ([window.windowController isKindOfClass:[PreferencesWindowController class]]) {
+                    prefsController = window.windowController;
+                    break;
+                }
+            
+            if (!prefsController)
+                prefsController = [[PreferencesWindowController alloc] init];
+            
+            [prefsController showWindow: self];
+            [prefsController setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
+        }
+        
+        if ([[alert suppressionButton] state] == NSOnState)
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey: @"hideCleanForFreeSpaceLimitSoonReachedWarning"];
+    }
+}
+
 -(void)cleanForFreeSpaceMB:(NSInteger)freeMemoryRequested {
 	if (self.isReadOnly)
         return;
@@ -401,8 +438,19 @@ static BOOL _showingCleanForFreeSpaceWarning = NO;
 		}*/
 		
 		if (free >= freeMemoryRequested)
+        {
+            if( free <= freeMemoryRequested * 1.2) // 20%
+            {
+                if( _cleanForFreeSpaceLimitSoonReachedDisplayed == NO)
+                {
+                    _cleanForFreeSpaceLimitSoonReachedDisplayed = YES;
+                    [self performSelectorOnMainThread:@selector(_cleanForFreeSpaceLimitSoonReachedWarning) withObject:nil waitUntilDone:NO];
+                }
+            }
+            
 			return;
-		
+		}
+        
 		NSLog(@"Info: cleaning for space (%lld MB available, %lld MB requested)", free, (unsigned long long)freeMemoryRequested);
 		
         unsigned long long initialDelta = freeMemoryRequested - free;

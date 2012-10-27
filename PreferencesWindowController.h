@@ -46,7 +46,7 @@
 -(IBAction)authAction:(id)sender;
 
 -(void)reopenDatabase;
-
+-(void)setCurrentContextWithResourceName: (NSString*) name;
 
 @end
 
