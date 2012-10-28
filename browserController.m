@@ -1310,7 +1310,7 @@ static NSConditionLock *threadLock = nil;
             
 			
 			[_database save:nil];
-			[_database release]; _database = nil;
+			[_database autorelease]; _database = nil;
 			
 			[DCMPix purgeCachedDictionaries];
 			[DCMView purgeStringTextureCache];

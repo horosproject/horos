@@ -36,6 +36,7 @@
 @property(readonly) NSMutableArray* animations;
 @property(readonly) SFAuthorizationView* authView;
 
++ (PreferencesWindowController*) sharedPreferencesWindowController;
 +(void) addPluginPaneWithResourceNamed:(NSString*)resourceName inBundle:(NSBundle*)parentBundle withTitle:(NSString*)title image:(NSImage*)image;
 +(void) removePluginPaneWithBundle:(NSBundle*)parentBundle;
 

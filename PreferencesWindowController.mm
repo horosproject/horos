@@ -89,6 +89,22 @@
 
 static const NSMutableArray* pluginPanes = [[NSMutableArray alloc] init];
 
++ (PreferencesWindowController*) sharedPreferencesWindowController
+{
+    PreferencesWindowController* prefsController = NULL;
+    
+    for (NSWindow* window in [NSApp windows])
+        if ([window.windowController isKindOfClass:[PreferencesWindowController class]]) {
+            prefsController = window.windowController;
+            break;
+        }
+    
+    if (!prefsController)
+        prefsController = [[PreferencesWindowController alloc] init];
+    
+    return prefsController;
+}
+
 -(id)init
 {
 //	AuthorizationRef authRef = nil;

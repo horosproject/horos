@@ -386,26 +386,15 @@ static BOOL _cleanForFreeSpaceLimitSoonReachedDisplayed = NO;
 	{
 		NSAlert* alert = [[NSAlert new] autorelease];
         [alert setMessageText: NSLocalizedString(@"Warning - Free Space", nil)];
-        [alert setInformativeText: NSLocalizedString( @"Free space limit soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
+        [alert setInformativeText: NSLocalizedString( @"Free space limit will be soon reached for your hard disk storing the database. Some studies will be deleted according to the rules specified in Preferences Database window (Database Auto-Cleaning).", nil)];
         [alert setShowsSuppressionButton:YES ];
         [alert addButtonWithTitle: NSLocalizedString( @"OK", nil)];
         [alert addButtonWithTitle: NSLocalizedString( @"Preferences", nil)];
         
         if( [alert runModal] == NSAlertSecondButtonReturn)
         {
-            PreferencesWindowController* prefsController = NULL;
-            
-            for (NSWindow* window in [NSApp windows])
-                if ([window.windowController isKindOfClass:[PreferencesWindowController class]]) {
-                    prefsController = window.windowController;
-                    break;
-                }
-            
-            if (!prefsController)
-                prefsController = [[PreferencesWindowController alloc] init];
-            
-            [prefsController showWindow: self];
-            [prefsController setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
+            [[PreferencesWindowController sharedPreferencesWindowController] showWindow: self];
+            [[PreferencesWindowController sharedPreferencesWindowController] setCurrentContextWithResourceName: @"OSIDatabasePreferencePanePref"];
         }
         
         if ([[alert suppressionButton] state] == NSOnState)

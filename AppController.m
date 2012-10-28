@@ -3864,19 +3864,9 @@ static BOOL initialized = NO;
 	[splashController affiche];
 }
 
--(IBAction)showPreferencePanel:(id)sender {
-	PreferencesWindowController* prefsController = NULL;
-	
-	for (NSWindow* window in [NSApp windows])
-		if ([window.windowController isKindOfClass:[PreferencesWindowController class]]) {
-			prefsController = window.windowController;
-			break;
-		}
-	
-	if (!prefsController)
-		prefsController = [[PreferencesWindowController alloc] init];
-	
-	[prefsController showWindow:sender];
+-(IBAction)showPreferencePanel:(id)sender
+{
+	[[PreferencesWindowController sharedPreferencesWindowController] showWindow: sender];
 }
 
 
