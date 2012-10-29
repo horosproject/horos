@@ -2929,6 +2929,8 @@ static NSConditionLock *threadLock = nil;
             
             // compute every album's studies count
             
+            DicomDatabase *currentDatabase = _database;
+            
             NSArray* albumObjectIDs;
             @synchronized (self)
             {
@@ -2939,6 +2941,12 @@ static NSConditionLock *threadLock = nil;
             
             for (NSManagedObjectID* albumObjectID in albumObjectIDs)
             {
+                if( currentDatabase != _database) // We switched the main database...
+                {
+                    [self performSelectorOnMainThread:@selector(delayedRefreshAlbums) withObject:nil waitUntilDone:NO];
+                    break;
+                }
+                
                 DicomAlbum* ialbum = [idatabase objectWithID:albumObjectID];
                 
                 [NSThread currentThread].status = ialbum.name;
@@ -3040,7 +3048,10 @@ static NSConditionLock *threadLock = nil;
             @synchronized(_albumNoOfStudiesCache)
             {
                 [_albumNoOfStudiesCache removeAllObjects];
-                [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
+                
+                if( currentDatabase == _database) // Did we switch the main database...
+                    [_albumNoOfStudiesCache addObjectsFromArray:NoOfStudies];
+                
                 [albumTable performSelectorOnMainThread: @selector(reloadData) withObject: nil waitUntilDone: NO];
             }
         }
