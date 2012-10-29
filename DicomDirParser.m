@@ -250,7 +250,8 @@ static int validFilePathDepth = 0;
     
     while ([inData=[[newPipe fileHandleForReading] availableData] length]>0 || [aTask isRunning]) 
     {
-		s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
+        if( inData.length)
+            s = [s stringByAppendingString:[[[NSString alloc] initWithData:inData encoding:NSUTF8StringEncoding] autorelease]];
     }
 	
     while( [aTask isRunning])
@@ -262,7 +263,7 @@ static int validFilePathDepth = 0;
 	
 	data = [[NSString alloc] initWithString: s];
 	
- return self;
+    return self;
 }
 
 @end
