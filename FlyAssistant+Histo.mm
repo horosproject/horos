@@ -159,6 +159,9 @@
 
 - (void) smoothHistogramWith:(const unsigned int)window;
 {
+    if( inputHisto == nil)
+        return;
+    
     int limit = histoSize;
     int size = limit + 2 * window;
     vImagePixelCount original[size];// = (vImagePixelCount *)malloc(  * sizeof(vImagePixelCount) );
@@ -177,7 +180,7 @@
     {
         original[ i ] = inputHisto[ 0 ];
         
-        if( size - i >= 0 && limit - i >= 0)
+        if( size - i >= 0 && limit - i >= 0 && limit - i < histoSize)
             original[ size - i ] = inputHisto[ limit - i ];
     }
     
