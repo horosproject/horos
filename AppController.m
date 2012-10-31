@@ -1012,8 +1012,13 @@ static NSDate *lastWarningDate = nil;
 		
 		CFStringRef versionString = nil;
 		if(bundleInfoDict != NULL)
+        {
 			versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleVersion"));
 		
+            if( versionString == nil)
+                versionString = CFDictionaryGetValue(bundleInfoDict, CFSTR("CFBundleShortVersionString"));
+        }
+        
 		NSString *pluginBundleVersion = nil;
 		if(versionString != NULL)
 			pluginBundleVersion = (NSString*)versionString;
