@@ -1036,7 +1036,7 @@ static NSDate *lastWarningDate = nil;
 				[replacingPlugins appendString: pluginBundleName];
 				[replacingPlugins appendString: strVersion];
 				[replacingPlugins appendString: pluginBundleVersion];
-				[replacingPlugins appendString: @"\n\n"];
+				[replacingPlugins appendString: @".\n\n"];
 			}
 		}
 		
