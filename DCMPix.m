@@ -8405,7 +8405,7 @@ END_CREATE_ROIS:
 					} // if ...val is not NULL
 				}
 
-#pragma mark tag group 5400 for Waveform
+/*#pragma mark tag group 5400 for Waveform
 				
 				if ((theGroupP = (SElement*)[self getPapyGroup:0x5400])) {
                     val = Papy3GetElement(theGroupP, papWaveformSequenceGr, &nbVal, &elemType);
@@ -8415,12 +8415,12 @@ END_CREATE_ROIS:
                         
                         for (Papy_List* lWaveformSequence = val->sq; lWaveformSequence; lWaveformSequence = lWaveformSequence->next) {
                             DCMWaveformSequence* ws = [w newSequence];
-                            NSLog(@"ws...");
+//                            NSLog(@"ws...");
                         
                             for (Papy_List* lWaveformSequenceGroup = lWaveformSequence->object->item; lWaveformSequenceGroup; lWaveformSequenceGroup = lWaveformSequenceGroup->next) {
                                 SElement* waveformSequenceGroup = (SElement*)lWaveformSequenceGroup->object->group;
                                 
-                                NSLog(@"... (%04X,%04X)", waveformSequenceGroup->group, waveformSequenceGroup->element);
+//                                NSLog(@"... (%04X,%04X)", waveformSequenceGroup->group, waveformSequenceGroup->element);
                                 switch (waveformSequenceGroup->group) {
                                     case 0x0018: {
                                         // (0018,1068) MultiplexgroupTimeOffset 1C DS [1]
@@ -8462,10 +8462,10 @@ END_CREATE_ROIS:
                                         if (val && nbVal > 0 && val->sq)
                                             for (Papy_List* lChannelDefinitionSequence = val->sq; lChannelDefinitionSequence; lChannelDefinitionSequence = lChannelDefinitionSequence->next) {
                                                 DCMWaveformChannelDefinition* cd = [ws newChannelDefinition];
-                                                NSLog(@"... cd...");
+//                                                NSLog(@"... cd...");
                                                 for (Papy_List* lChannelDefinitionSequenceGroup = lChannelDefinitionSequence->object->item; lChannelDefinitionSequenceGroup; lChannelDefinitionSequenceGroup = lChannelDefinitionSequenceGroup->next) {
                                                     SElement* channelDefinitionSequenceGroup = (SElement*)lChannelDefinitionSequenceGroup->object->group;
-                                                    NSLog(@"   ... (%04X,%04X)", channelDefinitionSequenceGroup->group, channelDefinitionSequenceGroup->element);
+//                                                    NSLog(@"   ... (%04X,%04X)", channelDefinitionSequenceGroup->group, channelDefinitionSequenceGroup->element);
                                                     switch (channelDefinitionSequenceGroup->group) {
                                                         case 0x003A: {
                                                             // (003A,0202) WaveformChannelNumber 3 IS [1]
@@ -8485,7 +8485,7 @@ END_CREATE_ROIS:
                                                             if (val && nbVal > 0 && val->sq)
                                                                 for (Papy_List* lChannelSourceSequence = val->sq; lChannelSourceSequence; lChannelSourceSequence = lChannelSourceSequence->next) {
                                                                     DCMWaveformChannelSource* cs = [cd newChannelSource];
-                                                                    NSLog(@"...... cs...");
+//                                                                    NSLog(@"...... cs...");
                                                                     // [Code Sequence Macro]
                                                                     [self papyLoadCodeSequenceMacro:cs from:lChannelSourceSequence->object];
                                                                 }
@@ -8495,7 +8495,7 @@ END_CREATE_ROIS:
                                                             if (val && nbVal > 0 && val->sq)
                                                                 for (Papy_List* lChannelSourceModifiersSequence = val->sq; lChannelSourceModifiersSequence; lChannelSourceModifiersSequence = lChannelSourceModifiersSequence->next) {
                                                                     DCMWaveformChannelSourceModifier* csm = [cd newChannelSourceModifier];
-                                                                    NSLog(@"...... csm...");
+//                                                                    NSLog(@"...... csm...");
                                                                     // [Code Sequence Macro]
                                                                     [self papyLoadCodeSequenceMacro:csm from:lChannelSourceModifiersSequence->object];
 
@@ -8506,10 +8506,10 @@ END_CREATE_ROIS:
                                                             if (val && nbVal > 0 && val->sq)
                                                                 for (Papy_List* lSourceWaveformSequence = val->sq; lSourceWaveformSequence; lSourceWaveformSequence = lSourceWaveformSequence->next) {
                                                                     DCMWaveformSourceWaveform* sw = [cd newSourceWaveform];
-                                                                    NSLog(@"...... sw...");
+//                                                                    NSLog(@"...... sw...");
                                                                     for (Papy_List* lSourceWaveformSequenceGroup = lSourceWaveformSequence->object->item; lSourceWaveformSequenceGroup; lSourceWaveformSequenceGroup = lSourceWaveformSequenceGroup->next) {
                                                                         SElement* sourceWaveformSequenceGroup = (SElement*)lSourceWaveformSequenceGroup->object->group;
-                                                                        NSLog(@"      ... (%04X,%04X)", sourceWaveformSequenceGroup->group, sourceWaveformSequenceGroup->element);
+//                                                                        NSLog(@"      ... (%04X,%04X)", sourceWaveformSequenceGroup->group, sourceWaveformSequenceGroup->element);
                                                                         switch (sourceWaveformSequenceGroup->group) {
                                                                             case 0x0040: {
                                                                                 // (0040,A0B0) ReferencedWaveformChannels 1 US [2-2n]
@@ -8535,7 +8535,7 @@ END_CREATE_ROIS:
                                                             if (val && nbVal > 0 && val->sq)
                                                                 for (Papy_List* lChannelSensitivityUnitsSequence = val->sq; lChannelSensitivityUnitsSequence; lChannelSensitivityUnitsSequence = lChannelSensitivityUnitsSequence->next) {
                                                                     DCMWaveformChannelSensitivityUnit* csu = [cd newChannelSensitivityUnit];
-                                                                    NSLog(@"...... csu...");
+//                                                                    NSLog(@"...... csu...");
                                                                     // [Code Sequence Macro]
                                                                     [self papyLoadCodeSequenceMacro:csu from:lChannelSensitivityUnitsSequence->object];
                                                                 }
@@ -8641,7 +8641,7 @@ END_CREATE_ROIS:
                     }
 
                     
-                }
+                }*/
                 
 		#pragma mark tag group 6000		
 				

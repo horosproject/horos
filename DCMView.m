@@ -8419,9 +8419,9 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glDisable( GL_BLEND);
 			}
 			
-			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
-                [self drawWaveform];
-            else
+//			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
+//                [self drawWaveform];
+//            else
                 [self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 
 			BOOL noBlending = NO;
