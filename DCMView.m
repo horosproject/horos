@@ -47,6 +47,7 @@
 #import "N2Debug.h"
 #import "OSIEnvironment.h"
 #import "OSIEnvironment+Private.h"
+#import "DCMWaveform.h"
 
 // kvImageHighQualityResampling
 #define QUALITY kvImageNoFlags
@@ -7573,7 +7574,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 		if( colorBoxSize && stringID == nil && [self is2DViewer] == YES)
 		{
 			glColor4f( studyColorR, studyColorG, studyColorB, 1.0);
-			glBegin( GL_POLYGON);		
+			glBegin( GL_POLYGON);
 			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -colorBoxSize+1);
 			glVertex2f( size.size.width-2 -colorBoxSize+1, size.size.height-2 -1);
 			glVertex2f( size.size.width-2 -1, size.size.height-2 -1);
@@ -8265,7 +8266,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 //	glRotatef (rotation, 0.0f, 0.0f, 1.0f); // no rotation for waveform
 	glTranslatef(origin.x , -origin.y, 0.0f);
 	if (curDCM.pixelRatio != 1.0) glScalef( 1.f, curDCM.pixelRatio, 1.f); // this is done for
-    glScalef(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f);
+    glScalef(scaleValue/2*curDCM.pwidth, scaleValue/2*curDCM.pheight, 1.f); // scaleValue/2*curDCM.pheight
     // the scene is now in sync with the standard OsiriX DICOM viewer: the drawn pix would be in the rectangle at (-1,-1) with size (2,2)... since this is a waveform, we assume the dcmpix is square
     float m = MIN(size.height, size.width);
     glScalef(size.width/m, size.height/m, 1); // use the whole window, not just the part covered by the undrawn DCMPix... // TODO: check that this can be used if we use regions...
@@ -8285,34 +8286,52 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
     gluUnProject(viewport[0]+viewport[2], viewport[1]+viewport[3], 0, mvmatrix, projmatrix, viewport, &p1[0], &p1[1], &p1[2]);
     // NSLog(@"X Range: %f -> %f = %f", p0[0], p1[0], p1[0]-p0[0]);
     
+    DCMWaveformSequence* ws = [[curDCM.waveform sequences] objectAtIndex:0];
     
-    
-    
-    
-    
-    
-    
+    NSUInteger valuesCount;
+    CGFloat* values = [ws getValues:&valuesCount];
+    size_t numberOfChannels = ws.numberOfWaveformChannels;
+    NSUInteger numberOfSamples = ws.numberOfWaveformSamples;
     
     glEnable(GL_LINE_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    glBegin(GL_LINES);
+    
+    CGFloat h = 1./numberOfChannels;
+    
+    for (size_t i = 1; i < numberOfChannels; ++i) {
+        glBegin(GL_LINE);
+        glVertex2f(0,h*i);
+        glVertex2f(1,h*i);
+        glEnd();
+    }
+    
+    size_t step = sizeof(CGFloat)*numberOfChannels;
+    for (size_t i = 0; i < numberOfChannels; ++i) {
+        DCMWaveformChannelDefinition* cd = [ws.channelDefinitions objectAtIndex:i];
+        CGFloat min, max; [cd getValuesMin:&min max:&max];
+        CGFloat mm = MAX(fabs(min), fabs(max));
+        CGFloat* v = &values[i];
+        glBegin(GL_LINE_STRIP);
+        for (NSUInteger x = 0; x < numberOfSamples; ++x, v += numberOfChannels)
+            glVertex2d(1./numberOfSamples*x, h*(0.5+i)+(*v/mm/2)*h);
+        glEnd();
+    }
     
     // this is the test pattern.... a centered spiral...
+    
+    /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glColor4f(249./255., 240./255., 140./255., 1);
+
+    glBegin(GL_LINE_STRIP);
     glVertex2f(0.5,0.5);
     glVertex2f(0.5,1);
-    glVertex2f(0.5,1);
-    glVertex2f(1,1);
     glVertex2f(1,1);
     glVertex2f(1,0);
-    glVertex2f(1,0);
-    glVertex2f(0,0);
     glVertex2f(0,0);
     glVertex2f(0,1);
-    
-    
-    
-    glEnd();
+    glEnd();*/
 }
 
 - (void) drawRect:(NSRect)aRect withContext:(NSOpenGLContext *)ctx
@@ -8400,10 +8419,11 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 				glDisable( GL_BLEND);
 			}
 			
-            [self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
 			if (curDCM.waveform) // [DCMAbstractSyntaxUID isWaveform:curDCM.SOPClassUID]
                 [self drawWaveform];
-			
+            else
+                [self drawRectIn:drawingFrameRect :pTextureName :offset :textureX :textureY :textureWidth :textureHeight];
+
 			BOOL noBlending = NO;
 			
 			if( is2DViewer == YES)

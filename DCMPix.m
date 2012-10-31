@@ -58,6 +58,7 @@
 
 #import "math.h"
 #import "altivecFunctions.h"
+#import "DICOMToNSString.h"
 
 #ifdef STATIC_DICOM_LIB
 #define PREVIEWSIZE 512
@@ -3537,6 +3538,7 @@ void erase_outside_circle(char *buf, int width, int height, int cx, int cy, int 
 	copy->patientPosition = [self->patientPosition retain];
 	copy->annotationsDictionary = [self->annotationsDictionary retain];
     copy->usRegions = [self->usRegions retain];
+    copy->waveform = [self->waveform retain];
 	
 	copy->patientsWeight = self->patientsWeight;
 	copy->SUVConverted = self->SUVConverted;
@@ -7614,6 +7616,82 @@ END_CREATE_ROIS:
 	[PapyrusLock unlock];
 }
 
+- (void)papyLoadCodeSequenceMacro:(DCMCodeSequenceMacro*)csm from:(papObject*)object {
+    UValue_T* val;
+    PapyULong nbVal;
+	int elemType;
+    for (Papy_List* l = object->item; l; l = l->next) {
+        SElement* group = (SElement*)l->object->group;
+        switch (group->group) {
+            case 0x0008: {
+                // (0008,0100) CodeValue 1 SH [1]
+                val = Papy3GetElement(group, papCodeValueGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.codeValue = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                
+                // (0008,0102) CodingSchemeDesignator 1 SH [1]
+                val = Papy3GetElement(group, papCodingSchemeDesignatorGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.codingSchemeDesignator = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+
+                // (0008,0103) CodingSchemeVersion 1C SH [1]
+                val = Papy3GetElement(group, papCodingSchemeVersionGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.codingSchemeVersion = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                
+                // (0008,0104) CodeMeaning 1  LO [1]
+                val = Papy3GetElement(group, papCodeMeaningGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.codeMeaning = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                
+                // (0008,010F) ContextIdentifier 3 CS [1]
+                val = Papy3GetElement(group, papContextIdentifierGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.contextIdentifier = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                
+                // (0008,0117) ContextUID 3 UI [1]
+                val = Papy3GetElement(group, papContextIdentifierGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.contextUID = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                
+                // (0008,0105) MappingResource 1C CS [1]
+                val = Papy3GetElement(group, papMappingResourceGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) [csm setMappingResourceCS:val->a];
+                
+                // (0008,0106) ContextGroupVersion 1C DT [1]
+                val = Papy3GetElement(group, papContextGroupVersionGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.contextGroupVersion = [DCMCalendarDate dicomDateTime:[NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding]];
+                
+                // (0008,010B) ContextGroupExtensionFlag 3 CS [1]
+                // val = Papy3GetElement(group, ???, &nbVal, &elemType); // Papyrus doesn't support ContextGroupExtensionFlag
+                
+                // (0008,0107) ContextGroupLocalVersion 1C DT [1]
+                val = Papy3GetElement(group, papContextgroupLocalVersionGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) csm.contextGroupLocalVersion = [DCMCalendarDate dicomDateTime:[NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding]];
+                
+                // (0008,010D) ContextGroupExtensionCreatorUID 1C UI [1]
+                // val = Papy3GetElement(group, papCodeValueGr, &nbVal, &elemType); // Papyrus doesn't support ContextGroupExtensionCreatorUID
+                
+            } break;
+        }
+    }
+}
+
+- (void)papyLoadSOPInstanceReferenceMacro:(DCMSOPInstanceReferenceMacro*)sirm from:(papObject*)object {
+    UValue_T* val;
+    PapyULong nbVal;
+	int elemType;
+    for (Papy_List* l = object->item; l; l = l->next) {
+        SElement* group = (SElement*)l->object->group;
+        switch (group->group) {
+            case 0x0008: {
+                // (0008,1150) ReferencedSOPClassUID 1 UI [1]
+                val = Papy3GetElement(group, papReferencedSOPClassUID, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) sirm.referencedSOPClassUID = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+
+                // (0008,1155) ReferencedSOPInstanceUID 1 UI [1]
+                val = Papy3GetElement(group, papContextIdentifierGr, &nbVal, &elemType);
+                if (val && val->a && validAPointer(elemType)) sirm.referencedSOPInstanceUID = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+
+            } break;
+        }
+    }
+}
+
 - (BOOL) loadDICOMPapyrus
 {
 	int				elemType;
@@ -7654,6 +7732,8 @@ END_CREATE_ROIS:
 	
 	[purgeCacheLock lock];
 	[purgeCacheLock unlockWithCondition: [purgeCacheLock condition]+1];
+    
+    //NSString* specificCharacterSet = nil; // hopefully Papyrus3 does string decoding with UValue_T->a
 	
 	@try
 	{
@@ -7674,7 +7754,11 @@ END_CREATE_ROIS:
 			theGroupP = (SElement*) [self getPapyGroup: 0x0008];
 			if( theGroupP)
 			{
-				val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType);
+                /*val = Papy3GetElement (theGroupP, papSpecificCharacterSetGr, &nbVal, &elemType);
+                if (val && val->a)
+                    specificCharacterSet = [NSString stringWithCString:val->a DICOMEncoding:specificCharacterSet]; // specificCharacterSet is initially nil*/
+                
+                val = Papy3GetElement (theGroupP, papRecommendedDisplayFrameRateGr, &nbVal, &elemType);
 				if ( val && val->a && validAPointer( elemType)) cineRate = atof( val->a);	//[[NSString stringWithFormat:@"%0.1f", ] floatValue];
 				
 				int priority[ 8];
@@ -7784,7 +7868,7 @@ END_CREATE_ROIS:
 				[self papyLoadGroup0x0020: theGroupP];
 			
 			theGroupP = (SElement*) [self getPapyGroup: 0x0028];
-			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] || [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID]) // This group is MANDATORY... or DICOM SR / PDF / Spectro
+			if( theGroupP || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.104.1"] || [SOPClassUID hasPrefix: @"1.2.840.10008.5.1.4.1.1.88"] || [DCMAbstractSyntaxUID isNonImageStorage: SOPClassUID] || [DCMAbstractSyntaxUID isWaveform:SOPClassUID]) // This group is MANDATORY... or DICOM SR / PDF / Spectro / Waveform
 			{
 				if( theGroupP)
 				   [self papyLoadGroup0x0028: theGroupP];
@@ -8320,7 +8404,245 @@ END_CREATE_ROIS:
 						} // if ...there is a sequence of groups
 					} // if ...val is not NULL
 				}
+
+#pragma mark tag group 5400 for Waveform
 				
+				if ((theGroupP = (SElement*)[self getPapyGroup:0x5400])) {
+                    val = Papy3GetElement(theGroupP, papWaveformSequenceGr, &nbVal, &elemType);
+                    
+                    if (val && nbVal > 0 && val->sq) {
+                        DCMWaveform* w = self.waveform = [[[DCMWaveform alloc] init] autorelease];
+                        
+                        for (Papy_List* lWaveformSequence = val->sq; lWaveformSequence; lWaveformSequence = lWaveformSequence->next) {
+                            DCMWaveformSequence* ws = [w newSequence];
+                            NSLog(@"ws...");
+                        
+                            for (Papy_List* lWaveformSequenceGroup = lWaveformSequence->object->item; lWaveformSequenceGroup; lWaveformSequenceGroup = lWaveformSequenceGroup->next) {
+                                SElement* waveformSequenceGroup = (SElement*)lWaveformSequenceGroup->object->group;
+                                
+                                NSLog(@"... (%04X,%04X)", waveformSequenceGroup->group, waveformSequenceGroup->element);
+                                switch (waveformSequenceGroup->group) {
+                                    case 0x0018: {
+                                        // (0018,1068) MultiplexgroupTimeOffset 1C DS [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papMultiplexgroupTimeOffsetGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) ws.multiplexgroupTimeOffset = strtod(val->a, NULL);
+                                        
+                                        // (0018,1069) TriggerTimeOffset 1C DS [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papTriggerTimeOffsetGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) ws.triggerTimeOffset = strtod(val->a, NULL);
+                                        
+                                        // (0018,106E) TriggerSamplePosition 3 UL [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papTriggerSamplePositionGr, &nbVal, &elemType);
+                                        if (val) ws.triggerSamplePosition = val->ul;
+                                        
+                                    } break;
+                                    case 0x003A: {
+                                        // (003A,0004) WaveformOriginality 1 CS [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papWaveformOriginalityGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) [ws setWaveformOriginalityCS:val->a];
+                                        
+                                        // (003A,0005) NumberOfWaveformChannels 1 US [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papNumberOfWaveformChannelsGr, &nbVal, &elemType);
+                                        if (val) ws.numberOfWaveformChannels = val->us;
+                                        
+                                        // (003A,0010) NumberOfWaveformSamples 1 UL [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papNumberOfWaveformSamplesGr, &nbVal, &elemType);
+                                        if (val) ws.numberOfWaveformSamples = val->ul;
+                                        
+                                        // (003A,001A) SamplingFrequency 1 DS [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papSamplingFrequencyGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) ws.samplingFrequency = strtod(val->a, NULL);
+                                        
+                                        // (003A,0020) MultiplexGroupLabel 3 SH [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papMultiplexGroupLabelGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) ws.multiplexGroupLabel = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                                        
+                                        // (003A,0200) ChannelDefinitionSequence 1 SQ [1] (1+)
+                                        val = Papy3GetElement(waveformSequenceGroup, papChannelDefinitionSequenceGr, &nbVal, &elemType);
+                                        if (val && nbVal > 0 && val->sq)
+                                            for (Papy_List* lChannelDefinitionSequence = val->sq; lChannelDefinitionSequence; lChannelDefinitionSequence = lChannelDefinitionSequence->next) {
+                                                DCMWaveformChannelDefinition* cd = [ws newChannelDefinition];
+                                                NSLog(@"... cd...");
+                                                for (Papy_List* lChannelDefinitionSequenceGroup = lChannelDefinitionSequence->object->item; lChannelDefinitionSequenceGroup; lChannelDefinitionSequenceGroup = lChannelDefinitionSequenceGroup->next) {
+                                                    SElement* channelDefinitionSequenceGroup = (SElement*)lChannelDefinitionSequenceGroup->object->group;
+                                                    NSLog(@"   ... (%04X,%04X)", channelDefinitionSequenceGroup->group, channelDefinitionSequenceGroup->element);
+                                                    switch (channelDefinitionSequenceGroup->group) {
+                                                        case 0x003A: {
+                                                            // (003A,0202) WaveformChannelNumber 3 IS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papWaveformChannelNumberGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.waveformChannelNumber = strtol(val->a, NULL, 10);
+                                                            
+                                                            // (003A,0203) ChannelLabel 3 SH [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelLabelGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelLabel = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                                                            
+                                                            // (003A,0205) ChannelStatus 3 CS [1-n]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelStatusGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) [cd setChannelStatusCS:val->a];
+                                                            
+                                                            // (003A,0208) ChannelSourceSequence 1 SQ [1] (1)
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSourceSequenceGr, &nbVal, &elemType);
+                                                            if (val && nbVal > 0 && val->sq)
+                                                                for (Papy_List* lChannelSourceSequence = val->sq; lChannelSourceSequence; lChannelSourceSequence = lChannelSourceSequence->next) {
+                                                                    DCMWaveformChannelSource* cs = [cd newChannelSource];
+                                                                    NSLog(@"...... cs...");
+                                                                    // [Code Sequence Macro]
+                                                                    [self papyLoadCodeSequenceMacro:cs from:lChannelSourceSequence->object];
+                                                                }
+                                                            
+                                                            // (003A,0209) ChannelSourceModifiersSequence 1C SQ [1] (1+)
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSourceModifiersSequenceGr, &nbVal, &elemType);
+                                                            if (val && nbVal > 0 && val->sq)
+                                                                for (Papy_List* lChannelSourceModifiersSequence = val->sq; lChannelSourceModifiersSequence; lChannelSourceModifiersSequence = lChannelSourceModifiersSequence->next) {
+                                                                    DCMWaveformChannelSourceModifier* csm = [cd newChannelSourceModifier];
+                                                                    NSLog(@"...... csm...");
+                                                                    // [Code Sequence Macro]
+                                                                    [self papyLoadCodeSequenceMacro:csm from:lChannelSourceModifiersSequence->object];
+
+                                                                }
+                                                            
+                                                            // (003A,020A) SourceWaveformSequence 3 SQ [1] (1+)
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papSourceWaveformSequenceGr, &nbVal, &elemType);
+                                                            if (val && nbVal > 0 && val->sq)
+                                                                for (Papy_List* lSourceWaveformSequence = val->sq; lSourceWaveformSequence; lSourceWaveformSequence = lSourceWaveformSequence->next) {
+                                                                    DCMWaveformSourceWaveform* sw = [cd newSourceWaveform];
+                                                                    NSLog(@"...... sw...");
+                                                                    for (Papy_List* lSourceWaveformSequenceGroup = lSourceWaveformSequence->object->item; lSourceWaveformSequenceGroup; lSourceWaveformSequenceGroup = lSourceWaveformSequenceGroup->next) {
+                                                                        SElement* sourceWaveformSequenceGroup = (SElement*)lSourceWaveformSequenceGroup->object->group;
+                                                                        NSLog(@"      ... (%04X,%04X)", sourceWaveformSequenceGroup->group, sourceWaveformSequenceGroup->element);
+                                                                        switch (sourceWaveformSequenceGroup->group) {
+                                                                            case 0x0040: {
+                                                                                // (0040,A0B0) ReferencedWaveformChannels 1 US [2-2n]
+                                                                                val = Papy3GetElement(channelDefinitionSequenceGroup, papReferencedWaveformChannelsGr, &nbVal, &elemType);
+                                                                                if (val) sw.referencedWaveformChannels = val->us;
+                                                                            } break;
+                                                                        }
+                                                                    }
+                                                                    // [SOP Instance Reference Macro]
+                                                                    [self papyLoadSOPInstanceReferenceMacro:sw from:lSourceWaveformSequence->object];
+                                                                }
+                                                            
+                                                            // (003A,020C) ChannelDerivationDescription 3 LO [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelDerivationDescriptionGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelDerivationDescription = [NSString stringWithCString:val->a encoding:NSISOLatin1StringEncoding];
+                                                            
+                                                            // (003A,0210) ChannelSensitivity 1C DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSensitivityGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelSensitivity = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,0211) ChannelSensitivityUnitsSequence 1C SQ [1] (1)
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSensitivityUnitsSequenceGr, &nbVal, &elemType);
+                                                            if (val && nbVal > 0 && val->sq)
+                                                                for (Papy_List* lChannelSensitivityUnitsSequence = val->sq; lChannelSensitivityUnitsSequence; lChannelSensitivityUnitsSequence = lChannelSensitivityUnitsSequence->next) {
+                                                                    DCMWaveformChannelSensitivityUnit* csu = [cd newChannelSensitivityUnit];
+                                                                    NSLog(@"...... csu...");
+                                                                    // [Code Sequence Macro]
+                                                                    [self papyLoadCodeSequenceMacro:csu from:lChannelSensitivityUnitsSequence->object];
+                                                                }
+                                                            
+                                                            // (003A,0212) ChannelSensitivityCorrectionFactor 1C DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSensitivityCorrectionFactorGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelSensitivityCorrectionFactor = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,0213) ChannelBaseline 1C DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelBaselineGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelBaseline = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,0214) ChannelTimeSkew 1C DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelTimeSkewGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelTimeSkew = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,0215) ChannelSampleSkew 1C DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelSampleSkewGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelSampleSkew = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,0218) ChannelOffset 3 DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelOffsetGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.channelOffset = strtod(val->a, NULL);
+                                                            
+                                                            // (003A,021A) WaveformBitsStored 1 US [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papWaveformBitsStoredGr, &nbVal, &elemType);
+                                                            if (val) cd.waveformBitsStored = val->us;
+                                                            
+                                                            // (003A,0220) FilterLowFrequency 3 DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papFilterLowFrequencyGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.filterLowFrequency = strtod(val->a, NULL);
+
+                                                            // (003A,0221) FilterHighFrequency 3 DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papFilterHighFrequencyGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.filterHighFrequency = strtod(val->a, NULL);
+
+                                                            // (003A,0222) NotchFilterFrequency 3 DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papNotchFilterFrequencyGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.notchFilterFrequency = strtod(val->a, NULL);
+
+                                                            // (003A,0223) NotchFilterBandwidth 3 DS [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papNotchFilterBandwidthGr, &nbVal, &elemType);
+                                                            if (val && val->a && validAPointer(elemType)) cd.notchFilterBandwidth = strtod(val->a, NULL);
+                                                            
+                                                        } break;
+                                                        case 0x5400: {
+                                                            // (5400,0110) ChannelMinimumValue 3 OB/OW [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelMinimumValueGr, &nbVal, &elemType);
+                                                            if (val) {
+                                                                if (val->a && validAPointer(elemType)) // OB
+                                                                    [cd setChannelMinimumValue:val->a length:nbVal];
+                                                                else // OW
+                                                                    [cd setChannelMinimumValue:val->ow length:nbVal*2];
+                                                            }
+
+                                                            // (5400,0112) ChannelMaximumValue 3 OB/OW [1]
+                                                            val = Papy3GetElement(channelDefinitionSequenceGroup, papChannelMaximumValueGr, &nbVal, &elemType);
+                                                            if (val) {
+                                                                if (val->a && validAPointer(elemType)) // OB
+                                                                    [cd setChannelMaximumValue:val->a length:nbVal];
+                                                                else // OW
+                                                                    [cd setChannelMaximumValue:val->ow length:nbVal*2];
+                                                            }
+
+                                                        }  break;
+                                                    }
+                                                }
+                                            }
+                                        
+                                    } break;
+                                    case 0x5400: {
+                                        // (5400,1004) WaveformBitsAllocated 1 US [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papWaveformBitsAllocatedGr, &nbVal, &elemType);
+                                        if (val) ws.waveformBitsAllocated = val->us;
+                                        
+                                        // (5400,1006) WaveformSampleInterpretation 1 CS [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papWaveformSampleInterpretationGr, &nbVal, &elemType);
+                                        if (val && val->a && validAPointer(elemType)) [ws setWaveformSampleInterpretationCS:val->a];
+                                        
+                                        // (5400,100A) WaveformPaddingValue 1C OB/OW [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papWaveformPaddingValueGr, &nbVal, &elemType);
+                                        if (val) {
+                                            if (val->a && validAPointer(elemType)) // OB
+                                                [ws setWaveformPaddingValue:val->a length:nbVal];
+                                            else // OW
+                                                [ws setWaveformPaddingValue:val->ow length:nbVal*2];
+                                        }
+                                        
+                                        // (5400,1010) WaveformData 1 OB/OW [1]
+                                        val = Papy3GetElement(waveformSequenceGroup, papWaveformDataGr, &nbVal, &elemType);
+                                        if (val) {
+                                            if (val->a && validAPointer(elemType)) // OB
+                                                [ws setWaveformData:val->a length:ws.numberOfWaveformChannels*ws.numberOfWaveformSamples*ws.waveformBitsAllocated/8];
+                                            else // OW
+                                                [ws setWaveformData:val->ow length:ws.numberOfWaveformChannels*ws.numberOfWaveformSamples*2];
+                                        }
+                                        
+                                    } break;
+                                }
+                                
+                            }
+                        }
+                    }
+
+                    
+                }
+                
 		#pragma mark tag group 6000		
 				
 				theGroupP = (SElement*) [self getPapyGroup: 0x6000];
