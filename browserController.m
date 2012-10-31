@@ -4011,7 +4011,7 @@ static NSConditionLock *threadLock = nil;
         
         if( [self.comparativePatientUID compare: studySelected.patientUID options: NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch | NSWidthInsensitiveSearch] == NSOrderedSame) // There was maybe other locks in the queue... Keep only the displayed patientUID
         {
-            NSLog( @"Search history: %@", studySelected.patientUID);
+//            NSLog( @"Search history: %@", studySelected.patientUID);
             NSMutableArray *mergedStudies = nil;
             
             lastRefreshComparativeStudies = [NSDate timeIntervalSinceReferenceDate];

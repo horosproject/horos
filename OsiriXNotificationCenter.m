@@ -13,17 +13,17 @@ const static void *namesKey = &namesKey;
 
 + (void) load
 {
-	method_exchangeImplementations(class_getInstanceMethod(self, @selector(addObserver:selector:name:object:)),
-	                               class_getInstanceMethod(self, @selector(my_addObserver:selector:name:object:)));
-    
-    method_exchangeImplementations(class_getInstanceMethod(self, @selector(postNotificationName:object:userInfo:)),
-	                               class_getInstanceMethod(self, @selector(my_postNotificationName:object:userInfo:)));
-    
-    method_exchangeImplementations(class_getInstanceMethod(self, @selector(postNotification:)),
-	                               class_getInstanceMethod(self, @selector(my_postNotification:)));
-    
-    method_exchangeImplementations(class_getInstanceMethod(self, @selector(removeObserver:name:object:)),
-	                               class_getInstanceMethod(self, @selector(my_removeObserver:name:object:)));
+//	method_exchangeImplementations(class_getInstanceMethod(self, @selector(addObserver:selector:name:object:)),
+//	                               class_getInstanceMethod(self, @selector(my_addObserver:selector:name:object:)));
+//    
+//    method_exchangeImplementations(class_getInstanceMethod(self, @selector(postNotificationName:object:userInfo:)),
+//	                               class_getInstanceMethod(self, @selector(my_postNotificationName:object:userInfo:)));
+//    
+//    method_exchangeImplementations(class_getInstanceMethod(self, @selector(postNotification:)),
+//	                               class_getInstanceMethod(self, @selector(my_postNotification:)));
+//    
+//    method_exchangeImplementations(class_getInstanceMethod(self, @selector(removeObserver:name:object:)),
+//	                               class_getInstanceMethod(self, @selector(my_removeObserver:name:object:)));
 }
 
 - (void) my_addObserver:(id)notificationObserver selector:(SEL)notificationSelector name:(NSString *)notificationName object:(id)notificationSender

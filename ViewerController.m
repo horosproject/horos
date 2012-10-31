@@ -425,6 +425,9 @@ return YES;
 #endif
 	BOOL valid = NO;
 	
+    if( windowWillClose)
+        return NO;
+    
 	if( [[fileList[ 0] lastObject] isKindOfClass:[NSManagedObject class]] == NO)
 		return NO;
 	if( [item action] == @selector( showHideMatrix:))
