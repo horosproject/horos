@@ -12521,7 +12521,7 @@ END_CREATE_ROIS:
 			}
 		}
 		
-        if( newWW < 0.001) newWW = 0.001;
+        if( newWW < 0.001 * slope) newWW = 0.001 * slope;
         
         ww = newWW;
         wl = newWL;

@@ -5265,11 +5265,13 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	}
 }
 
-- (void)mouseDraggedBlending:(NSEvent *)event{
+- (void)mouseDraggedBlending:(NSEvent *)event
+{
 	float WWAdapter = bdstartWW / 100.0;
 	NSPoint current = [self currentPointInView:event];
-	if( WWAdapter < 0.001) WWAdapter = 0.001;
-
+    
+	if( WWAdapter < 0.001 * curDCM.slope) WWAdapter = 0.001 * curDCM.slope;
+    
 	if( [self is2DViewer] == YES)
 	{
 		[[[self windowController] thickSlabController] setLowQuality: YES];
@@ -5345,7 +5347,7 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 	{
 		float WWAdapter = startWW / 80.00;
 
-		if( WWAdapter < 0.001) WWAdapter = 0.001;
+		if( WWAdapter < 0.001 * curDCM.slope) WWAdapter = 0.001 * curDCM.slope;
 		
 		if( [self is2DViewer] == YES)
 		{

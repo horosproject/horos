@@ -1025,7 +1025,7 @@ extern int ANNOTATIONS;
 	{
 		float WWAdapter = startWW / 100.0;
 		
-		if( WWAdapter < 0.001) WWAdapter = 0.001;
+		if( WWAdapter < 0.001 * curDCM.slope) WWAdapter = 0.001 * curDCM.slope;
 		
 		if( [self is2DViewer] == YES)
 		{
