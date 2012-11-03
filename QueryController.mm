@@ -887,16 +887,24 @@ extern "C"
 	if( includeDICOMNodes)
 	{
 		NSMutableArray *srcArray = [NSMutableArray array];
+        NSMutableArray *srcAETitleArray = [NSMutableArray array];
 		for( id src in sourcesArray)
 		{
 			if( [[src valueForKey: @"activated"] boolValue] == YES)
+            {
 				[srcArray addObject: [NSString stringWithString: [src valueForKey: @"AddressAndPort"]]];
+                [srcAETitleArray addObject: [NSString stringWithString: [src valueForKey: @"AETitle"]]];
+            }
 		}
 		
 		if( [srcArray count] == 0 && [sourcesTable selectedRow] >= 0)
+        {
 			[srcArray addObject: [NSString stringWithString: [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey: @"AddressAndPort"]]];
-		
+            [srcAETitleArray addObject: [NSString stringWithString: [[sourcesArray objectAtIndex: [sourcesTable selectedRow]] valueForKey: @"AETitle"]]];
+		}
+        
 		[presets setValue: srcArray forKey: @"DICOMNodes"];
+        [presets setValue: srcAETitleArray forKey: @"DICOMNodesAETitle"];
 	}
 	
 	[presets setValue: [searchFieldName stringValue] forKey: @"searchFieldName"];
@@ -1012,6 +1020,7 @@ extern "C"
 	if( [presets valueForKey: @"DICOMNodes"])
 	{
 		NSArray *r = [presets valueForKey: @"DICOMNodes"];
+        NSArray *rAE = [presets valueForKey: @"DICOMNodesAETitle"];
 		
 		if( [r count])
 		{
@@ -1037,23 +1046,29 @@ extern "C"
 //			{
 				BOOL first = YES;
 				
-				for( id v in r)
-				{
-					for( id src in sourcesArray)
-					{
-						if( [[src valueForKey: @"AddressAndPort"] isEqualToString: v])
-						{
-							[src setValue: [NSNumber numberWithBool: YES] forKey: @"activated"];
-							
-							if( first)
-							{
-								first = NO;
-								[sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
-								[sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
-							}
-						}
-					}
-				}
+                for( int i = 0; i < r.count; i++)
+                {
+                    NSString *v = [r objectAtIndex: i];
+                    
+                    NSString *ae = nil;
+                    if( i < rAE.count)
+                        ae = [rAE objectAtIndex: i];
+                    
+                    for( id src in sourcesArray)
+                    {
+                        if( [[src valueForKey: @"AddressAndPort"] isEqualToString: v] && (ae == nil || [ae isEqualToString: [src valueForKey:@"AETitle"]]))
+                        {
+                            [src setValue: [NSNumber numberWithBool: YES] forKey: @"activated"];
+                            
+                            if( first)
+                            {
+                                first = NO;
+                                [sourcesTable selectRowIndexes: [NSIndexSet indexSetWithIndex: [sourcesArray indexOfObject: src]] byExtendingSelection: NO];
+                                [sourcesTable scrollRowToVisible: [sourcesArray indexOfObject: src]];
+                            }
+                        }
+                    }
+                }
 //			}
 			
 			[self didChangeValueForKey:@"sourcesArray"];
@@ -2144,13 +2159,21 @@ extern "C"
         if( [NSThread isMainThread])
             [self refreshList: [NSArray array]]; // Clean the list
         
-		for( NSString *s in [instance objectForKey: @"DICOMNodes"])
+        NSArray *dicomNodes = [instance objectForKey: @"DICOMNodes"];
+        NSArray *dicomNodesAE = [instance objectForKey: @"DICOMNodesAETitle"];
+        
+		for( int v = 0; v < dicomNodes.count; v++)
         {
+            NSString *s = [dicomNodes objectAtIndex: v];
+            NSString *ae = nil;
+            if( v < dicomNodesAE.count)
+                ae = [dicomNodesAE objectAtIndex: v];
+                
             NSDictionary *aServer = nil;
             
             for( id src in sourcesArray)
             {
-                if( [[src valueForKey: @"AddressAndPort"] isEqualToString: s])
+                if( [[src valueForKey: @"AddressAndPort"] isEqualToString: s] && (ae == nil || [[src valueForKey: @"AETitle"] isEqualToString: ae]))
                     aServer = [src valueForKey: @"server"];
             }
             
