@@ -4530,6 +4530,12 @@ static BOOL initialized = NO;
 		}
 	}
 	
+    if( rows <= 0)
+        rows = 1;
+    
+    if( columns <= 0)
+        columns = 1;
+    
 	//excess viewers. Need to add spaces to accept
 	if( viewerCount > (rows * columns))
 	{
@@ -4540,11 +4546,19 @@ static BOOL initialized = NO;
 		
 		float viewerCountPerScreen = (float) viewerCount / (float) numberOfMonitors;
 		
+        BOOL fixedRows = NO, fixedColumns = NO;
+        
+        if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"rows"])
+            fixedRows = YES;
+        
+        if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"columns"])
+            fixedColumns = YES;
+        
 		while (viewerCountPerScreen > (rows * columns))
 		{
-			if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"rows"])
+			if( fixedRows)
 				columns++;
-			else if( [sender isKindOfClass: [NSDictionary class]] && [sender objectForKey: @"columns"])
+			else if( fixedColumns)
 				rows++;
 			else
 			{
