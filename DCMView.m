@@ -9681,54 +9681,59 @@ NSInteger studyCompare(ViewerController *v1, ViewerController *v2, void *context
 															offset: &ioffset
 														  isSigned: &iisSigned];
 			
-			if( i == 0)
-			{
-				if( imSpacing)
-				{
-					imSpacing[ 0] = iimSpacing[ 0];
-					imSpacing[ 1] = iimSpacing[ 1];
-				}
-				
-				if( imOrigin)
-				{
-					imOrigin[ 0] = 0;
-					imOrigin[ 1] = 0;
-					imOrigin[ 2] = 0;
-				}
-				
-				*spp = ispp;
-				*bpp = ibpp;
-				if( offset) *offset = ioffset;
-				if( isSigned) *isSigned = iisSigned;
-				
-				data = calloc( 1, (1+*width) * (1+*height) * *spp * *bpp/8);
-			}
-			else
-			{
-				if( imSpacing)
-				{
-					if( fabs( imSpacing[ 0] - iimSpacing[ 0]) > 0.005 || fabs( imSpacing[ 1] - iimSpacing[ 1]) > 0.005)
-					{
-						imSpacing[ 0] = 0;
-						imSpacing[ 1] = 0;
-					}
-				}
-			}
+            if( tempData)
+            {
+                if( i == 0)
+                {
+                    if( imSpacing)
+                    {
+                        imSpacing[ 0] = iimSpacing[ 0];
+                        imSpacing[ 1] = iimSpacing[ 1];
+                    }
+                    
+                    if( imOrigin)
+                    {
+                        imOrigin[ 0] = 0;
+                        imOrigin[ 1] = 0;
+                        imOrigin[ 2] = 0;
+                    }
+                    
+                    *spp = ispp;
+                    *bpp = ibpp;
+                    if( offset) *offset = ioffset;
+                    if( isSigned) *isSigned = iisSigned;
+                    
+                    data = calloc( 1, (2+*width) * (2+*height) * *spp * *bpp/8);
+                }
+                else
+                {
+                    if( imSpacing)
+                    {
+                        if( fabs( imSpacing[ 0] - iimSpacing[ 0]) > 0.005 || fabs( imSpacing[ 1] - iimSpacing[ 1]) > 0.005)
+                        {
+                            imSpacing[ 0] = 0;
+                            imSpacing[ 1] = 0;
+                        }
+                    }
+                }
 
-			
-			NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[views bounds];
-			
-			bounds.origin.x -= unionRect.origin.x;
-			bounds.origin.y -= unionRect.origin.y;
-			
-			unsigned char	*o = data + (*bpp/8) * *spp * *width * (int) (*height - bounds.origin.y - iheight) + (int) bounds.origin.x * *spp * (*bpp/8);
-			 
-			for( int y = 0 ; y < iheight; y++)
-			{
-				memcpy( o + (*bpp/8) * y * *spp * *width, tempData + (*bpp/8) * y *ispp * iwidth, (*bpp/8) * ispp * iwidth);
-			}
-			
-			free( tempData);
+                
+                NSRect	bounds = [[viewsRect objectAtIndex: i] rectValue];	//[views bounds];
+                
+                bounds.origin.x -= unionRect.origin.x;
+                bounds.origin.y -= unionRect.origin.y;
+                
+                if( data)
+                {
+                    unsigned char	*o = data + (*bpp/8) * *spp * *width * (int) (*height - bounds.origin.y - iheight) + (int) bounds.origin.x * *spp * (*bpp/8);
+                     
+                    for( int y = 0 ; y < iheight; y++)
+                    {
+                        memcpy( o + (*bpp/8) * y * *spp * *width, tempData + (*bpp/8) * y *ispp * iwidth, (*bpp/8) * ispp * iwidth);
+                    }
+                }
+                free( tempData);
+            }
 		}
 		
 		return data;
