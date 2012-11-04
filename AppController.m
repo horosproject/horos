@@ -66,6 +66,9 @@
 #import "Window3DController.h"
 #import "N2Stuff.h"
 #import "OSIGeneralPreferencePanePref.h"
+#import "Security/Security.h"
+#import "Security/SecRequirement.h"
+#import "Security/SecCode.h"
 
 #include <OpenGL/OpenGL.h>
 
@@ -3304,6 +3307,33 @@ static BOOL initialized = NO;
 #ifndef OSIRIX_LIGHT
     #import "PFMoveApplication.h"
     PFMoveToApplicationsFolderIfNecessary();
+
+    if( [AppController isFDACleared])
+    {
+        
+        SecRequirementRef requirement = 0;
+        SecStaticCodeRef code = 0;
+        
+        OSStatus status = SecRequirementCreateWithString( (CFStringRef) @"anchor trusted and certificate leaf [subject.CN] = \"Developer ID Application: Antoine Rosset\"", kSecCSDefaultFlags, &requirement);
+        
+        status = SecStaticCodeCreateWithPath( (CFURLRef) [[NSBundle mainBundle] bundleURL], kSecCSDefaultFlags, &code);
+        
+        NSError *errors = nil;
+        
+        status = SecStaticCodeCheckValidityWithErrors(code, kSecCSDefaultFlags, requirement, (CFErrorRef*) &errors);
+        
+        if(status != noErr)
+        {
+            NSLog( @"SecStaticCodeCheckValidity: %ld", status);
+            NSLog( @"%@", errors);
+            
+            NSRunCriticalAlertPanel( NSLocalizedString( @"Code signing and Certificate", nil), [NSString stringWithFormat: NSLocalizedString( @"Invalid code signing or certificate. Redownload OsiriX from the pixmeo web site.\r\r%@\r\r%@", nil), errors.localizedDescription, errors.userInfo], NSLocalizedString( @"Quit", nil) , nil, nil);
+            exit( 0);
+        }
+        
+        CFRelease( requirement);
+        CFRelease( code);
+    }
 #endif
 }
 
