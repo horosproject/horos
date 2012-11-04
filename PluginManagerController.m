@@ -17,6 +17,8 @@
 #import "WaitRendering.h"
 #import "Notifications.h"
 #import "PreferencesWindowController.h"
+#import "ThreadsManager.h"
+#import "NSThread+N2.h"
 
 // this is the address of the plist containing the list of the available plugins.
 // the alternative link will be used if the first one doesn't reply...
@@ -395,20 +397,47 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 		[downloadButton setHidden:NO];
 }
 
+- (void) fakeThread: (NSString*) downloadedFilePath
+{
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    BOOL downloading = YES;    
+    while( downloading)
+    {
+        @synchronized( downloadingPlugins)
+        {
+            if( [downloadingPlugins objectForKey: downloadedFilePath] == nil)
+                downloading = NO;
+            
+            [NSThread sleepForTimeInterval: 1];
+        }
+    }
+    
+    [pool release];
+}
+
 - (IBAction)download:(id)sender;
 {
     NSString *downloadedFilePath = [NSString stringWithFormat:@"/tmp/%@", [[downloadURL lastPathComponent] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     
-    if( [downloadingPlugins objectForKey: downloadedFilePath])
-        NSLog( @"---- Already downloading...");
-    
-    else
+    @synchronized( downloadingPlugins)
     {
-        NSURLDownload *download = [[[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self] autorelease];
+        if( [downloadingPlugins objectForKey: downloadedFilePath])
+            NSLog( @"---- Already downloading...");
         
-        [download setDestination: downloadedFilePath allowOverwrite:YES];
-        
-        [downloadingPlugins setObject: download forKey: downloadedFilePath];
+        else
+        {
+            NSURLDownload *download = [[[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:downloadURL]] delegate:self] autorelease];
+            
+            [download setDestination: downloadedFilePath allowOverwrite:YES];
+            
+            [downloadingPlugins setObject: download forKey: downloadedFilePath];
+            
+            NSThread *t = [[[NSThread alloc] initWithTarget:self selector: @selector( fakeThread:) object: downloadedFilePath] autorelease];
+            t.name = NSLocalizedString( @"Plugin download...", nil);
+            t.status = downloadURL;
+            [[ThreadsManager defaultManager] addThreadAndStart: t];
+        }
     }
 }
 
@@ -426,7 +455,11 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
     
-    NSArray *paths = [downloadingPlugins allKeysForObject: download];
+    NSArray *paths = nil;
+    @synchronized( downloadingPlugins)
+    {
+        paths = [downloadingPlugins allKeysForObject: download];
+    }
     
     if( paths.count == 1)
     {
@@ -434,7 +467,10 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
         
         [[NSNotificationCenter defaultCenter] postNotificationName:OsirixPluginDownloadInstallDidFinishNotification object:self userInfo:nil];
         
-        [downloadingPlugins removeObjectForKey: [paths lastObject]];
+        @synchronized( downloadingPlugins)
+        {
+            [downloadingPlugins removeObjectForKey: [paths lastObject]];
+        }
     }
     else
         NSLog( @"***** downloadDidFinish path for download?");
@@ -450,10 +486,19 @@ NSInteger sortPluginArrayByName(id plugin1, id plugin2, void *context)
 	[statusProgressIndicator setHidden:YES];
 	[statusProgressIndicator stopAnimation:self];
     
-    NSArray *paths = [downloadingPlugins allKeysForObject: download];
+    NSArray *paths = nil;
+    @synchronized( downloadingPlugins)
+    {
+        paths = [downloadingPlugins allKeysForObject: download];
+    }
     
     if( paths.count == 1)
-        [downloadingPlugins removeObjectForKey: [paths lastObject]];
+    {
+        @synchronized( downloadingPlugins)
+        {
+            [downloadingPlugins removeObjectForKey: [paths lastObject]];
+        }
+    }
     else
         NSLog( @"***** download didFailWithError path for download?");
 }
