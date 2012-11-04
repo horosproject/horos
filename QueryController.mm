@@ -1844,7 +1844,7 @@ extern "C"
 						return [[seriesArray objectAtIndex: 0] valueForKey: @"stateText"];
 				}
 			}
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
 		}
 		else if( [[tableColumn identifier] isEqualToString: @"comment"])
 		{
@@ -1865,7 +1865,7 @@ extern "C"
 				else
 					return [item valueForKey: @"comments"];
 			}
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
 		}
 		else if ( [[tableColumn identifier] isEqualToString: @"Button"] == NO && [tableColumn identifier] != nil)
 		{
@@ -1877,7 +1877,7 @@ extern "C"
                 }
                 else return [item valueForKey: [tableColumn identifier]];
             }
-            else NSLog( @"***** unknown class in QueryController outlineView: %@", item);
+            else NSLog( @"***** unknown class in QueryController outlineView: %@", [item class]);
 		}	
 	}
 	@catch (NSException * e)
