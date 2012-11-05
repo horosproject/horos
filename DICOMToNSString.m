@@ -59,14 +59,17 @@
 	else if( [characterSet isEqualToString:@"UTF 8"])	encoding = NSUTF8StringEncoding;
 	else
 	{
-		NSLog(@"** encoding not found: %@", characterSet);
+		NSLog(@"** DICOMTONSString encoding not found: %@", characterSet);
 		
-		NSArray *multipleEncoding = [characterSet componentsSeparatedByString:@"\\"];
-		if( [multipleEncoding count] > 1)
-		{
-			NSLog( @"**** error: multiple encoding in %s : %@", __PRETTY_FUNCTION__, characterSet);
-			return [NSString encodingForDICOMCharacterSet: [multipleEncoding objectAtIndex: 0]];
-		}
+        if( characterSet.length < 50)
+        {
+            NSArray *multipleEncoding = [characterSet componentsSeparatedByString:@"\\"];
+            if( [multipleEncoding count] > 1)
+            {
+                NSLog( @"**** error: multiple encoding in %s : %@", __PRETTY_FUNCTION__, characterSet);
+                return [NSString encodingForDICOMCharacterSet: [multipleEncoding objectAtIndex: 0]];
+            }
+        }
 	}
 	return encoding;
 
